@@ -34,3 +34,6 @@ inst_data.bin
 *.a
 convert
 Signup
+designCPUByChisel/target
+designCPUByChisel/project
+designCPUByChisel/test_run_dir
