@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0m/mnt/d/myCPU_new/nscscc2026ByCQUPT/designCPU/src/main/scala/core_top.scala:60:3: not found: value clock[0m
+[0m[[0m[31merror[0m] [0m[0m  clock.suggestName("clk")[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/mnt/d/myCPU_new/nscscc2026ByCQUPT/designCPU/src/main/scala/core_top.scala:61:3: not found: value reset[0m
+[0m[[0m[31merror[0m] [0m[0m  reset.suggestName("rst")[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

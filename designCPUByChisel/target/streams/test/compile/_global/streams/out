@@ -1,0 +1,5 @@
+[0m[[0m[33mwarn[0m] [0m[0m/mnt/d/myCPU_new/NonBlockingCache/src/test/scala/FakeNonBlockingRAM.scala:60:5: match may not be exhaustive.[0m
+[0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following input: None[0m
+[0m[[0m[33mwarn[0m] [0m[0m    burstState match {[0m
+[0m[[0m[33mwarn[0m] [0m[0m    ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
