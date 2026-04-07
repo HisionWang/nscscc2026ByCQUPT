@@ -5,6 +5,7 @@ import chisel3.util._
 // 被动类型（Passive Type）：纯数据结构，无方向标注
 // --------------------------
 // AXI3 AR通道数据（纯数据，无方向）
+
 class AXI3ARData extends Bundle {
   val arid    = UInt(4.W)
   val araddr  = UInt(32.W)

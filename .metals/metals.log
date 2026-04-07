@@ -1,0 +1,350 @@
+2026.04.07 10:12:32 INFO  Started: Metals version 1.6.6 in folders '/nfs/home/wanghao/nscscc2026ByCQUPT' for client Visual Studio Code 1.111.0.
+2026.04.07 10:12:32 INFO  Memory monitor started
+2026.04.07 10:12:32 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 10:12:33 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:12:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 10:12:35 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2026.04.07 10:12:35 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:12:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:12:36 WARN  no build target for: /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt
+2026.04.07 10:12:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:13:02 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:13:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:14:01 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/build.sbt. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 10:14:49 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Apr 07, 2026 10:14:49 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:40 WARN  no build target for: /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 10:16:40 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 19
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:40 WARN  no build target for: /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala
+Apr 07, 2026 10:16:41 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 27
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:41 WARN  no build target for: /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 10:16:41 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 33
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:46 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:46 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:46 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:46 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:46 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:16:51 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:17:01 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:17:01 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 10:17:38 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:49:34 INFO  Started: Metals version 1.6.6 in folders '/nfs/home/wanghao/nscscc2026ByCQUPT' for client Visual Studio Code 1.111.0.
+2026.04.07 13:49:34 INFO  Memory monitor started
+2026.04.07 13:49:34 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 13:49:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:49:36 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Apr 07, 2026 1:49:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2
+2026.04.07 13:49:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:49:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:49:48 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2026.04.07 13:49:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:11 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:11 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:12 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:12 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:12 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:14 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala]
+2026.04.07 13:51:14 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-07/r_empty-definition_13-51-15-078.md")
+2026.04.07 13:51:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:19 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:19 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:19 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:19 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:21 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:21 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:21 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:21 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:21 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:21 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:22 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:26 WARN  no build target for: /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala
+2026.04.07 13:51:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:28 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:28 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:51:32 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 66
+2026.04.07 13:51:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:33 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:33 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:36 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:51:55 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:24 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:24 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:24 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:24 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:24 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:27 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:28 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:28 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:28 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:30 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:30 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:30 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:31 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:31 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:33 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:33 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:33 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala]
+2026.04.07 13:52:33 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-07/r_empty-definition_13-52-33-728.md")
+2026.04.07 13:52:38 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:38 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:52:49 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:53:05 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:53:08 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:53:30 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2026.04.07 13:54:25 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:25 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:25 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:25 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/core_top.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:26 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-07/r_empty-definition_13-52-33-728.md")
+2026.04.07 13:54:30 INFO  Shutting down server
+2026.04.07 13:54:30 INFO  Memory monitor stopped
+2026.04.07 13:54:30 INFO  shutting down Metals
+2026.04.07 13:54:30 INFO  Exiting server
+2026.04.07 13:54:31 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:54:31 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 208
+2026.04.07 13:54:31 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:31 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:54:32 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 216
+2026.04.07 13:54:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:32 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:34 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:35 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:37 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:39 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:40 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:41 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala]
+2026.04.07 13:54:42 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-07/r_empty-definition_13-54-42-257.md")
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:42 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 1:54:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 265
+2026.04.07 13:54:43 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:44 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:44 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-07/r_empty-definition_13-54-42-257.md")
+2026.04.07 13:54:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:47 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:48 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:50 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:50 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:53 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:53 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:53 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:54 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:57 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:57 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:57 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:54:57 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:06 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:06 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:07 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:07 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:09 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:09 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:09 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:11 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:11 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:12 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:12 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:14 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:15 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:16 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:17 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:17 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:17 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:18 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:20 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:20 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:20 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:20 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:22 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:23 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:23 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:26 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:27 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:28 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:30 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:30 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 13:55:59 ERROR 
+2026.04.07 13:55:59 ERROR https://github.com/scala/hello-world.g8.git: connection failed
+2026.04.07 13:55:59 ERROR 
+2026.04.07 13:55:59 INFO  time: ran 'giter8.Giter8' in 2m22s
+2026.04.07 14:50:20 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 14:50:29 INFO  Shutting down server
+2026.04.07 14:50:29 INFO  Memory monitor stopped
+2026.04.07 14:50:29 INFO  shutting down Metals
+2026.04.07 14:50:29 INFO  Exiting server
+2026.04.07 15:44:27 INFO  Started: Metals version 1.6.6 in folders '/nfs/home/wanghao/nscscc2026ByCQUPT' for client Visual Studio Code 1.111.0.
+2026.04.07 15:44:27 INFO  Memory monitor started
+2026.04.07 15:44:27 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.07 15:44:29 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.07 15:44:29 WARN  no build target for: /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala
+2026.04.07 15:44:29 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 3:44:31 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2026.04.07 15:44:33 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/Bundle.scala. Using presentation compiler with project's scala-library version: 3.3.7
+Apr 07, 2026 3:44:41 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
