@@ -1,5 +1,7 @@
 .vscode
 .idea
+/chiplab/toolchains/
+
 cmake-build-debug
 CMakeLists.txt
 toolchains/*
@@ -37,4 +39,3 @@ Signup
 designCPUByChisel/target
 designCPUByChisel/project
 designCPUByChisel/test_run_dir
-chiplab/toolchains
