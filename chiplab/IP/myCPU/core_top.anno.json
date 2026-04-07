@@ -1,5 +1,29 @@
 [
   {
+    "class":"firrtl.transforms.DedupedResult",
+    "original":"~core_top|MiniICache",
+    "duplicate":"~core_top|core_top/icache:MiniICache",
+    "index":0.07692307692307693
+  },
+  {
+    "class":"firrtl.transforms.DedupedResult",
+    "original":"~core_top|MiniICache_1",
+    "duplicate":"~core_top|core_top/dcache:MiniICache",
+    "index":0.15384615384615385
+  },
+  {
+    "class":"firrtl.transforms.DedupedResult",
+    "original":"~core_top|MiniICache_2",
+    "duplicate":"~core_top|core_top/uncache1:MiniICache",
+    "index":0.23076923076923078
+  },
+  {
+    "class":"firrtl.transforms.DedupedResult",
+    "original":"~core_top|MiniICache_3",
+    "duplicate":"~core_top|core_top/uncache2:MiniICache",
+    "index":0.3076923076923077
+  },
+  {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
   },
@@ -45,163 +69,643 @@
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_araddr"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_araddr"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arlen"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arlen"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arsize"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arsize"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arburst"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arburst"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arlock"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arlock"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arcache"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arcache"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arprot"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arprot"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_out_arvalid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_out_arvalid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_ar_arready"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_ar_arready"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awaddr"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awaddr"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awlen"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awlen"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awsize"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awsize"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awburst"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awburst"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awlock"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awlock"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awcache"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awcache"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awprot"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awprot"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_out_awvalid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_out_awvalid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_aw_awready"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_aw_awready"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_w_out_wid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_w_out_wid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_w_out_wdata"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_w_out_wdata"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_w_out_wstrb"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_w_out_wstrb"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_w_out_wlast"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_w_out_wlast"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_w_out_wvalid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_w_out_wvalid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_w_wready"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_w_wready"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_r_in_rid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_r_in_rid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_r_in_rdata"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_r_in_rdata"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_r_in_rresp"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_r_in_rresp"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_r_in_rlast"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_r_in_rlast"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_r_in_rvalid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_r_in_rvalid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_r_rready"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_r_rready"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_b_in_bid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_b_in_bid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_b_in_bresp"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_b_in_bresp"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_b_in_bvalid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_b_in_bvalid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_axi_master_b_bready"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_axi_master_b_bready"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_cpu_if_req_addr"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_cpu_if_req_addr"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_cpu_if_req_valid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_cpu_if_req_valid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_cpu_if_resp_data"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_cpu_if_resp_data"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
-    "target":"~core_top|MiniICache>io_cpu_if_resp_valid"
+    "target":"~core_top|core_top/uncache2:MiniICache>io_cpu_if_resp_valid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_araddr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arlen"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arsize"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arburst"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arlock"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arcache"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arprot"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_out_arvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_ar_arready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awaddr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awlen"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awsize"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awburst"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awlock"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awcache"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awprot"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_out_awvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_aw_awready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_w_out_wid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_w_out_wdata"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_w_out_wstrb"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_w_out_wlast"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_w_out_wvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_w_wready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_r_in_rid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_r_in_rdata"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_r_in_rresp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_r_in_rlast"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_r_in_rvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_r_rready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_b_in_bid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_b_in_bresp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_b_in_bvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_axi_master_b_bready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_cpu_if_req_addr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_cpu_if_req_valid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_cpu_if_resp_data"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/uncache1:MiniICache>io_cpu_if_resp_valid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_araddr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arlen"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arsize"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arburst"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arlock"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arcache"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arprot"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_out_arvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_ar_arready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awaddr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awlen"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awsize"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awburst"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awlock"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awcache"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awprot"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_out_awvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_aw_awready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_w_out_wid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_w_out_wdata"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_w_out_wstrb"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_w_out_wlast"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_w_out_wvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_w_wready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_r_in_rid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_r_in_rdata"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_r_in_rresp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_r_in_rlast"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_r_in_rvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_r_rready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_b_in_bid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_b_in_bresp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_b_in_bvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_axi_master_b_bready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_cpu_if_req_addr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_cpu_if_req_valid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_cpu_if_resp_data"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/dcache:MiniICache>io_cpu_if_resp_valid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_araddr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arlen"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arsize"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arburst"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arlock"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arcache"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arprot"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_out_arvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_ar_arready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awaddr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awlen"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awsize"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awburst"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awlock"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awcache"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awprot"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_out_awvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_aw_awready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_w_out_wid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_w_out_wdata"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_w_out_wstrb"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_w_out_wlast"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_w_out_wvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_w_wready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_r_in_rid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_r_in_rdata"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_r_in_rresp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_r_in_rlast"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_r_in_rvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_r_rready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_b_in_bid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_b_in_bresp"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_b_in_bvalid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_axi_master_b_bready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_cpu_if_req_addr"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_cpu_if_req_valid"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_cpu_if_resp_data"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top/icache:MiniICache>io_cpu_if_resp_valid"
   },
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
@@ -922,6 +1426,18 @@
   {
     "class":"firrtl.transforms.DontTouchAnnotation",
     "target":"~core_top|AXI3Crossbar4to1>io_out_b_bready"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top>reg_num"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top>infor_flag"
+  },
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"~core_top|core_top>break_point"
   },
   {
     "class":"firrtl.transforms.BlackBoxTargetDirAnno",

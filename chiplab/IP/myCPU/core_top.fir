@@ -279,232 +279,916 @@ circuit core_top :
             io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 140:30]
 
 
-  extmodule dcache_BlackBox :
-    output axi_master : { ar : { out : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>}, flip arready : UInt<1>}, aw : { out : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>}, flip awready : UInt<1>}, w : { out : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>}, flip wready : UInt<1>}, r : { flip in : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>}, rready : UInt<1>}, b : { flip in : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>}, bready : UInt<1>}}
-    output cpu_if : { flip req_addr : UInt<32>, flip req_valid : UInt<1>, resp_data : UInt<32>, resp_valid : UInt<1>}
-    defname = dcache_BlackBox
+  module MiniICache_1 :
+    input clock : Clock
+    input reset : Reset
+    output io : { axi_master : { ar : { out : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>}, flip arready : UInt<1>}, aw : { out : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>}, flip awready : UInt<1>}, w : { out : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>}, flip wready : UInt<1>}, r : { flip in : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>}, rready : UInt<1>}, b : { flip in : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>}, bready : UInt<1>}}, cpu_if : { flip req_addr : UInt<32>, flip req_valid : UInt<1>, resp_data : UInt<32>, resp_valid : UInt<1>}} @[src/main/scala/icache.scala 7:14]
 
-  extmodule uncache1_BlackBox :
-    output axi_master : { ar : { out : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>}, flip arready : UInt<1>}, aw : { out : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>}, flip awready : UInt<1>}, w : { out : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>}, flip wready : UInt<1>}, r : { flip in : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>}, rready : UInt<1>}, b : { flip in : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>}, bready : UInt<1>}}
-    output cpu_if : { flip req_addr : UInt<32>, flip req_valid : UInt<1>, resp_data : UInt<32>, resp_valid : UInt<1>}
-    defname = uncache1_BlackBox
+    io.cpu_if.resp_data <= UInt<1>("h0") @[src/main/scala/icache.scala 22:24]
+    io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 23:24]
+    io.axi_master.r.rready <= UInt<1>("h0") @[src/main/scala/icache.scala 24:26]
+    io.axi_master.b.bready <= UInt<1>("h0") @[src/main/scala/icache.scala 25:26]
+    wire default_aw_data : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>} @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awprot <= UInt<3>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awcache <= UInt<4>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awlock <= UInt<2>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awburst <= UInt<2>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awsize <= UInt<3>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awlen <= UInt<8>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awaddr <= UInt<32>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awid <= UInt<4>("h0") @[src/main/scala/icache.scala 28:37]
+    wire default_w_data : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>} @[src/main/scala/icache.scala 29:37]
+    default_w_data.wvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wlast <= UInt<1>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wstrb <= UInt<4>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wdata <= UInt<32>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wid <= UInt<4>("h0") @[src/main/scala/icache.scala 29:37]
+    io.axi_master.aw.out <= default_aw_data @[src/main/scala/icache.scala 30:24]
+    io.axi_master.w.out <= default_w_data @[src/main/scala/icache.scala 31:24]
+    smem cache_tag : UInt<22> [256] @[src/main/scala/icache.scala 46:33]
+    smem cache_valid : UInt<1> [256] @[src/main/scala/icache.scala 47:33]
+    smem cache_data : UInt<32> [256] @[src/main/scala/icache.scala 48:33]
+    node req_tag = bits(io.cpu_if.req_addr, 31, 10) @[src/main/scala/icache.scala 54:27]
+    node req_index = bits(io.cpu_if.req_addr, 9, 2) @[src/main/scala/icache.scala 55:27]
+    node req_offset = bits(io.cpu_if.req_addr, 1, 0) @[src/main/scala/icache.scala 56:27]
+    wire _rd_tag_WIRE : UInt @[src/main/scala/icache.scala 61:33]
+    _rd_tag_WIRE is invalid @[src/main/scala/icache.scala 61:33]
+    when io.cpu_if.req_valid : @[src/main/scala/icache.scala 61:33]
+      _rd_tag_WIRE <= req_index @[src/main/scala/icache.scala 61:33]
+      node _rd_tag_T = or(_rd_tag_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 61:33]
+      node _rd_tag_T_1 = bits(_rd_tag_T, 7, 0) @[src/main/scala/icache.scala 61:33]
+      read mport rd_tag = cache_tag[_rd_tag_T_1], clock @[src/main/scala/icache.scala 61:33]
+    wire _rd_valid_WIRE : UInt @[src/main/scala/icache.scala 62:35]
+    _rd_valid_WIRE is invalid @[src/main/scala/icache.scala 62:35]
+    when io.cpu_if.req_valid : @[src/main/scala/icache.scala 62:35]
+      _rd_valid_WIRE <= req_index @[src/main/scala/icache.scala 62:35]
+      node _rd_valid_T = or(_rd_valid_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 62:35]
+      node _rd_valid_T_1 = bits(_rd_valid_T, 7, 0) @[src/main/scala/icache.scala 62:35]
+      read mport rd_valid = cache_valid[_rd_valid_T_1], clock @[src/main/scala/icache.scala 62:35]
+    node _hit_T = eq(rd_tag, req_tag) @[src/main/scala/icache.scala 63:39]
+    node hit = and(rd_valid, _hit_T) @[src/main/scala/icache.scala 63:28]
+    reg miss_pending : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/icache.scala 68:29]
+    reg miss_addr : UInt<32>, clock with :
+      reset => (UInt<1>("h0"), miss_addr) @[src/main/scala/icache.scala 69:25]
+    reg state : UInt<2>, clock with :
+      reset => (reset, UInt<2>("h0")) @[src/main/scala/icache.scala 75:22]
+    wire default_ar_data : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>} @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arprot <= UInt<3>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arcache <= UInt<4>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arlock <= UInt<2>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arburst <= UInt<2>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arsize <= UInt<3>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arlen <= UInt<8>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.araddr <= UInt<32>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arid <= UInt<4>("h0") @[src/main/scala/icache.scala 78:37]
+    io.axi_master.ar.out <= default_ar_data @[src/main/scala/icache.scala 79:24]
+    node _T = eq(UInt<2>("h0"), state) @[src/main/scala/icache.scala 81:17]
+    when _T : @[src/main/scala/icache.scala 81:17]
+      when io.cpu_if.req_valid : @[src/main/scala/icache.scala 83:33]
+        when hit : @[src/main/scala/icache.scala 84:19]
+          wire _io_cpu_if_resp_data_WIRE : UInt @[src/main/scala/icache.scala 86:50]
+          _io_cpu_if_resp_data_WIRE is invalid @[src/main/scala/icache.scala 86:50]
+          when UInt<1>("h1") : @[src/main/scala/icache.scala 86:50]
+            _io_cpu_if_resp_data_WIRE <= req_index @[src/main/scala/icache.scala 86:50]
+            node _io_cpu_if_resp_data_T = or(_io_cpu_if_resp_data_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 86:50]
+            node _io_cpu_if_resp_data_T_1 = bits(_io_cpu_if_resp_data_T, 7, 0) @[src/main/scala/icache.scala 86:50]
+            read mport io_cpu_if_resp_data_MPORT = cache_data[_io_cpu_if_resp_data_T_1], clock @[src/main/scala/icache.scala 86:50]
+          io.cpu_if.resp_data <= io_cpu_if_resp_data_MPORT @[src/main/scala/icache.scala 86:32]
+          io.cpu_if.resp_valid <= UInt<1>("h1") @[src/main/scala/icache.scala 87:32]
+        else :
+          miss_pending <= UInt<1>("h1") @[src/main/scala/icache.scala 90:24]
+          miss_addr <= io.cpu_if.req_addr @[src/main/scala/icache.scala 91:24]
+          state <= UInt<2>("h1") @[src/main/scala/icache.scala 92:24]
+      else :
+        io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 96:30]
+        io.cpu_if.resp_data <= UInt<1>("h0") @[src/main/scala/icache.scala 97:30]
+    else :
+      node _T_1 = eq(UInt<2>("h1"), state) @[src/main/scala/icache.scala 81:17]
+      when _T_1 : @[src/main/scala/icache.scala 81:17]
+        wire ar_req_data : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>} @[src/main/scala/icache.scala 103:29]
+        ar_req_data.arid <= UInt<1>("h0") @[src/main/scala/icache.scala 104:27]
+        ar_req_data.araddr <= miss_addr @[src/main/scala/icache.scala 105:27]
+        ar_req_data.arlen <= UInt<1>("h0") @[src/main/scala/icache.scala 106:27]
+        ar_req_data.arsize <= UInt<2>("h2") @[src/main/scala/icache.scala 107:27]
+        ar_req_data.arburst <= UInt<1>("h1") @[src/main/scala/icache.scala 108:27]
+        ar_req_data.arlock <= UInt<1>("h0") @[src/main/scala/icache.scala 109:27]
+        ar_req_data.arcache <= UInt<1>("h0") @[src/main/scala/icache.scala 110:27]
+        ar_req_data.arprot <= UInt<1>("h0") @[src/main/scala/icache.scala 111:27]
+        ar_req_data.arvalid <= UInt<1>("h1") @[src/main/scala/icache.scala 112:27]
+        io.axi_master.ar.out <= ar_req_data @[src/main/scala/icache.scala 114:28]
+        when io.axi_master.ar.arready : @[src/main/scala/icache.scala 116:38]
+          state <= UInt<2>("h2") @[src/main/scala/icache.scala 118:15]
+      else :
+        node _T_2 = eq(UInt<2>("h2"), state) @[src/main/scala/icache.scala 81:17]
+        when _T_2 : @[src/main/scala/icache.scala 81:17]
+          io.axi_master.r.rready <= UInt<1>("h1") @[src/main/scala/icache.scala 124:30]
+          when io.axi_master.r.in.rvalid : @[src/main/scala/icache.scala 125:39]
+            write mport MPORT = cache_tag[req_index], clock
+            MPORT <= req_tag
+            write mport MPORT_1 = cache_valid[req_index], clock
+            MPORT_1 <= UInt<1>("h1")
+            write mport MPORT_2 = cache_data[req_index], clock
+            MPORT_2 <= io.axi_master.r.in.rdata
+            io.cpu_if.resp_data <= io.axi_master.r.in.rdata @[src/main/scala/icache.scala 132:30]
+            io.cpu_if.resp_valid <= UInt<1>("h1") @[src/main/scala/icache.scala 133:30]
+            miss_pending <= UInt<1>("h0") @[src/main/scala/icache.scala 136:22]
+            state <= UInt<2>("h0") @[src/main/scala/icache.scala 137:22]
+          else :
+            io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 140:30]
 
-  extmodule uncache2_BlackBox :
-    output axi_master : { ar : { out : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>}, flip arready : UInt<1>}, aw : { out : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>}, flip awready : UInt<1>}, w : { out : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>}, flip wready : UInt<1>}, r : { flip in : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>}, rready : UInt<1>}, b : { flip in : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>}, bready : UInt<1>}}
-    output cpu_if : { flip req_addr : UInt<32>, flip req_valid : UInt<1>, resp_data : UInt<32>, resp_valid : UInt<1>}
-    defname = uncache2_BlackBox
+
+  module MiniICache_2 :
+    input clock : Clock
+    input reset : Reset
+    output io : { axi_master : { ar : { out : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>}, flip arready : UInt<1>}, aw : { out : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>}, flip awready : UInt<1>}, w : { out : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>}, flip wready : UInt<1>}, r : { flip in : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>}, rready : UInt<1>}, b : { flip in : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>}, bready : UInt<1>}}, cpu_if : { flip req_addr : UInt<32>, flip req_valid : UInt<1>, resp_data : UInt<32>, resp_valid : UInt<1>}} @[src/main/scala/icache.scala 7:14]
+
+    io.cpu_if.resp_data <= UInt<1>("h0") @[src/main/scala/icache.scala 22:24]
+    io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 23:24]
+    io.axi_master.r.rready <= UInt<1>("h0") @[src/main/scala/icache.scala 24:26]
+    io.axi_master.b.bready <= UInt<1>("h0") @[src/main/scala/icache.scala 25:26]
+    wire default_aw_data : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>} @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awprot <= UInt<3>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awcache <= UInt<4>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awlock <= UInt<2>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awburst <= UInt<2>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awsize <= UInt<3>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awlen <= UInt<8>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awaddr <= UInt<32>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awid <= UInt<4>("h0") @[src/main/scala/icache.scala 28:37]
+    wire default_w_data : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>} @[src/main/scala/icache.scala 29:37]
+    default_w_data.wvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wlast <= UInt<1>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wstrb <= UInt<4>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wdata <= UInt<32>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wid <= UInt<4>("h0") @[src/main/scala/icache.scala 29:37]
+    io.axi_master.aw.out <= default_aw_data @[src/main/scala/icache.scala 30:24]
+    io.axi_master.w.out <= default_w_data @[src/main/scala/icache.scala 31:24]
+    smem cache_tag : UInt<22> [256] @[src/main/scala/icache.scala 46:33]
+    smem cache_valid : UInt<1> [256] @[src/main/scala/icache.scala 47:33]
+    smem cache_data : UInt<32> [256] @[src/main/scala/icache.scala 48:33]
+    node req_tag = bits(io.cpu_if.req_addr, 31, 10) @[src/main/scala/icache.scala 54:27]
+    node req_index = bits(io.cpu_if.req_addr, 9, 2) @[src/main/scala/icache.scala 55:27]
+    node req_offset = bits(io.cpu_if.req_addr, 1, 0) @[src/main/scala/icache.scala 56:27]
+    wire _rd_tag_WIRE : UInt @[src/main/scala/icache.scala 61:33]
+    _rd_tag_WIRE is invalid @[src/main/scala/icache.scala 61:33]
+    when io.cpu_if.req_valid : @[src/main/scala/icache.scala 61:33]
+      _rd_tag_WIRE <= req_index @[src/main/scala/icache.scala 61:33]
+      node _rd_tag_T = or(_rd_tag_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 61:33]
+      node _rd_tag_T_1 = bits(_rd_tag_T, 7, 0) @[src/main/scala/icache.scala 61:33]
+      read mport rd_tag = cache_tag[_rd_tag_T_1], clock @[src/main/scala/icache.scala 61:33]
+    wire _rd_valid_WIRE : UInt @[src/main/scala/icache.scala 62:35]
+    _rd_valid_WIRE is invalid @[src/main/scala/icache.scala 62:35]
+    when io.cpu_if.req_valid : @[src/main/scala/icache.scala 62:35]
+      _rd_valid_WIRE <= req_index @[src/main/scala/icache.scala 62:35]
+      node _rd_valid_T = or(_rd_valid_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 62:35]
+      node _rd_valid_T_1 = bits(_rd_valid_T, 7, 0) @[src/main/scala/icache.scala 62:35]
+      read mport rd_valid = cache_valid[_rd_valid_T_1], clock @[src/main/scala/icache.scala 62:35]
+    node _hit_T = eq(rd_tag, req_tag) @[src/main/scala/icache.scala 63:39]
+    node hit = and(rd_valid, _hit_T) @[src/main/scala/icache.scala 63:28]
+    reg miss_pending : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/icache.scala 68:29]
+    reg miss_addr : UInt<32>, clock with :
+      reset => (UInt<1>("h0"), miss_addr) @[src/main/scala/icache.scala 69:25]
+    reg state : UInt<2>, clock with :
+      reset => (reset, UInt<2>("h0")) @[src/main/scala/icache.scala 75:22]
+    wire default_ar_data : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>} @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arprot <= UInt<3>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arcache <= UInt<4>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arlock <= UInt<2>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arburst <= UInt<2>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arsize <= UInt<3>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arlen <= UInt<8>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.araddr <= UInt<32>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arid <= UInt<4>("h0") @[src/main/scala/icache.scala 78:37]
+    io.axi_master.ar.out <= default_ar_data @[src/main/scala/icache.scala 79:24]
+    node _T = eq(UInt<2>("h0"), state) @[src/main/scala/icache.scala 81:17]
+    when _T : @[src/main/scala/icache.scala 81:17]
+      when io.cpu_if.req_valid : @[src/main/scala/icache.scala 83:33]
+        when hit : @[src/main/scala/icache.scala 84:19]
+          wire _io_cpu_if_resp_data_WIRE : UInt @[src/main/scala/icache.scala 86:50]
+          _io_cpu_if_resp_data_WIRE is invalid @[src/main/scala/icache.scala 86:50]
+          when UInt<1>("h1") : @[src/main/scala/icache.scala 86:50]
+            _io_cpu_if_resp_data_WIRE <= req_index @[src/main/scala/icache.scala 86:50]
+            node _io_cpu_if_resp_data_T = or(_io_cpu_if_resp_data_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 86:50]
+            node _io_cpu_if_resp_data_T_1 = bits(_io_cpu_if_resp_data_T, 7, 0) @[src/main/scala/icache.scala 86:50]
+            read mport io_cpu_if_resp_data_MPORT = cache_data[_io_cpu_if_resp_data_T_1], clock @[src/main/scala/icache.scala 86:50]
+          io.cpu_if.resp_data <= io_cpu_if_resp_data_MPORT @[src/main/scala/icache.scala 86:32]
+          io.cpu_if.resp_valid <= UInt<1>("h1") @[src/main/scala/icache.scala 87:32]
+        else :
+          miss_pending <= UInt<1>("h1") @[src/main/scala/icache.scala 90:24]
+          miss_addr <= io.cpu_if.req_addr @[src/main/scala/icache.scala 91:24]
+          state <= UInt<2>("h1") @[src/main/scala/icache.scala 92:24]
+      else :
+        io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 96:30]
+        io.cpu_if.resp_data <= UInt<1>("h0") @[src/main/scala/icache.scala 97:30]
+    else :
+      node _T_1 = eq(UInt<2>("h1"), state) @[src/main/scala/icache.scala 81:17]
+      when _T_1 : @[src/main/scala/icache.scala 81:17]
+        wire ar_req_data : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>} @[src/main/scala/icache.scala 103:29]
+        ar_req_data.arid <= UInt<1>("h0") @[src/main/scala/icache.scala 104:27]
+        ar_req_data.araddr <= miss_addr @[src/main/scala/icache.scala 105:27]
+        ar_req_data.arlen <= UInt<1>("h0") @[src/main/scala/icache.scala 106:27]
+        ar_req_data.arsize <= UInt<2>("h2") @[src/main/scala/icache.scala 107:27]
+        ar_req_data.arburst <= UInt<1>("h1") @[src/main/scala/icache.scala 108:27]
+        ar_req_data.arlock <= UInt<1>("h0") @[src/main/scala/icache.scala 109:27]
+        ar_req_data.arcache <= UInt<1>("h0") @[src/main/scala/icache.scala 110:27]
+        ar_req_data.arprot <= UInt<1>("h0") @[src/main/scala/icache.scala 111:27]
+        ar_req_data.arvalid <= UInt<1>("h1") @[src/main/scala/icache.scala 112:27]
+        io.axi_master.ar.out <= ar_req_data @[src/main/scala/icache.scala 114:28]
+        when io.axi_master.ar.arready : @[src/main/scala/icache.scala 116:38]
+          state <= UInt<2>("h2") @[src/main/scala/icache.scala 118:15]
+      else :
+        node _T_2 = eq(UInt<2>("h2"), state) @[src/main/scala/icache.scala 81:17]
+        when _T_2 : @[src/main/scala/icache.scala 81:17]
+          io.axi_master.r.rready <= UInt<1>("h1") @[src/main/scala/icache.scala 124:30]
+          when io.axi_master.r.in.rvalid : @[src/main/scala/icache.scala 125:39]
+            write mport MPORT = cache_tag[req_index], clock
+            MPORT <= req_tag
+            write mport MPORT_1 = cache_valid[req_index], clock
+            MPORT_1 <= UInt<1>("h1")
+            write mport MPORT_2 = cache_data[req_index], clock
+            MPORT_2 <= io.axi_master.r.in.rdata
+            io.cpu_if.resp_data <= io.axi_master.r.in.rdata @[src/main/scala/icache.scala 132:30]
+            io.cpu_if.resp_valid <= UInt<1>("h1") @[src/main/scala/icache.scala 133:30]
+            miss_pending <= UInt<1>("h0") @[src/main/scala/icache.scala 136:22]
+            state <= UInt<2>("h0") @[src/main/scala/icache.scala 137:22]
+          else :
+            io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 140:30]
+
+
+  module MiniICache_3 :
+    input clock : Clock
+    input reset : Reset
+    output io : { axi_master : { ar : { out : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>}, flip arready : UInt<1>}, aw : { out : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>}, flip awready : UInt<1>}, w : { out : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>}, flip wready : UInt<1>}, r : { flip in : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>}, rready : UInt<1>}, b : { flip in : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>}, bready : UInt<1>}}, cpu_if : { flip req_addr : UInt<32>, flip req_valid : UInt<1>, resp_data : UInt<32>, resp_valid : UInt<1>}} @[src/main/scala/icache.scala 7:14]
+
+    io.cpu_if.resp_data <= UInt<1>("h0") @[src/main/scala/icache.scala 22:24]
+    io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 23:24]
+    io.axi_master.r.rready <= UInt<1>("h0") @[src/main/scala/icache.scala 24:26]
+    io.axi_master.b.bready <= UInt<1>("h0") @[src/main/scala/icache.scala 25:26]
+    wire default_aw_data : { awid : UInt<4>, awaddr : UInt<32>, awlen : UInt<8>, awsize : UInt<3>, awburst : UInt<2>, awlock : UInt<2>, awcache : UInt<4>, awprot : UInt<3>, awvalid : UInt<1>} @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awprot <= UInt<3>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awcache <= UInt<4>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awlock <= UInt<2>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awburst <= UInt<2>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awsize <= UInt<3>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awlen <= UInt<8>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awaddr <= UInt<32>("h0") @[src/main/scala/icache.scala 28:37]
+    default_aw_data.awid <= UInt<4>("h0") @[src/main/scala/icache.scala 28:37]
+    wire default_w_data : { wid : UInt<4>, wdata : UInt<32>, wstrb : UInt<4>, wlast : UInt<1>, wvalid : UInt<1>} @[src/main/scala/icache.scala 29:37]
+    default_w_data.wvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wlast <= UInt<1>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wstrb <= UInt<4>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wdata <= UInt<32>("h0") @[src/main/scala/icache.scala 29:37]
+    default_w_data.wid <= UInt<4>("h0") @[src/main/scala/icache.scala 29:37]
+    io.axi_master.aw.out <= default_aw_data @[src/main/scala/icache.scala 30:24]
+    io.axi_master.w.out <= default_w_data @[src/main/scala/icache.scala 31:24]
+    smem cache_tag : UInt<22> [256] @[src/main/scala/icache.scala 46:33]
+    smem cache_valid : UInt<1> [256] @[src/main/scala/icache.scala 47:33]
+    smem cache_data : UInt<32> [256] @[src/main/scala/icache.scala 48:33]
+    node req_tag = bits(io.cpu_if.req_addr, 31, 10) @[src/main/scala/icache.scala 54:27]
+    node req_index = bits(io.cpu_if.req_addr, 9, 2) @[src/main/scala/icache.scala 55:27]
+    node req_offset = bits(io.cpu_if.req_addr, 1, 0) @[src/main/scala/icache.scala 56:27]
+    wire _rd_tag_WIRE : UInt @[src/main/scala/icache.scala 61:33]
+    _rd_tag_WIRE is invalid @[src/main/scala/icache.scala 61:33]
+    when io.cpu_if.req_valid : @[src/main/scala/icache.scala 61:33]
+      _rd_tag_WIRE <= req_index @[src/main/scala/icache.scala 61:33]
+      node _rd_tag_T = or(_rd_tag_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 61:33]
+      node _rd_tag_T_1 = bits(_rd_tag_T, 7, 0) @[src/main/scala/icache.scala 61:33]
+      read mport rd_tag = cache_tag[_rd_tag_T_1], clock @[src/main/scala/icache.scala 61:33]
+    wire _rd_valid_WIRE : UInt @[src/main/scala/icache.scala 62:35]
+    _rd_valid_WIRE is invalid @[src/main/scala/icache.scala 62:35]
+    when io.cpu_if.req_valid : @[src/main/scala/icache.scala 62:35]
+      _rd_valid_WIRE <= req_index @[src/main/scala/icache.scala 62:35]
+      node _rd_valid_T = or(_rd_valid_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 62:35]
+      node _rd_valid_T_1 = bits(_rd_valid_T, 7, 0) @[src/main/scala/icache.scala 62:35]
+      read mport rd_valid = cache_valid[_rd_valid_T_1], clock @[src/main/scala/icache.scala 62:35]
+    node _hit_T = eq(rd_tag, req_tag) @[src/main/scala/icache.scala 63:39]
+    node hit = and(rd_valid, _hit_T) @[src/main/scala/icache.scala 63:28]
+    reg miss_pending : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/icache.scala 68:29]
+    reg miss_addr : UInt<32>, clock with :
+      reset => (UInt<1>("h0"), miss_addr) @[src/main/scala/icache.scala 69:25]
+    reg state : UInt<2>, clock with :
+      reset => (reset, UInt<2>("h0")) @[src/main/scala/icache.scala 75:22]
+    wire default_ar_data : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>} @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arvalid <= UInt<1>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arprot <= UInt<3>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arcache <= UInt<4>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arlock <= UInt<2>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arburst <= UInt<2>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arsize <= UInt<3>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arlen <= UInt<8>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.araddr <= UInt<32>("h0") @[src/main/scala/icache.scala 78:37]
+    default_ar_data.arid <= UInt<4>("h0") @[src/main/scala/icache.scala 78:37]
+    io.axi_master.ar.out <= default_ar_data @[src/main/scala/icache.scala 79:24]
+    node _T = eq(UInt<2>("h0"), state) @[src/main/scala/icache.scala 81:17]
+    when _T : @[src/main/scala/icache.scala 81:17]
+      when io.cpu_if.req_valid : @[src/main/scala/icache.scala 83:33]
+        when hit : @[src/main/scala/icache.scala 84:19]
+          wire _io_cpu_if_resp_data_WIRE : UInt @[src/main/scala/icache.scala 86:50]
+          _io_cpu_if_resp_data_WIRE is invalid @[src/main/scala/icache.scala 86:50]
+          when UInt<1>("h1") : @[src/main/scala/icache.scala 86:50]
+            _io_cpu_if_resp_data_WIRE <= req_index @[src/main/scala/icache.scala 86:50]
+            node _io_cpu_if_resp_data_T = or(_io_cpu_if_resp_data_WIRE, UInt<8>("h0")) @[src/main/scala/icache.scala 86:50]
+            node _io_cpu_if_resp_data_T_1 = bits(_io_cpu_if_resp_data_T, 7, 0) @[src/main/scala/icache.scala 86:50]
+            read mport io_cpu_if_resp_data_MPORT = cache_data[_io_cpu_if_resp_data_T_1], clock @[src/main/scala/icache.scala 86:50]
+          io.cpu_if.resp_data <= io_cpu_if_resp_data_MPORT @[src/main/scala/icache.scala 86:32]
+          io.cpu_if.resp_valid <= UInt<1>("h1") @[src/main/scala/icache.scala 87:32]
+        else :
+          miss_pending <= UInt<1>("h1") @[src/main/scala/icache.scala 90:24]
+          miss_addr <= io.cpu_if.req_addr @[src/main/scala/icache.scala 91:24]
+          state <= UInt<2>("h1") @[src/main/scala/icache.scala 92:24]
+      else :
+        io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 96:30]
+        io.cpu_if.resp_data <= UInt<1>("h0") @[src/main/scala/icache.scala 97:30]
+    else :
+      node _T_1 = eq(UInt<2>("h1"), state) @[src/main/scala/icache.scala 81:17]
+      when _T_1 : @[src/main/scala/icache.scala 81:17]
+        wire ar_req_data : { arid : UInt<4>, araddr : UInt<32>, arlen : UInt<8>, arsize : UInt<3>, arburst : UInt<2>, arlock : UInt<2>, arcache : UInt<4>, arprot : UInt<3>, arvalid : UInt<1>} @[src/main/scala/icache.scala 103:29]
+        ar_req_data.arid <= UInt<1>("h0") @[src/main/scala/icache.scala 104:27]
+        ar_req_data.araddr <= miss_addr @[src/main/scala/icache.scala 105:27]
+        ar_req_data.arlen <= UInt<1>("h0") @[src/main/scala/icache.scala 106:27]
+        ar_req_data.arsize <= UInt<2>("h2") @[src/main/scala/icache.scala 107:27]
+        ar_req_data.arburst <= UInt<1>("h1") @[src/main/scala/icache.scala 108:27]
+        ar_req_data.arlock <= UInt<1>("h0") @[src/main/scala/icache.scala 109:27]
+        ar_req_data.arcache <= UInt<1>("h0") @[src/main/scala/icache.scala 110:27]
+        ar_req_data.arprot <= UInt<1>("h0") @[src/main/scala/icache.scala 111:27]
+        ar_req_data.arvalid <= UInt<1>("h1") @[src/main/scala/icache.scala 112:27]
+        io.axi_master.ar.out <= ar_req_data @[src/main/scala/icache.scala 114:28]
+        when io.axi_master.ar.arready : @[src/main/scala/icache.scala 116:38]
+          state <= UInt<2>("h2") @[src/main/scala/icache.scala 118:15]
+      else :
+        node _T_2 = eq(UInt<2>("h2"), state) @[src/main/scala/icache.scala 81:17]
+        when _T_2 : @[src/main/scala/icache.scala 81:17]
+          io.axi_master.r.rready <= UInt<1>("h1") @[src/main/scala/icache.scala 124:30]
+          when io.axi_master.r.in.rvalid : @[src/main/scala/icache.scala 125:39]
+            write mport MPORT = cache_tag[req_index], clock
+            MPORT <= req_tag
+            write mport MPORT_1 = cache_valid[req_index], clock
+            MPORT_1 <= UInt<1>("h1")
+            write mport MPORT_2 = cache_data[req_index], clock
+            MPORT_2 <= io.axi_master.r.in.rdata
+            io.cpu_if.resp_data <= io.axi_master.r.in.rdata @[src/main/scala/icache.scala 132:30]
+            io.cpu_if.resp_valid <= UInt<1>("h1") @[src/main/scala/icache.scala 133:30]
+            miss_pending <= UInt<1>("h0") @[src/main/scala/icache.scala 136:22]
+            state <= UInt<2>("h0") @[src/main/scala/icache.scala 137:22]
+          else :
+            io.cpu_if.resp_valid <= UInt<1>("h0") @[src/main/scala/icache.scala 140:30]
+
+
+  extmodule DifftestInstrCommit :
+    input clock : Clock
+    input coreid : UInt<8>
+    input index : UInt<8>
+    input valid : UInt<1>
+    input pc : UInt<64>
+    input instr : UInt<32>
+    input skip : UInt<1>
+    input is_TLBFILL : UInt<1>
+    input TLBFILL_index : UInt<5>
+    input is_CNTinst : UInt<1>
+    input timer_64_value : UInt<64>
+    input wen : UInt<1>
+    input wdest : UInt<8>
+    input wdata : UInt<64>
+    input csr_rstat : UInt<1>
+    input csr_data : UInt<64>
+    defname = DifftestInstrCommit
+
+  extmodule DifftestExcpEvent :
+    input clock : Clock
+    input coreid : UInt<8>
+    input excp_valid : UInt<1>
+    input eret : UInt<1>
+    input intrNo : UInt<11>
+    input cause : UInt<6>
+    input exceptionPC : UInt<64>
+    input exceptionInst : UInt<32>
+    defname = DifftestExcpEvent
+
+  extmodule DifftestTrapEvent :
+    input clock : Clock
+    input coreid : UInt<8>
+    input valid : UInt<1>
+    input code : UInt<8>
+    input pc : UInt<64>
+    input cycleCnt : UInt<64>
+    input instrCnt : UInt<64>
+    defname = DifftestTrapEvent
+
+  extmodule DifftestStoreEvent :
+    input clock : Clock
+    input coreid : UInt<8>
+    input index : UInt<8>
+    input valid : UInt<1>
+    input storePAddr : UInt<64>
+    input storeVAddr : UInt<64>
+    input storeData : UInt<64>
+    defname = DifftestStoreEvent
+
+  extmodule DifftestLoadEvent :
+    input clock : Clock
+    input coreid : UInt<8>
+    input index : UInt<8>
+    input valid : UInt<1>
+    input paddr : UInt<64>
+    input vaddr : UInt<64>
+    defname = DifftestLoadEvent
+
+  extmodule DifftestCSRRegState :
+    input clock : Clock
+    input coreid : UInt<8>
+    input crmd : UInt<32>
+    input prmd : UInt<32>
+    input euen : UInt<32>
+    input ecfg : UInt<32>
+    input estat : UInt<32>
+    input era : UInt<64>
+    input badv : UInt<64>
+    input eentry : UInt<64>
+    input tlbidx : UInt<32>
+    input tlbehi : UInt<64>
+    input tlbelo0 : UInt<32>
+    input tlbelo1 : UInt<32>
+    input asid : UInt<32>
+    input pgdl : UInt<64>
+    input pgdh : UInt<64>
+    input save0 : UInt<64>
+    input save1 : UInt<64>
+    input save2 : UInt<64>
+    input save3 : UInt<64>
+    input tid : UInt<64>
+    input tcfg : UInt<32>
+    input tval : UInt<64>
+    input ticlr : UInt<32>
+    input llbctl : UInt<32>
+    input tlbrentry : UInt<64>
+    input dmw0 : UInt<32>
+    input dmw1 : UInt<32>
+    defname = DifftestCSRRegState
+
+  extmodule DifftestGRegState :
+    input clock : Clock
+    input coreid : UInt<8>
+    input gpr_0 : UInt<64>
+    input gpr_1 : UInt<64>
+    input gpr_2 : UInt<64>
+    input gpr_3 : UInt<64>
+    input gpr_4 : UInt<64>
+    input gpr_5 : UInt<64>
+    input gpr_6 : UInt<64>
+    input gpr_7 : UInt<64>
+    input gpr_8 : UInt<64>
+    input gpr_9 : UInt<64>
+    input gpr_10 : UInt<64>
+    input gpr_11 : UInt<64>
+    input gpr_12 : UInt<64>
+    input gpr_13 : UInt<64>
+    input gpr_14 : UInt<64>
+    input gpr_15 : UInt<64>
+    input gpr_16 : UInt<64>
+    input gpr_17 : UInt<64>
+    input gpr_18 : UInt<64>
+    input gpr_19 : UInt<64>
+    input gpr_20 : UInt<64>
+    input gpr_21 : UInt<64>
+    input gpr_22 : UInt<64>
+    input gpr_23 : UInt<64>
+    input gpr_24 : UInt<64>
+    input gpr_25 : UInt<64>
+    input gpr_26 : UInt<64>
+    input gpr_27 : UInt<64>
+    input gpr_28 : UInt<64>
+    input gpr_29 : UInt<64>
+    input gpr_30 : UInt<64>
+    input gpr_31 : UInt<64>
+    defname = DifftestGRegState
+
+  module Difftest :
+    input clock : Clock
+    input reset : Reset
+    output io : { flip inst_valid_diff : UInt<1>, flip cnt_inst_diff : UInt<1>, flip timer_64_diff : UInt<64>, flip inst_ld_en_diff : UInt<1>, flip ld_paddr_diff : UInt<64>, flip ld_vaddr_diff : UInt<64>, flip inst_st_en_diff : UInt<1>, flip st_paddr_diff : UInt<64>, flip st_vaddr_diff : UInt<64>, flip st_data_diff : UInt<64>, flip csr_rstat_en_diff : UInt<1>, flip csr_data_diff : UInt<64>, flip debug0_wb_rf_wen : UInt<1>, flip debug0_wb_rf_wnum : UInt<5>, flip debug0_wb_rf_wdata : UInt<64>, flip debug0_wb_pc : UInt<64>, flip debug0_wb_inst : UInt<32>, flip excp_flush : UInt<1>, flip ertn_flush : UInt<1>, flip ws_csr_ecode : UInt<6>, flip tlbfill_en : UInt<1>, flip rand_index : UInt<5>, flip csr_estat_diff_0 : UInt<32>, flip csr_crmd_diff_0 : UInt<32>, flip csr_prmd_diff_0 : UInt<32>, flip csr_ectl_diff_0 : UInt<32>, flip csr_era_diff_0 : UInt<64>, flip csr_badv_diff_0 : UInt<64>, flip csr_eentry_diff_0 : UInt<64>, flip csr_tlbidx_diff_0 : UInt<32>, flip csr_tlbehi_diff_0 : UInt<64>, flip csr_tlbelo0_diff_0 : UInt<32>, flip csr_tlbelo1_diff_0 : UInt<32>, flip csr_asid_diff_0 : UInt<32>, flip csr_pgdl_diff_0 : UInt<64>, flip csr_pgdh_diff_0 : UInt<64>, flip csr_save0_diff_0 : UInt<64>, flip csr_save1_diff_0 : UInt<64>, flip csr_save2_diff_0 : UInt<64>, flip csr_save3_diff_0 : UInt<64>, flip csr_tid_diff_0 : UInt<64>, flip csr_tcfg_diff_0 : UInt<32>, flip csr_tval_diff_0 : UInt<64>, flip csr_ticlr_diff_0 : UInt<32>, flip csr_llbctl_diff_0 : UInt<32>, flip csr_tlbrentry_diff_0 : UInt<64>, flip csr_dmw0_diff_0 : UInt<32>, flip csr_dmw1_diff_0 : UInt<32>, flip regs : UInt<64>[32]} @[src/main/scala/difftest/Difftest.scala 156:14]
+
+    reg cmt_valid : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 215:26]
+    reg cmt_cnt_inst : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 216:29]
+    reg cmt_timer_64 : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 217:29]
+    reg cmt_inst_ld_en : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 218:31]
+    reg cmt_ld_paddr : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 219:29]
+    reg cmt_ld_vaddr : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 220:29]
+    reg cmt_inst_st_en : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 221:31]
+    reg cmt_st_paddr : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 222:29]
+    reg cmt_st_vaddr : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 223:29]
+    reg cmt_st_data : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 224:28]
+    reg cmt_csr_rstat_en : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 225:33]
+    reg cmt_csr_data : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 226:29]
+    reg cmt_wen : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 228:24]
+    reg cmt_wdest : UInt<8>, clock with :
+      reset => (reset, UInt<8>("h0")) @[src/main/scala/difftest/Difftest.scala 229:26]
+    reg cmt_wdata : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 230:26]
+    reg cmt_pc : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 231:23]
+    reg cmt_inst : UInt<32>, clock with :
+      reset => (reset, UInt<32>("h0")) @[src/main/scala/difftest/Difftest.scala 232:25]
+    reg cmt_excp_flush : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 234:31]
+    reg cmt_ertn : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 235:25]
+    reg cmt_csr_ecode : UInt<6>, clock with :
+      reset => (reset, UInt<6>("h0")) @[src/main/scala/difftest/Difftest.scala 236:30]
+    reg cmt_tlbfill_en : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 237:31]
+    reg cmt_rand_index : UInt<5>, clock with :
+      reset => (reset, UInt<5>("h0")) @[src/main/scala/difftest/Difftest.scala 238:31]
+    reg trap : UInt<1>, clock with :
+      reset => (reset, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 240:21]
+    reg trap_code : UInt<8>, clock with :
+      reset => (reset, UInt<8>("h0")) @[src/main/scala/difftest/Difftest.scala 241:26]
+    reg cycleCnt : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 242:25]
+    reg instrCnt : UInt<64>, clock with :
+      reset => (reset, UInt<64>("h0")) @[src/main/scala/difftest/Difftest.scala 243:25]
+    node _T = eq(trap, UInt<1>("h0")) @[src/main/scala/difftest/Difftest.scala 279:10]
+    when _T : @[src/main/scala/difftest/Difftest.scala 279:17]
+      cmt_valid <= io.inst_valid_diff @[src/main/scala/difftest/Difftest.scala 280:17]
+      cmt_cnt_inst <= io.cnt_inst_diff @[src/main/scala/difftest/Difftest.scala 281:20]
+      cmt_timer_64 <= io.timer_64_diff @[src/main/scala/difftest/Difftest.scala 282:20]
+      cmt_inst_ld_en <= io.inst_ld_en_diff @[src/main/scala/difftest/Difftest.scala 283:22]
+      cmt_ld_paddr <= io.ld_paddr_diff @[src/main/scala/difftest/Difftest.scala 284:20]
+      cmt_ld_vaddr <= io.ld_vaddr_diff @[src/main/scala/difftest/Difftest.scala 285:20]
+      cmt_inst_st_en <= io.inst_st_en_diff @[src/main/scala/difftest/Difftest.scala 286:22]
+      cmt_st_paddr <= io.st_paddr_diff @[src/main/scala/difftest/Difftest.scala 287:20]
+      cmt_st_vaddr <= io.st_vaddr_diff @[src/main/scala/difftest/Difftest.scala 288:20]
+      cmt_st_data <= io.st_data_diff @[src/main/scala/difftest/Difftest.scala 289:19]
+      cmt_csr_rstat_en <= io.csr_rstat_en_diff @[src/main/scala/difftest/Difftest.scala 290:24]
+      cmt_csr_data <= io.csr_data_diff @[src/main/scala/difftest/Difftest.scala 291:20]
+      cmt_wen <= io.debug0_wb_rf_wen @[src/main/scala/difftest/Difftest.scala 293:15]
+      node _cmt_wdest_T = cat(UInt<3>("h0"), io.debug0_wb_rf_wnum) @[src/main/scala/difftest/Difftest.scala 294:23]
+      cmt_wdest <= _cmt_wdest_T @[src/main/scala/difftest/Difftest.scala 294:17]
+      cmt_wdata <= io.debug0_wb_rf_wdata @[src/main/scala/difftest/Difftest.scala 295:17]
+      cmt_pc <= io.debug0_wb_pc @[src/main/scala/difftest/Difftest.scala 296:14]
+      cmt_inst <= io.debug0_wb_inst @[src/main/scala/difftest/Difftest.scala 297:16]
+      cmt_excp_flush <= io.excp_flush @[src/main/scala/difftest/Difftest.scala 299:22]
+      cmt_ertn <= io.ertn_flush @[src/main/scala/difftest/Difftest.scala 300:16]
+      cmt_csr_ecode <= io.ws_csr_ecode @[src/main/scala/difftest/Difftest.scala 301:21]
+      cmt_tlbfill_en <= io.tlbfill_en @[src/main/scala/difftest/Difftest.scala 302:22]
+      cmt_rand_index <= io.rand_index @[src/main/scala/difftest/Difftest.scala 303:22]
+      trap <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 305:12]
+      node _trap_code_T = bits(io.regs[10], 7, 0) @[src/main/scala/difftest/Difftest.scala 306:31]
+      trap_code <= _trap_code_T @[src/main/scala/difftest/Difftest.scala 306:17]
+      node _cycleCnt_T = add(cycleCnt, UInt<1>("h1")) @[src/main/scala/difftest/Difftest.scala 307:28]
+      node _cycleCnt_T_1 = tail(_cycleCnt_T, 1) @[src/main/scala/difftest/Difftest.scala 307:28]
+      cycleCnt <= _cycleCnt_T_1 @[src/main/scala/difftest/Difftest.scala 307:16]
+      node _instrCnt_T = add(instrCnt, io.inst_valid_diff) @[src/main/scala/difftest/Difftest.scala 308:28]
+      node _instrCnt_T_1 = tail(_instrCnt_T, 1) @[src/main/scala/difftest/Difftest.scala 308:28]
+      instrCnt <= _instrCnt_T_1 @[src/main/scala/difftest/Difftest.scala 308:16]
+    inst difftestInstrCommit of DifftestInstrCommit @[src/main/scala/difftest/Difftest.scala 313:35]
+    difftestInstrCommit.clock <= clock @[src/main/scala/difftest/Difftest.scala 315:32]
+    difftestInstrCommit.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 316:33]
+    difftestInstrCommit.index <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 317:32]
+    difftestInstrCommit.valid <= cmt_valid @[src/main/scala/difftest/Difftest.scala 318:32]
+    difftestInstrCommit.pc <= cmt_pc @[src/main/scala/difftest/Difftest.scala 319:29]
+    difftestInstrCommit.instr <= cmt_inst @[src/main/scala/difftest/Difftest.scala 320:32]
+    difftestInstrCommit.skip <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 321:31]
+    difftestInstrCommit.is_TLBFILL <= cmt_tlbfill_en @[src/main/scala/difftest/Difftest.scala 322:37]
+    difftestInstrCommit.TLBFILL_index <= cmt_rand_index @[src/main/scala/difftest/Difftest.scala 323:40]
+    difftestInstrCommit.is_CNTinst <= cmt_cnt_inst @[src/main/scala/difftest/Difftest.scala 324:37]
+    difftestInstrCommit.timer_64_value <= cmt_timer_64 @[src/main/scala/difftest/Difftest.scala 325:41]
+    difftestInstrCommit.wen <= cmt_wen @[src/main/scala/difftest/Difftest.scala 326:30]
+    difftestInstrCommit.wdest <= cmt_wdest @[src/main/scala/difftest/Difftest.scala 327:32]
+    difftestInstrCommit.wdata <= cmt_wdata @[src/main/scala/difftest/Difftest.scala 328:32]
+    difftestInstrCommit.csr_rstat <= cmt_csr_rstat_en @[src/main/scala/difftest/Difftest.scala 329:36]
+    difftestInstrCommit.csr_data <= cmt_csr_data @[src/main/scala/difftest/Difftest.scala 330:35]
+    inst difftestExcpEvent of DifftestExcpEvent @[src/main/scala/difftest/Difftest.scala 332:33]
+    difftestExcpEvent.clock <= clock @[src/main/scala/difftest/Difftest.scala 333:30]
+    difftestExcpEvent.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 334:31]
+    difftestExcpEvent.excp_valid <= cmt_excp_flush @[src/main/scala/difftest/Difftest.scala 335:35]
+    difftestExcpEvent.eret <= cmt_ertn @[src/main/scala/difftest/Difftest.scala 336:29]
+    node _difftestExcpEvent_io_intrNo_T = bits(io.csr_estat_diff_0, 12, 2) @[src/main/scala/difftest/Difftest.scala 337:53]
+    difftestExcpEvent.intrNo <= _difftestExcpEvent_io_intrNo_T @[src/main/scala/difftest/Difftest.scala 337:31]
+    difftestExcpEvent.cause <= cmt_csr_ecode @[src/main/scala/difftest/Difftest.scala 338:30]
+    difftestExcpEvent.exceptionPC <= cmt_pc @[src/main/scala/difftest/Difftest.scala 339:36]
+    difftestExcpEvent.exceptionInst <= cmt_inst @[src/main/scala/difftest/Difftest.scala 340:38]
+    inst difftestTrapEvent of DifftestTrapEvent @[src/main/scala/difftest/Difftest.scala 342:33]
+    difftestTrapEvent.clock <= clock @[src/main/scala/difftest/Difftest.scala 343:30]
+    difftestTrapEvent.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 344:31]
+    difftestTrapEvent.valid <= trap @[src/main/scala/difftest/Difftest.scala 345:30]
+    difftestTrapEvent.code <= trap_code @[src/main/scala/difftest/Difftest.scala 346:29]
+    difftestTrapEvent.pc <= cmt_pc @[src/main/scala/difftest/Difftest.scala 347:27]
+    difftestTrapEvent.cycleCnt <= cycleCnt @[src/main/scala/difftest/Difftest.scala 348:33]
+    difftestTrapEvent.instrCnt <= instrCnt @[src/main/scala/difftest/Difftest.scala 349:33]
+    inst difftestStoreEvent of DifftestStoreEvent @[src/main/scala/difftest/Difftest.scala 351:34]
+    difftestStoreEvent.clock <= clock @[src/main/scala/difftest/Difftest.scala 352:31]
+    difftestStoreEvent.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 353:32]
+    difftestStoreEvent.index <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 354:31]
+    difftestStoreEvent.valid <= cmt_inst_st_en @[src/main/scala/difftest/Difftest.scala 355:31]
+    difftestStoreEvent.storePAddr <= cmt_st_paddr @[src/main/scala/difftest/Difftest.scala 356:36]
+    difftestStoreEvent.storeVAddr <= cmt_st_vaddr @[src/main/scala/difftest/Difftest.scala 357:36]
+    difftestStoreEvent.storeData <= cmt_st_data @[src/main/scala/difftest/Difftest.scala 358:35]
+    inst difftestLoadEvent of DifftestLoadEvent @[src/main/scala/difftest/Difftest.scala 360:33]
+    difftestLoadEvent.clock <= clock @[src/main/scala/difftest/Difftest.scala 361:30]
+    difftestLoadEvent.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 362:31]
+    difftestLoadEvent.index <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 363:30]
+    difftestLoadEvent.valid <= cmt_inst_ld_en @[src/main/scala/difftest/Difftest.scala 364:30]
+    difftestLoadEvent.paddr <= cmt_ld_paddr @[src/main/scala/difftest/Difftest.scala 365:30]
+    difftestLoadEvent.vaddr <= cmt_ld_vaddr @[src/main/scala/difftest/Difftest.scala 366:30]
+    inst difftestCSRRegState of DifftestCSRRegState @[src/main/scala/difftest/Difftest.scala 368:35]
+    difftestCSRRegState.clock <= clock @[src/main/scala/difftest/Difftest.scala 369:32]
+    difftestCSRRegState.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 370:33]
+    difftestCSRRegState.crmd <= io.csr_crmd_diff_0 @[src/main/scala/difftest/Difftest.scala 371:31]
+    difftestCSRRegState.prmd <= io.csr_prmd_diff_0 @[src/main/scala/difftest/Difftest.scala 372:31]
+    difftestCSRRegState.euen <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 373:31]
+    difftestCSRRegState.ecfg <= io.csr_ectl_diff_0 @[src/main/scala/difftest/Difftest.scala 374:31]
+    difftestCSRRegState.estat <= io.csr_estat_diff_0 @[src/main/scala/difftest/Difftest.scala 375:32]
+    difftestCSRRegState.era <= io.csr_era_diff_0 @[src/main/scala/difftest/Difftest.scala 376:30]
+    difftestCSRRegState.badv <= io.csr_badv_diff_0 @[src/main/scala/difftest/Difftest.scala 377:31]
+    difftestCSRRegState.eentry <= io.csr_eentry_diff_0 @[src/main/scala/difftest/Difftest.scala 378:33]
+    difftestCSRRegState.tlbidx <= io.csr_tlbidx_diff_0 @[src/main/scala/difftest/Difftest.scala 379:33]
+    difftestCSRRegState.tlbehi <= io.csr_tlbehi_diff_0 @[src/main/scala/difftest/Difftest.scala 380:33]
+    difftestCSRRegState.tlbelo0 <= io.csr_tlbelo0_diff_0 @[src/main/scala/difftest/Difftest.scala 381:34]
+    difftestCSRRegState.tlbelo1 <= io.csr_tlbelo1_diff_0 @[src/main/scala/difftest/Difftest.scala 382:34]
+    difftestCSRRegState.asid <= io.csr_asid_diff_0 @[src/main/scala/difftest/Difftest.scala 383:31]
+    difftestCSRRegState.pgdl <= io.csr_pgdl_diff_0 @[src/main/scala/difftest/Difftest.scala 384:31]
+    difftestCSRRegState.pgdh <= io.csr_pgdh_diff_0 @[src/main/scala/difftest/Difftest.scala 385:31]
+    difftestCSRRegState.save0 <= io.csr_save0_diff_0 @[src/main/scala/difftest/Difftest.scala 386:32]
+    difftestCSRRegState.save1 <= io.csr_save1_diff_0 @[src/main/scala/difftest/Difftest.scala 387:32]
+    difftestCSRRegState.save2 <= io.csr_save2_diff_0 @[src/main/scala/difftest/Difftest.scala 388:32]
+    difftestCSRRegState.save3 <= io.csr_save3_diff_0 @[src/main/scala/difftest/Difftest.scala 389:32]
+    difftestCSRRegState.tid <= io.csr_tid_diff_0 @[src/main/scala/difftest/Difftest.scala 390:30]
+    difftestCSRRegState.tcfg <= io.csr_tcfg_diff_0 @[src/main/scala/difftest/Difftest.scala 391:31]
+    difftestCSRRegState.tval <= io.csr_tval_diff_0 @[src/main/scala/difftest/Difftest.scala 392:31]
+    difftestCSRRegState.ticlr <= io.csr_ticlr_diff_0 @[src/main/scala/difftest/Difftest.scala 393:32]
+    difftestCSRRegState.llbctl <= io.csr_llbctl_diff_0 @[src/main/scala/difftest/Difftest.scala 394:33]
+    difftestCSRRegState.tlbrentry <= io.csr_tlbrentry_diff_0 @[src/main/scala/difftest/Difftest.scala 395:36]
+    difftestCSRRegState.dmw0 <= io.csr_dmw0_diff_0 @[src/main/scala/difftest/Difftest.scala 396:31]
+    difftestCSRRegState.dmw1 <= io.csr_dmw1_diff_0 @[src/main/scala/difftest/Difftest.scala 397:31]
+    inst difftestGRegState of DifftestGRegState @[src/main/scala/difftest/Difftest.scala 399:33]
+    difftestGRegState.clock <= clock @[src/main/scala/difftest/Difftest.scala 400:30]
+    difftestGRegState.coreid <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 401:31]
+    difftestGRegState.gpr_0 <= UInt<1>("h0") @[src/main/scala/difftest/Difftest.scala 402:30]
+    difftestGRegState.gpr_1 <= io.regs[1] @[src/main/scala/difftest/Difftest.scala 403:30]
+    difftestGRegState.gpr_2 <= io.regs[2] @[src/main/scala/difftest/Difftest.scala 404:30]
+    difftestGRegState.gpr_3 <= io.regs[3] @[src/main/scala/difftest/Difftest.scala 405:30]
+    difftestGRegState.gpr_4 <= io.regs[4] @[src/main/scala/difftest/Difftest.scala 406:30]
+    difftestGRegState.gpr_5 <= io.regs[5] @[src/main/scala/difftest/Difftest.scala 407:30]
+    difftestGRegState.gpr_6 <= io.regs[6] @[src/main/scala/difftest/Difftest.scala 408:30]
+    difftestGRegState.gpr_7 <= io.regs[7] @[src/main/scala/difftest/Difftest.scala 409:30]
+    difftestGRegState.gpr_8 <= io.regs[8] @[src/main/scala/difftest/Difftest.scala 410:30]
+    difftestGRegState.gpr_9 <= io.regs[9] @[src/main/scala/difftest/Difftest.scala 411:30]
+    difftestGRegState.gpr_10 <= io.regs[10] @[src/main/scala/difftest/Difftest.scala 412:31]
+    difftestGRegState.gpr_11 <= io.regs[11] @[src/main/scala/difftest/Difftest.scala 413:31]
+    difftestGRegState.gpr_12 <= io.regs[12] @[src/main/scala/difftest/Difftest.scala 414:31]
+    difftestGRegState.gpr_13 <= io.regs[13] @[src/main/scala/difftest/Difftest.scala 415:31]
+    difftestGRegState.gpr_14 <= io.regs[14] @[src/main/scala/difftest/Difftest.scala 416:31]
+    difftestGRegState.gpr_15 <= io.regs[15] @[src/main/scala/difftest/Difftest.scala 417:31]
+    difftestGRegState.gpr_16 <= io.regs[16] @[src/main/scala/difftest/Difftest.scala 418:31]
+    difftestGRegState.gpr_17 <= io.regs[17] @[src/main/scala/difftest/Difftest.scala 419:31]
+    difftestGRegState.gpr_18 <= io.regs[18] @[src/main/scala/difftest/Difftest.scala 420:31]
+    difftestGRegState.gpr_19 <= io.regs[19] @[src/main/scala/difftest/Difftest.scala 421:31]
+    difftestGRegState.gpr_20 <= io.regs[20] @[src/main/scala/difftest/Difftest.scala 422:31]
+    difftestGRegState.gpr_21 <= io.regs[21] @[src/main/scala/difftest/Difftest.scala 423:31]
+    difftestGRegState.gpr_22 <= io.regs[22] @[src/main/scala/difftest/Difftest.scala 424:31]
+    difftestGRegState.gpr_23 <= io.regs[23] @[src/main/scala/difftest/Difftest.scala 425:31]
+    difftestGRegState.gpr_24 <= io.regs[24] @[src/main/scala/difftest/Difftest.scala 426:31]
+    difftestGRegState.gpr_25 <= io.regs[25] @[src/main/scala/difftest/Difftest.scala 427:31]
+    difftestGRegState.gpr_26 <= io.regs[26] @[src/main/scala/difftest/Difftest.scala 428:31]
+    difftestGRegState.gpr_27 <= io.regs[27] @[src/main/scala/difftest/Difftest.scala 429:31]
+    difftestGRegState.gpr_28 <= io.regs[28] @[src/main/scala/difftest/Difftest.scala 430:31]
+    difftestGRegState.gpr_29 <= io.regs[29] @[src/main/scala/difftest/Difftest.scala 431:31]
+    difftestGRegState.gpr_30 <= io.regs[30] @[src/main/scala/difftest/Difftest.scala 432:31]
+    difftestGRegState.gpr_31 <= io.regs[31] @[src/main/scala/difftest/Difftest.scala 433:31]
 
   module core_top :
-    input aclk : Clock @[src/main/scala/core_top.scala 8:16]
-    input aresetn : UInt<1> @[src/main/scala/core_top.scala 9:19]
-    input intrpt : UInt<8> @[src/main/scala/core_top.scala 12:19]
-    output arid : UInt<4> @[src/main/scala/core_top.scala 15:19]
-    output araddr : UInt<32> @[src/main/scala/core_top.scala 16:19]
-    output arlen : UInt<8> @[src/main/scala/core_top.scala 17:19]
-    output arsize : UInt<3> @[src/main/scala/core_top.scala 18:19]
-    output arburst : UInt<2> @[src/main/scala/core_top.scala 19:19]
-    output arlock : UInt<2> @[src/main/scala/core_top.scala 20:19]
-    output arcache : UInt<4> @[src/main/scala/core_top.scala 21:19]
-    output arprot : UInt<3> @[src/main/scala/core_top.scala 22:19]
-    output arvalid : UInt<1> @[src/main/scala/core_top.scala 23:19]
-    input arready : UInt<1> @[src/main/scala/core_top.scala 24:19]
-    input rid : UInt<4> @[src/main/scala/core_top.scala 27:19]
-    input rdata : UInt<32> @[src/main/scala/core_top.scala 28:19]
-    input rresp : UInt<2> @[src/main/scala/core_top.scala 29:19]
-    input rlast : UInt<1> @[src/main/scala/core_top.scala 30:19]
-    input rvalid : UInt<1> @[src/main/scala/core_top.scala 31:19]
-    output rready : UInt<1> @[src/main/scala/core_top.scala 32:19]
-    output awid : UInt<4> @[src/main/scala/core_top.scala 35:19]
-    output awaddr : UInt<32> @[src/main/scala/core_top.scala 36:19]
-    output awlen : UInt<8> @[src/main/scala/core_top.scala 37:19]
-    output awsize : UInt<3> @[src/main/scala/core_top.scala 38:19]
-    output awburst : UInt<2> @[src/main/scala/core_top.scala 39:19]
-    output awlock : UInt<2> @[src/main/scala/core_top.scala 40:19]
-    output awcache : UInt<4> @[src/main/scala/core_top.scala 41:19]
-    output awprot : UInt<3> @[src/main/scala/core_top.scala 42:19]
-    output awvalid : UInt<1> @[src/main/scala/core_top.scala 43:19]
-    input awready : UInt<1> @[src/main/scala/core_top.scala 44:19]
-    output wid : UInt<4> @[src/main/scala/core_top.scala 47:19]
-    output wdata : UInt<32> @[src/main/scala/core_top.scala 48:19]
-    output wstrb : UInt<4> @[src/main/scala/core_top.scala 49:19]
-    output wlast : UInt<1> @[src/main/scala/core_top.scala 50:19]
-    output wvalid : UInt<1> @[src/main/scala/core_top.scala 51:19]
-    input wready : UInt<1> @[src/main/scala/core_top.scala 52:19]
-    input bid : UInt<4> @[src/main/scala/core_top.scala 55:19]
-    input bresp : UInt<2> @[src/main/scala/core_top.scala 56:19]
-    input bvalid : UInt<1> @[src/main/scala/core_top.scala 57:19]
-    output bready : UInt<1> @[src/main/scala/core_top.scala 58:19]
+    input aclk : Clock @[src/main/scala/myCPU_top.scala 8:16]
+    input aresetn : UInt<1> @[src/main/scala/myCPU_top.scala 9:19]
+    input intrpt : UInt<8> @[src/main/scala/myCPU_top.scala 12:19]
+    output arid : UInt<4> @[src/main/scala/myCPU_top.scala 15:19]
+    output araddr : UInt<32> @[src/main/scala/myCPU_top.scala 16:19]
+    output arlen : UInt<8> @[src/main/scala/myCPU_top.scala 17:19]
+    output arsize : UInt<3> @[src/main/scala/myCPU_top.scala 18:19]
+    output arburst : UInt<2> @[src/main/scala/myCPU_top.scala 19:19]
+    output arlock : UInt<2> @[src/main/scala/myCPU_top.scala 20:19]
+    output arcache : UInt<4> @[src/main/scala/myCPU_top.scala 21:19]
+    output arprot : UInt<3> @[src/main/scala/myCPU_top.scala 22:19]
+    output arvalid : UInt<1> @[src/main/scala/myCPU_top.scala 23:19]
+    input arready : UInt<1> @[src/main/scala/myCPU_top.scala 24:19]
+    input rid : UInt<4> @[src/main/scala/myCPU_top.scala 27:19]
+    input rdata : UInt<32> @[src/main/scala/myCPU_top.scala 28:19]
+    input rresp : UInt<2> @[src/main/scala/myCPU_top.scala 29:19]
+    input rlast : UInt<1> @[src/main/scala/myCPU_top.scala 30:19]
+    input rvalid : UInt<1> @[src/main/scala/myCPU_top.scala 31:19]
+    output rready : UInt<1> @[src/main/scala/myCPU_top.scala 32:19]
+    output awid : UInt<4> @[src/main/scala/myCPU_top.scala 35:19]
+    output awaddr : UInt<32> @[src/main/scala/myCPU_top.scala 36:19]
+    output awlen : UInt<8> @[src/main/scala/myCPU_top.scala 37:19]
+    output awsize : UInt<3> @[src/main/scala/myCPU_top.scala 38:19]
+    output awburst : UInt<2> @[src/main/scala/myCPU_top.scala 39:19]
+    output awlock : UInt<2> @[src/main/scala/myCPU_top.scala 40:19]
+    output awcache : UInt<4> @[src/main/scala/myCPU_top.scala 41:19]
+    output awprot : UInt<3> @[src/main/scala/myCPU_top.scala 42:19]
+    output awvalid : UInt<1> @[src/main/scala/myCPU_top.scala 43:19]
+    input awready : UInt<1> @[src/main/scala/myCPU_top.scala 44:19]
+    output wid : UInt<4> @[src/main/scala/myCPU_top.scala 47:19]
+    output wdata : UInt<32> @[src/main/scala/myCPU_top.scala 48:19]
+    output wstrb : UInt<4> @[src/main/scala/myCPU_top.scala 49:19]
+    output wlast : UInt<1> @[src/main/scala/myCPU_top.scala 50:19]
+    output wvalid : UInt<1> @[src/main/scala/myCPU_top.scala 51:19]
+    input wready : UInt<1> @[src/main/scala/myCPU_top.scala 52:19]
+    input bid : UInt<4> @[src/main/scala/myCPU_top.scala 55:19]
+    input bresp : UInt<2> @[src/main/scala/myCPU_top.scala 56:19]
+    input bvalid : UInt<1> @[src/main/scala/myCPU_top.scala 57:19]
+    output bready : UInt<1> @[src/main/scala/myCPU_top.scala 58:19]
+    input break_point : UInt<1> @[src/main/scala/myCPU_top.scala 60:34]
+    input infor_flag : UInt<1> @[src/main/scala/myCPU_top.scala 61:34]
+    input reg_num : UInt<5> @[src/main/scala/myCPU_top.scala 62:34]
+    output ws_valid : UInt<1> @[src/main/scala/myCPU_top.scala 63:34]
+    output rf_rdata : UInt<32> @[src/main/scala/myCPU_top.scala 64:34]
+    output debug0_wb_pc : UInt<32> @[src/main/scala/myCPU_top.scala 66:30]
+    output debug0_wb_rf_wen : UInt<1> @[src/main/scala/myCPU_top.scala 67:30]
+    output debug0_wb_rf_wnum : UInt<5> @[src/main/scala/myCPU_top.scala 68:30]
+    output debug0_wb_rf_wdata : UInt<32> @[src/main/scala/myCPU_top.scala 69:30]
+    output debug0_wb_inst : UInt<32> @[src/main/scala/myCPU_top.scala 70:30]
 
-    inst axi_crossbar of AXI3Crossbar4to1 @[src/main/scala/core_top.scala 68:28]
+    debug0_wb_pc <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 81:16]
+    debug0_wb_rf_wen <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 82:20]
+    debug0_wb_rf_wnum <= UInt<5>("h0") @[src/main/scala/myCPU_top.scala 83:21]
+    debug0_wb_rf_wdata <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 84:22]
+    debug0_wb_inst <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 85:18]
+    ws_valid <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 86:12]
+    rf_rdata <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 87:12]
+    inst axi_crossbar of AXI3Crossbar4to1 @[src/main/scala/myCPU_top.scala 95:28]
     axi_crossbar.clock <= aclk
     axi_crossbar.reset <= aresetn
-    inst icache of MiniICache @[src/main/scala/core_top.scala 70:28]
+    inst icache of MiniICache @[src/main/scala/myCPU_top.scala 97:28]
     icache.clock <= aclk
     icache.reset <= aresetn
-    inst dcache of dcache_BlackBox @[src/main/scala/core_top.scala 74:28]
-    inst uncache1 of uncache1_BlackBox @[src/main/scala/core_top.scala 75:28]
-    inst uncache2 of uncache2_BlackBox @[src/main/scala/core_top.scala 76:28]
-    icache.io.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/core_top.scala 82:30]
-    icache.io.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/core_top.scala 83:30]
-    dcache.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/core_top.scala 85:30]
-    dcache.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/core_top.scala 86:30]
-    uncache1.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/core_top.scala 88:32]
-    uncache1.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/core_top.scala 89:32]
-    uncache2.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/core_top.scala 91:32]
-    uncache2.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/core_top.scala 92:32]
-    axi_crossbar.io.in_icache <= icache.io.axi_master @[src/main/scala/core_top.scala 99:31]
-    axi_crossbar.io.in_dcache.b.bready <= dcache.axi_master.b.bready @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.b.in.bvalid <= axi_crossbar.io.in_dcache.b.in.bvalid @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.b.in.bresp <= axi_crossbar.io.in_dcache.b.in.bresp @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.b.in.bid <= axi_crossbar.io.in_dcache.b.in.bid @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.r.rready <= dcache.axi_master.r.rready @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.r.in.rvalid <= axi_crossbar.io.in_dcache.r.in.rvalid @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.r.in.rlast <= axi_crossbar.io.in_dcache.r.in.rlast @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.r.in.rresp <= axi_crossbar.io.in_dcache.r.in.rresp @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.r.in.rdata <= axi_crossbar.io.in_dcache.r.in.rdata @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.r.in.rid <= axi_crossbar.io.in_dcache.r.in.rid @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.w.wready <= axi_crossbar.io.in_dcache.w.wready @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.w.out.wvalid <= dcache.axi_master.w.out.wvalid @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.w.out.wlast <= dcache.axi_master.w.out.wlast @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.w.out.wstrb <= dcache.axi_master.w.out.wstrb @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.w.out.wdata <= dcache.axi_master.w.out.wdata @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.w.out.wid <= dcache.axi_master.w.out.wid @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.aw.awready <= axi_crossbar.io.in_dcache.aw.awready @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awvalid <= dcache.axi_master.aw.out.awvalid @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awprot <= dcache.axi_master.aw.out.awprot @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awcache <= dcache.axi_master.aw.out.awcache @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awlock <= dcache.axi_master.aw.out.awlock @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awburst <= dcache.axi_master.aw.out.awburst @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awsize <= dcache.axi_master.aw.out.awsize @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awlen <= dcache.axi_master.aw.out.awlen @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awaddr <= dcache.axi_master.aw.out.awaddr @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.aw.out.awid <= dcache.axi_master.aw.out.awid @[src/main/scala/core_top.scala 100:31]
-    dcache.axi_master.ar.arready <= axi_crossbar.io.in_dcache.ar.arready @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arvalid <= dcache.axi_master.ar.out.arvalid @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arprot <= dcache.axi_master.ar.out.arprot @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arcache <= dcache.axi_master.ar.out.arcache @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arlock <= dcache.axi_master.ar.out.arlock @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arburst <= dcache.axi_master.ar.out.arburst @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arsize <= dcache.axi_master.ar.out.arsize @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arlen <= dcache.axi_master.ar.out.arlen @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.araddr <= dcache.axi_master.ar.out.araddr @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_dcache.ar.out.arid <= dcache.axi_master.ar.out.arid @[src/main/scala/core_top.scala 100:31]
-    axi_crossbar.io.in_uncache1.b.bready <= uncache1.axi_master.b.bready @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.b.in.bvalid <= axi_crossbar.io.in_uncache1.b.in.bvalid @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.b.in.bresp <= axi_crossbar.io.in_uncache1.b.in.bresp @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.b.in.bid <= axi_crossbar.io.in_uncache1.b.in.bid @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.r.rready <= uncache1.axi_master.r.rready @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.r.in.rvalid <= axi_crossbar.io.in_uncache1.r.in.rvalid @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.r.in.rlast <= axi_crossbar.io.in_uncache1.r.in.rlast @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.r.in.rresp <= axi_crossbar.io.in_uncache1.r.in.rresp @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.r.in.rdata <= axi_crossbar.io.in_uncache1.r.in.rdata @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.r.in.rid <= axi_crossbar.io.in_uncache1.r.in.rid @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.w.wready <= axi_crossbar.io.in_uncache1.w.wready @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.w.out.wvalid <= uncache1.axi_master.w.out.wvalid @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.w.out.wlast <= uncache1.axi_master.w.out.wlast @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.w.out.wstrb <= uncache1.axi_master.w.out.wstrb @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.w.out.wdata <= uncache1.axi_master.w.out.wdata @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.w.out.wid <= uncache1.axi_master.w.out.wid @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.aw.awready <= axi_crossbar.io.in_uncache1.aw.awready @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awvalid <= uncache1.axi_master.aw.out.awvalid @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awprot <= uncache1.axi_master.aw.out.awprot @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awcache <= uncache1.axi_master.aw.out.awcache @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awlock <= uncache1.axi_master.aw.out.awlock @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awburst <= uncache1.axi_master.aw.out.awburst @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awsize <= uncache1.axi_master.aw.out.awsize @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awlen <= uncache1.axi_master.aw.out.awlen @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awaddr <= uncache1.axi_master.aw.out.awaddr @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.aw.out.awid <= uncache1.axi_master.aw.out.awid @[src/main/scala/core_top.scala 101:31]
-    uncache1.axi_master.ar.arready <= axi_crossbar.io.in_uncache1.ar.arready @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arvalid <= uncache1.axi_master.ar.out.arvalid @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arprot <= uncache1.axi_master.ar.out.arprot @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arcache <= uncache1.axi_master.ar.out.arcache @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arlock <= uncache1.axi_master.ar.out.arlock @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arburst <= uncache1.axi_master.ar.out.arburst @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arsize <= uncache1.axi_master.ar.out.arsize @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arlen <= uncache1.axi_master.ar.out.arlen @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.araddr <= uncache1.axi_master.ar.out.araddr @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache1.ar.out.arid <= uncache1.axi_master.ar.out.arid @[src/main/scala/core_top.scala 101:31]
-    axi_crossbar.io.in_uncache2.b.bready <= uncache2.axi_master.b.bready @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.b.in.bvalid <= axi_crossbar.io.in_uncache2.b.in.bvalid @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.b.in.bresp <= axi_crossbar.io.in_uncache2.b.in.bresp @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.b.in.bid <= axi_crossbar.io.in_uncache2.b.in.bid @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.r.rready <= uncache2.axi_master.r.rready @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.r.in.rvalid <= axi_crossbar.io.in_uncache2.r.in.rvalid @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.r.in.rlast <= axi_crossbar.io.in_uncache2.r.in.rlast @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.r.in.rresp <= axi_crossbar.io.in_uncache2.r.in.rresp @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.r.in.rdata <= axi_crossbar.io.in_uncache2.r.in.rdata @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.r.in.rid <= axi_crossbar.io.in_uncache2.r.in.rid @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.w.wready <= axi_crossbar.io.in_uncache2.w.wready @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.w.out.wvalid <= uncache2.axi_master.w.out.wvalid @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.w.out.wlast <= uncache2.axi_master.w.out.wlast @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.w.out.wstrb <= uncache2.axi_master.w.out.wstrb @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.w.out.wdata <= uncache2.axi_master.w.out.wdata @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.w.out.wid <= uncache2.axi_master.w.out.wid @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.aw.awready <= axi_crossbar.io.in_uncache2.aw.awready @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awvalid <= uncache2.axi_master.aw.out.awvalid @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awprot <= uncache2.axi_master.aw.out.awprot @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awcache <= uncache2.axi_master.aw.out.awcache @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awlock <= uncache2.axi_master.aw.out.awlock @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awburst <= uncache2.axi_master.aw.out.awburst @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awsize <= uncache2.axi_master.aw.out.awsize @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awlen <= uncache2.axi_master.aw.out.awlen @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awaddr <= uncache2.axi_master.aw.out.awaddr @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.aw.out.awid <= uncache2.axi_master.aw.out.awid @[src/main/scala/core_top.scala 102:31]
-    uncache2.axi_master.ar.arready <= axi_crossbar.io.in_uncache2.ar.arready @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arvalid <= uncache2.axi_master.ar.out.arvalid @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arprot <= uncache2.axi_master.ar.out.arprot @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arcache <= uncache2.axi_master.ar.out.arcache @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arlock <= uncache2.axi_master.ar.out.arlock @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arburst <= uncache2.axi_master.ar.out.arburst @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arsize <= uncache2.axi_master.ar.out.arsize @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arlen <= uncache2.axi_master.ar.out.arlen @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.araddr <= uncache2.axi_master.ar.out.araddr @[src/main/scala/core_top.scala 102:31]
-    axi_crossbar.io.in_uncache2.ar.out.arid <= uncache2.axi_master.ar.out.arid @[src/main/scala/core_top.scala 102:31]
-    arid <= axi_crossbar.io.out.ar.out.arid @[src/main/scala/core_top.scala 106:11]
-    araddr <= axi_crossbar.io.out.ar.out.araddr @[src/main/scala/core_top.scala 107:11]
-    arlen <= axi_crossbar.io.out.ar.out.arlen @[src/main/scala/core_top.scala 108:11]
-    arsize <= axi_crossbar.io.out.ar.out.arsize @[src/main/scala/core_top.scala 109:11]
-    arburst <= axi_crossbar.io.out.ar.out.arburst @[src/main/scala/core_top.scala 110:11]
-    arlock <= axi_crossbar.io.out.ar.out.arlock @[src/main/scala/core_top.scala 111:11]
-    arcache <= axi_crossbar.io.out.ar.out.arcache @[src/main/scala/core_top.scala 112:11]
-    arprot <= axi_crossbar.io.out.ar.out.arprot @[src/main/scala/core_top.scala 113:11]
-    arvalid <= axi_crossbar.io.out.ar.out.arvalid @[src/main/scala/core_top.scala 114:11]
-    axi_crossbar.io.out.ar.arready <= arready @[src/main/scala/core_top.scala 115:34]
-    wire r_data : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>} @[src/main/scala/core_top.scala 118:20]
-    r_data.rid <= rid @[src/main/scala/core_top.scala 119:17]
-    r_data.rdata <= rdata @[src/main/scala/core_top.scala 120:17]
-    r_data.rresp <= rresp @[src/main/scala/core_top.scala 121:17]
-    r_data.rlast <= rlast @[src/main/scala/core_top.scala 122:17]
-    r_data.rvalid <= rvalid @[src/main/scala/core_top.scala 123:17]
-    axi_crossbar.io.out.r.in.rvalid <= r_data.rvalid @[src/main/scala/core_top.scala 124:28]
-    axi_crossbar.io.out.r.in.rlast <= r_data.rlast @[src/main/scala/core_top.scala 124:28]
-    axi_crossbar.io.out.r.in.rresp <= r_data.rresp @[src/main/scala/core_top.scala 124:28]
-    axi_crossbar.io.out.r.in.rdata <= r_data.rdata @[src/main/scala/core_top.scala 124:28]
-    axi_crossbar.io.out.r.in.rid <= r_data.rid @[src/main/scala/core_top.scala 124:28]
-    rready <= axi_crossbar.io.out.r.rready @[src/main/scala/core_top.scala 125:10]
-    awid <= axi_crossbar.io.out.aw.out.awid @[src/main/scala/core_top.scala 128:11]
-    awaddr <= axi_crossbar.io.out.aw.out.awaddr @[src/main/scala/core_top.scala 129:11]
-    awlen <= axi_crossbar.io.out.aw.out.awlen @[src/main/scala/core_top.scala 130:11]
-    awsize <= axi_crossbar.io.out.aw.out.awsize @[src/main/scala/core_top.scala 131:11]
-    awburst <= axi_crossbar.io.out.aw.out.awburst @[src/main/scala/core_top.scala 132:11]
-    awlock <= axi_crossbar.io.out.aw.out.awlock @[src/main/scala/core_top.scala 133:11]
-    awcache <= axi_crossbar.io.out.aw.out.awcache @[src/main/scala/core_top.scala 134:11]
-    awprot <= axi_crossbar.io.out.aw.out.awprot @[src/main/scala/core_top.scala 135:11]
-    awvalid <= axi_crossbar.io.out.aw.out.awvalid @[src/main/scala/core_top.scala 136:11]
-    axi_crossbar.io.out.aw.awready <= awready @[src/main/scala/core_top.scala 137:34]
-    wid <= axi_crossbar.io.out.w.out.wid @[src/main/scala/core_top.scala 140:11]
-    wdata <= axi_crossbar.io.out.w.out.wdata @[src/main/scala/core_top.scala 141:11]
-    wstrb <= axi_crossbar.io.out.w.out.wstrb @[src/main/scala/core_top.scala 142:11]
-    wlast <= axi_crossbar.io.out.w.out.wlast @[src/main/scala/core_top.scala 143:11]
-    wvalid <= axi_crossbar.io.out.w.out.wvalid @[src/main/scala/core_top.scala 144:11]
-    axi_crossbar.io.out.w.wready <= wready @[src/main/scala/core_top.scala 145:32]
-    wire b_data : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>} @[src/main/scala/core_top.scala 148:20]
-    b_data.bid <= bid @[src/main/scala/core_top.scala 149:17]
-    b_data.bresp <= bresp @[src/main/scala/core_top.scala 150:17]
-    b_data.bvalid <= bvalid @[src/main/scala/core_top.scala 151:17]
-    axi_crossbar.io.out.b.in.bvalid <= b_data.bvalid @[src/main/scala/core_top.scala 152:28]
-    axi_crossbar.io.out.b.in.bresp <= b_data.bresp @[src/main/scala/core_top.scala 152:28]
-    axi_crossbar.io.out.b.in.bid <= b_data.bid @[src/main/scala/core_top.scala 152:28]
-    bready <= axi_crossbar.io.out.b.bready @[src/main/scala/core_top.scala 153:10]
+    inst dcache of MiniICache_1 @[src/main/scala/myCPU_top.scala 101:28]
+    dcache.clock <= aclk
+    dcache.reset <= aresetn
+    inst uncache1 of MiniICache_2 @[src/main/scala/myCPU_top.scala 102:28]
+    uncache1.clock <= aclk
+    uncache1.reset <= aresetn
+    inst uncache2 of MiniICache_3 @[src/main/scala/myCPU_top.scala 103:28]
+    uncache2.clock <= aclk
+    uncache2.reset <= aresetn
+    icache.io.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 109:30]
+    icache.io.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 110:30]
+    dcache.io.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 112:30]
+    dcache.io.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 113:30]
+    uncache1.io.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 115:32]
+    uncache1.io.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 116:32]
+    uncache2.io.cpu_if.req_addr <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 118:32]
+    uncache2.io.cpu_if.req_valid <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 119:32]
+    axi_crossbar.io.in_icache <= icache.io.axi_master @[src/main/scala/myCPU_top.scala 126:31]
+    axi_crossbar.io.in_dcache <= dcache.io.axi_master @[src/main/scala/myCPU_top.scala 127:31]
+    axi_crossbar.io.in_uncache1 <= uncache1.io.axi_master @[src/main/scala/myCPU_top.scala 128:31]
+    axi_crossbar.io.in_uncache2 <= uncache2.io.axi_master @[src/main/scala/myCPU_top.scala 129:31]
+    arid <= axi_crossbar.io.out.ar.out.arid @[src/main/scala/myCPU_top.scala 133:11]
+    araddr <= axi_crossbar.io.out.ar.out.araddr @[src/main/scala/myCPU_top.scala 134:11]
+    arlen <= axi_crossbar.io.out.ar.out.arlen @[src/main/scala/myCPU_top.scala 135:11]
+    arsize <= axi_crossbar.io.out.ar.out.arsize @[src/main/scala/myCPU_top.scala 136:11]
+    arburst <= axi_crossbar.io.out.ar.out.arburst @[src/main/scala/myCPU_top.scala 137:11]
+    arlock <= axi_crossbar.io.out.ar.out.arlock @[src/main/scala/myCPU_top.scala 138:11]
+    arcache <= axi_crossbar.io.out.ar.out.arcache @[src/main/scala/myCPU_top.scala 139:11]
+    arprot <= axi_crossbar.io.out.ar.out.arprot @[src/main/scala/myCPU_top.scala 140:11]
+    arvalid <= axi_crossbar.io.out.ar.out.arvalid @[src/main/scala/myCPU_top.scala 141:11]
+    axi_crossbar.io.out.ar.arready <= arready @[src/main/scala/myCPU_top.scala 142:34]
+    wire r_data : { rid : UInt<4>, rdata : UInt<32>, rresp : UInt<2>, rlast : UInt<1>, rvalid : UInt<1>} @[src/main/scala/myCPU_top.scala 145:20]
+    r_data.rid <= rid @[src/main/scala/myCPU_top.scala 146:17]
+    r_data.rdata <= rdata @[src/main/scala/myCPU_top.scala 147:17]
+    r_data.rresp <= rresp @[src/main/scala/myCPU_top.scala 148:17]
+    r_data.rlast <= rlast @[src/main/scala/myCPU_top.scala 149:17]
+    r_data.rvalid <= rvalid @[src/main/scala/myCPU_top.scala 150:17]
+    axi_crossbar.io.out.r.in.rvalid <= r_data.rvalid @[src/main/scala/myCPU_top.scala 151:28]
+    axi_crossbar.io.out.r.in.rlast <= r_data.rlast @[src/main/scala/myCPU_top.scala 151:28]
+    axi_crossbar.io.out.r.in.rresp <= r_data.rresp @[src/main/scala/myCPU_top.scala 151:28]
+    axi_crossbar.io.out.r.in.rdata <= r_data.rdata @[src/main/scala/myCPU_top.scala 151:28]
+    axi_crossbar.io.out.r.in.rid <= r_data.rid @[src/main/scala/myCPU_top.scala 151:28]
+    rready <= axi_crossbar.io.out.r.rready @[src/main/scala/myCPU_top.scala 152:10]
+    awid <= axi_crossbar.io.out.aw.out.awid @[src/main/scala/myCPU_top.scala 155:11]
+    awaddr <= axi_crossbar.io.out.aw.out.awaddr @[src/main/scala/myCPU_top.scala 156:11]
+    awlen <= axi_crossbar.io.out.aw.out.awlen @[src/main/scala/myCPU_top.scala 157:11]
+    awsize <= axi_crossbar.io.out.aw.out.awsize @[src/main/scala/myCPU_top.scala 158:11]
+    awburst <= axi_crossbar.io.out.aw.out.awburst @[src/main/scala/myCPU_top.scala 159:11]
+    awlock <= axi_crossbar.io.out.aw.out.awlock @[src/main/scala/myCPU_top.scala 160:11]
+    awcache <= axi_crossbar.io.out.aw.out.awcache @[src/main/scala/myCPU_top.scala 161:11]
+    awprot <= axi_crossbar.io.out.aw.out.awprot @[src/main/scala/myCPU_top.scala 162:11]
+    awvalid <= axi_crossbar.io.out.aw.out.awvalid @[src/main/scala/myCPU_top.scala 163:11]
+    axi_crossbar.io.out.aw.awready <= awready @[src/main/scala/myCPU_top.scala 164:34]
+    wid <= axi_crossbar.io.out.w.out.wid @[src/main/scala/myCPU_top.scala 167:11]
+    wdata <= axi_crossbar.io.out.w.out.wdata @[src/main/scala/myCPU_top.scala 168:11]
+    wstrb <= axi_crossbar.io.out.w.out.wstrb @[src/main/scala/myCPU_top.scala 169:11]
+    wlast <= axi_crossbar.io.out.w.out.wlast @[src/main/scala/myCPU_top.scala 170:11]
+    wvalid <= axi_crossbar.io.out.w.out.wvalid @[src/main/scala/myCPU_top.scala 171:11]
+    axi_crossbar.io.out.w.wready <= wready @[src/main/scala/myCPU_top.scala 172:32]
+    wire b_data : { bid : UInt<4>, bresp : UInt<2>, bvalid : UInt<1>} @[src/main/scala/myCPU_top.scala 175:20]
+    b_data.bid <= bid @[src/main/scala/myCPU_top.scala 176:17]
+    b_data.bresp <= bresp @[src/main/scala/myCPU_top.scala 177:17]
+    b_data.bvalid <= bvalid @[src/main/scala/myCPU_top.scala 178:17]
+    axi_crossbar.io.out.b.in.bvalid <= b_data.bvalid @[src/main/scala/myCPU_top.scala 179:28]
+    axi_crossbar.io.out.b.in.bresp <= b_data.bresp @[src/main/scala/myCPU_top.scala 179:28]
+    axi_crossbar.io.out.b.in.bid <= b_data.bid @[src/main/scala/myCPU_top.scala 179:28]
+    bready <= axi_crossbar.io.out.b.bready @[src/main/scala/myCPU_top.scala 180:10]
+    inst difftest of Difftest @[src/main/scala/myCPU_top.scala 189:24]
+    difftest.clock <= aclk
+    difftest.reset <= aresetn
+    difftest.io.inst_valid_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 191:31]
+    difftest.io.cnt_inst_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 192:29]
+    difftest.io.timer_64_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 193:29]
+    difftest.io.inst_ld_en_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 194:31]
+    difftest.io.ld_paddr_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 195:29]
+    difftest.io.ld_vaddr_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 196:29]
+    difftest.io.inst_st_en_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 197:31]
+    difftest.io.st_paddr_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 198:29]
+    difftest.io.st_vaddr_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 199:29]
+    difftest.io.st_data_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 200:28]
+    difftest.io.csr_rstat_en_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 201:33]
+    difftest.io.csr_data_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 202:29]
+    difftest.io.debug0_wb_rf_wen <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 204:32]
+    difftest.io.debug0_wb_rf_wnum <= UInt<5>("h0") @[src/main/scala/myCPU_top.scala 205:33]
+    difftest.io.debug0_wb_rf_wdata <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 206:34]
+    difftest.io.debug0_wb_pc <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 207:28]
+    difftest.io.debug0_wb_inst <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 208:30]
+    difftest.io.excp_flush <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 210:26]
+    difftest.io.ertn_flush <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 211:26]
+    difftest.io.ws_csr_ecode <= UInt<6>("h0") @[src/main/scala/myCPU_top.scala 212:28]
+    difftest.io.tlbfill_en <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 213:26]
+    difftest.io.rand_index <= UInt<5>("h0") @[src/main/scala/myCPU_top.scala 214:26]
+    difftest.io.csr_estat_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 216:32]
+    difftest.io.csr_crmd_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 217:31]
+    difftest.io.csr_prmd_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 218:31]
+    difftest.io.csr_ectl_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 219:31]
+    difftest.io.csr_era_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 220:30]
+    difftest.io.csr_badv_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 221:31]
+    difftest.io.csr_eentry_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 222:33]
+    difftest.io.csr_tlbidx_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 223:33]
+    difftest.io.csr_tlbehi_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 224:33]
+    difftest.io.csr_tlbelo0_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 225:34]
+    difftest.io.csr_tlbelo1_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 226:34]
+    difftest.io.csr_asid_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 227:31]
+    difftest.io.csr_pgdl_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 228:31]
+    difftest.io.csr_pgdh_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 229:31]
+    difftest.io.csr_save0_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 230:32]
+    difftest.io.csr_save1_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 231:32]
+    difftest.io.csr_save2_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 232:32]
+    difftest.io.csr_save3_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 233:32]
+    difftest.io.csr_tid_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 234:30]
+    difftest.io.csr_tcfg_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 235:31]
+    difftest.io.csr_tval_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 236:31]
+    difftest.io.csr_ticlr_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 237:32]
+    difftest.io.csr_llbctl_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 238:33]
+    difftest.io.csr_tlbrentry_diff_0 <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 239:36]
+    difftest.io.csr_dmw0_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 240:31]
+    difftest.io.csr_dmw1_diff_0 <= UInt<32>("h0") @[src/main/scala/myCPU_top.scala 241:31]
+    difftest.io.regs[0] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[1] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[2] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[3] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[4] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[5] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[6] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[7] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[8] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[9] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[10] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[11] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[12] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[13] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[14] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[15] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[16] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[17] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[18] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[19] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[20] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[21] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[22] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[23] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[24] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[25] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[26] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[27] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[28] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[29] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[30] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
+    difftest.io.regs[31] <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 244:25]
 
