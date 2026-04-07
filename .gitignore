@@ -1,11 +1,7 @@
 .vscode
 .idea
-/chiplab/toolchains/
-
 cmake-build-debug
 CMakeLists.txt
-toolchains/*
-!toolchains/README.md
 software/random_res
 sims/verilator/run_prog/single.log
 *.o
@@ -39,3 +35,4 @@ Signup
 designCPUByChisel/target
 designCPUByChisel/project
 designCPUByChisel/test_run_dir
+chiplab/toolchains
