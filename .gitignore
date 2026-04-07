@@ -35,4 +35,4 @@ Signup
 designCPUByChisel/target
 designCPUByChisel/project
 designCPUByChisel/test_run_dir
-chiplab/toolchains
+chiplab/toolchains/*
