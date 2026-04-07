@@ -588,8 +588,9 @@ module Difftest(
   input   reset
 );
 `ifdef RANDOMIZE_REG_INIT
-  reg [63:0] _RAND_0;
+  reg [31:0] _RAND_0;
   reg [63:0] _RAND_1;
+  reg [63:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
   wire  difftestInstrCommit_clock; // @[src/main/scala/difftest/Difftest.scala 313:35]
   wire [7:0] difftestInstrCommit_coreid; // @[src/main/scala/difftest/Difftest.scala 313:35]
@@ -698,10 +699,11 @@ module Difftest(
   wire [63:0] difftestGRegState_gpr_29; // @[src/main/scala/difftest/Difftest.scala 399:33]
   wire [63:0] difftestGRegState_gpr_30; // @[src/main/scala/difftest/Difftest.scala 399:33]
   wire [63:0] difftestGRegState_gpr_31; // @[src/main/scala/difftest/Difftest.scala 399:33]
+  reg  cmt_valid; // @[src/main/scala/difftest/Difftest.scala 215:26]
   reg [63:0] cycleCnt; // @[src/main/scala/difftest/Difftest.scala 242:25]
   reg [63:0] instrCnt; // @[src/main/scala/difftest/Difftest.scala 243:25]
   wire [63:0] _cycleCnt_T_1 = cycleCnt + 64'h1; // @[src/main/scala/difftest/Difftest.scala 307:28]
-  wire [64:0] _instrCnt_T = {{1'd0}, instrCnt}; // @[src/main/scala/difftest/Difftest.scala 308:28]
+  wire [63:0] _instrCnt_T_1 = instrCnt + 64'h1; // @[src/main/scala/difftest/Difftest.scala 308:28]
   DifftestInstrCommit difftestInstrCommit ( // @[src/main/scala/difftest/Difftest.scala 313:35]
     .clock(difftestInstrCommit_clock),
     .coreid(difftestInstrCommit_coreid),
@@ -826,7 +828,7 @@ module Difftest(
   assign difftestInstrCommit_clock = clock; // @[src/main/scala/difftest/Difftest.scala 315:32]
   assign difftestInstrCommit_coreid = 8'h0; // @[src/main/scala/difftest/Difftest.scala 316:33]
   assign difftestInstrCommit_index = 8'h0; // @[src/main/scala/difftest/Difftest.scala 317:32]
-  assign difftestInstrCommit_valid = 1'h0; // @[src/main/scala/difftest/Difftest.scala 318:32]
+  assign difftestInstrCommit_valid = cmt_valid; // @[src/main/scala/difftest/Difftest.scala 318:32]
   assign difftestInstrCommit_pc = 64'h0; // @[src/main/scala/difftest/Difftest.scala 319:29]
   assign difftestInstrCommit_instr = 32'h0; // @[src/main/scala/difftest/Difftest.scala 320:32]
   assign difftestInstrCommit_skip = 1'h0; // @[src/main/scala/difftest/Difftest.scala 321:31]
@@ -931,6 +933,11 @@ module Difftest(
   assign difftestGRegState_gpr_30 = 64'h0; // @[src/main/scala/difftest/Difftest.scala 432:31]
   assign difftestGRegState_gpr_31 = 64'h0; // @[src/main/scala/difftest/Difftest.scala 433:31]
   always @(posedge clock) begin
+    if (reset) begin // @[src/main/scala/difftest/Difftest.scala 215:26]
+      cmt_valid <= 1'h0; // @[src/main/scala/difftest/Difftest.scala 215:26]
+    end else begin
+      cmt_valid <= 1'h1;
+    end
     if (reset) begin // @[src/main/scala/difftest/Difftest.scala 242:25]
       cycleCnt <= 64'h0; // @[src/main/scala/difftest/Difftest.scala 242:25]
     end else begin
@@ -939,7 +946,7 @@ module Difftest(
     if (reset) begin // @[src/main/scala/difftest/Difftest.scala 243:25]
       instrCnt <= 64'h0; // @[src/main/scala/difftest/Difftest.scala 243:25]
     end else begin
-      instrCnt <= _instrCnt_T[63:0];
+      instrCnt <= _instrCnt_T_1;
     end
   end
 // Register and memory initialization
@@ -978,10 +985,12 @@ initial begin
       `endif
     `endif
 `ifdef RANDOMIZE_REG_INIT
-  _RAND_0 = {2{`RANDOM}};
-  cycleCnt = _RAND_0[63:0];
+  _RAND_0 = {1{`RANDOM}};
+  cmt_valid = _RAND_0[0:0];
   _RAND_1 = {2{`RANDOM}};
-  instrCnt = _RAND_1[63:0];
+  cycleCnt = _RAND_1[63:0];
+  _RAND_2 = {2{`RANDOM}};
+  instrCnt = _RAND_2[63:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

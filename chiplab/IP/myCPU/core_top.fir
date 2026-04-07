@@ -1111,7 +1111,7 @@ circuit core_top :
     inst difftest of Difftest @[src/main/scala/myCPU_top.scala 189:24]
     difftest.clock <= aclk
     difftest.reset <= aresetn
-    difftest.io.inst_valid_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 191:31]
+    difftest.io.inst_valid_diff <= UInt<1>("h1") @[src/main/scala/myCPU_top.scala 191:31]
     difftest.io.cnt_inst_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 192:29]
     difftest.io.timer_64_diff <= UInt<64>("h0") @[src/main/scala/myCPU_top.scala 193:29]
     difftest.io.inst_ld_en_diff <= UInt<1>("h0") @[src/main/scala/myCPU_top.scala 194:31]

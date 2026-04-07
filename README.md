@@ -22,3 +22,9 @@ source env.sh
 目前我的chisel框架大致搭建好了，就在designCPUbyChisel里面，现在是一坨AI生成的代码
 但是可以成功转换成v，有可行性，里面也有黑盒，你们可以去看一下
 
+
+
+
+## 4月7日 王豪：
+
+把chisel中的difftest模块加上了

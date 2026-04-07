@@ -188,7 +188,7 @@ class core_top extends RawModule {
 
   val difftest = Module(new Difftest)
     // 将所有输入信号赋值为0
-  difftest.io.inst_valid_diff := false.B
+  difftest.io.inst_valid_diff := true.B
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B
