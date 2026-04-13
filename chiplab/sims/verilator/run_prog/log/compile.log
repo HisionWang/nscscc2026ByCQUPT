@@ -3,9 +3,6 @@
       |   ^~~~~~~~~~~~~~~~~~~
                        ... For warning description see https://verilator.org/warn/DECLFILENAME?v=5.044
                        ... Use "/* verilator lint_off DECLFILENAME */" and lint_on around source to disable this message.
-%Warning-DECLFILENAME: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1:8: Filename 'mycpu_top' does not match MODULE name: 'AXI3Crossbar4to1'
-    1 | module AXI3Crossbar4to1(
-      |        ^~~~~~~~~~~~~~~~
 %Warning-DECLFILENAME: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/confreg_sim.v:104:8: Filename 'confreg_sim' does not match MODULE name: 'confreg'
   104 | module confreg
       |        ^~~~~~~
@@ -55,15 +52,6 @@
   387 |     .rf_rdata          (                  )
       |      ^~~~~~~~
                           ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-%Warning-PINMISSING: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:340:10: Instance has missing pin: 'debug0_wb_inst'
-  340 | core_top cpu
-      |          ^~~
-                     ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-                     /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1051:17: ... Location of port declaration
- 1051 |   output [31:0] debug0_wb_inst  
-      |                 ^~~~~~~~~~~~~~
-                     ... For warning description see https://verilator.org/warn/PINMISSING?v=5.044
-                     ... Use "/* verilator lint_off PINMISSING */" and lint_on around source to disable this message.
 %Warning-PINCONNECTEMPTY: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:572:2: Instance pin connected by name with empty reference: 's1_awid'
   572 | .s1_awid           (                    ),
       |  ^~~~~~~
@@ -319,6 +307,8 @@
                      /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:78:1: ... Location of port declaration
    78 | apb_rw_dma,
       | ^~~~~~~~~~
+                     ... For warning description see https://verilator.org/warn/PINMISSING?v=5.044
+                     ... Use "/* verilator lint_off PINMISSING */" and lint_on around source to disable this message.
 %Warning-PINMISSING: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:726:14: Instance has missing pin: 'apb_psel_dma'
   726 | axi2apb_misc APB_DEV 
       |              ^~~~~~~
@@ -389,14 +379,17 @@
                      /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:89:1: ... Location of port declaration
    89 | dma_ack_i,
       | ^~~~~~~~~
-%Warning-MULTITOP: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/nand.v:34:8: Multiple top level modules
-                                                                                          : ... Suggest see manual; fix the duplicates, or use --top-module to select top.
+%Warning-MULTITOP: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/Core_top.v:1:8: Multiple top level modules
+                                                                                      : ... Suggest see manual; fix the duplicates, or use --top-module to select top.
                    ... For warning description see https://verilator.org/warn/MULTITOP?v=5.044
                    ... Use "/* verilator lint_off MULTITOP */" and lint_on around source to disable this message.
-                                                                                          : ... Top module 'simu_top'
+                                                                                      : ... Top module 'simu_top'
     1 | module simu_top
       |        ^~~~~~~~
-                                                                                          : ... Top module 'NAND_top'
+                                                                                      : ... Top module 'Core_top'
+    1 | module Core_top(
+      |        ^~~~~~~~
+                                                                                      : ... Top module 'NAND_top'
    34 | module NAND_top(
       |        ^~~~~~~~
 %Warning-MISINDENT: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_receiver.v:160:46: Misleading indentation
@@ -471,14 +464,6 @@
       |            ^~
                      ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.044
                      ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
-%Warning-WIDTHEXPAND: ../testbench/difftest.v:111:3: Operator TASKREF 'v_difftest_ExcpEvent' expects 8 bits on the Function Argument, but Function Argument's VARREF 'excp_valid' generates 1 bits.
-                                                   : ... note: In instance 'simu_top.soc.cpu.difftest.difftestExcpEvent'
-  111 |   v_difftest_ExcpEvent (
-      |   ^~~~~~~~~~~~~~~~~~~~
-%Warning-WIDTHEXPAND: ../testbench/difftest.v:85:3: Operator TASKREF 'v_difftest_InstrCommit' expects 8 bits on the Function Argument, but Function Argument's VARREF 'TLBFILL_index' generates 5 bits.
-                                                  : ... note: In instance 'simu_top.soc.cpu.difftest.difftestInstrCommit'
-   85 |   v_difftest_InstrCommit (
-      |   ^~~~~~~~~~~~~~~~~~~~~~
 %Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:1102:19: Operator ASSIGNDLY expects 3 bits on the Assign RHS, but Assign RHS's CONST '2'h0' generates 2 bits.
                                                                                                : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX.rd_fifo'
  1102 |       fifo_ram[i] <= 2'b0;
@@ -515,86 +500,6 @@
                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
   589 |                     axi_s_req_addr  <= 32'h0;
       |                                     ^~
-%Warning-WIDTHTRUNC: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:723:6: Input port connection 'csr_data' expects 32 bits on the pin connection, but pin connection's VARREF 'difftestInstrCommit_csr_data' generates 64 bits.
-                                                                                           : ... note: In instance 'simu_top.soc.cpu.difftest'
-  723 |     .csr_data(difftestInstrCommit_csr_data)
-      |      ^~~~~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:730:6: Input port connection 'intrNo' expects 32 bits on the pin connection, but pin connection's VARREF 'difftestExcpEvent_intrNo' generates 11 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  730 |     .intrNo(difftestExcpEvent_intrNo),
-      |      ^~~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:731:6: Input port connection 'cause' expects 32 bits on the pin connection, but pin connection's VARREF 'difftestExcpEvent_cause' generates 6 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  731 |     .cause(difftestExcpEvent_cause),
-      |      ^~~~~
-%Warning-WIDTHTRUNC: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:739:6: Input port connection 'code' expects 3 bits on the pin connection, but pin connection's VARREF 'difftestTrapEvent_code' generates 8 bits.
-                                                                                           : ... note: In instance 'simu_top.soc.cpu.difftest'
-  739 |     .code(difftestTrapEvent_code),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:748:6: Input port connection 'valid' expects 8 bits on the pin connection, but pin connection's VARREF 'difftestStoreEvent_valid' generates 1 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  748 |     .valid(difftestStoreEvent_valid),
-      |      ^~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:757:6: Input port connection 'valid' expects 8 bits on the pin connection, but pin connection's VARREF 'difftestLoadEvent_valid' generates 1 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  757 |     .valid(difftestLoadEvent_valid),
-      |      ^~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:764:6: Input port connection 'crmd' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_crmd' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  764 |     .crmd(difftestCSRRegState_crmd),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:765:6: Input port connection 'prmd' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_prmd' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  765 |     .prmd(difftestCSRRegState_prmd),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:766:6: Input port connection 'euen' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_euen' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  766 |     .euen(difftestCSRRegState_euen),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:767:6: Input port connection 'ecfg' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_ecfg' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  767 |     .ecfg(difftestCSRRegState_ecfg),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:768:6: Input port connection 'estat' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_estat' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  768 |     .estat(difftestCSRRegState_estat),
-      |      ^~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:772:6: Input port connection 'tlbidx' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tlbidx' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  772 |     .tlbidx(difftestCSRRegState_tlbidx),
-      |      ^~~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:774:6: Input port connection 'tlbelo0' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tlbelo0' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  774 |     .tlbelo0(difftestCSRRegState_tlbelo0),
-      |      ^~~~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:775:6: Input port connection 'tlbelo1' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tlbelo1' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  775 |     .tlbelo1(difftestCSRRegState_tlbelo1),
-      |      ^~~~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:776:6: Input port connection 'asid' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_asid' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  776 |     .asid(difftestCSRRegState_asid),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:784:6: Input port connection 'tcfg' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tcfg' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  784 |     .tcfg(difftestCSRRegState_tcfg),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:786:6: Input port connection 'ticlr' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_ticlr' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  786 |     .ticlr(difftestCSRRegState_ticlr),
-      |      ^~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:787:6: Input port connection 'llbctl' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_llbctl' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  787 |     .llbctl(difftestCSRRegState_llbctl),
-      |      ^~~~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:789:6: Input port connection 'dmw0' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_dmw0' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  789 |     .dmw0(difftestCSRRegState_dmw0),
-      |      ^~~~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:790:6: Input port connection 'dmw1' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_dmw1' generates 32 bits.
-                                                                                            : ... note: In instance 'simu_top.soc.cpu.difftest'
-  790 |     .dmw1(difftestCSRRegState_dmw1)
-      |      ^~~~
 %Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/confreg_sim.v:171:28: Operator EQ expects 16 bits on the LHS, but LHS's SEL generates 13 bits.
                                                                                                  : ... note: In instance 'simu_top.soc.confreg'
   171 |      if (conf_raddr[28:16] == 16'h1fd0)
@@ -663,16 +568,136 @@
                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
   978 |             if(rd_data_sel==axi_rd_data_int) begin
       |                           ^~
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:348:6: Output port connection 'arlen' expects 8 bits on the pin connection, but pin connection's VARREF 'cpu_arlen' generates 4 bits.
-                                                                                                   : ... note: In instance 'simu_top.soc'
-  348 |     .arlen             (cpu_arlen         ), 
+%Warning-WIDTHEXPAND: ../testbench/difftest.v:111:3: Operator TASKREF 'v_difftest_ExcpEvent' expects 8 bits on the Function Argument, but Function Argument's VARREF 'excp_valid' generates 1 bits.
+                                                   : ... note: In instance 'Core_top.difftest.difftestExcpEvent'
+  111 |   v_difftest_ExcpEvent (
+      |   ^~~~~~~~~~~~~~~~~~~~
+%Warning-WIDTHEXPAND: ../testbench/difftest.v:85:3: Operator TASKREF 'v_difftest_InstrCommit' expects 8 bits on the Function Argument, but Function Argument's VARREF 'TLBFILL_index' generates 5 bits.
+                                                  : ... note: In instance 'Core_top.difftest.difftestInstrCommit'
+   85 |   v_difftest_InstrCommit (
+      |   ^~~~~~~~~~~~~~~~~~~~~~
+%Error-MODMISSING: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:340:1: Cannot find file containing module: 'core_top'
+  340 | core_top cpu
+      | ^~~~~~~~
+                   ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
+                   ... For error description see https://verilator.org/warn/MODMISSING?v=5.044
+                   ... Looked in:
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_DELAY_RAND/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_DELAY_RAND/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_DELAY_RAND/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/core_top.sv
+                        ../testbench/core_top
+                        ../testbench/core_top.v
+                        ../testbench/core_top.sv
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/core_top
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/core_top.v
+                        /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/core_top.sv
+                        core_top
+                        core_top.v
+                        core_top.sv
+                        obj_dir/core_top
+                        obj_dir/core_top.v
+                        obj_dir/core_top.sv
+%Warning-WIDTHTRUNC: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:143:6: Input port connection 'csr_data' expects 32 bits on the pin connection, but pin connection's VARREF 'difftestInstrCommit_csr_data' generates 64 bits.
+                                                                                                : ... note: In instance 'Core_top.difftest'
+  143 |     .csr_data(difftestInstrCommit_csr_data)
+      |      ^~~~~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:150:6: Input port connection 'intrNo' expects 32 bits on the pin connection, but pin connection's VARREF 'difftestExcpEvent_intrNo' generates 11 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  150 |     .intrNo(difftestExcpEvent_intrNo),
+      |      ^~~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:151:6: Input port connection 'cause' expects 32 bits on the pin connection, but pin connection's VARREF 'difftestExcpEvent_cause' generates 6 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  151 |     .cause(difftestExcpEvent_cause),
       |      ^~~~~
-                      ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:358:6: Output port connection 'awlen' expects 8 bits on the pin connection, but pin connection's VARREF 'cpu_awlen' generates 4 bits.
-                                                                                                   : ... note: In instance 'simu_top.soc'
-  358 |     .awlen             (cpu_awlen         ), 
+%Warning-WIDTHTRUNC: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:159:6: Input port connection 'code' expects 3 bits on the pin connection, but pin connection's VARREF 'difftestTrapEvent_code' generates 8 bits.
+                                                                                                : ... note: In instance 'Core_top.difftest'
+  159 |     .code(difftestTrapEvent_code),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:168:6: Input port connection 'valid' expects 8 bits on the pin connection, but pin connection's VARREF 'difftestStoreEvent_valid' generates 1 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  168 |     .valid(difftestStoreEvent_valid),
       |      ^~~~~
-                      ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:177:6: Input port connection 'valid' expects 8 bits on the pin connection, but pin connection's VARREF 'difftestLoadEvent_valid' generates 1 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  177 |     .valid(difftestLoadEvent_valid),
+      |      ^~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:184:6: Input port connection 'crmd' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_crmd' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  184 |     .crmd(difftestCSRRegState_crmd),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:185:6: Input port connection 'prmd' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_prmd' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  185 |     .prmd(difftestCSRRegState_prmd),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:186:6: Input port connection 'euen' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_euen' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  186 |     .euen(difftestCSRRegState_euen),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:187:6: Input port connection 'ecfg' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_ecfg' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  187 |     .ecfg(difftestCSRRegState_ecfg),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:188:6: Input port connection 'estat' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_estat' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  188 |     .estat(difftestCSRRegState_estat),
+      |      ^~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:192:6: Input port connection 'tlbidx' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tlbidx' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  192 |     .tlbidx(difftestCSRRegState_tlbidx),
+      |      ^~~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:194:6: Input port connection 'tlbelo0' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tlbelo0' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  194 |     .tlbelo0(difftestCSRRegState_tlbelo0),
+      |      ^~~~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:195:6: Input port connection 'tlbelo1' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tlbelo1' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  195 |     .tlbelo1(difftestCSRRegState_tlbelo1),
+      |      ^~~~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:196:6: Input port connection 'asid' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_asid' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  196 |     .asid(difftestCSRRegState_asid),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:204:6: Input port connection 'tcfg' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_tcfg' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  204 |     .tcfg(difftestCSRRegState_tcfg),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:206:6: Input port connection 'ticlr' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_ticlr' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  206 |     .ticlr(difftestCSRRegState_ticlr),
+      |      ^~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:207:6: Input port connection 'llbctl' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_llbctl' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  207 |     .llbctl(difftestCSRRegState_llbctl),
+      |      ^~~~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:209:6: Input port connection 'dmw0' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_dmw0' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  209 |     .dmw0(difftestCSRRegState_dmw0),
+      |      ^~~~
+%Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/DifftestInCore.v:210:6: Input port connection 'dmw1' expects 64 bits on the pin connection, but pin connection's VARREF 'difftestCSRRegState_dmw1' generates 32 bits.
+                                                                                                 : ... note: In instance 'Core_top.difftest'
+  210 |     .dmw1(difftestCSRRegState_dmw1)
+      |      ^~~~
 %Warning-WIDTHEXPAND: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/nand.v:154:24: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's REPLICATE generates 15 bits.
                                                                                                : ... note: In instance 'NAND_top'
   154 |           nand_command <= {1'b0,1'b0,1'b0,1'b0,9'b0,1'b0,NANDtag};
@@ -1273,426 +1298,4 @@
                                                     : ... note: In instance 'simu_top'
   137 | assign uart_ctr_bus = {
       |                     ^
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_top.v:52:19: Bits of signal are not used: 'PADDR'[7:4]
-                                                                                                  : ... note: In instance 'simu_top.soc.APB_DEV.uart0'
-   52 | input   [7:0]     PADDR;
-      |                   ^~~~~
-                       ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.044
-                       ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/nand.v:111:15: Signal is not used: 'nand_dma_ack_i'
-                                                                                                : ... note: In instance 'NAND_top'
-  111 | wire          nand_dma_ack_i;
-      |               ^~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/NAND/nand.v:382:9: Signal is not used: 'NAND_ACK'
-                                                                                               : ... note: In instance 'NAND_top'
-  382 | reg     NAND_ACK;
-      |         ^~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:302:14: Signal is not used: 'reset'
-                                                                                                     : ... note: In instance 'simu_top.soc'
-  302 | wire         reset      ;
-      |              ^~~~~
-                       ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:310:18: Signal is not used: 'UART_RTS'
-                                                                                                     : ... note: In instance 'simu_top.soc'
-  310 | wire UART_CTS,   UART_RTS;
-      |                  ^~~~~~~~
-                       ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:311:6: Signal is not used: 'UART_DTR'
-                                                                                                    : ... note: In instance 'simu_top.soc'
-  311 | wire UART_DTR,   UART_DSR;
-      |      ^~~~~~~~
-                       ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-%Warning-UNDRIVEN: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/chip/soc_demo/sim/soc_top.v:312:6: Signal is not driven: 'UART_RI'
-                                                                                                : ... note: In instance 'simu_top.soc'
-  312 | wire UART_RI,    UART_DCD;
-      |      ^~~~~~~
-                   ../testbench/simu_top.v:92:1: ... note: In file included from 'simu_top.v'
-                   ... For warning description see https://verilator.org/warn/UNDRIVEN?v=5.044
-                   ... Use "/* verilator lint_off UNDRIVEN */" and lint_on around source to disable this message.
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1005:17: Signal is not used: 'intrpt'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1005 |   input  [7:0]  intrpt,  
-      |                 ^~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1042:17: Signal is not used: 'break_point'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1042 |   input         break_point,  
-      |                 ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1043:17: Signal is not used: 'infor_flag'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1043 |   input         infor_flag,  
-      |                 ^~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1044:17: Signal is not used: 'reg_num'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1044 |   input  [4:0]  reg_num,  
-      |                 ^~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1273:15: Signal is not used: 'icache_io_cpu_if_resp_data'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1273 |   wire [31:0] icache_io_cpu_if_resp_data;  
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1274:9: Signal is not used: 'icache_io_cpu_if_resp_valid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu'
- 1274 |   wire  icache_io_cpu_if_resp_valid;  
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1315:15: Signal is not used: 'dcache_io_cpu_if_resp_data'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1315 |   wire [31:0] dcache_io_cpu_if_resp_data;  
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1316:9: Signal is not used: 'dcache_io_cpu_if_resp_valid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu'
- 1316 |   wire  dcache_io_cpu_if_resp_valid;  
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1357:15: Signal is not used: 'uncache1_io_cpu_if_resp_data'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1357 |   wire [31:0] uncache1_io_cpu_if_resp_data;  
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1358:9: Signal is not used: 'uncache1_io_cpu_if_resp_valid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu'
- 1358 |   wire  uncache1_io_cpu_if_resp_valid;  
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1399:15: Signal is not used: 'uncache2_io_cpu_if_resp_data'
-                                                                                               : ... note: In instance 'simu_top.soc.cpu'
- 1399 |   wire [31:0] uncache2_io_cpu_if_resp_data;  
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:1400:9: Signal is not used: 'uncache2_io_cpu_if_resp_valid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu'
- 1400 |   wire  uncache2_io_cpu_if_resp_valid;  
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:263:21: Signal is not used: 'spi_boot'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  263 | input               spi_boot;
-      |                     ^~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:746:11: Signal is not driven, nor used: 'BASE_ADDR'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  746 | wire [4:0]BASE_ADDR [5-1:0];
-      |           ^~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:752:11: Signal is not driven, nor used: 'rd_sel_group_0'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  752 | wire [2:0]rd_sel_group_0;
-      |           ^~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:753:11: Signal is not driven, nor used: 'rd_sel_group_1'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  753 | wire [2:0]rd_sel_group_1;
-      |           ^~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:754:11: Signal is not used: 'rd_valid_group_0'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  754 | wire [2:0]rd_valid_group_0;
-      |           ^~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:755:11: Signal is not used: 'rd_valid_group_1'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  755 | wire [2:0]rd_valid_group_1;
-      |           ^~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:926:11: Signal is not used: 'rd_data_pre_sel'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  926 | reg [2:0] rd_data_pre_sel;
-      |           ^~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi_mux_sim.v:929:11: Signal is not driven, nor used: 'rd_addr_hit_int'
-                                                                                               : ... note: In instance 'simu_top.soc.AXI_SLAVE_MUX'
-  929 | integer   rd_addr_hit_int;
-      |           ^~~~~~~~~~~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:109:11: Parameter is not used: 'L_ADDR'
-                                                                                                         : ... note: In instance 'simu_top.soc.APB_DEV'
-  109 |           L_ADDR = 64,
-      |           ^~~~~~
-                      ... For warning description see https://verilator.org/warn/UNUSEDPARAM?v=5.044
-                      ... Use "/* verilator lint_off UNUSEDPARAM */" and lint_on around source to disable this message.
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:110:11: Parameter is not used: 'L_ID'
-                                                                                                         : ... note: In instance 'simu_top.soc.APB_DEV'
-  110 |           L_ID   = 8,
-      |           ^~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:111:11: Parameter is not used: 'L_DATA'
-                                                                                                         : ... note: In instance 'simu_top.soc.APB_DEV'
-  111 |           L_DATA = 128,
-      |           ^~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:112:11: Parameter is not used: 'L_MASK'
-                                                                                                         : ... note: In instance 'simu_top.soc.APB_DEV'
-  112 |           L_MASK = 16;
-      |           ^~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:183:9: Signal is not used: 'nand_dma_ack_i'
-                                                                                                         : ... note: In instance 'simu_top.soc.APB_DEV'
-  183 | assign  nand_dma_ack_i = dma_ack_i; 
-      |         ^~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:192:25: Signal is not used: 'apb_clk_cpu'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  192 | wire                    apb_clk_cpu;
-      |                         ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:193:25: Signal is not used: 'apb_reset_n_cpu'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  193 | wire                    apb_reset_n_cpu; 
-      |                         ^~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:205:25: Signal is not driven, nor used: 'apb_clk_dma'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  205 | wire                    apb_clk_dma;
-      |                         ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:206:25: Signal is not driven, nor used: 'apb_reset_n_dma'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  206 | wire                    apb_reset_n_dma; 
-      |                         ^~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:208:21: Signal is not used: 'apb_uart0_req'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  208 | wire                apb_uart0_req;
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:213:23: Bits of signal are not used: 'apb_uart0_addr'[19:8]
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  213 | wire  [ADDR_APB -1:0] apb_uart0_addr;
-      |                       ^~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:217:21: Signal is not driven, nor used: 'apb_nand_req'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  217 | wire                apb_nand_req; 
-      |                     ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:218:21: Signal is not driven, nor used: 'apb_nand_ack'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  218 | wire                apb_nand_ack; 
-      |                     ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:219:21: Signal is not driven, nor used: 'apb_nand_rw'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  219 | wire                apb_nand_rw; 
-      |                     ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:220:21: Signal is not driven, nor used: 'apb_nand_enab'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  220 | wire                apb_nand_enab; 
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:221:21: Signal is not driven, nor used: 'apb_nand_psel'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  221 | wire                apb_nand_psel; 
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:222:23: Signal is not driven, nor used: 'apb_nand_addr'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  222 | wire  [ADDR_APB -1:0] apb_nand_addr; 
-      |                       ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:223:21: Signal is not driven, nor used: 'apb_nand_datai'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  223 | wire  [31:0]        apb_nand_datai; 
-      |                     ^~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_dev_top_no_nand.v:224:21: Signal is not driven, nor used: 'apb_nand_datao'
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV'
-  224 | wire  [31:0]        apb_nand_datao; 
-      |                     ^~~~~~~~~~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_DELAY_RAND/soc_axi_delay_rand.v:8:17: Parameter is not used: 'CPU_WIDTH'
-                                                                                                             : ... note: In instance 'simu_top.soc.delay'
-    8 |     parameter   CPU_WIDTH  = 32
-      |                 ^~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_DELAY_RAND/soc_axi_delay_rand.v:100:13: Signal is not used: 'mask_no_delay'
-                                                                                                                : ... note: In instance 'simu_top.soc.delay'
-  100 | reg         mask_no_delay   ;
-      |             ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_DELAY_RAND/soc_axi_delay_rand.v:106:13: Signal is not used: 'mask_short_delay'
-                                                                                                                : ... note: In instance 'simu_top.soc.delay'
-  106 | reg         mask_short_delay;
-      |             ^~~~~~~~~~~~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:8:17: Parameter is not used: 'CPU_WIDTH'
-                                                                                                               : ... note: In instance 'simu_top.soc.sram_axi_ram'
-    8 |     parameter   CPU_WIDTH  = 32
-      |                 ^~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:21:37: Signal is not used: 'm_arcache'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   21 |     input  wire [3              :0] m_arcache,
-      |                                     ^~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:24:37: Signal is not used: 'm_arlock'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   24 |     input  wire [1              :0] m_arlock ,
-      |                                     ^~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:25:37: Signal is not used: 'm_arprot'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   25 |     input  wire [2              :0] m_arprot ,
-      |                                     ^~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:31:37: Signal is not used: 'm_awcache'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   31 |     input  wire [3              :0] m_awcache,
-      |                                     ^~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:34:37: Signal is not used: 'm_awlock'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   34 |     input  wire [1              :0] m_awlock ,
-      |                                     ^~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:35:37: Signal is not used: 'm_awprot'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   35 |     input  wire [2              :0] m_awprot ,
-      |                                     ^~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:50:37: Signal is not used: 'm_wid'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   50 |     input  wire [3              :0] m_wid    ,
-      |                                     ^~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:58:29: Signal is not used: 'ram_r_a_data'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   58 | wire [BUS_WIDTH+13-1    :0] ram_r_a_data               ;
-      |                             ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:92:29: Signal is not used: 'ram_r_data'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   92 | wire [DATA_WIDTH-1      :0] ram_r_data                 ;
-      |                             ^~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AXI_SRAM_BRIDGE/soc_axi_sram_bridge.v:99:29: Signal is not used: 'ram_w_a_data'
-                                                                                                                 : ... note: In instance 'simu_top.soc.sram_axi_ram'
-   99 | wire [BUS_WIDTH+13-1    :0] ram_w_a_data               ;
-      |                             ^~~~~~~~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/confreg_sim.v:108:17: Parameter is not used: 'CPU_WIDTH'
-                                                                                                 : ... note: In instance 'simu_top.soc.confreg'
-  108 |     parameter   CPU_WIDTH  = 32
-      |                 ^~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/confreg_sim.v:117:34: Bits of signal are not used: 'conf_raddr'[31:29]
-                                                                                                  : ... note: In instance 'simu_top.soc.confreg'
-  117 |  input      [BUS_WIDTH-1:0]      conf_raddr,    
-      |                                  ^~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/confreg_sim.v:118:34: Bits of signal are not used: 'conf_waddr'[31:16]
-                                                                                                  : ... note: In instance 'simu_top.soc.confreg'
-  118 |  input      [BUS_WIDTH-1:0]      conf_waddr,    
-      |                                  ^~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/CONFREG/confreg_sim.v:150:17: Signal is not used: 'confreg_uart_valid'
-                                                                                                  : ... note: In instance 'simu_top.soc.confreg'
-  150 |     reg         confreg_uart_valid;
-      |                 ^~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:338:17: Signal is not used: 'io_axi_master_aw_awready'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  338 |   input         io_axi_master_aw_awready,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:344:17: Signal is not used: 'io_axi_master_w_wready'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  344 |   input         io_axi_master_w_wready,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:345:17: Signal is not used: 'io_axi_master_r_in_rid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  345 |   input  [3:0]  io_axi_master_r_in_rid,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:347:17: Signal is not used: 'io_axi_master_r_in_rresp'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  347 |   input  [1:0]  io_axi_master_r_in_rresp,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:348:17: Signal is not used: 'io_axi_master_r_in_rlast'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  348 |   input         io_axi_master_r_in_rlast,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:351:17: Signal is not used: 'io_axi_master_b_in_bid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  351 |   input  [3:0]  io_axi_master_b_in_bid,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:352:17: Signal is not used: 'io_axi_master_b_in_bresp'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  352 |   input  [1:0]  io_axi_master_b_in_bresp,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:353:17: Signal is not used: 'io_axi_master_b_in_bvalid'
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  353 |   input         io_axi_master_b_in_bvalid,  
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:376:9: Signal is not used: 'cache_tag_rd_tag_en'
-                                                                                             : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  376 |   wire  cache_tag_rd_tag_en;  
-      |         ^~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:386:9: Signal is not used: 'cache_valid_rd_valid_en'
-                                                                                             : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  386 |   wire  cache_valid_rd_valid_en;  
-      |         ^~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:396:9: Signal is not used: 'cache_data_io_cpu_if_resp_data_MPORT_en'
-                                                                                             : ... note: In instance 'simu_top.soc.cpu.uncache2'
-  396 |   wire  cache_data_io_cpu_if_resp_data_MPORT_en;  
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:610:15: Bits of signal are not used: 'difftestInstrCommit_csr_data'[63:32]
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.difftest'
-  610 |   wire [63:0] difftestInstrCommit_csr_data;  
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/myCPU/mycpu_top.v:622:14: Bits of signal are not used: 'difftestTrapEvent_code'[7:3]
-                                                                                              : ... note: In instance 'simu_top.soc.cpu.difftest'
-  622 |   wire [7:0] difftestTrapEvent_code;  
-      |              ^~~~~~~~~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:96:26: Signal is not used: 'axi_s_awid'
-                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-   96 | input  [4         -1 :0] axi_s_awid;
-      |                          ^~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:97:23: Bits of signal are not used: 'axi_s_awaddr'[31:20]
-                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-   97 | input  [32     -1 :0] axi_s_awaddr;
-      |                       ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:98:23: Signal is not used: 'axi_s_awlen'
-                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-   98 | input  [4      -1 :0] axi_s_awlen;
-      |                       ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:100:21: Signal is not used: 'axi_s_awburst'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  100 | input  [2    -1 :0] axi_s_awburst;
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:101:22: Signal is not used: 'axi_s_awlock'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  101 | input  [2     -1 :0] axi_s_awlock;
-      |                      ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:102:21: Signal is not used: 'axi_s_awcache'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  102 | input  [4    -1 :0] axi_s_awcache;
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:103:22: Signal is not used: 'axi_s_awprot'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  103 | input  [3     -1 :0] axi_s_awprot;
-      |                      ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:109:29: Signal is not used: 'axi_s_wlast'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  109 | input                       axi_s_wlast;
-      |                             ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:117:23: Bits of signal are not used: 'axi_s_araddr'[31:20]
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  117 | input  [32     -1 :0] axi_s_araddr;
-      |                       ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:118:23: Signal is not used: 'axi_s_arlen'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  118 | input  [4      -1 :0] axi_s_arlen;
-      |                       ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:120:21: Signal is not used: 'axi_s_arburst'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  120 | input  [2    -1 :0] axi_s_arburst;
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:121:22: Signal is not used: 'axi_s_arlock'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  121 | input  [2     -1 :0] axi_s_arlock;
-      |                      ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:122:21: Signal is not used: 'axi_s_arcache'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  122 | input  [4    -1 :0] axi_s_arcache;
-      |                     ^~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:123:22: Signal is not used: 'axi_s_arprot'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  123 | input  [3     -1 :0] axi_s_arprot;
-      |                      ^~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:177:10: Bits of signal are not used: 'axi_s_rstrb'[3:2]
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  177 | reg [3:0]axi_s_rstrb;
-      |          ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/AMBA/axi2apb.v:183:11: Signal is not used: 'apb_wr_size'
-                                                                                           : ... note: In instance 'simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu'
-  183 | reg [2:0] apb_wr_size;
-      |           ^~~~~~~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/apb_mux2.v:84:11: Parameter is not used: 'DATA_APB_32'
-                                                                                             : ... note: In instance 'simu_top.soc.APB_DEV.AA_apb_mux16'
-   84 |           DATA_APB_32 = 32;
-      |           ^~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_regs.v:222:13: Signal is not used: 'rstate'
-                                                                                                    : ... note: In instance 'simu_top.soc.APB_DEV.uart0.regs'
-  222 | wire [3:0]  rstate;
-      |             ^~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_receiver.v:64:14: Signal is not used: 'rbit_in'
-                                                                                                       : ... note: In instance 'simu_top.soc.APB_DEV.uart0.regs.receiver'
-   64 | reg          rbit_in;
-      |              ^~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_receiver.v:95:12: Signal is not used: 'rcounter16_eq_1'
-                                                                                                       : ... note: In instance 'simu_top.soc.APB_DEV.uart0.regs.receiver'
-   95 | wire       rcounter16_eq_1 = (rcounter16 == 4'd1);
-      |            ^~~~~~~~~~~~~~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_transmitter.v:43:14: Bits of signal are not used: 'lcr'[7]
-                                                                                                          : ... note: In instance 'simu_top.soc.APB_DEV.uart0.regs.transmitter'
-   43 | input [7:0]  lcr;
-      |              ^~~
-%Warning-UNUSEDSIGNAL: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_transmitter.v:75:6: Signal is not used: 'tf_overrun'
-                                                                                                         : ... note: In instance 'simu_top.soc.APB_DEV.uart0.regs.transmitter'
-   75 | wire tf_overrun;
-      |      ^~~~~~~~~~
-%Warning-UNUSEDPARAM: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_sync_flops.v:44:11: Parameter is not used: 'Tp'
-                                                                                                        : ... note: In instance 'simu_top.soc.APB_DEV.uart0.regs.i_uart_sync_flops'
-   44 | parameter Tp            = 1;
-      |           ^~
-%Warning-CASEX: /nfs/home/wanghao/nscscc2026ByCQUPT/chiplab/IP/APB_DEV/URT/uart_transmitter.v:242:19: Suggest casez (with ?'s) in place of casex (with X's)
-  242 |                   casex ({lcr[2],lcr[1:0]})
-      |                   ^~~~~
-                ... For warning description see https://verilator.org/warn/CASEX?v=5.044
-                ... Use "/* verilator lint_off CASEX */" and lint_on around source to disable this message.
-%Warning-SYMRSVDWORD: ../testbench/simu_top.v:69:23: Symbol matches C++ keyword: 'switch'
-   69 |     input      [7 :0] switch,       
-      |                       ^~~~~~
-                      ... For warning description see https://verilator.org/warn/SYMRSVDWORD?v=5.044
-                      ... Use "/* verilator lint_off SYMRSVDWORD */" and lint_on around source to disable this message.
-- V e r i l a t i o n   R e p o r t: Verilator 5.044 2026-01-01 rev v5.044
-- Verilator: Built from 4.841 MB sources in 33 modules, into 1.827 MB in 14 C++ files needing 0.003 MB
-- Verilator: Walltime 0.442 s (elab=0.038, cvt=0.226, bld=0.000); cpu 0.355 s on 1 threads; alloced 53.234 MB
+%Error: Exiting due to 1 error(s)

@@ -1,16 +1,28 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache.scala:
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/AXI3MasterIO#
+	 -chisel3/util/AXI3MasterIO#
+	 -AXI3MasterIO#
+	 -scala/Predef.AXI3MasterIO#
+offset: 214
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
-import config.NSModule
-import config.NSBundle
-import config.Parameters  // 导入Parameters类型
+
 // 迷你指令Cache（彻底修复初始化错误）
-class MiniICache(implicit p: Parameters) extends NSModule {
-  val io = IO(new NSBundle {
+class MiniICache extends NSModule {
+  val io = IO(new Bundle {
     // 对外AXI3 Master接口（对接转接桥）
-    val axi_master = new AXI3MasterIO
+    val axi_master = new AXI3Mas@@terIO
     // 对内CPU接口（预留扩展）
-    val cpu_if = new NSBundle {
+    val cpu_if = new Bundle {
       val req_addr  = Input(UInt(32.W))  // CPU请求地址
       val req_valid = Input(Bool())     // CPU请求有效
       val resp_data = Output(UInt(32.W))// Cache返回数据
@@ -147,3 +159,9 @@ class MiniICache(implicit p: Parameters) extends NSModule {
   // 防止信号优化
   dontTouch(io)
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

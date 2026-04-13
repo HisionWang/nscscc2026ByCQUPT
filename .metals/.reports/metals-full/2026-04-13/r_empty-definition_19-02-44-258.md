@@ -1,3 +1,31 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala:when.
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/when.
+	 -chisel3/when#
+	 -chisel3/when().
+	 -chisel3/util/when.
+	 -chisel3/util/when#
+	 -chisel3/util/when().
+	 -config/when.
+	 -config/when#
+	 -config/when().
+	 -scala/sys/process/when.
+	 -scala/sys/process/when#
+	 -scala/sys/process/when().
+	 -when.
+	 -when#
+	 -when().
+	 -scala/Predef.when.
+	 -scala/Predef.when#
+	 -scala/Predef.when().
+offset: 5719
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
@@ -89,7 +117,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   ws_valid := false.B
   rf_rdata := 0.U(32.W)
 
-  withClockAndReset(aclk, ~aresetn) {
+  withClockAndReset(aclk, aresetn) {
 
   
   // --------------------------
@@ -186,15 +214,18 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
 
   val reg = RegInit(0.U(64.W))
-  reg := reg + 1.U
   
+  // 寄存器更新逻辑
+  whe@@n(io.en) {
+    reg := io.in
+  }
 
 
 
-  val difftest = Module(new DifftestInCore)
+  val difftest = Module(new Difftest)
     // 将所有输入信号赋值为0
   
-  difftest.io.inst_valid_diff := reg(6)
+  difftest.io.inst_valid_diff := true.B
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B
@@ -210,7 +241,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.debug0_wb_rf_wen := false.B
   difftest.io.debug0_wb_rf_wnum := 0.U(5.W)
   difftest.io.debug0_wb_rf_wdata := 0.U(64.W)
-  difftest.io.debug0_wb_pc := reg
+  difftest.io.debug0_wb_pc := 0.U(64.W)
   difftest.io.debug0_wb_inst := 0.U(32.W)
   
   difftest.io.excp_flush := false.B
@@ -317,3 +348,10 @@ object myCPU_top extends App {
 
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

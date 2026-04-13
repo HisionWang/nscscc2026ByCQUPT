@@ -1,3 +1,19 @@
+error id: file://<WORKSPACE>/designCPUByChisel/build.sbt:
+file://<WORKSPACE>/designCPUByChisel/build.sbt
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -cross.
+	 -cross#
+	 -cross().
+	 -scala/Predef.cross.
+	 -scala/Predef.cross#
+	 -scala/Predef.cross().
+offset: 770
+uri: file://<WORKSPACE>/designCPUByChisel/build.sbt
+text:
+```scala
 scalacOptions ++= Seq(
   "-deprecation",
   "-feature",
@@ -20,6 +36,10 @@ val chiselVersion = "3.6.1"
 
 libraryDependencies += "edu.berkeley.cs" %% "chisel3" % chiselVersion
 libraryDependencies += "edu.berkeley.cs" %% "chiseltest" % "0.6.2"
-libraryDependencies += "edu.berkeley.cs" %% "firrtl" % "1.6.0"
-addCompilerPlugin("edu.berkeley.cs" %% "chisel3-plugin" % chiselVersion cross CrossVersion.full)
+addCompilerPlugin("edu.berkeley.cs" %% "chisel3-plugin" % chiselVersion cross@@ CrossVersion.full)
+```
 
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

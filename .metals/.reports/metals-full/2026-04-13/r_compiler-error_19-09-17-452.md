@@ -1,3 +1,16 @@
+error id: 7FB8F92DE54DE5D94621BBB186345C7D
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala
+### java.lang.IndexOutOfBoundsException: -1
+
+occurred in the presentation compiler.
+
+
+
+action parameters:
+offset: 5819
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
@@ -89,7 +102,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   ws_valid := false.B
   rf_rdata := 0.U(32.W)
 
-  withClockAndReset(aclk, ~aresetn) {
+  withClockAndReset(aclk, aresetn) {
 
   
   // --------------------------
@@ -186,15 +199,15 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
 
   val reg = RegInit(0.U(64.W))
-  reg := reg + 1.U
+  reg := reg + 1
   
 
 
 
-  val difftest = Module(new DifftestInCore)
+  val difftest = Module(new Difftest)
     // 将所有输入信号赋值为0
   
-  difftest.io.inst_valid_diff := reg(6)
+  difftest.io.inst_valid_diff := reg()@@
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B
@@ -210,7 +223,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.debug0_wb_rf_wen := false.B
   difftest.io.debug0_wb_rf_wnum := 0.U(5.W)
   difftest.io.debug0_wb_rf_wdata := 0.U(64.W)
-  difftest.io.debug0_wb_pc := reg
+  difftest.io.debug0_wb_pc := 0.U(64.W)
   difftest.io.debug0_wb_inst := 0.U(32.W)
   
   difftest.io.excp_flush := false.B
@@ -317,3 +330,39 @@ object myCPU_top extends App {
 
 }
 
+
+```
+
+
+presentation compiler configuration:
+Scala version: 3.3.7-bin-nonbootstrapped
+Classpath:
+<HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.3.7/scala3-library_3-3.3.7.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.16/scala-library-2.13.16.jar [exists ]
+Options:
+
+
+
+
+
+#### Error stacktrace:
+
+```
+scala.collection.LinearSeqOps.apply(LinearSeq.scala:129)
+	scala.collection.LinearSeqOps.apply$(LinearSeq.scala:128)
+	scala.collection.immutable.List.apply(List.scala:79)
+	dotty.tools.dotc.util.Signatures$.applyCallInfo(Signatures.scala:244)
+	dotty.tools.dotc.util.Signatures$.computeSignatureHelp(Signatures.scala:101)
+	dotty.tools.dotc.util.Signatures$.signatureHelp(Signatures.scala:88)
+	dotty.tools.pc.SignatureHelpProvider$.signatureHelp(SignatureHelpProvider.scala:46)
+	dotty.tools.pc.ScalaPresentationCompiler.signatureHelp$$anonfun$1(ScalaPresentationCompiler.scala:498)
+	scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:149)
+	scala.meta.internal.pc.CompilerAccess.withNonInterruptableCompiler$$anonfun$1(CompilerAccess.scala:133)
+	scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:210)
+	scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:153)
+	java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	java.base/java.lang.Thread.run(Thread.java:1583)
+```
+#### Short summary: 
+
+java.lang.IndexOutOfBoundsException: -1

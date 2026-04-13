@@ -1,3 +1,28 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/Bundle.scala:NSBundle.
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/Bundle.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/NSBundle.
+	 -chisel3/NSBundle#
+	 -chisel3/NSBundle().
+	 -chisel3/util/NSBundle.
+	 -chisel3/util/NSBundle#
+	 -chisel3/util/NSBundle().
+	 -config/NSBundle.
+	 -config/NSBundle#
+	 -config/NSBundle().
+	 -NSBundle.
+	 -NSBundle#
+	 -NSBundle().
+	 -scala/Predef.NSBundle.
+	 -scala/Predef.NSBundle#
+	 -scala/Predef.NSBundle().
+offset: 202
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/Bundle.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 
@@ -6,10 +31,9 @@ import chisel3.util._
 // --------------------------
 // AXI3 AR通道数据（纯数据，无方向）
 import config.NSModule
-import config.NSBundle
+import config.NSBundl@@e
 import config.Parameters  // 导入Parameters类型
-
-class AXI3ARData(implicit p: Parameters) extends NSBundle {
+class AXI3ARData extends NSBundle {
   val arid    = UInt(4.W)
   val araddr  = UInt(32.W)
   val arlen   = UInt(8.W)
@@ -22,7 +46,7 @@ class AXI3ARData(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 AW通道数据（纯数据，无方向）
-class AXI3AWData(implicit p: Parameters) extends NSBundle {
+class AXI3AWData extends NSBundle {
   val awid    = UInt(4.W)
   val awaddr  = UInt(32.W)
   val awlen   = UInt(8.W)
@@ -35,7 +59,7 @@ class AXI3AWData(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 W通道数据（纯数据，无方向）
-class AXI3WData(implicit p: Parameters) extends NSBundle {
+class AXI3WData extends NSBundle {
   val wid    = UInt(4.W)
   val wdata  = UInt(32.W)
   val wstrb  = UInt(4.W)
@@ -44,7 +68,7 @@ class AXI3WData(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 R通道数据（纯数据，无方向）
-class AXI3RData(implicit p: Parameters) extends NSBundle {
+class AXI3RData extends NSBundle {
   val rid    = UInt(4.W)
   val rdata  = UInt(32.W)
   val rresp  = UInt(2.W)
@@ -53,7 +77,7 @@ class AXI3RData(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 B通道数据（纯数据，无方向）
-class AXI3BData(implicit p: Parameters) extends NSBundle {
+class AXI3BData extends NSBundle {
   val bid    = UInt(4.W)
   val bresp  = UInt(2.W)
   val bvalid = Bool()
@@ -63,7 +87,7 @@ class AXI3BData(implicit p: Parameters) extends NSBundle {
 // IO类型：带方向标注的接口
 // --------------------------
 // AXI3 AR通道IO
-class AXI3ARChannel(implicit p: Parameters) extends NSBundle {
+class AXI3ARChannel extends NSBundle {
   // Master输出信号
   val out = Output(new AXI3ARData)
   // Master输入信号
@@ -71,7 +95,7 @@ class AXI3ARChannel(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 AW通道IO
-class AXI3AWChannel(implicit p: Parameters) extends NSBundle {
+class AXI3AWChannel extends NSBundle {
   // Master输出信号
   val out = Output(new AXI3AWData)
   // Master输入信号
@@ -79,7 +103,7 @@ class AXI3AWChannel(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 W通道IO
-class AXI3WChannel(implicit p: Parameters) extends NSBundle {
+class AXI3WChannel extends NSBundle {
   // Master输出信号
   val out = Output(new AXI3WData)
   // Master输入信号
@@ -87,7 +111,7 @@ class AXI3WChannel(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 R通道IO
-class AXI3RChannel(implicit p: Parameters) extends NSBundle {
+class AXI3RChannel extends NSBundle {
   // Master输入信号
   val in = Input(new AXI3RData)
   // Master输出信号
@@ -95,7 +119,7 @@ class AXI3RChannel(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 B通道IO
-class AXI3BChannel(implicit p: Parameters) extends NSBundle {
+class AXI3BChannel extends NSBundle {
   // Master输入信号
   val in = Input(new AXI3BData)
   // Master输出信号
@@ -103,10 +127,16 @@ class AXI3BChannel(implicit p: Parameters) extends NSBundle {
 }
 
 // AXI3 Master完整IO接口
-class AXI3MasterIO(implicit p: Parameters) extends NSBundle {
+class AXI3MasterIO extends NSBundle {
   val ar = new AXI3ARChannel
   val aw = new AXI3AWChannel
   val w  = new AXI3WChannel
   val r  = new AXI3RChannel
   val b  = new AXI3BChannel
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

@@ -1,9 +1,23 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/AXI3Crossbar.scala:config.
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/config.
+	 -chisel3/util/config.
+	 -config.
+	 -scala/Predef.config.
+offset: 117
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
 import config.NSModule
 import config.NSBundle
-import config.Parameters  // 导入Parameters类型
+import @@config.Parameters  // 导入Parameters类型
 // 4转1 AXI3转接桥（修复Mux被动类型错误）
 class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   val io = IO(new NSBundle {
@@ -140,3 +154,9 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   // 防止信号优化
   dontTouch(io)
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

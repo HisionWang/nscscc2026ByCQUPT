@@ -1,3 +1,28 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala:emitVerilog.
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/emitVerilog.
+	 -chisel3/emitVerilog#
+	 -chisel3/emitVerilog().
+	 -chisel3/util/emitVerilog.
+	 -chisel3/util/emitVerilog#
+	 -chisel3/util/emitVerilog().
+	 -config/emitVerilog.
+	 -config/emitVerilog#
+	 -config/emitVerilog().
+	 -emitVerilog.
+	 -emitVerilog#
+	 -emitVerilog().
+	 -scala/Predef.emitVerilog.
+	 -scala/Predef.emitVerilog#
+	 -scala/Predef.emitVerilog().
+offset: 8211
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/myCPU_top.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
@@ -6,7 +31,7 @@ import config.NSRawModule
 import config.NSBundle
 import config.Parameters  // 导入Parameters类型
 // 代码全是AI写的，应该一坨，但是可以转成v成功
-class Core_top(implicit p: Parameters) extends NSRawModule {
+class core_top(implicit p: Parameters) extends NSRawModule {
     // 覆盖默认的时钟和复位信号的名称
   val aclk = IO(Input(Clock()))
   val aresetn = IO(Input(Bool()))
@@ -89,7 +114,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   ws_valid := false.B
   rf_rdata := 0.U(32.W)
 
-  withClockAndReset(aclk, ~aresetn) {
+  withClockAndReset(aclk, aresetn) {
 
   
   // --------------------------
@@ -185,16 +210,13 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
 
 
-  val reg = RegInit(0.U(64.W))
-  reg := reg + 1.U
-  
 
 
 
-  val difftest = Module(new DifftestInCore)
+
+  val difftest = Module(new Difftest)
     // 将所有输入信号赋值为0
-  
-  difftest.io.inst_valid_diff := reg(6)
+  difftest.io.inst_valid_diff := true.B
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B
@@ -210,7 +232,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.debug0_wb_rf_wen := false.B
   difftest.io.debug0_wb_rf_wnum := 0.U(5.W)
   difftest.io.debug0_wb_rf_wdata := 0.U(64.W)
-  difftest.io.debug0_wb_pc := reg
+  difftest.io.debug0_wb_pc := 0.U(64.W)
   difftest.io.debug0_wb_inst := 0.U(32.W)
   
   difftest.io.excp_flush := false.B
@@ -273,47 +295,24 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   dontTouch(bresp)
   
 }
-import config._
-import java.io.File
-import scala.sys.process._
-
+import config._  // 导入config包中的所有内容
+// 生成Verilog入口
 object myCPU_top extends App {
 
-  val targetDirPath = "./../chiplab/IP/myCPU"
-  val targetDir = new File(targetDirPath)
-
-  if (targetDir.exists() && targetDir.isDirectory) {
-    def deleteRecursively(file: File): Unit = {
-      if (file.isDirectory) {
-        file.listFiles().foreach(deleteRecursively)
-      }
-      if (file.exists && !file.delete()) {
-        throw new Exception(s"Exception DeleFail: ${file.getAbsolutePath}")
-      }
-    }
-    deleteRecursively(targetDir)
-  } 
-  targetDir.mkdirs()
-
-  implicit val config: Parameters = new Parameters(Map())
-
-  emitVerilog(
-    new Core_top,
-    Array( 
-      //"--help",
-      "--target-dir", targetDirPath, 
-      //"--output-file", "mycpu_top",
-      "--emit-modules", "verilog"
-      )
+  implicit val config: Parameters = new Parameters(
+    Map()
   )
 
-  val filesToDelete = List("Core_top.anno.json", "Core_top.fir")
-  filesToDelete.foreach { filename =>
-    val fileToDelete = new File(targetDir, filename)
-    if (fileToDelete.exists()) {
-      fileToDelete.delete()
-    } 
-  }
-
+  emitVeri@@log(
+    new core_top,
+    Array("--target-dir", "./../chiplab/IP/myCPU", "--output-file", "mycpu_top")
+  )
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

@@ -152,7 +152,7 @@ class DifftestGRegState extends BlackBox with HasBlackBoxResource {
 }
 
 // 顶层模块
-class Difftest extends Module {
+class DifftestInCore extends Module {
   val io = IO(new Bundle {
     
     // 来自CPU的信号
@@ -242,40 +242,6 @@ class Difftest extends Module {
   val cycleCnt = RegInit(0.U(64.W))
   val instrCnt = RegInit(0.U(64.W))
   
-  // 时序逻辑
-
-    //when(this.reset.asBool) {
-    //  cmt_valid := false.B
-    //  cmt_cnt_inst := false.B
-    //  cmt_timer_64 := 0.U
-    //  cmt_inst_ld_en := false.B
-    //  cmt_ld_paddr := 0.U
-    //  cmt_ld_vaddr := 0.U
-    //  cmt_inst_st_en := false.B
-    //  cmt_st_paddr := 0.U
-    //  cmt_st_vaddr := 0.U
-    //  cmt_st_data := 0.U
-    //  cmt_csr_rstat_en := false.B
-    //  cmt_csr_data := 0.U
-    //  
-    //  cmt_wen := false.B
-    //  cmt_wdest := 0.U
-    //  cmt_wdata := 0.U
-    //  cmt_pc := 0.U
-    //  cmt_inst := 0.U
-    //  
-    //  cmt_excp_flush := false.B
-    //  cmt_ertn := false.B
-    //  cmt_csr_ecode := 0.U
-    //  cmt_tlbfill_en := false.B
-    //  cmt_rand_index := 0.U
-    //  
-    //  trap := false.B
-    //  trap_code := 0.U
-    //  cycleCnt := 0.U
-    //  instrCnt := 0.U
-    //}.else
-        
     when(!trap) {
       cmt_valid := io.inst_valid_diff
       cmt_cnt_inst := io.cnt_inst_diff

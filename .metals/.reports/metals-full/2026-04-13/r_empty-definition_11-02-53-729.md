@@ -1,19 +1,31 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/AXI3Crossbar.scala:
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/AXI3MasterIO#
+	 -chisel3/util/AXI3MasterIO#
+	 -AXI3MasterIO#
+	 -scala/Predef.AXI3MasterIO#
+offset: 455
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
-import config.NSModule
-import config.NSBundle
-import config.Parameters  // 导入Parameters类型
+
 // 4转1 AXI3转接桥（修复Mux被动类型错误）
-class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
-  val io = IO(new NSBundle {
+class AXI3Crossbar4to1 extends Module {
+  val io = IO(new Bundle {
     // 4个输入AXI3 Master接口（CPU内部模块）
     val in_icache   = Flipped(new AXI3MasterIO)
     val in_dcache   = Flipped(new AXI3MasterIO)
     val in_uncache1 = Flipped(new AXI3MasterIO)
     val in_uncache2 = Flipped(new AXI3MasterIO)
     // 1个输出AXI3 Master接口（对外内存）
-    val out         = new AXI3MasterIO
+    val out         = new AXI3MasterIO@@
   })
 
   // --------------------------
@@ -140,3 +152,9 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   // 防止信号优化
   dontTouch(io)
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

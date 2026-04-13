@@ -28,3 +28,13 @@ source env.sh
 ## 4月7日 王豪：
 
 把chisel中的difftest模块加上了
+
+## 4月13日 王豪：
+
+1.把香山/Rocket的传参的方法加进去了（nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/config）
+    后面参数的传递应该就很方便了，直接可以在designCPUByChisel/src/main/scala/config/NSCore.scala或者designCPUByChisel/src/main/scala/config/Arch.scala
+    中可以直接写入相关的宏定义，然后实例化带这些参数的模块，在具体的模块里就能直接用这些参数
+2.生成v时可以支持拆分成多个文件了，问了ai问了半天怎么拆分都不对，后面琢磨着直接一个help命令让他打印出直接哪些参数就行，哎哟真服了
+    然后稍微把生成verilog那边的逻辑整得稍微感觉一点了
+
+**修改之后sbt、仿真未见错误**

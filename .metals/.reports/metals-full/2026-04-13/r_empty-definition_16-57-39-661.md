@@ -1,3 +1,28 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache.scala:Parameters.
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -chisel3/Parameters.
+	 -chisel3/Parameters#
+	 -chisel3/Parameters().
+	 -chisel3/util/Parameters.
+	 -chisel3/util/Parameters#
+	 -chisel3/util/Parameters().
+	 -config/Parameters.
+	 -config/Parameters#
+	 -config/Parameters().
+	 -Parameters.
+	 -Parameters#
+	 -Parameters().
+	 -scala/Predef.Parameters.
+	 -scala/Predef.Parameters#
+	 -scala/Predef.Parameters().
+offset: 256
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
@@ -5,7 +30,9 @@ import config.NSModule
 import config.NSBundle
 import config.Parameters  // 导入Parameters类型
 // 迷你指令Cache（彻底修复初始化错误）
-class MiniICache(implicit p: Parameters) extends NSModule {
+class MiniICacheimport config.NSModule
+import config.NSBundle
+import config.Pa@@rameters  // 导入Parameters类型 extends NSModule {
   val io = IO(new NSBundle {
     // 对外AXI3 Master接口（对接转接桥）
     val axi_master = new AXI3MasterIO
@@ -147,3 +174,9 @@ class MiniICache(implicit p: Parameters) extends NSModule {
   // 防止信号优化
   dontTouch(io)
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 
