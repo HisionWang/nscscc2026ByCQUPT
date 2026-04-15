@@ -3,140 +3,240 @@ import chisel3.util._
 import chisel3.dontTouch
 import config.NSModule
 import config.NSBundle
-import config.Parameters  // 导入Parameters类型
-// 4转1 AXI3转接桥（修复Mux被动类型错误）
+import config.Parameters
+
+// 4转1 AXI3转接桥
 class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
-  val io = IO(new NSBundle {
-    // 4个输入AXI3 Master接口（CPU内部模块）
-    val in_icache   = Flipped(new AXI3MasterIO)
+  val io = IO(new Bundle {
+    // === 修复1：正确方向定义 ===
+    // 4个输入：Crossbar作为Slave，接收来自Master的请求
+    val in_icache   = Flipped(new AXI3MasterIO)  // 从设备接口
     val in_dcache   = Flipped(new AXI3MasterIO)
     val in_uncache1 = Flipped(new AXI3MasterIO)
     val in_uncache2 = Flipped(new AXI3MasterIO)
-    // 1个输出AXI3 Master接口（对外内存）
-    val out         = new AXI3MasterIO
+    
+    // 1个输出：Crossbar作为Master，向Slave发起请求
+    val out         = new AXI3MasterIO           // 主设备接口
   })
-
-  // --------------------------
-  // 1. 仲裁优先级定义
-  // --------------------------
-  val prio_icache   = 3.U(2.W)
-  val prio_dcache   = 2.U(2.W)
-  val prio_uncache1 = 1.U(2.W)
-  val prio_uncache2 = 0.U(2.W)
-
-  // 各输入端口的请求有效信号（AR/AW通道）
-  val req_valid = VecInit(
-    io.in_icache.ar.out.arvalid || io.in_icache.aw.out.awvalid,
-    io.in_dcache.ar.out.arvalid || io.in_dcache.aw.out.awvalid,
-    io.in_uncache1.ar.out.arvalid || io.in_uncache1.aw.out.awvalid,
-    io.in_uncache2.ar.out.arvalid || io.in_uncache2.aw.out.awvalid
+  
+  // === AR通道仲裁 (Round-Robin) ===
+  
+  // 提取各master的AR请求
+  val ar_icache_valid   = io.in_icache.ar.data.arvalid
+  val ar_dcache_valid   = io.in_dcache.ar.data.arvalid
+  val ar_uncache1_valid = io.in_uncache1.ar.data.arvalid
+  val ar_uncache2_valid = io.in_uncache2.ar.data.arvalid
+  
+  // AR通道仲裁器
+  val ar_arbiter = Module(new Arbiter(new AXI3ARData, 4))
+  
+  // 连接各master到仲裁器输入
+  ar_arbiter.io.in(0).valid := ar_icache_valid
+  ar_arbiter.io.in(0).bits  := io.in_icache.ar.data
+  ar_arbiter.io.in(1).valid := ar_dcache_valid
+  ar_arbiter.io.in(1).bits  := io.in_dcache.ar.data
+  ar_arbiter.io.in(2).valid := ar_uncache1_valid
+  ar_arbiter.io.in(2).bits  := io.in_uncache1.ar.data
+  ar_arbiter.io.in(3).valid := ar_uncache2_valid
+  ar_arbiter.io.in(3).bits  := io.in_uncache2.ar.data
+  
+  // 连接仲裁器输出到slave
+  io.out.ar.data <> ar_arbiter.io.out.bits
+  io.out.ar.data.arvalid := ar_arbiter.io.out.valid
+  
+  // 分发arready回各master
+  io.in_icache.ar.arready   := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 0.U
+  io.in_dcache.ar.arready   := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 1.U
+  io.in_uncache1.ar.arready := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 2.U
+  io.in_uncache2.ar.arready := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 3.U
+  
+  // === R通道路由 (基于ID) ===
+  
+  // 提取ID用于路由
+  val r_id_route = io.out.r.data.rid(3, 2)  // 使用ID的高2位路由
+  
+  // === 修复2：R通道完全初始化 ===
+  // 为所有R通道信号提供默认值
+  
+  // 1. 首先为所有R通道信号设置默认值
+  io.in_icache.r.data.rvalid   := false.B
+  io.in_dcache.r.data.rvalid   := false.B
+  io.in_uncache1.r.data.rvalid := false.B
+  io.in_uncache2.r.data.rvalid := false.B
+  
+  // 2. 设置默认的R通道数据（防止出现VOID）
+  io.in_icache.r.data.rid    := 0.U
+  io.in_dcache.r.data.rid    := 0.U
+  io.in_uncache1.r.data.rid  := 0.U
+  io.in_uncache2.r.data.rid  := 0.U
+  
+  io.in_icache.r.data.rdata  := 0.U
+  io.in_dcache.r.data.rdata  := 0.U
+  io.in_uncache1.r.data.rdata := 0.U
+  io.in_uncache2.r.data.rdata := 0.U
+  
+  io.in_icache.r.data.rresp  := 0.U
+  io.in_dcache.r.data.rresp  := 0.U
+  io.in_uncache1.r.data.rresp := 0.U
+  io.in_uncache2.r.data.rresp := 0.U
+  
+  io.in_icache.r.data.rlast  := false.B
+  io.in_dcache.r.data.rlast  := false.B
+  io.in_uncache1.r.data.rlast := false.B
+  io.in_uncache2.r.data.rlast := false.B
+  
+  // 3. 路由R通道数据
+  when(io.out.r.data.rvalid) {
+    switch(r_id_route) {
+      is(0.U) { 
+        io.in_icache.r.data := io.out.r.data
+      }
+      is(1.U) { 
+        io.in_dcache.r.data := io.out.r.data
+      }
+      is(2.U) { 
+        io.in_uncache1.r.data := io.out.r.data
+      }
+      is(3.U) { 
+        io.in_uncache2.r.data := io.out.r.data
+      }
+    }
+  }
+  
+  // 4. R通道rready汇聚
+  io.out.r.rready := Mux1H(
+    Seq(
+      (r_id_route === 0.U) -> io.in_icache.r.rready,
+      (r_id_route === 1.U) -> io.in_dcache.r.rready,
+      (r_id_route === 2.U) -> io.in_uncache1.r.rready,
+      (r_id_route === 3.U) -> io.in_uncache2.r.rready
+    )
   )
-  val req_prio = VecInit(prio_icache, prio_dcache, prio_uncache1, prio_uncache2)
-
-  // 仲裁选择：最高优先级的有效请求
-  val sel_idx = PriorityMux(req_valid.zipWithIndex.map { case (v, i) => v -> i.U })
-
-  // --------------------------
-  // 2. AR通道仲裁（拆解为被动类型后Mux）
-  // --------------------------
-  // 提取各输入端口的AR数据（被动类型）
-  val ar_data_icache   = io.in_icache.ar.out
-  val ar_data_dcache   = io.in_dcache.ar.out
-  val ar_data_uncache1 = io.in_uncache1.ar.out
-  val ar_data_uncache2 = io.in_uncache2.ar.out
-
-  // Mux被动类型数据（核心修复点）
-  val ar_sel_data = MuxLookup(sel_idx, ar_data_icache)(Seq(
-    0.U -> ar_data_icache,
-    1.U -> ar_data_dcache,
-    2.U -> ar_data_uncache1,
-    3.U -> ar_data_uncache2
-  ))
-
-  // 输出AR信号：驱动out.ar.out
-  io.out.ar.out := ar_sel_data
-  // 输入ARready：仅选中的端口接收out.ar.arready
-  io.in_icache.ar.arready   := Mux(sel_idx === 0.U, io.out.ar.arready, false.B)
-  io.in_dcache.ar.arready   := Mux(sel_idx === 1.U, io.out.ar.arready, false.B)
-  io.in_uncache1.ar.arready := Mux(sel_idx === 2.U, io.out.ar.arready, false.B)
-  io.in_uncache2.ar.arready := Mux(sel_idx === 3.U, io.out.ar.arready, false.B)
-
-  // --------------------------
-  // 3. AW通道仲裁
-  // --------------------------
-  val aw_data_icache   = io.in_icache.aw.out
-  val aw_data_dcache   = io.in_dcache.aw.out
-  val aw_data_uncache1 = io.in_uncache1.aw.out
-  val aw_data_uncache2 = io.in_uncache2.aw.out
-
-  val aw_sel_data = MuxLookup(sel_idx, aw_data_icache)(Seq(
-    0.U -> aw_data_icache,
-    1.U -> aw_data_dcache,
-    2.U -> aw_data_uncache1,
-    3.U -> aw_data_uncache2
-  ))
-
-  io.out.aw.out := aw_sel_data
-  io.in_icache.aw.awready   := Mux(sel_idx === 0.U, io.out.aw.awready, false.B)
-  io.in_dcache.aw.awready   := Mux(sel_idx === 1.U, io.out.aw.awready, false.B)
-  io.in_uncache1.aw.awready := Mux(sel_idx === 2.U, io.out.aw.awready, false.B)
-  io.in_uncache2.aw.awready := Mux(sel_idx === 3.U, io.out.aw.awready, false.B)
-
-  // --------------------------
-  // 4. W通道仲裁
-  // --------------------------
-  val w_data_icache   = io.in_icache.w.out
-  val w_data_dcache   = io.in_dcache.w.out
-  val w_data_uncache1 = io.in_uncache1.w.out
-  val w_data_uncache2 = io.in_uncache2.w.out
-
-  val w_sel_data = MuxLookup(sel_idx, w_data_icache)(Seq(
-    0.U -> w_data_icache,
-    1.U -> w_data_dcache,
-    2.U -> w_data_uncache1,
-    3.U -> w_data_uncache2
-  ))
-
-  io.out.w.out := w_sel_data
-  io.in_icache.w.wready   := Mux(sel_idx === 0.U, io.out.w.wready, false.B)
-  io.in_dcache.w.wready   := Mux(sel_idx === 1.U, io.out.w.wready, false.B)
-  io.in_uncache1.w.wready := Mux(sel_idx === 2.U, io.out.w.wready, false.B)
-  io.in_uncache2.w.wready := Mux(sel_idx === 3.U, io.out.w.wready, false.B)
-
-  // --------------------------
-  // 5. R通道仲裁
-  // --------------------------
-  // 输出Rready：由选中的输入端口rready驱动
-  io.out.r.rready := MuxLookup(sel_idx, io.in_icache.r.rready)(Seq(
-    0.U -> io.in_icache.r.rready,
-    1.U -> io.in_dcache.r.rready,
-    2.U -> io.in_uncache1.r.rready,
-    3.U -> io.in_uncache2.r.rready
-  ))
-
-  // 输入R信号：仅选中的端口接收out.r.in
-  io.in_icache.r.in := Mux(sel_idx === 0.U, io.out.r.in, 0.U.asTypeOf(new AXI3RData))
-  io.in_dcache.r.in := Mux(sel_idx === 1.U, io.out.r.in, 0.U.asTypeOf(new AXI3RData))
-  io.in_uncache1.r.in := Mux(sel_idx === 2.U, io.out.r.in, 0.U.asTypeOf(new AXI3RData))
-  io.in_uncache2.r.in := Mux(sel_idx === 3.U, io.out.r.in, 0.U.asTypeOf(new AXI3RData))
-
-  // --------------------------
-  // 6. B通道仲裁
-  // --------------------------
-  // 输出Bready：由选中的输入端口bready驱动
-  io.out.b.bready := MuxLookup(sel_idx, io.in_icache.b.bready)(Seq(
-    0.U -> io.in_icache.b.bready,
-    1.U -> io.in_dcache.b.bready,
-    2.U -> io.in_uncache1.b.bready,
-    3.U -> io.in_uncache2.b.bready
-  ))
-
-  // 输入B信号：仅选中的端口接收out.b.in
-  io.in_icache.b.in := Mux(sel_idx === 0.U, io.out.b.in, 0.U.asTypeOf(new AXI3BData))
-  io.in_dcache.b.in := Mux(sel_idx === 1.U, io.out.b.in, 0.U.asTypeOf(new AXI3BData))
-  io.in_uncache1.b.in := Mux(sel_idx === 2.U, io.out.b.in, 0.U.asTypeOf(new AXI3BData))
-  io.in_uncache2.b.in := Mux(sel_idx === 3.U, io.out.b.in, 0.U.asTypeOf(new AXI3BData))
-
-  // 防止信号优化
-  dontTouch(io)
+  
+  // === AW通道仲裁 ===
+  
+  val aw_arbiter = Module(new Arbiter(new AXI3AWData, 4))
+  
+  // 连接各master到仲裁器输入
+  aw_arbiter.io.in(0).valid := io.in_icache.aw.data.awvalid
+  aw_arbiter.io.in(0).bits  := io.in_icache.aw.data
+  aw_arbiter.io.in(1).valid := io.in_dcache.aw.data.awvalid
+  aw_arbiter.io.in(1).bits  := io.in_dcache.aw.data
+  aw_arbiter.io.in(2).valid := io.in_uncache1.aw.data.awvalid
+  aw_arbiter.io.in(2).bits  := io.in_uncache1.aw.data
+  aw_arbiter.io.in(3).valid := io.in_uncache2.aw.data.awvalid
+  aw_arbiter.io.in(3).bits  := io.in_uncache2.aw.data
+  
+  // 连接仲裁器输出到slave
+  io.out.aw.data <> aw_arbiter.io.out.bits
+  io.out.aw.data.awvalid := aw_arbiter.io.out.valid
+  
+  // 分发awready
+  io.in_icache.aw.awready   := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 0.U
+  io.in_dcache.aw.awready   := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 1.U
+  io.in_uncache1.aw.awready := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 2.U
+  io.in_uncache2.aw.awready := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 3.U
+  
+  // === W通道跟随AW ===
+  
+  // 记录当前AW的master，用于W通道路由
+  val aw_master_valid = RegInit(false.B)
+  val aw_master_idx = Reg(UInt(2.W))
+  
+  when(aw_arbiter.io.out.fire()) {
+    aw_master_valid := true.B
+    aw_master_idx := aw_arbiter.io.chosen
+  }.elsewhen(io.out.w.data.wlast && io.out.w.data.wvalid && io.out.w.wready) {
+    aw_master_valid := false.B
+  }
+  
+  // === 修复3：W通道完全初始化 ===
+  // 为W通道设置默认值
+  
+  // 1. 设置默认的W通道输出
+  io.out.w.data.wid    := 0.U
+  io.out.w.data.wdata  := 0.U
+  io.out.w.data.wstrb  := 0.U
+  io.out.w.data.wlast  := false.B
+  io.out.w.data.wvalid := false.B
+  
+  // 2. 设置默认的wready
+  io.in_icache.w.wready   := false.B
+  io.in_dcache.w.wready   := false.B
+  io.in_uncache1.w.wready := false.B
+  io.in_uncache2.w.wready := false.B
+  
+  // 3. 路由W通道数据
+  when(aw_master_valid) {
+    switch(aw_master_idx) {
+      is(0.U) {
+        io.out.w.data := io.in_icache.w.data
+        io.in_icache.w.wready := io.out.w.wready
+      }
+      is(1.U) {
+        io.out.w.data := io.in_dcache.w.data
+        io.in_dcache.w.wready := io.out.w.wready
+      }
+      is(2.U) {
+        io.out.w.data := io.in_uncache1.w.data
+        io.in_uncache1.w.wready := io.out.w.wready
+      }
+      is(3.U) {
+        io.out.w.data := io.in_uncache2.w.data
+        io.in_uncache2.w.wready := io.out.w.wready
+      }
+    }
+  }
+  
+  // === B通道路由 (基于ID) ===
+  
+  val b_id_route = io.out.b.data.bid(3, 2)
+  
+  // === 修复4：B通道完全初始化 ===
+  // 为所有B通道信号提供默认值
+  
+  // 1. 首先为所有B通道信号设置默认值
+  io.in_icache.b.data.bvalid   := false.B
+  io.in_dcache.b.data.bvalid   := false.B
+  io.in_uncache1.b.data.bvalid := false.B
+  io.in_uncache2.b.data.bvalid := false.B
+  
+  // 2. 设置默认的B通道数据
+  io.in_icache.b.data.bid    := 0.U
+  io.in_dcache.b.data.bid    := 0.U
+  io.in_uncache1.b.data.bid  := 0.U
+  io.in_uncache2.b.data.bid  := 0.U
+  
+  io.in_icache.b.data.bresp  := 0.U
+  io.in_dcache.b.data.bresp  := 0.U
+  io.in_uncache1.b.data.bresp := 0.U
+  io.in_uncache2.b.data.bresp := 0.U
+  
+  // 3. 路由B通道数据
+  when(io.out.b.data.bvalid) {
+    switch(b_id_route) {
+      is(0.U) { 
+        io.in_icache.b.data := io.out.b.data
+      }
+      is(1.U) { 
+        io.in_dcache.b.data := io.out.b.data
+      }
+      is(2.U) { 
+        io.in_uncache1.b.data := io.out.b.data
+      }
+      is(3.U) { 
+        io.in_uncache2.b.data := io.out.b.data
+      }
+    }
+  }
+  
+  // 4. B通道bready汇聚
+  io.out.b.bready := Mux1H(
+    Seq(
+      (b_id_route === 0.U) -> io.in_icache.b.bready,
+      (b_id_route === 1.U) -> io.in_dcache.b.bready,
+      (b_id_route === 2.U) -> io.in_uncache1.b.bready,
+      (b_id_route === 3.U) -> io.in_uncache2.b.bready
+    )
+  )
 }

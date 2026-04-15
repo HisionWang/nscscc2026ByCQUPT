@@ -95,23 +95,13 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   // --------------------------
   // 模块实例化
   // --------------------------
-  val axi_crossbar = Module(new AXI3Crossbar4to1) //AI写的，暂未检查正误
 
-  val icache       = Module(new MiniICache)
 
   // 预留扩展接口
   // 重点了解一下关于之里黑盒
-  val dcache       = Module(new MiniICache)//Module(new dcache_BlackBox)//还是黑盒 后续 实现
-  val uncache1     = Module(new MiniICache)//Module(new uncache1_BlackBox)//还是黑盒 后续 实现
-  val uncache2     = Module(new MiniICache)//Module(new uncache2_BlackBox)//还是黑盒 后续 实现
-
-  // --------------------------
-  // 0. 与CPU最核心的接口，后续再实现优化
-  // --------------------------
-
-  icache.io.cpu_if.req_addr  := 0.U
-  icache.io.cpu_if.req_valid := false.B
-
+  val dcache       = Module(new dcache_BlackBox)
+  val uncache1     = Module(new uncache1_BlackBox)
+  val uncache2     = Module(new uncache2_BlackBox)
   dcache.io.cpu_if.req_addr  := 0.U
   dcache.io.cpu_if.req_valid := false.B
 
@@ -120,6 +110,34 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
   uncache2.io.cpu_if.req_addr  := 0.U
   uncache2.io.cpu_if.req_valid := false.B
+
+
+  val axi_crossbar = Module(new AXI3Crossbar4to1)
+  val icache       = Module(new ICache)
+  val fetch_unit = Module(new FetchUnit)
+
+  // 连接前端和ICache
+  fetch_unit.io.icache_req.addr  <> icache.io.cpu_if.req_addr
+  fetch_unit.io.icache_req.valid <> icache.io.cpu_if.req_valid
+  fetch_unit.io.icache_req.kill  <> icache.io.cpu_if.req_kill
+  // --------------------------
+  // 0. 与CPU最核心的接口，后续再实现优化
+  // --------------------------
+  icache.io.cpu_if.resp_instrs <> fetch_unit.io.icache_resp.instrs
+  icache.io.cpu_if.resp_addr   <> fetch_unit.io.icache_resp.addr
+  icache.io.cpu_if.resp_valid  <> fetch_unit.io.icache_resp.valid
+  icache.io.cpu_if.resp_miss   <> fetch_unit.io.icache_resp.miss
+
+  fetch_unit.io.start_pc := 0x1C000000.U
+  fetch_unit.io.start_valid := true.B
+  fetch_unit.io.flush := false.B
+  fetch_unit.io.stall := false.B
+
+  // 连接ICache控制信号
+  icache.io.flush := false.B
+  icache.io.stall := false.B
+
+
 
 
   // --------------------------
@@ -133,15 +151,15 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
   // 2. 转接桥输出 → 顶层AXI3接口
   // AR通道
-  arid    := axi_crossbar.io.out.ar.out.arid
-  araddr  := axi_crossbar.io.out.ar.out.araddr
-  arlen   := axi_crossbar.io.out.ar.out.arlen
-  arsize  := axi_crossbar.io.out.ar.out.arsize
-  arburst := axi_crossbar.io.out.ar.out.arburst
-  arlock  := axi_crossbar.io.out.ar.out.arlock
-  arcache := axi_crossbar.io.out.ar.out.arcache
-  arprot  := axi_crossbar.io.out.ar.out.arprot
-  arvalid := axi_crossbar.io.out.ar.out.arvalid
+  arid    := axi_crossbar.io.out.ar.data.arid
+  araddr  := axi_crossbar.io.out.ar.data.araddr
+  arlen   := axi_crossbar.io.out.ar.data.arlen
+  arsize  := axi_crossbar.io.out.ar.data.arsize
+  arburst := axi_crossbar.io.out.ar.data.arburst
+  arlock  := axi_crossbar.io.out.ar.data.arlock
+  arcache := axi_crossbar.io.out.ar.data.arcache
+  arprot  := axi_crossbar.io.out.ar.data.arprot
+  arvalid := axi_crossbar.io.out.ar.data.arvalid
   axi_crossbar.io.out.ar.arready := arready
 
   // R通道
@@ -151,27 +169,27 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   r_data.rresp  := rresp
   r_data.rlast  := rlast
   r_data.rvalid := rvalid
-  axi_crossbar.io.out.r.in := r_data
+  axi_crossbar.io.out.r.data := r_data
   rready := axi_crossbar.io.out.r.rready
 
   // AW通道
-  awid    := axi_crossbar.io.out.aw.out.awid
-  awaddr  := axi_crossbar.io.out.aw.out.awaddr
-  awlen   := axi_crossbar.io.out.aw.out.awlen
-  awsize  := axi_crossbar.io.out.aw.out.awsize
-  awburst := axi_crossbar.io.out.aw.out.awburst
-  awlock  := axi_crossbar.io.out.aw.out.awlock
-  awcache := axi_crossbar.io.out.aw.out.awcache
-  awprot  := axi_crossbar.io.out.aw.out.awprot
-  awvalid := axi_crossbar.io.out.aw.out.awvalid
+  awid    := axi_crossbar.io.out.aw.data.awid
+  awaddr  := axi_crossbar.io.out.aw.data.awaddr
+  awlen   := axi_crossbar.io.out.aw.data.awlen
+  awsize  := axi_crossbar.io.out.aw.data.awsize
+  awburst := axi_crossbar.io.out.aw.data.awburst
+  awlock  := axi_crossbar.io.out.aw.data.awlock
+  awcache := axi_crossbar.io.out.aw.data.awcache
+  awprot  := axi_crossbar.io.out.aw.data.awprot
+  awvalid := axi_crossbar.io.out.aw.data.awvalid
   axi_crossbar.io.out.aw.awready := awready
 
   // W通道
-  wid     := axi_crossbar.io.out.w.out.wid
-  wdata   := axi_crossbar.io.out.w.out.wdata
-  wstrb   := axi_crossbar.io.out.w.out.wstrb
-  wlast   := axi_crossbar.io.out.w.out.wlast
-  wvalid  := axi_crossbar.io.out.w.out.wvalid
+  wid     := axi_crossbar.io.out.w.data.wid
+  wdata   := axi_crossbar.io.out.w.data.wdata
+  wstrb   := axi_crossbar.io.out.w.data.wstrb
+  wlast   := axi_crossbar.io.out.w.data.wlast
+  wvalid  := axi_crossbar.io.out.w.data.wvalid
   axi_crossbar.io.out.w.wready := wready
 
   // B通道
@@ -179,7 +197,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   b_data.bid    := bid
   b_data.bresp  := bresp
   b_data.bvalid := bvalid
-  axi_crossbar.io.out.b.in := b_data
+  axi_crossbar.io.out.b.data := b_data
   bready := axi_crossbar.io.out.b.bready
 
 
@@ -194,7 +212,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   val difftest = Module(new DifftestInCore)
     // 将所有输入信号赋值为0
   
-  difftest.io.inst_valid_diff := reg(6)
+  difftest.io.inst_valid_diff := reg(4)
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B
