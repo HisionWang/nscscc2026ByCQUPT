@@ -1,7 +1,7 @@
-[0000000012ns] mycpu : pc = 00000000, inst = 00000000, reg = 00, val = 00000000
+[0000001624ns] mycpu : pc = 00000324, inst = 1c000000, reg = 00, val = 00000000
    crmd different at pc = 0x1c000000, right= 0x00000008, wrong = 0x00000000
    asid different at pc = 0x1c000000, right= 0x000a0000, wrong = 0x00000000
-this_pc different at pc = 0x1c000000, right= 0x1c000000, wrong = 0x00000000
+this_pc different at pc = 0x1c000000, right= 0x1c000000, wrong = 0x00000324
 
 ==============  DUT Regs  ==============
 r0(r 0): 0x00000000 ra(r 1): 0x00000000 tp(r 2): 0x00000000 sp(r 3): 0x00000000 
@@ -12,7 +12,7 @@ t4(r16): 0x00000000 t5(r17): 0x00000000 t6(r18): 0x00000000 t7(r19): 0x00000000
 t8(r20): 0x00000000  x(r21): 0x00000000 fp(r22): 0x00000000 s0(r23): 0x00000000 
 s1(r24): 0x00000000 s2(r25): 0x00000000 s3(r26): 0x00000000 s4(r27): 0x00000000 
 s5(r28): 0x00000000 s6(r29): 0x00000000 s7(r30): 0x00000000 s8(r31): 0x00000000 
-pc: 0x00000000
+pc: 0x00000324
 CRMD: 0x00000000,    PRMD: 0x00000000,   EUEN: 0x00000000
 ECFG: 0x00000000,   ESTAT: 0x00000000,    ERA: 0x00000000
 BADV: 0x00000000,  EENTRY: 0x00000000, LLBCTL: 0x00000000

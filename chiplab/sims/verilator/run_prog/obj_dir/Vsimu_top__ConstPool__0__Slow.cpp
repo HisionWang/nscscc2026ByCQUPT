@@ -3,6 +3,13 @@
 
 #include "verilated.h"
 
+extern const VlWide<16>/*511:0*/ Vsimu_top__ConstPool__CONST_h93e1b771_0 = VlWide<16>{{
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000
+}};
+
 extern const VlUnpacked<CData/*0:0*/, 2048> Vsimu_top__ConstPool__TABLE_h0409fe98_0 = {{
     0U, 0U, 1U, 0U, 0U, 0U, 0U, 0U,
     1U, 0U, 1U, 0U, 1U, 0U, 0U, 0U,

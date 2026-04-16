@@ -28,8 +28,11 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   val ar_uncache2_valid = io.in_uncache2.ar.data.arvalid
   
   // AR通道仲裁器
+  //对于地址的读请求，会有四个输入端口
+  //每个端口都是一组AXI3ARData，请求传过去地址的数据包
   val ar_arbiter = Module(new Arbiter(new AXI3ARData, 4))
   
+  //正向的Valid数据请求信号
   // 连接各master到仲裁器输入
   ar_arbiter.io.in(0).valid := ar_icache_valid
   ar_arbiter.io.in(0).bits  := io.in_icache.ar.data
@@ -42,13 +45,17 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   
   // 连接仲裁器输出到slave
   io.out.ar.data <> ar_arbiter.io.out.bits
+  //真正的valid还得赋值到这个valid身上
   io.out.ar.data.arvalid := ar_arbiter.io.out.valid
-  
+
+  // 反向的Ready回馈信号
+  // 能让arbiter发出数据的条件:
+  ar_arbiter.io.out.ready := io.out.ar.arready  // 第31行附近
   // 分发arready回各master
-  io.in_icache.ar.arready   := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 0.U
-  io.in_dcache.ar.arready   := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 1.U
-  io.in_uncache1.ar.arready := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 2.U
-  io.in_uncache2.ar.arready := ar_arbiter.io.out.ready && ar_arbiter.io.chosen === 3.U
+  io.in_icache.ar.arready   := ar_arbiter.io.in(0).ready //&& ar_arbiter.io.chosen === 0.U
+  io.in_dcache.ar.arready   := ar_arbiter.io.in(1).ready //&& ar_arbiter.io.chosen === 1.U
+  io.in_uncache1.ar.arready := ar_arbiter.io.in(2).ready //&& ar_arbiter.io.chosen === 2.U
+  io.in_uncache2.ar.arready := ar_arbiter.io.in(3).ready //&& ar_arbiter.io.chosen === 3.U
   
   // === R通道路由 (基于ID) ===
   
@@ -117,6 +124,7 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   
   val aw_arbiter = Module(new Arbiter(new AXI3AWData, 4))
   
+  // 正向的Valid数据请求信号
   // 连接各master到仲裁器输入
   aw_arbiter.io.in(0).valid := io.in_icache.aw.data.awvalid
   aw_arbiter.io.in(0).bits  := io.in_icache.aw.data
@@ -130,12 +138,14 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   // 连接仲裁器输出到slave
   io.out.aw.data <> aw_arbiter.io.out.bits
   io.out.aw.data.awvalid := aw_arbiter.io.out.valid
-  
+
+  // 反向的Ready回馈信号
+  aw_arbiter.io.out.ready := io.out.aw.awready
   // 分发awready
-  io.in_icache.aw.awready   := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 0.U
-  io.in_dcache.aw.awready   := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 1.U
-  io.in_uncache1.aw.awready := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 2.U
-  io.in_uncache2.aw.awready := aw_arbiter.io.out.ready && aw_arbiter.io.chosen === 3.U
+  io.in_icache.aw.awready   := aw_arbiter.io.in(0).ready //&& aw_arbiter.io.chosen === 0.U
+  io.in_dcache.aw.awready   := aw_arbiter.io.in(1).ready //&& aw_arbiter.io.chosen === 1.U
+  io.in_uncache1.aw.awready := aw_arbiter.io.in(2).ready //&& aw_arbiter.io.chosen === 2.U
+  io.in_uncache2.aw.awready := aw_arbiter.io.in(3).ready //&& aw_arbiter.io.chosen === 3.U
   
   // === W通道跟随AW ===
   

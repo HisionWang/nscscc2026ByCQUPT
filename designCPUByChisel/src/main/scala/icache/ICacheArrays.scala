@@ -203,7 +203,7 @@ class ICacheReplacer(implicit p: Parameters) extends NSModule {
   // === PLRU更新逻辑 ===
   def updatePLRU(oldPLRU: UInt, way: UInt): UInt = {
     val newPLRU = Wire(UInt(3.W))
-    
+    newPLRU := 0.U
     // 将 way 转换为 UInt(2.W) 进行匹配
     switch(way) {
       is(0.U) {

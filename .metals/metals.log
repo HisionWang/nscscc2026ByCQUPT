@@ -14353,3 +14353,859 @@ WARNING: Unmatched cancel notification for request id 42225
 2026.04.15 18:07:34 INFO  time: compiled designcpubychisel in 4.25s
 2026.04.15 18:07:34 INFO  compiling designcpubychisel (1 scala source)
 2026.04.15 18:07:36 INFO  time: compiled designcpubychisel in 2.02s
+2026.04.15 18:36:41 INFO  Shutting down server
+2026.04.15 18:36:41 INFO  Memory monitor stopped
+2026.04.15 18:36:41 INFO  shutting down Metals
+2026.04.15 18:36:41 INFO  Shut down connection with build server.
+2026.04.15 18:36:41 INFO  Exiting server
+2026.04.16 16:05:54 INFO  Started: Metals version 1.6.7 in folders '/nfs/home/wanghao/nscscc2026ByCQUPT' for client Visual Studio Code 1.111.0.
+2026.04.16 16:05:54 INFO  Memory monitor started
+2026.04.16 16:05:54 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.16 16:05:55 INFO  no build target found for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.04.16 16:05:55 INFO  Attempting to connect to the build server...
+2026.04.16 16:05:55 INFO  Found a Bloop server running
+2026.04.16 16:05:55 INFO  tracing is disabled for protocol BSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /nfs/home/wanghao/nscscc2026ByCQUPT/.metals/bsp.trace.json or /nfs/home/wanghao/.cache/metals/bsp.trace.json
+2026.04.16 16:05:55 INFO  time: Connected to build server in 0.24s
+2026.04.16 16:05:55 INFO  Connected to Build server: Bloop v2.0.19
+2026.04.16 16:05:56 INFO  time: Imported build in 0.3s
+2026.04.16 16:05:56 WARN  2.13.14 is no longer supported in the current Metals versions, using the last known supported version 1.6.3
+2026.04.16 16:05:59 WARN  Could not find java sources in /usr/lib/jvm/src.zip, /usr/lib/jvm/lib/src.zip, /usr/lib/jvm/java-21-openjdk-amd64/src.zip, /usr/lib/jvm/java-21-openjdk-amd64/lib/src.zip. Java symbols will not be available.
+2026.04.16 16:05:59 INFO  time: indexed workspace in 3.15s
+Apr 16, 2026 4:06:07 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Apr 16, 2026 4:06:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 17
+Apr 16, 2026 4:07:11 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 44
+Apr 16, 2026 4:07:11 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 47
+2026.04.16 16:08:53 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala]
+2026.04.16 16:08:53 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-08-53-135.md")
+2026.04.16 16:08:53 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala]
+2026.04.16 16:08:53 INFO  Could not find any locations for Some(SymbolOccurrence(Some(Range(30,6,30,16)),_empty_/AXI3Crossbar4to1#ar_arbiter.,DEFINITION)), printing index state (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-references_(designcpubychisel)_16-08-53-170.md")
+2026.04.16 16:08:54 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala]
+2026.04.16 16:08:54 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-08-54-664.md")
+2026.04.16 16:09:43 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:09:49 INFO  time: compiled designcpubychisel in 5.86s
+2026.04.16 16:09:49 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:09:51 INFO  time: compiled designcpubychisel in 1.95s
+2026.04.16 16:09:55 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:09:57 INFO  time: compiled designcpubychisel in 1.59s
+2026.04.16 16:10:01 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:02 INFO  time: compiled designcpubychisel in 1.37s
+2026.04.16 16:10:04 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:10:04 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:06 INFO  time: compiled designcpubychisel in 1.39s
+Apr 16, 2026 4:10:06 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 16:10:11 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:12 INFO  time: compiled designcpubychisel in 1.3s
+2026.04.16 16:10:14 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:16 INFO  time: compiled designcpubychisel in 2.05s
+2026.04.16 16:10:19 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:20 INFO  time: compiled designcpubychisel in 1.36s
+2026.04.16 16:10:21 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:22 INFO  time: compiled designcpubychisel in 1.31s
+2026.04.16 16:10:32 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:34 INFO  time: compiled designcpubychisel in 1.2s
+2026.04.16 16:10:40 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:10:41 INFO  time: compiled designcpubychisel in 1.17s
+2026.04.16 16:16:03 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:16:09 INFO  time: compiled designcpubychisel in 6.03s
+2026.04.16 16:16:09 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:16:12 INFO  time: compiled designcpubychisel in 2.64s
+2026.04.16 16:16:17 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:16:18 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:16:19 INFO  time: compiled designcpubychisel in 1.42s
+2026.04.16 16:16:21 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:16:22 INFO  time: compiled designcpubychisel in 1.54s
+2026.04.16 16:20:30 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:20:36 INFO  time: compiled designcpubychisel in 6.07s
+2026.04.16 16:20:36 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:20:36 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:20:39 INFO  time: compiled designcpubychisel in 2.84s
+2026.04.16 16:29:43 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:29:47 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:29:47 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:29:47 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:29:49 INFO  time: compiled designcpubychisel in 6.26s
+2026.04.16 16:29:51 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:29:52 INFO  time: compiled designcpubychisel in 1.83s
+2026.04.16 16:30:00 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:01 INFO  time: compiled designcpubychisel in 1.42s
+2026.04.16 16:30:01 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:01 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:30:02 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:30:03 INFO  time: compiled designcpubychisel in 1.35s
+Apr 16, 2026 4:30:03 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 16:30:08 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:09 INFO  time: compiled designcpubychisel in 1.37s
+2026.04.16 16:30:09 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:10 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:30:10 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:30:11 INFO  time: compiled designcpubychisel in 1.25s
+2026.04.16 16:30:11 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:13 INFO  time: compiled designcpubychisel in 1.27s
+2026.04.16 16:30:15 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:16 INFO  time: compiled designcpubychisel in 1.21s
+2026.04.16 16:30:16 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:18 INFO  time: compiled designcpubychisel in 1.23s
+2026.04.16 16:30:18 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:19 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:30:20 INFO  time: compiled designcpubychisel in 1.21s
+2026.04.16 16:30:32 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:33 INFO  time: compiled designcpubychisel in 1.36s
+2026.04.16 16:30:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:38 INFO  time: compiled designcpubychisel in 1.73s
+2026.04.16 16:30:44 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:46 INFO  time: compiled designcpubychisel in 1.52s
+2026.04.16 16:30:46 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:47 INFO  time: compiled designcpubychisel in 1.11s
+2026.04.16 16:30:48 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:49 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:30:50 INFO  time: compiled designcpubychisel in 1.22s
+2026.04.16 16:30:56 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:30:58 INFO  time: compiled designcpubychisel in 1.84s
+2026.04.16 16:31:00 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:31:02 INFO  time: compiled designcpubychisel in 1.65s
+Exception in thread "pool-5-thread-1" java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$onCompilerJobQueue$1(CompilerAccess.scala:207)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026.04.16 16:32:34 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala]
+2026.04.16 16:32:34 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-32-34-894.md")
+2026.04.16 16:32:36 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:32:36 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-32-34-894.md")
+2026.04.16 16:32:38 INFO  time: compiled designcpubychisel in 2.78s
+2026.04.16 16:32:47 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:32:47 INFO  time: compiled designcpubychisel in 0.68s
+2026.04.16 16:32:55 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:32:59 INFO  time: compiled designcpubychisel in 3.5s
+2026.04.16 16:33:02 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:33:03 INFO  time: compiled designcpubychisel in 1.62s
+2026.04.16 16:34:05 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:12 INFO  time: compiled designcpubychisel in 6.44s
+2026.04.16 16:34:12 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:12 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:13 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:14 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:14 INFO  time: compiled designcpubychisel in 2.28s
+2026.04.16 16:34:19 INFO  compiling designcpubychisel (1 scala source)
+Apr 16, 2026 4:34:20 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3083
+2026.04.16 16:34:20 INFO  time: compiled designcpubychisel in 1.53s
+2026.04.16 16:34:23 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:25 INFO  time: compiled designcpubychisel in 1.52s
+2026.04.16 16:34:32 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:34 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:34 INFO  time: compiled designcpubychisel in 1.27s
+2026.04.16 16:34:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:38 INFO  time: compiled designcpubychisel in 1.25s
+2026.04.16 16:34:38 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:38 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:40 INFO  time: compiled designcpubychisel in 1.41s
+2026.04.16 16:34:42 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:43 INFO  time: compiled designcpubychisel in 1.18s
+2026.04.16 16:34:50 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:52 INFO  time: compiled designcpubychisel in 1.24s
+Apr 16, 2026 4:34:52 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 16:34:52 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:52 INFO  time: compiled designcpubychisel in 0.25s
+Apr 16, 2026 4:34:52 PM scala.meta.internal.pc.MetalsGlobal inverseSemanticdbSymbols
+SEVERE: invalid SemanticDB symbol: _empty_/AXI3Crossbar4to1#aw_arbiter.
+illegal cyclic reference involving class AXI3Crossbar4to1
+2026.04.16 16:34:53 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:53 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:53 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:53 INFO  time: compiled designcpubychisel in 0.41s
+2026.04.16 16:34:53 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:34:54 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:34:55 INFO  time: compiled designcpubychisel in 1.16s
+2026.04.16 16:35:02 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:03 INFO  time: compiled designcpubychisel in 1.47s
+2026.04.16 16:35:05 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:05 INFO  time: compiled designcpubychisel in 0.28s
+2026.04.16 16:35:06 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:07 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:07 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:09 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:10 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:11 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:11 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:12 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:12 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:13 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:16 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:17 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:18 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:18 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:19 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:19 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:20 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:21 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:22 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:23 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:24 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:24 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:25 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/AXI3Crossbar.scala
+2026.04.16 16:35:25 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:26 INFO  time: compiled designcpubychisel in 1.17s
+2026.04.16 16:35:36 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-32-34-894.md")
+2026.04.16 16:35:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:37 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-32-34-894.md")
+2026.04.16 16:35:37 INFO  time: compiled designcpubychisel in 0.32s
+2026.04.16 16:35:42 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:42 INFO  time: compiled designcpubychisel in 0.25s
+2026.04.16 16:35:46 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:46 INFO  time: compiled designcpubychisel in 0.27s
+2026.04.16 16:35:53 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:35:57 INFO  time: compiled designcpubychisel in 3.92s
+2026.04.16 16:37:02 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:37:09 INFO  time: compiled designcpubychisel in 7.05s
+2026.04.16 16:42:32 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:42:37 INFO  time: compiled designcpubychisel in 4.52s
+2026.04.16 16:42:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:42:42 INFO  time: compiled designcpubychisel in 4.96s
+2026.04.16 16:42:48 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:42:50 INFO  time: compiled designcpubychisel in 1.63s
+Apr 16, 2026 4:43:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4283
+2026.04.16 16:45:07 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:45:10 INFO  time: compiled designcpubychisel in 3.02s
+2026.04.16 16:45:18 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:45:23 INFO  time: compiled designcpubychisel in 4.98s
+2026.04.16 16:47:19 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:27 INFO  time: compiled designcpubychisel in 8.01s
+2026.04.16 16:47:28 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:27 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:27 INFO  time: compiled designcpubychisel in 0.65s
+2026.04.16 16:47:29 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:29 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:30 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:32 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:32 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:33 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:34 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:34 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:34 INFO  time: compiled designcpubychisel in 0.36s
+2026.04.16 16:47:35 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:36 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:37 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:37 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:38 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:38 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:38 INFO  time: compiled designcpubychisel in 0.31s
+2026.04.16 16:47:39 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:40 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:40 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:42 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:42 INFO  time: compiled designcpubychisel in 0.31s
+2026.04.16 16:47:43 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:46 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:47:46 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:48 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+Apr 16, 2026 4:47:50 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 16:47:50 INFO  time: compiled designcpubychisel in 3.87s
+2026.04.16 16:47:50 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:47:52 INFO  time: compiled designcpubychisel in 1.67s
+2026.04.16 16:48:00 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:48:02 INFO  time: compiled designcpubychisel in 1.83s
+2026.04.16 16:48:05 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:48:06 INFO  time: compiled designcpubychisel in 1.42s
+2026.04.16 16:48:08 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:48:08 INFO  time: compiled designcpubychisel in 0.56s
+2026.04.16 16:48:52 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:48:52 INFO  time: compiled designcpubychisel in 0.41s
+2026.04.16 16:49:02 INFO  compiling designcpubychisel (2 scala sources)
+2026.04.16 16:49:02 INFO  time: compiled designcpubychisel in 0.3s
+2026.04.16 16:49:05 INFO  compiling designcpubychisel (2 scala sources)
+2026.04.16 16:49:05 INFO  time: compiled designcpubychisel in 0.69s
+Exception in thread "pool-5-thread-2" java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$onCompilerJobQueue$1(CompilerAccess.scala:207)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026.04.16 16:49:44 INFO  compiling designcpubychisel (2 scala sources)
+2026.04.16 16:49:44 INFO  time: compiled designcpubychisel in 0.48s
+2026.04.16 16:49:48 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 16:49:48 INFO  empty definition using pc, found symbol in pc: local0 (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-49-48-509.md")
+2026.04.16 16:49:48 INFO  compiling designcpubychisel (2 scala sources)
+2026.04.16 16:49:52 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 16:49:52 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-49-52-341.md")
+2026.04.16 16:49:54 INFO  time: compiled designcpubychisel in 5.5s
+Apr 16, 2026 4:49:54 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 16:49:54 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:49:54 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:49:54 INFO  time: compiled designcpubychisel in 0.32s
+2026.04.16 16:49:55 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:49:55 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:49:57 INFO  time: compiled designcpubychisel in 1.76s
+2026.04.16 16:49:59 INFO  compiling designcpubychisel (1 scala source)
+Apr 16, 2026 4:50:01 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 16:50:01 INFO  time: compiled designcpubychisel in 1.55s
+2026.04.16 16:50:03 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:04 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 16:50:05 INFO  time: compiled designcpubychisel in 1.71s
+2026.04.16 16:50:05 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:05 INFO  time: compiled designcpubychisel in 0.36s
+2026.04.16 16:50:06 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:08 INFO  time: compiled designcpubychisel in 1.56s
+2026.04.16 16:50:08 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:10 INFO  time: compiled designcpubychisel in 1.96s
+2026.04.16 16:50:10 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:12 INFO  time: compiled designcpubychisel in 1.59s
+2026.04.16 16:50:15 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:15 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 16:50:15 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-50-15-497.md")
+2026.04.16 16:50:15 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 16:50:15 INFO  empty definition using pc, found symbol in pc: instrs (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-50-15-574.md")
+2026.04.16 16:50:15 INFO  time: compiled designcpubychisel in 0.41s
+2026.04.16 16:50:19 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:21 INFO  time: compiled designcpubychisel in 1.92s
+2026.04.16 16:50:23 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:24 INFO  time: compiled designcpubychisel in 1.57s
+2026.04.16 16:50:31 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:33 INFO  time: compiled designcpubychisel in 1.88s
+2026.04.16 16:50:36 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:37 INFO  time: compiled designcpubychisel in 1.73s
+2026.04.16 16:50:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:41 INFO  time: compiled designcpubychisel in 2.52s
+2026.04.16 16:50:41 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:50:43 INFO  time: compiled designcpubychisel in 1.66s
+2026.04.16 16:56:51 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:56:54 INFO  time: compiled designcpubychisel in 2.98s
+Apr 16, 2026 4:56:54 PM scala.meta.internal.pc.CompletionProvider expected$1
+WARNING: Range [4643, 4643 + -20) out of bounds for length 9990
+Apr 16, 2026 4:56:55 PM scala.meta.internal.pc.CompletionProvider expected$1
+WARNING: Range [4644, 4644 + -20) out of bounds for length 9993
+2026.04.16 16:56:55 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:57:00 INFO  time: compiled designcpubychisel in 4.8s
+2026.04.16 16:57:11 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:57:12 INFO  time: compiled designcpubychisel in 1.86s
+2026.04.16 16:58:45 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:58:53 INFO  time: compiled designcpubychisel in 7.72s
+2026.04.16 16:59:30 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:59:32 INFO  time: compiled designcpubychisel in 2.22s
+2026.04.16 16:59:55 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:59:56 INFO  time: compiled designcpubychisel in 1.23s
+2026.04.16 16:59:56 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 16:59:56 INFO  time: compiled designcpubychisel in 0.49s
+2026.04.16 17:00:02 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:00:02 INFO  empty definition using pc, found symbol in pc: _empty_/dcache_BlackBox# (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_17-00-02-726.md")
+2026.04.16 17:00:05 INFO  compiling designcpubychisel (2 scala sources)
+2026.04.16 17:00:07 INFO  time: compiled designcpubychisel in 2.16s
+2026.04.16 17:00:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:00:45 INFO  time: compiled designcpubychisel in 7.75s
+2026.04.16 17:00:45 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:00:48 INFO  time: compiled designcpubychisel in 2.35s
+Apr 16, 2026 5:05:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6544
+2026.04.16 17:13:54 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:54 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:54 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:54 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:13:55 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:55 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:57 INFO  time: compiled designcpubychisel in 3.51s
+2026.04.16 17:13:57 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:13:58 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:58 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+Apr 16, 2026 5:13:58 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:13:58 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:57 INFO  time: compiled designcpubychisel in 0.7s
+2026.04.16 17:13:58 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:13:59 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+Apr 16, 2026 5:13:59 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:13:59 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-49-52-341.md")
+2026.04.16 17:13:59 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:13:59 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_inst_valid)
+       tree position: line 301 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   298   dontTouch(bresp)
+   299   dontTouch(pc)
+   300   dontTouch(insts)
+   301   dontTouch(_CURSOR_inst_valid)
+   302   
+   303 }
+   304 import config._ (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-13-59-447.md")
+Apr 16, 2026 5:13:59 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:13:59 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:13:59 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_insts)
+       tree position: line 300 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299   dontTouch(pc)
+   300   dontTouch(_CURSOR_insts)
+   301   dontTouch(inst_valid)
+   302   
+   303 } (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-13-59-985.md")
+Apr 16, 2026 5:14:00 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:13:59 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:13:59 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_pc)
+       tree position: line 299 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   296   dontTouch(wdata)
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299   dontTouch(_CURSOR_pc)
+   300   dontTouch(insts)
+   301   dontTouch(inst_valid)
+   302    (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-00-380.md")
+Apr 16, 2026 5:14:00 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:00 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:00 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_pc)
+       tree position: line 299 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   296   dontTouch(wdata)
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299   dontTouch(_CURSOR_pc)
+   300   dontTouch(insts)
+   301   dontTouch(inst_valid)
+   302    (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-00-850.md")
+Apr 16, 2026 5:14:01 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:00 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:00 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_pc)
+       tree position: line 299 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   296   dontTouch(wdata)
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299   dontTouch(_CURSOR_pc)
+   300   dontTouch(insts)
+   301   dontTouch(inst_valid)
+   302    (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-01-281.md")
+Apr 16, 2026 5:14:01 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+Apr 16, 2026 5:14:02 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:02 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:02 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_insts)
+       tree position: line 300 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299   dontTouch(pc)
+   300   dontTouch(_CURSOR_insts)
+   301   dontTouch(inst_valid)
+   302   
+   303 } (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-02-358.md")
+Apr 16, 2026 5:14:02 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:02 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:02 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_inst_valid)
+       tree position: line 301 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   298   dontTouch(bresp)
+   299   dontTouch(pc)
+   300   dontTouch(insts)
+   301   dontTouch(_CURSOR_inst_valid)
+   302   
+   303 }
+   304 import config._ (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-02-719.md")
+Apr 16, 2026 5:14:02 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:03 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+Apr 16, 2026 5:14:04 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:04 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:04 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_)
+       tree position: line 299 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   296   dontTouch(wdata)
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299 _CURSOR_
+   300   
+   301 }
+   302 import config._ (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-04-926.md")
+Apr 16, 2026 5:14:05 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:04 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:04 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: This(class Core_top)
+       tree position: line 73 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: Core_top.this.type
+              symbol: class Core_top
+   symbol definition: class Core_top extends NSRawModule (a ClassSymbol)
+      symbol package: <empty>
+       symbol owners: class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+    70   val debug0_wb_rf_wen =   IO(Output(Bool()))
+    71   val debug0_wb_rf_wnum =  IO(Output(UInt(5.W)))
+    72   val debug0_wb_rf_wdata = IO(Output(UInt(32.W)))
+    73   val debug0_wb_inst =     IO(Output(UInt(32.W)))
+    74       //debug
+    75 
+    76  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-05-355.md")
+Apr 16, 2026 5:14:05 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:04 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:04 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_)
+       tree position: line 300 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   297   dontTouch(bid)
+   298   dontTouch(bresp)
+   299 
+   300   _CURSOR_
+   301 }
+   302 import config._
+   303 import java.io.File (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-05-747.md")
+2026.04.16 17:14:06 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:14:07 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+Apr 16, 2026 5:14:07 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:07 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:14:07 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:07 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_wdata)
+       tree position: line 299 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   296   dontTouch(awid)
+   297   dontTouch(awaddr)
+   298   dontTouch(wid)
+   299   dontTouch(_CURSOR_wdata)
+   300   dontTouch(bid)
+   301   dontTouch(bresp)
+   302  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-07-524.md")
+Apr 16, 2026 5:14:07 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:07 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:07 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_bresp)
+       tree position: line 301 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   298   dontTouch(wid)
+   299   dontTouch(wdata)
+   300   dontTouch(bid)
+   301   dontTouch(_CURSOR_bresp)
+   302 
+   303   
+   304 } (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-07-847.md")
+Apr 16, 2026 5:14:07 PM scala.meta.internal.pc.CompilerAccess retryWithCleanCompiler
+INFO: compiler crashed due to an error in the Scala compiler, retrying with new compiler instance.
+2026.04.16 17:14:07 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:14:07 INFO  scala.reflect.internal.FatalError: 
+  ThisType(value <local Core_top>) for sym which is not a class
+     while compiling: file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+        during phase: globalPhase=<no phase>, enteringPhase=parser
+     library version: version 2.13.14
+    compiler version: version 2.13.14
+  reconstructed args: -deprecation -feature -unchecked -Wconf:cat=unchecked:w -Wconf:cat=feature:w -Wconf:cat=deprecation:w -Wconf:cat=deprecation:ws -Wconf:cat=feature:ws -Wconf:cat=optimizer:ws -classpath /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-tQxYRcq3SCCNHHIUOMQWyA==:/nfs/home/wanghao/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar:/nfs/home/wanghao/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar -language:reflectiveCalls -Xplugin-require:semanticdb -Yrangepos -Ymacro-expand:discard -Ycache-plugin-class-loader:last-modified -Ypresentation-any-thread
+
+  last tree to typer: Ident(_CURSOR_bid)
+       tree position: line 300 of file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+            tree tpe: <error>
+              symbol: value <error: <none>>
+   symbol definition: val <error: <none>>: <error> (a TermSymbol)
+      symbol package: <empty>
+       symbol owners: value <error: <none>> -> value <local Core_top> -> class Core_top
+           call site: <none> in <none>
+
+== Source file context for tree position ==
+
+   297   dontTouch(awaddr)
+   298   dontTouch(wid)
+   299   dontTouch(wdata)
+   300   dontTouch(_CURSOR_bid)
+   301   dontTouch(bresp)
+   302 
+   303    (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_compiler-error_(designcpubychisel)_17-14-08-142.md")
+2026.04.16 17:14:09 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:14:11 WARN  Could not load snapshot text for /nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala
+2026.04.16 17:14:12 INFO  time: compiled designcpubychisel in 4.69s
+2026.04.16 17:14:12 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:14:14 INFO  time: compiled designcpubychisel in 1.88s
+2026.04.16 17:14:17 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:14:18 INFO  time: compiled designcpubychisel in 1.61s
+2026.04.16 17:14:21 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:14:23 INFO  time: compiled designcpubychisel in 2.27s
+2026.04.16 17:20:29 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:20:38 INFO  time: compiled designcpubychisel in 8.54s
+2026.04.16 17:21:24 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:21:26 INFO  time: compiled designcpubychisel in 2.11s
+Apr 16, 2026 5:21:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7060
+2026.04.16 17:22:01 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:22:03 INFO  time: compiled designcpubychisel in 1.91s
+2026.04.16 17:22:14 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:22:16 INFO  time: compiled designcpubychisel in 1.7s
+2026.04.16 17:28:46 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 17:28:46 INFO  empty definition using pc, found symbol in pc: debug0_wb_inst (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_17-28-46-544.md")
+2026.04.16 17:29:07 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:29:10 INFO  time: compiled designcpubychisel in 3.18s
+2026.04.16 17:29:10 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:29:10 INFO  time: compiled designcpubychisel in 0.89s
+2026.04.16 17:29:15 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:29:15 INFO  time: compiled designcpubychisel in 0.74s
+2026.04.16 17:29:19 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:29:23 INFO  time: compiled designcpubychisel in 4.33s
+2026.04.16 17:37:15 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:37:16 INFO  time: compiled designcpubychisel in 1.11s
+2026.04.16 17:37:23 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:37:23 INFO  time: compiled designcpubychisel in 0.45s
+2026.04.16 17:37:25 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-15/r_empty-definition_(designcpubychisel)_17-37-25-386.md")
+2026.04.16 17:37:27 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:37:27 INFO  time: compiled designcpubychisel in 0.28s
+2026.04.16 17:37:45 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:37:48 INFO  time: compiled designcpubychisel in 2.7s
+2026.04.16 17:37:50 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:37:50 INFO  time: compiled designcpubychisel in 0.29s
+2026.04.16 17:38:04 WARN  Could not find 'B' using presentation compiler nor semanticdb. Trying to guess the definition using available information from local class context. 
+2026.04.16 17:38:04 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-15/r_empty-definition_(designcpubychisel)_17-37-25-386.md")
+2026.04.16 17:38:55 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:38:55 INFO  time: compiled designcpubychisel in 0.46s
+2026.04.16 17:38:56 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:38:56 INFO  time: compiled designcpubychisel in 0.42s
+2026.04.16 17:39:32 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:39:32 WARN  Could not find 'B' using presentation compiler nor semanticdb. Trying to guess the definition using available information from local class context. 
+2026.04.16 17:39:32 INFO  empty definition using pc, found symbol in pc:  (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-15/r_empty-definition_(designcpubychisel)_17-37-25-386.md")
+2026.04.16 17:39:32 INFO  time: compiled designcpubychisel in 0.74s
+2026.04.16 17:39:34 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 17:39:39 INFO  time: compiled designcpubychisel in 4.7s
+2026.04.16 18:22:06 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:22:15 INFO  time: compiled designcpubychisel in 8.76s
+2026.04.16 18:22:17 INFO  empty definition using pc, found symbol in pc: instrs (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_16-50-15-574.md")
+2026.04.16 18:22:21 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 18:22:21 INFO  empty definition using pc, found symbol in pc: fetch_packet (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_18-22-21-492.md")
+2026.04.16 18:23:02 INFO  Created report: Optional[file:///nfs/home/wanghao/nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/myCPU_top.scala]
+2026.04.16 18:23:02 INFO  empty definition using pc, found symbol in pc: debug0_wb_pc (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_18-23-02-604.md")
+2026.04.16 18:23:23 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:23:32 INFO  time: compiled designcpubychisel in 8.88s
+2026.04.16 18:23:32 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:23:35 INFO  time: compiled designcpubychisel in 2.26s
+2026.04.16 18:24:10 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:24:19 INFO  time: compiled designcpubychisel in 8.82s
+2026.04.16 18:24:27 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:24:29 INFO  time: compiled designcpubychisel in 2.14s
+Exception in thread "pool-5-thread-3" java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$onCompilerJobQueue$1(CompilerAccess.scala:207)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026.04.16 18:25:01 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:25:09 INFO  time: compiled designcpubychisel in 8.72s
+2026.04.16 18:25:37 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:25:49 INFO  time: compiled designcpubychisel in 12s
+2026.04.16 18:28:32 INFO  empty definition using pc, found symbol in pc: debug0_wb_pc (full report at: "/nfs/home/wanghao/nscscc2026ByCQUPT/.metals/.reports/metals-full/2026-04-16/r_empty-definition_(designcpubychisel)_18-23-02-604.md")
+2026.04.16 18:29:02 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:29:30 INFO  time: compiled designcpubychisel in 27s
+2026.04.16 18:29:30 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:29:35 INFO  time: compiled designcpubychisel in 4.58s
+2026.04.16 18:32:53 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:33:05 INFO  time: compiled designcpubychisel in 12s
+2026.04.16 18:33:05 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:33:08 INFO  time: compiled designcpubychisel in 2.32s
+2026.04.16 18:33:08 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:33:10 INFO  time: compiled designcpubychisel in 0.61s
+2026.04.16 18:33:13 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:33:13 INFO  time: compiled designcpubychisel in 0.77s
+2026.04.16 18:33:54 INFO  compiling designcpubychisel (1 scala source)
+2026.04.16 18:34:10 INFO  time: compiled designcpubychisel in 16s
+Apr 16, 2026 6:45:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9279
+Apr 16, 2026 6:54:16 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace

@@ -23,8 +23,8 @@ class FetchUnit(implicit p: Parameters) extends NSModule {
     
     // 到后端的输出
     val fetch_packet = Decoupled(new Bundle {
-      val instrs = Vec(4, UInt(32.W))
-      val pc     = UInt(32.W)
+      val instrs = Output(Vec(4, UInt(32.W)))
+      val pc     = Output(UInt(32.W))
     })
     
     // 控制信号

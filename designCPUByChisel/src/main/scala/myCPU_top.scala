@@ -6,7 +6,7 @@ import config.NSRawModule
 import config.NSBundle
 import config.Parameters  // 导入Parameters类型
 // 代码全是AI写的，应该一坨，但是可以转成v成功
-class Core_top(implicit p: Parameters) extends NSRawModule {
+class core_top(implicit p: Parameters) extends NSRawModule {
     // 覆盖默认的时钟和复位信号的名称
   val aclk = IO(Input(Clock()))
   val aresetn = IO(Input(Bool()))
@@ -99,9 +99,9 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
   // 预留扩展接口
   // 重点了解一下关于之里黑盒
-  val dcache       = Module(new dcache_BlackBox)
-  val uncache1     = Module(new uncache1_BlackBox)
-  val uncache2     = Module(new uncache2_BlackBox)
+  val dcache       = Module(new cache_BlackBox)
+  val uncache1     = Module(new cache_BlackBox)
+  val uncache2     = Module(new cache_BlackBox)
   dcache.io.cpu_if.req_addr  := 0.U
   dcache.io.cpu_if.req_valid := false.B
 
@@ -132,6 +132,13 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   fetch_unit.io.start_valid := true.B
   fetch_unit.io.flush := false.B
   fetch_unit.io.stall := false.B
+
+  fetch_unit.io.fetch_packet.ready := true.B
+  val pc = fetch_unit.io.fetch_packet.bits.pc
+  val insts = fetch_unit.io.fetch_packet.bits.instrs
+  val inst_valid = fetch_unit.io.fetch_packet.valid
+
+  
 
   // 连接ICache控制信号
   icache.io.flush := false.B
@@ -212,7 +219,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   val difftest = Module(new DifftestInCore)
     // 将所有输入信号赋值为0
   
-  difftest.io.inst_valid_diff := reg(4)
+  difftest.io.inst_valid_diff := (reg === 0x324.U)
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B
@@ -229,7 +236,7 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.debug0_wb_rf_wnum := 0.U(5.W)
   difftest.io.debug0_wb_rf_wdata := 0.U(64.W)
   difftest.io.debug0_wb_pc := reg
-  difftest.io.debug0_wb_inst := 0.U(32.W)
+  difftest.io.debug0_wb_inst := pc
   
   difftest.io.excp_flush := false.B
   difftest.io.ertn_flush := false.B
@@ -270,15 +277,10 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
 
 
 
-
-
-
-
-  }
-
-
-
-  // 防止顶层信号优化
+  dontTouch(pc)
+  dontTouch(insts)
+  dontTouch(inst_valid)
+    // 防止顶层信号优化
   dontTouch(arid)
   dontTouch(araddr)
   dontTouch(rid)
@@ -289,6 +291,13 @@ class Core_top(implicit p: Parameters) extends NSRawModule {
   dontTouch(wdata)
   dontTouch(bid)
   dontTouch(bresp)
+
+  }
+
+
+
+
+
   
 }
 import config._
@@ -297,7 +306,7 @@ import scala.sys.process._
 
 object myCPU_top extends App {
 
-  val targetDirPath = "./../chiplab/IP/myCPU"
+  val targetDirPath = "./../chiplab/IP/myCPU/Chisel"
   val targetDir = new File(targetDirPath)
 
   if (targetDir.exists() && targetDir.isDirectory) {
@@ -316,7 +325,7 @@ object myCPU_top extends App {
   implicit val config: Parameters = new Parameters(Map())
 
   emitVerilog(
-    new Core_top,
+    new core_top,
     Array( 
       //"--help",
       "--target-dir", targetDirPath, 
@@ -325,7 +334,7 @@ object myCPU_top extends App {
       )
   )
 
-  val filesToDelete = List("Core_top.anno.json", "Core_top.fir")
+  val filesToDelete = List("core_top.anno.json", "core_top.fir")
   filesToDelete.foreach { filename =>
     val fileToDelete = new File(targetDir, filename)
     if (fileToDelete.exists()) {

@@ -3,7 +3,7 @@ import chisel3.util._
 import config.NSModule
 import config.NSBundle
 import config.Parameters  // 导入Parameters类型
-class dcache_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBoxResource {
+class cache_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBoxResource {
     val io = IO(new Bundle {
     // 对外AXI3 Master接口（对接转接桥）
       val axi_master = new AXI3MasterIO

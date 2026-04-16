@@ -131,6 +131,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }.elsewhen(s0_fire) {
     s0_valid := true.B
     s0_addr  := io.cpu_req.addr
+  }.otherwise {
+    s0_valid := false.B
   }
   
   // === Stage 1: Tag检查 ===

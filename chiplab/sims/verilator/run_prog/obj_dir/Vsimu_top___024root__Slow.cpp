@@ -24,7 +24,7 @@ Vsimu_top___024root::~Vsimu_top___024root() {
 
 // Savable
 void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
-    uint64_t __Vcheckval = 0x35aa83557dbbb78cULL;
+    uint64_t __Vcheckval = 0x612fa3e440c89662ULL;
     os << __Vcheckval;
     os << vlSymsp->_vm_contextp__;
     os<<aclk;
@@ -83,59 +83,103 @@ void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
     os<<simu_top__DOT__soc__DOT__apb_s_rvalid;
     os<<simu_top__DOT__soc__DOT__UART_RI;
     os<<simu_top__DOT__soc__DOT__uart0_int;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_ar_out_arvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_in_rvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_dcache_ar_out_arvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_dcache_r_in_rvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache1_ar_out_arvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache1_r_in_rvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache2_r_in_rvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_out_arsize;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_out_arburst;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_arready;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_aw_awready;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__axi_master_aw_awready;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_ar_data_arvalid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_ar_arready;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_data_rvalid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_arlen;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_arsize;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_arburst;
     os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_w_wready;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_r_in_rvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_b_in_bvalid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__sel_idx;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__io_cpu_if_resp_valid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_tag_rd_tag_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_valid_rd_valid_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__state;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT___GEN_34;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__io_cpu_if_resp_valid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_tag_rd_tag_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_valid_rd_valid_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__state;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT___GEN_34;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__io_cpu_if_resp_valid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_tag_rd_tag_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_valid_rd_valid_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__state;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT___GEN_34;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__io_cpu_if_resp_valid;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_tag_rd_tag_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_valid_rd_valid_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__state;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT___GEN_34;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_r_data_rvalid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_b_data_bvalid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__aw_master_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__aw_master_idx;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT___GEN_71;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_miss_req_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_miss_resp_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_replacer_touch_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_replacer_touch_way;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_meta_write_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_meta_write_idx;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_meta_write_way;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s0_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_idx;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___GEN_4;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_hit;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___s1_hit_T;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_hit_way_lo_1;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___GEN_18;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___GEN_35;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__state;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_idx;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_victim_way;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_count;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___data_count_T_1;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_42;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_86;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_MPORT_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_MPORT_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_MPORT_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_MPORT_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_MPORT_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_MPORT_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_current_data_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_current_data_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_1_en_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_1_addr_pipe_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__victimRespReg;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__io_icache_req_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__io_icache_resp_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__pc_valid;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__fetch_state;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT___GEN_5;
     os<<simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cmt_valid;
     os<<simu_top__DOT__soc__DOT__delay__DOT__s_arvalid;
+    os<<simu_top__DOT__soc__DOT__delay__DOT__s_bready;
     os<<simu_top__DOT__soc__DOT__delay__DOT__s_rready;
     os<<simu_top__DOT__soc__DOT__delay__DOT__mask_ar_disable;
     os<<simu_top__DOT__soc__DOT__delay__DOT__mask_aw_disable;
@@ -143,10 +187,12 @@ void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
     os<<simu_top__DOT__soc__DOT__delay__DOT__mask_short_delay;
     os<<simu_top__DOT__soc__DOT__delay__DOT__mask_w_disable;
     os<<simu_top__DOT__soc__DOT__delay__DOT____VdfgRegularize_ha6db628c_0_2;
+    os<<simu_top__DOT__soc__DOT__delay__DOT____VdfgRegularize_ha6db628c_0_3;
     os<<simu_top__DOT__soc__DOT__delay__DOT____VdfgRegularize_ha6db628c_0_5;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_h63b02204__1;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_hb47bec07__0;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_h326270fe__0;
+    os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_h816b233e__1;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_hefbc5fe9__0;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s1_bid;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s1_bresp;
@@ -554,15 +600,90 @@ void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
     os<<DAT_I;
     os<<DAT_O;
     os<<simu_top__DOT__soc__DOT__m0_rdata;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_in_rdata;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_dcache_r_in_rdata;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache1_r_in_rdata;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache2_r_in_rdata;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_out_araddr;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__miss_addr;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__miss_addr;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__miss_addr;
-    os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__miss_addr;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_data_rdata;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_araddr;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_data_write_data[__Vi0];
+    }
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s0_addr;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_addr;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_tag;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_addr;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_data[__Vi0];
+    }
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_addr;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_tag;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_0;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_1;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_2;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_3;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_4;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_5;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_6;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_7;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_8;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_9;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_10;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_11;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_12;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_13;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_14;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_15;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_8;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_9;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_10;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_11;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_12;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_13;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_14;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_15;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_16;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_17;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_18;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_19;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_20;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_21;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_22;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_23;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___io_data_write_data_T[__Vi0];
+    }
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_57;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_58;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_59;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_60;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_61;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_62;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_63;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_64;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_65;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_66;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_67;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_68;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_69;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_70;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_71;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_72;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_MPORT_1_data;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_MPORT_1_data;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_MPORT_1_data[__Vi0];
+    }
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_MPORT_1_data[__Vi0];
+    }
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_MPORT_1_data[__Vi0];
+    }
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_MPORT_1_data[__Vi0];
+    }
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__pc_reg;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT___GEN_6;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cmt_inst;
     os<<simu_top__DOT__soc__DOT__delay__DOT__mask_random;
     os<<simu_top__DOT__soc__DOT__delay__DOT__mask_random_next;
     os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s1_rdata;
@@ -632,6 +753,9 @@ void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
     os<<NAND_top__DOT__NAND_DAT_O_RD;
     os<<NAND_top__DOT__NAND_DAT_I_WR;
     os<<__VactIterCount;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__reg_;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT___reg_T_1;
+    os<<simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cmt_pc;
     os<<simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cycleCnt;
     os<<simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__instrCnt;
     os<<simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT___cycleCnt_T_1;
@@ -645,40 +769,51 @@ void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
     os<<NAND_top__DOT__ID_INFORM;
     os<<NAND_top__DOT__NAND_ADDR;
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_tag[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_valid[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_data[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_tag[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_valid[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_data[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_tag[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_valid[__Vi0];
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_data[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0[__Vi0][__Vi1];
+        }
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_tag[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1[__Vi0][__Vi1];
+        }
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_valid[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2[__Vi0][__Vi1];
+        }
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os<<simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_data[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3[__Vi0][__Vi1];
+        }
+    }
+    for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
+        os<<simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 5; ++__Vi0) {
         os<<simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s_bid[__Vi0];
@@ -730,7 +865,7 @@ void Vsimu_top___024root::__Vserialize(VerilatedSerialize& os) {
     }
 }
 void Vsimu_top___024root::__Vdeserialize(VerilatedDeserialize& os) {
-    uint64_t __Vcheckval = 0x35aa83557dbbb78cULL;
+    uint64_t __Vcheckval = 0x612fa3e440c89662ULL;
     os.readAssert(__Vcheckval);
     os >> vlSymsp->_vm_contextp__;
     os>>aclk;
@@ -789,59 +924,103 @@ void Vsimu_top___024root::__Vdeserialize(VerilatedDeserialize& os) {
     os>>simu_top__DOT__soc__DOT__apb_s_rvalid;
     os>>simu_top__DOT__soc__DOT__UART_RI;
     os>>simu_top__DOT__soc__DOT__uart0_int;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_ar_out_arvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_in_rvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_dcache_ar_out_arvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_dcache_r_in_rvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache1_ar_out_arvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache1_r_in_rvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache2_r_in_rvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_out_arsize;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_out_arburst;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_arready;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_aw_awready;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__axi_master_aw_awready;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_ar_data_arvalid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_ar_arready;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_data_rvalid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_arlen;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_arsize;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_arburst;
     os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_w_wready;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_r_in_rvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_b_in_bvalid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__sel_idx;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__io_cpu_if_resp_valid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_tag_rd_tag_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_valid_rd_valid_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__state;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT___GEN_34;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__io_cpu_if_resp_valid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_tag_rd_tag_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_valid_rd_valid_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__state;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT___GEN_34;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__io_cpu_if_resp_valid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_tag_rd_tag_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_valid_rd_valid_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__state;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT___GEN_34;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__io_cpu_if_resp_valid;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_tag_rd_tag_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_tag_rd_tag_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_valid_rd_valid_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_valid_rd_valid_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_data_io_cpu_if_resp_data_MPORT_en_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_data_io_cpu_if_resp_data_MPORT_addr_pipe_0;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__state;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT___GEN_34;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_r_data_rvalid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_b_data_bvalid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__aw_master_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__aw_master_idx;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT___GEN_71;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_miss_req_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_miss_resp_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_replacer_touch_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe_io_replacer_touch_way;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_meta_write_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_meta_write_idx;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_meta_write_way;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s0_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_idx;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___GEN_4;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_hit;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___s1_hit_T;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_hit_way_lo_1;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___GEN_18;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT___GEN_35;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__state;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_idx;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_victim_way;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_count;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___data_count_T_1;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_42;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_86;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_MPORT_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_MPORT_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_MPORT_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_MPORT_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_MPORT_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_MPORT_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_current_data_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_current_data_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_1_en_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree_currentPLRU_1_addr_pipe_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__victimRespReg;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__io_icache_req_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__io_icache_resp_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__pc_valid;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__fetch_state;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT___GEN_5;
     os>>simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cmt_valid;
     os>>simu_top__DOT__soc__DOT__delay__DOT__s_arvalid;
+    os>>simu_top__DOT__soc__DOT__delay__DOT__s_bready;
     os>>simu_top__DOT__soc__DOT__delay__DOT__s_rready;
     os>>simu_top__DOT__soc__DOT__delay__DOT__mask_ar_disable;
     os>>simu_top__DOT__soc__DOT__delay__DOT__mask_aw_disable;
@@ -849,10 +1028,12 @@ void Vsimu_top___024root::__Vdeserialize(VerilatedDeserialize& os) {
     os>>simu_top__DOT__soc__DOT__delay__DOT__mask_short_delay;
     os>>simu_top__DOT__soc__DOT__delay__DOT__mask_w_disable;
     os>>simu_top__DOT__soc__DOT__delay__DOT____VdfgRegularize_ha6db628c_0_2;
+    os>>simu_top__DOT__soc__DOT__delay__DOT____VdfgRegularize_ha6db628c_0_3;
     os>>simu_top__DOT__soc__DOT__delay__DOT____VdfgRegularize_ha6db628c_0_5;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_h63b02204__1;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_hb47bec07__0;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_h326270fe__0;
+    os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_h816b233e__1;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT____Vlvbound_hefbc5fe9__0;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s1_bid;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s1_bresp;
@@ -1260,15 +1441,90 @@ void Vsimu_top___024root::__Vdeserialize(VerilatedDeserialize& os) {
     os>>DAT_I;
     os>>DAT_O;
     os>>simu_top__DOT__soc__DOT__m0_rdata;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_in_rdata;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_dcache_r_in_rdata;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache1_r_in_rdata;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_uncache2_r_in_rdata;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_out_araddr;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__miss_addr;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__miss_addr;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__miss_addr;
-    os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__miss_addr;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_in_icache_r_data_rdata;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__axi_crossbar__DOT__io_out_ar_data_araddr;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit_io_data_write_data[__Vi0];
+    }
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s0_addr;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_addr;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s1_tag;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_addr;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__mainPipe__DOT__s2_data[__Vi0];
+    }
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_addr;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__req_tag;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_0;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_1;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_2;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_3;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_4;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_5;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_6;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_7;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_8;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_9;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_10;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_11;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_12;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_13;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_14;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT__data_buffer_15;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_8;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_9;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_10;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_11;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_12;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_13;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_14;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_15;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_16;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_17;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_18;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_19;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_20;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_21;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_22;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_23;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___io_data_write_data_T[__Vi0];
+    }
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_57;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_58;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_59;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_60;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_61;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_62;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_63;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_64;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_65;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_66;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_67;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_68;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_69;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_70;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_71;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__missUnit__DOT___GEN_72;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag_MPORT_1_data;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag_MPORT_1_data;
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0_MPORT_1_data[__Vi0];
+    }
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1_MPORT_1_data[__Vi0];
+    }
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2_MPORT_1_data[__Vi0];
+    }
+    for (int __Vi0 = 0; __Vi0 < 16; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3_MPORT_1_data[__Vi0];
+    }
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT__pc_reg;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__fetch_unit__DOT___GEN_6;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cmt_inst;
     os>>simu_top__DOT__soc__DOT__delay__DOT__mask_random;
     os>>simu_top__DOT__soc__DOT__delay__DOT__mask_random_next;
     os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s1_rdata;
@@ -1338,6 +1594,9 @@ void Vsimu_top___024root::__Vdeserialize(VerilatedDeserialize& os) {
     os>>NAND_top__DOT__NAND_DAT_O_RD;
     os>>NAND_top__DOT__NAND_DAT_I_WR;
     os>>__VactIterCount;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__reg_;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT___reg_T_1;
+    os>>simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cmt_pc;
     os>>simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__cycleCnt;
     os>>simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT__instrCnt;
     os>>simu_top__DOT__soc__DOT__cpu__DOT__difftest__DOT___cycleCnt_T_1;
@@ -1351,40 +1610,51 @@ void Vsimu_top___024root::__Vdeserialize(VerilatedDeserialize& os) {
     os>>NAND_top__DOT__ID_INFORM;
     os>>NAND_top__DOT__NAND_ADDR;
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_tag[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_valid[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_0_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__cache_data[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_tag[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_1_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_valid[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__dcache__DOT__cache_data[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_2_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_tag[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_valid[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_valid[__Vi0];
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__metaArray__DOT__metaArray_3_tag[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache1__DOT__cache_data[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_0[__Vi0][__Vi1];
+        }
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_tag[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_1[__Vi0][__Vi1];
+        }
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_valid[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_2[__Vi0][__Vi1];
+        }
     }
     for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
-        os>>simu_top__DOT__soc__DOT__cpu__DOT__uncache2__DOT__cache_data[__Vi0];
+        for (int __Vi1 = 0; __Vi1 < 16; ++__Vi1) {
+            os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__dataArray__DOT__dataArray_3[__Vi0][__Vi1];
+        }
+    }
+    for (int __Vi0 = 0; __Vi0 < 256; ++__Vi0) {
+        os>>simu_top__DOT__soc__DOT__cpu__DOT__icache__DOT__replacer__DOT__plruTree[__Vi0];
     }
     for (int __Vi0 = 0; __Vi0 < 5; ++__Vi0) {
         os>>simu_top__DOT__soc__DOT__AXI_SLAVE_MUX__DOT__s_bid[__Vi0];

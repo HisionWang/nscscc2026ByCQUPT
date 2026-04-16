@@ -11,7 +11,7 @@ Vsimu_top__Syms::Vsimu_top__Syms(VerilatedContext* contextp, const char* namep, 
     , TOP{this, namep}
 {
     // Check resources
-    Verilated::stackCheck(3116);
+    Verilated::stackCheck(3662);
     // Setup sub module instances
     TOP____024unit.ctor(this, "$unit");
     // Configure time unit / time precision
