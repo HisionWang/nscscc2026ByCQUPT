@@ -3,22 +3,24 @@
 // See Vsimu_top.h for the primary calling header
 
 #include "Vsimu_top__pch.h"
+#include "Vsimu_top__Syms.h"
+#include "Vsimu_top___024unit.h"
 
 void Vsimu_top___024unit___ctor_var_reset(Vsimu_top___024unit* vlSelf);
 
-void Vsimu_top___024unit::ctor(Vsimu_top__Syms* symsp, const char* namep) {
-    vlSymsp = symsp;
-    vlNamep = strdup(Verilated::catName(vlSymsp->name(), namep));
+Vsimu_top___024unit::Vsimu_top___024unit(Vsimu_top__Syms* symsp, const char* v__name)
+    : VerilatedModule{v__name}
+    , vlSymsp{symsp}
+ {
     // Reset structure values
     Vsimu_top___024unit___ctor_var_reset(this);
 }
 
 void Vsimu_top___024unit::__Vconfigure(bool first) {
-    (void)first;  // Prevent unused variable warning
+    if (false && first) {}  // Prevent unused
 }
 
-void Vsimu_top___024unit::dtor() {
-    VL_DO_DANGLING(std::free(const_cast<char*>(vlNamep)), vlNamep);
+Vsimu_top___024unit::~Vsimu_top___024unit() {
 }
 
 // Savable

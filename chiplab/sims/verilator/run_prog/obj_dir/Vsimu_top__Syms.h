@@ -20,7 +20,7 @@
 // DPI TYPES for DPI Export callbacks (Internal use)
 
 // SYMS CLASS (contains all model state)
-class alignas(VL_CACHE_LINE_BYTES) Vsimu_top__Syms final : public VerilatedSyms {
+class alignas(VL_CACHE_LINE_BYTES)Vsimu_top__Syms final : public VerilatedSyms {
   public:
     // INTERNAL STATE
     Vsimu_top* const __Vm_modelp;
@@ -38,7 +38,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vsimu_top__Syms final : public VerilatedSyms 
     ~Vsimu_top__Syms();
 
     // METHODS
-    const char* name() const { return TOP.vlNamep; }
+    const char* name() { return TOP.name(); }
     void __Vserialize(VerilatedSerialize& os);
     void __Vdeserialize(VerilatedDeserialize& os);
 };

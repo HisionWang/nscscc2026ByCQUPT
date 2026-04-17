@@ -26,15 +26,27 @@ class alignas(VL_CACHE_LINE_BYTES) Vsimu_top VL_NOT_FINAL : public VerilatedMode
 
   public:
 
-    // CONSTEXPR CAPABILITIES
-    // Verilated with --trace?
-    static constexpr bool traceCapable = true;
-
     // PORTS
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
-    VL_IN8(&aclk,0,0);
     VL_IN8(&pclk,0,0);
+    VL_IN8(&penable,0,0);
+    VL_IN8(&pwrite,0,0);
+    VL_IN8(&aclk,0,0);
+    VL_IN8(&nand_type,1,0);
+    VL_IN8(&prst_,0,0);
+    VL_IN8(&psel,0,0);
+    VL_OUT8(&NAND_CE_o,3,0);
+    VL_OUT8(&NAND_REQ,0,0);
+    VL_IN8(&NAND_I,7,0);
+    VL_OUT8(&NAND_O,7,0);
+    VL_OUT8(&NAND_EN_,0,0);
+    VL_OUT8(&NAND_ALE,0,0);
+    VL_OUT8(&NAND_CLE,0,0);
+    VL_OUT8(&NAND_WR_,0,0);
+    VL_OUT8(&NAND_RD_,0,0);
+    VL_IN8(&NAND_IORDY_i,3,0);
+    VL_OUT8(&nand_int,0,0);
     VL_IN8(&aresetn,0,0);
     VL_IN8(&enable_delay,0,0);
     VL_OUT8(&ram_ren,0,0);
@@ -55,24 +67,10 @@ class alignas(VL_CACHE_LINE_BYTES) Vsimu_top VL_NOT_FINAL : public VerilatedMode
     VL_OUT8(&btn_key_col,3,0);
     VL_IN8(&btn_key_row,3,0);
     VL_IN8(&btn_step,1,0);
-    VL_IN8(&nand_type,1,0);
-    VL_IN8(&prst_,0,0);
-    VL_IN8(&psel,0,0);
-    VL_IN8(&penable,0,0);
-    VL_IN8(&pwrite,0,0);
-    VL_OUT8(&NAND_CE_o,3,0);
-    VL_OUT8(&NAND_REQ,0,0);
-    VL_IN8(&NAND_I,7,0);
-    VL_OUT8(&NAND_O,7,0);
-    VL_OUT8(&NAND_EN_,0,0);
-    VL_OUT8(&NAND_ALE,0,0);
-    VL_OUT8(&NAND_CLE,0,0);
-    VL_OUT8(&NAND_WR_,0,0);
-    VL_OUT8(&NAND_RD_,0,0);
-    VL_IN8(&NAND_IORDY_i,3,0);
-    VL_OUT8(&nand_int,0,0);
-    VL_OUT16(&led,15,0);
     VL_IN16(&ADDR,10,0);
+    VL_OUT16(&led,15,0);
+    VL_IN(&DAT_I,31,0);
+    VL_OUT(&DAT_O,31,0);
     VL_IN(&random_seed,22,0);
     VL_OUT(&ram_raddr,31,0);
     VL_IN(&ram_rdata,31,0);
@@ -82,8 +80,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vsimu_top VL_NOT_FINAL : public VerilatedMode
     VL_OUT(&debug0_wb_rf_wdata,31,0);
     VL_OUT(&num_data,31,0);
     VL_OUTW(&uart_ctr_bus,127,0,4);
-    VL_IN(&DAT_I,31,0);
-    VL_OUT(&DAT_O,31,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -122,7 +118,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vsimu_top VL_NOT_FINAL : public VerilatedMode
     /// Returns time at next time slot. Aborts if !eventsPending()
     uint64_t nextTimeSlot();
     /// Trace signals in the model; called by application code
-    void trace(VerilatedTraceBaseC* tfp, int levels, int options = 0) { contextp()->trace(tfp, levels, options); }
+    void trace(VerilatedFstC* tfp, int levels, int options = 0);
     /// Retrieve name of this model instance (as passed to constructor).
     const char* name() const;
 
@@ -141,9 +137,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vsimu_top VL_NOT_FINAL : public VerilatedMode
     /// Re-allocate necessary resources. Called after cloning.
     void atClone() const;
     std::unique_ptr<VerilatedTraceConfig> traceConfig() const override final;
-  private:
-    // Internal functions - trace registration
-    void traceBaseModel(VerilatedTraceBaseC* tfp, int levels, int options);
 };
 
 #endif  // guard

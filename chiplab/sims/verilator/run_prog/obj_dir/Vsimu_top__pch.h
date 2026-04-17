@@ -5,6 +5,7 @@
 // unless using verilator public meta comments.
 // Suggest use Vsimu_top.h instead.
 
+
 #ifndef VERILATED_VSIMU_TOP__PCH_H_
 #define VERILATED_VSIMU_TOP__PCH_H_  // guard
 
@@ -22,7 +23,5 @@
 
 #include "Vsimu_top__Syms.h"
 #include "Vsimu_top.h"
-
-// Additional include files added using '--compiler-include'
 
 #endif  // guard

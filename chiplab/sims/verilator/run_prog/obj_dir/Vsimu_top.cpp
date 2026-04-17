@@ -10,8 +10,24 @@
 Vsimu_top::Vsimu_top(VerilatedContext* _vcontextp__, const char* _vcname__)
     : VerilatedModel{*_vcontextp__}
     , vlSymsp{new Vsimu_top__Syms(contextp(), _vcname__, this)}
-    , aclk{vlSymsp->TOP.aclk}
     , pclk{vlSymsp->TOP.pclk}
+    , penable{vlSymsp->TOP.penable}
+    , pwrite{vlSymsp->TOP.pwrite}
+    , aclk{vlSymsp->TOP.aclk}
+    , nand_type{vlSymsp->TOP.nand_type}
+    , prst_{vlSymsp->TOP.prst_}
+    , psel{vlSymsp->TOP.psel}
+    , NAND_CE_o{vlSymsp->TOP.NAND_CE_o}
+    , NAND_REQ{vlSymsp->TOP.NAND_REQ}
+    , NAND_I{vlSymsp->TOP.NAND_I}
+    , NAND_O{vlSymsp->TOP.NAND_O}
+    , NAND_EN_{vlSymsp->TOP.NAND_EN_}
+    , NAND_ALE{vlSymsp->TOP.NAND_ALE}
+    , NAND_CLE{vlSymsp->TOP.NAND_CLE}
+    , NAND_WR_{vlSymsp->TOP.NAND_WR_}
+    , NAND_RD_{vlSymsp->TOP.NAND_RD_}
+    , NAND_IORDY_i{vlSymsp->TOP.NAND_IORDY_i}
+    , nand_int{vlSymsp->TOP.nand_int}
     , aresetn{vlSymsp->TOP.aresetn}
     , enable_delay{vlSymsp->TOP.enable_delay}
     , ram_ren{vlSymsp->TOP.ram_ren}
@@ -32,24 +48,10 @@ Vsimu_top::Vsimu_top(VerilatedContext* _vcontextp__, const char* _vcname__)
     , btn_key_col{vlSymsp->TOP.btn_key_col}
     , btn_key_row{vlSymsp->TOP.btn_key_row}
     , btn_step{vlSymsp->TOP.btn_step}
-    , nand_type{vlSymsp->TOP.nand_type}
-    , prst_{vlSymsp->TOP.prst_}
-    , psel{vlSymsp->TOP.psel}
-    , penable{vlSymsp->TOP.penable}
-    , pwrite{vlSymsp->TOP.pwrite}
-    , NAND_CE_o{vlSymsp->TOP.NAND_CE_o}
-    , NAND_REQ{vlSymsp->TOP.NAND_REQ}
-    , NAND_I{vlSymsp->TOP.NAND_I}
-    , NAND_O{vlSymsp->TOP.NAND_O}
-    , NAND_EN_{vlSymsp->TOP.NAND_EN_}
-    , NAND_ALE{vlSymsp->TOP.NAND_ALE}
-    , NAND_CLE{vlSymsp->TOP.NAND_CLE}
-    , NAND_WR_{vlSymsp->TOP.NAND_WR_}
-    , NAND_RD_{vlSymsp->TOP.NAND_RD_}
-    , NAND_IORDY_i{vlSymsp->TOP.NAND_IORDY_i}
-    , nand_int{vlSymsp->TOP.nand_int}
-    , led{vlSymsp->TOP.led}
     , ADDR{vlSymsp->TOP.ADDR}
+    , led{vlSymsp->TOP.led}
+    , DAT_I{vlSymsp->TOP.DAT_I}
+    , DAT_O{vlSymsp->TOP.DAT_O}
     , random_seed{vlSymsp->TOP.random_seed}
     , ram_raddr{vlSymsp->TOP.ram_raddr}
     , ram_rdata{vlSymsp->TOP.ram_rdata}
@@ -59,15 +61,11 @@ Vsimu_top::Vsimu_top(VerilatedContext* _vcontextp__, const char* _vcname__)
     , debug0_wb_rf_wdata{vlSymsp->TOP.debug0_wb_rf_wdata}
     , num_data{vlSymsp->TOP.num_data}
     , uart_ctr_bus{vlSymsp->TOP.uart_ctr_bus}
-    , DAT_I{vlSymsp->TOP.DAT_I}
-    , DAT_O{vlSymsp->TOP.DAT_O}
     , __PVT____024unit{vlSymsp->TOP.__PVT____024unit}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context
     contextp()->addModel(this);
-    contextp()->traceBaseModelCbAdd(
-        [this](VerilatedTraceBaseC* tfp, int levels, int options) { traceBaseModel(tfp, levels, options); });
 }
 
 Vsimu_top::Vsimu_top(const char* _vcname__)
@@ -119,7 +117,7 @@ void Vsimu_top::eval_step() {
 bool Vsimu_top::eventsPending() { return false; }
 
 uint64_t Vsimu_top::nextTimeSlot() {
-    VL_FATAL_MT(__FILE__, __LINE__, "", "No delays in the design");
+    VL_FATAL_MT(__FILE__, __LINE__, "", "%Error: No delays in the design");
     return 0;
 }
 
@@ -169,7 +167,7 @@ VL_ATTR_COLD static void trace_init(void* voidSelf, VerilatedFst* tracep, uint32
             "Turning on wave traces requires Verilated::traceEverOn(true) call before time 0.");
     }
     vlSymsp->__Vm_baseCode = code;
-    tracep->pushPrefix(vlSymsp->name(), VerilatedTracePrefixType::SCOPE_MODULE);
+    tracep->pushPrefix(std::string{vlSymsp->name()}, VerilatedTracePrefixType::SCOPE_MODULE);
     Vsimu_top___024root__trace_decl_types(tracep);
     Vsimu_top___024root__trace_init_top(vlSelf, tracep);
     tracep->popPrefix();
@@ -177,16 +175,14 @@ VL_ATTR_COLD static void trace_init(void* voidSelf, VerilatedFst* tracep, uint32
 
 VL_ATTR_COLD void Vsimu_top___024root__trace_register(Vsimu_top___024root* vlSelf, VerilatedFst* tracep);
 
-VL_ATTR_COLD void Vsimu_top::traceBaseModel(VerilatedTraceBaseC* tfp, int levels, int options) {
-    (void)levels; (void)options;
-    VerilatedFstC* const stfp = dynamic_cast<VerilatedFstC*>(tfp);
-    if (VL_UNLIKELY(!stfp)) {
-        vl_fatal(__FILE__, __LINE__, __FILE__,"'Vsimu_top::trace()' called on non-VerilatedFstC object;"
-            " use --trace-fst with VerilatedFst object, and --trace-vcd with VerilatedVcd object");
+VL_ATTR_COLD void Vsimu_top::trace(VerilatedFstC* tfp, int levels, int options) {
+    if (tfp->isOpen()) {
+        vl_fatal(__FILE__, __LINE__, __FILE__,"'Vsimu_top::trace()' shall not be called after 'VerilatedFstC::open()'.");
     }
-    stfp->spTrace()->addModel(this);
-    stfp->spTrace()->addInitCb(&trace_init, &(vlSymsp->TOP));
-    Vsimu_top___024root__trace_register(&(vlSymsp->TOP), stfp->spTrace());
+    if (false && levels && options) {}  // Prevent unused
+    tfp->spTrace()->addModel(this);
+    tfp->spTrace()->addInitCb(&trace_init, &(vlSymsp->TOP));
+    Vsimu_top___024root__trace_register(&(vlSymsp->TOP), tfp->spTrace());
 }
 
 //============================================================

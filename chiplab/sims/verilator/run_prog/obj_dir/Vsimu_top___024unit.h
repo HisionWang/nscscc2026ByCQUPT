@@ -11,18 +11,15 @@
 
 class Vsimu_top__Syms;
 
-class alignas(VL_CACHE_LINE_BYTES) Vsimu_top___024unit final {
+class alignas(VL_CACHE_LINE_BYTES) Vsimu_top___024unit final : public VerilatedModule {
   public:
 
     // INTERNAL VARIABLES
-    Vsimu_top__Syms* vlSymsp;
-    const char* vlNamep;
+    Vsimu_top__Syms* const vlSymsp;
 
     // CONSTRUCTORS
-    Vsimu_top___024unit() = default;
-    ~Vsimu_top___024unit() = default;
-    void ctor(Vsimu_top__Syms* symsp, const char* namep);
-    void dtor();
+    Vsimu_top___024unit(Vsimu_top__Syms* symsp, const char* v__name);
+    ~Vsimu_top___024unit();
     VL_UNCOPYABLE(Vsimu_top___024unit);
 
     // INTERNAL METHODS
