@@ -1,22 +1,19 @@
+error id: B28AFB9EB48895666E3F1A033CEF49F9
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala
+### scala.ScalaReflectionException: value s2_fire is not a method
+
+occurred in the presentation compiler.
+
+
+
+action parameters:
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import config.Parameters
-import config._
-class ICacheArrayRead(implicit p: Parameters) extends NSBundle {
-
-  val idx   = Decoupled(
-    Output(UInt(idxBits.W))
-  )
-
-  val data     = Decoupled(
-    Vec(2, new Bundle { 
-      val has = Input(Bool())              //读取的数据的状态
-      val tag   = Input(UInt(tagBits.W))
-      val data = Input(UInt((blockBytes * 8).W))
-    })
-  )
-
-}
+import config.NSModule
 
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -67,7 +64,26 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     })
     
     // SRAM接口
-    val arrays_read = new ICacheArrayRead
+    val arrays_read = new Bundle {
+
+      val req  = new Bundle { 
+        val valid = Output(Bool())
+        val idx   = Output(UInt(idxBits.W))
+      }
+      val resp  = new Bundle {
+        val valid = Input(Bool())
+
+        //读取的tag以及data最多横跨两个Cache行
+        val data = Vec(2, new Bundle { 
+          val has = Input(Bool())              //读取的数据的状态
+          val tag   = Input(UInt(tagBits.W))
+          val data = Input(UInt((blockBytes * 8).W))
+        })
+
+      }
+        
+
+    }
     
     // Miss处理接口
     val miss_req = new Bundle {
@@ -133,8 +149,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 4: 响应输出
   // === Stage inputoutput: 请求接收 ===
   val s1_ready = Wire(Bool())
-  val s0_fire = ( s0_valid && io.arrays_read.idx.ready && s1_ready ) || (!s0_valid)
-
+  val s0_fire = ( s0_valid && s1_ready ) || (!s0_valid)
   io.cpu_req.ready := s0_fire || !s0_valid
 
   val curr_vidx = io.cpu_req.bits.addr(blockOffBits + idxBits - 1, blockOffBits)
@@ -162,8 +177,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   //= Stage0时需要干的 =
 
   //读Tag and Data
-  io.arrays_read.idx.valid := s0_valid
-  io.arrays_read.idx   := s0_vidx
+  io.arrays_read.req.valid := s0_valid
+  io.arrays_read.req.idx   := s0_vidx
   
   // 向MMU发起地址转换请求
   io.mmu.req.valid := s0_valid
@@ -188,14 +203,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
   //========Warning!!Warning!!此处需要CacheArray与Mmu出数据的时序是一样的==========
   //========Warning!!Warning!!不然就会被堵住                            ==========
-  val s1_cango = io.mmu.resp.valid && io.arrays_read.data.valid
+  val s1_resp_valid = io.mmu.resp.valid && io.arrays_read.resp.valid
 
-  s1_fire  := ( s1_valid && s1_cango && s2_ready ) || (!s1_valid)
+  s1_fire  := ( s1_valid && s1_resp_valid && s2_ready ) || (!s1_valid)
   s1_ready := s1_fire || !s1_valid
-  val writeBuffer = s1_cango && !s2_ready
-  val bufferHas = RegInit(false.B)
-
-  
     // 从物理地址计算索引和标签
   val curr_pidx = io.mmu.resp.paddr(blockOffBits + idxBits - 1, blockOffBits)
   val curr_ptag = io.mmu.resp.paddr(31, blockOffBits + idxBits)
@@ -235,8 +246,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_pidx  = Reg(UInt(idxBits.W))  // 物理索引
   val s2_ptag  = Reg(UInt(tagBits.W))  // 物理标签
   
-  val s3_ready = Wire(Bool())
-  val s2_fire = ( s2_valid && s3_ready) || (!s2_valid)
+  val s2_fire = ( s2_valid && )
 
   
   when(io.flush) {
@@ -467,3 +477,71 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   println(s"  PipelineStages: 5 (including MMU stage and response stage)")
   println(s"  Features: MMU translation, Uncached access support")
 }
+```
+
+
+presentation compiler configuration:
+Scala version: 2.13.14
+Classpath:
+<WORKSPACE>/designCPUByChisel/.bloop/designcpubychisel/bloop-bsp-clients-classes/classes-Metals-aWcoIt_lQk-5i3xgh7IG8w== [exists ], <HOME>/.cache/bloop/semanticdb/com.sourcegraph.semanticdb-javac.0.11.2/semanticdb-javac-0.11.2.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.14/scala-library-2.13.14.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chisel3_2.13/3.6.1/chisel3_2.13-3.6.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/chiseltest_2.13/0.6.2/chiseltest_2.13-0.6.2.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/firrtl_2.13/1.6.0/firrtl_2.13-1.6.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.14/scala-reflect-2.13.14.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle_2.13/2.0.0/upickle_2.13-2.0.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/os-lib_2.13/0.8.1/os-lib_2.13-0.8.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/edu/berkeley/cs/treadle_2.13/1.6.0/treadle_2.13-1.6.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.15/scalatest_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/utest_2.13/0.8.1/utest_2.13-0.8.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.18.3/protobuf-java-3.18.3.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.13/3.7.1/scopt_2.13-3.7.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/net/jcazevedo/moultingyaml_2.13/0.4.2/moultingyaml_2.13-0.4.2.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.13/4.0.6/json4s-native_2.13-4.0.6.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/alexarchambault/data-class_2.13/0.2.5/data-class_2.13-0.2.5.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parallel-collections_2.13/1.0.4/scala-parallel-collections_2.13-1.0.4.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/ujson_2.13/2.0.0/ujson_2.13-2.0.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upack_2.13/2.0.0/upack_2.13-2.0.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-implicits_2.13/2.0.0/upickle-implicits_2.13-2.0.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/geny_2.13/0.7.1/geny_2.13-0.7.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-jline/2.12.1/scala-jline-2.12.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.15/scalatest-core_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/3.2.15/scalatest-featurespec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.15/scalatest-flatspec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.13/3.2.15/scalatest-freespec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.15/scalatest-funsuite_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.13/3.2.15/scalatest-funspec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.13/3.2.15/scalatest-propspec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.13/3.2.15/scalatest-refspec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.13/3.2.15/scalatest-wordspec_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.13/3.2.15/scalatest-diagrams_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.13/3.2.15/scalatest-matchers-core_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/3.2.15/scalatest-shouldmatchers_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/3.2.15/scalatest-mustmatchers_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/portable-scala/portable-scala-reflect_2.13/1.1.2/portable-scala-reflect_2.13-1.1.2.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.13/2.22.0/nscala-time_2.13-2.22.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.26/snakeyaml-1.26.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.13/4.0.6/json4s-core_2.13-4.0.6.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native-core_2.13/4.0.6/json4s-native-core_2.13-4.0.6.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/upickle-core_2.13/2.0.0/upickle-core_2.13-2.0.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/jansi/jansi/1.11/jansi-1.11.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.15/scalatest-compatible-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.2.15/scalactic_2.13-3.2.15.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/2.1.0/scala-xml_2.13-2.1.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.13/4.0.6/json4s-ast_2.13-4.0.6.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.13/4.0.6/json4s-scalap_2.13-4.0.6.jar [exists ], <HOME>/.cache/coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar [exists ]
+Options:
+-deprecation -feature -unchecked -language:reflectiveCalls -Yrangepos -Xplugin-require:semanticdb
+
+
+
+
+#### Error stacktrace:
+
+```
+scala.reflect.api.Symbols$SymbolApi.asMethod(Symbols.scala:240)
+	scala.reflect.api.Symbols$SymbolApi.asMethod$(Symbols.scala:234)
+	scala.reflect.internal.Symbols$SymbolContextApiImpl.asMethod(Symbols.scala:99)
+	scala.tools.nsc.typechecker.ContextErrors$TyperContextErrors$TyperErrorGen$.MissingArgsForMethodTpeError(ContextErrors.scala:810)
+	scala.tools.nsc.typechecker.Typers$Typer.adaptMethodTypeToExpr$1(Typers.scala:999)
+	scala.tools.nsc.typechecker.Typers$Typer.adapt(Typers.scala:1353)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:6276)
+	scala.tools.nsc.typechecker.Typers$Typer.typedDefDef(Typers.scala:6525)
+	scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:6167)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:6261)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStat$1(Typers.scala:6339)
+	scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$4(Typers.scala:3488)
+	scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$4$adapted(Typers.scala:3483)
+	scala.reflect.internal.Scopes$Scope.foreach(Scopes.scala:455)
+	scala.tools.nsc.typechecker.Typers$Typer.addSynthetics$1(Typers.scala:3483)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStats(Typers.scala:3551)
+	scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:2144)
+	scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1982)
+	scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:6168)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:6261)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStat$1(Typers.scala:6339)
+	scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$9(Typers.scala:3539)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStats(Typers.scala:3539)
+	scala.tools.nsc.typechecker.Typers$Typer.typedPackageDef$1(Typers.scala:5844)
+	scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:6171)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:6261)
+	scala.tools.nsc.typechecker.Analyzer$typerFactory$TyperPhase.apply(Analyzer.scala:125)
+	scala.tools.nsc.Global$GlobalPhase.applyPhase(Global.scala:481)
+	scala.tools.nsc.interactive.Global$TyperRun.applyPhase(Global.scala:1369)
+	scala.tools.nsc.interactive.Global$TyperRun.typeCheck(Global.scala:1362)
+	scala.tools.nsc.interactive.Global.typeCheck(Global.scala:680)
+	scala.meta.internal.pc.WithCompilationUnit.<init>(WithCompilationUnit.scala:24)
+	scala.meta.internal.pc.SimpleCollector.<init>(PcCollector.scala:348)
+	scala.meta.internal.pc.PcSemanticTokensProvider$Collector$.<init>(PcSemanticTokensProvider.scala:19)
+	scala.meta.internal.pc.PcSemanticTokensProvider.Collector$lzycompute$1(PcSemanticTokensProvider.scala:19)
+	scala.meta.internal.pc.PcSemanticTokensProvider.Collector(PcSemanticTokensProvider.scala:19)
+	scala.meta.internal.pc.PcSemanticTokensProvider.provide(PcSemanticTokensProvider.scala:73)
+	scala.meta.internal.pc.ScalaPresentationCompiler.$anonfun$semanticTokens$1(ScalaPresentationCompiler.scala:207)
+	scala.meta.internal.pc.CompilerAccess.retryWithCleanCompiler(CompilerAccess.scala:182)
+	scala.meta.internal.pc.CompilerAccess.$anonfun$withSharedCompiler$1(CompilerAccess.scala:155)
+	scala.Option.map(Option.scala:242)
+	scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:154)
+	scala.meta.internal.pc.CompilerAccess.$anonfun$withInterruptableCompiler$1(CompilerAccess.scala:92)
+	scala.meta.internal.pc.CompilerAccess.$anonfun$onCompilerJobQueue$1(CompilerAccess.scala:209)
+	scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	java.base/java.lang.Thread.run(Thread.java:1583)
+```
+#### Short summary: 
+
+scala.ScalaReflectionException: value s2_fire is not a method

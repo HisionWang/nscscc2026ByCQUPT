@@ -1,27 +1,23 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala:chisel3/Bundle#
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala
+empty definition using pc, found symbol in pc: 
+found definition using semanticdb; symbol chisel3/Bundle#
+empty definition using fallback
+non-local guesses:
+
+offset: 225
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import config.Parameters
-import config._
-class ICacheArrayRead(implicit p: Parameters) extends NSBundle {
-
-  val idx   = Decoupled(
-    Output(UInt(idxBits.W))
-  )
-
-  val data     = Decoupled(
-    Vec(2, new Bundle { 
-      val has = Input(Bool())              //读取的数据的状态
-      val tag   = Input(UInt(tagBits.W))
-      val data = Input(UInt((blockBytes * 8).W))
-    })
-  )
-
-}
+import config.NSModule
 
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     // CPU接口
-    val cpu_req = Decoupled(new Bundle {
+    val cpu_req = new Decoupled(B@@undle {
       val addr  = Input(UInt(32.W))   // 虚拟地址
       val valid = Input(Bool())
       val kill  = Input(Bool())
@@ -50,7 +46,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         val paddr    = UInt(32.W)  // 物理地址
         val uncached = Bool()      // 是否为uncached访问
         val valid    = Bool()      // 转换结果有效
-        val error    = Bool()      // 转换错误(如TLB缺失)
+        val error    = Bool()      // 转换错误（如TLB缺失）
       })
     }
     
@@ -67,7 +63,28 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     })
     
     // SRAM接口
-    val arrays_read = new ICacheArrayRead
+    val meta_read = new Bundle {
+      val req  = new Bundle { 
+        val valid = Output(Bool())
+        val idx   = Output(UInt(idxBits.W))
+      }
+      val resp = new Bundle {
+        val data  = Vec(nWays, new Bundle {
+          val valid = Input(Bool())
+          val tag   = Input(UInt(tagBits.W))
+        })
+      }
+    }
+    
+    val data_read = new Bundle {
+      val req  = new Bundle { 
+        val valid = Output(Bool())
+        val idx   = Output(UInt(idxBits.W))
+      }
+      val resp = new Bundle {
+        val data = Input(Vec(nWays, UInt((blockBytes * 8).W)))
+      }
+    }
     
     // Miss处理接口
     val miss_req = new Bundle {
@@ -131,98 +148,65 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 2: 接收MMU转换结果，判断是否为uncached访问
   // Stage 3: 使用物理地址进行标签比较，判断命中/缺失
   // Stage 4: 响应输出
-  // === Stage inputoutput: 请求接收 ===
-  val s1_ready = Wire(Bool())
-  val s0_fire = ( s0_valid && io.arrays_read.idx.ready && s1_ready ) || (!s0_valid)
-
-  io.cpu_req.ready := s0_fire || !s0_valid
-
-  val curr_vidx = io.cpu_req.bits.addr(blockOffBits + idxBits - 1, blockOffBits)
-  val curr_vtag = io.cpu_req.bits.addr(31, blockOffBits + idxBits)
-
+  
   // === Stage 0: 请求接收 ===
   val s0_valid = RegInit(false.B)
   val s0_vaddr = Reg(UInt(32.W))  // 虚拟地址
   val s0_vidx  = Reg(UInt(idxBits.W))  // 虚拟索引
   val s0_vtag  = Reg(UInt(tagBits.W))  // 虚拟标签
   
-  when(io.flush || io.cpu_req.bits.kill) {
+  // 当前请求的虚拟地址计算
+  val curr_vidx = io.cpu_req.addr(blockOffBits + idxBits - 1, blockOffBits)
+  val curr_vtag = io.cpu_req.addr(31, blockOffBits + idxBits)
+  
+  
+  val s0_fire = io.cpu_req.valid && !io.stall
+  
+  when(io.flush || io.cpu_req.kill) {
     s0_valid := false.B
   }.elsewhen(s0_fire) {
-    s0_valid := io.cpu_req.valid
-    s0_vaddr := io.cpu_req.bits.addr
+    s0_valid := true.B
+    s0_vaddr := io.cpu_req.addr
     s0_vidx  := curr_vidx
     s0_vtag  := curr_vtag
-
   }.otherwise {
-    //暂停阻塞的情况下
-    s0_valid := s0_valid
+    s0_valid := false.B
   }
-
-  //= Stage0时需要干的 =
-
-  //读Tag and Data
-  io.arrays_read.idx.valid := s0_valid
-  io.arrays_read.idx   := s0_vidx
   
-  // 向MMU发起地址转换请求
-  io.mmu.req.valid := s0_valid
-  io.mmu.req.vaddr := s0_vaddr
-
-
-
   // === Stage 1: SRAM读取请求和MMU转换请求 ===
   val s1_valid = RegInit(false.B)
   val s1_vaddr = Reg(UInt(32.W))
   val s1_vidx  = Reg(UInt(idxBits.W))
   val s1_vtag  = Reg(UInt(tagBits.W))
-
-  val s1_paddr = Reg(UInt(32.W))     // 物理地址
-  val s1_uncached = Reg(Bool())     // 是否为uncached访问
-  val s1_mmu_error = Reg(Bool())     // MMU转换错误
-  val s1_pidx  = Reg(UInt(idxBits.W))  // 物理索引
-  val s1_ptag  = Reg(UInt(tagBits.W))  // 物理标签
-
   val s1_fire  = Wire(Bool())
-  val s2_ready = Wire(Bool())
-
-  //========Warning!!Warning!!此处需要CacheArray与Mmu出数据的时序是一样的==========
-  //========Warning!!Warning!!不然就会被堵住                            ==========
-  val s1_cango = io.mmu.resp.valid && io.arrays_read.data.valid
-
-  s1_fire  := ( s1_valid && s1_cango && s2_ready ) || (!s1_valid)
-  s1_ready := s1_fire || !s1_valid
-  val writeBuffer = s1_cango && !s2_ready
-  val bufferHas = RegInit(false.B)
-
   
-    // 从物理地址计算索引和标签
-  val curr_pidx = io.mmu.resp.paddr(blockOffBits + idxBits - 1, blockOffBits)
-  val curr_ptag = io.mmu.resp.paddr(31, blockOffBits + idxBits)
-
+  s1_fire := s1_valid && !io.flush && !io.stall
+  
   when(io.flush) {
     s1_valid := false.B
-  }.elsewhen(s1_fire) {
-    s1_valid := s0_valid
+  }.elsewhen(s0_valid && !io.stall) {
+    s1_valid := true.B
     s1_vaddr := s0_vaddr
     s1_vidx  := s0_vidx
     s1_vtag  := s0_vtag
-
-    //拉一下MMU的数据
-    //s1_pidx  := curr_pidx
-    //s1_ptag  := curr_ptag
-    //s1_paddr := io.mmu.resp.paddr
-    //s1_uncached := io.mmu.resp.uncached
-    //s1_mmu_error := io.mmu.resp.error
-
-
-
   }.otherwise {
-    s1_valid := s1_valid
+    s1_valid := false.B
   }
+  
+  // 发出SRAM读取请求（使用虚拟地址的索引）
+  io.meta_read.req.valid := s1_valid
+  io.meta_read.req.idx   := s1_vidx
+  
+  io.data_read.req.valid := s1_valid
+  io.data_read.req.idx   := s1_vidx
+  
+  // 向MMU发起地址转换请求
+  io.mmu.req.vaddr := s1_vaddr
+  io.mmu.req.valid := s1_valid
+  
   // Stage 1输出
-  //io.s1_fire := s1_fire
-  //io.s1_idx  := s1_vidx
+  io.s1_fire := s1_fire
+  io.s1_idx  := s1_vidx
   
   // === Stage 2: MMU转换结果处理 ===
   val s2_valid = RegInit(false.B)
@@ -235,9 +219,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_pidx  = Reg(UInt(idxBits.W))  // 物理索引
   val s2_ptag  = Reg(UInt(tagBits.W))  // 物理标签
   
-  val s3_ready = Wire(Bool())
-  val s2_fire = ( s2_valid && s3_ready) || (!s2_valid)
-
+  // 从物理地址计算索引和标签
+  val curr_pidx = io.mmu.resp.paddr(blockOffBits + idxBits - 1, blockOffBits)
+  val curr_ptag = io.mmu.resp.paddr(31, blockOffBits + idxBits)
   
   when(io.flush) {
     s2_valid := false.B
@@ -271,8 +255,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // 标签比较逻辑（仅对cached访问）
   val tag_hits = Wire(Vec(nWays, Bool()))
   for (i <- 0 until nWays) {
-    tag_hits(i) := io.arrays_read.resp.data(i).valid && 
-                   io.arrays_read.resp.data(i).tag === s2_ptag
+    tag_hits(i) := io.meta_read.resp.data(i).valid && 
+                   io.meta_read.resp.data(i).tag === s2_ptag
   }
   val s2_hit = tag_hits.asUInt.orR
   val s2_hit_way = OHToUInt(tag_hits)
@@ -467,3 +451,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   println(s"  PipelineStages: 5 (including MMU stage and response stage)")
   println(s"  Features: MMU translation, Uncached access support")
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

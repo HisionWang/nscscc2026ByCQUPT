@@ -1,22 +1,37 @@
+error id: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala:config/NSModule#
+file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala
+empty definition using pc, found symbol in pc: 
+found definition using semanticdb; symbol config/NSModule#
+empty definition using fallback
+non-local guesses:
+
+offset: 125
+uri: file://<WORKSPACE>/designCPUByChisel/src/main/scala/icache/ICacheMainPipe.scala
+text:
+```scala
 import chisel3._
 import chisel3.util._
 import config.Parameters
-import config._
-class ICacheArrayRead(implicit p: Parameters) extends NSBundle {
+import config.NSModule
+class ICacheArrayRead extends NSBundle@@ {
 
-  val idx   = Decoupled(
-    Output(UInt(idxBits.W))
-  )
+      val req  = new Bundle { 
+        val valid = Output(Bool())
+        val idx   = Output(UInt(idxBits.W))
+      }
+      val resp  = new Bundle {
+        val valid = Input(Bool())
 
-  val data     = Decoupled(
-    Vec(2, new Bundle { 
-      val has = Input(Bool())              //读取的数据的状态
-      val tag   = Input(UInt(tagBits.W))
-      val data = Input(UInt((blockBytes * 8).W))
-    })
-  )
+        //读取的tag以及data最多横跨两个Cache行
+        val data = Vec(2, new Bundle { 
+          val has = Input(Bool())              //读取的数据的状态
+          val tag   = Input(UInt(tagBits.W))
+          val data = Input(UInt((blockBytes * 8).W))
+        })
 
-}
+      }
+
+    }
 
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -133,8 +148,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 4: 响应输出
   // === Stage inputoutput: 请求接收 ===
   val s1_ready = Wire(Bool())
-  val s0_fire = ( s0_valid && io.arrays_read.idx.ready && s1_ready ) || (!s0_valid)
-
+  val s0_fire = ( s0_valid && s1_ready ) || (!s0_valid)
   io.cpu_req.ready := s0_fire || !s0_valid
 
   val curr_vidx = io.cpu_req.bits.addr(blockOffBits + idxBits - 1, blockOffBits)
@@ -162,8 +176,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   //= Stage0时需要干的 =
 
   //读Tag and Data
-  io.arrays_read.idx.valid := s0_valid
-  io.arrays_read.idx   := s0_vidx
+  io.arrays_read.req.valid := s0_valid
+  io.arrays_read.req.idx   := s0_vidx
   
   // 向MMU发起地址转换请求
   io.mmu.req.valid := s0_valid
@@ -188,14 +202,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
   //========Warning!!Warning!!此处需要CacheArray与Mmu出数据的时序是一样的==========
   //========Warning!!Warning!!不然就会被堵住                            ==========
-  val s1_cango = io.mmu.resp.valid && io.arrays_read.data.valid
+  val s1_cango = io.mmu.resp.valid && io.arrays_read.resp.valid
 
   s1_fire  := ( s1_valid && s1_cango && s2_ready ) || (!s1_valid)
   s1_ready := s1_fire || !s1_valid
-  val writeBuffer = s1_cango && !s2_ready
-  val bufferHas = RegInit(false.B)
-
-  
+  val special = s1_cango && !s2_ready
     // 从物理地址计算索引和标签
   val curr_pidx = io.mmu.resp.paddr(blockOffBits + idxBits - 1, blockOffBits)
   val curr_ptag = io.mmu.resp.paddr(31, blockOffBits + idxBits)
@@ -467,3 +478,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   println(s"  PipelineStages: 5 (including MMU stage and response stage)")
   println(s"  Features: MMU translation, Uncached access support")
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 
