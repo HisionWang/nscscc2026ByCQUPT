@@ -61,7 +61,7 @@ class ICache(implicit p: Parameters) extends NSModule {
   metaArray.io.read.idx   := mainPipe.io.meta_read.req.idx
   mainPipe.io.meta_read.resp.data := metaArray.io.read.data
   
-  // Meta写入 (来自MissUnit)
+  // Meta写入 (来自MissUnit)  
   metaArray.io.write.valid := missUnit.io.meta_write.valid
   metaArray.io.write.idx   := missUnit.io.meta_write.idx
   metaArray.io.write.way   := missUnit.io.meta_write.way
