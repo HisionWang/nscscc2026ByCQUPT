@@ -16507,3 +16507,30 @@ Exception in thread "pool-5-thread-39" java.lang.InterruptedException
 2026.04.17 18:02:58 INFO  time: compiled designcpubychisel in 0.43s
 Apr 17, 2026 6:27:30 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
 INFO: Unsupported notification method: $/setTrace
+2026.04.17 18:28:35 INFO  Shutting down server
+2026.04.17 18:28:35 INFO  Memory monitor stopped
+2026.04.17 18:28:35 INFO  shutting down Metals
+2026.04.17 18:28:35 INFO  Shut down connection with build server.
+2026.04.17 18:28:35 INFO  Exiting server
+2026.04.19 15:26:11 INFO  Started: Metals version 1.6.7 in folders '/nfs/home/wanghao/nscscc2026ByCQUPT' for client Visual Studio Code 1.111.0.
+2026.04.19 15:26:11 INFO  Memory monitor started
+2026.04.19 15:26:11 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.19 15:26:12 INFO  Attempting to connect to the build server...
+2026.04.19 15:26:12 INFO  Found a Bloop server running
+2026.04.19 15:26:12 INFO  tracing is disabled for protocol BSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /nfs/home/wanghao/nscscc2026ByCQUPT/.metals/bsp.trace.json or /nfs/home/wanghao/.cache/metals/bsp.trace.json
+2026.04.19 15:26:12 INFO  time: Connected to build server in 0.32s
+2026.04.19 15:26:12 INFO  Connected to Build server: Bloop v2.0.19
+2026.04.19 15:26:13 INFO  time: Imported build in 0.33s
+2026.04.19 15:26:13 WARN  2.13.14 is no longer supported in the current Metals versions, using the last known supported version 1.6.3
+Apr 19, 2026 3:26:18 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2026.04.19 15:26:22 WARN  Could not find java sources in /usr/lib/jvm/src.zip, /usr/lib/jvm/lib/src.zip, /usr/lib/jvm/java-21-openjdk-amd64/src.zip, /usr/lib/jvm/java-21-openjdk-amd64/lib/src.zip. Java symbols will not be available.
+2026.04.19 15:26:22 INFO  time: indexed workspace in 9.74s
+2026.04.19 15:26:23 INFO  compiling designcpubychisel (1 scala source)
+2026.04.19 15:26:27 INFO  time: compiled designcpubychisel in 4.72s
+Apr 20, 2026 10:04:52 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Apr 20, 2026 10:05:50 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3
+Apr 20, 2026 10:06:00 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 27
