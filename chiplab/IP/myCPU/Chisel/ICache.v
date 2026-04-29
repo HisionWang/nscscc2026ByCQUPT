@@ -1,6 +1,7 @@
 module ICache(
   input         clock,
   input         reset,
+  output        io_cpu_req_ready, // @[src/main/scala/icache/Icache.scala 12:14]
   input         io_cpu_req_valid, // @[src/main/scala/icache/Icache.scala 12:14]
   input  [31:0] io_cpu_req_bits_addr, // @[src/main/scala/icache/Icache.scala 12:14]
   output        io_cpu_resp_valid, // @[src/main/scala/icache/Icache.scala 12:14]
@@ -28,6 +29,7 @@ module ICache(
 );
   wire  mainPipe_clock; // @[src/main/scala/icache/Icache.scala 35:24]
   wire  mainPipe_reset; // @[src/main/scala/icache/Icache.scala 35:24]
+  wire  mainPipe_io_cpu_req_ready; // @[src/main/scala/icache/Icache.scala 35:24]
   wire  mainPipe_io_cpu_req_valid; // @[src/main/scala/icache/Icache.scala 35:24]
   wire [31:0] mainPipe_io_cpu_req_bits_addr; // @[src/main/scala/icache/Icache.scala 35:24]
   wire  mainPipe_io_cpu_resp_valid; // @[src/main/scala/icache/Icache.scala 35:24]
@@ -121,6 +123,7 @@ module ICache(
   ICacheMainPipe mainPipe ( // @[src/main/scala/icache/Icache.scala 35:24]
     .clock(mainPipe_clock),
     .reset(mainPipe_reset),
+    .io_cpu_req_ready(mainPipe_io_cpu_req_ready),
     .io_cpu_req_valid(mainPipe_io_cpu_req_valid),
     .io_cpu_req_bits_addr(mainPipe_io_cpu_req_bits_addr),
     .io_cpu_resp_valid(mainPipe_io_cpu_resp_valid),
@@ -218,6 +221,7 @@ module ICache(
     .io_mmu_resp_valid(simMMU_io_mmu_resp_valid),
     .io_mmu_resp_data_paddr(simMMU_io_mmu_resp_data_paddr)
   );
+  assign io_cpu_req_ready = mainPipe_io_cpu_req_ready; // @[src/main/scala/icache/Icache.scala 43:24]
   assign io_cpu_resp_valid = mainPipe_io_cpu_resp_valid; // @[src/main/scala/icache/Icache.scala 44:25]
   assign io_cpu_resp_instrs_0 = mainPipe_io_cpu_resp_instrs_0; // @[src/main/scala/icache/Icache.scala 44:25]
   assign io_cpu_resp_instrs_1 = mainPipe_io_cpu_resp_instrs_1; // @[src/main/scala/icache/Icache.scala 44:25]

@@ -24,6 +24,10 @@ class SimpleBlockRAM(
     val rd_data  = Output(UInt(width.W))
     val rd_valid = Output(Bool())  // 数据有效信号
   })
+  dontTouch(io.wr_en)
+  dontTouch(io.wr_addr)
+  dontTouch(io.wr_data)
+
   
   // 真正的双端口块RAM
   val mem = SyncReadMem(depth, UInt(width.W))
@@ -47,7 +51,8 @@ class SimpleBlockRAM(
   }
   
   // 输出
-  io.rd_data := dataPipeline(readLatency-1)
+ // io.rd_data := dataPipeline(readLatency-1)
+  io.rd_data := mem.read(io.rd_addr, io.rd_en)
   io.rd_valid := rdPipeline(readLatency-1)
   
   // 写入逻辑

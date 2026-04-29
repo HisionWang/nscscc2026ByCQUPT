@@ -90,9 +90,11 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   // === 写入逻辑 ===
   // 写使能解码
   val writeWayOneHot = UIntToOH(io.write.way)
+  dontTouch(writeWayOneHot)
   
   for (way <- 0 until nWays) {
     val waySel = writeWayOneHot(way)
+    dontTouch(waySel)
     
     // 标签写入：构造 meta 数据 (valid + tag)
     val metaWriteData = Cat(true.B, io.write.tag)  // 写入时总是设置 valid = true
@@ -118,14 +120,17 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   // flush 时清除所有 way 的指定地址
   for (way <- 0 until nWays) {
     // flush 时写入 meta 为 0 (valid = false, tag = 0)
-    metaBRAMs(way).wr_en   := io.flush.valid
-    metaBRAMs(way).wr_addr := io.flush.idx
-    metaBRAMs(way).wr_data := 0.U
-    
-    // flush 时写入 data 为 0
-    dataBRAMs(way).wr_en   := io.flush.valid
-    dataBRAMs(way).wr_addr := io.flush.idx
-    dataBRAMs(way).wr_data := 0.U
+    when(io.flush.valid){
+      metaBRAMs(way).wr_en   := io.flush.valid
+      metaBRAMs(way).wr_addr := io.flush.idx
+      metaBRAMs(way).wr_data := 0.U
+
+      // flush 时写入 data 为 0
+      dataBRAMs(way).wr_en   := io.flush.valid
+      dataBRAMs(way).wr_addr := io.flush.idx
+      dataBRAMs(way).wr_data := 0.U
+    }
+
   }
   
   when(io.flush.valid) {

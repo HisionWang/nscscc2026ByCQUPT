@@ -126,11 +126,13 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // --------------------------
   icache.io.cpu_resp.instrs <> fetch_unit.io.icache_resp.instrs
   icache.io.cpu_resp.addr   <> fetch_unit.io.icache_resp.addr
-  icache.io.cpu_resp.valid  <> fetch_unit.io.icache_resp.valid
+  
+  fetch_unit.io.icache_resp.valid := icache.io.cpu_req.ready 
+
   icache.io.cpu_resp.miss   <> fetch_unit.io.icache_resp.miss
 
   fetch_unit.io.start_pc := 0x1C000000.U
-  fetch_unit.io.start_valid := true.B
+  
   fetch_unit.io.flush := false.B
   fetch_unit.io.stall := false.B
 
@@ -210,6 +212,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   val reg = RegInit(0.U(64.W))
   reg := reg + 1.U
+  fetch_unit.io.start_valid := reg === 88.U
   
 
 
@@ -217,7 +220,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val difftest = Module(new DifftestInCore)
     // 将所有输入信号赋值为0
   
-  difftest.io.inst_valid_diff := (reg === 0x324.U)
+  difftest.io.inst_valid_diff := (reg === 0x666.U)
   difftest.io.cnt_inst_diff := false.B
   difftest.io.timer_64_diff := 0.U(64.W)
   difftest.io.inst_ld_en_diff := false.B

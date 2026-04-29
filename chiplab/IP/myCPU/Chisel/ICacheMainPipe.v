@@ -1,6 +1,7 @@
 module ICacheMainPipe(
   input          clock,
   input          reset,
+  output         io_cpu_req_ready, // @[src/main/scala/icache/ICacheMainPipe.scala 9:14]
   input          io_cpu_req_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 9:14]
   input  [31:0]  io_cpu_req_bits_addr, // @[src/main/scala/icache/ICacheMainPipe.scala 9:14]
   output         io_cpu_resp_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 9:14]
@@ -259,6 +260,7 @@ module ICacheMainPipe(
   wire [1054:0] _GEN_205 = _io_axi_r_rready_T & io_axi_r_data_rvalid & _T_18 ? _GEN_202 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 383:29 565:98]
   wire  _GEN_215 = _io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_24 | uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 618:104 620:24 399:35]
   wire [1054:0] _GEN_217 = _s3_ready_T_1 ? 1055'h0 : _GEN_205; // @[src/main/scala/icache/ICacheMainPipe.scala 630:38 633:22]
+  assign io_cpu_req_ready = s0_fire | ~s0_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 66:26]
   assign io_cpu_resp_valid = _T_27 ? _GEN_162 : _T_26; // @[src/main/scala/icache/ICacheMainPipe.scala 435:17]
   assign io_cpu_resp_instrs_0 = _T_27 ? _GEN_158 : 32'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 435:17]
   assign io_cpu_resp_instrs_1 = _T_27 ? _GEN_159 : 32'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 435:17]
