@@ -1,12 +1,14 @@
 module AXI3Crossbar4to1(
   input         clock,
   input         reset,
+  input  [3:0]  io_in_icache_ar_data_arid, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   input  [31:0] io_in_icache_ar_data_araddr, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   input  [7:0]  io_in_icache_ar_data_arlen, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   input  [2:0]  io_in_icache_ar_data_arsize, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   input  [1:0]  io_in_icache_ar_data_arburst, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   input         io_in_icache_ar_data_arvalid, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   output        io_in_icache_ar_arready, // @[src/main/scala/AXI3Crossbar.scala 10:14]
+  output [3:0]  io_in_icache_r_data_rid, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   output [31:0] io_in_icache_r_data_rdata, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   output        io_in_icache_r_data_rlast, // @[src/main/scala/AXI3Crossbar.scala 10:14]
   output        io_in_icache_r_data_rvalid, // @[src/main/scala/AXI3Crossbar.scala 10:14]
@@ -162,6 +164,7 @@ module AXI3Crossbar4to1(
 `endif // RANDOMIZE_REG_INIT
   wire  ar_arbiter_io_in_0_ready; // @[src/main/scala/AXI3Crossbar.scala 33:26]
   wire  ar_arbiter_io_in_0_valid; // @[src/main/scala/AXI3Crossbar.scala 33:26]
+  wire [3:0] ar_arbiter_io_in_0_bits_arid; // @[src/main/scala/AXI3Crossbar.scala 33:26]
   wire [31:0] ar_arbiter_io_in_0_bits_araddr; // @[src/main/scala/AXI3Crossbar.scala 33:26]
   wire [7:0] ar_arbiter_io_in_0_bits_arlen; // @[src/main/scala/AXI3Crossbar.scala 33:26]
   wire [2:0] ar_arbiter_io_in_0_bits_arsize; // @[src/main/scala/AXI3Crossbar.scala 33:26]
@@ -278,6 +281,7 @@ module AXI3Crossbar4to1(
   wire [1:0] _GEN_27 = 2'h1 == r_id_route ? 2'h0 : _GEN_12; // @[src/main/scala/AXI3Crossbar.scala 97:24 88:31]
   wire  _GEN_28 = 2'h1 == r_id_route ? 1'h0 : _GEN_13; // @[src/main/scala/AXI3Crossbar.scala 97:24 93:31]
   wire  _GEN_29 = 2'h1 == r_id_route ? 1'h0 : _GEN_14; // @[src/main/scala/AXI3Crossbar.scala 97:24 72:32]
+  wire [3:0] _GEN_30 = 2'h0 == r_id_route ? io_out_r_data_rid : 4'h0; // @[src/main/scala/AXI3Crossbar.scala 97:24 99:29 75:30]
   wire [31:0] _GEN_31 = 2'h0 == r_id_route ? io_out_r_data_rdata : 32'h0; // @[src/main/scala/AXI3Crossbar.scala 97:24 99:29 80:30]
   wire  _GEN_33 = 2'h0 == r_id_route & io_out_r_data_rlast; // @[src/main/scala/AXI3Crossbar.scala 97:24 99:29 90:30]
   wire  _GEN_34 = 2'h0 == r_id_route & io_out_r_data_rvalid; // @[src/main/scala/AXI3Crossbar.scala 97:24 99:29 69:32]
@@ -362,13 +366,13 @@ module AXI3Crossbar4to1(
   wire [3:0] _GEN_139 = 2'h0 == b_id_route ? 4'h0 : _GEN_127; // @[src/main/scala/AXI3Crossbar.scala 227:24 218:30]
   wire [1:0] _GEN_140 = 2'h0 == b_id_route ? 2'h0 : _GEN_128; // @[src/main/scala/AXI3Crossbar.scala 227:24 223:31]
   wire  _GEN_141 = 2'h0 == b_id_route ? 1'h0 : _GEN_129; // @[src/main/scala/AXI3Crossbar.scala 227:24 212:32]
-  wire  _io_out_b_bready_T = b_id_route == 2'h0; // @[src/main/scala/AXI3Crossbar.scala 246:19]
   wire  _io_out_b_bready_T_1 = b_id_route == 2'h1; // @[src/main/scala/AXI3Crossbar.scala 247:19]
   wire  _io_out_b_bready_T_2 = b_id_route == 2'h2; // @[src/main/scala/AXI3Crossbar.scala 248:19]
   wire  _io_out_b_bready_T_3 = b_id_route == 2'h3; // @[src/main/scala/AXI3Crossbar.scala 249:19]
   Arbiter ar_arbiter ( // @[src/main/scala/AXI3Crossbar.scala 33:26]
     .io_in_0_ready(ar_arbiter_io_in_0_ready),
     .io_in_0_valid(ar_arbiter_io_in_0_valid),
+    .io_in_0_bits_arid(ar_arbiter_io_in_0_bits_arid),
     .io_in_0_bits_araddr(ar_arbiter_io_in_0_bits_araddr),
     .io_in_0_bits_arlen(ar_arbiter_io_in_0_bits_arlen),
     .io_in_0_bits_arsize(ar_arbiter_io_in_0_bits_arsize),
@@ -458,6 +462,7 @@ module AXI3Crossbar4to1(
     .io_chosen(aw_arbiter_io_chosen)
   );
   assign io_in_icache_ar_arready = ar_arbiter_io_in_0_ready; // @[src/main/scala/AXI3Crossbar.scala 55:29]
+  assign io_in_icache_r_data_rid = io_out_r_data_rvalid ? _GEN_30 : 4'h0; // @[src/main/scala/AXI3Crossbar.scala 75:30 96:30]
   assign io_in_icache_r_data_rdata = io_out_r_data_rvalid ? _GEN_31 : 32'h0; // @[src/main/scala/AXI3Crossbar.scala 80:30 96:30]
   assign io_in_icache_r_data_rlast = io_out_r_data_rvalid & _GEN_33; // @[src/main/scala/AXI3Crossbar.scala 90:30 96:30]
   assign io_in_icache_r_data_rvalid = io_out_r_data_rvalid & _GEN_34; // @[src/main/scala/AXI3Crossbar.scala 96:30 69:32]
@@ -519,9 +524,10 @@ module AXI3Crossbar4to1(
   assign io_out_w_data_wvalid = aw_master_valid & _GEN_98; // @[src/main/scala/AXI3Crossbar.scala 171:24 180:25]
   assign io_out_r_rready = _io_out_r_rready_T & io_in_icache_r_rready | _io_out_r_rready_T_1 & io_in_dcache_r_rready |
     _io_out_r_rready_T_2 & io_in_uncache1_r_rready | _io_out_r_rready_T_3 & io_in_uncache2_r_rready; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_out_b_bready = _io_out_b_bready_T | _io_out_b_bready_T_1 & io_in_dcache_b_bready | _io_out_b_bready_T_2 &
-    io_in_uncache1_b_bready | _io_out_b_bready_T_3 & io_in_uncache2_b_bready; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_out_b_bready = _io_out_b_bready_T_1 & io_in_dcache_b_bready | _io_out_b_bready_T_2 & io_in_uncache1_b_bready
+     | _io_out_b_bready_T_3 & io_in_uncache2_b_bready; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign ar_arbiter_io_in_0_valid = io_in_icache_ar_data_arvalid; // @[src/main/scala/AXI3Crossbar.scala 37:29]
+  assign ar_arbiter_io_in_0_bits_arid = io_in_icache_ar_data_arid; // @[src/main/scala/AXI3Crossbar.scala 38:29]
   assign ar_arbiter_io_in_0_bits_araddr = io_in_icache_ar_data_araddr; // @[src/main/scala/AXI3Crossbar.scala 38:29]
   assign ar_arbiter_io_in_0_bits_arlen = io_in_icache_ar_data_arlen; // @[src/main/scala/AXI3Crossbar.scala 38:29]
   assign ar_arbiter_io_in_0_bits_arsize = io_in_icache_ar_data_arsize; // @[src/main/scala/AXI3Crossbar.scala 38:29]

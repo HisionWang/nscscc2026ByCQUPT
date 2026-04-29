@@ -117,16 +117,17 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val fetch_unit = Module(new FetchUnit)
 
   // 连接前端和ICache
-  fetch_unit.io.icache_req.addr  <> icache.io.cpu_if.req_addr
-  fetch_unit.io.icache_req.valid <> icache.io.cpu_if.req_valid
-  fetch_unit.io.icache_req.kill  <> icache.io.cpu_if.req_kill
+  fetch_unit.io.icache_req.addr  <> icache.io.cpu_req.bits.addr
+  fetch_unit.io.icache_req.valid <> icache.io.cpu_req.valid
+  //icache.io.cpu_req.ready := true.B
+  //fetch_unit.io.icache_req.kill  <> icache.io.cpu_if.req_kill
   // --------------------------
   // 0. 与CPU最核心的接口，后续再实现优化
   // --------------------------
-  icache.io.cpu_if.resp_instrs <> fetch_unit.io.icache_resp.instrs
-  icache.io.cpu_if.resp_addr   <> fetch_unit.io.icache_resp.addr
-  icache.io.cpu_if.resp_valid  <> fetch_unit.io.icache_resp.valid
-  icache.io.cpu_if.resp_miss   <> fetch_unit.io.icache_resp.miss
+  icache.io.cpu_resp.instrs <> fetch_unit.io.icache_resp.instrs
+  icache.io.cpu_resp.addr   <> fetch_unit.io.icache_resp.addr
+  icache.io.cpu_resp.valid  <> fetch_unit.io.icache_resp.valid
+  icache.io.cpu_resp.miss   <> fetch_unit.io.icache_resp.miss
 
   fetch_unit.io.start_pc := 0x1C000000.U
   fetch_unit.io.start_valid := true.B
@@ -134,15 +135,12 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   fetch_unit.io.stall := false.B
 
   fetch_unit.io.fetch_packet.ready := true.B
-  val pc = fetch_unit.io.fetch_packet.bits.pc
-  val insts = fetch_unit.io.fetch_packet.bits.instrs
-  val inst_valid = fetch_unit.io.fetch_packet.valid
+  val pc = icache.io.cpu_resp.addr
+  val insts = icache.io.cpu_resp.instrs
+  val inst_valid = icache.io.cpu_resp.valid
+  val inst_valids = icache.io.cpu_resp.instvalids
 
   
-
-  // 连接ICache控制信号
-  icache.io.flush := false.B
-  icache.io.stall := false.B
 
 
 
@@ -280,6 +278,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   dontTouch(pc)
   dontTouch(insts)
   dontTouch(inst_valid)
+  dontTouch(inst_valids)
     // 防止顶层信号优化
   dontTouch(arid)
   dontTouch(araddr)

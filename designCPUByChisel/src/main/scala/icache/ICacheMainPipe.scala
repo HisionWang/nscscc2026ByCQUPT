@@ -5,142 +5,40 @@ import config._
 import config.NSModule
 import config.NSBundle
 
-class dataFromArray(implicit p: Parameters) extends  NSBundle{
-
-  val twoCacheLine = Vec(2,
-    Vec(4, new Bundle { 
-      val has  = Bool()
-      val tag  = UInt(tagBits.W)
-      val data = UInt((blockBytes * 8).W)
-    })
-  )
-  
-}
-class ICacheArrayRead(implicit p: Parameters) extends NSBundle {
-
-  val req   = new Bundle{
-    val valid = Output(Bool())
-    val idx = Output(UInt(idxBits.W))
-  }
-
-  val resp    = new Bundle{
-    val valid = Input(Bool())
-    val data  = Input(new dataFromArray)
-  }
-
-}
-class MMURead(implicit p: Parameters) extends NSBundle {
-  // 转换请求
-  val req = Output(new Bundle {
-    val vaddr = UInt(32.W)     // 虚拟地址
-    val valid = Bool()         // 转换请求有效
-  })
-  // 转换响应
-  val resp = Input(new Bundle {
-    val valid    = Bool()      // 转换结果有效
-    val data = Vec(2, new Bundle {
-          val paddr    = UInt(32.W)  // 物理地址
-          val uncached = Bool()      // 是否为uncached访问
-          val error    = Bool()      // 转换错误(如TLB缺失)
-      }
-    )
-
-  })
-}
-
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
+    
     // CPU接口
-    val cpu_req = Decoupled(new Bundle {
-      val addr  = Input(UInt(32.W))   // 虚拟地址
-      val valid = Input(Bool())
-      val kill  = Input(Bool())
-    })
+    val cpu_req = Flipped( Decoupled(new Bundle {
+      val addr  = (UInt(32.W))   // 虚拟地址
+    }))
     
     val cpu_resp = new Bundle {
-      val instrs = Output(Vec(fetchWidth, UInt(32.W)))
-      val addr   = Output(UInt(32.W))  // 返回虚拟地址
       val valid  = Output(Bool())
+      val instrs = Output(Vec(fetchWidth, UInt(32.W)))
+      val instvalids = Output(Vec(fetchWidth, Bool()))
+
+      val addr   = Output(UInt(32.W))  // 返回虚拟地址
       val miss   = Output(Bool())
-    }
-    
-    // 控制信号
-    val flush = Input(Bool())
-    val stall = Input(Bool())
+      val uncached   = Output(Bool())
+      val mmu_error   = Output(Bool())
+   }
+
+    val axi         = new AXI3MasterIO
 
     // SRAM接口
     val arrays_read = new ICacheArrayRead
+    val array_write = new ICacheArrayWrite
+
+    val victim_read = new victimRead
+    val replacer_touch = new victimChange
+
+    //读取替换指针victim
+
+
     // === 新增：MMU接口 ===
     val mmu = new MMURead
-    
-    // === 新增：Uncached访问接口 ===
-    val uncached_req = Output(new Bundle {
-      val valid = Bool()
-      val vaddr = UInt(32.W)  // 虚拟地址
-      val paddr = UInt(32.W)  // 物理地址
-    })
-    
-    val uncached_resp = Input(new Bundle {
-      val valid = Bool()
-      val data  = UInt(32.W)  // 返回的数据
-    })
-    
 
-    
-    // Miss处理接口
-    val miss_req = new Bundle {
-      val valid = Output(Bool())
-      val ready = Input(Bool())
-      val bits  = Output(new Bundle {
-        val addr       = UInt(32.W)  // 物理地址
-        val idx        = UInt(idxBits.W)
-        val tag        = UInt(tagBits.W)
-        val victim_way = UInt(wayBits.W)
-      })
-    }
-    
-    val miss_resp = Input(new Bundle {
-      val valid = Bool()
-      val bits  = new Bundle {
-        val data = UInt((blockBytes * 8).W)
-        val idx  = UInt(idxBits.W)
-        val tag  = UInt(tagBits.W)
-      }
-    })
-    
-    // Replacer接口
-    val replacer_touch = Output(new Bundle {
-      val valid = Bool()
-      val idx   = UInt(idxBits.W)
-      val way   = UInt(wayBits.W)
-    })
-    
-    // Replacer victim接口
-    val replacer_victim = new Bundle {
-      val req  = Output(Bool())
-      val idx  = Output(UInt(idxBits.W))
-      val resp = Input(UInt(wayBits.W))
-    }
-    
-    // Flush SRAM接口
-    val meta_flush = Output(new Bundle {
-      val valid = Bool()
-      val idx   = UInt(idxBits.W)
-    })
-    
-    val data_flush = Output(new Bundle {
-      val valid = Bool()
-      val idx   = UInt(idxBits.W)
-    })
-    
-    val replacer_flush = Output(new Bundle {
-      val valid = Bool()
-      val idx   = UInt(idxBits.W)
-    })
-    
-    // 状态输出
-    val s1_fire = Output(Bool())
-    val s1_idx  = Output(UInt(idxBits.W))
   })
 
   //
@@ -161,7 +59,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 0: 发出Cached的SRAM读取请求，向MMU发起地址转换
   // Stage 1: 接收接收双方的请求，并判断是否为uncahe
   // Stage 2: 使用物理地址进行标签比较，判断命中/缺失
-
+  val s0_valid = RegInit(false.B)
   val s1_ready = Wire(Bool())
   val s0_cango = true.B// TODO：什么时候才能流向下一级
   val s0_fire = ( s0_valid  && s1_ready ) && s0_cango
@@ -172,7 +70,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val curr_vtag = io.cpu_req.bits.addr(31, blockOffBits + idxBits)
 
   // === Stage 0: 发出Cached的SRAM读取请求，向MMU发起地址转换 ===
-  val s0_valid = RegInit(false.B)
+  
   val s0_vaddr = Reg(UInt(32.W))  // 虚拟地址
   val s0_vidx  = Reg(UInt(idxBits.W))  // 虚拟索引
   val s0_vtag  = Reg(UInt(tagBits.W))  // 虚拟标签
@@ -182,7 +80,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   when(s0_flush) {
     s0_valid  := false.B
     
-  }.elsewhen(io_fire && !io.flush){
+  }.elsewhen(io_fire && !s0_flush){
     s0_valid  := true.B //或者：io.cpu_req.valid
     s0_vaddr := io.cpu_req.bits.addr
     s0_vidx  := curr_vidx
@@ -214,6 +112,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s1_cango = Wire(Bool())
   s1_fire  := ( s1_valid  && s2_ready ) && s1_cango
   s1_ready := s1_fire || !s1_valid
+  
 
   when(s1_flush) {
     s1_valid  := false.B
@@ -229,14 +128,15 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val mmu_resp_fire = io.mmu.resp.valid
   val array_resp_fire = io.arrays_read.resp.valid
 
-  s1_cango := (s1_array_received && mmu_resp_fire) ||
-              (mmu_resp_fire && array_resp_fire)
+
 
   val s1_responses_ready = RegInit(false.B)
   val s1_mmu_received = RegInit(false.B)
   val s1_array_received = RegInit(false.B)
+  s1_cango := (s1_array_received && mmu_resp_fire) ||
+              (array_resp_fire && mmu_resp_fire)
 
-  val s1_array_received_data = Reg(new dataFromArray)
+  val s1_array_received_data = Reg(new arrayReadData)
     // 记录响应接收状态
   when(s1_fire || s1_flush) {
     s1_array_received := false.B
@@ -254,23 +154,20 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_vtag  = Reg(UInt(tagBits.W))
   val s2_pidx  = Reg(UInt(idxBits.W))  // 物理索引
   val s2_ptag  = Reg(UInt(tagBits.W))  // 物理标签
-  val s2_pidx_nextLine  = Reg(UInt(idxBits.W))  // 物理索引
-  val s2_ptag_nextLine  = Reg(UInt(tagBits.W))  // 物理标签
-  val s2_array_data = Reg(new dataFromArray)
+
+  val s2_array_data = Reg(new arrayReadData)
   
   val s3_ready = Wire(Bool())
   val s2_fire = ( s2_valid && s3_ready)
   val s2_is_uncached_access = RegInit(false.B)
-
+  s2_ready := s2_fire || !s2_valid
       // 从物理地址计算索引和标签
 
-  val curr_ptag = io.mmu.resp.data(0).paddr(31, blockOffBits + idxBits)
-
-  val curr_ptag_nextLine = io.mmu.resp.data(1).paddr(31, blockOffBits + idxBits)
+  val curr_ptag = io.mmu.resp.data.paddr(31, blockOffBits + idxBits)
 
   when(s2_flush) {
     s2_valid := false.B
-  }.elsewhen(s1_fire && !s0_flush) {
+  }.elsewhen(s1_fire && !s1_flush) {
     s2_valid := true.B
     
     //查看保存的状态以获取正确的array数据
@@ -279,215 +176,464 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s2_vaddr := s1_vaddr
     s2_vidx  := s1_vidx
     s2_vtag  := s1_vtag
-    s2_paddr := io.mmu.resp.data(0).paddr
+    s2_paddr := io.mmu.resp.data.paddr
     s2_ptag  := curr_ptag
-    s2_uncached := io.mmu.resp.data(0).uncached
-    s2_mmu_error := io.mmu.resp.data(0).error
-    s2_is_uncached_access := io.mmu.resp.data(0).uncached || io.mmu.resp.data(0).error
+    s2_uncached := io.mmu.resp.data.uncached
+    s2_mmu_error := io.mmu.resp.data.error
+    s2_is_uncached_access := io.mmu.resp.data.uncached || io.mmu.resp.data.error
 
-    
   }.otherwise {
     s2_valid := false.B
   }
-  val tag_hits = Wire( Vec( 2, Vec(nWays, Bool()) ))
+  val tag_hits = Wire(  Vec(nWays, Bool()) )
 
 
   for (i <- 0 until nWays) { 
-    tag_hits(0)(i) := io.arrays_read.resp.data.twoCacheLine(0)(i).has &&  
-                      io.arrays_read.resp.data.twoCacheLine(0)(i).tag === s2_ptag 
-    tag_hits(1)(i) := io.arrays_read.resp.data.twoCacheLine(1)(i).has &&  
-                      io.arrays_read.resp.data.twoCacheLine(1)(i).tag === s2_ptag_nextLine 
+    tag_hits(i) := s2_array_data.cacheLine(i).has &&  
+                      s2_array_data.cacheLine(i).tag === s2_ptag 
+
   }
-  val s2_hit = tag_hits.asUInt.orR
-  val s2_hit_way = OHToUInt(tag_hits(0))
-  val s2_data = io.arrays_read.resp.data.twoCacheLine(0)(s2_hit_way)
-
-  val s2_hit_nextLine = tag_hits.asUInt.orR
-  val s2_hit_way_nextLine = OHToUInt(tag_hits(0))
-  val s2_data_nextLine = io.arrays_read.resp.data.twoCacheLine(0)(s2_hit_way)
-
-  val is_cache_miss = s2_valid && !s3_is_uncached_access && !s2_hit
+  val s2_hit = s2_valid && tag_hits.asUInt.orR
+  val s2_hit_way = OHToUInt(tag_hits)
+  val s2_cacheLine_data = s2_array_data.cacheLine(s2_hit_way).data
+  val s2_cache_miss = s2_valid && !s2_is_uncached_access && !s2_hit
 
   
-  // === Stage 3: 标签比较和命中判断 ===
+  // === Stage 3: 处理hit、miss以及uncache（mmu异常） ===
   val s3_valid = RegInit(false.B)
   val s3_vaddr = Reg(UInt(32.W))
   val s3_paddr = Reg(UInt(32.W))
   val s3_uncached = Reg(Bool())
   val s3_mmu_error = Reg(Bool())
-  val s3_hit   = Reg(Bool())
-  val s3_way   = Reg(UInt(wayBits.W))
-  val s3_data  = Reg(UInt((blockBytes * 8).W))
-  val s3_pidx  = Reg(UInt(idxBits.W))
-  val s3_ptag  = Reg(UInt(tagBits.W))
-  val s3_is_uncached_access = Reg(Bool())  // 标记是否为uncached访问
-  
-  // 标签比较逻辑（仅对cached访问）
+  val s3_hit    = Reg(Bool())
+  val s3_hit_way    = Reg(UInt(wayBits.W))
+  val s3_miss   = Reg(Bool())
+  val s3_cacheLine_data  = Reg(UInt((blockBytes * 8).W))
 
+  //TODO：请根据写的状态机正确处理s3_ready
+  //处理miss、非缓存及命中
+  //三种情况满足一种即可ready
+  //s3_ready := false.B //TODO
 
-  
-  when(io.flush) {
+  when(s3_flush) {
     s3_valid := false.B
-  }.elsewhen(s2_valid) {
+  }.elsewhen(s2_fire && !s2_flush) {
     s3_valid := true.B
     s3_vaddr := s2_vaddr
     s3_paddr := s2_paddr
+
     s3_uncached := s2_uncached
     s3_mmu_error := s2_mmu_error
-    s3_pidx  := s2_pidx
-    s3_ptag  := s2_ptag
-    s3_is_uncached_access := s2_uncached || s2_mmu_error
-    
-    when (s2_uncached || s2_mmu_error) {
-      // uncached访问或MMU错误，不进行缓存查找
-      s3_hit := false.B
-      s3_way := 0.U
-      s3_data := 0.U
-    } .otherwise {
-      // cached访问，进行正常的命中判断
-      s3_hit := s2_hit
-      s3_way := s2_hit_way
-      s3_data := s2_data
-    }
+
+    s3_hit := s2_hit 
+    s3_hit_way := s2_hit_way //指示替换算法等
+    s3_miss := s2_cache_miss
+    s3_cacheLine_data := s2_cacheLine_data
 
   }.otherwise {
     s3_valid := false.B
   }
+  val s3_ptag = s3_paddr(31, blockOffBits + idxBits)
+  val s3_pidx = s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
+
+  // === Stuation1：Hit时 ===
+  // Task1：在s3_cacheLine_data这个一整个CacheLine中提取最多fetchWidth条指令出来（如何跨Cache行了不够则能取多少取多少）
+  // Task2：更新Replacer替换算法
+  // 更新接口如下：
+  // io.replacer_touch.valid := s3_hit
+  // io.replacer_touch.idx   := s3_pidx
+  // io.replacer_touch.way   := s3_hit_way
+  // 
+  // === Stuation2：Miss时 ===
+  // Task1：向外发起AXI访问（发起大小是一个Cacha行大小，并且要处理突发传输）
+  // 接口为：
+  //  AXI3 Master完整IO接口
+  //  class AXI3MasterIO(implicit p: Parameters) extends NSBundle {
+  //    val ar = new AXI3ARChannel
+  //    val aw = new AXI3AWChannel
+  //    val w  = new AXI3WChannel
+  //    val r  = new AXI3RChannel
+  //    val b  = new AXI3BChannel
+  //  }
+  // Task2：通过对数据和Tag进行更新，这里不需要处理替换算法，外层自行处理
+  // 接口为：
+  //     val write = Flipped(new Bundle {
+  //       val valid = Bool()
+  //       val idx   = UInt(idxBits.W)
+  //       val tag   = UInt(tagBits.W)     // 要写入的标签
+  //       val data  = UInt(dataBits.W)    // 要写入的数据
+  //     })
+  // Task3：拿到数据后提取最多fetchWidth条指令出来（如何跨Cache行了不够则能取多少取多少）
+
+  // === Stuation3：Uncache时 ===
+  // Task1：向外发起AXI访问（发起大小是一个字大小）
+  // Task2：拿到数据后结束并向后给
+
+  // === Stuation3：mmu_error时 ===
+  // Task1：暂定，暂认为不会出现此错误，保留处理的接口即可
+
+  // === 状态机定义 ===
+  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: Nil = Enum(9)
   
-  // === 新增：Uncached访问处理 ===
-  // 当检测到uncached访问时，直接发起内存请求
-  io.uncached_req.valid := s3_valid && s3_is_uncached_access
-  io.uncached_req.vaddr := s3_vaddr
-  io.uncached_req.paddr := s3_paddr
-  
-  // === Miss处理 ===
-  // 注意：uncached访问不经过缓存，所以不计入缓存缺失
-  val is_cache_miss = s3_valid && !s3_is_uncached_access && !s3_hit
-  io.miss_req.valid := is_cache_miss
-  io.miss_req.bits.addr := s3_paddr
-  io.miss_req.bits.idx  := s3_pidx
-  io.miss_req.bits.tag  := s3_ptag
-  io.miss_req.bits.victim_way := io.replacer_victim.resp
-  
-  // Replacer更新（仅对cached命中）
-  val is_cache_hit = s3_valid && !s3_is_uncached_access && s3_hit
-  io.replacer_touch.valid := is_cache_hit
-  io.replacer_touch.idx   := s3_pidx
-  io.replacer_touch.way   := s3_way
-  
-  // Replacer victim请求（仅对cached缺失）
-  io.replacer_victim.req := is_cache_miss
-  io.replacer_victim.idx := s3_pidx
-  
-  // === Stage 4: 响应输出 ===
-  val s4_valid = RegInit(false.B)
-  val s4_vaddr = Reg(UInt(32.W))
-  val s4_data  = Reg(UInt((blockBytes * 8).W))
-  val s4_hit   = Reg(Bool())
-  val s4_is_uncached = Reg(Bool())
-  val s4_mmu_error = Reg(Bool())
-  
-  when(io.flush) {
-    s4_valid := false.B
-  }.elsewhen(s3_valid) {
-    s4_valid := true.B
-    s4_vaddr := s3_vaddr
-    s4_hit   := s3_hit || s3_is_uncached_access
-    s4_is_uncached := s3_is_uncached_access
-    s4_mmu_error := s3_mmu_error
-    
-    when (s3_is_uncached_access) {
-      // uncached访问，等待内存响应
-      s4_data := 0.U
-    } .otherwise {
-      // cached访问
-      s4_data := s3_data
+  val state = RegInit(s_idle)
+  val next_state = WireInit(s_idle)
+  val cpu_ready = true.B
+  // 状态转移逻辑
+  switch(state) {
+    is(s_idle) {
+      when(s3_valid && !s3_flush) {
+        // 根据Stage 2的结果选择下一个状态
+        when(s3_mmu_error) {
+          next_state := s_mmu_error_state
+        }.elsewhen(s3_uncached) {
+          next_state := s_uncache_req
+        }.elsewhen(s3_miss) {
+          next_state := s_miss_req
+        }.elsewhen(s3_hit) {
+          next_state := s_hit
+        }.otherwise {
+          // 理论上不应该到这里
+          next_state := s_idle
+        }
+      }.otherwise {
+        next_state := s_idle
+      }
     }
+    
+    is(s_hit) {
+      // 命中处理在一个周期内完成
+      next_state := s_done
+    }
+    
+    is(s_miss_req) {
+      // 发起AXI读请求后等待
+      when(io.axi.ar.arready) {
+        next_state := s_miss_wait
+      }.otherwise {
+        next_state := s_miss_req
+      }
+    }
+    
+    is(s_miss_wait) {
+      // 等待AXI响应
+      when(io.axi.r.data.rvalid && io.axi.r.data.rlast && io.axi.r.data.rid === icacheAxiMissId.U) {
+        next_state := s_miss_write
+      }.otherwise {
+        next_state := s_miss_wait
+      }
+    }
+    
+    is(s_miss_write) {
+      // 写入Cache阵列
+      next_state := s_done
+    }
+    
+    is(s_uncache_req) {
+      // 发起非缓存读请求
+      when(io.axi.ar.arready) {
+        next_state := s_uncache_wait
+      }.otherwise {
+        next_state := s_uncache_req
+      }
+    }
+    
+    is(s_uncache_wait) {
+      // 等待非缓存响应
+      when(io.axi.r.data.rvalid && io.axi.r.data.rlast && io.axi.r.data.rid === icacheAxiNucacheId.U) {
+        next_state := s_done
+      }.otherwise {
+        next_state := s_uncache_wait
+      }
+    }
+    
+    is(s_mmu_error_state) {
+      // MMU错误，直接完成
+      next_state := s_done
+    }
+    
+    is(s_done) {
+      // 完成状态，等待外层ready
+      when(cpu_ready) {
+        next_state := s_idle
+      }.otherwise {
+        next_state := s_done
+      }
+    }
+  }
+  // 处理flush信号
+  when(s3_flush) {
+    state := s_idle
   }.otherwise {
-    s4_valid := false.B
+    state := next_state
+  }
+
+  // 1. 命中处理
+  val hit_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
+  val hit_valids = Wire(Vec(fetchWidth, Bool()))
+  val word_offset = s3_vaddr(blockOffBits-1, 2)  // 摄取低两位，计算字偏移
+  
+  for (i <- 0 until fetchWidth) {
+    val word_offset_i = (word_offset + i.U)// % (blockBytes/4).U
+    val bit_offset = word_offset_i * 32.U
+    hit_instrs(i) := (s3_cacheLine_data >> bit_offset)(31, 0)
+    hit_valids(i) := Mux( word_offset_i < (blockBytes/4).U, true.B, false.B )
+  }
+
+  // 2. 缺失处理
+  val miss_data_buffer = Reg(UInt((blockBytes * 8).W))
+  val miss_data_valid = RegInit(false.B)
+
+  val miss_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
+  val miss_valids = Wire(Vec(fetchWidth, Bool()))
+  //val word_offset = s3_vaddr(blockOffBits-1, 2)  // 摄取低两位，计算字偏移
+  
+  for (i <- 0 until fetchWidth) {
+    val word_offset_i = (word_offset + i.U)// % (blockBytes/4).U
+    val bit_offset = word_offset_i * 32.U
+    miss_instrs(i) := (miss_data_buffer >> bit_offset)(31, 0)
+    miss_valids(i) := Mux( word_offset_i < (blockBytes/4).U, true.B, false.B )
   }
   
-  // === Uncached访问响应处理 ===
-  // 当uncached访问得到响应时，更新数据
-  val uncached_data_buffer = Reg(UInt((blockBytes * 8).W))
-  val uncached_data_valid = RegInit(false.B)
-  
-  when(io.uncached_resp.valid) {
-    uncached_data_buffer := io.uncached_resp.data
-    uncached_data_valid := true.B
-  }.elsewhen(s4_valid && s4_is_uncached) {
-    // 消耗uncached响应
-    uncached_data_valid := false.B
+  // 3. 非缓存处理
+  val uncache_data_buffer = Reg(UInt(32.W))
+  val uncache_data_valid = RegInit(false.B)
+  val uncache_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
+  uncache_instrs(0) := uncache_data_buffer
+  for (i <- 1 until fetchWidth) {
+    uncache_instrs(i) := 0.U
   }
   
-  // === 响应CPU ===
-  // 对于cached命中，立即响应
-  // 对于uncached访问，等待内存响应
-  // 对于缓存缺失，等待缺失响应
+  // 4. 最终输出
+  val output_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
+  val output_instvalids = Wire(Vec(fetchWidth, Bool()))
+  val output_valid = Wire(Bool())
+  val output_miss = Wire(Bool())
+  val output_uncached = Wire(Bool())
+  val output_mmu_error = Wire(Bool())
+
+  output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+  output_instvalids := 0.U.asTypeOf(Vec(fetchWidth, Bool()))
+  output_valid := false.B
+  output_miss := false.B
+  output_uncached := false.B
+  output_mmu_error := false.B
+
+  io.cpu_resp.instrs := output_instrs
+  io.cpu_resp.valid := output_valid
+  io.cpu_resp.instvalids := output_instvalids
+
+  io.cpu_resp.addr := s3_vaddr
+
+  io.cpu_resp.miss := output_miss
+  io.cpu_resp.uncached := output_uncached
+  io.cpu_resp.mmu_error := output_mmu_error
   
-  val cached_hit_resp = s4_valid && !s4_is_uncached && s4_hit
-  val uncached_resp_ready = s4_valid && s4_is_uncached && uncached_data_valid
-  val miss_resp_ready = io.miss_resp.valid
+
   
-  io.cpu_resp.valid := cached_hit_resp || uncached_resp_ready || miss_resp_ready
-  io.cpu_resp.miss  := s4_valid && !s4_is_uncached && !s4_hit
   
-  when(io.cpu_resp.valid) {
-    io.cpu_resp.addr := s4_vaddr
-    
-    val resp_data = WireDefault(0.U((blockBytes * 8).W))
-    
-    when(cached_hit_resp) {
-      resp_data := s4_data
-    }.elsewhen(uncached_resp_ready) {
-      resp_data := uncached_data_buffer
-    }.elsewhen(miss_resp_ready) {
-      resp_data := io.miss_resp.bits.data
+  // 根据状态选择输出
+  switch(state) {
+    is(s_done) {
+      when(s3_hit) {
+        output_instrs := hit_instrs
+        output_instvalids := hit_valids
+        output_valid := true.B
+        output_miss := false.B
+        output_uncached := false.B
+        output_mmu_error := false.B
+      }.elsewhen(miss_data_valid) {
+        output_instrs := miss_instrs
+        output_instvalids := miss_valids
+        output_valid := true.B
+        output_miss := false.B
+        output_uncached := false.B
+        output_mmu_error := false.B
+      }.elsewhen(uncache_data_valid) {
+        output_instrs := uncache_instrs
+        output_instvalids(0) := true.B
+        output_instvalids(1) := false.B
+        output_instvalids(2) := false.B
+        output_instvalids(3) := false.B
+        output_valid := true.B
+        output_miss := false.B
+        output_uncached := true.B
+        output_mmu_error := false.B
+      }.elsewhen(s3_mmu_error) {
+        output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+        output_valid := true.B
+        output_miss := false.B
+        output_uncached := false.B
+        output_mmu_error := true.B
+      }.otherwise {
+        output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+        output_valid := false.B
+        output_miss := false.B
+        output_uncached := false.B
+        output_mmu_error := false.B
+      }
     }
     
-    // 从数据中提取指令
-    val byte_offset = s4_vaddr(blockOffBits-1, 2)
+    is(s_mmu_error_state) {
+      output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+      output_valid := true.B
+      output_miss := false.B
+      output_uncached := false.B
+      output_mmu_error := true.B
+    }
     
-    for (i <- 0 until fetchWidth) {
-      val word_offset = (byte_offset + i.U) % (blockBytes/4).U
-      val bit_offset = word_offset * 32.U
+    //default {
+    //  output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+    //  output_valid := false.B
+    //  output_miss := false.B
+    //  output_uncached := false.B
+    //  output_mmu_error := false.B
+    //}
+  }
+  
+  // 输出到接口
+  //io.s3_valid := output_valid
+  //io.s3_vaddr := s3_vaddr
+  //io.s3_instrs := output_instrs
+  //io.s3_miss := output_miss
+  //io.s3_uncached := output_uncached
+  //io.s3_mmu_error := output_mmu_error
+  
+  // === Stage 3 ready信号 ===
+  // Stage 3准备好接收新数据的条件：空闲状态或完成状态且外层已准备好
+
+  
+  s3_ready := (state === s_idle) || (state === s_done && cpu_ready)//io.cpu_ready)
+  
+  // === 各状态的具体任务 ===
+  
+  // 1. 命中状态
+  when(state === s_hit) {
+    // 更新替换算法
+    io.replacer_touch.valid := true.B
+    io.replacer_touch.idx   := s3_pidx
+    io.replacer_touch.way   := s3_hit_way
+  }.otherwise {
+    io.replacer_touch.valid := false.B
+    io.replacer_touch.idx   := s3_pidx
+    io.replacer_touch.way   := s3_hit_way
+  }
+
+
+  io.axi.aw <> 0.U.asTypeOf(new AXI3AWChannel)
+  io.axi.w <> 0.U.asTypeOf(new AXI3WChannel)
+  io.axi.b <> 0.U.asTypeOf(new AXI3BChannel)
+  
+  // 2. 缺失状态 - 发起AXI请求
+  val axi_burst_length = (blockBytes / 4 - 1).U  // 突发长度，以字为单位
+  
+  io.axi.ar.data.arlock  := 0.U
+  io.axi.ar.data.arcache := 0.U
+  io.axi.ar.data.arprot  := 0.U
+  when(state === s_miss_req) {
+    // 发起Cache行读取
+    io.axi.ar.data.arid    := icacheAxiMissId.U
+    io.axi.ar.data.araddr  := Cat(s3_ptag, s3_pidx, 0.U(blockOffBits.W))
+    io.axi.ar.data.arlen   := axi_burst_length
+    io.axi.ar.data.arsize  := 2.U  // 4字节
+    io.axi.ar.data.arburst := 1.U  // 递增突发
+    io.axi.ar.data.arvalid := true.B
+  }.elsewhen(state === s_uncache_req) {
+    // 发起非缓存读取（单字）
+    io.axi.ar.data.arid    := icacheAxiNucacheId.U
+    io.axi.ar.data.araddr  := s3_paddr
+    io.axi.ar.data.arlen   := 0.U
+    io.axi.ar.data.arsize  := 2.U  // 4字节
+    io.axi.ar.data.arburst := 1.U  // 递增突发
+    io.axi.ar.data.arvalid := true.B
+
+  }.otherwise {
+    io.axi.ar.data.arid    := 0.U
+    io.axi.ar.data.arvalid := false.B
+    io.axi.ar.data.araddr  := 0.U
+    io.axi.ar.data.arlen   := 0.U
+    io.axi.ar.data.arsize  := 0.U
+    io.axi.ar.data.arburst := 0.U
+  }
+  
+  // 连接其他AXI信号（简化）
+  io.axi.aw.data.awvalid := false.B
+  io.axi.w.data.wvalid   := false.B
+  io.axi.r.rready   := (state === s_miss_wait) || (state === s_uncache_wait)
+  io.axi.b.bready   := false.B
+  
+  // 3. 缺失状态 - 收集数据
+  when(state === s_miss_wait && io.axi.r.data.rvalid && io.axi.r.data.rid === icacheAxiMissId.U) {
+    // 收集突发传输的数据
+    val beat_counter = RegInit(0.U(4.W))
+    
+    when(io.axi.r.data.rvalid) {
+      // 将数据拼接到缓冲区
+      val beat = beat_counter
+      val data_offset = beat * 32.U
+      miss_data_buffer := miss_data_buffer | (io.axi.r.data.rdata << data_offset)
+      beat_counter := beat_counter + 1.U
       
-      val shifted = resp_data >> bit_offset
-      io.cpu_resp.instrs(i) := shifted(31, 0)
-    }
-  }.otherwise {
-    io.cpu_resp.addr := 0.U
-    for (i <- 0 until fetchWidth) {
-      io.cpu_resp.instrs(i) := 0.U
+      when(io.axi.r.data.rlast) {
+        miss_data_valid := true.B
+        beat_counter := 0.U
+      }
     }
   }
   
-  // === Miss响应处理 ===
-  when(io.miss_resp.valid) {
-    // 更新缓存行
-    // 这里可以触发对缓存的更新
+  // 4. 缺失状态 - 写入data
+  when(state === s_miss_write && miss_data_valid && cpu_ready) {
+    io.array_write.valid := true.B
+    io.array_write.idx   := s3_pidx
+    io.array_write.tag   := s3_ptag
+    io.array_write.data  := miss_data_buffer
+    // way由替换算法决定，这里暂时使用s3_hit_way（实际应该从替换算法获取）
+    io.victim_read.req := true.B
+    io.victim_read.idx := s3_pidx
+    io.array_write.way   := io.victim_read.resp
+
+    io.replacer_touch.valid := true.B
+    io.replacer_touch.idx := s3_pidx
+    io.replacer_touch.way := io.victim_read.resp
+    
+
+  }.otherwise {
+    io.array_write.valid := false.B
+    io.array_write.idx   := 0.U
+    io.array_write.tag   := 0.U
+    io.array_write.data  := 0.U
+    io.array_write.way   := 0.U
+
+    io.victim_read.req := false.B
+    io.victim_read.idx := s3_pidx
+
+    io.replacer_touch.valid := false.B
+    io.replacer_touch.idx := s3_pidx
+    io.replacer_touch.way := io.victim_read.resp
+
+  }
+
+
+  
+  // 5. 非缓存状态 - 收集数据
+  when(state === s_uncache_wait && io.axi.r.data.rvalid && io.axi.r.data.rid === icacheAxiNucacheId.U) {
+    uncache_data_buffer := io.axi.r.data.rdata
+    uncache_data_valid := true.B
   }
   
-  // === Flush处理 ===
-  when(io.flush) {
-    // 发送flush信号
-    io.meta_flush.valid := s1_valid
-    io.meta_flush.idx   := s1_vidx
-    
-    io.data_flush.valid := s1_valid
-    io.data_flush.idx   := s1_vidx
-    
-    io.replacer_flush.valid := s1_valid
-    io.replacer_flush.idx   := s1_vidx
-  }.otherwise {
-    io.meta_flush.valid := false.B
-    io.meta_flush.idx   := 0.U
-    
-    io.data_flush.valid := false.B
-    io.data_flush.idx   := 0.U
-    
-    io.replacer_flush.valid := false.B
-    io.replacer_flush.idx   := 0.U
+  // 6. MMU错误状态
+  when(state === s_mmu_error_state) {
+    // 可以记录错误信息或触发异常
+    // 这里暂时不处理
+  }
+
+  // 清除缓冲区
+  when(state === s_done && cpu_ready){
+  
+    miss_data_valid := false.B
+    miss_data_buffer := 0.U
+    uncache_data_buffer := io.axi.r.data.rdata
+    uncache_data_valid := false.B
+
   }
   
   // === 性能计数器 ===
@@ -496,22 +642,21 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val perf_uncached = RegInit(0.U(32.W))
   val perf_mmu_error = RegInit(0.U(32.W))
   
-  when(s3_valid && !s3_is_uncached_access && s3_hit) {
+  when(state === s_hit && next_state === s_done) {
     perf_hit := perf_hit + 1.U
   }
-  when(s3_valid && !s3_is_uncached_access && !s3_hit) {
+  when(state === s_miss_write) {
     perf_miss := perf_miss + 1.U
   }
-  when(s3_valid && s3_uncached && !s3_mmu_error) {
+  when(state === s_uncache_wait && io.axi.r.data.rid === icacheAxiNucacheId.U && io.axi.r.data.rvalid && io.axi.r.data.rlast) {
     perf_uncached := perf_uncached + 1.U
   }
-  when(s3_valid && s3_mmu_error) {
+  when(state === s_mmu_error_state) {
     perf_mmu_error := perf_mmu_error + 1.U
   }
   
-  println("ICacheMainPipe with MMU instantiated:")
-  println(s"  FetchWidth: $fetchWidth, Ways: $nWays, Sets: $nSets")
-  println(s"  BlockBytes: $blockBytes, IdxBits: $idxBits, TagBits: $tagBits")
-  println(s"  PipelineStages: 5 (including MMU stage and response stage)")
-  println(s"  Features: MMU translation, Uncached access support")
+  println("ICache Stage 3 State Machine instantiated:")
+  println(s"  States: Idle, Hit, Miss_Req, Miss_Wait, Miss_Write, Uncache_Req, Uncache_Wait, Done, MMU_Error")
+  println(s"  Fetch Width: $fetchWidth, Block Size: $blockBytes bytes")
+  
 }

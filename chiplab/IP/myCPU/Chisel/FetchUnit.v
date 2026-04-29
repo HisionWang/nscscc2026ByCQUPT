@@ -3,18 +3,7 @@ module FetchUnit(
   input         reset,
   output [31:0] io_icache_req_addr, // @[src/main/scala/FetchUnit.scala 9:14]
   output        io_icache_req_valid, // @[src/main/scala/FetchUnit.scala 9:14]
-  input  [31:0] io_icache_resp_instrs_0, // @[src/main/scala/FetchUnit.scala 9:14]
-  input  [31:0] io_icache_resp_instrs_1, // @[src/main/scala/FetchUnit.scala 9:14]
-  input  [31:0] io_icache_resp_instrs_2, // @[src/main/scala/FetchUnit.scala 9:14]
-  input  [31:0] io_icache_resp_instrs_3, // @[src/main/scala/FetchUnit.scala 9:14]
-  input  [31:0] io_icache_resp_addr, // @[src/main/scala/FetchUnit.scala 9:14]
-  input         io_icache_resp_valid, // @[src/main/scala/FetchUnit.scala 9:14]
-  output        io_fetch_packet_valid, // @[src/main/scala/FetchUnit.scala 9:14]
-  output [31:0] io_fetch_packet_bits_instrs_0, // @[src/main/scala/FetchUnit.scala 9:14]
-  output [31:0] io_fetch_packet_bits_instrs_1, // @[src/main/scala/FetchUnit.scala 9:14]
-  output [31:0] io_fetch_packet_bits_instrs_2, // @[src/main/scala/FetchUnit.scala 9:14]
-  output [31:0] io_fetch_packet_bits_instrs_3, // @[src/main/scala/FetchUnit.scala 9:14]
-  output [31:0] io_fetch_packet_bits_pc // @[src/main/scala/FetchUnit.scala 9:14]
+  input         io_icache_resp_valid // @[src/main/scala/FetchUnit.scala 9:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -29,12 +18,6 @@ module FetchUnit(
   wire [31:0] _GEN_6 = io_icache_resp_valid ? _pc_reg_T_1 : 32'h1c000000; // @[src/main/scala/FetchUnit.scala 72:34 74:16]
   assign io_icache_req_addr = pc_reg; // @[src/main/scala/FetchUnit.scala 55:22]
   assign io_icache_req_valid = fetch_state == 2'h1 & pc_valid; // @[src/main/scala/FetchUnit.scala 54:50]
-  assign io_fetch_packet_valid = io_icache_resp_valid & fetch_state == 2'h2; // @[src/main/scala/FetchUnit.scala 83:49]
-  assign io_fetch_packet_bits_instrs_0 = io_icache_resp_instrs_0; // @[src/main/scala/FetchUnit.scala 84:31]
-  assign io_fetch_packet_bits_instrs_1 = io_icache_resp_instrs_1; // @[src/main/scala/FetchUnit.scala 84:31]
-  assign io_fetch_packet_bits_instrs_2 = io_icache_resp_instrs_2; // @[src/main/scala/FetchUnit.scala 84:31]
-  assign io_fetch_packet_bits_instrs_3 = io_icache_resp_instrs_3; // @[src/main/scala/FetchUnit.scala 84:31]
-  assign io_fetch_packet_bits_pc = io_icache_resp_addr; // @[src/main/scala/FetchUnit.scala 85:27]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/FetchUnit.scala 40:23]
       pc_reg <= 32'h1c000000; // @[src/main/scala/FetchUnit.scala 40:23]

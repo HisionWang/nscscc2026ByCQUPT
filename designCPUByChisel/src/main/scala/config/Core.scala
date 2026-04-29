@@ -59,7 +59,13 @@ trait HasCoreParameters {
   val blockOffBits = log2Ceil(blockBytes)
   val tagBits     = 32 - idxBits - blockOffBits
   val instrsPerLine = blockBytes / instrBytes
+  val instrsPerLineBits = log2Ceil(instrsPerLine)
   val fetchBytes  = fetchWidth * instrBytes
+
+
+
+  val icacheAxiMissId : Int = 0
+  val icacheAxiNucacheId : Int = 1
   
 
 }

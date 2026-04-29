@@ -1,6 +1,7 @@
 module Arbiter(
   output        io_in_0_ready, // @[src/main/scala/chisel3/util/Arbiter.scala 134:14]
   input         io_in_0_valid, // @[src/main/scala/chisel3/util/Arbiter.scala 134:14]
+  input  [3:0]  io_in_0_bits_arid, // @[src/main/scala/chisel3/util/Arbiter.scala 134:14]
   input  [31:0] io_in_0_bits_araddr, // @[src/main/scala/chisel3/util/Arbiter.scala 134:14]
   input  [7:0]  io_in_0_bits_arlen, // @[src/main/scala/chisel3/util/Arbiter.scala 134:14]
   input  [2:0]  io_in_0_bits_arsize, // @[src/main/scala/chisel3/util/Arbiter.scala 134:14]
@@ -70,7 +71,7 @@ module Arbiter(
   assign io_in_2_ready = grant_2 & io_out_ready; // @[src/main/scala/chisel3/util/Arbiter.scala 147:19]
   assign io_in_3_ready = grant_3 & io_out_ready; // @[src/main/scala/chisel3/util/Arbiter.scala 147:19]
   assign io_out_valid = ~grant_3 | io_in_3_valid; // @[src/main/scala/chisel3/util/Arbiter.scala 148:31]
-  assign io_out_bits_arid = io_in_0_valid ? 4'h0 : _GEN_11; // @[src/main/scala/chisel3/util/Arbiter.scala 139:26 141:19]
+  assign io_out_bits_arid = io_in_0_valid ? io_in_0_bits_arid : _GEN_11; // @[src/main/scala/chisel3/util/Arbiter.scala 139:26 141:19]
   assign io_out_bits_araddr = io_in_0_valid ? io_in_0_bits_araddr : _GEN_12; // @[src/main/scala/chisel3/util/Arbiter.scala 139:26 141:19]
   assign io_out_bits_arlen = io_in_0_valid ? io_in_0_bits_arlen : _GEN_13; // @[src/main/scala/chisel3/util/Arbiter.scala 139:26 141:19]
   assign io_out_bits_arsize = io_in_0_valid ? io_in_0_bits_arsize : _GEN_14; // @[src/main/scala/chisel3/util/Arbiter.scala 139:26 141:19]
