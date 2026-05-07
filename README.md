@@ -53,3 +53,10 @@ source env.sh
 > 在Chisel生成的代码将保存在myCPU/Chisel文件夹中
 > 但这样的话，用VERILATOR仿真的话，就得在makefile里面的VERILATOR_INCLUDE和VERILATOR_SRC加上/Chisel文件夹了
 
+## 4月底 王豪：
+Icache的大致流水线都做好了
+核心代码在CachePipe流水线中
+分成了很多级的流水线，每一级干不同的事情，并且还有bypass路径，每一级干不同的事情
+在Icache中uncahe访问和miss访问用同一个通道，用同一个状态机控制
+在目前的开发阶段而言效果已经已经达到了理想状态
+
