@@ -1,3 +1,5 @@
+package ICacheBunble
+
 import chisel3._
 import chisel3.util._
 import config.Parameters
@@ -71,4 +73,16 @@ class MMURead(implicit p: Parameters) extends NSBundle {
   })
   // 响应
   val resp = Input(new mmuReadData)
+}
+
+class IcacheResp(implicit p: Parameters) extends NSBundle {
+
+  //val valid  = Output(Bool())
+  val instrs = Output(Vec(fetchWidth, UInt(32.W)))
+  val instvalids = Output(Vec(fetchWidth, Bool()))
+
+  val addr   = Output(UInt(32.W))  // 返回虚拟地址
+  val miss   = Output(Bool())
+  val uncached   = Output(Bool())
+  val mmu_error   = Output(Bool()) //异常
 }

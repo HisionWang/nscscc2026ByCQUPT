@@ -48,7 +48,12 @@ trait HasCoreParameters {
   val  nSets:      Int = 256
   val  nWays:      Int = 2
   val  blockBytes: Int = 64
-  val  fetchWidth: Int = 6
+  val  fetchWidth: Int = 4
+  val  issueWidth: Int = 4  // 可配置的发射宽度，默认4条，可修改为2、4、6、8等
+  val  ibufDepth:  Int = 16  // 指令缓冲深度，通常设为2倍fetchWidth或更多
+  
+  val  ibufBitSize = ibufDepth * 32
+
   val  instrBytes: Int = 4
   val  nMSHR:      Int = 4
   val  replacerMode:   String = "plru"

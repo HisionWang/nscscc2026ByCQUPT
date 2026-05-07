@@ -3,7 +3,7 @@ import chisel3._
 import chisel3.util._
 import config.Parameters
 import config.NSModule
-
+import ICacheBunble._
 class ICacheReplacer(implicit p: Parameters) extends NSModule {
   
   val io = IO(new Bundle {

@@ -114,7 +114,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   val axi_crossbar = Module(new AXI3Crossbar4to1)
   val icache       = Module(new ICache)
-  val fetch_unit = Module(new FetchUnit)
+  val fetch_unit = Module(new IFU)
 
   // 连接前端和ICache
   fetch_unit.io.icache_req.addr  <> icache.io.cpu_req.bits.addr
@@ -124,24 +124,25 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // --------------------------
   // 0. 与CPU最核心的接口，后续再实现优化
   // --------------------------
-  icache.io.cpu_resp.instrs <> fetch_unit.io.icache_resp.instrs
-  icache.io.cpu_resp.addr   <> fetch_unit.io.icache_resp.addr
-  fetch_unit.io.icache_resp.valid <> icache.io.cpu_resp.valid
+  icache.io.icache_resp <> fetch_unit.io.icache_resp
+
   
   fetch_unit.io.icache_req.ready := icache.io.cpu_req.ready 
 
-  icache.io.cpu_resp.miss   <> fetch_unit.io.icache_resp.miss
+
 
   fetch_unit.io.start_pc := 0x1C000000.U
-  
   fetch_unit.io.flush := false.B
   fetch_unit.io.stall := false.B
 
-  fetch_unit.io.fetch_packet.ready := true.B
-  val pc = icache.io.cpu_resp.addr
-  val insts = icache.io.cpu_resp.instrs
-  val inst_valid = icache.io.cpu_resp.valid
-  val inst_valids = icache.io.cpu_resp.instvalids
+  val inst_buffer = Module(new IBF)
+
+  //fetch_unit.io.fetch_packet.ready := true.B
+
+  val pc = icache.io.icache_resp.bits.addr
+  val insts = icache.io.icache_resp.bits.instrs
+  val inst_valid = icache.io.icache_resp.valid
+  val inst_valids = icache.io.icache_resp.bits.instvalids
 
   
 
@@ -213,7 +214,9 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   val reg = RegInit(0.U(64.W))
   reg := reg + 1.U
-  fetch_unit.io.start_valid := reg === 88.U
+  fetch_unit.io.start_valid := aresetn
+  
+  //reg === 88.U
   
 
 

@@ -1,6 +1,7 @@
 
 
 import chisel3._
+import ICacheBunble._
 import chisel3.util._
 
 import config.Parameters
@@ -15,16 +16,7 @@ class ICache(implicit p: Parameters) extends NSModule {
       val addr  = (UInt(32.W))   // 虚拟地址
     }))
 
-    val cpu_resp = new Bundle {
-      val valid  = Output(Bool())
-      val instrs = Output(Vec(fetchWidth, UInt(32.W)))
-      val instvalids = Output(Vec(fetchWidth, Bool()))
-
-      val addr   = Output(UInt(32.W))  // 返回虚拟地址
-      val miss   = Output(Bool())
-      val uncached   = Output(Bool())
-      val mmu_error   = Output(Bool())
-   }
+  val icache_resp = Decoupled(new IcacheResp)
 
    val axi_master         = new AXI3MasterIO
     
@@ -41,7 +33,7 @@ class ICache(implicit p: Parameters) extends NSModule {
   // === 连接CPU接口 ===
   
   mainPipe.io.cpu_req  <> io.cpu_req
-  mainPipe.io.cpu_resp  <> io.cpu_resp
+  mainPipe.io.icache_resp  <> io.icache_resp
   mainPipe.io.axi  <> io.axi_master
 
   mainPipe.io.arrays_read  <> array.io.read

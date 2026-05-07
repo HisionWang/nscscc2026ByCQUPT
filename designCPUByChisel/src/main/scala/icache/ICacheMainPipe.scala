@@ -4,7 +4,7 @@ import config.Parameters
 import config._
 import config.NSModule
 import config.NSBundle
-
+import ICacheBunble._
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     
@@ -13,16 +13,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
       val addr  = (UInt(32.W))   // 虚拟地址
     }))
     
-    val cpu_resp = new Bundle {
-      val valid  = Output(Bool())
-      val instrs = Output(Vec(fetchWidth, UInt(32.W)))
-      val instvalids = Output(Vec(fetchWidth, Bool()))
-
-      val addr   = Output(UInt(32.W))  // 返回虚拟地址
-      val miss   = Output(Bool())
-      val uncached   = Output(Bool())
-      val mmu_error   = Output(Bool())
-   }
+    val icache_resp = Decoupled(new IcacheResp)
 
     val axi         = new AXI3MasterIO
 
@@ -253,7 +244,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   
   val state = RegInit(s_idle)
   val next_state = WireInit(s_idle)
-  val cpu_ready = true.B
+  val cpu_ready = io.icache_resp.ready
 
   val s3_fire =((s3_valid && s3_hit) || state === s_done )&& cpu_ready
 
@@ -470,15 +461,15 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   output_uncached := false.B
   output_mmu_error := false.B
 
-  io.cpu_resp.instrs := output_instrs
-  io.cpu_resp.valid := output_valid
-  io.cpu_resp.instvalids := output_instvalids
+  io.icache_resp.bits.instrs := output_instrs
+  io.icache_resp.valid := output_valid
+  io.icache_resp.bits.instvalids := output_instvalids
 
-  io.cpu_resp.addr := s3_vaddr
+  io.icache_resp.bits.addr := s3_vaddr
 
-  io.cpu_resp.miss := output_miss
-  io.cpu_resp.uncached := output_uncached
-  io.cpu_resp.mmu_error := output_mmu_error
+  io.icache_resp.bits.miss := output_miss
+  io.icache_resp.bits.uncached := output_uncached
+  io.icache_resp.bits.mmu_error := output_mmu_error
   
 
   
