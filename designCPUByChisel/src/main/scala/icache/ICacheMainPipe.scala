@@ -133,16 +133,24 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s1_responses_ready = RegInit(false.B)
   val s1_mmu_received = RegInit(false.B)
   val s1_array_received = RegInit(false.B)
-  s1_cango := (s1_array_received && mmu_resp_fire) ||
-              (array_resp_fire && mmu_resp_fire)
+  s1_cango := (s1_array_received || array_resp_fire) &&
+              (s1_mmu_received || mmu_resp_fire)
 
   val s1_array_received_data = Reg(new arrayReadData)
+  val s1_mmu_received_data = Reg(new mmuReadData)
     // 记录响应接收状态
   when(s1_fire || s1_flush) {
     s1_array_received := false.B
-  }.elsewhen(array_resp_fire && !mmu_resp_fire) {
+  }.elsewhen(array_resp_fire) {
     s1_array_received := true.B
     s1_array_received_data := io.arrays_read.resp.data
+  }
+
+  when(s1_fire || s1_flush) {
+    s1_mmu_received := false.B
+  }.elsewhen(mmu_resp_fire) {
+    s1_mmu_received := true.B
+    s1_mmu_received_data := io.mmu.resp
   }
   // === Stage 2: 标签比较和命中判断 ===
   val s2_valid = RegInit(false.B)
@@ -159,11 +167,41 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   
   val s3_ready = Wire(Bool())
   val s2_fire = ( s2_valid && s3_ready)
-  val s2_is_uncached_access = RegInit(false.B)
+  val s2_is_uncached_access = s2_mmu_error || s2_uncached
   s2_ready := s2_fire || !s2_valid
       // 从物理地址计算索引和标签
 
-  val curr_ptag = io.mmu.resp.data.paddr(31, blockOffBits + idxBits)
+  val s1_ptag = Mux(s1_mmu_received, s1_mmu_received_data.data.paddr(31, blockOffBits + idxBits), io.mmu.resp.data.paddr(31, blockOffBits + idxBits))
+  val s1_array_data_read = Mux(s1_array_received, s1_array_received_data, io.arrays_read.resp.data)
+  val s1_paddr = Mux(s1_mmu_received, s1_mmu_received_data.data.paddr, io.mmu.resp.data.paddr)
+  // s1_vidx has
+
+  val s3_ptag    = Wire(UInt(tagBits.W))
+  val s3_pidx    = Wire(UInt(idxBits.W))
+  //val s3_array_data = Wire(new arrayReadData)
+
+  val miss_data_valid = RegInit(false.B)
+  val s3_valid = RegInit(false.B)
+  val s3_vaddr = Reg(UInt(32.W))
+  val s3_paddr = Reg(UInt(32.W))
+  val s3_uncached = Reg(Bool())
+  val s3_mmu_error = Reg(Bool())
+  val s3_hit    = Reg(Bool())
+
+  val s3_miss   = Reg(Bool())
+  
+  val s3_hit_way    = Reg(UInt(wayBits.W))
+  val miss_data_buffer = Reg(UInt((blockBytes * 8).W))
+  val s1_bypass_data = miss_data_buffer
+  val s1_can_bypass = (s1_ptag === s3_ptag && s1_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s3_mmu_error)
+  val s1_bypass_hit_way    = io.victim_read.resp
+
+  val s2_bypass_data_from_s1 = Reg(UInt((blockBytes * 8).W))
+  
+  val s2_can_bypass_from_s1 = RegInit(false.B)
+  val s2_hit_way_from_s1    = Reg(UInt(wayBits.W))
+  
+  //miss_data_buffer
 
   when(s2_flush) {
     s2_valid := false.B
@@ -171,18 +209,21 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s2_valid := true.B
     
     //查看保存的状态以获取正确的array数据
-    s2_array_data := Mux(s1_array_received, s1_array_received_data, io.arrays_read.resp.data)
+    s2_array_data := s1_array_data_read
 
     s2_vaddr := s1_vaddr
     s2_vidx  := s1_vidx
     s2_vtag  := s1_vtag
-    s2_paddr := io.mmu.resp.data.paddr
-    s2_ptag  := curr_ptag
-    s2_uncached := io.mmu.resp.data.uncached
-    s2_mmu_error := io.mmu.resp.data.error
-    s2_is_uncached_access := io.mmu.resp.data.uncached || io.mmu.resp.data.error
+    s2_paddr := s1_paddr
+    s2_ptag  := s1_ptag
+    s2_uncached := Mux(s1_mmu_received, s1_mmu_received_data.data.uncached, io.mmu.resp.data.uncached)
+    s2_mmu_error := Mux(s1_mmu_received, s1_mmu_received_data.data.error, io.mmu.resp.data.error)
 
-  }.otherwise {
+    s2_bypass_data_from_s1 := s1_bypass_data
+    s2_can_bypass_from_s1 := s1_can_bypass
+    s2_hit_way_from_s1 := s1_bypass_hit_way
+
+  }.elsewhen(s2_fire) {
     s2_valid := false.B
   }
   val tag_hits = Wire(  Vec(nWays, Bool()) )
@@ -200,14 +241,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
   
   // === Stage 3: 处理hit、miss以及uncache（mmu异常） ===
-  val s3_valid = RegInit(false.B)
-  val s3_vaddr = Reg(UInt(32.W))
-  val s3_paddr = Reg(UInt(32.W))
-  val s3_uncached = Reg(Bool())
-  val s3_mmu_error = Reg(Bool())
-  val s3_hit    = Reg(Bool())
-  val s3_hit_way    = Reg(UInt(wayBits.W))
-  val s3_miss   = Reg(Bool())
+
   val s3_cacheLine_data  = Reg(UInt((blockBytes * 8).W))
 
   //TODO：请根据写的状态机正确处理s3_ready
@@ -215,6 +249,17 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   //三种情况满足一种即可ready
   //s3_ready := false.B //TODO
 
+  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: Nil = Enum(9)
+  
+  val state = RegInit(s_idle)
+  val next_state = WireInit(s_idle)
+  val cpu_ready = true.B
+
+  val s3_fire =((s3_valid && s3_hit) || state === s_done )&& cpu_ready
+
+
+  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s3_mmu_error)
+  val s2_bypass_data = miss_data_buffer
   when(s3_flush) {
     s3_valid := false.B
   }.elsewhen(s2_fire && !s2_flush) {
@@ -225,16 +270,25 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s3_uncached := s2_uncached
     s3_mmu_error := s2_mmu_error
 
-    s3_hit := s2_hit 
-    s3_hit_way := s2_hit_way //指示替换算法等
-    s3_miss := s2_cache_miss
-    s3_cacheLine_data := s2_cacheLine_data
+    s3_hit := s2_hit || s2_can_bypass_from_s1 || s2_can_bypass
+    s3_hit_way := Mux(s2_can_bypass_from_s1, s2_hit_way_from_s1, (
 
-  }.otherwise {
+      Mux(s2_can_bypass, io.victim_read.resp ,s2_hit_way)
+
+    )) 
+
+    s3_miss := s2_cache_miss && ( !s2_can_bypass_from_s1 && !s2_can_bypass)
+    s3_cacheLine_data := Mux(s2_can_bypass_from_s1, s2_bypass_data_from_s1, (
+
+      Mux(s2_can_bypass, s2_bypass_data ,s2_cacheLine_data)
+
+    )) 
+
+  }.elsewhen(s3_fire) {
     s3_valid := false.B
   }
-  val s3_ptag = s3_paddr(31, blockOffBits + idxBits)
-  val s3_pidx = s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
+  s3_ptag := s3_paddr(31, blockOffBits + idxBits)
+  s3_pidx := s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
 
   // === Stuation1：Hit时 ===
   // Task1：在s3_cacheLine_data这个一整个CacheLine中提取最多fetchWidth条指令出来（如何跨Cache行了不够则能取多少取多少）
@@ -273,15 +327,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Task1：暂定，暂认为不会出现此错误，保留处理的接口即可
 
   // === 状态机定义 ===
-  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: Nil = Enum(9)
-  
-  val state = RegInit(s_idle)
-  val next_state = WireInit(s_idle)
-  val cpu_ready = true.B
+
   // 状态转移逻辑
   switch(state) {
     is(s_idle) {
-      when(s3_valid && !s3_flush) {
+      when(s3_valid && !s3_flush && !s3_hit) {
         // 根据Stage 2的结果选择下一个状态
         when(s3_mmu_error) {
           next_state := s_mmu_error_state
@@ -370,7 +420,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // 1. 命中处理
   val hit_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
   val hit_valids = Wire(Vec(fetchWidth, Bool()))
-  val word_offset = s3_vaddr(blockOffBits-1, 2)  // 摄取低两位，计算字偏移
+  val word_offset = Wire(UInt(5.W))
+    
+  word_offset :=  s3_vaddr(blockOffBits-1, 2)  // 摄取低两位，计算字偏移
   
   for (i <- 0 until fetchWidth) {
     val word_offset_i = (word_offset + i.U)// % (blockBytes/4).U
@@ -380,8 +432,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
 
   // 2. 缺失处理
-  val miss_data_buffer = Reg(UInt((blockBytes * 8).W))
-  val miss_data_valid = RegInit(false.B)
+
+
 
   val miss_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
   val miss_valids = Wire(Vec(fetchWidth, Bool()))
@@ -433,15 +485,18 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   
   // 根据状态选择输出
   switch(state) {
-    is(s_done) {
-      when(s3_hit) {
+    is(s_idle){
+      when(s3_hit && s3_valid) {
         output_instrs := hit_instrs
         output_instvalids := hit_valids
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
         output_mmu_error := false.B
-      }.elsewhen(miss_data_valid) {
+      }
+    }
+    is(s_done) {
+      when(miss_data_valid) {
         output_instrs := miss_instrs
         output_instvalids := miss_valids
         output_valid := true.B
@@ -502,12 +557,12 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 3准备好接收新数据的条件：空闲状态或完成状态且外层已准备好
 
   
-  s3_ready := (state === s_idle) || (state === s_done && cpu_ready)//io.cpu_ready)
+  s3_ready := ((state === s_idle && s3_valid && s3_hit)) || (state === s_idle && !s3_valid) || (state === s_done && cpu_ready)//io.cpu_ready)
   
   // === 各状态的具体任务 ===
   
   // 1. 命中状态
-  when(state === s_hit) {
+  when(s3_hit) {
     // 更新替换算法
     io.replacer_touch.valid := true.B
     io.replacer_touch.idx   := s3_pidx
@@ -630,8 +685,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   when(state === s_done && cpu_ready){
   
     miss_data_valid := false.B
-    miss_data_buffer := 0.U
-    uncache_data_buffer := io.axi.r.data.rdata
+
     uncache_data_valid := false.B
 
   }

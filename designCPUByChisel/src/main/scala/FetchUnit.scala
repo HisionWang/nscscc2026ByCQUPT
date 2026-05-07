@@ -10,12 +10,14 @@ class FetchUnit(implicit p: Parameters) extends NSModule {
     // 连接ICache
     val icache_req = new Bundle {
       val addr  = Output(UInt(32.W))
+      val ready  = Input(Bool())
+
       val valid = Output(Bool())
       val kill  = Output(Bool())
     }
     
     val icache_resp = new Bundle {
-      val instrs = Input(Vec(4, UInt(32.W)))
+      val instrs = Input(Vec(fetchWidth, UInt(32.W)))
       val addr   = Input(UInt(32.W))
       val valid  = Input(Bool())
       val miss   = Input(Bool())
@@ -23,7 +25,7 @@ class FetchUnit(implicit p: Parameters) extends NSModule {
     
     // 到后端的输出
     val fetch_packet = Decoupled(new Bundle {
-      val instrs = Output(Vec(4, UInt(32.W)))
+      val instrs = Output(Vec(fetchWidth, UInt(32.W)))
       val pc     = Output(UInt(32.W))
     })
     
@@ -51,9 +53,13 @@ class FetchUnit(implicit p: Parameters) extends NSModule {
   val s_IDLE :: s_FETCH :: s_WAIT :: Nil = Enum(3)
   
   // 连接ICache
-  io.icache_req.valid := fetch_state === s_FETCH && pc_valid
+  io.icache_req.valid := io.icache_req.ready && pc_valid
   io.icache_req.addr := pc_reg
   io.icache_req.kill := false.B
+  
+  when(io.icache_req.ready && pc_valid) {
+    pc_reg := pc_reg + (fetchWidth * 4).U
+  }
   
   // 状态机
   switch(fetch_state) {
@@ -71,13 +77,14 @@ class FetchUnit(implicit p: Parameters) extends NSModule {
 
       when(io.icache_resp.valid) {
         fetch_state := s_IDLE
-        pc_reg := pc_reg + 16.U
+        //pc_reg := pc_reg + 16.U
       }.elsewhen(io.flush) {
         fetch_state := s_IDLE
       }
 
     }
   }
+
   
   // 输出到后端
   io.fetch_packet.valid := io.icache_resp.valid && fetch_state === s_WAIT

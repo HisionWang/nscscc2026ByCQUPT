@@ -53,6 +53,16 @@ class victimChange(implicit p: Parameters) extends NSBundle {
     val way   = Output(UInt(wayBits.W))
 }
 
+class mmuReadData(implicit p: Parameters) extends  NSBundle{
+    val valid    = Bool()      // 转换结果有效
+    val data =  new Bundle {
+        val paddr    = UInt(32.W)  // 物理地址
+        val uncached = Bool()      // 是否为uncached访问
+        val error    = Bool()      // 转换错误(如TLB缺失)，我不清楚是否只有这一个异常，如果有很多那这个信号的位数不止一位
+    }
+
+}
+
 class MMURead(implicit p: Parameters) extends NSBundle {
   // 请求
   val req = Output(new Bundle {
@@ -60,12 +70,5 @@ class MMURead(implicit p: Parameters) extends NSBundle {
     val valid = Bool()         // 转换请求有效
   })
   // 响应
-  val resp = Input(new Bundle {
-    val valid    = Bool()      // 转换结果有效
-    val data =  new Bundle {
-        val paddr    = UInt(32.W)  // 物理地址
-        val uncached = Bool()      // 是否为uncached访问
-        val error    = Bool()      // 转换错误(如TLB缺失)，我不清楚是否只有这一个异常，如果有很多那这个信号的位数不止一位
-    }
-  })
+  val resp = Input(new mmuReadData)
 }

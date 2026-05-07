@@ -46,9 +46,9 @@ trait HasCoreParameters {
   val burstNum: Int = p(CPUConfigKeys.burstNumKey)
 
   val  nSets:      Int = 256
-  val  nWays:      Int = 4
+  val  nWays:      Int = 2
   val  blockBytes: Int = 64
-  val  fetchWidth: Int = 4
+  val  fetchWidth: Int = 6
   val  instrBytes: Int = 4
   val  nMSHR:      Int = 4
   val  replacerMode:   String = "plru"

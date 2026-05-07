@@ -2,54 +2,33 @@ module FetchUnit(
   input         clock,
   input         reset,
   output [31:0] io_icache_req_addr, // @[src/main/scala/FetchUnit.scala 9:14]
+  input         io_icache_req_ready, // @[src/main/scala/FetchUnit.scala 9:14]
   output        io_icache_req_valid, // @[src/main/scala/FetchUnit.scala 9:14]
-  input         io_icache_resp_valid, // @[src/main/scala/FetchUnit.scala 9:14]
   input         io_start_valid // @[src/main/scala/FetchUnit.scala 9:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
-  reg [31:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
-  reg [31:0] pc_reg; // @[src/main/scala/FetchUnit.scala 40:23]
-  reg  pc_valid; // @[src/main/scala/FetchUnit.scala 41:25]
-  wire [31:0] _GEN_0 = io_start_valid ? 32'h1c000000 : pc_reg; // @[src/main/scala/FetchUnit.scala 44:24 45:12 40:23]
-  wire  _GEN_1 = io_start_valid | pc_valid; // @[src/main/scala/FetchUnit.scala 44:24 46:14 41:25]
-  reg [1:0] fetch_state; // @[src/main/scala/FetchUnit.scala 50:28]
-  wire [31:0] _pc_reg_T_1 = pc_reg + 32'h10; // @[src/main/scala/FetchUnit.scala 74:26]
-  wire [1:0] _GEN_5 = io_icache_resp_valid ? 2'h0 : fetch_state; // @[src/main/scala/FetchUnit.scala 72:34 73:21]
-  wire [31:0] _GEN_6 = io_icache_resp_valid ? _pc_reg_T_1 : _GEN_0; // @[src/main/scala/FetchUnit.scala 72:34 74:16]
-  assign io_icache_req_addr = pc_reg; // @[src/main/scala/FetchUnit.scala 55:22]
-  assign io_icache_req_valid = fetch_state == 2'h1 & pc_valid; // @[src/main/scala/FetchUnit.scala 54:50]
+  reg [31:0] pc_reg; // @[src/main/scala/FetchUnit.scala 42:23]
+  reg  pc_valid; // @[src/main/scala/FetchUnit.scala 43:25]
+  wire  _GEN_1 = io_start_valid | pc_valid; // @[src/main/scala/FetchUnit.scala 46:24 48:14 43:25]
+  wire  _io_icache_req_valid_T = io_icache_req_ready & pc_valid; // @[src/main/scala/FetchUnit.scala 56:46]
+  wire [31:0] _pc_reg_T_1 = pc_reg + 32'h18; // @[src/main/scala/FetchUnit.scala 61:22]
+  assign io_icache_req_addr = pc_reg; // @[src/main/scala/FetchUnit.scala 57:22]
+  assign io_icache_req_valid = io_icache_req_ready & pc_valid; // @[src/main/scala/FetchUnit.scala 56:46]
   always @(posedge clock) begin
-    if (reset) begin // @[src/main/scala/FetchUnit.scala 40:23]
-      pc_reg <= 32'h1c000000; // @[src/main/scala/FetchUnit.scala 40:23]
-    end else if (2'h0 == fetch_state) begin // @[src/main/scala/FetchUnit.scala 59:23]
-      pc_reg <= _GEN_0;
-    end else if (2'h1 == fetch_state) begin // @[src/main/scala/FetchUnit.scala 59:23]
-      pc_reg <= _GEN_0;
-    end else if (2'h2 == fetch_state) begin // @[src/main/scala/FetchUnit.scala 59:23]
-      pc_reg <= _GEN_6;
-    end else begin
-      pc_reg <= _GEN_0;
+    if (reset) begin // @[src/main/scala/FetchUnit.scala 42:23]
+      pc_reg <= 32'h1c000000; // @[src/main/scala/FetchUnit.scala 42:23]
+    end else if (_io_icache_req_valid_T) begin // @[src/main/scala/FetchUnit.scala 60:41]
+      pc_reg <= _pc_reg_T_1; // @[src/main/scala/FetchUnit.scala 61:12]
+    end else if (io_start_valid) begin // @[src/main/scala/FetchUnit.scala 46:24]
+      pc_reg <= 32'h1c000000; // @[src/main/scala/FetchUnit.scala 47:12]
     end
-    if (reset) begin // @[src/main/scala/FetchUnit.scala 41:25]
-      pc_valid <= 1'h0; // @[src/main/scala/FetchUnit.scala 41:25]
+    if (reset) begin // @[src/main/scala/FetchUnit.scala 43:25]
+      pc_valid <= 1'h0; // @[src/main/scala/FetchUnit.scala 43:25]
     end else begin
       pc_valid <= _GEN_1;
-    end
-    if (reset) begin // @[src/main/scala/FetchUnit.scala 50:28]
-      fetch_state <= 2'h0; // @[src/main/scala/FetchUnit.scala 50:28]
-    end else if (2'h0 == fetch_state) begin // @[src/main/scala/FetchUnit.scala 59:23]
-      if (pc_valid) begin // @[src/main/scala/FetchUnit.scala 61:35]
-        fetch_state <= 2'h1; // @[src/main/scala/FetchUnit.scala 62:21]
-      end
-    end else if (2'h1 == fetch_state) begin // @[src/main/scala/FetchUnit.scala 59:23]
-      if (io_icache_req_valid) begin // @[src/main/scala/FetchUnit.scala 66:46]
-        fetch_state <= 2'h2; // @[src/main/scala/FetchUnit.scala 67:21]
-      end
-    end else if (2'h2 == fetch_state) begin // @[src/main/scala/FetchUnit.scala 59:23]
-      fetch_state <= _GEN_5;
     end
   end
 // Register and memory initialization
@@ -92,8 +71,6 @@ initial begin
   pc_reg = _RAND_0[31:0];
   _RAND_1 = {1{`RANDOM}};
   pc_valid = _RAND_1[0:0];
-  _RAND_2 = {1{`RANDOM}};
-  fetch_state = _RAND_2[1:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

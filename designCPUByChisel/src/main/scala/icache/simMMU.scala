@@ -28,8 +28,8 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   stage2_vaddr := stage1_vaddr
   
   // 响应输出
-  io.mmu.resp.valid := stage2_valid
-  io.mmu.resp.data.paddr := stage2_vaddr  // 恒等映射
+  io.mmu.resp.valid := stage1_valid
+  io.mmu.resp.data.paddr := stage1_vaddr  // 恒等映射
   io.mmu.resp.data.uncached := false.B   // 默认cached
   io.mmu.resp.data.error := false.B      // 默认无错误
   

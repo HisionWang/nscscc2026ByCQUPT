@@ -1,4 +1,4 @@
-module SimpleBlockRAM_4(
+module SimpleBlockRAM_2(
   input          clock,
   input          io_wr_en, // @[src/main/scala/icache/BlockRAM.scala 15:14]
   input  [7:0]   io_wr_addr, // @[src/main/scala/icache/BlockRAM.scala 15:14]

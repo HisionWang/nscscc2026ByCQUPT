@@ -126,8 +126,9 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // --------------------------
   icache.io.cpu_resp.instrs <> fetch_unit.io.icache_resp.instrs
   icache.io.cpu_resp.addr   <> fetch_unit.io.icache_resp.addr
+  fetch_unit.io.icache_resp.valid <> icache.io.cpu_resp.valid
   
-  fetch_unit.io.icache_resp.valid := icache.io.cpu_req.ready 
+  fetch_unit.io.icache_req.ready := icache.io.cpu_req.ready 
 
   icache.io.cpu_resp.miss   <> fetch_unit.io.icache_resp.miss
 
