@@ -33,10 +33,12 @@ build with mill
 - scala-version: 2.13.16
 
 ### Makefile
+verilog generation
 
 branch mmu_dev
 此分支下Mafefile默认构架方式修改为项目中给定的mill
-EMIT_TOPS指定顶层构建对象(转换为verilog的module), verilog生成到以下路径
+EMIT_TOPS指定顶层构建对象, 虽然Elaborate有多个同时转换的相关实现, 但是Makefile中只使用最后一个,
+verilog生成到以下路径
 `BUILD_DIR := ./build
 RTL_DIR   := $(BUILD_DIR)/rtl`
 对应顶层为main/scala/Elaborate.scala
