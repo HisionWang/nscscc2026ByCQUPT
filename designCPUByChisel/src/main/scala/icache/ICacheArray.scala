@@ -1,10 +1,11 @@
+package nscscc.icache
+
 import chisel3._
 import chisel3.util._
-import ICacheBunble._
-import config._
-import config.Parameters
-import config.NSModule
-import config.NSBundle
+import nscscc.config._
+import nscscc.config.Parameters
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
 // 内部存储单元定义
 class MetaEntry(implicit p: Parameters) extends NSBundle {
   val valid = Bool()

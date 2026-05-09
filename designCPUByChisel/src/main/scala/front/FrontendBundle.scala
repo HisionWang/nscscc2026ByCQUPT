@@ -1,11 +1,11 @@
-package Frontend
+package nscscc.frontend
 
 import chisel3._
 import chisel3.util._
-import config.Parameters
-import config._
-import config.NSModule
-import config.NSBundle
+import nscscc.config.Parameters
+import nscscc.config._
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
 
 class RedirectIO(implicit p: Parameters) extends NSBundle {
   val target = Output(UInt(32.W))

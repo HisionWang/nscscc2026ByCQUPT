@@ -1,8 +1,10 @@
+package nscscc.icache
+
 import chisel3._
 import chisel3.util._
-import config.Parameters
-import config.NSModule
-import config.NSBundle
+import nscscc.config.Parameters
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
 
 // SimpleBlockRAM 模块（与Xilinx Block Memory IP核兼容）
 class SimpleBlockRAM(

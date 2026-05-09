@@ -1,5 +1,5 @@
 // 文件: src/main/scala/config/NSCore.scala
-package config
+package nscscc.config
 
 import chisel3._
 import chisel3.util._

@@ -1,11 +1,12 @@
-
+package nscscc.icache
 
 import chisel3._
-import ICacheBunble._
 import chisel3.util._
 
-import config.Parameters
-import config.NSModule
+import nscscc.axi._
+
+import nscscc.config.Parameters
+import nscscc.config.NSModule
 // OK
 class ICache(implicit p: Parameters) extends NSModule {
   

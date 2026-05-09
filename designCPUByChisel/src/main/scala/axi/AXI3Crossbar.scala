@@ -1,9 +1,11 @@
+package nscscc.axi
+
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
-import config.NSModule
-import config.NSBundle
-import config.Parameters
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
+import nscscc.config.Parameters
 
 // 4转1 AXI3转接桥
 class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
@@ -153,7 +155,7 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   val aw_master_valid = RegInit(false.B)
   val aw_master_idx = Reg(UInt(2.W))
   
-  when(aw_arbiter.io.out.fire()) {
+  when(aw_arbiter.io.out.fire) {
     aw_master_valid := true.B
     aw_master_idx := aw_arbiter.io.chosen
   }.elsewhen(io.out.w.data.wlast && io.out.w.data.wvalid && io.out.w.wready) {

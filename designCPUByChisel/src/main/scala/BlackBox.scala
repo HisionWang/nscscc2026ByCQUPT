@@ -1,8 +1,11 @@
+package nscscc
+
 import chisel3._
 import chisel3.util._
-import config.NSModule
-import config.NSBundle
-import config.Parameters  // 导入Parameters类型
+import nscscc.axi._
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
+import nscscc.config.Parameters  // 导入Parameters类型
 class cache_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBoxResource {
     val io = IO(new Bundle {
     // 对外AXI3 Master接口（对接转接桥）

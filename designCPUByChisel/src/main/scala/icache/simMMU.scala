@@ -1,9 +1,10 @@
+package nscscc.icache
+
 import chisel3._
 import chisel3.util._
-import config.Parameters
-import config.NSModule
-import config.NSBundle
-import ICacheBunble._
+import nscscc.config.Parameters
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
 class SimpleMMU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val mmu = Flipped(new MMURead)

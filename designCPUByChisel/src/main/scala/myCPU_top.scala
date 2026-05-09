@@ -1,10 +1,18 @@
+package nscscc
+
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
-import config.NSModule
-import config.NSRawModule
-import config.NSBundle
-import config.Parameters  // 导入Parameters类型
+import nscscc.config.NSModule
+import nscscc.config.NSRawModule
+import nscscc.config.NSBundle
+import nscscc.config.Parameters  // 导入Parameters类型
+
+import nscscc.axi._
+import nscscc.icache._
+import nscscc.frontend._
+import nscscc.difftest._
+
 // 代码全是AI写的，应该一坨，但是可以转成v成功
 class core_top(implicit p: Parameters) extends NSRawModule {
     // 覆盖默认的时钟和复位信号的名称
@@ -111,10 +119,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   uncache2.io.cpu_if.req_addr  := 0.U
   uncache2.io.cpu_if.req_valid := false.B
 
-
   val axi_crossbar = Module(new AXI3Crossbar4to1)
   val icache       = Module(new ICache)
   val fetch_unit = Module(new IFU)
+  fetch_unit.io <> DontCare /* fallback */
 
   // 连接前端和ICache
   fetch_unit.io.icache_req.addr  <> icache.io.cpu_req.bits.addr
@@ -136,6 +144,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   fetch_unit.io.stall := false.B
 
   val inst_buffer = Module(new IBF)
+  inst_buffer.io <> DontCare
 
   //fetch_unit.io.fetch_packet.ready := true.B
 

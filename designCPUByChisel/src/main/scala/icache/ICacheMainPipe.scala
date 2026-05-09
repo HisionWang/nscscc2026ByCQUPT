@@ -1,10 +1,12 @@
+package nscscc.icache
+
 import chisel3._
 import chisel3.util._
-import config.Parameters
-import config._
-import config.NSModule
-import config.NSBundle
-import ICacheBunble._
+import nscscc.axi._
+import nscscc.config.Parameters
+import nscscc.config._
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     
@@ -565,9 +567,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
 
 
-  io.axi.aw <> 0.U.asTypeOf(new AXI3AWChannel)
-  io.axi.w <> 0.U.asTypeOf(new AXI3WChannel)
-  io.axi.b <> 0.U.asTypeOf(new AXI3BChannel)
+  io.axi.aw <> WireDefault(0.U.asTypeOf(new AXI3AWChannel))
+  io.axi.w  <> WireDefault(0.U.asTypeOf(new AXI3WChannel))
+  io.axi.b  <> WireDefault(0.U.asTypeOf(new AXI3BChannel))
   
   // 2. 缺失状态 - 发起AXI请求
   val axi_burst_length = (blockBytes / 4 - 1).U  // 突发长度，以字为单位

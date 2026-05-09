@@ -1,13 +1,14 @@
+package nscscc.frontend
 
 import chisel3._
-import Frontend._
-import ICacheBunble._
+import nscscc.frontend._
+import nscscc.icache._
 
 import chisel3.util._
 import chisel3.util.experimental.BoringUtils
-import config._
-import config.NSModule
-import config.NSBundle
+import nscscc.config._
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
 
 // 龙芯32位指令缓冲组件 - 支持可配置发射宽度
 class IBF(implicit p: Parameters) extends NSModule {
@@ -24,7 +25,8 @@ class IBF(implicit p: Parameters) extends NSModule {
     
     // 后端就绪信号，与发射宽度相同
     val backendReady = Input(Vec(issueWidth, Bool()))
-  })
+})
+  io.out.foreach(_.bits := DontCare) // fallback
 
   // 指令缓冲区 - 环形缓冲区设计
   val instBuffer = RegInit(VecInit(Seq.fill(ibufDepth)(0.U(32.W))))
@@ -50,7 +52,7 @@ class IBF(implicit p: Parameters) extends NSModule {
   io.icacheResp.ready := canAcceptInput
   
   // 写入缓冲区逻辑
-  when(io.icacheResp.fire() && !io.flush) {
+  when(io.icacheResp.fire && !io.flush) {
     val icache = io.icacheResp.bits
     val basePc = icache.addr
     
@@ -141,7 +143,7 @@ class IBF(implicit p: Parameters) extends NSModule {
   
   // 计算实际发射的指令数（考虑握手成功）
   for (i <- 0 until issueWidth) {
-    when(io.out(i).fire()) {
+    when(io.out(i).fire) {
       issuedCount := issuedCount + 1.U
     }
   }
@@ -180,7 +182,7 @@ class IBF(implicit p: Parameters) extends NSModule {
   val dequeueCounter = RegInit(0.U(32.W))
   val issueWidthCounter = RegInit(VecInit(Seq.fill(issueWidth+1)(0.U(32.W))))
   
-  when(io.icacheResp.fire()) {
+  when(io.icacheResp.fire) {
     enqueueCounter := enqueueCounter + PopCount(io.icacheResp.bits.instvalids)
   }
   

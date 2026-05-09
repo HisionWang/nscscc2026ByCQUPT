@@ -1,9 +1,11 @@
+package nscscc.frontend
+
 import chisel3._
 import chisel3.util._
-import config.Parameters
-import config.NSModule
-import config.NSBundle
-import ICacheBunble._
+import nscscc.config.Parameters
+import nscscc.config.NSModule
+import nscscc.config.NSBundle
+import nscscc.icache._
 // 专用跳转预译码信息
 class PredecodeInfo(implicit p: Parameters) extends NSBundle {
   // 指令类型快速识别

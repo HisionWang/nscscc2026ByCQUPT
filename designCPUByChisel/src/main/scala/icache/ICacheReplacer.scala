@@ -1,9 +1,9 @@
- 
+package nscscc.icache
+
 import chisel3._
 import chisel3.util._
-import config.Parameters
-import config.NSModule
-import ICacheBunble._
+import nscscc.config.Parameters
+import nscscc.config.NSModule
 class ICacheReplacer(implicit p: Parameters) extends NSModule {
   
   val io = IO(new Bundle {

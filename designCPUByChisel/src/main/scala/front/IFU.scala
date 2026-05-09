@@ -1,10 +1,11 @@
+package nscscc.frontend
 
 import chisel3._
-import ICacheBunble._
+import nscscc.icache._
 import chisel3.util._
-import config.Parameters
-import config.NSModule
-import Frontend._
+import nscscc.config.Parameters
+import nscscc.config.NSModule
+import nscscc.frontend._
 
 class IFU(implicit p: Parameters) extends NSModule {
   
