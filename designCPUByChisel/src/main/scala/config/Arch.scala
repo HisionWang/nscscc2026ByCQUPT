@@ -96,6 +96,15 @@ object ArchConfigKeys {
   
   // 异常子代码定义
   val ESUBCODE_ADEF = new Field[Int](0x0)          // ADEF异常子代码
+  //
+  val VPPN_LEN    = new Field[Int](19)
+  val TLB_ASID_LEN  = new Field[Int](10)
+  val PPN_LEN     = new Field[Int](20)
+  val PLV_LEN     = new Field[Int](2)
+  val MAT_LEN     = new Field[Int](2)
+  val PS_LEN      = new Field[Int](6)
+  val TLBIDX_INDEX_LEN   = new Field[Int](5)
+  val INVTLB_OP_LEN      = new Field[Int](5)
 }
 
 // 定义"参数特质" - 通过ArchConfigKeys对象访问参数键
@@ -215,10 +224,19 @@ trait HasArchParameters {
   val ECODE_IPE_VAL: Int = p(ArchConfigKeys.ECODE_IPE)
   val ECODE_FPD_VAL: Int = p(ArchConfigKeys.ECODE_FPD)
   val ECODE_TLBR_VAL: Int = p(ArchConfigKeys.ECODE_TLBR)
-  
   // 异常子代码
   val ESUBCODE_ADEF_VAL: Int = p(ArchConfigKeys.ESUBCODE_ADEF)
   
+  val vppnLen: Int = p(ArchConfigKeys.VPPN_LEN)
+  val asidLen: Int = p(ArchConfigKeys.TLB_ASID_LEN)
+  val ppnLen: Int = p(ArchConfigKeys.PPN_LEN)
+  val plvLen: Int = p(ArchConfigKeys.PLV_LEN)
+  val matLen: Int = p(ArchConfigKeys.MAT_LEN)
+  val psLen: Int = p(ArchConfigKeys.PS_LEN)
+
+  val invtlbOpLen: Int = p(ArchConfigKeys.INVTLB_OP_LEN)
+
+
   // 实用函数：提取位域
   def extractField(data: UInt, hi: Int, lo: Int): UInt = {
     data(hi, lo)

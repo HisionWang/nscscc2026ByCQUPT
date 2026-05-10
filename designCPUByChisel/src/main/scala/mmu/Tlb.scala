@@ -5,7 +5,9 @@ import chisel3.util._
 
 import nscscc.config._
 
-class Tlb(implicit p: Parameters) extends NSModule {
+class Tlb(implicit p: Parameters) extends NSModule 
+  with HasArchParameters
+{
   val io = IO(new Bundle {
     val search = Vec(nrSearchPort, new Bundle {
       val req  = Flipped(Decoupled(new TlbSearchReq))

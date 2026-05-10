@@ -20,6 +20,11 @@ object CPUConfigKeys {
   val burstNumKey = new Field[Int](16)
 }
 
+object MmuconfigKeys {
+  val TlbNum = new Field[Int](32)
+  val TlbSearchPortNum = new Field[Int](2)
+}
+
 // 4. 定义"参数特质" - 通过CPUConfigKeys对象访问参数键
 trait HasCoreParameters {
   implicit val p: Parameters
@@ -42,7 +47,7 @@ trait HasCoreParameters {
 
 
 
-  val xlen: Int = p(CPUConfigKeys.XLENKey)
+  val XLEN : Int = p(CPUConfigKeys.XLENKey)
   val burstNum: Int = p(CPUConfigKeys.burstNumKey)
 
   val  nSets:      Int = 256
@@ -67,12 +72,12 @@ trait HasCoreParameters {
   val instrsPerLineBits = log2Ceil(instrsPerLine)
   val fetchBytes  = fetchWidth * instrBytes
 
-
-
   val icacheAxiMissId : Int = 0
   val icacheAxiNucacheId : Int = 1
   
-
+  val nrTlb: Int = p(MmuconfigKeys.TlbNum)
+  val nrSearchPort: Int = p(MmuconfigKeys.TlbSearchPortNum)
+  val tlbIdxLen: Int = log2Ceil(nrTlb)
 }
 
  

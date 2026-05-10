@@ -17,7 +17,7 @@ RTL_DIR   := $(BUILD_DIR)/rtl
 SCALA_FILES := $(shell find ./src/main/scala -name "*.scala")
 
 # EMIT_TOPS := nscscc.core_top
-EMIT_TOPS := nscscc.mmu.Mmu
+EMIT_TOPS := nscscc.mmu.Tlb
 # only last valid
 TOP_V     := $(RTL_DIR)/$(lastword $(subst ., ,$(EMIT_TOPS))).sv
 

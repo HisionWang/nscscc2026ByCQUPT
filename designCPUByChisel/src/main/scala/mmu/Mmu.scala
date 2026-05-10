@@ -65,7 +65,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
   // 非idle不接受请求，每次处理一个search请求
   // locked
-  ifTlbReq.valid        := fromIcache.valid && useTlb && !fromIcacheFlush
+  ifTlbReq.valid        := io.fromIcache.valid && useTlb && !io.fromIcacheFlush
   ifTlbReq.bits.vppn    := reqVaddr(31, 13)
   ifTlbReq.bits.vaBit12 := reqVaddr(12)
   ifTlbReq.bits.offset  := reqVaddr(22,  0)
@@ -78,9 +78,9 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
   // Response
   /* TLB <> MMU <> ICACHE */
-  io.toIcache.valid := (ifTlbResp.valid || hitDmw) && !io.fromIcacheFlush
+  io.toIcache.valid := (ifTlbResp.valid || dmwHit) && !io.fromIcacheFlush
   val resp       = ifTlbResp.bits
-  val tlbError   = WireDefault(new emptyError)
+  val tlbError   = WireDefault(emptyError())
   val tlbOut     = WireDefault(0.U.asTypeOf(new MmuToIcache))
 
   tlbError.excpTlbRefill := !resp.found
@@ -107,7 +107,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
   }.otherwise {
     when (useTlb) {
       state := sBusy
-    }.elsewhen(io.ifTlbResp.fire && isBusy) {
+    }.elsewhen(ifTlbResp.fire && isBusy) {
       state := sIdle
     }
   }
