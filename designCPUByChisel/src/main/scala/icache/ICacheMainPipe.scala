@@ -9,12 +9,12 @@ import nscscc.config.NSModule
 import nscscc.config.NSBundle
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    
+
     // CPU接口
     val cpu_req = Flipped( Decoupled(new Bundle {
       val addr  = (UInt(32.W))   // 虚拟地址
     }))
-    
+
     val icache_resp = Decoupled(new IcacheResp)
 
     val axi         = new AXI3MasterIO

@@ -1,4 +1,4 @@
-package nscscc.core.mmu
+package nscscc.mmu
 
 import chisel3._
 import chisel3.util._
@@ -28,7 +28,7 @@ class TlbSearchReq(implicit p: Parameters) extends NSBundle {
   val vaBit12 = Bool()
   val asid    = UInt(asidLen.W)
 }
- 
+
 class TlbSearchResp(implicit p: Parameters) extends NSBundle {
   val found = Bool()
   val index = UInt(tlbIdxLen.W)
@@ -39,7 +39,7 @@ class TlbSearchResp(implicit p: Parameters) extends NSBundle {
   val d     = Bool()
   val v     = Bool()
 }
- 
+
 class TlbWriteReq(implicit p: Parameters) extends NSBundle {
   val index = UInt(tlbIdxLen.W)
   val e     = Bool()
@@ -58,7 +58,7 @@ class TlbWriteReq(implicit p: Parameters) extends NSBundle {
   val d1    = Bool()
   val v1    = Bool()
 }
- 
+
 class TlbReadResp(implicit p: Parameters) extends NSBundle {
   val e    = Bool()
   val vppn = UInt(vppnLen.W)
@@ -76,10 +76,13 @@ class TlbReadResp(implicit p: Parameters) extends NSBundle {
   val d1   = Bool()
   val v1   = Bool()
 }
- 
+
 class InvtlbReq(implicit p: Parameters) extends NSBundle {
   val op   = UInt(invtlbOpLen.W)
   val asid = UInt(asidLen.W)
   val vpn  = UInt(vppnLen.W)
 }
- 
+
+class MmuToIcache(implicit p: Parameters) extends NSBundle {
+  val 
+}

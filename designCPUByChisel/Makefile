@@ -34,10 +34,7 @@ $(TOP_V): $(SCALA_FILES) $(BUILD_FILES)
 	--target-dir $(RTL_DIR) 						\
 	--split-verilog
 
-.PHONY: all run-sbt run-make clean verilog
-
-# 默认目标
-all: sbt sim
+.PHONY: all run-sbt run-make clean verilog clean_mill
 
 sbt:
 	cd $(SBT_DIR) && \
@@ -52,3 +49,6 @@ sim:
 clean:
 	cd $(SBT_DIR) && sbt clean
 	cd $(MAKE_DIR) && $(MAKE) clean
+
+clean_mill:
+	rm -rf $(BUILD_DIR) out

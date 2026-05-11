@@ -18,7 +18,7 @@ class cache_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBoxRe
         val resp_valid = Output(Bool())   
       }
   })
-  
+
 
 }
 
@@ -34,7 +34,7 @@ class uncache1_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBo
       val resp_valid = Output(Bool())   // Cache返回有效
     }
   })
-  
+
 
 }
 class uncache2_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBoxResource {
@@ -49,7 +49,7 @@ class uncache2_BlackBox(implicit p: Parameters) extends BlackBox with HasBlackBo
       val resp_valid = Output(Bool())   // Cache返回有效
     }
   })
-  
+
 
 }
 
