@@ -23,7 +23,7 @@ class Tlb(implicit p: Parameters) extends NSModule {
   val portBusy = Wire(Vec(nrSearchPort, Bool()))
   val pipeBusy = portBusy.asUInt.orR
 
-  // tlb维护指令，阻塞search请求
+  // tlb维护指令阻塞search请求
   val maintValid = io.write.valid || io.invtlb.valid
   val blockSearch = maintValid
 
@@ -31,6 +31,7 @@ class Tlb(implicit p: Parameters) extends NSModule {
   io.write.ready  := !pipeBusy
   io.invtlb.ready := !pipeBusy && !io.write.valid
 
+  // nrSearchPort个并行流水线
   for (idx <- 0 until nrSearchPort) {
     val req   = io.search(idx).req
     val resp  = io.search(idx).resp
@@ -50,6 +51,7 @@ class Tlb(implicit p: Parameters) extends NSModule {
     req.ready := !blockSearch && !flush && s1Ready
 
     // lookup
+    // 感觉关键路径还是在stage1
     val matchVec = VecInit(entries.map { e =>
       val vppnHit = Mux(e.ps,
         e.vppn(vppnLen - 1, vppnLen - 10) === req.bits.vppn(vppnLen - 1, vppnLen - 10),
@@ -82,23 +84,23 @@ class Tlb(implicit p: Parameters) extends NSModule {
           // 奇偶页判断
           val oddPage = Mux(hitE.ps, s1Req.vppn(8), s1Req.vaBit12)
 
-          s2Resp.found := s1Found
-          s2Resp.index := s1Index
-          s2Resp.ps    := Mux(hitE.ps, 21.U, 12.U)
-          s2Resp.ppn   := Mux(oddPage, hitE.ppn1, hitE.ppn0)
-          s2Resp.v     := Mux(oddPage, hitE.v1,   hitE.v0)
-          s2Resp.d     := Mux(oddPage, hitE.d1,   hitE.d0)
-          s2Resp.mat   := Mux(oddPage, hitE.mat1, hitE.mat0)
-          s2Resp.plv   := Mux(oddPage, hitE.plv1, hitE.plv0)
+          s2Resp.offset := s1Req.offset
+          s2Resp.found  := s1Found
+          s2Resp.index  := s1Index
+          s2Resp.ps     := Mux(hitE.ps, 21.U, 12.U)
+          s2Resp.ppn    := Mux(oddPage, hitE.ppn1, hitE.ppn0)
+          s2Resp.v      := Mux(oddPage, hitE.v1,   hitE.v0)
+          s2Resp.d      := Mux(oddPage, hitE.d1,   hitE.d0)
+          s2Resp.mat    := Mux(oddPage, hitE.mat1, hitE.mat0)
+          s2Resp.plv    := Mux(oddPage, hitE.plv1, hitE.plv0)
         }
       }
-
     }
 
     resp.valid := s2Valid
     resp.bits  := s2Resp
 
-    portBusy(idx) := s1Valid || s2Valid && !flush
+    portBusy(idx) := (s1Valid || s2Valid) && !flush
   }
 
   when (io.write.fire) {

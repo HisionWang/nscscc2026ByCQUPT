@@ -5,6 +5,129 @@ import chisel3.util._
 
 import nscscc.config._
 
-class Mmu(implicit p: Parameters) extends NSModule{
+/* 只允许iFetch请求
+ * pipeline暂时没加上去, 互斥请求, icache握手之后再实现
+ * Search port相关变量没有做区分,
+ * 暂时想不到什么把不同端口驱动代码分开的简单方法,
+ * 添加新的端口会比较丑陋,需要重新命名
+ */
+class Mmu(implicit p: Parameters) extends NSModule {
+  val io = IO(new MmuIoBundle)
 
+  val tlb = Module(new Tlb)
+
+  private def emptyError(): MmuTransError = 0.U.asTypeOf(new MmuTransError)
+
+  private def hitDmw(dmw: UInt, vaddr: UInt, plv: UInt): Bool = {
+    val plvHit = (plv === 0.U && dmw(0)) || (plv === 3.U && dmw(3))
+    val segHit = dmw(31, 29) === vaddr(31, 29)
+    plvHit && segHit
+  }
+
+  private def dmwPaddr(dmw: UInt, vaddr: UInt): UInt = {
+    Cat(dmw(27, 25), vaddr(28, 0))
+  }
+
+  private def isCacheable(mat: UInt): Bool = mat === 1.U
+
+  // a mutex lock
+  // useTlb = lock, fire = unlock
+  val sIdle :: sBusy :: Nil = Enum(2)
+  val state = RegInit(sIdle)
+
+  val isIdle = state === sIdle
+  val isBusy = state === sBusy
+
+  val reqVaddr = io.fromIcache.bits.vaddr
+
+  val isPaging = io.fromCsr.pgda === 2.U
+  val isDirect = io.fromCsr.pgda === 1.U
+
+  // DMW
+  val dmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, reqVaddr, io.fromCsr.plv)
+  val dmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, reqVaddr, io.fromCsr.plv)
+  val dmwHit  = dmw0Hit || dmw1Hit
+  val useTlb  = isPaging && !dmwHit // DMW miss
+
+  val directResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
+  directResp.paddr := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),
+                      Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), reqVaddr))
+  //directResp.cacheable := Mux(dmw0Hit, isCacheable(io.fromCsr.dmw0(5, 4)),
+  //                        Mux(dmw1Hit, isCacheable(io.fromCsr.dmw1(5, 4)),
+  //                        Mux(isDirect, isCacheable(io.fromCsr.datf), false.B)))
+  directResp.cacheable := true.B
+  directResp.error    := emptyError()
+  directResp.hasError := false.B
+
+  // iFetch Port
+  val ifTlbReq  = tlb.io.search(0).req
+  val ifTlbResp = tlb.io.search(0).resp
+
+  // 非idle不接受请求，每次处理一个search请求
+  // locked
+  ifTlbReq.valid        := fromIcache.valid && useTlb && !fromIcacheFlush
+  ifTlbReq.bits.vppn    := reqVaddr(31, 13)
+  ifTlbReq.bits.vaBit12 := reqVaddr(12)
+  ifTlbReq.bits.offset  := reqVaddr(22,  0)
+  ifTlbReq.bits.asid    := io.fromCsr.asid
+
+  io.fromIcache.ready := isIdle && !io.fromIcacheFlush
+
+  ifTlbResp.ready := io.fromIcache.ready && !io.fromIcacheFlush
+  tlb.io.search(0).flush := io.fromIcacheFlush
+
+  // Response
+  /* TLB <> MMU <> ICACHE */
+  io.toIcache.valid := (ifTlbResp.valid || hitDmw) && !io.fromIcacheFlush
+  val resp       = ifTlbResp.bits
+  val tlbError   = WireDefault(new emptyError)
+  val tlbOut     = WireDefault(0.U.asTypeOf(new MmuToIcache))
+
+  tlbError.excpTlbRefill := !resp.found
+  tlbError.excpTlbPif    := resp.found && !resp.v
+  tlbError.excpTlbPpi    := resp.found && resp.v && (io.fromCsr.plv > resp.plv)
+
+  tlbOut.paddr        := tlbPaddr(resp)
+  // tlbOut.cacheable     := isCacheable(resp.mat)
+  tlbOut.cacheable    := true.B
+  tlbOut.error        := tlbError
+  tlbOut.hasError     := tlbError.asUInt.orR
+
+  io.toIcache.bits  := Mux(dmwHit, directResp, tlbOut)
+
+  private def tlbPaddr(resp: TlbSearchResp): UInt = {
+    Mux(resp.ps === 12.U,
+      Cat(resp.ppn, resp.offset(11, 0)),// small page
+      Cat(resp.ppn(ppnLen - 1, 10), resp.offset)// big page
+    )
+  }
+
+  when (io.fromIcacheFlush) {
+    state := sIdle
+  }.otherwise {
+    when (useTlb) {
+      state := sBusy
+    }.elsewhen(io.ifTlbResp.fire && isBusy) {
+      state := sIdle
+    }
+  }
+
+
+  // Only use Port(0)
+  for (i <- 1 until nrSearchPort) {
+    tlb.io.search(i).req.valid  := false.B
+    tlb.io.search(i).req.bits   := DontCare
+    tlb.io.search(i).resp.ready := true.B
+    tlb.io.search(i).flush      := false.B
+  }
+
+  // tlb.io.invtlb := io.maint.fromInvtlb
+  // io.maint.toReadResp := tlb.io.rResp
+  // tlb.io.write  := io.maint.fromWrite tlb.io.rIndex := io.maint.fromReadIndex
+  tlb.io.invtlb.valid := false.B
+  tlb.io.invtlb.bits  := DontCare
+  tlb.io.write.valid  := false.B
+  tlb.io.write.bits   := DontCare
+  tlb.io.rIndex <> DontCare
+  tlb.io.rResp  <> DontCare
 }
