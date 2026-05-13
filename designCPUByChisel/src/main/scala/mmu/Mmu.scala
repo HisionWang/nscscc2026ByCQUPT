@@ -52,6 +52,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
   val directResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
   directResp.paddr := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),
                       Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), reqVaddr))
+  // TODO: uncomment
   //directResp.cacheable := Mux(dmw0Hit, isCacheable(io.fromCsr.dmw0(5, 4)),
   //                        Mux(dmw1Hit, isCacheable(io.fromCsr.dmw1(5, 4)),
   //                        Mux(isDirect, isCacheable(io.fromCsr.datf), false.B)))
@@ -88,6 +89,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
   tlbError.excpTlbPpi    := resp.found && resp.v && (io.fromCsr.plv > resp.plv)
 
   tlbOut.paddr        := tlbPaddr(resp)
+  // TODO: uncomment
   // tlbOut.cacheable     := isCacheable(resp.mat)
   tlbOut.cacheable    := true.B
   tlbOut.error        := tlbError
@@ -113,6 +115,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
   }
 
 
+  // TODO: connect other ports
   // Only use Port(0)
   for (i <- 1 until nrSearchPort) {
     tlb.io.search(i).req.valid  := false.B
@@ -121,9 +124,13 @@ class Mmu(implicit p: Parameters) extends NSModule {
     tlb.io.search(i).flush      := false.B
   }
 
+  // TODO: uncomment
   // tlb.io.invtlb := io.maint.fromInvtlb
-  // io.maint.toReadResp := tlb.io.rResp
   // tlb.io.write  := io.maint.fromWrite tlb.io.rIndex := io.maint.fromReadIndex
+  // io.maint.toReadResp := tlb.io.rResp
+  io.maint.fromWrite.ready  := false.B
+  io.maint.fromInvtlb.ready := false.B
+  io.maint.toReadResp := DontCare
   tlb.io.invtlb.valid := false.B
   tlb.io.invtlb.bits  := DontCare
   tlb.io.write.valid  := false.B
