@@ -1,3 +1,5 @@
+package.json
+package-lock.json
 software/random_res
 chiplab/sims/verilator/run_prog/single.log
 chiplab/chip/soc_demo/nscscc-team/xilinx_ip/*/gen

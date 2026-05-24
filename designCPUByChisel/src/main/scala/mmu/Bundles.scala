@@ -89,7 +89,7 @@ class TlbReadResp(implicit p: Parameters) extends NSBundle
   val d1   = Bool()
   val v1   = Bool()
 }
- 
+
 class InvtlbReq(implicit p: Parameters) extends NSBundle
   with HasArchParameters
 {
