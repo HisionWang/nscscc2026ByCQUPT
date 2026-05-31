@@ -5,9 +5,7 @@ import chisel3.util._
 
 import nscscc.config._
 
-class TlbEntry(implicit p: Parameters) extends NSBundle 
-  with HasArchParameters
-{
+class TlbEntry(implicit p: Parameters) extends NSBundle {
   val e     = Bool()
   val ps    = Bool()
   val vppn  = UInt(vppnLen.W)
@@ -25,18 +23,14 @@ class TlbEntry(implicit p: Parameters) extends NSBundle
   val v1    = Bool()
 }
 
-class TlbSearchReq(implicit p: Parameters) extends NSBundle
-  with HasArchParameters
-{
+class TlbSearchReq(implicit p: Parameters) extends NSBundle {
   val vppn     = UInt(vppnLen.W)
   val vaBit12  = Bool()
   val offset   = UInt(22.W)
   val asid     = UInt(asidLen.W)
 }
 
-class TlbSearchResp(implicit p: Parameters) extends NSBundle
-  with HasArchParameters
-{
+class TlbSearchResp(implicit p: Parameters) extends NSBundle {
   // 对应大页偏移
   val offset = UInt(22.W)
   val found  = Bool()
@@ -49,9 +43,7 @@ class TlbSearchResp(implicit p: Parameters) extends NSBundle
   val v      = Bool()
 }
 
-class TlbWriteReq(implicit p: Parameters) extends NSBundle
-  with HasArchParameters
-{
+class TlbWriteReq(implicit p: Parameters) extends NSBundle {
   val index = UInt(tlbIdxLen.W)
   val e     = Bool()
   val vppn  = UInt(vppnLen.W)
@@ -70,9 +62,7 @@ class TlbWriteReq(implicit p: Parameters) extends NSBundle
   val v1    = Bool()
 }
  
-class TlbReadResp(implicit p: Parameters) extends NSBundle
-  with HasArchParameters
-{
+class TlbReadResp(implicit p: Parameters) extends NSBundle {
   val e    = Bool()
   val vppn = UInt(vppnLen.W)
   val ps   = UInt(psLen.W)
@@ -90,9 +80,7 @@ class TlbReadResp(implicit p: Parameters) extends NSBundle
   val v1   = Bool()
 }
 
-class InvtlbReq(implicit p: Parameters) extends NSBundle
-  with HasArchParameters
-{
+class InvtlbReq(implicit p: Parameters) extends NSBundle {
   val op   = UInt(invtlbOpLen.W)
   val asid = UInt(asidLen.W)
   val vpn  = UInt(vppnLen.W)
@@ -119,9 +107,7 @@ class MmuToIcache(implicit p: Parameters) extends NSBundle {
   val error     = new MmuTransError
 }
 
-class CsrToMmu(implicit p: Parameters) extends NSBundle 
-  with HasArchParameters
-{
+class CsrToMmu(implicit p: Parameters) extends NSBundle {
   val plv  = UInt(plvLen.W)
   val pgda = UInt(2.W)
   val dmw0 = UInt(XLEN.W)
@@ -150,4 +136,3 @@ class MmuIoBundle(implicit p: Parameters) extends NSBundle {
 
   val maint = new MmuMaintPort
 }
-

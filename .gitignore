@@ -346,6 +346,8 @@ xcuserdata
 *.class
 *.log
 /.bsp
+**/.bsp/
+**/.scala-build/
 
 # sbt specific
 .cache
