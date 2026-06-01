@@ -78,6 +78,48 @@ trait HasCoreParameters {
   val nrTlb: Int = p(MmuconfigKeys.TlbNum)
   val nrSearchPort: Int = p(MmuconfigKeys.TlbSearchPortNum)
   val tlbIdxLen: Int = log2Ceil(nrTlb)
+
+
+    // ============================================================
+  // === BPU (Branch Prediction Unit) 参数 ===
+  // ============================================================
+ 
+  // --- 基本容量 ---
+  val btbSize:  Int = 16    // BTB表项数, 16项直接映射 (设计文档§2.3)
+  val phtSize:  Int = 64    // PHT表项数, 64项2位饱和计数器 (设计文档§2.4)
+  val rasSize:  Int = 8     // RAS深度, 8层返回地址栈 (设计文档§2.5)
+ 
+  // --- 索引位宽 ---
+  // fetchBlockBits: PC低几位不参与BTB/PHT索引
+  //   = log2(fetchWidth * 4) = log2(16) = 4
+  //   含义: PC[3:0]是块内偏移(2位字节对齐 + log2(fetchWidth)位指令偏移)
+  //   当fetchWidth=4时: PC[1:0]=00(定长4字节对齐), PC[3:2]=块内指令索引
+  val fetchBlockBits: Int = log2Ceil(fetchWidth * instrBytes)
+ 
+  // btbIndexBits: BTB索引位宽 = log2(btbSize) = log2(16) = 4
+  val btbIndexBits: Int = log2Ceil(btbSize)
+ 
+  // phtIndexBits: PHT索引位宽 = log2(phtSize) = log2(64) = 6
+  val phtIndexBits: Int = log2Ceil(phtSize)
+ 
+  // --- 标签位宽 ---
+  // btbTagBits: BTB标签位宽 = 32 - fetchBlockBits - btbIndexBits
+  //   当fetchWidth=4: 32 - 4 - 4 = 24
+  //   即 PC[31:8] 作为tag
+  val btbTagBits: Int = 32 - fetchBlockBits - btbIndexBits
+ 
+  // --- 块内偏移位宽 ---
+  // 块内指令偏移: log2(fetchWidth), 用于标记分支在fetch块中的第几条
+  //   当fetchWidth=4: 2位, 值域0~3
+  val fetchOffsetBits: Int = log2Ceil(fetchWidth)
+ 
+  // --- RAS指针位宽 ---
+  // rasTop位宽 = log2(rasSize) = log2(8) = 3
+  val rasTopBits: Int = log2Ceil(rasSize)
+ 
+  // --- 预测信息队列深度 ---
+  // 与ICache流水线级数匹配, 用于缓存BPU预测信息与ICache响应配对
+  val predQueueDepth: Int = 8
 }
 
  

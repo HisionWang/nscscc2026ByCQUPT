@@ -1,28 +1,29 @@
 package nscscc
-
+ 
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
 import nscscc.config.NSModule
 import nscscc.config.NSRawModule
 import nscscc.config.NSBundle
-import nscscc.config.Parameters  // 导入Parameters类型
-
+import nscscc.config.Parameters
+ 
 import nscscc.axi._
 import nscscc.icache._
 import nscscc.frontend._
+import nscscc.mmu._
+import nscscc.csr._
 import nscscc.difftest._
-
-// 代码全是AI写的，应该一坨，但是可以转成v成功
+ 
 class core_top(implicit p: Parameters) extends NSRawModule {
-    // 覆盖默认的时钟和复位信号的名称
-  val aclk = IO(Input(Clock()))
+  // ========== 时钟与复位 ==========
+  val aclk    = IO(Input(Clock()))
   val aresetn = IO(Input(Bool()))
-
-  // 中断输入
-  val intrpt  = IO(Input(UInt(8.W)))
-
-  // AXI3 AR通道
+ 
+  // ========== 中断输入 ==========
+  val intrpt = IO(Input(UInt(8.W)))
+ 
+  // ========== AXI3 AR通道 ==========
   val arid    = IO(Output(UInt(4.W)))
   val araddr  = IO(Output(UInt(32.W)))
   val arlen   = IO(Output(UInt(8.W)))
@@ -33,16 +34,16 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val arprot  = IO(Output(UInt(3.W)))
   val arvalid = IO(Output(Bool()))
   val arready = IO(Input(Bool()))
-
-  // AXI3 R通道
-  val rid     = IO(Input(UInt(4.W)))
-  val rdata   = IO(Input(UInt(32.W)))
-  val rresp   = IO(Input(UInt(2.W)))
-  val rlast   = IO(Input(Bool()))
-  val rvalid  = IO(Input(Bool()))
-  val rready  = IO(Output(Bool()))
-
-  // AXI3 AW通道
+ 
+  // ========== AXI3 R通道 ==========
+  val rid    = IO(Input(UInt(4.W)))
+  val rdata  = IO(Input(UInt(32.W)))
+  val rresp  = IO(Input(UInt(2.W)))
+  val rlast  = IO(Input(Bool()))
+  val rvalid = IO(Input(Bool()))
+  val rready = IO(Output(Bool()))
+ 
+  // ========== AXI3 AW通道 ==========
   val awid    = IO(Output(UInt(4.W)))
   val awaddr  = IO(Output(UInt(32.W)))
   val awlen   = IO(Output(UInt(8.W)))
@@ -53,121 +54,174 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val awprot  = IO(Output(UInt(3.W)))
   val awvalid = IO(Output(Bool()))
   val awready = IO(Input(Bool()))
-
-  // AXI3 W通道
-  val wid     = IO(Output(UInt(4.W)))
-  val wdata   = IO(Output(UInt(32.W)))
-  val wstrb   = IO(Output(UInt(4.W)))
-  val wlast   = IO(Output(Bool()))
-  val wvalid  = IO(Output(Bool()))
-  val wready  = IO(Input(Bool()))
-
-  // AXI3 B通道
-  val bid     = IO(Input(UInt(4.W)))
-  val bresp   = IO(Input(UInt(2.W)))
-  val bvalid  = IO(Input(Bool()))
-  val bready  = IO(Output(Bool()))
-
-  val break_point=             IO(Input(Bool())           )
-  val infor_flag=              IO(Input(Bool())           )
-  val reg_num=                 IO(Input(UInt(5.W))  )
-  val ws_valid=                IO(Output(Bool())          )
-  val rf_rdata=                IO(Output(UInt(32.W))  )
-
-  val debug0_wb_pc =       IO(Output(UInt(32.W)))
-  val debug0_wb_rf_wen =   IO(Output(Bool()))
-  val debug0_wb_rf_wnum =  IO(Output(UInt(5.W)))
-  val debug0_wb_rf_wdata = IO(Output(UInt(32.W)))
-  val debug0_wb_inst =     IO(Output(UInt(32.W)))
-      //debug
-
-
-  // ========== 输入信号不优化 ==========
-  dontTouch(break_point)
-  dontTouch(infor_flag)
-  dontTouch(reg_num)
-  
-  // ========== 输出信号直接赋初始值 ==========
-  // 为所有输出信号提供确定的初始值
-  debug0_wb_pc := 0.U(64.W)
-  debug0_wb_rf_wen := false.B
-  debug0_wb_rf_wnum := 0.U(5.W)
-  debug0_wb_rf_wdata := 0.U(64.W)
-  debug0_wb_inst := 0.U(32.W)
-  ws_valid := false.B
-  rf_rdata := 0.U(32.W)
-
+ 
+  // ========== AXI3 W通道 ==========
+  val wid    = IO(Output(UInt(4.W)))
+  val wdata  = IO(Output(UInt(32.W)))
+  val wstrb  = IO(Output(UInt(4.W)))
+  val wlast  = IO(Output(Bool()))
+  val wvalid = IO(Output(Bool()))
+  val wready = IO(Input(Bool()))
+ 
+  // ========== AXI3 B通道 ==========
+  val bid    = IO(Input(UInt(4.W)))
+  val bresp  = IO(Input(UInt(2.W)))
+  val bvalid = IO(Input(Bool()))
+  val bready = IO(Output(Bool()))
+ 
+  // ========== 调试接口 ==========
+  val break_point       = IO(Input(Bool()))
+  val infor_flag        = IO(Input(Bool()))
+  val reg_num           = IO(Input(UInt(5.W)))
+  val ws_valid          = IO(Output(Bool()))
+  val rf_rdata          = IO(Output(UInt(32.W)))
+  val debug0_wb_pc      = IO(Output(UInt(32.W)))
+  val debug0_wb_rf_wen  = IO(Output(Bool()))
+  val debug0_wb_rf_wnum = IO(Output(UInt(5.W)))
+  val debug0_wb_rf_wdata= IO(Output(UInt(32.W)))
+  val debug0_wb_inst    = IO(Output(UInt(32.W)))
+ 
+  // ========== 输出信号初始值 ==========
+  debug0_wb_pc       := 0.U
+  debug0_wb_rf_wen   := false.B
+  debug0_wb_rf_wnum  := 0.U
+  debug0_wb_rf_wdata := 0.U
+  debug0_wb_inst     := 0.U
+  ws_valid           := false.B
+  rf_rdata           := 0.U
+ 
   withClockAndReset(aclk, ~aresetn) {
-
-  
-  // --------------------------
+ 
+  // ================================================================
   // 模块实例化
-  // --------------------------
-
-
-  // 预留扩展接口
-  // 重点了解一下关于之里黑盒
-  val dcache       = Module(new cache_BlackBox)
-  val uncache1     = Module(new cache_BlackBox)
-  val uncache2     = Module(new cache_BlackBox)
+  // ================================================================
+ 
+  // ---------- 前端 (IFU + BPU + Predecoder + ICache + IBuffer) ----------
+  val frontend = Module(new Frontend)
+ 
+  // ---------- MMU / TLB ----------
+  val mmu = Module(new Mmu)
+ 
+  // ---------- CSR ----------
+  val csr = Module(new CsrFile)
+ 
+  // ---------- DCache / Uncache (黑盒占位) ----------
+  val dcache   = Module(new cache_BlackBox)
+  val uncache1 = Module(new cache_BlackBox)
+  val uncache2 = Module(new cache_BlackBox)
+ 
   dcache.io.cpu_if.req_addr  := 0.U
   dcache.io.cpu_if.req_valid := false.B
-
   uncache1.io.cpu_if.req_addr  := 0.U
   uncache1.io.cpu_if.req_valid := false.B
-
   uncache2.io.cpu_if.req_addr  := 0.U
   uncache2.io.cpu_if.req_valid := false.B
-
+ 
+  // ---------- AXI3 Crossbar ----------
   val axi_crossbar = Module(new AXI3Crossbar4to1)
-  val icache       = Module(new ICache)
-  val fetch_unit = Module(new IFU)
-  fetch_unit.io <> DontCare /* fallback */
+ 
+  // ================================================================
+  // 前端 ↔ 后端 接口连接
+  // ================================================================
+  // 目前后端尚未实现, 所有来自前端的指令输出暂不连接
+  // 后端实现后, frontend.io.out 应连接到译码/执行级
+ 
+  // 后端就绪信号: 暂时置为前端输出就绪
+  val backendReady = Wire(Vec(issueWidth, Bool()))
+  for (i <- 0 until issueWidth) {
+    backendReady(i) := frontend.io.out(i).ready
+  }
+  frontend.io.backendReady := backendReady
+ 
+  // 后端重定向: 暂无后端, 置为无效
+  frontend.io.redirect.valid  := false.B
+  frontend.io.redirect.target := 0.U
+  frontend.io.redirect.rtype  := 0.U
+ 
 
-  // 连接前端和ICache
-  fetch_unit.io.icache_req.addr  <> icache.io.cpu_req.bits.addr
-  fetch_unit.io.icache_req.valid <> icache.io.cpu_req.valid
-  //icache.io.cpu_req.ready := true.B
-  //fetch_unit.io.icache_req.kill  <> icache.io.cpu_if.req_kill
-  // --------------------------
-  // 0. 与CPU最核心的接口，后续再实现优化
-  // --------------------------
-  icache.io.icache_resp <> fetch_unit.io.icache_resp
-
-  
-  fetch_unit.io.icache_req.ready := icache.io.cpu_req.ready 
-
-
-
-  fetch_unit.io.start_pc := 0x1C000000.U
-  fetch_unit.io.flush := false.B
-  fetch_unit.io.stall := false.B
-
-  val inst_buffer = Module(new IBF)
-  inst_buffer.io <> DontCare
-
-  //fetch_unit.io.fetch_packet.ready := true.B
-
-  val pc = icache.io.icache_resp.bits.addr
-  val insts = icache.io.icache_resp.bits.instrs
-  val inst_valid = icache.io.icache_resp.valid
-  val inst_valids = icache.io.icache_resp.bits.instvalids
-
-  
-
-
-
-
-  // --------------------------
-  // 接口连接
-  // --------------------------
-  // 1. 转接桥输入连接
-  axi_crossbar.io.in_icache   <> icache.io.axi_master
+ 
+  // 后端BPU更新: 暂无后端, 置为无效
+  frontend.io.bpuUpdateBr.valid  := false.B
+  frontend.io.bpuUpdateBr        := DontCare
+ 
+  // ================================================================
+  // 前端控制信号
+  // ================================================================
+  frontend.io.flush        := false.B
+  frontend.io.stall        := false.B
+ 
+  // ================================================================
+  // MMU / TLB 连接
+  // ================================================================
+  // ICache内部已有SimpleMMU, 此处Mmu模块作为独立的TLB查表单元
+  // 后续需要将ICache内部的SimpleMMU替换为此外部TLB连接
+ 
+  // MMU请求: 来自前端ICache的虚拟地址转换
+  // 注意: 当前ICache内部使用SimpleMMU, 此处MMU作为独立模块预留
+  // 待ICache改造为外部MMU接口后, 连接如下:
+  //   frontend.icache内部MMU请求 → mmu.io.tlb_req
+  //   mmu.io.tlb_resp → frontend.icache内部MMU响应
+ 
+  // MMU默认输入(暂不连接ICache, 等ICache接口改造)
+  mmu.io.fromIcache.valid := false.B
+  mmu.io.fromIcache.bits.vaddr := 0.U
+ 
+  // MMU与CSR的交互
+  // CSR提供: 页表基址(PGD), ASID, 直接映射窗口(DMW), DA模式等
+//  mmu.io.csr_pgdl     := csr.io.csr_pgdl
+//  mmu.io.csr_pgdh     := csr.io.csr_pgdh
+//  mmu.io.csr_asid     := csr.io.csr_asid
+//  mmu.io.csr_crmd_da  := csr.io.csr_crmd_da
+//  mmu.io.csr_crmd_pg  := csr.io.csr_crmd_pg
+//  mmu.io.csr_dmw0     := csr.io.csr_dmw0
+//  mmu.io.csr_dmw1     := csr.io.csr_dmw1
+ 
+  // TLB重填异常 → CSR
+  // 当MMU发生TLB缺失时, 需要触发异常进入OS处理TLB重填
+  // 后续连接到异常处理逻辑
+ 
+  // ================================================================
+  // CSR 连接
+  // ================================================================
+  // CSR时钟复位
+//  csr.io.clk    := aclk
+//  csr.io.reset  := ~aresetn
+// 
+//  // CSR中断输入
+//  csr.io.intrpt := intrpt
+// 
+//  // CSR读写接口: 暂无后端执行级, 置为无效
+//  csr.io.csr_raddr := 0.U
+//  csr.io.csr_rdata <> DontCare
+//  csr.io.csr_wen   := false.B
+//  csr.io.csr_waddr := 0.U
+//  csr.io.csr_wdata := 0.U
+// 
+//  // CSR异常相关输入: 暂无后端
+//  csr.io.excp_flush  := false.B
+//  csr.io.ertn_flush  := false.B
+//  csr.io.excp_ecode  := 0.U
+//  csr.io.excp_vaddr  := 0.U
+//  csr.io.excp_paddr  := 0.U
+//  csr.io.tlbfill_en  := false.B
+//  csr.io.rand_index  := 0.U
+ 
+  // ================================================================
+  // AXI3 Crossbar 连接
+  // ================================================================
+  // 前端ICache → Crossbar端口0
+  axi_crossbar.io.in_icache   <> frontend.io.axi_master
+ 
+  // DCache → Crossbar端口1 (黑盒占位)
   axi_crossbar.io.in_dcache   <> dcache.io.axi_master
+ 
+  // Uncache1 → Crossbar端口2 (黑盒占位)
   axi_crossbar.io.in_uncache1 <> uncache1.io.axi_master
+ 
+  // Uncache2 → Crossbar端口3 (黑盒占位)
   axi_crossbar.io.in_uncache2 <> uncache2.io.axi_master
-
-  // 2. 转接桥输出 → 顶层AXI3接口
+ 
+  // Crossbar → 顶层AXI3接口
   // AR通道
   arid    := axi_crossbar.io.out.ar.data.arid
   araddr  := axi_crossbar.io.out.ar.data.araddr
@@ -179,7 +233,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   arprot  := axi_crossbar.io.out.ar.data.arprot
   arvalid := axi_crossbar.io.out.ar.data.arvalid
   axi_crossbar.io.out.ar.arready := arready
-
+ 
   // R通道
   val r_data = Wire(new AXI3RData)
   r_data.rid    := rid
@@ -189,7 +243,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   r_data.rvalid := rvalid
   axi_crossbar.io.out.r.data := r_data
   rready := axi_crossbar.io.out.r.rready
-
+ 
   // AW通道
   awid    := axi_crossbar.io.out.aw.data.awid
   awaddr  := axi_crossbar.io.out.aw.data.awaddr
@@ -201,7 +255,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   awprot  := axi_crossbar.io.out.aw.data.awprot
   awvalid := axi_crossbar.io.out.aw.data.awvalid
   axi_crossbar.io.out.aw.awready := awready
-
+ 
   // W通道
   wid     := axi_crossbar.io.out.w.data.wid
   wdata   := axi_crossbar.io.out.w.data.wdata
@@ -209,7 +263,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   wlast   := axi_crossbar.io.out.w.data.wlast
   wvalid  := axi_crossbar.io.out.w.data.wvalid
   axi_crossbar.io.out.w.wready := wready
-
+ 
   // B通道
   val b_data = Wire(new AXI3BData)
   b_data.bid    := bid
@@ -217,85 +271,103 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   b_data.bvalid := bvalid
   axi_crossbar.io.out.b.data := b_data
   bready := axi_crossbar.io.out.b.bready
-
-
-
-
-  val reg = RegInit(0.U(64.W))
-  reg := reg + 1.U
-  fetch_unit.io.start_valid := aresetn
-  
-  //reg === 88.U
-  
-
-
-
-  val difftest = Module(new DifftestInCore)
-    // 将所有输入信号赋值为0
-  
-  difftest.io.inst_valid_diff := (reg === 0x666.U)
-  difftest.io.cnt_inst_diff := false.B
-  difftest.io.timer_64_diff := 0.U(64.W)
-  difftest.io.inst_ld_en_diff := false.B
-  difftest.io.ld_paddr_diff := 0.U(64.W)
-  difftest.io.ld_vaddr_diff := 0.U(64.W)
-  difftest.io.inst_st_en_diff := false.B
-  difftest.io.st_paddr_diff := 0.U(64.W)
-  difftest.io.st_vaddr_diff := 0.U(64.W)
-  difftest.io.st_data_diff := 0.U(64.W)
-  difftest.io.csr_rstat_en_diff := false.B
-  difftest.io.csr_data_diff := 0.U(64.W)
-  
-  difftest.io.debug0_wb_rf_wen := false.B
-  difftest.io.debug0_wb_rf_wnum := 0.U(5.W)
-  difftest.io.debug0_wb_rf_wdata := 0.U(64.W)
-  difftest.io.debug0_wb_pc := reg
-  difftest.io.debug0_wb_inst := pc
-  
-  difftest.io.excp_flush := false.B
-  difftest.io.ertn_flush := false.B
-  difftest.io.ws_csr_ecode := 0.U(6.W)
-  difftest.io.tlbfill_en := false.B
-  difftest.io.rand_index := 0.U(5.W)
-  
-  difftest.io.csr_estat_diff_0 := 0.U(32.W)
-  difftest.io.csr_crmd_diff_0 := 0.U(32.W)
-  difftest.io.csr_prmd_diff_0 := 0.U(32.W)
-  difftest.io.csr_ectl_diff_0 := 0.U(32.W)
-  difftest.io.csr_era_diff_0 := 0.U(64.W)
-  difftest.io.csr_badv_diff_0 := 0.U(64.W)
-  difftest.io.csr_eentry_diff_0 := 0.U(64.W)
-  difftest.io.csr_tlbidx_diff_0 := 0.U(32.W)
-  difftest.io.csr_tlbehi_diff_0 := 0.U(64.W)
-  difftest.io.csr_tlbelo0_diff_0 := 0.U(32.W)
-  difftest.io.csr_tlbelo1_diff_0 := 0.U(32.W)
-  difftest.io.csr_asid_diff_0 := 0.U(32.W)
-  difftest.io.csr_pgdl_diff_0 := 0.U(64.W)
-  difftest.io.csr_pgdh_diff_0 := 0.U(64.W)
-  difftest.io.csr_save0_diff_0 := 0.U(64.W)
-  difftest.io.csr_save1_diff_0 := 0.U(64.W)
-  difftest.io.csr_save2_diff_0 := 0.U(64.W)
-  difftest.io.csr_save3_diff_0 := 0.U(64.W)
-  difftest.io.csr_tid_diff_0 := 0.U(64.W)
-  difftest.io.csr_tcfg_diff_0 := 0.U(32.W)
-  difftest.io.csr_tval_diff_0 := 0.U(64.W)
-  difftest.io.csr_ticlr_diff_0 := 0.U(32.W)
-  difftest.io.csr_llbctl_diff_0 := 0.U(32.W)
-  difftest.io.csr_tlbrentry_diff_0 := 0.U(64.W)
-  difftest.io.csr_dmw0_diff_0 := 0.U(32.W)
-  difftest.io.csr_dmw1_diff_0 := 0.U(32.W)
-
-  for (i <- 0 until 32) {
-    difftest.io.regs(i) := 0.U(64.W)
+ 
+  // ================================================================
+  // 调试信号
+  // ================================================================
+  // 从前端IBuffer取第一条有效指令作为调试输出
+  val dbgFirstValid = frontend.io.out(0).fire
+  when(dbgFirstValid) {
+    debug0_wb_pc       := frontend.io.out(0).bits.pc
+    debug0_wb_inst     := frontend.io.out(0).bits.instr(31, 0)
+    debug0_wb_rf_wen   := false.B    // 后端实现后连接写回使能
+    debug0_wb_rf_wnum  := 0.U
+    debug0_wb_rf_wdata := 0.U
+    ws_valid           := true.B
+  }.otherwise {
+    ws_valid := false.B
   }
-
-
-
-  dontTouch(pc)
-  dontTouch(insts)
-  dontTouch(inst_valid)
-  dontTouch(inst_valids)
-    // 防止顶层信号优化
+ 
+  // 调试: 寄存器读数据 (暂无寄存器堆)
+  rf_rdata := 0.U
+ 
+  // ================================================================
+  // Difftest 协同仿真
+  // ================================================================
+  val cycleCount = RegInit(0.U(64.W))
+  cycleCount := cycleCount + 1.U
+ 
+  val difftest = Module(new DifftestInCore)
+ 
+  // 指令有效: 前端输出第一条指令握手成功
+  difftest.io.inst_valid_diff   := dbgFirstValid
+  difftest.io.cnt_inst_diff     := false.B
+  difftest.io.timer_64_diff     := cycleCount
+ 
+  // Load/Store (暂无后端)
+  difftest.io.inst_ld_en_diff   := false.B
+  difftest.io.ld_paddr_diff     := 0.U
+  difftest.io.ld_vaddr_diff     := 0.U
+  difftest.io.inst_st_en_diff   := false.B
+  difftest.io.st_paddr_diff     := 0.U
+  difftest.io.st_vaddr_diff     := 0.U
+  difftest.io.st_data_diff      := 0.U
+ 
+  // CSR (从CSR模块读出)
+  difftest.io.csr_rstat_en_diff := false.B
+  difftest.io.csr_data_diff     := 0.U
+ 
+  // 写回调试
+  difftest.io.debug0_wb_rf_wen  := false.B
+  difftest.io.debug0_wb_rf_wnum := 0.U
+  difftest.io.debug0_wb_rf_wdata:= 0.U
+  difftest.io.debug0_wb_pc      := frontend.io.out(0).bits.pc
+  difftest.io.debug0_wb_inst    := frontend.io.out(0).bits.instr(31, 0)
+ 
+  // 异常相关
+  difftest.io.excp_flush   := false.B
+  difftest.io.ertn_flush   := false.B
+  difftest.io.ws_csr_ecode := 0.U
+  difftest.io.tlbfill_en   := false.B
+  difftest.io.rand_index   := 0.U
+ 
+  // CSR快照 (从CSR模块读出)
+//  difftest.io.csr_estat_diff_0      := csr.io.csr_estat
+//  difftest.io.csr_crmd_diff_0       := csr.io.csr_crmd
+//  difftest.io.csr_prmd_diff_0       := csr.io.csr_prmd
+//  difftest.io.csr_ectl_diff_0       := csr.io.csr_ectl
+//  difftest.io.csr_era_diff_0        := csr.io.csr_era
+//  difftest.io.csr_badv_diff_0       := csr.io.csr_badv
+//  difftest.io.csr_eentry_diff_0     := csr.io.csr_eentry
+//  difftest.io.csr_tlbidx_diff_0     := csr.io.csr_tlbidx
+//  difftest.io.csr_tlbehi_diff_0     := csr.io.csr_tlbehi
+//  difftest.io.csr_tlbelo0_diff_0    := csr.io.csr_tlbelo0
+//  difftest.io.csr_tlbelo1_diff_0    := csr.io.csr_tlbelo1
+//  difftest.io.csr_asid_diff_0       := csr.io.csr_asid
+//  difftest.io.csr_pgdl_diff_0       := csr.io.csr_pgdl
+//  difftest.io.csr_pgdh_diff_0       := csr.io.csr_pgdh
+//  difftest.io.csr_save0_diff_0      := csr.io.csr_save0
+//  difftest.io.csr_save1_diff_0      := csr.io.csr_save1
+//  difftest.io.csr_save2_diff_0      := csr.io.csr_save2
+//  difftest.io.csr_save3_diff_0      := csr.io.csr_save3
+//  difftest.io.csr_tid_diff_0        := csr.io.csr_tid
+//  difftest.io.csr_tcfg_diff_0       := csr.io.csr_tcfg
+//  difftest.io.csr_tval_diff_0       := csr.io.csr_tval
+//  difftest.io.csr_ticlr_diff_0      := csr.io.csr_ticlr
+//  difftest.io.csr_llbctl_diff_0     := csr.io.csr_llbctl
+//  difftest.io.csr_tlbrentry_diff_0  := csr.io.csr_tlbrentry
+//  difftest.io.csr_dmw0_diff_0       := csr.io.csr_dmw0
+//  difftest.io.csr_dmw1_diff_0       := csr.io.csr_dmw1
+ 
+  // 寄存器堆 (暂无, 置0)
+  for (i <- 0 until 32) {
+    difftest.io.regs(i) := 0.U
+  }
+ 
+  // ========== 信号防优化 ==========
+  dontTouch(break_point)
+  dontTouch(infor_flag)
+  dontTouch(reg_num)
   dontTouch(arid)
   dontTouch(araddr)
   dontTouch(rid)
@@ -306,24 +378,22 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   dontTouch(wdata)
   dontTouch(bid)
   dontTouch(bresp)
-
-  }
-
-
-
-
-
-  
+ 
+  } // end withClockAndReset
 }
+ 
+// ================================================================
+// Verilog 生成入口
+// ================================================================
 import config._
 import java.io.File
 import scala.sys.process._
-
+ 
 object myCPU_top extends App {
-
+ 
   val targetDirPath = "./../chiplab/IP/myCPU/Chisel"
   val targetDir = new File(targetDirPath)
-
+ 
   if (targetDir.exists() && targetDir.isDirectory) {
     def deleteRecursively(file: File): Unit = {
       if (file.isDirectory) {
@@ -334,28 +404,24 @@ object myCPU_top extends App {
       }
     }
     deleteRecursively(targetDir)
-  } 
+  }
   targetDir.mkdirs()
-
+ 
   implicit val config: Parameters = new Parameters(Map())
-
+ 
   emitVerilog(
     new core_top,
-    Array( 
-      //"--help",
-      "--target-dir", targetDirPath, 
-      //"--output-file", "mycpu_top",
+    Array(
+      "--target-dir", targetDirPath,
       "--emit-modules", "verilog"
-      )
+    )
   )
-
+ 
   val filesToDelete = List("core_top.anno.json", "core_top.fir")
   filesToDelete.foreach { filename =>
     val fileToDelete = new File(targetDir, filename)
     if (fileToDelete.exists()) {
       fileToDelete.delete()
-    } 
+    }
   }
-
 }
-
