@@ -73,13 +73,13 @@ class Predecoder(implicit p: Parameters) extends NSModule {
  
     // 默认enqMask: 所有有效指令都可以入队
     for (i <- 0 until fetchWidth) {
-      stageData.enqMask(i) := icache.instvalids(i) && !icache.miss
+      stageData.enqMask(i) := icache.instvalids(i)
     }
  
     for (i <- 0 until fetchWidth) {
       val instr = icache.instrs(i)
       val pc    = icache.addr + (i * 4).U
-      val isValid = icache.instvalids(i) && !icache.miss
+      val isValid = icache.instvalids(i)
       val info  = stageData.pdInfo(i)
  
       // 默认值

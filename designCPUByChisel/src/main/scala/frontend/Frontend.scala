@@ -32,13 +32,14 @@ class Frontend(implicit p: Parameters) extends NSModule {
  
   // ==================== 子模块实例化 ====================
   val ifu      = Module(new IFU)
-  val icache   = Module(new ICache)
+  val icache   = Module(new ICache) //it's OK
   val ibuffer  = Module(new IBF)
  
   // ==================== IFU ↔ ICache ====================
   // 请求
   icache.io.cpu_req.valid := ifu.io.icache_req.valid
   icache.io.cpu_req.bits.addr := ifu.io.icache_req.addr
+  icache.io.flush := ifu.io.icache_req.flush //Icache 的清零信号
   ifu.io.icache_req.ready := icache.io.cpu_req.ready
  
   // 响应

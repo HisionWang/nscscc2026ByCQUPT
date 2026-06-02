@@ -16,10 +16,12 @@ class ICache(implicit p: Parameters) extends NSModule {
     val cpu_req = Flipped( Decoupled(new Bundle {
       val addr  = (UInt(32.W))   // 虚拟地址
     }))
+  
+    val flush = Input(Bool())
+    
+    val icache_resp = Decoupled(new IcacheResp)
 
-  val icache_resp = Decoupled(new IcacheResp)
-
-   val axi_master         = new AXI3MasterIO
+    val axi_master         = new AXI3MasterIO
     
   })
   

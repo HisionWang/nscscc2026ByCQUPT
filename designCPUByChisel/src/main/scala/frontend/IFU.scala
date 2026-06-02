@@ -12,13 +12,13 @@ class IFU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     // 后端重定向
     val redirect = Flipped(new RedirectIO)
- 
+
     // ICache接口
     val icache_req = new Bundle {
       val addr  = Output(UInt(32.W))
       val valid = Output(Bool())
       val ready = Input(Bool())
-      val kill  = Output(Bool())
+      val flush  = Output(Bool())
     }
     val icache_resp = Flipped(Decoupled(new IcacheResp))
  
@@ -74,23 +74,24 @@ class IFU(implicit p: Parameters) extends NSModule {
   // 下一拍PC选择 (优先级: 后端redirect > 前端redirect > BPU预测 > 顺序)
   val nextPC = Mux(backendRedirectValid,                backendRedirectTarget,
                Mux(frontendRedirectReg.valid,           frontendRedirectReg.target,
-               Mux(bpuTaken && pcValid,                 bpuTarget,
+               Mux(bpuTaken,                            bpuTarget,
                                                    seqPC)))
  
-  // S0发射条件
-  val s0_fire = pcValid && io.icache_req.ready && !backendRedirectValid &&
+  // pcReg将要进入Icache条件
+  val pc_fire = (io.icache_req.ready && predInfoQueue.io.enq.ready )&& !backendRedirectValid &&
                 !frontendRedirectReg.valid
  
   // 通知BPU预测结果被使用
-  bpu.io.predictFire := s0_fire
+  // RAS相关
+  bpu.io.predictFire := pc_fire
   
   val pcRegRedirect = backendRedirectValid || frontendRedirectReg.valid
   // 更新PC
   // 什么时候pc可以变了？
   // 1.当当前pc被icahe成功接收之后
   // 2.当重定向来了之后，流水线最尖端的位置是没有flush的
-  // 所以重定向来了之后强制变pc
-  when(s0_fire || pcRegRedirect) {
+  //   所以重定向来了之后强制变pc
+  when(pc_fire || pcRegRedirect) {
     pcReg := nextPC
   }
  
@@ -98,9 +99,9 @@ class IFU(implicit p: Parameters) extends NSModule {
   io.icache_req.addr  := pcReg
   io.icache_req.valid := pcValid && !backendRedirectValid &&
                          !frontendRedirectReg.valid //当重定向来了之后，不给Cache发当前请求
-  io.icache_req.kill  := backendRedirectValid || frontendRedirectReg.valid
+  io.icache_req.flush  := backendRedirectValid || frontendRedirectReg.valid
  
-  // ==================== 预测信息入队 ====================
+  // ==================== BPU的预测信息根据这次PC一起入队 ====================
   val currentPredInfo = Wire(new PredInfoBundle)
   currentPredInfo.pc          := pcReg
   currentPredInfo.fallThrough := fallThroughPC
@@ -109,23 +110,23 @@ class IFU(implicit p: Parameters) extends NSModule {
   currentPredInfo.takenOffset := bpu.io.predictResp.takenOffset
   currentPredInfo.meta        := bpuMeta
  
-  predInfoQueue.io.enq.valid := s0_fire
+  predInfoQueue.io.enq.valid := pc_fire
   predInfoQueue.io.enq.bits  := currentPredInfo
   predInfoQueue.io.flush     := backendRedirectValid || frontendRedirectReg.valid
  
   // ==================== ICache响应 → 预译码 ====================
-  // 判断ICache响应是否有对应的预测信息
+  // FIFO不为空
   val hasPredInfo = predInfoQueue.io.deq.valid
  
   // 处理正常响应(有预测信息)
   val processResp = io.icache_resp.valid && hasPredInfo
-  // 丢弃过期响应(无预测信息, flush后的残留)
-  val discardResp = io.icache_resp.valid && !hasPredInfo
  
   // ICache响应ready: 有预测信息时取决于预译码, 无预测信息时直接接收丢弃
-  io.icache_resp.ready := Mux(hasPredInfo, predecoder.io.icacheResp.ready, true.B)
+  io.icache_resp.ready := predecoder.io.icacheResp.ready
  
   // 预测信息出队
+  // 1.Cache正确地返还了数据 
+  // 2.预译码器时刻准备着
   predInfoQueue.io.deq.ready := processResp && predecoder.io.icacheResp.ready
  
   // 连接预译码输入
@@ -140,7 +141,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   // ==================== 前端重定向 ====================
   // 预译码输出的frontendRedirect寄存一拍后影响PC选择
   // (已在上面通过frontendRedirectReg实现)
-  // 当拍直接传递(用于ICache kill等)
+  // 当拍直接传递(用于ICache flush等)
   io.frontend_redirect.valid  := predecoder.io.out.bits.frontendRedirect.valid &&
                                   predecoder.io.out.valid
   io.frontend_redirect.target := predecoder.io.out.bits.frontendRedirect.target

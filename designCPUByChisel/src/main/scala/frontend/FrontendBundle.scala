@@ -186,11 +186,13 @@ class FlushableQueue[T <: Data](gen: T, entries: Int)(implicit p: Parameters) ex
     head := Mux(head === (entries - 1).U, 0.U, head + 1.U)
     tail := Mux(tail === (entries - 1).U, 0.U, tail + 1.U)
   }.elsewhen(io.enq.fire) {
+    // 仅入队
     data(tail)  := io.enq.bits
     valids(tail) := true.B
     tail := Mux(tail === (entries - 1).U, 0.U, tail + 1.U)
     count := count + 1.U
   }.elsewhen(io.deq.fire) {
+    // 仅出队
     valids(head) := false.B
     head := Mux(head === (entries - 1).U, 0.U, head + 1.U)
     count := count - 1.U
