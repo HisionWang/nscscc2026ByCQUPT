@@ -13,18 +13,15 @@ class RedirectIO(implicit p: Parameters) extends NSBundle {
   val valid = Output(Bool())
 }
 
-class CtrlFlowIO(implicit p: Parameters) extends NSBundle {
-  val instr = Output(UInt(64.W))
-  val pc = Output(UInt(32.W))
-  val pnpc = Output(UInt(32.W))
-  val redirect = new RedirectIO
-  val exceptionVec = Output(Vec(16, Bool()))
-  val intrVec = Output(Vec(12, Bool()))
-  val brIdx = Output(UInt(4.W))
-  val isRVC = Output(Bool())
-  val crossPageIPFFix = Output(Bool())
-  val runahead_checkpoint_id = Output(UInt(64.W))
-  val isBranch = Output(Bool())
+
+ 
+object FetchExceptIdx {
+  val INT  = 0
+  val PIL  = 1
+  val PIS  = 2
+  val PIF  = 3
+  val PME  = 4
+  val ADEF = 8
 }
 // ==================== LoongArch32 操作码 ====================
 object LoongArch32Opcodes {
@@ -96,7 +93,7 @@ class BpuUpdateReq(implicit p: Parameters) extends NSBundle {
 }
  
 // ==================== 预测信息流水线 Bundle ====================
-class PredInfoBundle(implicit p: Parameters) extends NSBundle {
+class bpuInfoBundle(implicit p: Parameters) extends NSBundle {
   val pc          = UInt(32.W)
   val fallThrough = UInt(32.W)
   val taken       = Bool()
@@ -131,24 +128,44 @@ class PredecodeResp(implicit p: Parameters) extends NSBundle {
   val enqMask          = Vec(fetchWidth, Bool())     // 入队掩码(经预译码校验修正)
   val frontendRedirect = new FrontendRedirect
   val bpuUpdate        = new BpuUpdateReq            // BPU快速更新请求
-  val miss             = Bool()
+  //val miss             = Bool()
   val uncached         = Bool()
   val mmu_error        = Bool()
   val addr             = UInt(32.W)
 }
+
+class CtrlFlowIO(implicit p: Parameters) extends NSBundle {
+  // === 核心取指信息 ===
+  val instr      = Output(UInt(32.W))
+  val pc         = Output(UInt(32.W))
+  // === 预译码结果 ===
+  val pdInfo     = new PredecodeInfo
+  // === 取指异常向量 (索引=LoongArch32 ECODE) ===
+  val exception = Output(Vec(9, Bool()))
+  //  [0]  INT  - 中断（暂未使用，预留）
+  //  [1]  PIL  - 取指TLB缺失
+  //  [2]  PIS  - 取指页表项无效
+  //  [3]  PIF  - 取指特权级违例
+  //  [4]  PME  - 取指页表项修改
+  //  [5]  -    - 预留
+  //  [6]  -    - 预留
+  //  [7]  -    - 预留
+  //  [8]  ADEF - 指令地址非对齐
+}
  
 // ==================== IBuffer 表项 ====================
-class IBufEntry(implicit p: Parameters) extends NSBundle {
-  val instr      = UInt(32.W)
-  val pc         = UInt(32.W)
-  val isBr       = Bool()
-  val isJal      = Bool()
-  val isJalr     = Bool()
-  val isCall     = Bool()
-  val isRet      = Bool()
-  val exception  = Bool()
-  val jumpTarget = UInt(32.W)
-}
+// 同 CtrlFlowIO
+//class IBufEntry(implicit p: Parameters) extends NSBundle {
+//  val instr      = UInt(32.W)
+//  val pc         = UInt(32.W)
+//  val isBr       = Bool()
+//  val isJal      = Bool()
+//  val isJalr     = Bool()
+//  val isCall     = Bool()
+//  val isRet      = Bool()
+//  val exception  = Bool()
+//  val jumpTarget = UInt(32.W)
+//}
  
 // ==================== 可刷新队列 ====================
 class FlushableQueue[T <: Data](gen: T, entries: Int)(implicit p: Parameters) extends NSModule {

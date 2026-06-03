@@ -41,7 +41,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   val predecoder = Module(new Predecoder)
  
   // 预测信息队列(跟踪ICache流水线中的BPU预测)
-  val predInfoQueue = Module(new FlushableQueue(new PredInfoBundle, entries = 8))
+  val predInfoQueue = Module(new FlushableQueue(new bpuInfoBundle, entries = 8))
  
   // ==================== PC生成单元 ====================
   val pcReg    = RegInit(0x1C000000.U(32.W))
@@ -102,7 +102,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   io.icache_req.flush  := backendRedirectValid || frontendRedirectReg.valid
  
   // ==================== BPU的预测信息根据这次PC一起入队 ====================
-  val currentPredInfo = Wire(new PredInfoBundle)
+  val currentPredInfo = Wire(new bpuInfoBundle)
   currentPredInfo.pc          := pcReg
   currentPredInfo.fallThrough := fallThroughPC
   currentPredInfo.taken       := bpuTaken
@@ -131,8 +131,8 @@ class IFU(implicit p: Parameters) extends NSModule {
  
   // 连接预译码输入
   predecoder.io.icacheResp <> io.icache_resp
-  predecoder.io.predInfo      := predInfoQueue.io.deq.bits
-  predecoder.io.predInfoValid := hasPredInfo
+  predecoder.io.bpuInfo      := predInfoQueue.io.deq.bits
+  predecoder.io.bpuInfoValid := hasPredInfo
   predecoder.io.flush         := backendRedirectValid || frontendRedirectReg.valid
  
   // 预译码输出

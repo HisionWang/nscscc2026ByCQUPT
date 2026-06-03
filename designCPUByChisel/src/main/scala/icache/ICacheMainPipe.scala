@@ -469,7 +469,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
   io.icache_resp.bits.addr := s3_vaddr
 
-  io.icache_resp.bits.miss := output_miss
+  //io.icache_resp.bits.miss := output_miss
   io.icache_resp.bits.uncached := output_uncached
   io.icache_resp.bits.mmu_error := output_mmu_error
   

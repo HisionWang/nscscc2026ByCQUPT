@@ -10,199 +10,237 @@ import nscscc.icache._
  
 class Predecoder(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    // 来自ICache的数据
-    val icacheResp = Flipped(Decoupled(new IcacheResp))
-    // 对应的BPU预测信息
-    val predInfo   = Input(new PredInfoBundle)
-    val predInfoValid = Input(Bool())  // 预测信息是否有效
-    // 输出
-    val out        = Decoupled(new PredecodeResp)
-    // 控制信号
-    val flush      = Input(Bool())
+    val flush         = Input(Bool())
+    val icacheResp    = Flipped(Decoupled(new IcacheResp))
+    val bpuInfo      = Input(new bpuInfoBundle)
+    val bpuInfoValid = Input(Bool())
+
+    val out           = Decoupled(new PredecodeResp)
+    
   })
  
-  io.out.bits := DontCare
+  // ================================================================
+  // 第一部分：输入寄存器 —— 只存原始数据，不计算
+  // ================================================================
  
-  // ==================== 流水线寄存器 ====================
-  val stageValid = RegInit(false.B)
-  val stageData  = Reg(new PredecodeResp)
+  val s_pd_valid    = RegInit(false.B)
+  val s_pd_instrs   = Reg(Vec(fetchWidth, UInt(32.W)))
+  val s_pd_valids   = Reg(Vec(fetchWidth, Bool()))
+  val s_pd_addr     = Reg(UInt(32.W))
+  //val s_pd_miss     = Reg(Bool())
+  val s_pd_uncached = Reg(Bool())
+  val s_pd_mmuError = Reg(Bool())
+  val s_pd_bpu     = Reg(new bpuInfoBundle)
  
-  val inFire  = io.icacheResp.valid && io.icacheResp.ready && io.predInfoValid
+  val inFire  = io.icacheResp.valid && io.icacheResp.ready && io.bpuInfoValid
   val outFire = io.out.valid && io.out.ready
  
-  io.icacheResp.ready := !stageValid || outFire
-  io.out.valid := stageValid
-  io.out.bits  := stageData
+  // 输入ready: 寄存器为空 或 输出被接收
+  io.icacheResp.ready := !s_pd_valid || outFire
  
-  // ==================== 预译码组合逻辑 ====================
+  // 状态转移
   when(io.flush) {
-    stageValid := false.B
+    s_pd_valid := false.B
   }.elsewhen(inFire) {
-    stageValid := true.B
-    val icache = io.icacheResp.bits
-    val pred   = io.predInfo
- 
-    // 透传
-    stageData.addr     := icache.addr
-    stageData.miss     := icache.miss
-    stageData.uncached := icache.uncached
-    stageData.mmu_error := icache.mmu_error
-    stageData.instrs   := icache.instrs
-    stageData.instvalids := icache.instvalids  // 使用原字段名
- 
-    // 默认: 无前端重定向, 无BPU更新
-    stageData.frontendRedirect.valid  := false.B
-    stageData.frontendRedirect.target := 0.U
-    stageData.bpuUpdate.valid := false.B
-    stageData.bpuUpdate := DontCare
- 
-    // 计算每条指令的PC
-    for (i <- 0 until fetchWidth) {
-      stageData.pcs(i) := icache.addr + (i * 4).U
-    }
- 
-    // ==================== 指令识别与目标计算 ====================
-    // 保存第一个检测到的故障信息
-    val firstFaultValid  = WireInit(false.B)
-    val firstFaultIdx    = WireInit(0.U(log2Ceil(fetchWidth).W))
-    val firstFaultTarget = WireInit(0.U(32.W))
-    val firstFaultIsCall = WireInit(false.B)
-    val firstFaultIsRet  = WireInit(false.B)
-    val firstFaultIsJal  = WireInit(false.B)
-    val firstFaultIsJalr = WireInit(false.B)
- 
-    // 默认enqMask: 所有有效指令都可以入队
-    for (i <- 0 until fetchWidth) {
-      stageData.enqMask(i) := icache.instvalids(i)
-    }
- 
-    for (i <- 0 until fetchWidth) {
-      val instr = icache.instrs(i)
-      val pc    = icache.addr + (i * 4).U
-      val isValid = icache.instvalids(i)
-      val info  = stageData.pdInfo(i)
- 
-      // 默认值
-      info.valid      := isValid
-      info.isBr       := false.B
-      info.isJal      := false.B
-      info.isJalr     := false.B
-      info.isCall     := false.B
-      info.isRet      := false.B
-      info.jumpTarget := 0.U
- 
-      when(isValid) {
-        // 提取LoongArch32字段
-        val opcode = instr(31, 26)
-        val rj     = instr(9, 5)
-        val rd     = instr(4, 0)
- 
-        // ---- 条件分支 ----
-        val isBr = LoongArch32Opcodes.isBranchOpcode(opcode)
-        info.isBr := isBr
- 
-        // 条件分支偏移: offs16 = instr[25:10], 符号扩展左移2
-        val offs16 = instr(25, 10)
-        val brOffset = Cat(offs16, 0.U(2.W))                        // 18 bits
-        val brOffsetSext = Cat(Fill(14, brOffset(17)), brOffset)    // 32 bits
-        val brTarget = pc + brOffsetSext
-        info.jumpTarget := Mux(isBr, brTarget, 0.U)
- 
-        // ---- 无条件直接跳转 (b/bl) ----
-        val isB  = opcode === LoongArch32Opcodes.OPC_B
-        val isBl = opcode === LoongArch32Opcodes.OPC_BL
-        val isJal = isB || isBl
-        info.isJal := isJal
- 
-        // b/bl偏移: offs26 = instr[25:0], 符号扩展左移2
-        val offs26 = instr(25, 0)
-        val jalOffset = Cat(offs26, 0.U(2.W))                       // 28 bits
-        val jalOffsetSext = Cat(Fill(4, jalOffset(27)), jalOffset)  // 32 bits
-        val jalTarget = pc + jalOffsetSext
-        when(isJal) {
-          info.jumpTarget := jalTarget
-        }
- 
-        // ---- 间接跳转 (jirl) ----
-        val isJirl = opcode === LoongArch32Opcodes.OPC_JIRL
-        info.isJalr := isJirl
-        // jirl目标依赖寄存器, 预译码无法计算
- 
-        // ---- 函数调用/返回 ----
-        // bl 总是保存返回地址到r1
-        // jirl rd=r1 也是调用模式
-        info.isCall := isBl || (isJirl && rd === 1.U)
-        // 典型返回: jirl r0, r1, 0
-        info.isRet  := isJirl && rj === 1.U && rd === 0.U
- 
-        // ==================== BPU预测校验 ====================
-        val predTakenThisInst = pred.taken && pred.takenOffset === i.U
- 
-        // 故障1: JAL/BL必跳, 但BPU说不跳
-        val jalFault = (isJal || info.isCall) && !predTakenThisInst
-        // 故障2: JIRL必跳, 但BPU说不跳
-        val jalrFault = isJirl && !predTakenThisInst
-        // 故障3: 非CFI指令, 但BPU说跳
-        val notCfiFault = !isBr && !isJal && !isJirl && predTakenThisInst
-        // 故障4: 直接跳转目标不对
-        val targetFault = (isJal || info.isCall) && predTakenThisInst &&
-                          (pred.target =/= jalTarget)
- 
-        val anyFault = jalFault || jalrFault || notCfiFault || targetFault
- 
-        // 记录第一个故障(最高优先级: 最低偏移)
-        when(anyFault && !firstFaultValid) {
-          firstFaultValid  := true.B
-          firstFaultIdx    := i.U
-          firstFaultIsJal  := isJal
-          firstFaultIsJalr := isJirl
-          firstFaultIsCall := info.isCall
-          firstFaultIsRet  := info.isRet
- 
-          // 确定正确的重定向目标
-          when(jalFault || targetFault) {
-            firstFaultTarget := jalTarget   // 直接跳转的正确目标
-          }.elsewhen(jalrFault) {
-            // jirl目标未知, 后端会再次重定向; 这里暂时用pc+4(不会执行到)
-            firstFaultTarget := pc + 4.U
-          }.elsewhen(notCfiFault) {
-            // 非CFI但预测跳了, 正确目标是fallThrough
-            firstFaultTarget := pred.fallThrough
-          }
-        }
-      }
-    }
- 
-    // ==================== 故障处理 ====================
-    when(firstFaultValid) {
-      // 1. 截断入队: 故障位置之后的指令不进IBuffer
-      for (i <- 0 until fetchWidth) {
-        when(i.U > firstFaultIdx) {
-          stageData.enqMask(i) := false.B
-        }
-      }
-      // 对于notCfiFault, 故障位置本身也不该跳, 但指令本身是有效的
-      // 如果是jalFault/jalrFault, 故障位置的那条指令可以入队(后续会重定向)
- 
-      // 2. 发起前端重定向
-      stageData.frontendRedirect.valid  := true.B
-      stageData.frontendRedirect.target := firstFaultTarget
- 
-      // 3. 生成BPU快速更新
-      val faultPC = icache.addr + (firstFaultIdx << 2)
-      stageData.bpuUpdate.valid  := true.B
-      stageData.bpuUpdate.pc     := faultPC
-      stageData.bpuUpdate.target := firstFaultTarget
-      stageData.bpuUpdate.isJalr := firstFaultIsJalr
-      stageData.bpuUpdate.isJal  := firstFaultIsJal
-      stageData.bpuUpdate.isCall := firstFaultIsCall
-      stageData.bpuUpdate.isRet  := firstFaultIsRet
-      stageData.bpuUpdate.offset := firstFaultIdx
-      stageData.bpuUpdate.taken  := true.B  // 发现必跳错误, 更新为taken
-      stageData.bpuUpdate.rasTop := pred.meta.rasTop
-    }
- 
+    s_pd_valid    := true.B
+    s_pd_instrs   := io.icacheResp.bits.instrs
+    s_pd_valids   := io.icacheResp.bits.instvalids
+    s_pd_addr     := io.icacheResp.bits.addr
+    //s_pd_miss     := io.icacheResp.bits.miss
+    s_pd_uncached := io.icacheResp.bits.uncached
+    s_pd_mmuError := io.icacheResp.bits.mmu_error
+    s_pd_bpu     := io.bpuInfo
   }.elsewhen(outFire) {
-    stageValid := false.B
+    s_pd_valid := false.B
   }
+ 
+  // ================================================================
+  // 第二部分：组合逻辑 —— 全部从寄存器读，在寄存器后计算
+  // ================================================================
+ 
+  // ---- 每条指令的预译码结果 ----
+  val pdInfo  = Wire(Vec(fetchWidth, new PredecodeInfo))
+  val pcs     = Wire(Vec(fetchWidth, UInt(32.W)))
+ 
+  // ---- 每条指令的故障信号 ----
+  val faultValid  = Wire(Vec(fetchWidth, Bool()))
+  val faultTarget = Wire(Vec(fetchWidth, UInt(32.W)))
+  val faultIsCall = Wire(Vec(fetchWidth, Bool()))
+  val faultIsRet  = Wire(Vec(fetchWidth, Bool()))
+  val faultIsJal  = Wire(Vec(fetchWidth, Bool()))
+  val faultIsJalr = Wire(Vec(fetchWidth, Bool()))
+ 
+  // ---- 入队掩码 ----
+  val enqMask = Wire(Vec(fetchWidth, Bool()))
+  for (i <- 0 until fetchWidth) {
+    enqMask(i) := s_pd_valids(i)
+  }
+ 
+  // ---- 前端重定向 & BPU更新 ----
+  val feRedirect = Wire(new FrontendRedirect)
+  feRedirect.valid  := false.B
+  feRedirect.target := 0.U
+ 
+  val bpuUpdate = Wire(new BpuUpdateReq)
+  bpuUpdate.valid := false.B
+  bpuUpdate := DontCare
+ 
+  // ================================================================
+  // 逐条指令预译码（从 s1 寄存器读取）
+  // ================================================================
+ 
+  for (i <- 0 until fetchWidth) {
+    val instr   = s_pd_instrs(i)
+    val pc      = s_pd_addr + (i * 4).U
+    val isValid = s_pd_valids(i)
+ 
+    pcs(i) := pc
+ 
+    pdInfo(i).valid      := isValid
+    pdInfo(i).isBr       := false.B
+    pdInfo(i).isJal      := false.B
+    pdInfo(i).isJalr     := false.B
+    pdInfo(i).isCall     := false.B
+    pdInfo(i).isRet      := false.B
+    pdInfo(i).jumpTarget := 0.U
+ 
+    faultValid(i)  := false.B
+    faultTarget(i) := 0.U
+    faultIsCall(i) := false.B
+    faultIsRet(i)  := false.B
+    faultIsJal(i)  := false.B
+    faultIsJalr(i) := false.B
+ 
+    when(isValid) {
+      val opcode = instr(31, 26)
+      val rj     = instr(9, 5)
+      val rd     = instr(4, 0)
+ 
+      // ==== 指令类型识别 ====
+      val isBr   = LoongArch32Opcodes.isBranchOpcode(opcode)
+      val isB    = opcode === LoongArch32Opcodes.OPC_B
+      val isBl   = opcode === LoongArch32Opcodes.OPC_BL
+      val isJal  = isB || isBl
+      val isJirl = opcode === LoongArch32Opcodes.OPC_JIRL
+      val isCall = isBl || (isJirl && rd === 1.U)
+      val isRet  = isJirl && rj === 1.U && rd === 0.U
+ 
+      pdInfo(i).isBr   := isBr
+      pdInfo(i).isJal  := isJal
+      pdInfo(i).isJalr := isJirl
+      pdInfo(i).isCall := isCall
+      pdInfo(i).isRet  := isRet
+ 
+      // ==== 跳转目标 ====
+      val offs16       = instr(25, 10)
+      val brOffsetSext = Cat(Fill(14, Cat(offs16, 0.U(2.W))(17)), Cat(offs16, 0.U(2.W)))
+      val brTarget     = pc + brOffsetSext
+ 
+      val offs26       = instr(25, 0)
+      val jalOffsetSext= Cat(Fill(4, Cat(offs26, 0.U(2.W))(27)), Cat(offs26, 0.U(2.W)))
+      val jalTarget    = pc + jalOffsetSext
+ 
+      pdInfo(i).jumpTarget := MuxCase(0.U, Seq(
+        isBr  -> brTarget,
+        isJal -> jalTarget
+      ))
+ 
+      // ==== BPU校验 ====
+      val predTakenHere = s_pd_bpu.taken && s_pd_bpu.takenOffset === i.U
+ 
+      val jalFault    = (isJal || isCall) && !predTakenHere
+      val jalrFault   = isJirl && !predTakenHere
+      val notCfiFault = !isBr && !isJal && !isJirl && predTakenHere
+      val targetFault = (isJal || isCall) && predTakenHere && (s_pd_bpu.target =/= jalTarget)
+ 
+      faultValid(i)  := jalFault || jalrFault || notCfiFault || targetFault
+      faultIsJal(i)  := isJal
+      faultIsJalr(i) := isJirl
+      faultIsCall(i) := isCall
+      faultIsRet(i)  := isRet
+ 
+      faultTarget(i) := MuxCase(0.U, Seq(
+        jalFault    -> jalTarget,
+        targetFault -> jalTarget,
+        jalrFault   -> (pc + 4.U),
+        notCfiFault -> s_pd_bpu.fallThrough
+      ))
+    }
+  }
+ 
+  // ================================================================
+  // 前缀扫描找第一个故障（无组合环路）
+  // ================================================================
+ 
+  val priorFault = Wire(Vec(fetchWidth + 1, Bool()))
+  priorFault(0) := false.B
+  for (i <- 0 until fetchWidth) {
+    priorFault(i + 1) := priorFault(i) || faultValid(i)
+  }
+ 
+  val isFirstFault = Wire(Vec(fetchWidth, Bool()))
+  for (i <- 0 until fetchWidth) {
+    isFirstFault(i) := faultValid(i) && !priorFault(i)
+  }
+ 
+  val firstFaultIdx    = WireInit(0.U(fetchOffsetBits.W))
+  val firstFaultTarget = WireInit(0.U(32.W))
+  val firstFaultIsCall = WireInit(false.B)
+  val firstFaultIsRet  = WireInit(false.B)
+  val firstFaultIsJal  = WireInit(false.B)
+  val firstFaultIsJalr = WireInit(false.B)
+  val anyFault         = WireInit(false.B)
+ 
+  for (i <- 0 until fetchWidth) {
+    when(isFirstFault(i)) {
+      anyFault         := true.B
+      firstFaultIdx    := i.U
+      firstFaultTarget := faultTarget(i)
+      firstFaultIsCall := faultIsCall(i)
+      firstFaultIsRet  := faultIsRet(i)
+      firstFaultIsJal  := faultIsJal(i)
+      firstFaultIsJalr := faultIsJalr(i)
+    }
+  }
+ 
+  // ================================================================
+  // 故障处理
+  // ================================================================
+ 
+  when(anyFault) {
+    for (i <- 0 until fetchWidth) {
+      when(i.U > firstFaultIdx) { enqMask(i) := false.B }
+    }
+    feRedirect.valid  := true.B
+    feRedirect.target := firstFaultTarget
+ 
+    val faultPC = s_pd_addr + Cat(firstFaultIdx, 0.U(2.W))
+    bpuUpdate.valid  := true.B
+    bpuUpdate.pc     := faultPC
+    bpuUpdate.target := firstFaultTarget
+    bpuUpdate.isJalr := firstFaultIsJalr
+    bpuUpdate.isJal  := firstFaultIsJal
+    bpuUpdate.isCall := firstFaultIsCall
+    bpuUpdate.isRet  := firstFaultIsRet
+    bpuUpdate.offset := firstFaultIdx
+    bpuUpdate.taken  := true.B
+    bpuUpdate.rasTop := s_pd_bpu.meta.rasTop
+  }
+ 
+  // ================================================================
+  // 第三部分：输出 —— 组合逻辑结果直出
+  // ================================================================
+ 
+  io.out.valid               := s_pd_valid
+  io.out.bits.instrs         := s_pd_instrs
+  io.out.bits.instvalids     := s_pd_valids
+  io.out.bits.pcs            := pcs
+  io.out.bits.addr           := s_pd_addr
+  //io.out.bits.miss           := s_pd_miss
+  io.out.bits.uncached       := s_pd_uncached
+  io.out.bits.mmu_error      := s_pd_mmuError
+  io.out.bits.pdInfo         := pdInfo
+  io.out.bits.enqMask        := enqMask
+  io.out.bits.frontendRedirect := feRedirect
+  io.out.bits.bpuUpdate      := bpuUpdate
 }
