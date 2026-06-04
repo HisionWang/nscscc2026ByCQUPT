@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config.Parameters
 import nscscc.config._
+import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 
@@ -130,7 +131,7 @@ class PredecodeResp(implicit p: Parameters) extends NSBundle {
   val bpuUpdate        = new BpuUpdateReq            // BPU快速更新请求
   //val miss             = Bool()
   val uncached         = Bool()
-  val mmu_error        = Bool()
+  val mmu_error        = new MmuTransError
   val addr             = UInt(32.W)
 }
 
@@ -141,7 +142,7 @@ class CtrlFlowIO(implicit p: Parameters) extends NSBundle {
   // === 预译码结果 ===
   val pdInfo     = new PredecodeInfo
   // === 取指异常向量 (索引=LoongArch32 ECODE) ===
-  val exception = Output(Vec(9, Bool()))
+  val exception = new MmuTransError
   //  [0]  INT  - 中断（暂未使用，预留）
   //  [1]  PIL  - 取指TLB缺失
   //  [2]  PIS  - 取指页表项无效

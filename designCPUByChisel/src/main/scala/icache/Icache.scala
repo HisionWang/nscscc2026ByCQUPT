@@ -12,12 +12,11 @@ class ICache(implicit p: Parameters) extends NSModule {
   
   
   val io = IO(new Bundle {
+    val redirect = Input(Bool())
     // CPU接口
     val cpu_req = Flipped( Decoupled(new Bundle {
       val addr  = (UInt(32.W))   // 虚拟地址
     }))
-  
-    val flush = Input(Bool())
     
     val icache_resp = Decoupled(new IcacheResp)
 
@@ -41,6 +40,9 @@ class ICache(implicit p: Parameters) extends NSModule {
 
   mainPipe.io.arrays_read  <> array.io.read
   mainPipe.io.array_write  <> array.io.write
+  mainPipe.io.redirect := io.redirect
+
+
   array.io.flush.valid := false.B
   array.io.flush.idx := 0.U
   //array OK

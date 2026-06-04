@@ -5,11 +5,12 @@ import chisel3.util._
 import nscscc.axi._
 import nscscc.config.Parameters
 import nscscc.config._
+import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-
+    val redirect = Input(Bool())
     // CPU接口
     val cpu_req = Flipped( Decoupled(new Bundle {
       val addr  = (UInt(32.W))   // 虚拟地址
@@ -35,7 +36,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   })
 
   //
-  val flushFormBack = false.B
+  val flushFormBack = io.redirect
   val s4_flush = flushFormBack || false.B
   val s3_flush = s4_flush      || false.B
   val s2_flush = s3_flush      || false.B
@@ -150,7 +151,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_vaddr = Reg(UInt(32.W))  // 虚拟地址
   val s2_paddr = Reg(UInt(32.W))  // 物理地址
   val s2_uncached = Reg(Bool())   // 是否为uncached访问
-  val s2_mmu_error = Reg(Bool())  // MMU转换错误
+  val s2_mmu_error = Reg(new MmuTransError)  // MMU转换错误
   val s2_vidx  = Reg(UInt(idxBits.W))
   val s2_vtag  = Reg(UInt(tagBits.W))
   val s2_pidx  = Reg(UInt(idxBits.W))  // 物理索引
@@ -160,7 +161,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   
   val s3_ready = Wire(Bool())
   val s2_fire = ( s2_valid && s3_ready)
-  val s2_is_uncached_access = s2_mmu_error || s2_uncached
+  val s2_is_uncached_access = s2_mmu_error.getAnyError || s2_uncached
   s2_ready := s2_fire || !s2_valid
       // 从物理地址计算索引和标签
 
@@ -178,7 +179,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_vaddr = Reg(UInt(32.W))
   val s3_paddr = Reg(UInt(32.W))
   val s3_uncached = Reg(Bool())
-  val s3_mmu_error = Reg(Bool())
+  val s3_mmu_error = Reg(new MmuTransError)
   val s3_hit    = Reg(Bool())
 
   val s3_miss   = Reg(Bool())
@@ -186,7 +187,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_hit_way    = Reg(UInt(wayBits.W))
   val miss_data_buffer = Reg(UInt((blockBytes * 8).W))
   val s1_bypass_data = miss_data_buffer
-  val s1_can_bypass = (s1_ptag === s3_ptag && s1_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s3_mmu_error)
+  val s1_can_bypass = (s1_ptag === s3_ptag && s1_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !(s3_mmu_error.getAnyError))
   val s1_bypass_hit_way    = io.victim_read.resp
 
   val s2_bypass_data_from_s1 = Reg(UInt((blockBytes * 8).W))
@@ -251,7 +252,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_fire =((s3_valid && s3_hit) || state === s_done )&& cpu_ready
 
 
-  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s3_mmu_error)
+  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !(s3_mmu_error.getAnyError))
   val s2_bypass_data = miss_data_buffer
   when(s3_flush) {
     s3_valid := false.B
@@ -326,7 +327,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     is(s_idle) {
       when(s3_valid && !s3_flush && !s3_hit) {
         // 根据Stage 2的结果选择下一个状态
-        when(s3_mmu_error) {
+        when(s3_mmu_error.getAnyError) {
           next_state := s_mmu_error_state
         }.elsewhen(s3_uncached) {
           next_state := s_uncache_req
@@ -454,14 +455,14 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val output_valid = Wire(Bool())
   val output_miss = Wire(Bool())
   val output_uncached = Wire(Bool())
-  val output_mmu_error = Wire(Bool())
+  val output_mmu_error = Wire(new MmuTransError)
 
   output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
   output_instvalids := 0.U.asTypeOf(Vec(fetchWidth, Bool()))
   output_valid := false.B
   output_miss := false.B
   output_uncached := false.B
-  output_mmu_error := false.B
+  output_mmu_error := 0.U.asTypeOf(new MmuTransError)
 
   io.icache_resp.bits.instrs := output_instrs
   io.icache_resp.valid := output_valid
@@ -485,7 +486,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := false.B
+        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
       }
     }
     is(s_done) {
@@ -495,7 +496,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := false.B
+        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
       }.elsewhen(uncache_data_valid) {
         output_instrs := uncache_instrs
         output_instvalids(0) := true.B
@@ -505,19 +506,19 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := true.B
         output_miss := false.B
         output_uncached := true.B
-        output_mmu_error := false.B
-      }.elsewhen(s3_mmu_error) {
+        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
+      }.elsewhen(s3_mmu_error.getAnyError) {
         output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := true.B
+        output_mmu_error := s3_mmu_error
       }.otherwise {
         output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
         output_valid := false.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := false.B
+        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
       }
     }
     
@@ -526,7 +527,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
       output_valid := true.B
       output_miss := false.B
       output_uncached := false.B
-      output_mmu_error := true.B
+      output_mmu_error := s3_mmu_error
     }
     
     //default {

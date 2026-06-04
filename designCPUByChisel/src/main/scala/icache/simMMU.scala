@@ -3,6 +3,7 @@ package nscscc.icache
 import chisel3._
 import chisel3.util._
 import nscscc.config.Parameters
+import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 class SimpleMMU(implicit p: Parameters) extends NSModule {
@@ -32,7 +33,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   io.mmu.resp.valid := stage1_valid
   io.mmu.resp.data.paddr := stage1_vaddr  // 恒等映射
   io.mmu.resp.data.uncached := false.B   // 默认cached
-  io.mmu.resp.data.error := false.B      // 默认无错误
+  io.mmu.resp.data.error := 0.U.asTypeOf(new MmuTransError)     // 默认无错误
   
-  println("SimpleMMU instantiated with 2-cycle latency")
+  //println("SimpleMMU instantiated with 2-cycle latency")
 }

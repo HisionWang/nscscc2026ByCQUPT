@@ -100,10 +100,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val frontend = Module(new Frontend)
  
   // ---------- MMU / TLB ----------
-  val mmu = Module(new Mmu)
+  //val mmu = Module(new Mmu)
  
   // ---------- CSR ----------
-  val csr = Module(new CsrFile)
+  //val csr = Module(new CsrFile)
  
   // ---------- DCache / Uncache (黑盒占位) ----------
   val dcache   = Module(new cache_BlackBox)
@@ -123,32 +123,21 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // ================================================================
   // 前端 ↔ 后端 接口连接
   // ================================================================
-  // 目前后端尚未实现, 所有来自前端的指令输出暂不连接
-  // 后端实现后, frontend.io.out 应连接到译码/执行级
- 
-  // 后端就绪信号: 暂时置为前端输出就绪
-  val backendReady = Wire(Vec(issueWidth, Bool()))
-  for (i <- 0 until issueWidth) {
-    backendReady(i) := frontend.io.out(i).ready
-  }
-  frontend.io.backendReady := backendReady
  
   // 后端重定向: 暂无后端, 置为无效
   frontend.io.redirect.valid  := false.B
   frontend.io.redirect.target := 0.U
   frontend.io.redirect.rtype  := 0.U
- 
-
- 
   // 后端BPU更新: 暂无后端, 置为无效
   frontend.io.bpuUpdateBr.valid  := false.B
   frontend.io.bpuUpdateBr        := DontCare
- 
-  // ================================================================
-  // 前端控制信号
-  // ================================================================
-  frontend.io.flush        := false.B
-  frontend.io.stall        := false.B
+  
+  for (i <- 0 until CtrlBlockWidth) {
+    frontend.io.out(i).ready := true.B  
+  }
+
+  dontTouch(frontend.io.out)
+
  
   // ================================================================
   // MMU / TLB 连接
@@ -163,8 +152,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   //   mmu.io.tlb_resp → frontend.icache内部MMU响应
  
   // MMU默认输入(暂不连接ICache, 等ICache接口改造)
-  mmu.io.fromIcache.valid := false.B
-  mmu.io.fromIcache.bits.vaddr := 0.U
+  // mmu.io.fromIcache.valid := false.B
+  // mmu.io.fromIcache.bits.vaddr := 0.U
  
   // MMU与CSR的交互
   // CSR提供: 页表基址(PGD), ASID, 直接映射窗口(DMW), DA模式等
@@ -300,7 +289,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val difftest = Module(new DifftestInCore)
  
   // 指令有效: 前端输出第一条指令握手成功
-  difftest.io.inst_valid_diff   := dbgFirstValid
+  difftest.io.inst_valid_diff   := cycleCount === 188.U
   difftest.io.cnt_inst_diff     := false.B
   difftest.io.timer_64_diff     := cycleCount
  
@@ -332,32 +321,32 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.rand_index   := 0.U
  
   // CSR快照 (从CSR模块读出)
-//  difftest.io.csr_estat_diff_0      := csr.io.csr_estat
-//  difftest.io.csr_crmd_diff_0       := csr.io.csr_crmd
-//  difftest.io.csr_prmd_diff_0       := csr.io.csr_prmd
-//  difftest.io.csr_ectl_diff_0       := csr.io.csr_ectl
-//  difftest.io.csr_era_diff_0        := csr.io.csr_era
-//  difftest.io.csr_badv_diff_0       := csr.io.csr_badv
-//  difftest.io.csr_eentry_diff_0     := csr.io.csr_eentry
-//  difftest.io.csr_tlbidx_diff_0     := csr.io.csr_tlbidx
-//  difftest.io.csr_tlbehi_diff_0     := csr.io.csr_tlbehi
-//  difftest.io.csr_tlbelo0_diff_0    := csr.io.csr_tlbelo0
-//  difftest.io.csr_tlbelo1_diff_0    := csr.io.csr_tlbelo1
-//  difftest.io.csr_asid_diff_0       := csr.io.csr_asid
-//  difftest.io.csr_pgdl_diff_0       := csr.io.csr_pgdl
-//  difftest.io.csr_pgdh_diff_0       := csr.io.csr_pgdh
-//  difftest.io.csr_save0_diff_0      := csr.io.csr_save0
-//  difftest.io.csr_save1_diff_0      := csr.io.csr_save1
-//  difftest.io.csr_save2_diff_0      := csr.io.csr_save2
-//  difftest.io.csr_save3_diff_0      := csr.io.csr_save3
-//  difftest.io.csr_tid_diff_0        := csr.io.csr_tid
-//  difftest.io.csr_tcfg_diff_0       := csr.io.csr_tcfg
-//  difftest.io.csr_tval_diff_0       := csr.io.csr_tval
-//  difftest.io.csr_ticlr_diff_0      := csr.io.csr_ticlr
-//  difftest.io.csr_llbctl_diff_0     := csr.io.csr_llbctl
-//  difftest.io.csr_tlbrentry_diff_0  := csr.io.csr_tlbrentry
-//  difftest.io.csr_dmw0_diff_0       := csr.io.csr_dmw0
-//  difftest.io.csr_dmw1_diff_0       := csr.io.csr_dmw1
+  difftest.io.csr_estat_diff_0      := 0.U
+  difftest.io.csr_crmd_diff_0       := 0.U
+  difftest.io.csr_prmd_diff_0       := 0.U
+  difftest.io.csr_ectl_diff_0       := 0.U
+  difftest.io.csr_era_diff_0        := 0.U
+  difftest.io.csr_badv_diff_0       := 0.U
+  difftest.io.csr_eentry_diff_0     := 0.U
+  difftest.io.csr_tlbidx_diff_0     := 0.U
+  difftest.io.csr_tlbehi_diff_0     := 0.U
+  difftest.io.csr_tlbelo0_diff_0    := 0.U
+  difftest.io.csr_tlbelo1_diff_0    := 0.U
+  difftest.io.csr_asid_diff_0       := 0.U
+  difftest.io.csr_pgdl_diff_0       := 0.U
+  difftest.io.csr_pgdh_diff_0       := 0.U
+  difftest.io.csr_save0_diff_0      := 0.U
+  difftest.io.csr_save1_diff_0      := 0.U
+  difftest.io.csr_save2_diff_0      := 0.U
+  difftest.io.csr_save3_diff_0      := 0.U
+  difftest.io.csr_tid_diff_0        := 0.U
+  difftest.io.csr_tcfg_diff_0       := 0.U
+  difftest.io.csr_tval_diff_0       := 0.U
+  difftest.io.csr_ticlr_diff_0      := 0.U
+  difftest.io.csr_llbctl_diff_0     := 0.U
+  difftest.io.csr_tlbrentry_diff_0  := 0.U
+  difftest.io.csr_dmw0_diff_0       := 0.U
+  difftest.io.csr_dmw1_diff_0       := 0.U
  
   // 寄存器堆 (暂无, 置0)
   for (i <- 0 until 32) {

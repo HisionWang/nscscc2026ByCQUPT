@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config.Parameters
 import nscscc.config._
+import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.icache._
@@ -29,7 +30,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   val s_pd_addr     = Reg(UInt(32.W))
   //val s_pd_miss     = Reg(Bool())
   val s_pd_uncached = Reg(Bool())
-  val s_pd_mmuError = Reg(Bool())
+  val s_pd_mmuError = Reg(new MmuTransError)
   val s_pd_bpu     = Reg(new bpuInfoBundle)
  
   val inFire  = io.icacheResp.valid && io.icacheResp.ready && io.bpuInfoValid

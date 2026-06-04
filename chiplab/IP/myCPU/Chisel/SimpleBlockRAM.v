@@ -1,12 +1,12 @@
 module SimpleBlockRAM(
   input         clock,
-  input         io_wr_en, // @[src/main/scala/icache/BlockRAM.scala 15:14]
-  input  [7:0]  io_wr_addr, // @[src/main/scala/icache/BlockRAM.scala 15:14]
-  input  [18:0] io_wr_data, // @[src/main/scala/icache/BlockRAM.scala 15:14]
-  input         io_rd_en, // @[src/main/scala/icache/BlockRAM.scala 15:14]
-  input  [7:0]  io_rd_addr, // @[src/main/scala/icache/BlockRAM.scala 15:14]
-  output [18:0] io_rd_data, // @[src/main/scala/icache/BlockRAM.scala 15:14]
-  output        io_rd_valid // @[src/main/scala/icache/BlockRAM.scala 15:14]
+  input         io_wr_en, // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  input  [7:0]  io_wr_addr, // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  input  [18:0] io_wr_data, // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  input         io_rd_en, // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  input  [7:0]  io_rd_addr, // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  output [18:0] io_rd_data, // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  output        io_rd_valid // @[src/main/scala/icache/BlockRAM.scala 17:14]
 );
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
@@ -19,38 +19,38 @@ module SimpleBlockRAM(
   reg [31:0] _RAND_5;
   reg [31:0] _RAND_6;
 `endif // RANDOMIZE_REG_INIT
-  reg [18:0] mem [0:255]; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire  mem_dataPipeline_0_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire [7:0] mem_dataPipeline_0_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire [18:0] mem_dataPipeline_0_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire  mem_io_rd_data_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire [7:0] mem_io_rd_data_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire [18:0] mem_io_rd_data_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire [18:0] mem_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire [7:0] mem_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire  mem_MPORT_mask; // @[src/main/scala/icache/BlockRAM.scala 33:24]
-  wire  mem_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 33:24]
+  reg [18:0] mem [0:255]; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire  mem_dataPipeline_0_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire [7:0] mem_dataPipeline_0_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire [18:0] mem_dataPipeline_0_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire  mem_io_rd_data_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire [7:0] mem_io_rd_data_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire [18:0] mem_io_rd_data_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire [18:0] mem_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire [7:0] mem_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire  mem_MPORT_mask; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+  wire  mem_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 35:24]
   reg  mem_dataPipeline_0_MPORT_en_pipe_0;
   reg [7:0] mem_dataPipeline_0_MPORT_addr_pipe_0;
   reg  mem_io_rd_data_MPORT_en_pipe_0;
   reg [7:0] mem_io_rd_data_MPORT_addr_pipe_0;
-  reg  rdPipeline_0; // @[src/main/scala/icache/BlockRAM.scala 36:23]
-  reg  rdPipeline_1; // @[src/main/scala/icache/BlockRAM.scala 36:23]
+  reg  rdPipeline_0; // @[src/main/scala/icache/BlockRAM.scala 38:23]
+  reg  rdPipeline_1; // @[src/main/scala/icache/BlockRAM.scala 38:23]
   assign mem_dataPipeline_0_MPORT_en = mem_dataPipeline_0_MPORT_en_pipe_0;
   assign mem_dataPipeline_0_MPORT_addr = mem_dataPipeline_0_MPORT_addr_pipe_0;
-  assign mem_dataPipeline_0_MPORT_data = mem[mem_dataPipeline_0_MPORT_addr]; // @[src/main/scala/icache/BlockRAM.scala 33:24]
+  assign mem_dataPipeline_0_MPORT_data = mem[mem_dataPipeline_0_MPORT_addr]; // @[src/main/scala/icache/BlockRAM.scala 35:24]
   assign mem_io_rd_data_MPORT_en = mem_io_rd_data_MPORT_en_pipe_0;
   assign mem_io_rd_data_MPORT_addr = mem_io_rd_data_MPORT_addr_pipe_0;
-  assign mem_io_rd_data_MPORT_data = mem[mem_io_rd_data_MPORT_addr]; // @[src/main/scala/icache/BlockRAM.scala 33:24]
+  assign mem_io_rd_data_MPORT_data = mem[mem_io_rd_data_MPORT_addr]; // @[src/main/scala/icache/BlockRAM.scala 35:24]
   assign mem_MPORT_data = io_wr_data;
   assign mem_MPORT_addr = io_wr_addr;
   assign mem_MPORT_mask = 1'h1;
   assign mem_MPORT_en = io_wr_en;
-  assign io_rd_data = mem_io_rd_data_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 55:14]
-  assign io_rd_valid = rdPipeline_1; // @[src/main/scala/icache/BlockRAM.scala 56:15]
+  assign io_rd_data = mem_io_rd_data_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 57:14]
+  assign io_rd_valid = rdPipeline_1; // @[src/main/scala/icache/BlockRAM.scala 58:15]
   always @(posedge clock) begin
     if (mem_MPORT_en & mem_MPORT_mask) begin
-      mem[mem_MPORT_addr] <= mem_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 33:24]
+      mem[mem_MPORT_addr] <= mem_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
     end
     mem_dataPipeline_0_MPORT_en_pipe_0 <= io_rd_en;
     if (io_rd_en) begin
@@ -60,8 +60,8 @@ module SimpleBlockRAM(
     if (io_rd_en) begin
       mem_io_rd_data_MPORT_addr_pipe_0 <= io_rd_addr;
     end
-    rdPipeline_0 <= io_rd_en; // @[src/main/scala/icache/BlockRAM.scala 45:17]
-    rdPipeline_1 <= rdPipeline_0; // @[src/main/scala/icache/BlockRAM.scala 50:19]
+    rdPipeline_0 <= io_rd_en; // @[src/main/scala/icache/BlockRAM.scala 47:17]
+    rdPipeline_1 <= rdPipeline_0; // @[src/main/scala/icache/BlockRAM.scala 52:19]
   end
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN

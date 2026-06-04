@@ -30,10 +30,6 @@ class IFU(implicit p: Parameters) extends NSModule {
 
 
     val bpuUpdateBr    = Input(new BpuUpdateReq)
- 
-    // 控制
-    val flush  = Input(Bool())
-    val stall  = Input(Bool())
   })
  
   // ==================== 子模块实例化 ====================
@@ -41,7 +37,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   val predecoder = Module(new Predecoder)
  
   // 预测信息队列(跟踪ICache流水线中的BPU预测)
-  val predInfoQueue = Module(new FlushableQueue(new bpuInfoBundle, entries = 8))
+  val bpuInfoQueue = Module(new FlushableQueue(new bpuInfoBundle, entries = 8))
  
   // ==================== PC生成单元 ====================
   val pcReg    = RegInit(0x1C000000.U(32.W))
@@ -64,7 +60,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   val bpuMeta   = bpu.io.predictResp.meta
  
   // 前端重定向(来自预译码, 寄存一拍后生效)
-  val frontendRedirectReg = Reg(new FrontendRedirect)
+  val frontendRedirectReg =  Wire(new FrontendRedirect) //Reg(new FrontendRedirect)
   frontendRedirectReg := io.frontend_redirect
  
   // 后端重定向
@@ -78,7 +74,7 @@ class IFU(implicit p: Parameters) extends NSModule {
                                                    seqPC)))
  
   // pcReg将要进入Icache条件
-  val pc_fire = (io.icache_req.ready && predInfoQueue.io.enq.ready )&& !backendRedirectValid &&
+  val pc_fire = (io.icache_req.ready && bpuInfoQueue.io.enq.ready )&& !backendRedirectValid &&
                 !frontendRedirectReg.valid
  
   // 通知BPU预测结果被使用
@@ -97,7 +93,7 @@ class IFU(implicit p: Parameters) extends NSModule {
  
   // ==================== ICache请求 ====================
   io.icache_req.addr  := pcReg
-  io.icache_req.valid := pcValid && !backendRedirectValid &&
+  io.icache_req.valid := !backendRedirectValid &&
                          !frontendRedirectReg.valid //当重定向来了之后，不给Cache发当前请求
   io.icache_req.flush  := backendRedirectValid || frontendRedirectReg.valid
  
@@ -110,16 +106,16 @@ class IFU(implicit p: Parameters) extends NSModule {
   currentPredInfo.takenOffset := bpu.io.predictResp.takenOffset
   currentPredInfo.meta        := bpuMeta
  
-  predInfoQueue.io.enq.valid := pc_fire
-  predInfoQueue.io.enq.bits  := currentPredInfo
-  predInfoQueue.io.flush     := backendRedirectValid || frontendRedirectReg.valid
+  bpuInfoQueue.io.enq.valid := pc_fire
+  bpuInfoQueue.io.enq.bits  := currentPredInfo
+  bpuInfoQueue.io.flush     := backendRedirectValid || frontendRedirectReg.valid
  
   // ==================== ICache响应 → 预译码 ====================
   // FIFO不为空
-  val hasPredInfo = predInfoQueue.io.deq.valid
+  val hasBpuInfo = bpuInfoQueue.io.deq.valid
  
   // 处理正常响应(有预测信息)
-  val processResp = io.icache_resp.valid && hasPredInfo
+  val processResp = io.icache_resp.valid && hasBpuInfo
  
   // ICache响应ready: 有预测信息时取决于预译码, 无预测信息时直接接收丢弃
   io.icache_resp.ready := predecoder.io.icacheResp.ready
@@ -127,12 +123,12 @@ class IFU(implicit p: Parameters) extends NSModule {
   // 预测信息出队
   // 1.Cache正确地返还了数据 
   // 2.预译码器时刻准备着
-  predInfoQueue.io.deq.ready := processResp && predecoder.io.icacheResp.ready
+  bpuInfoQueue.io.deq.ready := processResp && predecoder.io.icacheResp.ready
  
   // 连接预译码输入
   predecoder.io.icacheResp <> io.icache_resp
-  predecoder.io.bpuInfo      := predInfoQueue.io.deq.bits
-  predecoder.io.bpuInfoValid := hasPredInfo
+  predecoder.io.bpuInfo      := bpuInfoQueue.io.deq.bits
+  predecoder.io.bpuInfoValid := hasBpuInfo
   predecoder.io.flush         := backendRedirectValid || frontendRedirectReg.valid
  
   // 预译码输出
@@ -164,5 +160,5 @@ class IFU(implicit p: Parameters) extends NSModule {
   // 注意: 这里简化了rasTop的传递, 实际应在RedirectIO中增加rasTop字段
   // 或者通过后端redirect的bpuMeta来恢复。当前用rtype字段暂存, 后续需修改。
  
-  bpu.io.flush := backendRedirectValid || io.flush
+  bpu.io.flush := backendRedirectValid
 }

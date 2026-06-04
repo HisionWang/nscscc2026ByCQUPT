@@ -2,9 +2,9 @@
 SHELL := /bin/bash
 
 # 路径变量（强烈建议统一在这里管理）
-ENV_SCRIPT   := ./../
+ENV_SCRIPT   := ..
 SBT_DIR      := .
-MAKE_DIR     := ../chiplab/sims/verilator/run_prog/
+MAKE_DIR     := chiplab/sims/verilator/run_prog/
 
 MILL     ?= ./mill
 MODULE   := RamOn
@@ -43,7 +43,6 @@ sbt:
 sim:
 	cd $(ENV_SCRIPT) && \
 	source env.sh && \
-	@echo "==> Running make in $(MAKE_DIR)"
 	cd $(MAKE_DIR) && $(MAKE)
 
 clean:
