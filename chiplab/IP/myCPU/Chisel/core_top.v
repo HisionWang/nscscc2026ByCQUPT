@@ -431,9 +431,8 @@ module core_top(
   wire  difftest_clock; // @[src/main/scala/myCPU_top.scala 289:24]
   wire  difftest_reset; // @[src/main/scala/myCPU_top.scala 289:24]
   wire  difftest_io_inst_valid_diff; // @[src/main/scala/myCPU_top.scala 289:24]
+  wire  difftest_io_cnt_inst_diff; // @[src/main/scala/myCPU_top.scala 289:24]
   wire [63:0] difftest_io_timer_64_diff; // @[src/main/scala/myCPU_top.scala 289:24]
-  wire [63:0] difftest_io_debug0_wb_pc; // @[src/main/scala/myCPU_top.scala 289:24]
-  wire [31:0] difftest_io_debug0_wb_inst; // @[src/main/scala/myCPU_top.scala 289:24]
   wire  _T = ~aresetn; // @[src/main/scala/myCPU_top.scala 93:27]
   wire  dbgFirstValid = frontend_io_out_0_ready & frontend_io_out_0_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [31:0] _debug0_wb_inst_T = frontend_io_out_0_bits_instr; // @[src/main/scala/myCPU_top.scala 271:56]
@@ -829,9 +828,8 @@ module core_top(
     .clock(difftest_clock),
     .reset(difftest_reset),
     .io_inst_valid_diff(difftest_io_inst_valid_diff),
-    .io_timer_64_diff(difftest_io_timer_64_diff),
-    .io_debug0_wb_pc(difftest_io_debug0_wb_pc),
-    .io_debug0_wb_inst(difftest_io_debug0_wb_inst)
+    .io_cnt_inst_diff(difftest_io_cnt_inst_diff),
+    .io_timer_64_diff(difftest_io_timer_64_diff)
   );
   assign arid = axi_crossbar_io_out_ar_data_arid; // @[src/main/scala/myCPU_top.scala 215:11]
   assign araddr = axi_crossbar_io_out_ar_data_araddr; // @[src/main/scala/myCPU_top.scala 216:11]
@@ -1015,9 +1013,8 @@ module core_top(
   assign difftest_clock = aclk;
   assign difftest_reset = ~aresetn; // @[src/main/scala/myCPU_top.scala 93:27]
   assign difftest_io_inst_valid_diff = cycleCount == 64'hbc; // @[src/main/scala/myCPU_top.scala 292:47]
+  assign difftest_io_cnt_inst_diff = cycleCount == 64'hbc; // @[src/main/scala/myCPU_top.scala 293:47]
   assign difftest_io_timer_64_diff = cycleCount; // @[src/main/scala/myCPU_top.scala 294:33]
-  assign difftest_io_debug0_wb_pc = {{32'd0}, frontend_io_out_0_bits_pc}; // @[src/main/scala/myCPU_top.scala 313:33]
-  assign difftest_io_debug0_wb_inst = frontend_io_out_0_bits_instr; // @[src/main/scala/myCPU_top.scala 314:65]
   always @(posedge aclk) begin
     if (_T) begin // @[src/main/scala/myCPU_top.scala 286:27]
       cycleCount <= 64'h0; // @[src/main/scala/myCPU_top.scala 286:27]

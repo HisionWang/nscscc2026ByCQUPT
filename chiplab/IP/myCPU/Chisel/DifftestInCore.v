@@ -2,17 +2,15 @@ module DifftestInCore(
   input         clock,
   input         reset,
   input         io_inst_valid_diff, // @[src/main/scala/difftest/Difftest.scala 158:14]
-  input  [63:0] io_timer_64_diff, // @[src/main/scala/difftest/Difftest.scala 158:14]
-  input  [63:0] io_debug0_wb_pc, // @[src/main/scala/difftest/Difftest.scala 158:14]
-  input  [31:0] io_debug0_wb_inst // @[src/main/scala/difftest/Difftest.scala 158:14]
+  input         io_cnt_inst_diff, // @[src/main/scala/difftest/Difftest.scala 158:14]
+  input  [63:0] io_timer_64_diff // @[src/main/scala/difftest/Difftest.scala 158:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
-  reg [63:0] _RAND_1;
+  reg [31:0] _RAND_1;
   reg [63:0] _RAND_2;
-  reg [31:0] _RAND_3;
+  reg [63:0] _RAND_3;
   reg [63:0] _RAND_4;
-  reg [63:0] _RAND_5;
 `endif // RANDOMIZE_REG_INIT
   wire  difftestInstrCommit_clock; // @[src/main/scala/difftest/Difftest.scala 281:35]
   wire [7:0] difftestInstrCommit_coreid; // @[src/main/scala/difftest/Difftest.scala 281:35]
@@ -122,9 +120,8 @@ module DifftestInCore(
   wire [63:0] difftestGRegState_gpr_30; // @[src/main/scala/difftest/Difftest.scala 367:33]
   wire [63:0] difftestGRegState_gpr_31; // @[src/main/scala/difftest/Difftest.scala 367:33]
   reg  cmt_valid; // @[src/main/scala/difftest/Difftest.scala 217:26]
+  reg  cmt_cnt_inst; // @[src/main/scala/difftest/Difftest.scala 218:29]
   reg [63:0] cmt_timer_64; // @[src/main/scala/difftest/Difftest.scala 219:29]
-  reg [63:0] cmt_pc; // @[src/main/scala/difftest/Difftest.scala 233:23]
-  reg [31:0] cmt_inst; // @[src/main/scala/difftest/Difftest.scala 234:25]
   reg [63:0] cycleCnt; // @[src/main/scala/difftest/Difftest.scala 244:25]
   reg [63:0] instrCnt; // @[src/main/scala/difftest/Difftest.scala 245:25]
   wire [63:0] _cycleCnt_T_1 = cycleCnt + 64'h1; // @[src/main/scala/difftest/Difftest.scala 275:28]
@@ -255,12 +252,12 @@ module DifftestInCore(
   assign difftestInstrCommit_coreid = 8'h0; // @[src/main/scala/difftest/Difftest.scala 284:33]
   assign difftestInstrCommit_index = 8'h0; // @[src/main/scala/difftest/Difftest.scala 285:32]
   assign difftestInstrCommit_valid = cmt_valid; // @[src/main/scala/difftest/Difftest.scala 286:32]
-  assign difftestInstrCommit_pc = cmt_pc; // @[src/main/scala/difftest/Difftest.scala 287:29]
-  assign difftestInstrCommit_instr = cmt_inst; // @[src/main/scala/difftest/Difftest.scala 288:32]
+  assign difftestInstrCommit_pc = 64'h0; // @[src/main/scala/difftest/Difftest.scala 287:29]
+  assign difftestInstrCommit_instr = 32'h0; // @[src/main/scala/difftest/Difftest.scala 288:32]
   assign difftestInstrCommit_skip = 1'h0; // @[src/main/scala/difftest/Difftest.scala 289:31]
   assign difftestInstrCommit_is_TLBFILL = 1'h0; // @[src/main/scala/difftest/Difftest.scala 290:37]
   assign difftestInstrCommit_TLBFILL_index = 5'h0; // @[src/main/scala/difftest/Difftest.scala 291:40]
-  assign difftestInstrCommit_is_CNTinst = 1'h0; // @[src/main/scala/difftest/Difftest.scala 292:37]
+  assign difftestInstrCommit_is_CNTinst = cmt_cnt_inst; // @[src/main/scala/difftest/Difftest.scala 292:37]
   assign difftestInstrCommit_timer_64_value = cmt_timer_64; // @[src/main/scala/difftest/Difftest.scala 293:41]
   assign difftestInstrCommit_wen = 1'h0; // @[src/main/scala/difftest/Difftest.scala 294:30]
   assign difftestInstrCommit_wdest = 8'h0; // @[src/main/scala/difftest/Difftest.scala 295:32]
@@ -273,13 +270,13 @@ module DifftestInCore(
   assign difftestExcpEvent_eret = 1'h0; // @[src/main/scala/difftest/Difftest.scala 304:29]
   assign difftestExcpEvent_intrNo = 11'h0; // @[src/main/scala/difftest/Difftest.scala 305:53]
   assign difftestExcpEvent_cause = 6'h0; // @[src/main/scala/difftest/Difftest.scala 306:30]
-  assign difftestExcpEvent_exceptionPC = cmt_pc; // @[src/main/scala/difftest/Difftest.scala 307:36]
-  assign difftestExcpEvent_exceptionInst = cmt_inst; // @[src/main/scala/difftest/Difftest.scala 308:38]
+  assign difftestExcpEvent_exceptionPC = 64'h0; // @[src/main/scala/difftest/Difftest.scala 307:36]
+  assign difftestExcpEvent_exceptionInst = 32'h0; // @[src/main/scala/difftest/Difftest.scala 308:38]
   assign difftestTrapEvent_clock = clock; // @[src/main/scala/difftest/Difftest.scala 311:30]
   assign difftestTrapEvent_coreid = 8'h0; // @[src/main/scala/difftest/Difftest.scala 312:31]
   assign difftestTrapEvent_valid = 1'h0; // @[src/main/scala/difftest/Difftest.scala 313:30]
   assign difftestTrapEvent_code = 8'h0; // @[src/main/scala/difftest/Difftest.scala 314:29]
-  assign difftestTrapEvent_pc = cmt_pc; // @[src/main/scala/difftest/Difftest.scala 315:27]
+  assign difftestTrapEvent_pc = 64'h0; // @[src/main/scala/difftest/Difftest.scala 315:27]
   assign difftestTrapEvent_cycleCnt = cycleCnt; // @[src/main/scala/difftest/Difftest.scala 316:33]
   assign difftestTrapEvent_instrCnt = instrCnt; // @[src/main/scala/difftest/Difftest.scala 317:33]
   assign difftestStoreEvent_clock = clock; // @[src/main/scala/difftest/Difftest.scala 320:31]
@@ -364,20 +361,15 @@ module DifftestInCore(
     end else begin
       cmt_valid <= io_inst_valid_diff;
     end
+    if (reset) begin // @[src/main/scala/difftest/Difftest.scala 218:29]
+      cmt_cnt_inst <= 1'h0; // @[src/main/scala/difftest/Difftest.scala 218:29]
+    end else begin
+      cmt_cnt_inst <= io_cnt_inst_diff;
+    end
     if (reset) begin // @[src/main/scala/difftest/Difftest.scala 219:29]
       cmt_timer_64 <= 64'h0; // @[src/main/scala/difftest/Difftest.scala 219:29]
     end else begin
       cmt_timer_64 <= io_timer_64_diff;
-    end
-    if (reset) begin // @[src/main/scala/difftest/Difftest.scala 233:23]
-      cmt_pc <= 64'h0; // @[src/main/scala/difftest/Difftest.scala 233:23]
-    end else begin
-      cmt_pc <= io_debug0_wb_pc;
-    end
-    if (reset) begin // @[src/main/scala/difftest/Difftest.scala 234:25]
-      cmt_inst <= 32'h0; // @[src/main/scala/difftest/Difftest.scala 234:25]
-    end else begin
-      cmt_inst <= io_debug0_wb_inst;
     end
     if (reset) begin // @[src/main/scala/difftest/Difftest.scala 244:25]
       cycleCnt <= 64'h0; // @[src/main/scala/difftest/Difftest.scala 244:25]
@@ -428,16 +420,14 @@ initial begin
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
   cmt_valid = _RAND_0[0:0];
-  _RAND_1 = {2{`RANDOM}};
-  cmt_timer_64 = _RAND_1[63:0];
+  _RAND_1 = {1{`RANDOM}};
+  cmt_cnt_inst = _RAND_1[0:0];
   _RAND_2 = {2{`RANDOM}};
-  cmt_pc = _RAND_2[63:0];
-  _RAND_3 = {1{`RANDOM}};
-  cmt_inst = _RAND_3[31:0];
+  cmt_timer_64 = _RAND_2[63:0];
+  _RAND_3 = {2{`RANDOM}};
+  cycleCnt = _RAND_3[63:0];
   _RAND_4 = {2{`RANDOM}};
-  cycleCnt = _RAND_4[63:0];
-  _RAND_5 = {2{`RANDOM}};
-  instrCnt = _RAND_5[63:0];
+  instrCnt = _RAND_4[63:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

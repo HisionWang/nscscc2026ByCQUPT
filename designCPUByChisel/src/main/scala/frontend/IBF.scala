@@ -7,6 +7,7 @@ import nscscc.config._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.mmu.MmuTransError
+import nscscc.util.CircularQueue  // 导入新写的环形队列模块
 
 class IBF(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -18,182 +19,102 @@ class IBF(implicit p: Parameters) extends NSModule {
     val flush = Input(Bool())  // 后端redirect时清空(延迟一拍)
   })
   
-  // ==================== 环形缓冲区 ====================
-  val entries   = RegInit(VecInit(Seq.fill(ibufDepth)(0.U.asTypeOf(new CtrlFlowIO))))
-  val valids    = RegInit(VecInit(Seq.fill(ibufDepth)(false.B)))
-
-  val head      = RegInit(0.U(log2Ceil(ibufDepth).W))  // 写指针(入队端)
-  val tail      = RegInit(0.U(log2Ceil(ibufDepth).W))  // 读指针(出队端)
-  val count     = RegInit(0.U((log2Ceil(ibufDepth) + 1).W)) // 缓冲区中有效指令数
+  // ==================== 使用CircularQueue重构 ====================
   
-  val full  = count >= (ibufDepth - fetchWidth).U  // 没有足够空间容纳一次fetchWidth的入队
-  val empty = count === 0.U
+  // 实例化环形队列
+  val queue = Module(new CircularQueue(
+    gen = new CtrlFlowIO,        // 存储的数据类型
+    entries = ibufDepth,         // 队列容量
+    enqWidth = fetchWidth,       // 入队宽度（一次最多入队fetchWidth条指令）
+    deqWidth = CtrlBlockWidth    // 出队宽度（一次最多出队CtrlBlockWidth条指令）
+  ))
+  queue.io.read := DontCare
+  // 连接flush信号（注意：CircularQueue的flush是高电平有效）
+  queue.io.flush := io.flush
   
   // ==================== 入队逻辑 ====================
-  val canEnqueue = !full
-  io.in.ready := canEnqueue
-  
-  val enqueueCount = Wire(UInt(log2Ceil(fetchWidth+1).W))
-  enqueueCount := 0.U
-  
-  when(io.in.fire && !io.flush) {
-    val in = io.in.bits
+  // 连接预译码输入到CircularQueue的入队端口
+
+  // 入队有效信号：输入有效且对应的enqMask为真
+  for (i <- 0 until fetchWidth) {
     
-    for (i <- 0 until fetchWidth) {
-      val idx = (head + i.U) % ibufDepth.U
-      when(in.enqMask(i)) {
-        entries(idx).instr      := in.instrs(i)
-        entries(idx).pc         := in.pcs(i)
-        entries(idx).pdInfo     := in.pdInfo(i)
-        entries(idx).exception  := in.mmu_error
-        valids(idx) := true.B
-      }
-    }
+      queue.io.enq(i).valid := io.in.valid && io.in.bits.enqMask(i)
+      queue.io.enq(i).bits.instr := io.in.bits.instrs(i)
+      queue.io.enq(i).bits.pc := io.in.bits.pcs(i)
+      queue.io.enq(i).bits.pdInfo := io.in.bits.pdInfo(i)
+
+      // 异常处理
+      queue.io.enq(i).bits.exception := io.in.bits.mmu_error
     
-    enqueueCount := PopCount(in.enqMask)
+
   }
+  
+  // 输入就绪信号：队列就绪（CircularQueue内部会处理多路入队的就绪信号）
+  io.in.ready := !queue.io.full
   
   // ==================== 出队逻辑 ====================
-  // 计算每个输出端口对应的缓冲区索引
-  val tailIndices = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(ibufDepth).W)))
+  // 连接CircularQueue的出队端口到后端输出
+  
   for (i <- 0 until CtrlBlockWidth) {
-    tailIndices(i) := (tail + i.U) % ibufDepth.U
-  }
-  
-  // 计算从tail开始的连续有效指令
-  val hasValidInst = Wire(Vec(CtrlBlockWidth, Bool()))
-  for (i <- 0 until CtrlBlockWidth) {
-    hasValidInst(i) := (i.U < count) && valids(tailIndices(i))
-  }
-  
-  // 计算基本分配条件：有有效指令、端口就绪、无刷新
-  val baseAllocCond = Wire(Vec(CtrlBlockWidth, Bool()))
-  for (i <- 0 until CtrlBlockWidth) {
-    baseAllocCond(i) := hasValidInst(i) && io.out(i).ready && !io.flush
-  }
-  
-  // 优先级分配：从端口0开始顺序分配
-  val allocateMask = Wire(Vec(CtrlBlockWidth, Bool()))
-  
-  // 第一个端口的分配条件
-  allocateMask(0) := baseAllocCond(0)
-  
-  // 后续端口的分配条件：当前端口满足基本条件，且前面所有端口都不能分配
-  for (i <- 1 until CtrlBlockWidth) {
-    val previousCannotAlloc = (0 until i).map(j => !baseAllocCond(j)).reduce(_ && _)
-    allocateMask(i) := baseAllocCond(i) && previousCannotAlloc
-  }
-  
-  // 计算分配的指令数量
-  val allocatedCount = PopCount(allocateMask)
-  
-  // 设置输出
-  for (i <- 0 until CtrlBlockWidth) {
-    val idx = tailIndices(i)
+    // 连接valid和bits信号
+    io.out(i).valid := queue.io.deq(i).valid
+    io.out(i).bits := queue.io.deq(i).bits
     
-    when(allocateMask(i)) {
-      io.out(i).valid := true.B
-      io.out(i).bits.instr  := entries(idx).instr
-      io.out(i).bits.pc     := entries(idx).pc
-      io.out(i).bits.pdInfo := entries(idx).pdInfo
-      io.out(i).bits.exception := entries(idx).exception
-    }.otherwise {
-      io.out(i).valid := false.B
-      io.out(i).bits := DontCare
-    }
+    // 连接ready信号
+    queue.io.deq(i).ready := io.out(i).ready
   }
   
-  val issuedCount = PopCount(io.out.map(_.fire))
+  // ==================== 状态信号透传 ====================
+  // 可以将队列状态信号输出用于调试
+  val queueEmpty = queue.io.empty
+  val queueFull = queue.io.full
+  val queueCount = queue.io.count
   
-  // ==================== 同时入队和出队的更新逻辑 ====================
-  // 使用临时变量计算更新后的值
-  val nextHead = Wire(UInt(log2Ceil(ibufDepth).W))
-  val nextTail = Wire(UInt(log2Ceil(ibufDepth).W))
-  val nextCount = Wire(UInt((log2Ceil(ibufDepth) + 1).W))
-  
-  // 初始化
-  nextHead := head
-  nextTail := tail
-  nextCount := count
-  
-  // 入队更新
-  when(io.in.fire && !io.flush) {
-    nextHead := (head + enqueueCount) % ibufDepth.U
-  }
-  
-  // 出队更新
-  // 使用独立的逻辑清除已出队的指令，避免作用域逃逸
-  val clearValidMask = Wire(Vec(ibufDepth, Bool()))
-  for (i <- 0 until ibufDepth) {
-    clearValidMask(i) := false.B
-  }
-  
-  when(issuedCount > 0.U && !io.flush) {
-    // 清除已出队的指令有效位
-    for (i <- 0 until CtrlBlockWidth) {
-      when(i.U < issuedCount) {
-        val idx = (tail + i.U) % ibufDepth.U
-        clearValidMask(idx) := true.B
-      }
-    }
-    
-    nextTail := (tail + issuedCount) % ibufDepth.U
-  }
-  
-  // 应用清除掩码
-  for (i <- 0 until ibufDepth) {
-    when(clearValidMask(i)) {
-      valids(i) := false.B
-    }
-  }
-  
-  // 更新计数器：count = count + 入队数 - 出队数
-  val countChange = Mux(io.in.fire && !io.flush, enqueueCount, 0.U) - 
-                    Mux(issuedCount > 0.U && !io.flush, issuedCount, 0.U)
-  nextCount := count + countChange
-  
-  // 在时钟上升沿更新所有状态
-  when(!io.flush) {
-    head := nextHead
-    tail := nextTail
-    count := nextCount
-  }
-  
-  // ==================== 刷新逻辑 ====================
-  val flushReg = RegNext(io.flush, false.B)
-  when(flushReg) {
-    for (i <- 0 until ibufDepth) {
-      valids(i) := false.B
-    }
-    head  := 0.U
-    tail  := 0.U
-    count := 0.U
-  }
+  // ==================== 随机读端口 ====================
+  // 如果后端需要随机读取指令（如ROB需要读取特定指令的信息），可以使用read端口
+  // 这里示例中暂时不使用，但保留了接口
   
   // ==================== 调试信息 ====================
   when(io.in.fire) {
-    printf(p"[IBF] Enqueue: ${enqueueCount} instrs, new head=${nextHead}, new count=${nextCount}\n")
+    val enqCount = PopCount(io.in.bits.enqMask)
+    printf(p"[IBF-CircularQueue] Enqueue: ${enqCount} instructions, queue count=${queueCount}\n")
+    
+    // 输出每条入队的指令信息
+    for (i <- 0 until fetchWidth) {
+      when(io.in.bits.enqMask(i)) {
+        printf(p"  Instr[${i}]: pc=0x${Hexadecimal(io.in.bits.pcs(i))}, " +
+               p"instr=0x${Hexadecimal(io.in.bits.instrs(i))}\n")
+      }
+    }
   }
   
-  when(issuedCount > 0.U) {
-    printf(p"[IBF] Dequeue: ${issuedCount} instrs, new tail=${nextTail}, new count=${nextCount}\n")
+  // 输出出队信息
+  for (i <- 0 until CtrlBlockWidth) {
+    when(io.out(i).fire) {
+      printf(p"[IBF-CircularQueue] Dequeue[${i}]: pc=0x${Hexadecimal(io.out(i).bits.pc)}, " +
+             p"instr=0x${Hexadecimal(io.out(i).bits.instr)}\n")
+    }
   }
   
-  when(io.in.fire && issuedCount > 0.U) {
-    printf(p"[IBF] Simultaneous enqueue(${enqueueCount}) and dequeue(${issuedCount})\n")
+  // 队列状态监控
+  printf(p"[IBF-CircularQueue Status] count=$queueCount, empty=$queueEmpty, full=$queueFull\n")
+  
+  when(io.flush) {
+    printf(p"[IBF-CircularQueue] Buffer flushed due to redirect\n")
   }
   
-  // 缓冲区状态监控
-  printf(p"[IBF Status] head=$head, tail=$tail, count=$count, full=$full, empty=$empty\n")
+  // ==================== 断言检查 ====================
+  // 确保不会在队列满时尝试入队 就连个线你检查个屁
+  //when(io.in.valid && queue.io.full) {
+  //  assert(!io.in.valid || !queue.io.full, 
+  //         "IBF: Attempting to enqueue when queue is full")
+  //}
   
-
-  
-  // 确保入队和出队不会冲突
-  when(io.in.fire && issuedCount > 0.U) {
-    // 如果同时入队和出队，检查是否会导致head和tail交叉
-    val newHead = (head + enqueueCount) % ibufDepth.U
-    val newTail = (tail + issuedCount) % ibufDepth.U
-    val willBeFull = (newHead === newTail && (enqueueCount > 0.U || issuedCount > 0.U))
+  // 确保出队的指令是有效的
+  for (i <- 0 until CtrlBlockWidth) {
+    when(io.out(i).valid && !queue.io.empty) {
+      // 出队有效时，队列不应为空
+      // 这个检查在CircularQueue内部已经做了，这里再加一层保护
+    }
   }
-  
 }

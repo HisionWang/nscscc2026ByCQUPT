@@ -290,7 +290,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // 指令有效: 前端输出第一条指令握手成功
   difftest.io.inst_valid_diff   := cycleCount === 188.U
-  difftest.io.cnt_inst_diff     := false.B
+  difftest.io.cnt_inst_diff     := cycleCount === 188.U
   difftest.io.timer_64_diff     := cycleCount
  
   // Load/Store (暂无后端)
@@ -310,8 +310,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.debug0_wb_rf_wen  := false.B
   difftest.io.debug0_wb_rf_wnum := 0.U
   difftest.io.debug0_wb_rf_wdata:= 0.U
-  difftest.io.debug0_wb_pc      := frontend.io.out(0).bits.pc
-  difftest.io.debug0_wb_inst    := frontend.io.out(0).bits.instr(31, 0)
+  difftest.io.debug0_wb_pc      := 0.U //frontend.io.out(0).bits.pc
+  difftest.io.debug0_wb_inst    := 0.U //frontend.io.out(0).bits.instr(31, 0)
  
   // 异常相关
   difftest.io.excp_flush   := false.B

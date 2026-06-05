@@ -58,7 +58,7 @@ trait HasCoreParameters {
   val  CtrlBlockWidth : Int = 6
 
 
-  
+
   val  issueWidth: Int = 4  // 可配置的发射宽度，默认4条，可修改为2、4、6、8等
 
   

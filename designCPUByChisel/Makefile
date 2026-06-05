@@ -47,7 +47,7 @@ sim:
 
 clean:
 	cd $(SBT_DIR) && sbt clean
-	cd $(MAKE_DIR) && $(MAKE) clean
+	cd ../$(MAKE_DIR) && $(MAKE) clean
 
 clean_mill:
 	rm -rf $(BUILD_DIR) out
