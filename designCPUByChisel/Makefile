@@ -1,10 +1,7 @@
 # 指定使用 bash（source 需要 bash）
 SHELL := /bin/bash
 
-# 路径变量（强烈建议统一在这里管理）
-ENV_SCRIPT   := ..
-SBT_DIR      := .
-MAKE_DIR     := chiplab/sims/verilator/run_prog/
+
 
 MILL     ?= ./mill
 MODULE   := RamOn
@@ -36,6 +33,11 @@ $(TOP_V): $(SCALA_FILES) $(BUILD_FILES)
 
 .PHONY: all run-sbt run-make clean verilog clean_mill
 
+# 路径变量（强烈建议统一在这里管理）
+ENV_SCRIPT   := ..
+SBT_DIR      := .
+MAKE_DIR     := chiplab/sims/verilator/run_prog/
+
 sbt:
 	cd $(SBT_DIR) && \
 	sbt run
@@ -43,7 +45,7 @@ sbt:
 sim:
 	cd $(ENV_SCRIPT) && \
 	source env.sh && \
-	cd $(MAKE_DIR) && $(MAKE)
+	cd $(MAKE_DIR) && $(MAKE) 
 
 clean:
 	cd $(SBT_DIR) && sbt clean

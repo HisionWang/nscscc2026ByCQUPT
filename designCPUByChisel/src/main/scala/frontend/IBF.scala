@@ -29,28 +29,37 @@ class IBF(implicit p: Parameters) extends NSModule {
     deqWidth = CtrlBlockWidth    // 出队宽度（一次最多出队CtrlBlockWidth条指令）
   ))
   queue.io.read := DontCare
-  // 连接flush信号（注意：CircularQueue的flush是高电平有效）
+
   queue.io.flush := io.flush
   
   // ==================== 入队逻辑 ====================
-  // 连接预译码输入到CircularQueue的入队端口
-
-  // 入队有效信号：输入有效且对应的enqMask为真
   for (i <- 0 until fetchWidth) {
     
-      queue.io.enq(i).valid := io.in.valid && io.in.bits.enqMask(i)
+      queue.io.enq(i).valid := io.in.valid && io.in.bits.enqMask(i) && io.in.ready
+      /*因为前面来的是一个指令块，必须是同时入队的，为了避免单独几个入队的情况发生
+      [独属于IBF模块的情况] 必须要加上 io.in.ready
+      */
+      
       queue.io.enq(i).bits.instr := io.in.bits.instrs(i)
       queue.io.enq(i).bits.pc := io.in.bits.pcs(i)
       queue.io.enq(i).bits.pdInfo := io.in.bits.pdInfo(i)
 
       // 异常处理
       queue.io.enq(i).bits.exception := io.in.bits.mmu_error
+      //when(io.in.bits.pcs(i) === 0x1c000024.U){
+      //  queue.io.enq(i).valid := false.B
+      //}
     
 
   }
+
   
-  // 输入就绪信号：队列就绪（CircularQueue内部会处理多路入队的就绪信号）
-  io.in.ready := !queue.io.full
+  // 因为前面发过来的是一个指令块
+  // 所以说无论有多少个有效的可以入队的指令，一定都应该是必须要同时入队的
+  // 发给前面的指令块的ready条件：
+  // 当队列里面的剩余数量 大于等于 前方请求的数量数量时
+  io.in.ready :=  PopCount(queue.io.enq.map(_.ready)) >= PopCount(io.in.bits.enqMask) //fetchWidth.U
+  //!queue.io.full
   
   // ==================== 出队逻辑 ====================
   // 连接CircularQueue的出队端口到后端输出
@@ -60,8 +69,28 @@ class IBF(implicit p: Parameters) extends NSModule {
     io.out(i).valid := queue.io.deq(i).valid
     io.out(i).bits := queue.io.deq(i).bits
     
-    // 连接ready信号
-    queue.io.deq(i).ready := io.out(i).ready
+
+    /*-------- 现在暂且认为，整个系统不支持向前插空 ---------*/
+    // 所以在连接循坏队列的ready信号的时候
+    // 要注意
+    // 这个是不能直接这样传的
+    // queue.io.deq(i).ready := io.out(i).ready
+    // OK  NO
+    // OK  NO
+    // OK  OK
+    // 以上情况就会出现错误
+    // 队列中直接检测到第三组的ready都是OK的，就会错误的出队一个，但是这样是错误的
+    // 所以要更新给queue.io.deq(i).ready的赋值方式
+
+  }
+  val deqReadyMask = Wire(Vec(CtrlBlockWidth, Bool()))
+  deqReadyMask(0) := io.out(0).ready
+  // 后续端口：取决于自己的ready AND 前面所有端口都ready
+  for (i <- 1 until CtrlBlockWidth) {
+    deqReadyMask(i) := io.out(i).ready && deqReadyMask(i-1)
+  }
+  for (i <- 0 until CtrlBlockWidth) {
+    queue.io.deq(i).ready := deqReadyMask(i)
   }
   
   // ==================== 状态信号透传 ====================

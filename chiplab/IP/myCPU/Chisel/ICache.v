@@ -11,10 +11,12 @@ module ICache(
   output [31:0] io_icache_resp_bits_instrs_1, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_icache_resp_bits_instrs_2, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_icache_resp_bits_instrs_3, // @[src/main/scala/icache/Icache.scala 14:14]
+  output [31:0] io_icache_resp_bits_instrs_4, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_0, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_1, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_2, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_3, // @[src/main/scala/icache/Icache.scala 14:14]
+  output        io_icache_resp_bits_instvalids_4, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_icache_resp_bits_addr, // @[src/main/scala/icache/Icache.scala 14:14]
   output [3:0]  io_axi_master_ar_data_arid, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_axi_master_ar_data_araddr, // @[src/main/scala/icache/Icache.scala 14:14]
@@ -41,10 +43,12 @@ module ICache(
   wire [31:0] mainPipe_io_icache_resp_bits_instrs_1; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_icache_resp_bits_instrs_2; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_icache_resp_bits_instrs_3; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [31:0] mainPipe_io_icache_resp_bits_instrs_4; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_0; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_1; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_2; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_3; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire  mainPipe_io_icache_resp_bits_instvalids_4; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_icache_resp_bits_addr; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [3:0] mainPipe_io_axi_ar_data_arid; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_axi_ar_data_araddr; // @[src/main/scala/icache/Icache.scala 29:24]
@@ -125,10 +129,12 @@ module ICache(
     .io_icache_resp_bits_instrs_1(mainPipe_io_icache_resp_bits_instrs_1),
     .io_icache_resp_bits_instrs_2(mainPipe_io_icache_resp_bits_instrs_2),
     .io_icache_resp_bits_instrs_3(mainPipe_io_icache_resp_bits_instrs_3),
+    .io_icache_resp_bits_instrs_4(mainPipe_io_icache_resp_bits_instrs_4),
     .io_icache_resp_bits_instvalids_0(mainPipe_io_icache_resp_bits_instvalids_0),
     .io_icache_resp_bits_instvalids_1(mainPipe_io_icache_resp_bits_instvalids_1),
     .io_icache_resp_bits_instvalids_2(mainPipe_io_icache_resp_bits_instvalids_2),
     .io_icache_resp_bits_instvalids_3(mainPipe_io_icache_resp_bits_instvalids_3),
+    .io_icache_resp_bits_instvalids_4(mainPipe_io_icache_resp_bits_instvalids_4),
     .io_icache_resp_bits_addr(mainPipe_io_icache_resp_bits_addr),
     .io_axi_ar_data_arid(mainPipe_io_axi_ar_data_arid),
     .io_axi_ar_data_araddr(mainPipe_io_axi_ar_data_araddr),
@@ -209,10 +215,12 @@ module ICache(
   assign io_icache_resp_bits_instrs_1 = mainPipe_io_icache_resp_bits_instrs_1; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instrs_2 = mainPipe_io_icache_resp_bits_instrs_2; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instrs_3 = mainPipe_io_icache_resp_bits_instrs_3; // @[src/main/scala/icache/Icache.scala 38:28]
+  assign io_icache_resp_bits_instrs_4 = mainPipe_io_icache_resp_bits_instrs_4; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_0 = mainPipe_io_icache_resp_bits_instvalids_0; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_1 = mainPipe_io_icache_resp_bits_instvalids_1; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_2 = mainPipe_io_icache_resp_bits_instvalids_2; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_3 = mainPipe_io_icache_resp_bits_instvalids_3; // @[src/main/scala/icache/Icache.scala 38:28]
+  assign io_icache_resp_bits_instvalids_4 = mainPipe_io_icache_resp_bits_instvalids_4; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_addr = mainPipe_io_icache_resp_bits_addr; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_axi_master_ar_data_arid = mainPipe_io_axi_ar_data_arid; // @[src/main/scala/icache/Icache.scala 39:20]
   assign io_axi_master_ar_data_araddr = mainPipe_io_axi_ar_data_araddr; // @[src/main/scala/icache/Icache.scala 39:20]

@@ -53,10 +53,9 @@ trait HasCoreParameters {
   val  nSets:      Int = 256
   val  nWays:      Int = 2
   val  blockBytes: Int = 64
-  val  fetchWidth: Int = 4
-  val  ibufDepth:  Int = 16  // 指令缓冲深度，通常设为2倍fetchWidth或更多
-  val  CtrlBlockWidth : Int = 6
-
+  val  fetchWidth: Int = 5
+  val  ibufDepth:  Int = 16  // 必须为2的次方倍
+  val  CtrlBlockWidth : Int = 3
 
 
   val  issueWidth: Int = 4  // 可配置的发射宽度，默认4条，可修改为2、4、6、8等

@@ -6,13 +6,13 @@ module FlushableQueue(
   input  [31:0] io_enq_bits_fallThrough, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   input         io_enq_bits_taken, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   input  [31:0] io_enq_bits_target, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
-  input  [1:0]  io_enq_bits_takenOffset, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
+  input  [2:0]  io_enq_bits_takenOffset, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   input         io_deq_ready, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   output        io_deq_valid, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   output [31:0] io_deq_bits_fallThrough, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   output        io_deq_bits_taken, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   output [31:0] io_deq_bits_target, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
-  output [1:0]  io_deq_bits_takenOffset, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
+  output [2:0]  io_deq_bits_takenOffset, // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
   input         io_flush // @[src/main/scala/frontend/FrontendBundle.scala 173:14]
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -55,35 +55,35 @@ module FlushableQueue(
   reg [31:0] data_0_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_0_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_0_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_0_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_0_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_1_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_1_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_1_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_1_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_1_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_2_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_2_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_2_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_2_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_2_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_3_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_3_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_3_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_3_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_3_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_4_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_4_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_4_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_4_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_4_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_5_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_5_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_5_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_5_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_5_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_6_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_6_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_6_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_6_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_6_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_7_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg  data_7_taken; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [31:0] data_7_target; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-  reg [1:0] data_7_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+  reg [2:0] data_7_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
   reg [2:0] head; // @[src/main/scala/frontend/FrontendBundle.scala 182:23]
   reg [2:0] tail; // @[src/main/scala/frontend/FrontendBundle.scala 183:23]
   reg [3:0] count; // @[src/main/scala/frontend/FrontendBundle.scala 184:23]
@@ -107,12 +107,12 @@ module FlushableQueue(
   wire [31:0] _GEN_28 = 3'h4 == head ? data_4_target : _GEN_27; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
   wire [31:0] _GEN_29 = 3'h5 == head ? data_5_target : _GEN_28; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
   wire [31:0] _GEN_30 = 3'h6 == head ? data_6_target : _GEN_29; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
-  wire [1:0] _GEN_33 = 3'h1 == head ? data_1_takenOffset : data_0_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
-  wire [1:0] _GEN_34 = 3'h2 == head ? data_2_takenOffset : _GEN_33; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
-  wire [1:0] _GEN_35 = 3'h3 == head ? data_3_takenOffset : _GEN_34; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
-  wire [1:0] _GEN_36 = 3'h4 == head ? data_4_takenOffset : _GEN_35; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
-  wire [1:0] _GEN_37 = 3'h5 == head ? data_5_takenOffset : _GEN_36; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
-  wire [1:0] _GEN_38 = 3'h6 == head ? data_6_takenOffset : _GEN_37; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
+  wire [2:0] _GEN_33 = 3'h1 == head ? data_1_takenOffset : data_0_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
+  wire [2:0] _GEN_34 = 3'h2 == head ? data_2_takenOffset : _GEN_33; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
+  wire [2:0] _GEN_35 = 3'h3 == head ? data_3_takenOffset : _GEN_34; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
+  wire [2:0] _GEN_36 = 3'h4 == head ? data_4_takenOffset : _GEN_35; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
+  wire [2:0] _GEN_37 = 3'h5 == head ? data_5_takenOffset : _GEN_36; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
+  wire [2:0] _GEN_38 = 3'h6 == head ? data_6_takenOffset : _GEN_37; // @[src/main/scala/frontend/FrontendBundle.scala 191:{16,16}]
   wire  _T = io_enq_ready & io_enq_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _T_1 = io_deq_ready & io_deq_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [31:0] _GEN_128 = 3'h0 == tail ? io_enq_bits_fallThrough : data_0_fallThrough; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
@@ -139,14 +139,14 @@ module FlushableQueue(
   wire [31:0] _GEN_149 = 3'h5 == tail ? io_enq_bits_target : data_5_target; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
   wire [31:0] _GEN_150 = 3'h6 == tail ? io_enq_bits_target : data_6_target; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
   wire [31:0] _GEN_151 = 3'h7 == tail ? io_enq_bits_target : data_7_target; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_152 = 3'h0 == tail ? io_enq_bits_takenOffset : data_0_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_153 = 3'h1 == tail ? io_enq_bits_takenOffset : data_1_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_154 = 3'h2 == tail ? io_enq_bits_takenOffset : data_2_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_155 = 3'h3 == tail ? io_enq_bits_takenOffset : data_3_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_156 = 3'h4 == tail ? io_enq_bits_takenOffset : data_4_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_157 = 3'h5 == tail ? io_enq_bits_takenOffset : data_5_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_158 = 3'h6 == tail ? io_enq_bits_takenOffset : data_6_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
-  wire [1:0] _GEN_159 = 3'h7 == tail ? io_enq_bits_takenOffset : data_7_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_152 = 3'h0 == tail ? io_enq_bits_takenOffset : data_0_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_153 = 3'h1 == tail ? io_enq_bits_takenOffset : data_1_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_154 = 3'h2 == tail ? io_enq_bits_takenOffset : data_2_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_155 = 3'h3 == tail ? io_enq_bits_takenOffset : data_3_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_156 = 3'h4 == tail ? io_enq_bits_takenOffset : data_4_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_157 = 3'h5 == tail ? io_enq_bits_takenOffset : data_5_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_158 = 3'h6 == tail ? io_enq_bits_takenOffset : data_6_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
+  wire [2:0] _GEN_159 = 3'h7 == tail ? io_enq_bits_takenOffset : data_7_takenOffset; // @[src/main/scala/frontend/FrontendBundle.scala 201:{17,17} 180:23]
   wire [2:0] _head_T_2 = head + 3'h1; // @[src/main/scala/frontend/FrontendBundle.scala 204:53]
   wire [2:0] _head_T_3 = head == 3'h7 ? 3'h0 : _head_T_2; // @[src/main/scala/frontend/FrontendBundle.scala 204:16]
   wire [2:0] _tail_T_2 = tail + 3'h1; // @[src/main/scala/frontend/FrontendBundle.scala 205:53]
@@ -190,7 +190,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_0_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_0_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_0_takenOffset <= _GEN_152;
@@ -226,7 +226,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_1_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_1_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_1_takenOffset <= _GEN_153;
@@ -262,7 +262,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_2_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_2_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_2_takenOffset <= _GEN_154;
@@ -298,7 +298,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_3_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_3_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_3_takenOffset <= _GEN_155;
@@ -334,7 +334,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_4_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_4_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_4_takenOffset <= _GEN_156;
@@ -370,7 +370,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_5_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_5_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_5_takenOffset <= _GEN_157;
@@ -406,7 +406,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_6_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_6_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_6_takenOffset <= _GEN_158;
@@ -442,7 +442,7 @@ module FlushableQueue(
       end
     end
     if (reset) begin // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
-      data_7_takenOffset <= 2'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
+      data_7_takenOffset <= 3'h0; // @[src/main/scala/frontend/FrontendBundle.scala 180:23]
     end else if (!(io_flush)) begin // @[src/main/scala/frontend/FrontendBundle.scala 194:18]
       if (_T & _T_1) begin // @[src/main/scala/frontend/FrontendBundle.scala 199:42]
         data_7_takenOffset <= _GEN_159;
@@ -527,7 +527,7 @@ initial begin
   _RAND_2 = {1{`RANDOM}};
   data_0_target = _RAND_2[31:0];
   _RAND_3 = {1{`RANDOM}};
-  data_0_takenOffset = _RAND_3[1:0];
+  data_0_takenOffset = _RAND_3[2:0];
   _RAND_4 = {1{`RANDOM}};
   data_1_fallThrough = _RAND_4[31:0];
   _RAND_5 = {1{`RANDOM}};
@@ -535,7 +535,7 @@ initial begin
   _RAND_6 = {1{`RANDOM}};
   data_1_target = _RAND_6[31:0];
   _RAND_7 = {1{`RANDOM}};
-  data_1_takenOffset = _RAND_7[1:0];
+  data_1_takenOffset = _RAND_7[2:0];
   _RAND_8 = {1{`RANDOM}};
   data_2_fallThrough = _RAND_8[31:0];
   _RAND_9 = {1{`RANDOM}};
@@ -543,7 +543,7 @@ initial begin
   _RAND_10 = {1{`RANDOM}};
   data_2_target = _RAND_10[31:0];
   _RAND_11 = {1{`RANDOM}};
-  data_2_takenOffset = _RAND_11[1:0];
+  data_2_takenOffset = _RAND_11[2:0];
   _RAND_12 = {1{`RANDOM}};
   data_3_fallThrough = _RAND_12[31:0];
   _RAND_13 = {1{`RANDOM}};
@@ -551,7 +551,7 @@ initial begin
   _RAND_14 = {1{`RANDOM}};
   data_3_target = _RAND_14[31:0];
   _RAND_15 = {1{`RANDOM}};
-  data_3_takenOffset = _RAND_15[1:0];
+  data_3_takenOffset = _RAND_15[2:0];
   _RAND_16 = {1{`RANDOM}};
   data_4_fallThrough = _RAND_16[31:0];
   _RAND_17 = {1{`RANDOM}};
@@ -559,7 +559,7 @@ initial begin
   _RAND_18 = {1{`RANDOM}};
   data_4_target = _RAND_18[31:0];
   _RAND_19 = {1{`RANDOM}};
-  data_4_takenOffset = _RAND_19[1:0];
+  data_4_takenOffset = _RAND_19[2:0];
   _RAND_20 = {1{`RANDOM}};
   data_5_fallThrough = _RAND_20[31:0];
   _RAND_21 = {1{`RANDOM}};
@@ -567,7 +567,7 @@ initial begin
   _RAND_22 = {1{`RANDOM}};
   data_5_target = _RAND_22[31:0];
   _RAND_23 = {1{`RANDOM}};
-  data_5_takenOffset = _RAND_23[1:0];
+  data_5_takenOffset = _RAND_23[2:0];
   _RAND_24 = {1{`RANDOM}};
   data_6_fallThrough = _RAND_24[31:0];
   _RAND_25 = {1{`RANDOM}};
@@ -575,7 +575,7 @@ initial begin
   _RAND_26 = {1{`RANDOM}};
   data_6_target = _RAND_26[31:0];
   _RAND_27 = {1{`RANDOM}};
-  data_6_takenOffset = _RAND_27[1:0];
+  data_6_takenOffset = _RAND_27[2:0];
   _RAND_28 = {1{`RANDOM}};
   data_7_fallThrough = _RAND_28[31:0];
   _RAND_29 = {1{`RANDOM}};
@@ -583,7 +583,7 @@ initial begin
   _RAND_30 = {1{`RANDOM}};
   data_7_target = _RAND_30[31:0];
   _RAND_31 = {1{`RANDOM}};
-  data_7_takenOffset = _RAND_31[1:0];
+  data_7_takenOffset = _RAND_31[2:0];
   _RAND_32 = {1{`RANDOM}};
   head = _RAND_32[2:0];
   _RAND_33 = {1{`RANDOM}};

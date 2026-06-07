@@ -122,10 +122,8 @@ class CircularQueue[T <: Data](
   // =====================================================================
  
   /**
-   * 空：value相等 且 flag相等 → 两个指针完全相同
-   * 满：value相等 且 flag不同 → 差了一整圈
-   *
-   * 这是旗子方案的核心！只需要一个与门+一个异或门，硬件代价极低
+   * 空：value相等 且 flag相等 两个指针完全相同
+   * 满：value相等 且 flag不同 差了一整圈
    */
   val empty = deqPtr === enqPtr   // value相同 且 flag相同
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
@@ -140,11 +138,11 @@ class CircularQueue[T <: Data](
  
   /**
    * count = enqPtr 到 deqPtr 的距离
-   * 同旗：enqPtr.value - deqPtr.value
-   * 异旗：entries + enqPtr.value - deqPtr.value
+   * distanceTo 方法实现
    */
   val count = WireInit(0.U(log2Ceil(entries + 1).W))
     
+    //该方法的俩指针的方向不能变
   count :=  enqPtr.distanceTo(deqPtr)
   io.count := count
  
@@ -153,40 +151,52 @@ class CircularQueue[T <: Data](
   // =====================================================================
  
   /**
-   * 入队流程（以1路为例）：
-   *
-   *   ① 检查队列是否没满（或没满到放不下这么多）
-   *   ② 把数据写入 data(enqPtr.value)
-   *   ③ enqPtr 前进（+1）
-   *   ④ 握手：fire = valid && ready
-   *
-   * 多路入队时：
-   *   第0路写入 enqPtr 位置
-   *   第1路写入 enqPtr+1 位置
-   *   第i路写入 enqPtr+i 位置
-   *   全部写入后，enqPtr 一次前进 enqFireCnt 步
+   * 入队特性：
+   * 一对一的特性
+   * 不会块与块之间的问腿
+   * 只要某一个路上是valid
+   * 那就入队
+   * 
+   * 但是需要强制满足一个条件
+   * 就是必须得保证，valid从前到后不能断开
+   * 也就是不能是下面这种情况：
+   * port0： valid true
+   * port1： valid true
+   * port2： valid true
+   * port3： valid false
+   * port4： valid false
+   * port5： valid false
+   * port6： valid true [错误！!]
+   * port7： valid false
    */
-  val enqFireCnt = WireInit(0.U(log2Ceil(enqWidth + 1).W))  // 本周期实际入队数
+  for (i <- 0 until enqWidth - 1) {
+    // 如果当前端口valid为false，但下一个端口valid为true，就是错误
+    when(!io.enq(i).valid && io.enq(i+1).valid) {
+      assert(false.B, "IBF input invalid")
+    }
+  }
+  val enqFireCnt = WireInit(0.U(log2Ceil(enqWidth + 1).W))  // 本周期实际入队数dfdsf
+  
 
-  val canEnq = (count +& enqWidth.U) <= entries.U
   for (i <- 0 until enqWidth) {
     // 第i路能入队的条件：队列剩余空间 > i
     // 即：count + i.U < entries.U
-    //val canEnq = (count +& i.U) < entries.U
+    val canEnq = ((count +& i.U) < entries.U) // && io.enq(i).valid
     
- 
     io.enq(i).ready := canEnq && !full
- 
+    
     when (io.enq(i).fire) {
       // 计算第i路应该写入的位置
       // (enqPtr.value + i.U) 由于value位宽限制，自动取余
       val writeIdx = (enqPtr.value + i.U)(log2Ceil(entries) - 1, 0)
+      //dontouch(writeIdx)
       data(writeIdx) := io.enq(i).bits
     }
   }
  
   // 统计本周期有多少路入队成功
-  enqFireCnt := Mux(canEnq, PopCount(io.enq.map(_.fire)), 0.U)
+  // 这个是对的吗
+  enqFireCnt := PopCount(io.enq.map(_.fire))
  
   // 入队成功后，尾指针前进 enqFireCnt 步
   enqPtr := enqPtr + enqFireCnt

@@ -96,48 +96,6 @@ module core_top(
   wire  frontend_io_out_2_bits_exception_excpTlbRefill; // @[src/main/scala/myCPU_top.scala 100:24]
   wire  frontend_io_out_2_bits_exception_excpTlbPif; // @[src/main/scala/myCPU_top.scala 100:24]
   wire  frontend_io_out_2_bits_exception_excpTlbPpi; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_ready; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_valid; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_3_bits_instr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_3_bits_pc; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_pdInfo_valid; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_pdInfo_isBr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_pdInfo_isJal; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_pdInfo_isJalr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_pdInfo_isCall; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_pdInfo_isRet; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_3_bits_pdInfo_jumpTarget; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_exception_excpTlbRefill; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_exception_excpTlbPif; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_3_bits_exception_excpTlbPpi; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_ready; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_valid; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_4_bits_instr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_4_bits_pc; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_pdInfo_valid; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_pdInfo_isBr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_pdInfo_isJal; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_pdInfo_isJalr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_pdInfo_isCall; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_pdInfo_isRet; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_4_bits_pdInfo_jumpTarget; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_exception_excpTlbRefill; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_exception_excpTlbPif; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_4_bits_exception_excpTlbPpi; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_ready; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_valid; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_5_bits_instr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_5_bits_pc; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_pdInfo_valid; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_pdInfo_isBr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_pdInfo_isJal; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_pdInfo_isJalr; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_pdInfo_isCall; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_pdInfo_isRet; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire [31:0] frontend_io_out_5_bits_pdInfo_jumpTarget; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_exception_excpTlbRefill; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_exception_excpTlbPif; // @[src/main/scala/myCPU_top.scala 100:24]
-  wire  frontend_io_out_5_bits_exception_excpTlbPpi; // @[src/main/scala/myCPU_top.scala 100:24]
   wire [3:0] frontend_io_axi_master_ar_data_arid; // @[src/main/scala/myCPU_top.scala 100:24]
   wire [31:0] frontend_io_axi_master_ar_data_araddr; // @[src/main/scala/myCPU_top.scala 100:24]
   wire [7:0] frontend_io_axi_master_ar_data_arlen; // @[src/main/scala/myCPU_top.scala 100:24]
@@ -483,48 +441,6 @@ module core_top(
     .io_out_2_bits_exception_excpTlbRefill(frontend_io_out_2_bits_exception_excpTlbRefill),
     .io_out_2_bits_exception_excpTlbPif(frontend_io_out_2_bits_exception_excpTlbPif),
     .io_out_2_bits_exception_excpTlbPpi(frontend_io_out_2_bits_exception_excpTlbPpi),
-    .io_out_3_ready(frontend_io_out_3_ready),
-    .io_out_3_valid(frontend_io_out_3_valid),
-    .io_out_3_bits_instr(frontend_io_out_3_bits_instr),
-    .io_out_3_bits_pc(frontend_io_out_3_bits_pc),
-    .io_out_3_bits_pdInfo_valid(frontend_io_out_3_bits_pdInfo_valid),
-    .io_out_3_bits_pdInfo_isBr(frontend_io_out_3_bits_pdInfo_isBr),
-    .io_out_3_bits_pdInfo_isJal(frontend_io_out_3_bits_pdInfo_isJal),
-    .io_out_3_bits_pdInfo_isJalr(frontend_io_out_3_bits_pdInfo_isJalr),
-    .io_out_3_bits_pdInfo_isCall(frontend_io_out_3_bits_pdInfo_isCall),
-    .io_out_3_bits_pdInfo_isRet(frontend_io_out_3_bits_pdInfo_isRet),
-    .io_out_3_bits_pdInfo_jumpTarget(frontend_io_out_3_bits_pdInfo_jumpTarget),
-    .io_out_3_bits_exception_excpTlbRefill(frontend_io_out_3_bits_exception_excpTlbRefill),
-    .io_out_3_bits_exception_excpTlbPif(frontend_io_out_3_bits_exception_excpTlbPif),
-    .io_out_3_bits_exception_excpTlbPpi(frontend_io_out_3_bits_exception_excpTlbPpi),
-    .io_out_4_ready(frontend_io_out_4_ready),
-    .io_out_4_valid(frontend_io_out_4_valid),
-    .io_out_4_bits_instr(frontend_io_out_4_bits_instr),
-    .io_out_4_bits_pc(frontend_io_out_4_bits_pc),
-    .io_out_4_bits_pdInfo_valid(frontend_io_out_4_bits_pdInfo_valid),
-    .io_out_4_bits_pdInfo_isBr(frontend_io_out_4_bits_pdInfo_isBr),
-    .io_out_4_bits_pdInfo_isJal(frontend_io_out_4_bits_pdInfo_isJal),
-    .io_out_4_bits_pdInfo_isJalr(frontend_io_out_4_bits_pdInfo_isJalr),
-    .io_out_4_bits_pdInfo_isCall(frontend_io_out_4_bits_pdInfo_isCall),
-    .io_out_4_bits_pdInfo_isRet(frontend_io_out_4_bits_pdInfo_isRet),
-    .io_out_4_bits_pdInfo_jumpTarget(frontend_io_out_4_bits_pdInfo_jumpTarget),
-    .io_out_4_bits_exception_excpTlbRefill(frontend_io_out_4_bits_exception_excpTlbRefill),
-    .io_out_4_bits_exception_excpTlbPif(frontend_io_out_4_bits_exception_excpTlbPif),
-    .io_out_4_bits_exception_excpTlbPpi(frontend_io_out_4_bits_exception_excpTlbPpi),
-    .io_out_5_ready(frontend_io_out_5_ready),
-    .io_out_5_valid(frontend_io_out_5_valid),
-    .io_out_5_bits_instr(frontend_io_out_5_bits_instr),
-    .io_out_5_bits_pc(frontend_io_out_5_bits_pc),
-    .io_out_5_bits_pdInfo_valid(frontend_io_out_5_bits_pdInfo_valid),
-    .io_out_5_bits_pdInfo_isBr(frontend_io_out_5_bits_pdInfo_isBr),
-    .io_out_5_bits_pdInfo_isJal(frontend_io_out_5_bits_pdInfo_isJal),
-    .io_out_5_bits_pdInfo_isJalr(frontend_io_out_5_bits_pdInfo_isJalr),
-    .io_out_5_bits_pdInfo_isCall(frontend_io_out_5_bits_pdInfo_isCall),
-    .io_out_5_bits_pdInfo_isRet(frontend_io_out_5_bits_pdInfo_isRet),
-    .io_out_5_bits_pdInfo_jumpTarget(frontend_io_out_5_bits_pdInfo_jumpTarget),
-    .io_out_5_bits_exception_excpTlbRefill(frontend_io_out_5_bits_exception_excpTlbRefill),
-    .io_out_5_bits_exception_excpTlbPif(frontend_io_out_5_bits_exception_excpTlbPif),
-    .io_out_5_bits_exception_excpTlbPpi(frontend_io_out_5_bits_exception_excpTlbPpi),
     .io_axi_master_ar_data_arid(frontend_io_axi_master_ar_data_arid),
     .io_axi_master_ar_data_araddr(frontend_io_axi_master_ar_data_araddr),
     .io_axi_master_ar_data_arlen(frontend_io_axi_master_ar_data_arlen),
@@ -868,9 +784,6 @@ module core_top(
   assign frontend_io_out_0_ready = 1'h1; // @[src/main/scala/myCPU_top.scala 136:30]
   assign frontend_io_out_1_ready = 1'h1; // @[src/main/scala/myCPU_top.scala 136:30]
   assign frontend_io_out_2_ready = 1'h1; // @[src/main/scala/myCPU_top.scala 136:30]
-  assign frontend_io_out_3_ready = 1'h1; // @[src/main/scala/myCPU_top.scala 136:30]
-  assign frontend_io_out_4_ready = 1'h1; // @[src/main/scala/myCPU_top.scala 136:30]
-  assign frontend_io_out_5_ready = 1'h1; // @[src/main/scala/myCPU_top.scala 136:30]
   assign frontend_io_axi_master_ar_arready = axi_crossbar_io_in_icache_ar_arready; // @[src/main/scala/myCPU_top.scala 202:31]
   assign frontend_io_axi_master_r_data_rid = axi_crossbar_io_in_icache_r_data_rid; // @[src/main/scala/myCPU_top.scala 202:31]
   assign frontend_io_axi_master_r_data_rdata = axi_crossbar_io_in_icache_r_data_rdata; // @[src/main/scala/myCPU_top.scala 202:31]
