@@ -180,14 +180,13 @@ class CircularQueue[T <: Data](
 
   for (i <- 0 until enqWidth) {
     // 第i路能入队的条件：队列剩余空间 > i
-    // 即：count + i.U < entries.U
     val canEnq = ((count +& i.U) < entries.U) // && io.enq(i).valid
     
     io.enq(i).ready := canEnq && !full
     
     when (io.enq(i).fire) {
       // 计算第i路应该写入的位置
-      // (enqPtr.value + i.U) 由于value位宽限制，自动取余
+      // 自动取余
       val writeIdx = (enqPtr.value + i.U)(log2Ceil(entries) - 1, 0)
       //dontouch(writeIdx)
       data(writeIdx) := io.enq(i).bits
@@ -202,17 +201,9 @@ class CircularQueue[T <: Data](
   enqPtr := enqPtr + enqFireCnt
  
   // =====================================================================
-  // 7. 出队逻辑（支持多路同时出队）
+  // 7. 出队逻辑
   // =====================================================================
- 
-  /**
-   * 出队流程（以1路为例）：
-   *
-   *   ① 检查队列是否非空
-   *   ② 从 data(deqPtr.value) 读出数据
-   *   ③ deqPtr 前进（+1）
-   *   ④ 握手：fire = valid && ready
-   */
+
   val deqFireCnt = WireInit(0.U(log2Ceil(deqWidth + 1).W))  // 本周期实际出队数
  
   for (i <- 0 until deqWidth) {

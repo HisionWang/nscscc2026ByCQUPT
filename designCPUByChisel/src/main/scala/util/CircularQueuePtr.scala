@@ -138,17 +138,8 @@ class CircularQueuePtr[T <: CircularQueuePtr[T]](val entries: Int) extends Bundl
   // =====================================================================
  
   /**
-   * 计算从 this 到 that 之间有多少个项（that 在 this 之后）
-   *
-   * 【算法】
-   *   同旗：that.value - this.value
-   *   异旗：entries - this.value + that.value
-   *        = (entries + that.value) - this.value
-   *        = that.value - this.value + entries
-   *
-   * 可以统一为：扩展地址差
-   *   扩展地址 = value + flag * entries
-   *   距离 = that扩展地址 - this扩展地址
+   * 计算从 this 到 that 之间有多少个项
+   * 通过不同的flag进行分类
    */
   def distanceTo(that: T): UInt = {
     Mux(this.flag === that.flag,

@@ -167,7 +167,14 @@ class CtrlFlowIO(implicit p: Parameters) extends NSBundle {
 //  val exception  = Bool()
 //  val jumpTarget = UInt(32.W)
 //}
- 
+
+class bpuInfoQueueEnq(implicit p: Parameters) extends NSBundle {
+  // === 核心取指信息 ===
+  val instr      = Output(UInt(32.W))
+  val pc         = Output(UInt(32.W))
+
+}
+
 // ==================== 可刷新队列 ====================
 class FlushableQueue[T <: Data](gen: T, entries: Int)(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
