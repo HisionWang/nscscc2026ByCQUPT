@@ -75,7 +75,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s0_valid  := false.B
     
   }.elsewhen(io_fire && !s0_flush){
-    s0_valid  := true.B //或者：io.cpu_req.valid
+    s0_valid := io.cpu_req.bits.addr =/=  0x1BFFFFFC.U  //true.B //或者：io.cpu_req.valid
     s0_vaddr := io.cpu_req.bits.addr
     s0_vidx  := curr_vidx
     s0_vtag  := curr_vtag

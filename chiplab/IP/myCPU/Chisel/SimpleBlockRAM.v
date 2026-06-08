@@ -1,67 +1,184 @@
 module SimpleBlockRAM(
   input         clock,
-  input         io_wr_en, // @[src/main/scala/icache/BlockRAM.scala 17:14]
-  input  [7:0]  io_wr_addr, // @[src/main/scala/icache/BlockRAM.scala 17:14]
-  input  [18:0] io_wr_data, // @[src/main/scala/icache/BlockRAM.scala 17:14]
-  input         io_rd_en, // @[src/main/scala/icache/BlockRAM.scala 17:14]
-  input  [7:0]  io_rd_addr, // @[src/main/scala/icache/BlockRAM.scala 17:14]
-  output [18:0] io_rd_data, // @[src/main/scala/icache/BlockRAM.scala 17:14]
-  output        io_rd_valid // @[src/main/scala/icache/BlockRAM.scala 17:14]
+  input         reset,
+  input         io_wr_en, // @[src/main/scala/util/BlockRAM.scala 14:14]
+  input  [3:0]  io_wr_addr, // @[src/main/scala/util/BlockRAM.scala 14:14]
+  input  [62:0] io_wr_data, // @[src/main/scala/util/BlockRAM.scala 14:14]
+  input  [3:0]  io_rd_addr, // @[src/main/scala/util/BlockRAM.scala 14:14]
+  output [62:0] io_rd_data // @[src/main/scala/util/BlockRAM.scala 14:14]
 );
-`ifdef RANDOMIZE_MEM_INIT
-  reg [31:0] _RAND_0;
-`endif // RANDOMIZE_MEM_INIT
 `ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_1;
-  reg [31:0] _RAND_2;
-  reg [31:0] _RAND_3;
-  reg [31:0] _RAND_4;
-  reg [31:0] _RAND_5;
-  reg [31:0] _RAND_6;
+  reg [63:0] _RAND_0;
+  reg [63:0] _RAND_1;
+  reg [63:0] _RAND_2;
+  reg [63:0] _RAND_3;
+  reg [63:0] _RAND_4;
+  reg [63:0] _RAND_5;
+  reg [63:0] _RAND_6;
+  reg [63:0] _RAND_7;
+  reg [63:0] _RAND_8;
+  reg [63:0] _RAND_9;
+  reg [63:0] _RAND_10;
+  reg [63:0] _RAND_11;
+  reg [63:0] _RAND_12;
+  reg [63:0] _RAND_13;
+  reg [63:0] _RAND_14;
+  reg [63:0] _RAND_15;
+  reg [63:0] _RAND_16;
 `endif // RANDOMIZE_REG_INIT
-  reg [18:0] mem [0:255]; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire  mem_dataPipeline_0_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire [7:0] mem_dataPipeline_0_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire [18:0] mem_dataPipeline_0_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire  mem_io_rd_data_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire [7:0] mem_io_rd_data_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire [18:0] mem_io_rd_data_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire [18:0] mem_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire [7:0] mem_MPORT_addr; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire  mem_MPORT_mask; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  wire  mem_MPORT_en; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  reg  mem_dataPipeline_0_MPORT_en_pipe_0;
-  reg [7:0] mem_dataPipeline_0_MPORT_addr_pipe_0;
-  reg  mem_io_rd_data_MPORT_en_pipe_0;
-  reg [7:0] mem_io_rd_data_MPORT_addr_pipe_0;
-  reg  rdPipeline_0; // @[src/main/scala/icache/BlockRAM.scala 38:23]
-  reg  rdPipeline_1; // @[src/main/scala/icache/BlockRAM.scala 38:23]
-  assign mem_dataPipeline_0_MPORT_en = mem_dataPipeline_0_MPORT_en_pipe_0;
-  assign mem_dataPipeline_0_MPORT_addr = mem_dataPipeline_0_MPORT_addr_pipe_0;
-  assign mem_dataPipeline_0_MPORT_data = mem[mem_dataPipeline_0_MPORT_addr]; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  assign mem_io_rd_data_MPORT_en = mem_io_rd_data_MPORT_en_pipe_0;
-  assign mem_io_rd_data_MPORT_addr = mem_io_rd_data_MPORT_addr_pipe_0;
-  assign mem_io_rd_data_MPORT_data = mem[mem_io_rd_data_MPORT_addr]; // @[src/main/scala/icache/BlockRAM.scala 35:24]
-  assign mem_MPORT_data = io_wr_data;
-  assign mem_MPORT_addr = io_wr_addr;
-  assign mem_MPORT_mask = 1'h1;
-  assign mem_MPORT_en = io_wr_en;
-  assign io_rd_data = mem_io_rd_data_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 57:14]
-  assign io_rd_valid = rdPipeline_1; // @[src/main/scala/icache/BlockRAM.scala 58:15]
+  reg [62:0] mem_0; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_1; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_2; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_3; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_4; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_5; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_6; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_7; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_8; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_9; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_10; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_11; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_12; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_13; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_14; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] mem_15; // @[src/main/scala/util/BlockRAM.scala 30:14]
+  reg [62:0] dataPipeline_0; // @[src/main/scala/util/BlockRAM.scala 39:25]
+  wire [62:0] _GEN_1 = 4'h1 == io_rd_addr ? mem_1 : mem_0; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_2 = 4'h2 == io_rd_addr ? mem_2 : _GEN_1; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_3 = 4'h3 == io_rd_addr ? mem_3 : _GEN_2; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_4 = 4'h4 == io_rd_addr ? mem_4 : _GEN_3; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_5 = 4'h5 == io_rd_addr ? mem_5 : _GEN_4; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_6 = 4'h6 == io_rd_addr ? mem_6 : _GEN_5; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_7 = 4'h7 == io_rd_addr ? mem_7 : _GEN_6; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_8 = 4'h8 == io_rd_addr ? mem_8 : _GEN_7; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_9 = 4'h9 == io_rd_addr ? mem_9 : _GEN_8; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_10 = 4'ha == io_rd_addr ? mem_10 : _GEN_9; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  wire [62:0] _GEN_11 = 4'hb == io_rd_addr ? mem_11 : _GEN_10; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  assign io_rd_data = dataPipeline_0; // @[src/main/scala/util/BlockRAM.scala 54:14]
   always @(posedge clock) begin
-    if (mem_MPORT_en & mem_MPORT_mask) begin
-      mem[mem_MPORT_addr] <= mem_MPORT_data; // @[src/main/scala/icache/BlockRAM.scala 35:24]
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_0 <= 63'h492caa81883a9b53; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h0 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_0 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
     end
-    mem_dataPipeline_0_MPORT_en_pipe_0 <= io_rd_en;
-    if (io_rd_en) begin
-      mem_dataPipeline_0_MPORT_addr_pipe_0 <= io_rd_addr;
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_1 <= 63'h2bb6c9b6e5a6da51; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h1 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_1 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
     end
-    mem_io_rd_data_MPORT_en_pipe_0 <= io_rd_en;
-    if (io_rd_en) begin
-      mem_io_rd_data_MPORT_addr_pipe_0 <= io_rd_addr;
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_2 <= 63'hf4cd4e263f6527d; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h2 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_2 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
     end
-    rdPipeline_0 <= io_rd_en; // @[src/main/scala/icache/BlockRAM.scala 47:17]
-    rdPipeline_1 <= rdPipeline_0; // @[src/main/scala/icache/BlockRAM.scala 52:19]
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_3 <= 63'h63307ab895f9d311; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h3 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_3 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_4 <= 63'h24ccc761add711ce; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h4 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_4 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_5 <= 63'h7fe366d216177420; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h5 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_5 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_6 <= 63'h6c5e51ea3ae631a2; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h6 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_6 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_7 <= 63'hca2a7f9b6f5ffdd; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h7 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_7 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_8 <= 63'h57f18a5d4cbd807d; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h8 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_8 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_9 <= 63'h60e0fb484f67fe93; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'h9 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_9 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_10 <= 63'h3226ca9f5d6a3aab; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'ha == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_10 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_11 <= 63'h13a66fd7a71f5139; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'hb == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_11 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_12 <= 63'h39dc352f1bf40c5c; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'hc == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_12 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_13 <= 63'h2d9ed99a1a3d6d56; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'hd == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_13 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_14 <= 63'h70b9cb49b3cd1e04; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'he == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_14 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (reset) begin // @[src/main/scala/util/BlockRAM.scala 30:14]
+      mem_15 <= 63'h2048d976763701e0; // @[src/main/scala/util/BlockRAM.scala 30:14]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
+      if (4'hf == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
+        mem_15 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+      end
+    end
+    if (4'hf == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+      dataPipeline_0 <= mem_15; // @[src/main/scala/util/BlockRAM.scala 43:21]
+    end else if (4'he == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+      dataPipeline_0 <= mem_14; // @[src/main/scala/util/BlockRAM.scala 43:21]
+    end else if (4'hd == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+      dataPipeline_0 <= mem_13; // @[src/main/scala/util/BlockRAM.scala 43:21]
+    end else if (4'hc == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+      dataPipeline_0 <= mem_12; // @[src/main/scala/util/BlockRAM.scala 43:21]
+    end else begin
+      dataPipeline_0 <= _GEN_11;
+    end
   end
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
@@ -98,24 +215,41 @@ initial begin
         #0.002 begin end
       `endif
     `endif
-`ifdef RANDOMIZE_MEM_INIT
-  _RAND_0 = {1{`RANDOM}};
-  for (initvar = 0; initvar < 256; initvar = initvar+1)
-    mem[initvar] = _RAND_0[18:0];
-`endif // RANDOMIZE_MEM_INIT
 `ifdef RANDOMIZE_REG_INIT
-  _RAND_1 = {1{`RANDOM}};
-  mem_dataPipeline_0_MPORT_en_pipe_0 = _RAND_1[0:0];
-  _RAND_2 = {1{`RANDOM}};
-  mem_dataPipeline_0_MPORT_addr_pipe_0 = _RAND_2[7:0];
-  _RAND_3 = {1{`RANDOM}};
-  mem_io_rd_data_MPORT_en_pipe_0 = _RAND_3[0:0];
-  _RAND_4 = {1{`RANDOM}};
-  mem_io_rd_data_MPORT_addr_pipe_0 = _RAND_4[7:0];
-  _RAND_5 = {1{`RANDOM}};
-  rdPipeline_0 = _RAND_5[0:0];
-  _RAND_6 = {1{`RANDOM}};
-  rdPipeline_1 = _RAND_6[0:0];
+  _RAND_0 = {2{`RANDOM}};
+  mem_0 = _RAND_0[62:0];
+  _RAND_1 = {2{`RANDOM}};
+  mem_1 = _RAND_1[62:0];
+  _RAND_2 = {2{`RANDOM}};
+  mem_2 = _RAND_2[62:0];
+  _RAND_3 = {2{`RANDOM}};
+  mem_3 = _RAND_3[62:0];
+  _RAND_4 = {2{`RANDOM}};
+  mem_4 = _RAND_4[62:0];
+  _RAND_5 = {2{`RANDOM}};
+  mem_5 = _RAND_5[62:0];
+  _RAND_6 = {2{`RANDOM}};
+  mem_6 = _RAND_6[62:0];
+  _RAND_7 = {2{`RANDOM}};
+  mem_7 = _RAND_7[62:0];
+  _RAND_8 = {2{`RANDOM}};
+  mem_8 = _RAND_8[62:0];
+  _RAND_9 = {2{`RANDOM}};
+  mem_9 = _RAND_9[62:0];
+  _RAND_10 = {2{`RANDOM}};
+  mem_10 = _RAND_10[62:0];
+  _RAND_11 = {2{`RANDOM}};
+  mem_11 = _RAND_11[62:0];
+  _RAND_12 = {2{`RANDOM}};
+  mem_12 = _RAND_12[62:0];
+  _RAND_13 = {2{`RANDOM}};
+  mem_13 = _RAND_13[62:0];
+  _RAND_14 = {2{`RANDOM}};
+  mem_14 = _RAND_14[62:0];
+  _RAND_15 = {2{`RANDOM}};
+  mem_15 = _RAND_15[62:0];
+  _RAND_16 = {2{`RANDOM}};
+  dataPipeline_0 = _RAND_16[62:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

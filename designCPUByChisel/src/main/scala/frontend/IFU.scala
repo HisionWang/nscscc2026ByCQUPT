@@ -31,8 +31,10 @@ class IFU(implicit p: Parameters) extends NSModule {
 
   })
   // ==================== PC生成单元 ====================
-  val pcReg    = RegInit(0x1C000000.U(32.W))
+  val pcReg    = RegInit(0x1BFFFFFC.U(32.W))
   val pcValid  = RegInit(false.B)
+  pcValid := RegNext(true.B)
+  
  
   // ==================== 计算下一个PC ====================
   val blockOffset   = pcReg(blockOffBits - 1, 0)
@@ -44,8 +46,7 @@ class IFU(implicit p: Parameters) extends NSModule {
                           pcReg + (fetchWidth * 4).U)
   val fallThroughPC = seqPC
  
-  // ==================== 发起BPU的预测请求 ====================
-  io.predictReq.pc := pcReg
+
   // ==================== 接收预测的结果 ====================
   val bpuTaken  = io.predictResp.taken
   val bpuTarget = io.predictResp.target
@@ -62,10 +63,11 @@ class IFU(implicit p: Parameters) extends NSModule {
                Mux(  frontendRedirect.valid ,  frontendRedirect.target ,
                Mux(  bpuTaken               ,  bpuTarget               ,
                                                seqPC                   )))
- 
+  // ==================== 发起BPU的预测请求 ====================
+  io.predictReq.nextPC := nextPC
+  io.predictReq.pc := pcReg
   // pcReg将要进入Icache条件
-  val pc_fire = (io.icache_req.ready && io.bpuInfoQueuEnq.ready )&& !backendRedirectValid &&
-                !frontendRedirect.valid
+  val pc_fire = (io.icache_req.ready && io.bpuInfoQueuEnq.ready )&& !backendRedirectValid && !frontendRedirect.valid
  
   // 通知BPU预测结果被使用
   // RAS相关
@@ -95,8 +97,9 @@ class IFU(implicit p: Parameters) extends NSModule {
   currentPredInfo.target      := bpuTarget
   currentPredInfo.takenOffset := io.predictResp.takenOffset
   currentPredInfo.meta        := bpuMeta
+  dontTouch(currentPredInfo)
   // ==================== bpuInfoQueue请求 ====================
-  io.bpuInfoQueuEnq.valid := pc_fire
+  io.bpuInfoQueuEnq.valid := pc_fire && pcReg =/= 0x1BFFFFFC.U
   io.bpuInfoQueuEnq.bits  := currentPredInfo
 
 }

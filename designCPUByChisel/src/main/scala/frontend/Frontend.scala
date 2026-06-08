@@ -44,7 +44,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
   ifu.io.frontendRedirect.valid := frontendRedirectValid
   ifu.io.frontendRedirect.target := frontendRedirectTarget
   // BPU接口
-  bpu.io.predictReq.pc := ifu.io.predictReq.pc
+  bpu.io.predictReq := ifu.io.predictReq
   bpu.io.predictFire := ifu.io.predictFire
 
   ifu.io.predictResp := bpu.io.predictResp

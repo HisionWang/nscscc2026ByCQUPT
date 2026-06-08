@@ -75,6 +75,7 @@ class BpuMeta(implicit p: Parameters) extends NSBundle {
  
 // ==================== BPU 预测请求/响应 ====================
 class BpuPredictReq(implicit p: Parameters) extends NSBundle {
+  val nextPC = UInt(32.W)
   val pc = UInt(32.W)
 }
  
@@ -91,6 +92,7 @@ class BpuUpdateReq(implicit p: Parameters) extends NSBundle {
   val pc       = UInt(32.W)
   val taken    = Bool()       // 实际是否跳转
   val target   = UInt(32.W)   // 实际跳转目标
+  val oldPhtCounter   = UInt(2.W)   // 实际跳转目标
   val isJalr   = Bool()
   val isJal    = Bool()
   val isCall   = Bool()

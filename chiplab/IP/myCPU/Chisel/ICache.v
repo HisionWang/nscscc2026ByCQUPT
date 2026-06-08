@@ -11,12 +11,10 @@ module ICache(
   output [31:0] io_icache_resp_bits_instrs_1, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_icache_resp_bits_instrs_2, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_icache_resp_bits_instrs_3, // @[src/main/scala/icache/Icache.scala 14:14]
-  output [31:0] io_icache_resp_bits_instrs_4, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_0, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_1, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_2, // @[src/main/scala/icache/Icache.scala 14:14]
   output        io_icache_resp_bits_instvalids_3, // @[src/main/scala/icache/Icache.scala 14:14]
-  output        io_icache_resp_bits_instvalids_4, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_icache_resp_bits_addr, // @[src/main/scala/icache/Icache.scala 14:14]
   output [3:0]  io_axi_master_ar_data_arid, // @[src/main/scala/icache/Icache.scala 14:14]
   output [31:0] io_axi_master_ar_data_araddr, // @[src/main/scala/icache/Icache.scala 14:14]
@@ -43,12 +41,10 @@ module ICache(
   wire [31:0] mainPipe_io_icache_resp_bits_instrs_1; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_icache_resp_bits_instrs_2; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_icache_resp_bits_instrs_3; // @[src/main/scala/icache/Icache.scala 29:24]
-  wire [31:0] mainPipe_io_icache_resp_bits_instrs_4; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_0; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_1; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_2; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_icache_resp_bits_instvalids_3; // @[src/main/scala/icache/Icache.scala 29:24]
-  wire  mainPipe_io_icache_resp_bits_instvalids_4; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_icache_resp_bits_addr; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [3:0] mainPipe_io_axi_ar_data_arid; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_axi_ar_data_araddr; // @[src/main/scala/icache/Icache.scala 29:24]
@@ -71,17 +67,23 @@ module ICache(
   wire  mainPipe_io_arrays_read_resp_data_cacheLine_1_has; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [17:0] mainPipe_io_arrays_read_resp_data_cacheLine_1_tag; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [511:0] mainPipe_io_arrays_read_resp_data_cacheLine_1_data; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire  mainPipe_io_arrays_read_resp_data_cacheLine_2_has; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [17:0] mainPipe_io_arrays_read_resp_data_cacheLine_2_tag; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [511:0] mainPipe_io_arrays_read_resp_data_cacheLine_2_data; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire  mainPipe_io_arrays_read_resp_data_cacheLine_3_has; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [17:0] mainPipe_io_arrays_read_resp_data_cacheLine_3_tag; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [511:0] mainPipe_io_arrays_read_resp_data_cacheLine_3_data; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_array_write_valid; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [7:0] mainPipe_io_array_write_idx; // @[src/main/scala/icache/Icache.scala 29:24]
-  wire  mainPipe_io_array_write_way; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [1:0] mainPipe_io_array_write_way; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [17:0] mainPipe_io_array_write_tag; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [511:0] mainPipe_io_array_write_data; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_victim_read_req; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [7:0] mainPipe_io_victim_read_idx; // @[src/main/scala/icache/Icache.scala 29:24]
-  wire  mainPipe_io_victim_read_resp; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [1:0] mainPipe_io_victim_read_resp; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_replacer_touch_valid; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [7:0] mainPipe_io_replacer_touch_idx; // @[src/main/scala/icache/Icache.scala 29:24]
-  wire  mainPipe_io_replacer_touch_way; // @[src/main/scala/icache/Icache.scala 29:24]
+  wire [1:0] mainPipe_io_replacer_touch_way; // @[src/main/scala/icache/Icache.scala 29:24]
   wire [31:0] mainPipe_io_mmu_req_vaddr; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_mmu_req_valid; // @[src/main/scala/icache/Icache.scala 29:24]
   wire  mainPipe_io_mmu_resp_valid; // @[src/main/scala/icache/Icache.scala 29:24]
@@ -97,19 +99,25 @@ module ICache(
   wire  array_io_read_resp_data_cacheLine_1_has; // @[src/main/scala/icache/Icache.scala 30:21]
   wire [17:0] array_io_read_resp_data_cacheLine_1_tag; // @[src/main/scala/icache/Icache.scala 30:21]
   wire [511:0] array_io_read_resp_data_cacheLine_1_data; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire  array_io_read_resp_data_cacheLine_2_has; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire [17:0] array_io_read_resp_data_cacheLine_2_tag; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire [511:0] array_io_read_resp_data_cacheLine_2_data; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire  array_io_read_resp_data_cacheLine_3_has; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire [17:0] array_io_read_resp_data_cacheLine_3_tag; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire [511:0] array_io_read_resp_data_cacheLine_3_data; // @[src/main/scala/icache/Icache.scala 30:21]
   wire  array_io_write_valid; // @[src/main/scala/icache/Icache.scala 30:21]
   wire [7:0] array_io_write_idx; // @[src/main/scala/icache/Icache.scala 30:21]
-  wire  array_io_write_way; // @[src/main/scala/icache/Icache.scala 30:21]
+  wire [1:0] array_io_write_way; // @[src/main/scala/icache/Icache.scala 30:21]
   wire [17:0] array_io_write_tag; // @[src/main/scala/icache/Icache.scala 30:21]
   wire [511:0] array_io_write_data; // @[src/main/scala/icache/Icache.scala 30:21]
   wire  replacer_clock; // @[src/main/scala/icache/Icache.scala 31:24]
   wire  replacer_reset; // @[src/main/scala/icache/Icache.scala 31:24]
   wire  replacer_io_touch_valid; // @[src/main/scala/icache/Icache.scala 31:24]
   wire [7:0] replacer_io_touch_idx; // @[src/main/scala/icache/Icache.scala 31:24]
-  wire  replacer_io_touch_way; // @[src/main/scala/icache/Icache.scala 31:24]
+  wire [1:0] replacer_io_touch_way; // @[src/main/scala/icache/Icache.scala 31:24]
   wire  replacer_io_victim_req; // @[src/main/scala/icache/Icache.scala 31:24]
   wire [7:0] replacer_io_victim_idx; // @[src/main/scala/icache/Icache.scala 31:24]
-  wire  replacer_io_victim_resp; // @[src/main/scala/icache/Icache.scala 31:24]
+  wire [1:0] replacer_io_victim_resp; // @[src/main/scala/icache/Icache.scala 31:24]
   wire  simMMU_clock; // @[src/main/scala/icache/Icache.scala 32:22]
   wire  simMMU_reset; // @[src/main/scala/icache/Icache.scala 32:22]
   wire [31:0] simMMU_io_mmu_req_vaddr; // @[src/main/scala/icache/Icache.scala 32:22]
@@ -129,12 +137,10 @@ module ICache(
     .io_icache_resp_bits_instrs_1(mainPipe_io_icache_resp_bits_instrs_1),
     .io_icache_resp_bits_instrs_2(mainPipe_io_icache_resp_bits_instrs_2),
     .io_icache_resp_bits_instrs_3(mainPipe_io_icache_resp_bits_instrs_3),
-    .io_icache_resp_bits_instrs_4(mainPipe_io_icache_resp_bits_instrs_4),
     .io_icache_resp_bits_instvalids_0(mainPipe_io_icache_resp_bits_instvalids_0),
     .io_icache_resp_bits_instvalids_1(mainPipe_io_icache_resp_bits_instvalids_1),
     .io_icache_resp_bits_instvalids_2(mainPipe_io_icache_resp_bits_instvalids_2),
     .io_icache_resp_bits_instvalids_3(mainPipe_io_icache_resp_bits_instvalids_3),
-    .io_icache_resp_bits_instvalids_4(mainPipe_io_icache_resp_bits_instvalids_4),
     .io_icache_resp_bits_addr(mainPipe_io_icache_resp_bits_addr),
     .io_axi_ar_data_arid(mainPipe_io_axi_ar_data_arid),
     .io_axi_ar_data_araddr(mainPipe_io_axi_ar_data_araddr),
@@ -157,6 +163,12 @@ module ICache(
     .io_arrays_read_resp_data_cacheLine_1_has(mainPipe_io_arrays_read_resp_data_cacheLine_1_has),
     .io_arrays_read_resp_data_cacheLine_1_tag(mainPipe_io_arrays_read_resp_data_cacheLine_1_tag),
     .io_arrays_read_resp_data_cacheLine_1_data(mainPipe_io_arrays_read_resp_data_cacheLine_1_data),
+    .io_arrays_read_resp_data_cacheLine_2_has(mainPipe_io_arrays_read_resp_data_cacheLine_2_has),
+    .io_arrays_read_resp_data_cacheLine_2_tag(mainPipe_io_arrays_read_resp_data_cacheLine_2_tag),
+    .io_arrays_read_resp_data_cacheLine_2_data(mainPipe_io_arrays_read_resp_data_cacheLine_2_data),
+    .io_arrays_read_resp_data_cacheLine_3_has(mainPipe_io_arrays_read_resp_data_cacheLine_3_has),
+    .io_arrays_read_resp_data_cacheLine_3_tag(mainPipe_io_arrays_read_resp_data_cacheLine_3_tag),
+    .io_arrays_read_resp_data_cacheLine_3_data(mainPipe_io_arrays_read_resp_data_cacheLine_3_data),
     .io_array_write_valid(mainPipe_io_array_write_valid),
     .io_array_write_idx(mainPipe_io_array_write_idx),
     .io_array_write_way(mainPipe_io_array_write_way),
@@ -185,6 +197,12 @@ module ICache(
     .io_read_resp_data_cacheLine_1_has(array_io_read_resp_data_cacheLine_1_has),
     .io_read_resp_data_cacheLine_1_tag(array_io_read_resp_data_cacheLine_1_tag),
     .io_read_resp_data_cacheLine_1_data(array_io_read_resp_data_cacheLine_1_data),
+    .io_read_resp_data_cacheLine_2_has(array_io_read_resp_data_cacheLine_2_has),
+    .io_read_resp_data_cacheLine_2_tag(array_io_read_resp_data_cacheLine_2_tag),
+    .io_read_resp_data_cacheLine_2_data(array_io_read_resp_data_cacheLine_2_data),
+    .io_read_resp_data_cacheLine_3_has(array_io_read_resp_data_cacheLine_3_has),
+    .io_read_resp_data_cacheLine_3_tag(array_io_read_resp_data_cacheLine_3_tag),
+    .io_read_resp_data_cacheLine_3_data(array_io_read_resp_data_cacheLine_3_data),
     .io_write_valid(array_io_write_valid),
     .io_write_idx(array_io_write_idx),
     .io_write_way(array_io_write_way),
@@ -215,12 +233,10 @@ module ICache(
   assign io_icache_resp_bits_instrs_1 = mainPipe_io_icache_resp_bits_instrs_1; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instrs_2 = mainPipe_io_icache_resp_bits_instrs_2; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instrs_3 = mainPipe_io_icache_resp_bits_instrs_3; // @[src/main/scala/icache/Icache.scala 38:28]
-  assign io_icache_resp_bits_instrs_4 = mainPipe_io_icache_resp_bits_instrs_4; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_0 = mainPipe_io_icache_resp_bits_instvalids_0; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_1 = mainPipe_io_icache_resp_bits_instvalids_1; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_2 = mainPipe_io_icache_resp_bits_instvalids_2; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_instvalids_3 = mainPipe_io_icache_resp_bits_instvalids_3; // @[src/main/scala/icache/Icache.scala 38:28]
-  assign io_icache_resp_bits_instvalids_4 = mainPipe_io_icache_resp_bits_instvalids_4; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_icache_resp_bits_addr = mainPipe_io_icache_resp_bits_addr; // @[src/main/scala/icache/Icache.scala 38:28]
   assign io_axi_master_ar_data_arid = mainPipe_io_axi_ar_data_arid; // @[src/main/scala/icache/Icache.scala 39:20]
   assign io_axi_master_ar_data_araddr = mainPipe_io_axi_ar_data_araddr; // @[src/main/scala/icache/Icache.scala 39:20]
@@ -247,6 +263,12 @@ module ICache(
   assign mainPipe_io_arrays_read_resp_data_cacheLine_1_has = array_io_read_resp_data_cacheLine_1_has; // @[src/main/scala/icache/Icache.scala 41:28]
   assign mainPipe_io_arrays_read_resp_data_cacheLine_1_tag = array_io_read_resp_data_cacheLine_1_tag; // @[src/main/scala/icache/Icache.scala 41:28]
   assign mainPipe_io_arrays_read_resp_data_cacheLine_1_data = array_io_read_resp_data_cacheLine_1_data; // @[src/main/scala/icache/Icache.scala 41:28]
+  assign mainPipe_io_arrays_read_resp_data_cacheLine_2_has = array_io_read_resp_data_cacheLine_2_has; // @[src/main/scala/icache/Icache.scala 41:28]
+  assign mainPipe_io_arrays_read_resp_data_cacheLine_2_tag = array_io_read_resp_data_cacheLine_2_tag; // @[src/main/scala/icache/Icache.scala 41:28]
+  assign mainPipe_io_arrays_read_resp_data_cacheLine_2_data = array_io_read_resp_data_cacheLine_2_data; // @[src/main/scala/icache/Icache.scala 41:28]
+  assign mainPipe_io_arrays_read_resp_data_cacheLine_3_has = array_io_read_resp_data_cacheLine_3_has; // @[src/main/scala/icache/Icache.scala 41:28]
+  assign mainPipe_io_arrays_read_resp_data_cacheLine_3_tag = array_io_read_resp_data_cacheLine_3_tag; // @[src/main/scala/icache/Icache.scala 41:28]
+  assign mainPipe_io_arrays_read_resp_data_cacheLine_3_data = array_io_read_resp_data_cacheLine_3_data; // @[src/main/scala/icache/Icache.scala 41:28]
   assign mainPipe_io_victim_read_resp = replacer_io_victim_resp; // @[src/main/scala/icache/Icache.scala 50:28]
   assign mainPipe_io_mmu_resp_valid = simMMU_io_mmu_resp_valid; // @[src/main/scala/icache/Icache.scala 52:19]
   assign mainPipe_io_mmu_resp_data_paddr = simMMU_io_mmu_resp_data_paddr; // @[src/main/scala/icache/Icache.scala 52:19]

@@ -3,6 +3,7 @@ package nscscc.icache
 import chisel3._
 import chisel3.util._
 import nscscc.config._
+import nscscc.util._
 import nscscc.config.Parameters
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
@@ -42,11 +43,12 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   
   // === 创建 BlockRAM 阵列 ===
   // 每个 way 有自己的 meta 和 data BlockRAM
+
   val metaBRAMs = VecInit(Seq.fill(nWays)(
     Module(new SimpleBlockRAM(
       depth = nSets,
       width = metaWidth,
-      readLatency = 2
+      readLatency = 1
     )).io
   ))
   
@@ -54,7 +56,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
     Module(new SimpleBlockRAM(
       depth = nSets,
       width = dataBits,
-      readLatency = 2
+      readLatency = 1
     )).io
   ))
   
@@ -84,7 +86,8 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   }
   
   // 使用任意一个 way 的 rd_valid 作为整体有效信号（所有 way 同时读取）
-  val anyRdValid = metaBRAMs(0).rd_valid && dataBRAMs(0).rd_valid
+  val anyRdValid = //metaBRAMs(0).rd_valid && dataBRAMs(0).rd_valid
+                    RegNext(io.read.req.valid)
   
   io.read.resp.valid := anyRdValid
   io.read.resp.data  := readRespData

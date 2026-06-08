@@ -226,6 +226,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     bpuUpdate.offset := firstFaultIdx
     bpuUpdate.taken  := true.B
     bpuUpdate.rasTop := s_pd_bpu.meta.rasTop
+    bpuUpdate.oldPhtCounter := 0.U
   }
  
   // ================================================================

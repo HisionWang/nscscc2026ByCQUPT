@@ -3,10 +3,10 @@ module ICacheReplacer(
   input        reset,
   input        io_touch_valid, // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
   input  [7:0] io_touch_idx, // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
-  input        io_touch_way, // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
+  input  [1:0] io_touch_way, // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
   input        io_victim_req, // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
   input  [7:0] io_victim_idx, // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
-  output       io_victim_resp // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
+  output [1:0] io_victim_resp // @[src/main/scala/icache/ICacheReplacer.scala 9:14]
 );
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
@@ -37,23 +37,19 @@ module ICacheReplacer(
   reg [7:0] plruTree_currentPLRU_addr_pipe_0;
   reg  plruTree_currentPLRU_1_en_pipe_0;
   reg [7:0] plruTree_currentPLRU_1_addr_pipe_0;
-  wire  _newPLRU_T = ~io_touch_way; // @[src/main/scala/icache/ICacheReplacer.scala 39:17]
+  wire  _newPLRU_T = 2'h0 == io_touch_way; // @[src/main/scala/icache/ICacheReplacer.scala 39:17]
   wire [2:0] _newPLRU_newPLRU_T_1 = {2'h3,plruTree_currentPLRU_data[2]}; // @[src/main/scala/icache/ICacheReplacer.scala 41:23]
   wire [2:0] _newPLRU_newPLRU_T_3 = {2'h2,plruTree_currentPLRU_data[2]}; // @[src/main/scala/icache/ICacheReplacer.scala 44:23]
-  wire [1:0] _GEN_28 = {{1'd0}, io_touch_way}; // @[src/main/scala/icache/ICacheReplacer.scala 39:17]
   wire [2:0] _newPLRU_newPLRU_T_5 = {1'h0,plruTree_currentPLRU_data[1],1'h1}; // @[src/main/scala/icache/ICacheReplacer.scala 47:23]
   wire [2:0] _newPLRU_newPLRU_T_7 = {1'h0,plruTree_currentPLRU_data[1],1'h0}; // @[src/main/scala/icache/ICacheReplacer.scala 50:23]
-  wire [2:0] _GEN_4 = 2'h3 == _GEN_28 ? _newPLRU_newPLRU_T_7 : 3'h0; // @[src/main/scala/icache/ICacheReplacer.scala 37:13 39:17 50:17]
-  wire [2:0] _GEN_5 = 2'h2 == _GEN_28 ? _newPLRU_newPLRU_T_5 : _GEN_4; // @[src/main/scala/icache/ICacheReplacer.scala 39:17 47:17]
-  wire [2:0] _GEN_6 = io_touch_way ? _newPLRU_newPLRU_T_3 : _GEN_5; // @[src/main/scala/icache/ICacheReplacer.scala 39:17 44:17]
-  reg  victimRespReg; // @[src/main/scala/icache/ICacheReplacer.scala 86:30]
+  wire [2:0] _GEN_4 = 2'h3 == io_touch_way ? _newPLRU_newPLRU_T_7 : 3'h0; // @[src/main/scala/icache/ICacheReplacer.scala 37:13 39:17 50:17]
+  wire [2:0] _GEN_5 = 2'h2 == io_touch_way ? _newPLRU_newPLRU_T_5 : _GEN_4; // @[src/main/scala/icache/ICacheReplacer.scala 39:17 47:17]
+  wire [2:0] _GEN_6 = 2'h1 == io_touch_way ? _newPLRU_newPLRU_T_3 : _GEN_5; // @[src/main/scala/icache/ICacheReplacer.scala 39:17 44:17]
+  reg [1:0] victimRespReg; // @[src/main/scala/icache/ICacheReplacer.scala 86:30]
   wire  victimRespReg_plru0 = plruTree_currentPLRU_1_data[0]; // @[src/main/scala/icache/ICacheReplacer.scala 61:21]
   wire  victimRespReg_plru1 = plruTree_currentPLRU_1_data[1]; // @[src/main/scala/icache/ICacheReplacer.scala 62:21]
   wire  victimRespReg_plru2 = plruTree_currentPLRU_1_data[2]; // @[src/main/scala/icache/ICacheReplacer.scala 63:21]
   wire  _victimRespReg_victim_T_1 = ~victimRespReg_plru1 ? 1'h0 : 1'h1; // @[src/main/scala/icache/ICacheReplacer.scala 68:20]
-  wire [1:0] _victimRespReg_victim_T_3 = ~victimRespReg_plru2 ? 2'h2 : 2'h3; // @[src/main/scala/icache/ICacheReplacer.scala 71:20]
-  wire [1:0] _GEN_18 = ~victimRespReg_plru0 ? {{1'd0}, _victimRespReg_victim_T_1} : _victimRespReg_victim_T_3; // @[src/main/scala/icache/ICacheReplacer.scala 66:25 68:14 71:14]
-  wire  victimRespReg_victim = _GEN_18[0]; // @[src/main/scala/icache/ICacheReplacer.scala 58:29]
   assign plruTree_currentPLRU_en = plruTree_currentPLRU_en_pipe_0;
   assign plruTree_currentPLRU_addr = plruTree_currentPLRU_addr_pipe_0;
   assign plruTree_currentPLRU_data = plruTree[plruTree_currentPLRU_addr]; // @[src/main/scala/icache/ICacheReplacer.scala 31:29]
@@ -85,9 +81,15 @@ module ICacheReplacer(
       plruTree_currentPLRU_1_addr_pipe_0 <= io_victim_idx;
     end
     if (reset) begin // @[src/main/scala/icache/ICacheReplacer.scala 86:30]
-      victimRespReg <= 1'h0; // @[src/main/scala/icache/ICacheReplacer.scala 86:30]
+      victimRespReg <= 2'h0; // @[src/main/scala/icache/ICacheReplacer.scala 86:30]
     end else if (io_victim_req) begin // @[src/main/scala/icache/ICacheReplacer.scala 88:23]
-      victimRespReg <= victimRespReg_victim; // @[src/main/scala/icache/ICacheReplacer.scala 90:19]
+      if (~victimRespReg_plru0) begin // @[src/main/scala/icache/ICacheReplacer.scala 66:25]
+        victimRespReg <= {{1'd0}, _victimRespReg_victim_T_1}; // @[src/main/scala/icache/ICacheReplacer.scala 68:14]
+      end else if (~victimRespReg_plru2) begin // @[src/main/scala/icache/ICacheReplacer.scala 71:20]
+        victimRespReg <= 2'h2;
+      end else begin
+        victimRespReg <= 2'h3;
+      end
     end
   end
 // Register and memory initialization
@@ -140,7 +142,7 @@ initial begin
   _RAND_4 = {1{`RANDOM}};
   plruTree_currentPLRU_1_addr_pipe_0 = _RAND_4[7:0];
   _RAND_5 = {1{`RANDOM}};
-  victimRespReg = _RAND_5[0:0];
+  victimRespReg = _RAND_5[1:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

@@ -50,7 +50,7 @@ trait HasCoreParameters {
   val BpRunAheadDistance  : Int = 8    // BPU 最多超前 IFU 几项
 
   /*---- 通路位宽相关 ----*/
-  val  fetchWidth: Int = 5
+  val  fetchWidth: Int = 4
   val  ibufDepth:  Int = 16  // 必须为2的次方倍
   val  CtrlBlockWidth : Int = 3
 
