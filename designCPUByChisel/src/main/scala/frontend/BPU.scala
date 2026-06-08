@@ -7,7 +7,7 @@ import nscscc.config._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
  
-class BPU(implicit p: Parameters) extends NSModule {
+class BPU1(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     // 预测接口
     val predictReq   = Input(new BpuPredictReq)
@@ -26,7 +26,7 @@ class BPU(implicit p: Parameters) extends NSModule {
     val flush = Input(Bool())
   })
  
-  // ==================== BTB ====================
+  // ==================== BTB ==================== check OK
   // 使用VecInit(RegInit(...))实现组合读
   val btbDefault = Wire(new BTBEntry)
   btbDefault.valid  := false.B
@@ -97,24 +97,7 @@ class BPU(implicit p: Parameters) extends NSModule {
   io.predictResp.meta.rasTop     := rasTop
   io.predictResp.meta.predTaken  := finalTaken
   io.predictResp.meta.predTarget := Mux(btbHit, finalTarget, 0.U)
- 
-  // ==================== RAS 推测更新 ====================
-  // 仅当预测结果被实际使用时才更新RAS
-  when(io.predictFire && btbHit) {
-    when(btbIsCall) {
-      // 函数调用: 压栈返回地址
-      // 返回地址 = 取指PC + (call偏移 + 1) * 4
-      val returnAddr = io.predictReq.pc + (btbOffset + 1.U) * 4.U
-      rasStack(rasTop) := returnAddr
-      val nextTop = Mux(rasTop === (rasSize - 1).U, 0.U, rasTop + 1.U)
-      rasTop := nextTop
-    }
-    when(btbIsRet) {
-      // 函数返回: 弹栈
-      val nextTop = Mux(rasTop === 0.U, (rasSize - 1).U, rasTop - 1.U)
-      rasTop := nextTop
-    }
-  }
+
  
   // ==================== BPU 更新逻辑 ====================
   // 后端更新优先级高于预译码更新
@@ -158,6 +141,24 @@ class BPU(implicit p: Parameters) extends NSModule {
         val nextTop = Mux(rasTop === 0.U, (rasSize - 1).U, rasTop - 1.U)
         rasTop := nextTop
       }
+    }
+  }
+
+  // ==================== RAS 推测更新 ====================
+  // 仅当预测结果被实际使用时才更新RAS
+  when(io.predictFire && btbHit) {
+    when(btbIsCall) {
+      // 函数调用: 压栈返回地址
+      // 返回地址 = 取指PC + (call偏移 + 1) * 4
+      val returnAddr = io.predictReq.pc + (btbOffset + 1.U) * 4.U
+      rasStack(rasTop) := returnAddr
+      val nextTop = Mux(rasTop === (rasSize - 1).U, 0.U, rasTop + 1.U)
+      rasTop := nextTop
+    }
+    when(btbIsRet) {
+      // 函数返回: 弹栈
+      val nextTop = Mux(rasTop === 0.U, (rasSize - 1).U, rasTop - 1.U)
+      rasTop := nextTop
     }
   }
  

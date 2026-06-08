@@ -58,13 +58,4 @@ class ICache(implicit p: Parameters) extends NSModule {
   replacer.io.flush.idx := 0.U
 
   //replacer OK
-
-  
-
-
-
-  
-  println("ICache instantiated:")
-  println(s"  Sets: $nSets, Ways: $nWays, BlockBytes: $blockBytes")
-  println(s"  FetchWidth: $fetchWidth, MSHR: $nMSHR, Replacer: $replacer")
 }

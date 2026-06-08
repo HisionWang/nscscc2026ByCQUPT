@@ -14,6 +14,12 @@ class RedirectIO(implicit p: Parameters) extends NSBundle {
   val valid = Output(Bool())
 }
 
+class FtqEntry(implicit p: Parameters) extends NSBundle {
+  val startPc   = UInt(32.W)   // 这个取指块的起始 PC
+  val nextPc    = UInt(32.W)   // 预测的下一个 PC（顺序 = fallThru，跳转 = 分支目标）
+  val taken     = Bool()       // 是否预测跳转
+  val fallThru  = UInt(32.W)   // 顺序下落 PC = startPc + fetchWidth * 4
+}
 
  
 object FetchExceptIdx {

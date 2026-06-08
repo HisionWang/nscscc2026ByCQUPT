@@ -85,7 +85,8 @@ module IBF(
   output        io_out_2_bits_pdInfo_isJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_2_bits_pdInfo_isCall, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_2_bits_pdInfo_isRet, // @[src/main/scala/frontend/IBF.scala 13:14]
-  output [31:0] io_out_2_bits_pdInfo_jumpTarget // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_2_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_flush // @[src/main/scala/frontend/IBF.scala 13:14]
 );
   wire  queue_clock; // @[src/main/scala/frontend/IBF.scala 25:21]
   wire  queue_reset; // @[src/main/scala/frontend/IBF.scala 25:21]
@@ -180,6 +181,7 @@ module IBF(
   wire  queue_io_empty; // @[src/main/scala/frontend/IBF.scala 25:21]
   wire  queue_io_full; // @[src/main/scala/frontend/IBF.scala 25:21]
   wire [4:0] queue_io_count; // @[src/main/scala/frontend/IBF.scala 25:21]
+  wire  queue_io_flush; // @[src/main/scala/frontend/IBF.scala 25:21]
   wire [1:0] _io_in_ready_T = queue_io_enq_0_ready + queue_io_enq_1_ready; // @[src/main/scala/frontend/IBF.scala 61:27]
   wire [1:0] _io_in_ready_T_2 = queue_io_enq_3_ready + queue_io_enq_4_ready; // @[src/main/scala/frontend/IBF.scala 61:27]
   wire [1:0] _GEN_0 = {{1'd0}, queue_io_enq_2_ready}; // @[src/main/scala/frontend/IBF.scala 61:27]
@@ -289,7 +291,8 @@ module IBF(
     .io_deq_2_bits_pdInfo_jumpTarget(queue_io_deq_2_bits_pdInfo_jumpTarget),
     .io_empty(queue_io_empty),
     .io_full(queue_io_full),
-    .io_count(queue_io_count)
+    .io_count(queue_io_count),
+    .io_flush(queue_io_flush)
   );
   assign io_in_ready = _io_in_ready_T_6 >= _io_in_ready_T_14; // @[src/main/scala/frontend/IBF.scala 61:55]
   assign io_out_0_valid = queue_io_deq_0_valid; // @[src/main/scala/frontend/IBF.scala 69:21]
@@ -377,6 +380,7 @@ module IBF(
   assign queue_io_deq_0_ready = io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 86:26 87:19]
   assign queue_io_deq_1_ready = io_out_1_ready & io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 90:40]
   assign queue_io_deq_2_ready = io_out_2_ready & deqReadyMask_1; // @[src/main/scala/frontend/IBF.scala 90:40]
+  assign queue_io_flush = io_flush; // @[src/main/scala/frontend/IBF.scala 33:18]
   always @(posedge clock) begin
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND
@@ -488,6 +492,17 @@ module IBF(
         if (_T_2) begin
           $fwrite(32'h80000002,"[IBF-CircularQueue Status] count=%d, empty=%d, full=%d\n",queue_io_count,queue_io_empty,
             queue_io_full); // @[src/main/scala/frontend/IBF.scala 129:9]
+        end
+    `ifdef PRINTF_COND
+      end
+    `endif
+    `endif // SYNTHESIS
+    `ifndef SYNTHESIS
+    `ifdef PRINTF_COND
+      if (`PRINTF_COND) begin
+    `endif
+        if (io_flush & _T_2) begin
+          $fwrite(32'h80000002,"[IBF-CircularQueue] Buffer flushed due to redirect\n"); // @[src/main/scala/frontend/IBF.scala 132:11]
         end
     `ifdef PRINTF_COND
       end

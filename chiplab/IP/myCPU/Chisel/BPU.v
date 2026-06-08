@@ -12,7 +12,8 @@ module BPU(
   input         io_update_pd_isJalr, // @[src/main/scala/frontend/BPU.scala 11:14]
   input         io_update_pd_isJal, // @[src/main/scala/frontend/BPU.scala 11:14]
   input         io_update_pd_isCall, // @[src/main/scala/frontend/BPU.scala 11:14]
-  input         io_update_pd_isRet // @[src/main/scala/frontend/BPU.scala 11:14]
+  input         io_update_pd_isRet, // @[src/main/scala/frontend/BPU.scala 11:14]
+  input         io_rasRestore // @[src/main/scala/frontend/BPU.scala 11:14]
 );
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
@@ -515,6 +516,7 @@ module BPU(
   wire [1:0] _GEN_95 = 6'h3f == phtIdx ? phtMem_63 : _GEN_94; // @[src/main/scala/frontend/BPU.scala 56:{30,30}]
   wire  phtTaken = _GEN_95[1]; // @[src/main/scala/frontend/BPU.scala 56:30]
   reg [2:0] rasTop; // @[src/main/scala/frontend/BPU.scala 60:25]
+  wire [2:0] _GEN_96 = io_rasRestore ? 3'h0 : rasTop; // @[src/main/scala/frontend/BPU.scala 63:23 64:12 60:25]
   wire  _GEN_98 = 4'h1 == btbIdx ? btbMem_1_isJalr : btbMem_0_isJalr; // @[src/main/scala/frontend/BPU.scala 80:{42,42}]
   wire  _GEN_99 = 4'h2 == btbIdx ? btbMem_2_isJalr : _GEN_98; // @[src/main/scala/frontend/BPU.scala 80:{42,42}]
   wire  _GEN_100 = 4'h3 == btbIdx ? btbMem_3_isJalr : _GEN_99; // @[src/main/scala/frontend/BPU.scala 80:{42,42}]
@@ -2171,7 +2173,11 @@ module BPU(
         end
       end else if (_GEN_176) begin // @[src/main/scala/frontend/BPU.scala 104:21]
         rasTop <= nextTop; // @[src/main/scala/frontend/BPU.scala 110:14]
+      end else begin
+        rasTop <= _GEN_96;
       end
+    end else begin
+      rasTop <= _GEN_96;
     end
   end
 // Register and memory initialization
