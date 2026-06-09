@@ -928,7 +928,7 @@ module core_top(
   assign axi_crossbar_io_out_b_data_bvalid = bvalid; // @[src/main/scala/myCPU_top.scala 257:20 260:17]
   assign difftest_clock = aclk;
   assign difftest_reset = ~aresetn; // @[src/main/scala/myCPU_top.scala 93:27]
-  assign difftest_io_inst_valid_diff = cycleCount == 64'hbc; // @[src/main/scala/myCPU_top.scala 292:47]
+  assign difftest_io_inst_valid_diff = cycleCount == 64'h1587c; // @[src/main/scala/myCPU_top.scala 292:47]
   assign difftest_io_cnt_inst_diff = cycleCount == 64'hbc; // @[src/main/scala/myCPU_top.scala 293:47]
   assign difftest_io_timer_64_diff = cycleCount; // @[src/main/scala/myCPU_top.scala 294:33]
   always @(posedge aclk) begin

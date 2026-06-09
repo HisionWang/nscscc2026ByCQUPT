@@ -1,222 +1,190 @@
 module BPU(
   input         clock,
   input         reset,
-  input  [31:0] io_predictReq_nextPC, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input  [31:0] io_predictReq_pc, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_taken, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output [31:0] io_predictResp_target, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output [1:0]  io_predictResp_takenOffset, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_meta_btbHit, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_meta_btbIsJalr, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_meta_btbIsJal, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_meta_btbIsCall, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_meta_btbIsRet, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output [1:0]  io_predictResp_meta_btbOffset, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output [1:0]  io_predictResp_meta_phtCounter, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output [2:0]  io_predictResp_meta_rasTop, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output        io_predictResp_meta_predTaken, // @[src/main/scala/frontend/BPU.scala 12:14]
-  output [31:0] io_predictResp_meta_predTarget, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_predictFire, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_update_pd_valid, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input  [31:0] io_update_pd_pc, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input  [31:0] io_update_pd_target, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_update_pd_isJalr, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_update_pd_isJal, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_update_pd_isCall, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_update_pd_isRet, // @[src/main/scala/frontend/BPU.scala 12:14]
-  input         io_rasRestore // @[src/main/scala/frontend/BPU.scala 12:14]
+  input  [31:0] io_predictReq_nextPC, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input  [31:0] io_predictReq_pc, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_predictReq_pc_fire, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_taken, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output [31:0] io_predictResp_target, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output [1:0]  io_predictResp_takenOffset, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_meta_btbHit, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_meta_btbIsJalr, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_meta_btbIsJal, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_meta_btbIsCall, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_meta_btbIsRet, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output [1:0]  io_predictResp_meta_btbOffset, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output [1:0]  io_predictResp_meta_phtCounter, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output        io_predictResp_meta_predTaken, // @[src/main/scala/frontend/BPU.scala 13:14]
+  output [31:0] io_predictResp_meta_predTarget, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_update_pd_valid, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input  [31:0] io_update_pd_pc, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_update_pd_taken, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input  [31:0] io_update_pd_target, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input  [1:0]  io_update_pd_oldPhtCounter, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_update_pd_isJalr, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_update_pd_isJal, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_update_pd_isCall, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input         io_update_pd_isRet, // @[src/main/scala/frontend/BPU.scala 13:14]
+  input  [1:0]  io_update_pd_offset // @[src/main/scala/frontend/BPU.scala 13:14]
 );
-`ifdef RANDOMIZE_MEM_INIT
-  reg [31:0] _RAND_0;
-`endif // RANDOMIZE_MEM_INIT
-`ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_1;
-`endif // RANDOMIZE_REG_INIT
-  wire  btbMem_clock; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire  btbMem_reset; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire  btbMem_io_wr_en; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire [3:0] btbMem_io_wr_addr; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire [62:0] btbMem_io_wr_data; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire [3:0] btbMem_io_rd_addr; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire [62:0] btbMem_io_rd_data; // @[src/main/scala/frontend/BPU.scala 36:22]
-  wire  phtMem_clock; // @[src/main/scala/frontend/BPU.scala 60:22]
-  wire  phtMem_reset; // @[src/main/scala/frontend/BPU.scala 60:22]
-  wire  phtMem_io_wr_en; // @[src/main/scala/frontend/BPU.scala 60:22]
-  wire [5:0] phtMem_io_wr_addr; // @[src/main/scala/frontend/BPU.scala 60:22]
-  wire [1:0] phtMem_io_wr_data; // @[src/main/scala/frontend/BPU.scala 60:22]
-  wire [5:0] phtMem_io_rd_addr; // @[src/main/scala/frontend/BPU.scala 60:22]
-  wire [1:0] phtMem_io_rd_data; // @[src/main/scala/frontend/BPU.scala 60:22]
-  reg [31:0] rasStack [0:7]; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire  rasStack_rasTarget_MPORT_en; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [2:0] rasStack_rasTarget_MPORT_addr; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [31:0] rasStack_rasTarget_MPORT_data; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [31:0] rasStack_MPORT_data; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [2:0] rasStack_MPORT_addr; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire  rasStack_MPORT_mask; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire  rasStack_MPORT_en; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [31:0] rasStack_MPORT_1_data; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [2:0] rasStack_MPORT_1_addr; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire  rasStack_MPORT_1_mask; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire  rasStack_MPORT_1_en; // @[src/main/scala/frontend/BPU.scala 76:21]
-  wire [23:0] btbTag = io_predictReq_pc[31:8]; // @[src/main/scala/frontend/BPU.scala 45:32]
-  wire [62:0] _btbEntry_WIRE = btbMem_io_rd_data; // @[src/main/scala/frontend/BPU.scala 52:{44,44}]
-  wire [1:0] btbEntry_offset = _btbEntry_WIRE[1:0]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire  btbEntry_isRet = _btbEntry_WIRE[2]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire  btbEntry_isCall = _btbEntry_WIRE[3]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire  btbEntry_isJal = _btbEntry_WIRE[4]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire  btbEntry_isJalr = _btbEntry_WIRE[5]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire [31:0] btbEntry_target = _btbEntry_WIRE[37:6]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire [23:0] btbEntry_tag = _btbEntry_WIRE[61:38]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire  btbEntry_valid = _btbEntry_WIRE[62]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  wire  btbHit = btbEntry_valid & btbEntry_tag == btbTag; // @[src/main/scala/frontend/BPU.scala 53:33]
-  wire [62:0] btbEntrydebug = {btbEntry_valid,btbEntry_tag,btbEntry_target,btbEntry_isJalr,btbEntry_isJal,
-    btbEntry_isCall,btbEntry_isRet,btbEntry_offset}; // @[src/main/scala/frontend/BPU.scala 55:32]
-  wire  phtTaken = phtMem_io_rd_data[1]; // @[src/main/scala/frontend/BPU.scala 73:30]
-  reg [2:0] rasTop; // @[src/main/scala/frontend/BPU.scala 77:25]
-  wire [2:0] _GEN_0 = io_rasRestore ? 3'h0 : rasTop; // @[src/main/scala/frontend/BPU.scala 80:23 81:12 77:25]
-  wire  _rasTarget_T = rasTop == 3'h0; // @[src/main/scala/frontend/BPU.scala 94:32]
-  wire [2:0] _rasTarget_T_2 = rasTop - 3'h1; // @[src/main/scala/frontend/BPU.scala 94:62]
-  wire [31:0] rasTarget = rasTop == 3'h0 ? 32'h0 : rasStack_rasTarget_MPORT_data; // @[src/main/scala/frontend/BPU.scala 94:24]
-  wire [31:0] finalTarget = btbEntry_isJalr ? rasTarget : btbEntry_target; // @[src/main/scala/frontend/BPU.scala 95:24]
-  wire [3:0] updateIdx = io_update_pd_pc[7:4]; // @[src/main/scala/frontend/BPU.scala 128:33]
-  wire [23:0] updateTag = io_update_pd_pc[31:8]; // @[src/main/scala/frontend/BPU.scala 129:33]
-  wire [1:0] updateOffset = io_update_pd_pc[3:2]; // @[src/main/scala/frontend/BPU.scala 130:33]
-  wire [62:0] _btbMem_io_wr_data_T = {1'h1,updateTag,io_update_pd_target,io_update_pd_isJalr,io_update_pd_isJal,
-    io_update_pd_isCall,io_update_pd_isRet,updateOffset}; // @[src/main/scala/frontend/BPU.scala 145:35]
-  wire [5:0] updatePhtIdx = io_update_pd_pc[9:4]; // @[src/main/scala/frontend/BPU.scala 149:33]
-  wire [2:0] _nextTop_T_2 = rasTop + 3'h1; // @[src/main/scala/frontend/BPU.scala 167:67]
-  wire [2:0] nextTop = rasTop == 3'h7 ? 3'h0 : _nextTop_T_2; // @[src/main/scala/frontend/BPU.scala 167:26]
-  wire  _T_7 = io_predictFire & btbHit; // @[src/main/scala/frontend/BPU.scala 178:23]
-  wire [1:0] _returnAddr_T_1 = btbEntry_offset + 2'h1; // @[src/main/scala/frontend/BPU.scala 180:54]
-  wire [4:0] _returnAddr_T_2 = _returnAddr_T_1 * 3'h4; // @[src/main/scala/frontend/BPU.scala 180:61]
-  wire [31:0] _GEN_40 = {{27'd0}, _returnAddr_T_2}; // @[src/main/scala/frontend/BPU.scala 180:41]
-  SimpleBlockRAM btbMem ( // @[src/main/scala/frontend/BPU.scala 36:22]
-    .clock(btbMem_clock),
-    .reset(btbMem_reset),
-    .io_wr_en(btbMem_io_wr_en),
-    .io_wr_addr(btbMem_io_wr_addr),
-    .io_wr_data(btbMem_io_wr_data),
-    .io_rd_addr(btbMem_io_rd_addr),
-    .io_rd_data(btbMem_io_rd_data)
+  wire  btbMem0_clock; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire  btbMem0_reset; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire  btbMem0_io_wr_en; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire [3:0] btbMem0_io_wr_addr; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire [62:0] btbMem0_io_wr_data; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire  btbMem0_io_rd_en; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire [3:0] btbMem0_io_rd_addr; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire [62:0] btbMem0_io_rd_data; // @[src/main/scala/frontend/BPU.scala 39:23]
+  wire  phtMem0_clock; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire  phtMem0_reset; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire  phtMem0_io_wr_en; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire [5:0] phtMem0_io_wr_addr; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire [1:0] phtMem0_io_wr_data; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire  phtMem0_io_rd_en; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire [5:0] phtMem0_io_rd_addr; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire [1:0] phtMem0_io_rd_data; // @[src/main/scala/frontend/BPU.scala 42:23]
+  wire  btbMem1_clock; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire  btbMem1_reset; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire  btbMem1_io_wr_en; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire [3:0] btbMem1_io_wr_addr; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire [62:0] btbMem1_io_wr_data; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire  btbMem1_io_rd_en; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire [3:0] btbMem1_io_rd_addr; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire [62:0] btbMem1_io_rd_data; // @[src/main/scala/frontend/BPU.scala 45:23]
+  wire  phtMem1_clock; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire  phtMem1_reset; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire  phtMem1_io_wr_en; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire [5:0] phtMem1_io_wr_addr; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire [1:0] phtMem1_io_wr_data; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire  phtMem1_io_rd_en; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire [5:0] phtMem1_io_rd_addr; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire [1:0] phtMem1_io_rd_data; // @[src/main/scala/frontend/BPU.scala 48:23]
+  wire [3:0] readBlockIdx = io_predictReq_nextPC[7:4]; // @[src/main/scala/frontend/BPU.scala 51:42]
+  wire [1:0] fetchOffset = io_predictReq_pc[3:2]; // @[src/main/scala/frontend/BPU.scala 65:37]
+  wire [23:0] tag0 = io_predictReq_pc[31:8]; // @[src/main/scala/frontend/BPU.scala 68:30]
+  wire [27:0] _nextBlockBase_T_2 = io_predictReq_pc[31:4] + 28'h1; // @[src/main/scala/frontend/BPU.scala 70:69]
+  wire [31:0] nextBlockBase = {_nextBlockBase_T_2,4'h0}; // @[src/main/scala/frontend/BPU.scala 70:26]
+  wire [23:0] tag1 = nextBlockBase[31:8]; // @[src/main/scala/frontend/BPU.scala 71:27]
+  wire [62:0] _btbEntry0_WIRE = btbMem0_io_rd_data; // @[src/main/scala/frontend/BPU.scala 74:{47,47}]
+  wire [1:0] btbEntry0_offset = _btbEntry0_WIRE[1:0]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire  btbEntry0_isRet = _btbEntry0_WIRE[2]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire  btbEntry0_isCall = _btbEntry0_WIRE[3]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire  btbEntry0_isJal = _btbEntry0_WIRE[4]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire  btbEntry0_isJalr = _btbEntry0_WIRE[5]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire [31:0] btbEntry0_target = _btbEntry0_WIRE[37:6]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire [23:0] btbEntry0_tag = _btbEntry0_WIRE[61:38]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire  btbEntry0_valid = _btbEntry0_WIRE[62]; // @[src/main/scala/frontend/BPU.scala 74:47]
+  wire  phtTaken0 = phtMem0_io_rd_data[1]; // @[src/main/scala/frontend/BPU.scala 76:31]
+  wire  btbHit0 = btbEntry0_valid & btbEntry0_tag == tag0 & btbEntry0_offset >= fetchOffset; // @[src/main/scala/frontend/BPU.scala 78:64]
+  wire  predTaken0 = btbHit0 & (btbEntry0_isJalr | btbEntry0_isJal | phtTaken0); // @[src/main/scala/frontend/BPU.scala 79:28]
+  wire [62:0] _btbEntry1_WIRE = btbMem1_io_rd_data; // @[src/main/scala/frontend/BPU.scala 82:{47,47}]
+  wire [1:0] btbEntry1_offset = _btbEntry1_WIRE[1:0]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire  btbEntry1_isRet = _btbEntry1_WIRE[2]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire  btbEntry1_isCall = _btbEntry1_WIRE[3]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire  btbEntry1_isJal = _btbEntry1_WIRE[4]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire  btbEntry1_isJalr = _btbEntry1_WIRE[5]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire [31:0] btbEntry1_target = _btbEntry1_WIRE[37:6]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire [23:0] btbEntry1_tag = _btbEntry1_WIRE[61:38]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire  btbEntry1_valid = _btbEntry1_WIRE[62]; // @[src/main/scala/frontend/BPU.scala 82:47]
+  wire  phtTaken1 = phtMem1_io_rd_data[1]; // @[src/main/scala/frontend/BPU.scala 84:31]
+  wire  btbHit1 = btbEntry1_valid & btbEntry1_tag == tag1 & btbEntry1_offset < fetchOffset; // @[src/main/scala/frontend/BPU.scala 86:64]
+  wire  predTaken1 = btbHit1 & (btbEntry1_isJalr | btbEntry1_isJal | phtTaken1); // @[src/main/scala/frontend/BPU.scala 87:28]
+  wire [1:0] offset0_out = btbEntry0_offset - fetchOffset; // @[src/main/scala/frontend/BPU.scala 96:38]
+  wire [2:0] _GEN_8 = {{1'd0}, btbEntry1_offset}; // @[src/main/scala/frontend/BPU.scala 98:38]
+  wire [2:0] _offset1_out_T_1 = _GEN_8 + 3'h4; // @[src/main/scala/frontend/BPU.scala 98:38]
+  wire [2:0] _GEN_9 = {{1'd0}, fetchOffset}; // @[src/main/scala/frontend/BPU.scala 98:53]
+  wire [2:0] offset1_out = _offset1_out_T_1 - _GEN_9; // @[src/main/scala/frontend/BPU.scala 98:53]
+  wire [2:0] finalOffset = predTaken0 ? {{1'd0}, offset0_out} : offset1_out; // @[src/main/scala/frontend/BPU.scala 100:24]
+  wire [3:0] updateBlockIdx = io_update_pd_pc[7:4]; // @[src/main/scala/frontend/BPU.scala 130:35]
+  wire [23:0] updateTag = io_update_pd_pc[31:8]; // @[src/main/scala/frontend/BPU.scala 131:35]
+  wire [1:0] _nextCounter_T_1 = io_update_pd_oldPhtCounter + 2'h1; // @[src/main/scala/frontend/BPU.scala 148:33]
+  wire [1:0] _nextCounter_T_3 = io_update_pd_oldPhtCounter - 2'h1; // @[src/main/scala/frontend/BPU.scala 150:33]
+  wire [1:0] _GEN_0 = ~io_update_pd_taken & io_update_pd_oldPhtCounter != 2'h0 ? _nextCounter_T_3 :
+    io_update_pd_oldPhtCounter; // @[src/main/scala/frontend/BPU.scala 149:53 150:19 146:34]
+  wire [1:0] nextCounter = io_update_pd_taken & io_update_pd_oldPhtCounter != 2'h3 ? _nextCounter_T_1 : _GEN_0; // @[src/main/scala/frontend/BPU.scala 147:46 148:19]
+  wire [62:0] _btbMem0_io_wr_data_T = {1'h1,updateTag,io_update_pd_target,io_update_pd_isJalr,io_update_pd_isJal,
+    io_update_pd_isCall,io_update_pd_isRet,io_update_pd_offset}; // @[src/main/scala/frontend/BPU.scala 157:36]
+  wire [3:0] updateBlockIdx_minus_1 = updateBlockIdx - 4'h1; // @[src/main/scala/frontend/BPU.scala 165:49]
+  wire [3:0] _GEN_3 = io_update_pd_valid ? updateBlockIdx : 4'h0; // @[src/main/scala/frontend/BPU.scala 128:18 156:24 123:51]
+  wire [3:0] _GEN_6 = io_update_pd_valid ? updateBlockIdx_minus_1 : 4'h0; // @[src/main/scala/frontend/BPU.scala 128:18 168:24 125:51]
+  SimpleBlockRAM btbMem0 ( // @[src/main/scala/frontend/BPU.scala 39:23]
+    .clock(btbMem0_clock),
+    .reset(btbMem0_reset),
+    .io_wr_en(btbMem0_io_wr_en),
+    .io_wr_addr(btbMem0_io_wr_addr),
+    .io_wr_data(btbMem0_io_wr_data),
+    .io_rd_en(btbMem0_io_rd_en),
+    .io_rd_addr(btbMem0_io_rd_addr),
+    .io_rd_data(btbMem0_io_rd_data)
   );
-  SimpleBlockRAM_1 phtMem ( // @[src/main/scala/frontend/BPU.scala 60:22]
-    .clock(phtMem_clock),
-    .reset(phtMem_reset),
-    .io_wr_en(phtMem_io_wr_en),
-    .io_wr_addr(phtMem_io_wr_addr),
-    .io_wr_data(phtMem_io_wr_data),
-    .io_rd_addr(phtMem_io_rd_addr),
-    .io_rd_data(phtMem_io_rd_data)
+  SimpleBlockRAM_1 phtMem0 ( // @[src/main/scala/frontend/BPU.scala 42:23]
+    .clock(phtMem0_clock),
+    .reset(phtMem0_reset),
+    .io_wr_en(phtMem0_io_wr_en),
+    .io_wr_addr(phtMem0_io_wr_addr),
+    .io_wr_data(phtMem0_io_wr_data),
+    .io_rd_en(phtMem0_io_rd_en),
+    .io_rd_addr(phtMem0_io_rd_addr),
+    .io_rd_data(phtMem0_io_rd_data)
   );
-  assign rasStack_rasTarget_MPORT_en = 1'h1;
-  assign rasStack_rasTarget_MPORT_addr = rasTop - 3'h1;
-  assign rasStack_rasTarget_MPORT_data = rasStack[rasStack_rasTarget_MPORT_addr]; // @[src/main/scala/frontend/BPU.scala 76:21]
-  assign rasStack_MPORT_data = io_update_pd_pc + 32'h4;
-  assign rasStack_MPORT_addr = rasTop;
-  assign rasStack_MPORT_mask = 1'h1;
-  assign rasStack_MPORT_en = 1'h0;
-  assign rasStack_MPORT_1_data = io_predictReq_pc + _GEN_40;
-  assign rasStack_MPORT_1_addr = rasTop;
-  assign rasStack_MPORT_1_mask = 1'h1;
-  assign rasStack_MPORT_1_en = _T_7 & btbEntry_isCall;
-  assign io_predictResp_taken = btbHit & (btbEntry_isJalr | btbEntry_isJal | phtTaken); // @[src/main/scala/frontend/BPU.scala 93:28]
-  assign io_predictResp_target = btbHit ? finalTarget : 32'h0; // @[src/main/scala/frontend/BPU.scala 99:36]
-  assign io_predictResp_takenOffset = btbHit ? btbEntry_offset : 2'h0; // @[src/main/scala/frontend/BPU.scala 100:36]
-  assign io_predictResp_meta_btbHit = btbEntry_valid & btbEntry_tag == btbTag; // @[src/main/scala/frontend/BPU.scala 53:33]
-  assign io_predictResp_meta_btbIsJalr = _btbEntry_WIRE[5]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  assign io_predictResp_meta_btbIsJal = _btbEntry_WIRE[4]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  assign io_predictResp_meta_btbIsCall = _btbEntry_WIRE[3]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  assign io_predictResp_meta_btbIsRet = _btbEntry_WIRE[2]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  assign io_predictResp_meta_btbOffset = _btbEntry_WIRE[1:0]; // @[src/main/scala/frontend/BPU.scala 52:44]
-  assign io_predictResp_meta_phtCounter = phtMem_io_rd_data; // @[src/main/scala/frontend/BPU.scala 109:34]
-  assign io_predictResp_meta_rasTop = rasTop; // @[src/main/scala/frontend/BPU.scala 110:34]
-  assign io_predictResp_meta_predTaken = btbHit & (btbEntry_isJalr | btbEntry_isJal | phtTaken); // @[src/main/scala/frontend/BPU.scala 93:28]
-  assign io_predictResp_meta_predTarget = btbHit ? finalTarget : 32'h0; // @[src/main/scala/frontend/BPU.scala 112:40]
-  assign btbMem_clock = clock;
-  assign btbMem_reset = reset;
-  assign btbMem_io_wr_en = io_update_pd_valid; // @[src/main/scala/frontend/BPU.scala 115:37]
-  assign btbMem_io_wr_addr = io_update_pd_valid ? updateIdx : 4'h0; // @[src/main/scala/frontend/BPU.scala 127:18 120:21 144:23]
-  assign btbMem_io_wr_data = io_update_pd_valid ? _btbMem_io_wr_data_T : 63'h0; // @[src/main/scala/frontend/BPU.scala 127:18 121:21 145:23]
-  assign btbMem_io_rd_addr = io_predictReq_nextPC[7:4]; // @[src/main/scala/frontend/BPU.scala 44:36]
-  assign phtMem_clock = clock;
-  assign phtMem_reset = reset;
-  assign phtMem_io_wr_en = io_update_pd_valid; // @[src/main/scala/frontend/BPU.scala 115:37]
-  assign phtMem_io_wr_addr = io_update_pd_valid ? updatePhtIdx : 6'h0; // @[src/main/scala/frontend/BPU.scala 127:18 124:21 160:23]
-  assign phtMem_io_wr_data = io_update_pd_valid ? 2'h1 : 2'h0; // @[src/main/scala/frontend/BPU.scala 127:18 125:21 161:23]
-  assign phtMem_io_rd_addr = io_predictReq_nextPC[9:4]; // @[src/main/scala/frontend/BPU.scala 66:36]
-  always @(posedge clock) begin
-    if (rasStack_MPORT_en & rasStack_MPORT_mask) begin
-      rasStack[rasStack_MPORT_addr] <= rasStack_MPORT_data; // @[src/main/scala/frontend/BPU.scala 76:21]
-    end
-    if (rasStack_MPORT_1_en & rasStack_MPORT_1_mask) begin
-      rasStack[rasStack_MPORT_1_addr] <= rasStack_MPORT_1_data; // @[src/main/scala/frontend/BPU.scala 76:21]
-    end
-    if (reset) begin // @[src/main/scala/frontend/BPU.scala 77:25]
-      rasTop <= 3'h0; // @[src/main/scala/frontend/BPU.scala 77:25]
-    end else if (io_predictFire & btbHit) begin // @[src/main/scala/frontend/BPU.scala 178:34]
-      if (btbEntry_isRet) begin // @[src/main/scala/frontend/BPU.scala 185:20]
-        if (_rasTarget_T) begin // @[src/main/scala/frontend/BPU.scala 171:26]
-          rasTop <= 3'h7;
-        end else begin
-          rasTop <= _rasTarget_T_2;
-        end
-      end else if (btbEntry_isCall) begin // @[src/main/scala/frontend/BPU.scala 179:21]
-        rasTop <= nextTop; // @[src/main/scala/frontend/BPU.scala 183:14]
-      end else begin
-        rasTop <= _GEN_0;
-      end
-    end else begin
-      rasTop <= _GEN_0;
-    end
-  end
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_MEM_INIT
-  _RAND_0 = {1{`RANDOM}};
-  for (initvar = 0; initvar < 8; initvar = initvar+1)
-    rasStack[initvar] = _RAND_0[31:0];
-`endif // RANDOMIZE_MEM_INIT
-`ifdef RANDOMIZE_REG_INIT
-  _RAND_1 = {1{`RANDOM}};
-  rasTop = _RAND_1[2:0];
-`endif // RANDOMIZE_REG_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
+  SimpleBlockRAM btbMem1 ( // @[src/main/scala/frontend/BPU.scala 45:23]
+    .clock(btbMem1_clock),
+    .reset(btbMem1_reset),
+    .io_wr_en(btbMem1_io_wr_en),
+    .io_wr_addr(btbMem1_io_wr_addr),
+    .io_wr_data(btbMem1_io_wr_data),
+    .io_rd_en(btbMem1_io_rd_en),
+    .io_rd_addr(btbMem1_io_rd_addr),
+    .io_rd_data(btbMem1_io_rd_data)
+  );
+  SimpleBlockRAM_1 phtMem1 ( // @[src/main/scala/frontend/BPU.scala 48:23]
+    .clock(phtMem1_clock),
+    .reset(phtMem1_reset),
+    .io_wr_en(phtMem1_io_wr_en),
+    .io_wr_addr(phtMem1_io_wr_addr),
+    .io_wr_data(phtMem1_io_wr_data),
+    .io_rd_en(phtMem1_io_rd_en),
+    .io_rd_addr(phtMem1_io_rd_addr),
+    .io_rd_data(phtMem1_io_rd_data)
+  );
+  assign io_predictResp_taken = predTaken0 | predTaken1; // @[src/main/scala/frontend/BPU.scala 91:32]
+  assign io_predictResp_target = predTaken0 ? btbEntry0_target : btbEntry1_target; // @[src/main/scala/frontend/BPU.scala 92:24]
+  assign io_predictResp_takenOffset = finalOffset[1:0]; // @[src/main/scala/frontend/BPU.scala 103:30]
+  assign io_predictResp_meta_btbHit = btbHit0 | btbHit1; // @[src/main/scala/frontend/BPU.scala 107:45]
+  assign io_predictResp_meta_btbIsJalr = predTaken0 ? btbEntry0_isJalr : btbEntry1_isJalr; // @[src/main/scala/frontend/BPU.scala 108:40]
+  assign io_predictResp_meta_btbIsJal = predTaken0 ? btbEntry0_isJal : btbEntry1_isJal; // @[src/main/scala/frontend/BPU.scala 109:40]
+  assign io_predictResp_meta_btbIsCall = predTaken0 ? btbEntry0_isCall : btbEntry1_isCall; // @[src/main/scala/frontend/BPU.scala 110:40]
+  assign io_predictResp_meta_btbIsRet = predTaken0 ? btbEntry0_isRet : btbEntry1_isRet; // @[src/main/scala/frontend/BPU.scala 111:40]
+  assign io_predictResp_meta_btbOffset = predTaken0 ? btbEntry0_offset : btbEntry1_offset; // @[src/main/scala/frontend/BPU.scala 112:40]
+  assign io_predictResp_meta_phtCounter = predTaken0 ? phtMem0_io_rd_data : phtMem1_io_rd_data; // @[src/main/scala/frontend/BPU.scala 113:40]
+  assign io_predictResp_meta_predTaken = predTaken0 | predTaken1; // @[src/main/scala/frontend/BPU.scala 91:32]
+  assign io_predictResp_meta_predTarget = predTaken0 ? btbEntry0_target : btbEntry1_target; // @[src/main/scala/frontend/BPU.scala 92:24]
+  assign btbMem0_clock = clock;
+  assign btbMem0_reset = reset;
+  assign btbMem0_io_wr_en = io_update_pd_valid; // @[src/main/scala/frontend/BPU.scala 119:37]
+  assign btbMem0_io_wr_addr = io_update_pd_valid ? updateBlockIdx : 4'h0; // @[src/main/scala/frontend/BPU.scala 128:18 156:24 123:51]
+  assign btbMem0_io_wr_data = io_update_pd_valid ? _btbMem0_io_wr_data_T : 63'h0; // @[src/main/scala/frontend/BPU.scala 128:18 157:24 123:78]
+  assign btbMem0_io_rd_en = io_predictReq_pc_fire; // @[src/main/scala/frontend/BPU.scala 54:22]
+  assign btbMem0_io_rd_addr = io_predictReq_nextPC[7:4]; // @[src/main/scala/frontend/BPU.scala 51:42]
+  assign phtMem0_clock = clock;
+  assign phtMem0_reset = reset;
+  assign phtMem0_io_wr_en = io_update_pd_valid; // @[src/main/scala/frontend/BPU.scala 119:37]
+  assign phtMem0_io_wr_addr = {{2'd0}, _GEN_3};
+  assign phtMem0_io_wr_data = io_update_pd_valid ? nextCounter : 2'h0; // @[src/main/scala/frontend/BPU.scala 128:18 161:24 124:78]
+  assign phtMem0_io_rd_en = io_predictReq_pc_fire; // @[src/main/scala/frontend/BPU.scala 56:22]
+  assign phtMem0_io_rd_addr = {{2'd0}, readBlockIdx}; // @[src/main/scala/frontend/BPU.scala 57:22]
+  assign btbMem1_clock = clock;
+  assign btbMem1_reset = reset;
+  assign btbMem1_io_wr_en = io_update_pd_valid; // @[src/main/scala/frontend/BPU.scala 119:37]
+  assign btbMem1_io_wr_addr = io_update_pd_valid ? updateBlockIdx_minus_1 : 4'h0; // @[src/main/scala/frontend/BPU.scala 128:18 168:24 125:51]
+  assign btbMem1_io_wr_data = io_update_pd_valid ? _btbMem0_io_wr_data_T : 63'h0; // @[src/main/scala/frontend/BPU.scala 128:18 169:24 125:78]
+  assign btbMem1_io_rd_en = io_predictReq_pc_fire; // @[src/main/scala/frontend/BPU.scala 59:22]
+  assign btbMem1_io_rd_addr = io_predictReq_nextPC[7:4]; // @[src/main/scala/frontend/BPU.scala 51:42]
+  assign phtMem1_clock = clock;
+  assign phtMem1_reset = reset;
+  assign phtMem1_io_wr_en = io_update_pd_valid; // @[src/main/scala/frontend/BPU.scala 119:37]
+  assign phtMem1_io_wr_addr = {{2'd0}, _GEN_6};
+  assign phtMem1_io_wr_data = io_update_pd_valid ? nextCounter : 2'h0; // @[src/main/scala/frontend/BPU.scala 128:18 161:24 124:78]
+  assign phtMem1_io_rd_en = io_predictReq_pc_fire; // @[src/main/scala/frontend/BPU.scala 61:22]
+  assign phtMem1_io_rd_addr = {{2'd0}, readBlockIdx}; // @[src/main/scala/frontend/BPU.scala 62:22]
 endmodule

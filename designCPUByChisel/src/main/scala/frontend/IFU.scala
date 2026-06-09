@@ -34,6 +34,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   val pcReg    = RegInit(0x1BFFFFFC.U(32.W))
   val pcValid  = RegInit(false.B)
   pcValid := RegNext(true.B)
+  dontTouch(pcValid)
   
  
   // ==================== 计算下一个PC ====================
@@ -63,12 +64,15 @@ class IFU(implicit p: Parameters) extends NSModule {
                Mux(  frontendRedirect.valid ,  frontendRedirect.target ,
                Mux(  bpuTaken               ,  bpuTarget               ,
                                                seqPC                   )))
+
+    // pcReg将要进入Icache条件
+  val pc_fire = pcValid && (io.icache_req.ready && io.bpuInfoQueuEnq.ready )&& !backendRedirectValid && !frontendRedirect.valid
+ 
   // ==================== 发起BPU的预测请求 ====================
   io.predictReq.nextPC := nextPC
   io.predictReq.pc := pcReg
-  // pcReg将要进入Icache条件
-  val pc_fire = (io.icache_req.ready && io.bpuInfoQueuEnq.ready )&& !backendRedirectValid && !frontendRedirect.valid
- 
+  io.predictReq.pc_fire := pc_fire
+
   // 通知BPU预测结果被使用
   // RAS相关
   io.predictFire := pc_fire

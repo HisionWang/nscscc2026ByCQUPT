@@ -4,6 +4,7 @@ module SimpleBlockRAM_1(
   input        io_wr_en, // @[src/main/scala/util/BlockRAM.scala 14:14]
   input  [5:0] io_wr_addr, // @[src/main/scala/util/BlockRAM.scala 14:14]
   input  [1:0] io_wr_data, // @[src/main/scala/util/BlockRAM.scala 14:14]
+  input        io_rd_en, // @[src/main/scala/util/BlockRAM.scala 14:14]
   input  [5:0] io_rd_addr, // @[src/main/scala/util/BlockRAM.scala 14:14]
   output [1:0] io_rd_data // @[src/main/scala/util/BlockRAM.scala 14:14]
 );
@@ -198,466 +199,467 @@ module SimpleBlockRAM_1(
   wire [1:0] _GEN_57 = 6'h39 == io_rd_addr ? mem_57 : _GEN_56; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
   wire [1:0] _GEN_58 = 6'h3a == io_rd_addr ? mem_58 : _GEN_57; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
   wire [1:0] _GEN_59 = 6'h3b == io_rd_addr ? mem_59 : _GEN_58; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
-  assign io_rd_data = dataPipeline_0; // @[src/main/scala/util/BlockRAM.scala 54:14]
+  wire [1:0] _GEN_60 = 6'h3c == io_rd_addr ? mem_60 : _GEN_59; // @[src/main/scala/util/BlockRAM.scala 43:{21,21}]
+  assign io_rd_data = dataPipeline_0; // @[src/main/scala/util/BlockRAM.scala 53:14]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_0 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h0 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_0 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h0 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_0 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_1 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_1 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_1 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_2 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_2 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_2 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_3 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_3 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_3 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_4 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h4 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_4 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h4 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_4 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_5 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h5 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_5 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h5 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_5 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_6 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h6 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_6 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h6 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_6 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_7 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h7 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_7 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h7 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_7 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_8 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h8 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_8 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h8 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_8 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_9 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h9 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_9 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h9 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_9 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_10 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'ha == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_10 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'ha == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_10 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_11 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'hb == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_11 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'hb == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_11 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_12 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'hc == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_12 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'hc == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_12 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_13 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'hd == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_13 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'hd == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_13 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_14 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'he == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_14 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'he == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_14 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_15 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'hf == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_15 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'hf == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_15 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_16 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h10 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_16 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h10 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_16 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_17 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h11 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_17 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h11 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_17 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_18 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h12 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_18 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h12 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_18 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_19 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h13 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_19 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h13 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_19 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_20 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h14 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_20 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h14 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_20 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_21 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h15 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_21 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h15 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_21 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_22 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h16 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_22 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h16 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_22 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_23 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h17 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_23 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h17 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_23 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_24 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h18 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_24 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h18 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_24 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_25 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h19 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_25 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h19 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_25 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_26 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1a == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_26 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1a == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_26 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_27 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1b == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_27 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1b == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_27 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_28 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1c == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_28 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1c == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_28 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_29 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1d == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_29 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1d == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_29 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_30 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1e == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_30 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1e == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_30 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_31 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h1f == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_31 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h1f == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_31 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_32 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h20 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_32 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h20 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_32 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_33 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h21 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_33 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h21 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_33 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_34 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h22 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_34 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h22 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_34 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_35 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h23 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_35 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h23 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_35 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_36 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h24 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_36 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h24 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_36 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_37 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h25 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_37 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h25 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_37 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_38 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h26 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_38 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h26 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_38 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_39 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h27 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_39 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h27 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_39 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_40 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h28 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_40 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h28 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_40 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_41 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h29 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_41 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h29 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_41 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_42 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2a == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_42 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2a == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_42 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_43 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2b == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_43 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2b == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_43 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_44 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2c == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_44 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2c == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_44 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_45 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2d == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_45 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2d == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_45 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_46 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2e == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_46 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2e == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_46 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_47 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h2f == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_47 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h2f == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_47 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_48 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h30 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_48 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h30 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_48 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_49 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h31 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_49 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h31 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_49 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_50 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h32 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_50 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h32 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_50 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_51 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h33 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_51 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h33 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_51 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_52 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h34 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_52 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h34 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_52 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_53 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h35 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_53 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h35 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_53 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_54 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h36 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_54 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h36 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_54 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_55 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h37 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_55 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h37 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_55 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_56 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h38 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_56 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h38 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_56 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_57 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h39 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_57 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h39 == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_57 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_58 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3a == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_58 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3a == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_58 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_59 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3b == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_59 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3b == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_59 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_60 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3c == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_60 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3c == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_60 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_61 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3d == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_61 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3d == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_61 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_62 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3e == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_62 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3e == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_62 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
     if (reset) begin // @[src/main/scala/util/BlockRAM.scala 34:14]
       mem_63 <= 2'h0; // @[src/main/scala/util/BlockRAM.scala 34:14]
-    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 57:18]
-      if (6'h3f == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 58:21]
-        mem_63 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 58:21]
+    end else if (io_wr_en) begin // @[src/main/scala/util/BlockRAM.scala 56:18]
+      if (6'h3f == io_wr_addr) begin // @[src/main/scala/util/BlockRAM.scala 57:21]
+        mem_63 <= io_wr_data; // @[src/main/scala/util/BlockRAM.scala 57:21]
       end
     end
-    if (6'h3f == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
-      dataPipeline_0 <= mem_63; // @[src/main/scala/util/BlockRAM.scala 43:21]
-    end else if (6'h3e == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
-      dataPipeline_0 <= mem_62; // @[src/main/scala/util/BlockRAM.scala 43:21]
-    end else if (6'h3d == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
-      dataPipeline_0 <= mem_61; // @[src/main/scala/util/BlockRAM.scala 43:21]
-    end else if (6'h3c == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
-      dataPipeline_0 <= mem_60; // @[src/main/scala/util/BlockRAM.scala 43:21]
-    end else begin
-      dataPipeline_0 <= _GEN_59;
+    if (io_rd_en) begin // @[src/main/scala/util/BlockRAM.scala 42:18]
+      if (6'h3f == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+        dataPipeline_0 <= mem_63; // @[src/main/scala/util/BlockRAM.scala 43:21]
+      end else if (6'h3e == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+        dataPipeline_0 <= mem_62; // @[src/main/scala/util/BlockRAM.scala 43:21]
+      end else if (6'h3d == io_rd_addr) begin // @[src/main/scala/util/BlockRAM.scala 43:21]
+        dataPipeline_0 <= mem_61; // @[src/main/scala/util/BlockRAM.scala 43:21]
+      end else begin
+        dataPipeline_0 <= _GEN_60;
+      end
     end
   end
 // Register and memory initialization

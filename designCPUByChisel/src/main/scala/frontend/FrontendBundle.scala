@@ -77,6 +77,7 @@ class BpuMeta(implicit p: Parameters) extends NSBundle {
 class BpuPredictReq(implicit p: Parameters) extends NSBundle {
   val nextPC = UInt(32.W)
   val pc = UInt(32.W)
+  val pc_fire = Bool()
 }
  
 class BpuPredictResp(implicit p: Parameters) extends NSBundle {
@@ -197,6 +198,9 @@ class FlushableQueue[T <: Data](gen: T, entries: Int)(implicit p: Parameters) ex
   val head   = RegInit(0.U(log2Ceil(entries).W))
   val tail   = RegInit(0.U(log2Ceil(entries).W))
   val count  = RegInit(0.U(log2Ceil(entries + 1).W))
+
+  dontTouch(data)
+  dontTouch(io.deq)
  
   val full  = count === entries.U
   val empty = count === 0.U

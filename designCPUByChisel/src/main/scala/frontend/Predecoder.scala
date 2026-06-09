@@ -19,6 +19,9 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     val out           = Decoupled(new PredecodeResp)
     
   })
+  dontTouch(io.bpuInfo)
+  dontTouch(io.bpuInfoValid)
+  dontTouch(io.out)
  
   // ================================================================
   // 第一部分：输入寄存器 —— 只存原始数据，不计算
@@ -121,8 +124,9 @@ class Predecoder(implicit p: Parameters) extends NSModule {
       val isBr   = LoongArch32Opcodes.isBranchOpcode(opcode)
       val isB    = opcode === LoongArch32Opcodes.OPC_B
       val isBl   = opcode === LoongArch32Opcodes.OPC_BL
-      val isJal  = isB || isBl
       val isJirl = opcode === LoongArch32Opcodes.OPC_JIRL
+
+      val isJal  = isB || isBl
       val isCall = isBl || (isJirl && rd === 1.U)
       val isRet  = isJirl && rj === 1.U && rd === 0.U
  
@@ -133,28 +137,31 @@ class Predecoder(implicit p: Parameters) extends NSModule {
       pdInfo(i).isRet  := isRet
  
       // ==== 跳转目标 ====
-      val offs16       = instr(25, 10)
-      val brOffsetSext = Cat(Fill(14, Cat(offs16, 0.U(2.W))(17)), Cat(offs16, 0.U(2.W)))
-      val brTarget     = pc + brOffsetSext
+      val offs26       = Cat(instr(9, 0), instr(25, 10))//instr(25, 10)
+      //val brOffsetSext = Cat(Fill(14, Cat(offs26, 0.U(2.W))(17)), Cat(offs26, 0.U(2.W)))
+      //val brTarget     = pc + brOffsetSext
  
-      val offs26       = instr(25, 0)
+      //val offs26       = instr(25, 0)
       val jalOffsetSext= Cat(Fill(4, Cat(offs26, 0.U(2.W))(27)), Cat(offs26, 0.U(2.W)))
       val jalTarget    = pc + jalOffsetSext
  
-      pdInfo(i).jumpTarget := MuxCase(0.U, Seq(
-        isBr  -> brTarget,
-        isJal -> jalTarget
-      ))
+      pdInfo(i).jumpTarget := jalTarget
+        
+      //  MuxCase(0.U, Seq(
+      //  //isBr  -> brTarget,
+      //  isJal -> jalTarget
+      //))
  
       // ==== BPU校验 ====
       val predTakenHere = s_pd_bpu.taken && s_pd_bpu.takenOffset === i.U
  
-      val jalFault    = (isJal || isCall) && !predTakenHere
-      val jalrFault   = isJirl && !predTakenHere
+      val jalFault    = isJal && !predTakenHere
+      val targetFault = isJal && predTakenHere && (s_pd_bpu.target =/= jalTarget)
+      //val jalrFault = isJirl && !predTakenHere
       val notCfiFault = !isBr && !isJal && !isJirl && predTakenHere
-      val targetFault = (isJal || isCall) && predTakenHere && (s_pd_bpu.target =/= jalTarget)
+      
  
-      faultValid(i)  := jalFault || jalrFault || notCfiFault || targetFault
+      faultValid(i)  := jalFault  || notCfiFault || targetFault // || jalrFault
       faultIsJal(i)  := isJal
       faultIsJalr(i) := isJirl
       faultIsCall(i) := isCall
@@ -163,7 +170,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
       faultTarget(i) := MuxCase(0.U, Seq(
         jalFault    -> jalTarget,
         targetFault -> jalTarget,
-        jalrFault   -> (pc + 4.U),
+        //jalrFault   -> (pc + 4.U),
         notCfiFault -> s_pd_bpu.fallThrough
       ))
     }
@@ -212,7 +219,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     for (i <- 0 until fetchWidth) {
       when(i.U > firstFaultIdx) { enqMask(i) := false.B }
     }
-    feRedirect.valid  := true.B
+    feRedirect.valid  := true.B && s_pd_valid
     feRedirect.target := firstFaultTarget
  
     val faultPC = s_pd_addr + Cat(firstFaultIdx, 0.U(2.W))
@@ -223,10 +230,13 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     bpuUpdate.isJal  := firstFaultIsJal
     bpuUpdate.isCall := firstFaultIsCall
     bpuUpdate.isRet  := firstFaultIsRet
-    bpuUpdate.offset := firstFaultIdx
+    bpuUpdate.offset := faultPC(3,2)
     bpuUpdate.taken  := true.B
     bpuUpdate.rasTop := s_pd_bpu.meta.rasTop
     bpuUpdate.oldPhtCounter := 0.U
+  } .otherwise{
+    feRedirect.valid  := false.B
+    bpuUpdate.valid  := false.B
   }
  
   // ================================================================
@@ -243,6 +253,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   io.out.bits.mmu_error      := s_pd_mmuError
   io.out.bits.pdInfo         := pdInfo
   io.out.bits.enqMask        := enqMask
+
   io.out.bits.frontendRedirect := feRedirect
   io.out.bits.bpuUpdate      := bpuUpdate
 }

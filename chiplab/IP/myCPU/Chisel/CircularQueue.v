@@ -12,6 +12,9 @@ module CircularQueue(
   input         io_enq_0_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_0_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_0_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_0_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_0_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_enq_1_ready, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_1_valid, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_1_bits_instr, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -23,6 +26,9 @@ module CircularQueue(
   input         io_enq_1_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_1_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_1_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_1_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_1_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_1_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_enq_2_ready, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_2_valid, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_2_bits_instr, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -34,6 +40,9 @@ module CircularQueue(
   input         io_enq_2_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_2_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_2_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_2_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_2_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_2_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_enq_3_ready, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_3_valid, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_3_bits_instr, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -45,6 +54,9 @@ module CircularQueue(
   input         io_enq_3_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_enq_3_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input  [31:0] io_enq_3_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_3_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_3_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  input         io_enq_3_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_deq_0_ready, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_0_valid, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [31:0] io_deq_0_bits_instr, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -56,6 +68,9 @@ module CircularQueue(
   output        io_deq_0_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_0_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [31:0] io_deq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_0_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_0_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_0_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_deq_1_ready, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_1_valid, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [31:0] io_deq_1_bits_instr, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -67,6 +82,9 @@ module CircularQueue(
   output        io_deq_1_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_1_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [31:0] io_deq_1_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_1_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_1_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_1_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_deq_2_ready, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_2_valid, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [31:0] io_deq_2_bits_instr, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -78,6 +96,9 @@ module CircularQueue(
   output        io_deq_2_bits_pdInfo_isCall, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_2_bits_pdInfo_isRet, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [31:0] io_deq_2_bits_pdInfo_jumpTarget, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_2_bits_exception_excpTlbRefill, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_2_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
+  output        io_deq_2_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_empty, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_full, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output [4:0]  io_count, // @[src/main/scala/util/CircularQueue.scala 83:14]
@@ -232,6 +253,54 @@ module CircularQueue(
   reg [31:0] _RAND_145;
   reg [31:0] _RAND_146;
   reg [31:0] _RAND_147;
+  reg [31:0] _RAND_148;
+  reg [31:0] _RAND_149;
+  reg [31:0] _RAND_150;
+  reg [31:0] _RAND_151;
+  reg [31:0] _RAND_152;
+  reg [31:0] _RAND_153;
+  reg [31:0] _RAND_154;
+  reg [31:0] _RAND_155;
+  reg [31:0] _RAND_156;
+  reg [31:0] _RAND_157;
+  reg [31:0] _RAND_158;
+  reg [31:0] _RAND_159;
+  reg [31:0] _RAND_160;
+  reg [31:0] _RAND_161;
+  reg [31:0] _RAND_162;
+  reg [31:0] _RAND_163;
+  reg [31:0] _RAND_164;
+  reg [31:0] _RAND_165;
+  reg [31:0] _RAND_166;
+  reg [31:0] _RAND_167;
+  reg [31:0] _RAND_168;
+  reg [31:0] _RAND_169;
+  reg [31:0] _RAND_170;
+  reg [31:0] _RAND_171;
+  reg [31:0] _RAND_172;
+  reg [31:0] _RAND_173;
+  reg [31:0] _RAND_174;
+  reg [31:0] _RAND_175;
+  reg [31:0] _RAND_176;
+  reg [31:0] _RAND_177;
+  reg [31:0] _RAND_178;
+  reg [31:0] _RAND_179;
+  reg [31:0] _RAND_180;
+  reg [31:0] _RAND_181;
+  reg [31:0] _RAND_182;
+  reg [31:0] _RAND_183;
+  reg [31:0] _RAND_184;
+  reg [31:0] _RAND_185;
+  reg [31:0] _RAND_186;
+  reg [31:0] _RAND_187;
+  reg [31:0] _RAND_188;
+  reg [31:0] _RAND_189;
+  reg [31:0] _RAND_190;
+  reg [31:0] _RAND_191;
+  reg [31:0] _RAND_192;
+  reg [31:0] _RAND_193;
+  reg [31:0] _RAND_194;
+  reg [31:0] _RAND_195;
 `endif // RANDOMIZE_REG_INIT
   reg [3:0] deqPtr_value; // @[src/main/scala/util/CircularQueue.scala 101:23]
   reg  deqPtr_flag; // @[src/main/scala/util/CircularQueue.scala 101:23]
@@ -246,6 +315,9 @@ module CircularQueue(
   reg  data_0_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_0_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_0_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_0_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_0_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_0_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_1_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_1_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_1_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -255,6 +327,9 @@ module CircularQueue(
   reg  data_1_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_1_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_1_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_1_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_1_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_1_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_2_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_2_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_2_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -264,6 +339,9 @@ module CircularQueue(
   reg  data_2_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_2_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_2_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_2_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_2_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_2_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_3_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_3_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_3_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -273,6 +351,9 @@ module CircularQueue(
   reg  data_3_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_3_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_3_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_3_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_3_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_3_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_4_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_4_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_4_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -282,6 +363,9 @@ module CircularQueue(
   reg  data_4_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_4_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_4_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_4_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_4_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_4_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_5_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_5_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_5_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -291,6 +375,9 @@ module CircularQueue(
   reg  data_5_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_5_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_5_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_5_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_5_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_5_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_6_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_6_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_6_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -300,6 +387,9 @@ module CircularQueue(
   reg  data_6_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_6_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_6_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_6_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_6_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_6_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_7_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_7_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_7_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -309,6 +399,9 @@ module CircularQueue(
   reg  data_7_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_7_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_7_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_7_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_7_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_7_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_8_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_8_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_8_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -318,6 +411,9 @@ module CircularQueue(
   reg  data_8_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_8_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_8_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_8_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_8_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_8_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_9_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_9_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_9_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -327,6 +423,9 @@ module CircularQueue(
   reg  data_9_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_9_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_9_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_9_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_9_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_9_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_10_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_10_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_10_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -336,6 +435,9 @@ module CircularQueue(
   reg  data_10_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_10_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_10_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_10_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_10_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_10_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_11_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_11_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_11_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -345,6 +447,9 @@ module CircularQueue(
   reg  data_11_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_11_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_11_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_11_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_11_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_11_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_12_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_12_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_12_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -354,6 +459,9 @@ module CircularQueue(
   reg  data_12_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_12_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_12_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_12_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_12_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_12_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_13_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_13_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_13_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -363,6 +471,9 @@ module CircularQueue(
   reg  data_13_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_13_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_13_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_13_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_13_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_13_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_14_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_14_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_14_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -372,6 +483,9 @@ module CircularQueue(
   reg  data_14_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_14_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_14_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_14_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_14_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_14_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_15_instr; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_15_pc; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_15_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17]
@@ -381,6 +495,9 @@ module CircularQueue(
   reg  data_15_pdInfo_isCall; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg  data_15_pdInfo_isRet; // @[src/main/scala/util/CircularQueue.scala 118:17]
   reg [31:0] data_15_pdInfo_jumpTarget; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_15_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_15_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17]
+  reg  data_15_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17]
   wire  _empty_T = deqPtr_value == enqPtr_value; // @[src/main/scala/util/CircularQueuePtr.scala 103:39]
   wire  empty = deqPtr_value == enqPtr_value & deqPtr_flag == enqPtr_flag; // @[src/main/scala/util/CircularQueuePtr.scala 103:54]
   wire  full = _empty_T & deqPtr_flag != enqPtr_flag; // @[src/main/scala/util/CircularQueue.scala 129:47]
@@ -399,6 +516,54 @@ module CircularQueue(
   wire  canEnq = _canEnq_T < 6'h10; // @[src/main/scala/util/CircularQueue.scala 183:34]
   wire  _T_15 = io_enq_0_ready & io_enq_0_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [3:0] writeIdx = _GEN_3460[3:0]; // @[src/main/scala/util/CircularQueue.scala 190:36]
+  wire  _GEN_0 = 4'h0 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_0_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_1 = 4'h1 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_1_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_2 = 4'h2 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_2_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_3 = 4'h3 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_3_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_4 = 4'h4 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_4_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_5 = 4'h5 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_5_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_6 = 4'h6 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_6_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_7 = 4'h7 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_7_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_8 = 4'h8 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_8_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_9 = 4'h9 == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_9_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_10 = 4'ha == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_10_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_11 = 4'hb == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_11_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_12 = 4'hc == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_12_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_13 = 4'hd == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_13_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_14 = 4'he == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_14_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_15 = 4'hf == writeIdx ? io_enq_0_bits_exception_excpTlbRefill : data_15_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_16 = 4'h0 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_0_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_17 = 4'h1 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_1_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_18 = 4'h2 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_2_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_19 = 4'h3 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_3_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_20 = 4'h4 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_4_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_21 = 4'h5 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_5_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_22 = 4'h6 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_6_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_23 = 4'h7 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_7_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_24 = 4'h8 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_8_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_25 = 4'h9 == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_9_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_26 = 4'ha == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_10_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_27 = 4'hb == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_11_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_28 = 4'hc == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_12_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_29 = 4'hd == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_13_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_30 = 4'he == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_14_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_31 = 4'hf == writeIdx ? io_enq_0_bits_exception_excpTlbPif : data_15_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_32 = 4'h0 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_0_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_33 = 4'h1 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_1_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_34 = 4'h2 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_2_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_35 = 4'h3 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_3_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_36 = 4'h4 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_4_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_37 = 4'h5 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_5_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_38 = 4'h6 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_6_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_39 = 4'h7 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_7_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_40 = 4'h8 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_8_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_41 = 4'h9 == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_9_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_42 = 4'ha == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_10_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_43 = 4'hb == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_11_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_44 = 4'hc == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_12_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_45 = 4'hd == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_13_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_46 = 4'he == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_14_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_47 = 4'hf == writeIdx ? io_enq_0_bits_exception_excpTlbPpi : data_15_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
   wire  _GEN_48 = 4'h0 == writeIdx ? io_enq_0_bits_pdInfo_valid : data_0_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
   wire  _GEN_49 = 4'h1 == writeIdx ? io_enq_0_bits_pdInfo_valid : data_1_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
   wire  _GEN_50 = 4'h2 == writeIdx ? io_enq_0_bits_pdInfo_valid : data_2_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
@@ -543,6 +708,54 @@ module CircularQueue(
   wire [31:0] _GEN_189 = 4'hd == writeIdx ? io_enq_0_bits_instr : data_13_instr; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
   wire [31:0] _GEN_190 = 4'he == writeIdx ? io_enq_0_bits_instr : data_14_instr; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
   wire [31:0] _GEN_191 = 4'hf == writeIdx ? io_enq_0_bits_instr : data_15_instr; // @[src/main/scala/util/CircularQueue.scala 118:17 192:{22,22}]
+  wire  _GEN_192 = _T_15 ? _GEN_0 : data_0_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_193 = _T_15 ? _GEN_1 : data_1_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_194 = _T_15 ? _GEN_2 : data_2_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_195 = _T_15 ? _GEN_3 : data_3_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_196 = _T_15 ? _GEN_4 : data_4_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_197 = _T_15 ? _GEN_5 : data_5_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_198 = _T_15 ? _GEN_6 : data_6_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_199 = _T_15 ? _GEN_7 : data_7_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_200 = _T_15 ? _GEN_8 : data_8_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_201 = _T_15 ? _GEN_9 : data_9_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_202 = _T_15 ? _GEN_10 : data_10_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_203 = _T_15 ? _GEN_11 : data_11_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_204 = _T_15 ? _GEN_12 : data_12_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_205 = _T_15 ? _GEN_13 : data_13_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_206 = _T_15 ? _GEN_14 : data_14_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_207 = _T_15 ? _GEN_15 : data_15_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_208 = _T_15 ? _GEN_16 : data_0_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_209 = _T_15 ? _GEN_17 : data_1_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_210 = _T_15 ? _GEN_18 : data_2_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_211 = _T_15 ? _GEN_19 : data_3_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_212 = _T_15 ? _GEN_20 : data_4_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_213 = _T_15 ? _GEN_21 : data_5_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_214 = _T_15 ? _GEN_22 : data_6_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_215 = _T_15 ? _GEN_23 : data_7_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_216 = _T_15 ? _GEN_24 : data_8_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_217 = _T_15 ? _GEN_25 : data_9_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_218 = _T_15 ? _GEN_26 : data_10_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_219 = _T_15 ? _GEN_27 : data_11_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_220 = _T_15 ? _GEN_28 : data_12_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_221 = _T_15 ? _GEN_29 : data_13_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_222 = _T_15 ? _GEN_30 : data_14_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_223 = _T_15 ? _GEN_31 : data_15_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_224 = _T_15 ? _GEN_32 : data_0_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_225 = _T_15 ? _GEN_33 : data_1_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_226 = _T_15 ? _GEN_34 : data_2_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_227 = _T_15 ? _GEN_35 : data_3_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_228 = _T_15 ? _GEN_36 : data_4_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_229 = _T_15 ? _GEN_37 : data_5_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_230 = _T_15 ? _GEN_38 : data_6_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_231 = _T_15 ? _GEN_39 : data_7_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_232 = _T_15 ? _GEN_40 : data_8_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_233 = _T_15 ? _GEN_41 : data_9_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_234 = _T_15 ? _GEN_42 : data_10_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_235 = _T_15 ? _GEN_43 : data_11_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_236 = _T_15 ? _GEN_44 : data_12_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_237 = _T_15 ? _GEN_45 : data_13_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_238 = _T_15 ? _GEN_46 : data_14_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
+  wire  _GEN_239 = _T_15 ? _GEN_47 : data_15_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
   wire  _GEN_240 = _T_15 ? _GEN_48 : data_0_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
   wire  _GEN_241 = _T_15 ? _GEN_49 : data_1_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
   wire  _GEN_242 = _T_15 ? _GEN_50 : data_2_pdInfo_valid; // @[src/main/scala/util/CircularQueue.scala 118:17 187:27]
@@ -691,6 +904,54 @@ module CircularQueue(
   wire  canEnq_1 = _canEnq_T_1 < 6'h10; // @[src/main/scala/util/CircularQueue.scala 183:34]
   wire  _T_16 = io_enq_1_ready & io_enq_1_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [3:0] writeIdx_1 = enqPtr_value + 4'h1; // @[src/main/scala/util/CircularQueue.scala 190:36]
+  wire  _GEN_384 = 4'h0 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_192; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_385 = 4'h1 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_193; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_386 = 4'h2 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_194; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_387 = 4'h3 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_195; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_388 = 4'h4 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_196; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_389 = 4'h5 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_197; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_390 = 4'h6 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_198; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_391 = 4'h7 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_199; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_392 = 4'h8 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_200; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_393 = 4'h9 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_201; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_394 = 4'ha == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_202; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_395 = 4'hb == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_203; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_396 = 4'hc == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_204; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_397 = 4'hd == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_205; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_398 = 4'he == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_206; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_399 = 4'hf == writeIdx_1 ? io_enq_1_bits_exception_excpTlbRefill : _GEN_207; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_400 = 4'h0 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_208; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_401 = 4'h1 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_209; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_402 = 4'h2 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_210; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_403 = 4'h3 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_211; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_404 = 4'h4 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_212; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_405 = 4'h5 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_213; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_406 = 4'h6 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_214; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_407 = 4'h7 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_215; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_408 = 4'h8 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_216; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_409 = 4'h9 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_217; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_410 = 4'ha == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_218; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_411 = 4'hb == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_219; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_412 = 4'hc == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_220; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_413 = 4'hd == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_221; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_414 = 4'he == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_222; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_415 = 4'hf == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPif : _GEN_223; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_416 = 4'h0 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_224; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_417 = 4'h1 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_225; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_418 = 4'h2 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_226; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_419 = 4'h3 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_227; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_420 = 4'h4 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_228; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_421 = 4'h5 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_229; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_422 = 4'h6 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_230; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_423 = 4'h7 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_231; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_424 = 4'h8 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_232; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_425 = 4'h9 == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_233; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_426 = 4'ha == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_234; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_427 = 4'hb == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_235; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_428 = 4'hc == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_236; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_429 = 4'hd == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_237; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_430 = 4'he == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_238; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_431 = 4'hf == writeIdx_1 ? io_enq_1_bits_exception_excpTlbPpi : _GEN_239; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire  _GEN_432 = 4'h0 == writeIdx_1 ? io_enq_1_bits_pdInfo_valid : _GEN_240; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire  _GEN_433 = 4'h1 == writeIdx_1 ? io_enq_1_bits_pdInfo_valid : _GEN_241; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire  _GEN_434 = 4'h2 == writeIdx_1 ? io_enq_1_bits_pdInfo_valid : _GEN_242; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
@@ -835,6 +1096,54 @@ module CircularQueue(
   wire [31:0] _GEN_573 = 4'hd == writeIdx_1 ? io_enq_1_bits_instr : _GEN_381; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire [31:0] _GEN_574 = 4'he == writeIdx_1 ? io_enq_1_bits_instr : _GEN_382; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire [31:0] _GEN_575 = 4'hf == writeIdx_1 ? io_enq_1_bits_instr : _GEN_383; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_576 = _T_16 ? _GEN_384 : _GEN_192; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_577 = _T_16 ? _GEN_385 : _GEN_193; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_578 = _T_16 ? _GEN_386 : _GEN_194; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_579 = _T_16 ? _GEN_387 : _GEN_195; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_580 = _T_16 ? _GEN_388 : _GEN_196; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_581 = _T_16 ? _GEN_389 : _GEN_197; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_582 = _T_16 ? _GEN_390 : _GEN_198; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_583 = _T_16 ? _GEN_391 : _GEN_199; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_584 = _T_16 ? _GEN_392 : _GEN_200; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_585 = _T_16 ? _GEN_393 : _GEN_201; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_586 = _T_16 ? _GEN_394 : _GEN_202; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_587 = _T_16 ? _GEN_395 : _GEN_203; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_588 = _T_16 ? _GEN_396 : _GEN_204; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_589 = _T_16 ? _GEN_397 : _GEN_205; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_590 = _T_16 ? _GEN_398 : _GEN_206; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_591 = _T_16 ? _GEN_399 : _GEN_207; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_592 = _T_16 ? _GEN_400 : _GEN_208; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_593 = _T_16 ? _GEN_401 : _GEN_209; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_594 = _T_16 ? _GEN_402 : _GEN_210; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_595 = _T_16 ? _GEN_403 : _GEN_211; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_596 = _T_16 ? _GEN_404 : _GEN_212; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_597 = _T_16 ? _GEN_405 : _GEN_213; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_598 = _T_16 ? _GEN_406 : _GEN_214; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_599 = _T_16 ? _GEN_407 : _GEN_215; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_600 = _T_16 ? _GEN_408 : _GEN_216; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_601 = _T_16 ? _GEN_409 : _GEN_217; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_602 = _T_16 ? _GEN_410 : _GEN_218; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_603 = _T_16 ? _GEN_411 : _GEN_219; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_604 = _T_16 ? _GEN_412 : _GEN_220; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_605 = _T_16 ? _GEN_413 : _GEN_221; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_606 = _T_16 ? _GEN_414 : _GEN_222; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_607 = _T_16 ? _GEN_415 : _GEN_223; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_608 = _T_16 ? _GEN_416 : _GEN_224; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_609 = _T_16 ? _GEN_417 : _GEN_225; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_610 = _T_16 ? _GEN_418 : _GEN_226; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_611 = _T_16 ? _GEN_419 : _GEN_227; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_612 = _T_16 ? _GEN_420 : _GEN_228; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_613 = _T_16 ? _GEN_421 : _GEN_229; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_614 = _T_16 ? _GEN_422 : _GEN_230; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_615 = _T_16 ? _GEN_423 : _GEN_231; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_616 = _T_16 ? _GEN_424 : _GEN_232; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_617 = _T_16 ? _GEN_425 : _GEN_233; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_618 = _T_16 ? _GEN_426 : _GEN_234; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_619 = _T_16 ? _GEN_427 : _GEN_235; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_620 = _T_16 ? _GEN_428 : _GEN_236; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_621 = _T_16 ? _GEN_429 : _GEN_237; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_622 = _T_16 ? _GEN_430 : _GEN_238; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_623 = _T_16 ? _GEN_431 : _GEN_239; // @[src/main/scala/util/CircularQueue.scala 187:27]
   wire  _GEN_624 = _T_16 ? _GEN_432 : _GEN_240; // @[src/main/scala/util/CircularQueue.scala 187:27]
   wire  _GEN_625 = _T_16 ? _GEN_433 : _GEN_241; // @[src/main/scala/util/CircularQueue.scala 187:27]
   wire  _GEN_626 = _T_16 ? _GEN_434 : _GEN_242; // @[src/main/scala/util/CircularQueue.scala 187:27]
@@ -983,6 +1292,54 @@ module CircularQueue(
   wire  canEnq_2 = _canEnq_T_2 < 6'h10; // @[src/main/scala/util/CircularQueue.scala 183:34]
   wire  _T_17 = io_enq_2_ready & io_enq_2_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [3:0] writeIdx_2 = enqPtr_value + 4'h2; // @[src/main/scala/util/CircularQueue.scala 190:36]
+  wire  _GEN_768 = 4'h0 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_576; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_769 = 4'h1 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_577; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_770 = 4'h2 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_578; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_771 = 4'h3 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_579; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_772 = 4'h4 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_580; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_773 = 4'h5 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_581; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_774 = 4'h6 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_582; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_775 = 4'h7 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_583; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_776 = 4'h8 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_584; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_777 = 4'h9 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_585; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_778 = 4'ha == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_586; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_779 = 4'hb == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_587; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_780 = 4'hc == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_588; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_781 = 4'hd == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_589; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_782 = 4'he == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_590; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_783 = 4'hf == writeIdx_2 ? io_enq_2_bits_exception_excpTlbRefill : _GEN_591; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_784 = 4'h0 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_592; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_785 = 4'h1 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_593; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_786 = 4'h2 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_594; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_787 = 4'h3 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_595; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_788 = 4'h4 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_596; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_789 = 4'h5 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_597; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_790 = 4'h6 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_598; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_791 = 4'h7 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_599; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_792 = 4'h8 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_600; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_793 = 4'h9 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_601; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_794 = 4'ha == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_602; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_795 = 4'hb == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_603; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_796 = 4'hc == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_604; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_797 = 4'hd == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_605; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_798 = 4'he == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_606; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_799 = 4'hf == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPif : _GEN_607; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_800 = 4'h0 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_608; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_801 = 4'h1 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_609; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_802 = 4'h2 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_610; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_803 = 4'h3 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_611; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_804 = 4'h4 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_612; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_805 = 4'h5 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_613; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_806 = 4'h6 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_614; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_807 = 4'h7 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_615; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_808 = 4'h8 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_616; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_809 = 4'h9 == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_617; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_810 = 4'ha == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_618; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_811 = 4'hb == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_619; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_812 = 4'hc == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_620; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_813 = 4'hd == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_621; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_814 = 4'he == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_622; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_815 = 4'hf == writeIdx_2 ? io_enq_2_bits_exception_excpTlbPpi : _GEN_623; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire  _GEN_816 = 4'h0 == writeIdx_2 ? io_enq_2_bits_pdInfo_valid : _GEN_624; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire  _GEN_817 = 4'h1 == writeIdx_2 ? io_enq_2_bits_pdInfo_valid : _GEN_625; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire  _GEN_818 = 4'h2 == writeIdx_2 ? io_enq_2_bits_pdInfo_valid : _GEN_626; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
@@ -1127,6 +1484,54 @@ module CircularQueue(
   wire [31:0] _GEN_957 = 4'hd == writeIdx_2 ? io_enq_2_bits_instr : _GEN_765; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire [31:0] _GEN_958 = 4'he == writeIdx_2 ? io_enq_2_bits_instr : _GEN_766; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
   wire [31:0] _GEN_959 = 4'hf == writeIdx_2 ? io_enq_2_bits_instr : _GEN_767; // @[src/main/scala/util/CircularQueue.scala 192:{22,22}]
+  wire  _GEN_960 = _T_17 ? _GEN_768 : _GEN_576; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_961 = _T_17 ? _GEN_769 : _GEN_577; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_962 = _T_17 ? _GEN_770 : _GEN_578; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_963 = _T_17 ? _GEN_771 : _GEN_579; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_964 = _T_17 ? _GEN_772 : _GEN_580; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_965 = _T_17 ? _GEN_773 : _GEN_581; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_966 = _T_17 ? _GEN_774 : _GEN_582; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_967 = _T_17 ? _GEN_775 : _GEN_583; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_968 = _T_17 ? _GEN_776 : _GEN_584; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_969 = _T_17 ? _GEN_777 : _GEN_585; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_970 = _T_17 ? _GEN_778 : _GEN_586; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_971 = _T_17 ? _GEN_779 : _GEN_587; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_972 = _T_17 ? _GEN_780 : _GEN_588; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_973 = _T_17 ? _GEN_781 : _GEN_589; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_974 = _T_17 ? _GEN_782 : _GEN_590; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_975 = _T_17 ? _GEN_783 : _GEN_591; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_976 = _T_17 ? _GEN_784 : _GEN_592; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_977 = _T_17 ? _GEN_785 : _GEN_593; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_978 = _T_17 ? _GEN_786 : _GEN_594; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_979 = _T_17 ? _GEN_787 : _GEN_595; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_980 = _T_17 ? _GEN_788 : _GEN_596; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_981 = _T_17 ? _GEN_789 : _GEN_597; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_982 = _T_17 ? _GEN_790 : _GEN_598; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_983 = _T_17 ? _GEN_791 : _GEN_599; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_984 = _T_17 ? _GEN_792 : _GEN_600; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_985 = _T_17 ? _GEN_793 : _GEN_601; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_986 = _T_17 ? _GEN_794 : _GEN_602; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_987 = _T_17 ? _GEN_795 : _GEN_603; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_988 = _T_17 ? _GEN_796 : _GEN_604; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_989 = _T_17 ? _GEN_797 : _GEN_605; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_990 = _T_17 ? _GEN_798 : _GEN_606; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_991 = _T_17 ? _GEN_799 : _GEN_607; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_992 = _T_17 ? _GEN_800 : _GEN_608; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_993 = _T_17 ? _GEN_801 : _GEN_609; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_994 = _T_17 ? _GEN_802 : _GEN_610; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_995 = _T_17 ? _GEN_803 : _GEN_611; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_996 = _T_17 ? _GEN_804 : _GEN_612; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_997 = _T_17 ? _GEN_805 : _GEN_613; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_998 = _T_17 ? _GEN_806 : _GEN_614; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_999 = _T_17 ? _GEN_807 : _GEN_615; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1000 = _T_17 ? _GEN_808 : _GEN_616; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1001 = _T_17 ? _GEN_809 : _GEN_617; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1002 = _T_17 ? _GEN_810 : _GEN_618; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1003 = _T_17 ? _GEN_811 : _GEN_619; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1004 = _T_17 ? _GEN_812 : _GEN_620; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1005 = _T_17 ? _GEN_813 : _GEN_621; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1006 = _T_17 ? _GEN_814 : _GEN_622; // @[src/main/scala/util/CircularQueue.scala 187:27]
+  wire  _GEN_1007 = _T_17 ? _GEN_815 : _GEN_623; // @[src/main/scala/util/CircularQueue.scala 187:27]
   wire  _GEN_1008 = _T_17 ? _GEN_816 : _GEN_624; // @[src/main/scala/util/CircularQueue.scala 187:27]
   wire  _GEN_1009 = _T_17 ? _GEN_817 : _GEN_625; // @[src/main/scala/util/CircularQueue.scala 187:27]
   wire  _GEN_1010 = _T_17 ? _GEN_818 : _GEN_626; // @[src/main/scala/util/CircularQueue.scala 187:27]
@@ -1411,6 +1816,48 @@ module CircularQueue(
   wire [31:0] _GEN_1676 = 4'hc == readIdx ? data_12_pdInfo_jumpTarget : _GEN_1675; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire [31:0] _GEN_1677 = 4'hd == readIdx ? data_13_pdInfo_jumpTarget : _GEN_1676; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire [31:0] _GEN_1678 = 4'he == readIdx ? data_14_pdInfo_jumpTarget : _GEN_1677; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1681 = 4'h1 == readIdx ? data_1_exception_excpTlbRefill : data_0_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1682 = 4'h2 == readIdx ? data_2_exception_excpTlbRefill : _GEN_1681; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1683 = 4'h3 == readIdx ? data_3_exception_excpTlbRefill : _GEN_1682; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1684 = 4'h4 == readIdx ? data_4_exception_excpTlbRefill : _GEN_1683; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1685 = 4'h5 == readIdx ? data_5_exception_excpTlbRefill : _GEN_1684; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1686 = 4'h6 == readIdx ? data_6_exception_excpTlbRefill : _GEN_1685; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1687 = 4'h7 == readIdx ? data_7_exception_excpTlbRefill : _GEN_1686; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1688 = 4'h8 == readIdx ? data_8_exception_excpTlbRefill : _GEN_1687; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1689 = 4'h9 == readIdx ? data_9_exception_excpTlbRefill : _GEN_1688; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1690 = 4'ha == readIdx ? data_10_exception_excpTlbRefill : _GEN_1689; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1691 = 4'hb == readIdx ? data_11_exception_excpTlbRefill : _GEN_1690; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1692 = 4'hc == readIdx ? data_12_exception_excpTlbRefill : _GEN_1691; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1693 = 4'hd == readIdx ? data_13_exception_excpTlbRefill : _GEN_1692; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1694 = 4'he == readIdx ? data_14_exception_excpTlbRefill : _GEN_1693; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1697 = 4'h1 == readIdx ? data_1_exception_excpTlbPif : data_0_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1698 = 4'h2 == readIdx ? data_2_exception_excpTlbPif : _GEN_1697; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1699 = 4'h3 == readIdx ? data_3_exception_excpTlbPif : _GEN_1698; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1700 = 4'h4 == readIdx ? data_4_exception_excpTlbPif : _GEN_1699; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1701 = 4'h5 == readIdx ? data_5_exception_excpTlbPif : _GEN_1700; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1702 = 4'h6 == readIdx ? data_6_exception_excpTlbPif : _GEN_1701; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1703 = 4'h7 == readIdx ? data_7_exception_excpTlbPif : _GEN_1702; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1704 = 4'h8 == readIdx ? data_8_exception_excpTlbPif : _GEN_1703; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1705 = 4'h9 == readIdx ? data_9_exception_excpTlbPif : _GEN_1704; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1706 = 4'ha == readIdx ? data_10_exception_excpTlbPif : _GEN_1705; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1707 = 4'hb == readIdx ? data_11_exception_excpTlbPif : _GEN_1706; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1708 = 4'hc == readIdx ? data_12_exception_excpTlbPif : _GEN_1707; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1709 = 4'hd == readIdx ? data_13_exception_excpTlbPif : _GEN_1708; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1710 = 4'he == readIdx ? data_14_exception_excpTlbPif : _GEN_1709; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1713 = 4'h1 == readIdx ? data_1_exception_excpTlbPpi : data_0_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1714 = 4'h2 == readIdx ? data_2_exception_excpTlbPpi : _GEN_1713; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1715 = 4'h3 == readIdx ? data_3_exception_excpTlbPpi : _GEN_1714; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1716 = 4'h4 == readIdx ? data_4_exception_excpTlbPpi : _GEN_1715; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1717 = 4'h5 == readIdx ? data_5_exception_excpTlbPpi : _GEN_1716; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1718 = 4'h6 == readIdx ? data_6_exception_excpTlbPpi : _GEN_1717; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1719 = 4'h7 == readIdx ? data_7_exception_excpTlbPpi : _GEN_1718; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1720 = 4'h8 == readIdx ? data_8_exception_excpTlbPpi : _GEN_1719; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1721 = 4'h9 == readIdx ? data_9_exception_excpTlbPpi : _GEN_1720; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1722 = 4'ha == readIdx ? data_10_exception_excpTlbPpi : _GEN_1721; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1723 = 4'hb == readIdx ? data_11_exception_excpTlbPpi : _GEN_1722; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1724 = 4'hc == readIdx ? data_12_exception_excpTlbPpi : _GEN_1723; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1725 = 4'hd == readIdx ? data_13_exception_excpTlbPpi : _GEN_1724; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1726 = 4'he == readIdx ? data_14_exception_excpTlbPpi : _GEN_1725; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire  canDeq_1 = count > 5'h1; // @[src/main/scala/util/CircularQueue.scala 211:24]
   wire [3:0] readIdx_1 = deqPtr_value + 4'h1; // @[src/main/scala/util/CircularQueue.scala 216:33]
   wire [31:0] _GEN_1729 = 4'h1 == readIdx_1 ? data_1_instr : data_0_instr; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
@@ -1539,6 +1986,48 @@ module CircularQueue(
   wire [31:0] _GEN_1868 = 4'hc == readIdx_1 ? data_12_pdInfo_jumpTarget : _GEN_1867; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire [31:0] _GEN_1869 = 4'hd == readIdx_1 ? data_13_pdInfo_jumpTarget : _GEN_1868; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire [31:0] _GEN_1870 = 4'he == readIdx_1 ? data_14_pdInfo_jumpTarget : _GEN_1869; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1873 = 4'h1 == readIdx_1 ? data_1_exception_excpTlbRefill : data_0_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1874 = 4'h2 == readIdx_1 ? data_2_exception_excpTlbRefill : _GEN_1873; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1875 = 4'h3 == readIdx_1 ? data_3_exception_excpTlbRefill : _GEN_1874; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1876 = 4'h4 == readIdx_1 ? data_4_exception_excpTlbRefill : _GEN_1875; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1877 = 4'h5 == readIdx_1 ? data_5_exception_excpTlbRefill : _GEN_1876; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1878 = 4'h6 == readIdx_1 ? data_6_exception_excpTlbRefill : _GEN_1877; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1879 = 4'h7 == readIdx_1 ? data_7_exception_excpTlbRefill : _GEN_1878; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1880 = 4'h8 == readIdx_1 ? data_8_exception_excpTlbRefill : _GEN_1879; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1881 = 4'h9 == readIdx_1 ? data_9_exception_excpTlbRefill : _GEN_1880; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1882 = 4'ha == readIdx_1 ? data_10_exception_excpTlbRefill : _GEN_1881; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1883 = 4'hb == readIdx_1 ? data_11_exception_excpTlbRefill : _GEN_1882; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1884 = 4'hc == readIdx_1 ? data_12_exception_excpTlbRefill : _GEN_1883; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1885 = 4'hd == readIdx_1 ? data_13_exception_excpTlbRefill : _GEN_1884; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1886 = 4'he == readIdx_1 ? data_14_exception_excpTlbRefill : _GEN_1885; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1889 = 4'h1 == readIdx_1 ? data_1_exception_excpTlbPif : data_0_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1890 = 4'h2 == readIdx_1 ? data_2_exception_excpTlbPif : _GEN_1889; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1891 = 4'h3 == readIdx_1 ? data_3_exception_excpTlbPif : _GEN_1890; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1892 = 4'h4 == readIdx_1 ? data_4_exception_excpTlbPif : _GEN_1891; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1893 = 4'h5 == readIdx_1 ? data_5_exception_excpTlbPif : _GEN_1892; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1894 = 4'h6 == readIdx_1 ? data_6_exception_excpTlbPif : _GEN_1893; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1895 = 4'h7 == readIdx_1 ? data_7_exception_excpTlbPif : _GEN_1894; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1896 = 4'h8 == readIdx_1 ? data_8_exception_excpTlbPif : _GEN_1895; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1897 = 4'h9 == readIdx_1 ? data_9_exception_excpTlbPif : _GEN_1896; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1898 = 4'ha == readIdx_1 ? data_10_exception_excpTlbPif : _GEN_1897; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1899 = 4'hb == readIdx_1 ? data_11_exception_excpTlbPif : _GEN_1898; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1900 = 4'hc == readIdx_1 ? data_12_exception_excpTlbPif : _GEN_1899; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1901 = 4'hd == readIdx_1 ? data_13_exception_excpTlbPif : _GEN_1900; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1902 = 4'he == readIdx_1 ? data_14_exception_excpTlbPif : _GEN_1901; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1905 = 4'h1 == readIdx_1 ? data_1_exception_excpTlbPpi : data_0_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1906 = 4'h2 == readIdx_1 ? data_2_exception_excpTlbPpi : _GEN_1905; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1907 = 4'h3 == readIdx_1 ? data_3_exception_excpTlbPpi : _GEN_1906; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1908 = 4'h4 == readIdx_1 ? data_4_exception_excpTlbPpi : _GEN_1907; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1909 = 4'h5 == readIdx_1 ? data_5_exception_excpTlbPpi : _GEN_1908; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1910 = 4'h6 == readIdx_1 ? data_6_exception_excpTlbPpi : _GEN_1909; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1911 = 4'h7 == readIdx_1 ? data_7_exception_excpTlbPpi : _GEN_1910; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1912 = 4'h8 == readIdx_1 ? data_8_exception_excpTlbPpi : _GEN_1911; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1913 = 4'h9 == readIdx_1 ? data_9_exception_excpTlbPpi : _GEN_1912; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1914 = 4'ha == readIdx_1 ? data_10_exception_excpTlbPpi : _GEN_1913; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1915 = 4'hb == readIdx_1 ? data_11_exception_excpTlbPpi : _GEN_1914; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1916 = 4'hc == readIdx_1 ? data_12_exception_excpTlbPpi : _GEN_1915; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1917 = 4'hd == readIdx_1 ? data_13_exception_excpTlbPpi : _GEN_1916; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_1918 = 4'he == readIdx_1 ? data_14_exception_excpTlbPpi : _GEN_1917; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire  canDeq_2 = count > 5'h2; // @[src/main/scala/util/CircularQueue.scala 211:24]
   wire [3:0] readIdx_2 = deqPtr_value + 4'h2; // @[src/main/scala/util/CircularQueue.scala 216:33]
   wire [31:0] _GEN_1921 = 4'h1 == readIdx_2 ? data_1_instr : data_0_instr; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
@@ -1667,6 +2156,48 @@ module CircularQueue(
   wire [31:0] _GEN_2060 = 4'hc == readIdx_2 ? data_12_pdInfo_jumpTarget : _GEN_2059; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire [31:0] _GEN_2061 = 4'hd == readIdx_2 ? data_13_pdInfo_jumpTarget : _GEN_2060; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire [31:0] _GEN_2062 = 4'he == readIdx_2 ? data_14_pdInfo_jumpTarget : _GEN_2061; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2065 = 4'h1 == readIdx_2 ? data_1_exception_excpTlbRefill : data_0_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2066 = 4'h2 == readIdx_2 ? data_2_exception_excpTlbRefill : _GEN_2065; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2067 = 4'h3 == readIdx_2 ? data_3_exception_excpTlbRefill : _GEN_2066; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2068 = 4'h4 == readIdx_2 ? data_4_exception_excpTlbRefill : _GEN_2067; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2069 = 4'h5 == readIdx_2 ? data_5_exception_excpTlbRefill : _GEN_2068; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2070 = 4'h6 == readIdx_2 ? data_6_exception_excpTlbRefill : _GEN_2069; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2071 = 4'h7 == readIdx_2 ? data_7_exception_excpTlbRefill : _GEN_2070; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2072 = 4'h8 == readIdx_2 ? data_8_exception_excpTlbRefill : _GEN_2071; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2073 = 4'h9 == readIdx_2 ? data_9_exception_excpTlbRefill : _GEN_2072; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2074 = 4'ha == readIdx_2 ? data_10_exception_excpTlbRefill : _GEN_2073; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2075 = 4'hb == readIdx_2 ? data_11_exception_excpTlbRefill : _GEN_2074; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2076 = 4'hc == readIdx_2 ? data_12_exception_excpTlbRefill : _GEN_2075; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2077 = 4'hd == readIdx_2 ? data_13_exception_excpTlbRefill : _GEN_2076; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2078 = 4'he == readIdx_2 ? data_14_exception_excpTlbRefill : _GEN_2077; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2081 = 4'h1 == readIdx_2 ? data_1_exception_excpTlbPif : data_0_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2082 = 4'h2 == readIdx_2 ? data_2_exception_excpTlbPif : _GEN_2081; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2083 = 4'h3 == readIdx_2 ? data_3_exception_excpTlbPif : _GEN_2082; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2084 = 4'h4 == readIdx_2 ? data_4_exception_excpTlbPif : _GEN_2083; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2085 = 4'h5 == readIdx_2 ? data_5_exception_excpTlbPif : _GEN_2084; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2086 = 4'h6 == readIdx_2 ? data_6_exception_excpTlbPif : _GEN_2085; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2087 = 4'h7 == readIdx_2 ? data_7_exception_excpTlbPif : _GEN_2086; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2088 = 4'h8 == readIdx_2 ? data_8_exception_excpTlbPif : _GEN_2087; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2089 = 4'h9 == readIdx_2 ? data_9_exception_excpTlbPif : _GEN_2088; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2090 = 4'ha == readIdx_2 ? data_10_exception_excpTlbPif : _GEN_2089; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2091 = 4'hb == readIdx_2 ? data_11_exception_excpTlbPif : _GEN_2090; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2092 = 4'hc == readIdx_2 ? data_12_exception_excpTlbPif : _GEN_2091; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2093 = 4'hd == readIdx_2 ? data_13_exception_excpTlbPif : _GEN_2092; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2094 = 4'he == readIdx_2 ? data_14_exception_excpTlbPif : _GEN_2093; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2097 = 4'h1 == readIdx_2 ? data_1_exception_excpTlbPpi : data_0_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2098 = 4'h2 == readIdx_2 ? data_2_exception_excpTlbPpi : _GEN_2097; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2099 = 4'h3 == readIdx_2 ? data_3_exception_excpTlbPpi : _GEN_2098; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2100 = 4'h4 == readIdx_2 ? data_4_exception_excpTlbPpi : _GEN_2099; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2101 = 4'h5 == readIdx_2 ? data_5_exception_excpTlbPpi : _GEN_2100; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2102 = 4'h6 == readIdx_2 ? data_6_exception_excpTlbPpi : _GEN_2101; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2103 = 4'h7 == readIdx_2 ? data_7_exception_excpTlbPpi : _GEN_2102; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2104 = 4'h8 == readIdx_2 ? data_8_exception_excpTlbPpi : _GEN_2103; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2105 = 4'h9 == readIdx_2 ? data_9_exception_excpTlbPpi : _GEN_2104; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2106 = 4'ha == readIdx_2 ? data_10_exception_excpTlbPpi : _GEN_2105; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2107 = 4'hb == readIdx_2 ? data_11_exception_excpTlbPpi : _GEN_2106; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2108 = 4'hc == readIdx_2 ? data_12_exception_excpTlbPpi : _GEN_2107; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2109 = 4'hd == readIdx_2 ? data_13_exception_excpTlbPpi : _GEN_2108; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  wire  _GEN_2110 = 4'he == readIdx_2 ? data_14_exception_excpTlbPpi : _GEN_2109; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   wire  _deqFireCnt_T = io_deq_0_ready & io_deq_0_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _deqFireCnt_T_1 = io_deq_1_ready & io_deq_1_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _deqFireCnt_T_2 = io_deq_2_ready & io_deq_2_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
@@ -1692,6 +2223,9 @@ module CircularQueue(
   assign io_deq_0_bits_pdInfo_isCall = 4'hf == readIdx ? data_15_pdInfo_isCall : _GEN_1646; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_0_bits_pdInfo_isRet = 4'hf == readIdx ? data_15_pdInfo_isRet : _GEN_1662; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_0_bits_pdInfo_jumpTarget = 4'hf == readIdx ? data_15_pdInfo_jumpTarget : _GEN_1678; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_0_bits_exception_excpTlbRefill = 4'hf == readIdx ? data_15_exception_excpTlbRefill : _GEN_1694; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_0_bits_exception_excpTlbPif = 4'hf == readIdx ? data_15_exception_excpTlbPif : _GEN_1710; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_0_bits_exception_excpTlbPpi = 4'hf == readIdx ? data_15_exception_excpTlbPpi : _GEN_1726; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_1_valid = canDeq_1 & ~empty; // @[src/main/scala/util/CircularQueue.scala 213:31]
   assign io_deq_1_bits_instr = 4'hf == readIdx_1 ? data_15_instr : _GEN_1742; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_1_bits_pc = 4'hf == readIdx_1 ? data_15_pc : _GEN_1758; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
@@ -1702,6 +2236,9 @@ module CircularQueue(
   assign io_deq_1_bits_pdInfo_isCall = 4'hf == readIdx_1 ? data_15_pdInfo_isCall : _GEN_1838; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_1_bits_pdInfo_isRet = 4'hf == readIdx_1 ? data_15_pdInfo_isRet : _GEN_1854; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_1_bits_pdInfo_jumpTarget = 4'hf == readIdx_1 ? data_15_pdInfo_jumpTarget : _GEN_1870; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_1_bits_exception_excpTlbRefill = 4'hf == readIdx_1 ? data_15_exception_excpTlbRefill : _GEN_1886; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_1_bits_exception_excpTlbPif = 4'hf == readIdx_1 ? data_15_exception_excpTlbPif : _GEN_1902; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_1_bits_exception_excpTlbPpi = 4'hf == readIdx_1 ? data_15_exception_excpTlbPpi : _GEN_1918; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_2_valid = canDeq_2 & ~empty; // @[src/main/scala/util/CircularQueue.scala 213:31]
   assign io_deq_2_bits_instr = 4'hf == readIdx_2 ? data_15_instr : _GEN_1934; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_2_bits_pc = 4'hf == readIdx_2 ? data_15_pc : _GEN_1950; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
@@ -1712,6 +2249,9 @@ module CircularQueue(
   assign io_deq_2_bits_pdInfo_isCall = 4'hf == readIdx_2 ? data_15_pdInfo_isCall : _GEN_2030; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_2_bits_pdInfo_isRet = 4'hf == readIdx_2 ? data_15_pdInfo_isRet : _GEN_2046; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_2_bits_pdInfo_jumpTarget = 4'hf == readIdx_2 ? data_15_pdInfo_jumpTarget : _GEN_2062; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_2_bits_exception_excpTlbRefill = 4'hf == readIdx_2 ? data_15_exception_excpTlbRefill : _GEN_2078; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_2_bits_exception_excpTlbPif = 4'hf == readIdx_2 ? data_15_exception_excpTlbPif : _GEN_2094; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
+  assign io_deq_2_bits_exception_excpTlbPpi = 4'hf == readIdx_2 ? data_15_exception_excpTlbPpi : _GEN_2110; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_empty = empty; // @[src/main/scala/util/CircularQueue.scala 132:12]
   assign io_full = full; // @[src/main/scala/util/CircularQueue.scala 133:12]
   assign io_count = _count_T_6[4:0]; // @[src/main/scala/util/CircularQueue.scala 143:23 146:9]
@@ -1826,6 +2366,33 @@ module CircularQueue(
       data_0_pdInfo_jumpTarget <= _GEN_1104;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h0 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_0_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_0_exception_excpTlbRefill <= _GEN_960;
+      end
+    end else begin
+      data_0_exception_excpTlbRefill <= _GEN_960;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h0 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_0_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_0_exception_excpTlbPif <= _GEN_976;
+      end
+    end else begin
+      data_0_exception_excpTlbPif <= _GEN_976;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h0 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_0_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_0_exception_excpTlbPpi <= _GEN_992;
+      end
+    end else begin
+      data_0_exception_excpTlbPpi <= _GEN_992;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h1 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_1_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -1905,6 +2472,33 @@ module CircularQueue(
       end
     end else begin
       data_1_pdInfo_jumpTarget <= _GEN_1105;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h1 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_1_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_1_exception_excpTlbRefill <= _GEN_961;
+      end
+    end else begin
+      data_1_exception_excpTlbRefill <= _GEN_961;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h1 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_1_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_1_exception_excpTlbPif <= _GEN_977;
+      end
+    end else begin
+      data_1_exception_excpTlbPif <= _GEN_977;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h1 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_1_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_1_exception_excpTlbPpi <= _GEN_993;
+      end
+    end else begin
+      data_1_exception_excpTlbPpi <= _GEN_993;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h2 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -1988,6 +2582,33 @@ module CircularQueue(
       data_2_pdInfo_jumpTarget <= _GEN_1106;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h2 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_2_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_2_exception_excpTlbRefill <= _GEN_962;
+      end
+    end else begin
+      data_2_exception_excpTlbRefill <= _GEN_962;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h2 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_2_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_2_exception_excpTlbPif <= _GEN_978;
+      end
+    end else begin
+      data_2_exception_excpTlbPif <= _GEN_978;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h2 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_2_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_2_exception_excpTlbPpi <= _GEN_994;
+      end
+    end else begin
+      data_2_exception_excpTlbPpi <= _GEN_994;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h3 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_3_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -2067,6 +2688,33 @@ module CircularQueue(
       end
     end else begin
       data_3_pdInfo_jumpTarget <= _GEN_1107;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h3 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_3_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_3_exception_excpTlbRefill <= _GEN_963;
+      end
+    end else begin
+      data_3_exception_excpTlbRefill <= _GEN_963;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h3 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_3_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_3_exception_excpTlbPif <= _GEN_979;
+      end
+    end else begin
+      data_3_exception_excpTlbPif <= _GEN_979;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h3 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_3_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_3_exception_excpTlbPpi <= _GEN_995;
+      end
+    end else begin
+      data_3_exception_excpTlbPpi <= _GEN_995;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h4 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -2150,6 +2798,33 @@ module CircularQueue(
       data_4_pdInfo_jumpTarget <= _GEN_1108;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h4 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_4_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_4_exception_excpTlbRefill <= _GEN_964;
+      end
+    end else begin
+      data_4_exception_excpTlbRefill <= _GEN_964;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h4 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_4_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_4_exception_excpTlbPif <= _GEN_980;
+      end
+    end else begin
+      data_4_exception_excpTlbPif <= _GEN_980;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h4 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_4_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_4_exception_excpTlbPpi <= _GEN_996;
+      end
+    end else begin
+      data_4_exception_excpTlbPpi <= _GEN_996;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h5 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_5_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -2229,6 +2904,33 @@ module CircularQueue(
       end
     end else begin
       data_5_pdInfo_jumpTarget <= _GEN_1109;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h5 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_5_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_5_exception_excpTlbRefill <= _GEN_965;
+      end
+    end else begin
+      data_5_exception_excpTlbRefill <= _GEN_965;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h5 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_5_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_5_exception_excpTlbPif <= _GEN_981;
+      end
+    end else begin
+      data_5_exception_excpTlbPif <= _GEN_981;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h5 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_5_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_5_exception_excpTlbPpi <= _GEN_997;
+      end
+    end else begin
+      data_5_exception_excpTlbPpi <= _GEN_997;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h6 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -2312,6 +3014,33 @@ module CircularQueue(
       data_6_pdInfo_jumpTarget <= _GEN_1110;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h6 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_6_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_6_exception_excpTlbRefill <= _GEN_966;
+      end
+    end else begin
+      data_6_exception_excpTlbRefill <= _GEN_966;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h6 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_6_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_6_exception_excpTlbPif <= _GEN_982;
+      end
+    end else begin
+      data_6_exception_excpTlbPif <= _GEN_982;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h6 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_6_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_6_exception_excpTlbPpi <= _GEN_998;
+      end
+    end else begin
+      data_6_exception_excpTlbPpi <= _GEN_998;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h7 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_7_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -2391,6 +3120,33 @@ module CircularQueue(
       end
     end else begin
       data_7_pdInfo_jumpTarget <= _GEN_1111;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h7 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_7_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_7_exception_excpTlbRefill <= _GEN_967;
+      end
+    end else begin
+      data_7_exception_excpTlbRefill <= _GEN_967;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h7 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_7_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_7_exception_excpTlbPif <= _GEN_983;
+      end
+    end else begin
+      data_7_exception_excpTlbPif <= _GEN_983;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h7 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_7_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_7_exception_excpTlbPpi <= _GEN_999;
+      end
+    end else begin
+      data_7_exception_excpTlbPpi <= _GEN_999;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h8 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -2474,6 +3230,33 @@ module CircularQueue(
       data_8_pdInfo_jumpTarget <= _GEN_1112;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h8 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_8_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_8_exception_excpTlbRefill <= _GEN_968;
+      end
+    end else begin
+      data_8_exception_excpTlbRefill <= _GEN_968;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h8 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_8_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_8_exception_excpTlbPif <= _GEN_984;
+      end
+    end else begin
+      data_8_exception_excpTlbPif <= _GEN_984;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h8 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_8_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_8_exception_excpTlbPpi <= _GEN_1000;
+      end
+    end else begin
+      data_8_exception_excpTlbPpi <= _GEN_1000;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'h9 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_9_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -2553,6 +3336,33 @@ module CircularQueue(
       end
     end else begin
       data_9_pdInfo_jumpTarget <= _GEN_1113;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h9 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_9_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_9_exception_excpTlbRefill <= _GEN_969;
+      end
+    end else begin
+      data_9_exception_excpTlbRefill <= _GEN_969;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h9 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_9_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_9_exception_excpTlbPif <= _GEN_985;
+      end
+    end else begin
+      data_9_exception_excpTlbPif <= _GEN_985;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'h9 == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_9_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_9_exception_excpTlbPpi <= _GEN_1001;
+      end
+    end else begin
+      data_9_exception_excpTlbPpi <= _GEN_1001;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'ha == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -2636,6 +3446,33 @@ module CircularQueue(
       data_10_pdInfo_jumpTarget <= _GEN_1114;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'ha == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_10_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_10_exception_excpTlbRefill <= _GEN_970;
+      end
+    end else begin
+      data_10_exception_excpTlbRefill <= _GEN_970;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'ha == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_10_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_10_exception_excpTlbPif <= _GEN_986;
+      end
+    end else begin
+      data_10_exception_excpTlbPif <= _GEN_986;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'ha == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_10_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_10_exception_excpTlbPpi <= _GEN_1002;
+      end
+    end else begin
+      data_10_exception_excpTlbPpi <= _GEN_1002;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'hb == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_11_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -2715,6 +3552,33 @@ module CircularQueue(
       end
     end else begin
       data_11_pdInfo_jumpTarget <= _GEN_1115;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hb == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_11_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_11_exception_excpTlbRefill <= _GEN_971;
+      end
+    end else begin
+      data_11_exception_excpTlbRefill <= _GEN_971;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hb == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_11_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_11_exception_excpTlbPif <= _GEN_987;
+      end
+    end else begin
+      data_11_exception_excpTlbPif <= _GEN_987;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hb == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_11_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_11_exception_excpTlbPpi <= _GEN_1003;
+      end
+    end else begin
+      data_11_exception_excpTlbPpi <= _GEN_1003;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'hc == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -2798,6 +3662,33 @@ module CircularQueue(
       data_12_pdInfo_jumpTarget <= _GEN_1116;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hc == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_12_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_12_exception_excpTlbRefill <= _GEN_972;
+      end
+    end else begin
+      data_12_exception_excpTlbRefill <= _GEN_972;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hc == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_12_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_12_exception_excpTlbPif <= _GEN_988;
+      end
+    end else begin
+      data_12_exception_excpTlbPif <= _GEN_988;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hc == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_12_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_12_exception_excpTlbPpi <= _GEN_1004;
+      end
+    end else begin
+      data_12_exception_excpTlbPpi <= _GEN_1004;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'hd == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_13_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -2877,6 +3768,33 @@ module CircularQueue(
       end
     end else begin
       data_13_pdInfo_jumpTarget <= _GEN_1117;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hd == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_13_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_13_exception_excpTlbRefill <= _GEN_973;
+      end
+    end else begin
+      data_13_exception_excpTlbRefill <= _GEN_973;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hd == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_13_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_13_exception_excpTlbPif <= _GEN_989;
+      end
+    end else begin
+      data_13_exception_excpTlbPif <= _GEN_989;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hd == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_13_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_13_exception_excpTlbPpi <= _GEN_1005;
+      end
+    end else begin
+      data_13_exception_excpTlbPpi <= _GEN_1005;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'he == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
@@ -2960,6 +3878,33 @@ module CircularQueue(
       data_14_pdInfo_jumpTarget <= _GEN_1118;
     end
     if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'he == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_14_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_14_exception_excpTlbRefill <= _GEN_974;
+      end
+    end else begin
+      data_14_exception_excpTlbRefill <= _GEN_974;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'he == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_14_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_14_exception_excpTlbPif <= _GEN_990;
+      end
+    end else begin
+      data_14_exception_excpTlbPif <= _GEN_990;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'he == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_14_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_14_exception_excpTlbPpi <= _GEN_1006;
+      end
+    end else begin
+      data_14_exception_excpTlbPpi <= _GEN_1006;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
       if (4'hf == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
         data_15_instr <= io_enq_3_bits_instr; // @[src/main/scala/util/CircularQueue.scala 192:22]
       end else begin
@@ -3039,6 +3984,33 @@ module CircularQueue(
       end
     end else begin
       data_15_pdInfo_jumpTarget <= _GEN_1119;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hf == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_15_exception_excpTlbRefill <= io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_15_exception_excpTlbRefill <= _GEN_975;
+      end
+    end else begin
+      data_15_exception_excpTlbRefill <= _GEN_975;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hf == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_15_exception_excpTlbPif <= io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_15_exception_excpTlbPif <= _GEN_991;
+      end
+    end else begin
+      data_15_exception_excpTlbPif <= _GEN_991;
+    end
+    if (_T_18) begin // @[src/main/scala/util/CircularQueue.scala 187:27]
+      if (4'hf == writeIdx_3) begin // @[src/main/scala/util/CircularQueue.scala 192:22]
+        data_15_exception_excpTlbPpi <= io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/util/CircularQueue.scala 192:22]
+      end else begin
+        data_15_exception_excpTlbPpi <= _GEN_1007;
+      end
+    end else begin
+      data_15_exception_excpTlbPpi <= _GEN_1007;
     end
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND
@@ -3187,275 +4159,371 @@ initial begin
   _RAND_12 = {1{`RANDOM}};
   data_0_pdInfo_jumpTarget = _RAND_12[31:0];
   _RAND_13 = {1{`RANDOM}};
-  data_1_instr = _RAND_13[31:0];
+  data_0_exception_excpTlbRefill = _RAND_13[0:0];
   _RAND_14 = {1{`RANDOM}};
-  data_1_pc = _RAND_14[31:0];
+  data_0_exception_excpTlbPif = _RAND_14[0:0];
   _RAND_15 = {1{`RANDOM}};
-  data_1_pdInfo_valid = _RAND_15[0:0];
+  data_0_exception_excpTlbPpi = _RAND_15[0:0];
   _RAND_16 = {1{`RANDOM}};
-  data_1_pdInfo_isBr = _RAND_16[0:0];
+  data_1_instr = _RAND_16[31:0];
   _RAND_17 = {1{`RANDOM}};
-  data_1_pdInfo_isJal = _RAND_17[0:0];
+  data_1_pc = _RAND_17[31:0];
   _RAND_18 = {1{`RANDOM}};
-  data_1_pdInfo_isJalr = _RAND_18[0:0];
+  data_1_pdInfo_valid = _RAND_18[0:0];
   _RAND_19 = {1{`RANDOM}};
-  data_1_pdInfo_isCall = _RAND_19[0:0];
+  data_1_pdInfo_isBr = _RAND_19[0:0];
   _RAND_20 = {1{`RANDOM}};
-  data_1_pdInfo_isRet = _RAND_20[0:0];
+  data_1_pdInfo_isJal = _RAND_20[0:0];
   _RAND_21 = {1{`RANDOM}};
-  data_1_pdInfo_jumpTarget = _RAND_21[31:0];
+  data_1_pdInfo_isJalr = _RAND_21[0:0];
   _RAND_22 = {1{`RANDOM}};
-  data_2_instr = _RAND_22[31:0];
+  data_1_pdInfo_isCall = _RAND_22[0:0];
   _RAND_23 = {1{`RANDOM}};
-  data_2_pc = _RAND_23[31:0];
+  data_1_pdInfo_isRet = _RAND_23[0:0];
   _RAND_24 = {1{`RANDOM}};
-  data_2_pdInfo_valid = _RAND_24[0:0];
+  data_1_pdInfo_jumpTarget = _RAND_24[31:0];
   _RAND_25 = {1{`RANDOM}};
-  data_2_pdInfo_isBr = _RAND_25[0:0];
+  data_1_exception_excpTlbRefill = _RAND_25[0:0];
   _RAND_26 = {1{`RANDOM}};
-  data_2_pdInfo_isJal = _RAND_26[0:0];
+  data_1_exception_excpTlbPif = _RAND_26[0:0];
   _RAND_27 = {1{`RANDOM}};
-  data_2_pdInfo_isJalr = _RAND_27[0:0];
+  data_1_exception_excpTlbPpi = _RAND_27[0:0];
   _RAND_28 = {1{`RANDOM}};
-  data_2_pdInfo_isCall = _RAND_28[0:0];
+  data_2_instr = _RAND_28[31:0];
   _RAND_29 = {1{`RANDOM}};
-  data_2_pdInfo_isRet = _RAND_29[0:0];
+  data_2_pc = _RAND_29[31:0];
   _RAND_30 = {1{`RANDOM}};
-  data_2_pdInfo_jumpTarget = _RAND_30[31:0];
+  data_2_pdInfo_valid = _RAND_30[0:0];
   _RAND_31 = {1{`RANDOM}};
-  data_3_instr = _RAND_31[31:0];
+  data_2_pdInfo_isBr = _RAND_31[0:0];
   _RAND_32 = {1{`RANDOM}};
-  data_3_pc = _RAND_32[31:0];
+  data_2_pdInfo_isJal = _RAND_32[0:0];
   _RAND_33 = {1{`RANDOM}};
-  data_3_pdInfo_valid = _RAND_33[0:0];
+  data_2_pdInfo_isJalr = _RAND_33[0:0];
   _RAND_34 = {1{`RANDOM}};
-  data_3_pdInfo_isBr = _RAND_34[0:0];
+  data_2_pdInfo_isCall = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  data_3_pdInfo_isJal = _RAND_35[0:0];
+  data_2_pdInfo_isRet = _RAND_35[0:0];
   _RAND_36 = {1{`RANDOM}};
-  data_3_pdInfo_isJalr = _RAND_36[0:0];
+  data_2_pdInfo_jumpTarget = _RAND_36[31:0];
   _RAND_37 = {1{`RANDOM}};
-  data_3_pdInfo_isCall = _RAND_37[0:0];
+  data_2_exception_excpTlbRefill = _RAND_37[0:0];
   _RAND_38 = {1{`RANDOM}};
-  data_3_pdInfo_isRet = _RAND_38[0:0];
+  data_2_exception_excpTlbPif = _RAND_38[0:0];
   _RAND_39 = {1{`RANDOM}};
-  data_3_pdInfo_jumpTarget = _RAND_39[31:0];
+  data_2_exception_excpTlbPpi = _RAND_39[0:0];
   _RAND_40 = {1{`RANDOM}};
-  data_4_instr = _RAND_40[31:0];
+  data_3_instr = _RAND_40[31:0];
   _RAND_41 = {1{`RANDOM}};
-  data_4_pc = _RAND_41[31:0];
+  data_3_pc = _RAND_41[31:0];
   _RAND_42 = {1{`RANDOM}};
-  data_4_pdInfo_valid = _RAND_42[0:0];
+  data_3_pdInfo_valid = _RAND_42[0:0];
   _RAND_43 = {1{`RANDOM}};
-  data_4_pdInfo_isBr = _RAND_43[0:0];
+  data_3_pdInfo_isBr = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  data_4_pdInfo_isJal = _RAND_44[0:0];
+  data_3_pdInfo_isJal = _RAND_44[0:0];
   _RAND_45 = {1{`RANDOM}};
-  data_4_pdInfo_isJalr = _RAND_45[0:0];
+  data_3_pdInfo_isJalr = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  data_4_pdInfo_isCall = _RAND_46[0:0];
+  data_3_pdInfo_isCall = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  data_4_pdInfo_isRet = _RAND_47[0:0];
+  data_3_pdInfo_isRet = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  data_4_pdInfo_jumpTarget = _RAND_48[31:0];
+  data_3_pdInfo_jumpTarget = _RAND_48[31:0];
   _RAND_49 = {1{`RANDOM}};
-  data_5_instr = _RAND_49[31:0];
+  data_3_exception_excpTlbRefill = _RAND_49[0:0];
   _RAND_50 = {1{`RANDOM}};
-  data_5_pc = _RAND_50[31:0];
+  data_3_exception_excpTlbPif = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  data_5_pdInfo_valid = _RAND_51[0:0];
+  data_3_exception_excpTlbPpi = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
-  data_5_pdInfo_isBr = _RAND_52[0:0];
+  data_4_instr = _RAND_52[31:0];
   _RAND_53 = {1{`RANDOM}};
-  data_5_pdInfo_isJal = _RAND_53[0:0];
+  data_4_pc = _RAND_53[31:0];
   _RAND_54 = {1{`RANDOM}};
-  data_5_pdInfo_isJalr = _RAND_54[0:0];
+  data_4_pdInfo_valid = _RAND_54[0:0];
   _RAND_55 = {1{`RANDOM}};
-  data_5_pdInfo_isCall = _RAND_55[0:0];
+  data_4_pdInfo_isBr = _RAND_55[0:0];
   _RAND_56 = {1{`RANDOM}};
-  data_5_pdInfo_isRet = _RAND_56[0:0];
+  data_4_pdInfo_isJal = _RAND_56[0:0];
   _RAND_57 = {1{`RANDOM}};
-  data_5_pdInfo_jumpTarget = _RAND_57[31:0];
+  data_4_pdInfo_isJalr = _RAND_57[0:0];
   _RAND_58 = {1{`RANDOM}};
-  data_6_instr = _RAND_58[31:0];
+  data_4_pdInfo_isCall = _RAND_58[0:0];
   _RAND_59 = {1{`RANDOM}};
-  data_6_pc = _RAND_59[31:0];
+  data_4_pdInfo_isRet = _RAND_59[0:0];
   _RAND_60 = {1{`RANDOM}};
-  data_6_pdInfo_valid = _RAND_60[0:0];
+  data_4_pdInfo_jumpTarget = _RAND_60[31:0];
   _RAND_61 = {1{`RANDOM}};
-  data_6_pdInfo_isBr = _RAND_61[0:0];
+  data_4_exception_excpTlbRefill = _RAND_61[0:0];
   _RAND_62 = {1{`RANDOM}};
-  data_6_pdInfo_isJal = _RAND_62[0:0];
+  data_4_exception_excpTlbPif = _RAND_62[0:0];
   _RAND_63 = {1{`RANDOM}};
-  data_6_pdInfo_isJalr = _RAND_63[0:0];
+  data_4_exception_excpTlbPpi = _RAND_63[0:0];
   _RAND_64 = {1{`RANDOM}};
-  data_6_pdInfo_isCall = _RAND_64[0:0];
+  data_5_instr = _RAND_64[31:0];
   _RAND_65 = {1{`RANDOM}};
-  data_6_pdInfo_isRet = _RAND_65[0:0];
+  data_5_pc = _RAND_65[31:0];
   _RAND_66 = {1{`RANDOM}};
-  data_6_pdInfo_jumpTarget = _RAND_66[31:0];
+  data_5_pdInfo_valid = _RAND_66[0:0];
   _RAND_67 = {1{`RANDOM}};
-  data_7_instr = _RAND_67[31:0];
+  data_5_pdInfo_isBr = _RAND_67[0:0];
   _RAND_68 = {1{`RANDOM}};
-  data_7_pc = _RAND_68[31:0];
+  data_5_pdInfo_isJal = _RAND_68[0:0];
   _RAND_69 = {1{`RANDOM}};
-  data_7_pdInfo_valid = _RAND_69[0:0];
+  data_5_pdInfo_isJalr = _RAND_69[0:0];
   _RAND_70 = {1{`RANDOM}};
-  data_7_pdInfo_isBr = _RAND_70[0:0];
+  data_5_pdInfo_isCall = _RAND_70[0:0];
   _RAND_71 = {1{`RANDOM}};
-  data_7_pdInfo_isJal = _RAND_71[0:0];
+  data_5_pdInfo_isRet = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  data_7_pdInfo_isJalr = _RAND_72[0:0];
+  data_5_pdInfo_jumpTarget = _RAND_72[31:0];
   _RAND_73 = {1{`RANDOM}};
-  data_7_pdInfo_isCall = _RAND_73[0:0];
+  data_5_exception_excpTlbRefill = _RAND_73[0:0];
   _RAND_74 = {1{`RANDOM}};
-  data_7_pdInfo_isRet = _RAND_74[0:0];
+  data_5_exception_excpTlbPif = _RAND_74[0:0];
   _RAND_75 = {1{`RANDOM}};
-  data_7_pdInfo_jumpTarget = _RAND_75[31:0];
+  data_5_exception_excpTlbPpi = _RAND_75[0:0];
   _RAND_76 = {1{`RANDOM}};
-  data_8_instr = _RAND_76[31:0];
+  data_6_instr = _RAND_76[31:0];
   _RAND_77 = {1{`RANDOM}};
-  data_8_pc = _RAND_77[31:0];
+  data_6_pc = _RAND_77[31:0];
   _RAND_78 = {1{`RANDOM}};
-  data_8_pdInfo_valid = _RAND_78[0:0];
+  data_6_pdInfo_valid = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  data_8_pdInfo_isBr = _RAND_79[0:0];
+  data_6_pdInfo_isBr = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  data_8_pdInfo_isJal = _RAND_80[0:0];
+  data_6_pdInfo_isJal = _RAND_80[0:0];
   _RAND_81 = {1{`RANDOM}};
-  data_8_pdInfo_isJalr = _RAND_81[0:0];
+  data_6_pdInfo_isJalr = _RAND_81[0:0];
   _RAND_82 = {1{`RANDOM}};
-  data_8_pdInfo_isCall = _RAND_82[0:0];
+  data_6_pdInfo_isCall = _RAND_82[0:0];
   _RAND_83 = {1{`RANDOM}};
-  data_8_pdInfo_isRet = _RAND_83[0:0];
+  data_6_pdInfo_isRet = _RAND_83[0:0];
   _RAND_84 = {1{`RANDOM}};
-  data_8_pdInfo_jumpTarget = _RAND_84[31:0];
+  data_6_pdInfo_jumpTarget = _RAND_84[31:0];
   _RAND_85 = {1{`RANDOM}};
-  data_9_instr = _RAND_85[31:0];
+  data_6_exception_excpTlbRefill = _RAND_85[0:0];
   _RAND_86 = {1{`RANDOM}};
-  data_9_pc = _RAND_86[31:0];
+  data_6_exception_excpTlbPif = _RAND_86[0:0];
   _RAND_87 = {1{`RANDOM}};
-  data_9_pdInfo_valid = _RAND_87[0:0];
+  data_6_exception_excpTlbPpi = _RAND_87[0:0];
   _RAND_88 = {1{`RANDOM}};
-  data_9_pdInfo_isBr = _RAND_88[0:0];
+  data_7_instr = _RAND_88[31:0];
   _RAND_89 = {1{`RANDOM}};
-  data_9_pdInfo_isJal = _RAND_89[0:0];
+  data_7_pc = _RAND_89[31:0];
   _RAND_90 = {1{`RANDOM}};
-  data_9_pdInfo_isJalr = _RAND_90[0:0];
+  data_7_pdInfo_valid = _RAND_90[0:0];
   _RAND_91 = {1{`RANDOM}};
-  data_9_pdInfo_isCall = _RAND_91[0:0];
+  data_7_pdInfo_isBr = _RAND_91[0:0];
   _RAND_92 = {1{`RANDOM}};
-  data_9_pdInfo_isRet = _RAND_92[0:0];
+  data_7_pdInfo_isJal = _RAND_92[0:0];
   _RAND_93 = {1{`RANDOM}};
-  data_9_pdInfo_jumpTarget = _RAND_93[31:0];
+  data_7_pdInfo_isJalr = _RAND_93[0:0];
   _RAND_94 = {1{`RANDOM}};
-  data_10_instr = _RAND_94[31:0];
+  data_7_pdInfo_isCall = _RAND_94[0:0];
   _RAND_95 = {1{`RANDOM}};
-  data_10_pc = _RAND_95[31:0];
+  data_7_pdInfo_isRet = _RAND_95[0:0];
   _RAND_96 = {1{`RANDOM}};
-  data_10_pdInfo_valid = _RAND_96[0:0];
+  data_7_pdInfo_jumpTarget = _RAND_96[31:0];
   _RAND_97 = {1{`RANDOM}};
-  data_10_pdInfo_isBr = _RAND_97[0:0];
+  data_7_exception_excpTlbRefill = _RAND_97[0:0];
   _RAND_98 = {1{`RANDOM}};
-  data_10_pdInfo_isJal = _RAND_98[0:0];
+  data_7_exception_excpTlbPif = _RAND_98[0:0];
   _RAND_99 = {1{`RANDOM}};
-  data_10_pdInfo_isJalr = _RAND_99[0:0];
+  data_7_exception_excpTlbPpi = _RAND_99[0:0];
   _RAND_100 = {1{`RANDOM}};
-  data_10_pdInfo_isCall = _RAND_100[0:0];
+  data_8_instr = _RAND_100[31:0];
   _RAND_101 = {1{`RANDOM}};
-  data_10_pdInfo_isRet = _RAND_101[0:0];
+  data_8_pc = _RAND_101[31:0];
   _RAND_102 = {1{`RANDOM}};
-  data_10_pdInfo_jumpTarget = _RAND_102[31:0];
+  data_8_pdInfo_valid = _RAND_102[0:0];
   _RAND_103 = {1{`RANDOM}};
-  data_11_instr = _RAND_103[31:0];
+  data_8_pdInfo_isBr = _RAND_103[0:0];
   _RAND_104 = {1{`RANDOM}};
-  data_11_pc = _RAND_104[31:0];
+  data_8_pdInfo_isJal = _RAND_104[0:0];
   _RAND_105 = {1{`RANDOM}};
-  data_11_pdInfo_valid = _RAND_105[0:0];
+  data_8_pdInfo_isJalr = _RAND_105[0:0];
   _RAND_106 = {1{`RANDOM}};
-  data_11_pdInfo_isBr = _RAND_106[0:0];
+  data_8_pdInfo_isCall = _RAND_106[0:0];
   _RAND_107 = {1{`RANDOM}};
-  data_11_pdInfo_isJal = _RAND_107[0:0];
+  data_8_pdInfo_isRet = _RAND_107[0:0];
   _RAND_108 = {1{`RANDOM}};
-  data_11_pdInfo_isJalr = _RAND_108[0:0];
+  data_8_pdInfo_jumpTarget = _RAND_108[31:0];
   _RAND_109 = {1{`RANDOM}};
-  data_11_pdInfo_isCall = _RAND_109[0:0];
+  data_8_exception_excpTlbRefill = _RAND_109[0:0];
   _RAND_110 = {1{`RANDOM}};
-  data_11_pdInfo_isRet = _RAND_110[0:0];
+  data_8_exception_excpTlbPif = _RAND_110[0:0];
   _RAND_111 = {1{`RANDOM}};
-  data_11_pdInfo_jumpTarget = _RAND_111[31:0];
+  data_8_exception_excpTlbPpi = _RAND_111[0:0];
   _RAND_112 = {1{`RANDOM}};
-  data_12_instr = _RAND_112[31:0];
+  data_9_instr = _RAND_112[31:0];
   _RAND_113 = {1{`RANDOM}};
-  data_12_pc = _RAND_113[31:0];
+  data_9_pc = _RAND_113[31:0];
   _RAND_114 = {1{`RANDOM}};
-  data_12_pdInfo_valid = _RAND_114[0:0];
+  data_9_pdInfo_valid = _RAND_114[0:0];
   _RAND_115 = {1{`RANDOM}};
-  data_12_pdInfo_isBr = _RAND_115[0:0];
+  data_9_pdInfo_isBr = _RAND_115[0:0];
   _RAND_116 = {1{`RANDOM}};
-  data_12_pdInfo_isJal = _RAND_116[0:0];
+  data_9_pdInfo_isJal = _RAND_116[0:0];
   _RAND_117 = {1{`RANDOM}};
-  data_12_pdInfo_isJalr = _RAND_117[0:0];
+  data_9_pdInfo_isJalr = _RAND_117[0:0];
   _RAND_118 = {1{`RANDOM}};
-  data_12_pdInfo_isCall = _RAND_118[0:0];
+  data_9_pdInfo_isCall = _RAND_118[0:0];
   _RAND_119 = {1{`RANDOM}};
-  data_12_pdInfo_isRet = _RAND_119[0:0];
+  data_9_pdInfo_isRet = _RAND_119[0:0];
   _RAND_120 = {1{`RANDOM}};
-  data_12_pdInfo_jumpTarget = _RAND_120[31:0];
+  data_9_pdInfo_jumpTarget = _RAND_120[31:0];
   _RAND_121 = {1{`RANDOM}};
-  data_13_instr = _RAND_121[31:0];
+  data_9_exception_excpTlbRefill = _RAND_121[0:0];
   _RAND_122 = {1{`RANDOM}};
-  data_13_pc = _RAND_122[31:0];
+  data_9_exception_excpTlbPif = _RAND_122[0:0];
   _RAND_123 = {1{`RANDOM}};
-  data_13_pdInfo_valid = _RAND_123[0:0];
+  data_9_exception_excpTlbPpi = _RAND_123[0:0];
   _RAND_124 = {1{`RANDOM}};
-  data_13_pdInfo_isBr = _RAND_124[0:0];
+  data_10_instr = _RAND_124[31:0];
   _RAND_125 = {1{`RANDOM}};
-  data_13_pdInfo_isJal = _RAND_125[0:0];
+  data_10_pc = _RAND_125[31:0];
   _RAND_126 = {1{`RANDOM}};
-  data_13_pdInfo_isJalr = _RAND_126[0:0];
+  data_10_pdInfo_valid = _RAND_126[0:0];
   _RAND_127 = {1{`RANDOM}};
-  data_13_pdInfo_isCall = _RAND_127[0:0];
+  data_10_pdInfo_isBr = _RAND_127[0:0];
   _RAND_128 = {1{`RANDOM}};
-  data_13_pdInfo_isRet = _RAND_128[0:0];
+  data_10_pdInfo_isJal = _RAND_128[0:0];
   _RAND_129 = {1{`RANDOM}};
-  data_13_pdInfo_jumpTarget = _RAND_129[31:0];
+  data_10_pdInfo_isJalr = _RAND_129[0:0];
   _RAND_130 = {1{`RANDOM}};
-  data_14_instr = _RAND_130[31:0];
+  data_10_pdInfo_isCall = _RAND_130[0:0];
   _RAND_131 = {1{`RANDOM}};
-  data_14_pc = _RAND_131[31:0];
+  data_10_pdInfo_isRet = _RAND_131[0:0];
   _RAND_132 = {1{`RANDOM}};
-  data_14_pdInfo_valid = _RAND_132[0:0];
+  data_10_pdInfo_jumpTarget = _RAND_132[31:0];
   _RAND_133 = {1{`RANDOM}};
-  data_14_pdInfo_isBr = _RAND_133[0:0];
+  data_10_exception_excpTlbRefill = _RAND_133[0:0];
   _RAND_134 = {1{`RANDOM}};
-  data_14_pdInfo_isJal = _RAND_134[0:0];
+  data_10_exception_excpTlbPif = _RAND_134[0:0];
   _RAND_135 = {1{`RANDOM}};
-  data_14_pdInfo_isJalr = _RAND_135[0:0];
+  data_10_exception_excpTlbPpi = _RAND_135[0:0];
   _RAND_136 = {1{`RANDOM}};
-  data_14_pdInfo_isCall = _RAND_136[0:0];
+  data_11_instr = _RAND_136[31:0];
   _RAND_137 = {1{`RANDOM}};
-  data_14_pdInfo_isRet = _RAND_137[0:0];
+  data_11_pc = _RAND_137[31:0];
   _RAND_138 = {1{`RANDOM}};
-  data_14_pdInfo_jumpTarget = _RAND_138[31:0];
+  data_11_pdInfo_valid = _RAND_138[0:0];
   _RAND_139 = {1{`RANDOM}};
-  data_15_instr = _RAND_139[31:0];
+  data_11_pdInfo_isBr = _RAND_139[0:0];
   _RAND_140 = {1{`RANDOM}};
-  data_15_pc = _RAND_140[31:0];
+  data_11_pdInfo_isJal = _RAND_140[0:0];
   _RAND_141 = {1{`RANDOM}};
-  data_15_pdInfo_valid = _RAND_141[0:0];
+  data_11_pdInfo_isJalr = _RAND_141[0:0];
   _RAND_142 = {1{`RANDOM}};
-  data_15_pdInfo_isBr = _RAND_142[0:0];
+  data_11_pdInfo_isCall = _RAND_142[0:0];
   _RAND_143 = {1{`RANDOM}};
-  data_15_pdInfo_isJal = _RAND_143[0:0];
+  data_11_pdInfo_isRet = _RAND_143[0:0];
   _RAND_144 = {1{`RANDOM}};
-  data_15_pdInfo_isJalr = _RAND_144[0:0];
+  data_11_pdInfo_jumpTarget = _RAND_144[31:0];
   _RAND_145 = {1{`RANDOM}};
-  data_15_pdInfo_isCall = _RAND_145[0:0];
+  data_11_exception_excpTlbRefill = _RAND_145[0:0];
   _RAND_146 = {1{`RANDOM}};
-  data_15_pdInfo_isRet = _RAND_146[0:0];
+  data_11_exception_excpTlbPif = _RAND_146[0:0];
   _RAND_147 = {1{`RANDOM}};
-  data_15_pdInfo_jumpTarget = _RAND_147[31:0];
+  data_11_exception_excpTlbPpi = _RAND_147[0:0];
+  _RAND_148 = {1{`RANDOM}};
+  data_12_instr = _RAND_148[31:0];
+  _RAND_149 = {1{`RANDOM}};
+  data_12_pc = _RAND_149[31:0];
+  _RAND_150 = {1{`RANDOM}};
+  data_12_pdInfo_valid = _RAND_150[0:0];
+  _RAND_151 = {1{`RANDOM}};
+  data_12_pdInfo_isBr = _RAND_151[0:0];
+  _RAND_152 = {1{`RANDOM}};
+  data_12_pdInfo_isJal = _RAND_152[0:0];
+  _RAND_153 = {1{`RANDOM}};
+  data_12_pdInfo_isJalr = _RAND_153[0:0];
+  _RAND_154 = {1{`RANDOM}};
+  data_12_pdInfo_isCall = _RAND_154[0:0];
+  _RAND_155 = {1{`RANDOM}};
+  data_12_pdInfo_isRet = _RAND_155[0:0];
+  _RAND_156 = {1{`RANDOM}};
+  data_12_pdInfo_jumpTarget = _RAND_156[31:0];
+  _RAND_157 = {1{`RANDOM}};
+  data_12_exception_excpTlbRefill = _RAND_157[0:0];
+  _RAND_158 = {1{`RANDOM}};
+  data_12_exception_excpTlbPif = _RAND_158[0:0];
+  _RAND_159 = {1{`RANDOM}};
+  data_12_exception_excpTlbPpi = _RAND_159[0:0];
+  _RAND_160 = {1{`RANDOM}};
+  data_13_instr = _RAND_160[31:0];
+  _RAND_161 = {1{`RANDOM}};
+  data_13_pc = _RAND_161[31:0];
+  _RAND_162 = {1{`RANDOM}};
+  data_13_pdInfo_valid = _RAND_162[0:0];
+  _RAND_163 = {1{`RANDOM}};
+  data_13_pdInfo_isBr = _RAND_163[0:0];
+  _RAND_164 = {1{`RANDOM}};
+  data_13_pdInfo_isJal = _RAND_164[0:0];
+  _RAND_165 = {1{`RANDOM}};
+  data_13_pdInfo_isJalr = _RAND_165[0:0];
+  _RAND_166 = {1{`RANDOM}};
+  data_13_pdInfo_isCall = _RAND_166[0:0];
+  _RAND_167 = {1{`RANDOM}};
+  data_13_pdInfo_isRet = _RAND_167[0:0];
+  _RAND_168 = {1{`RANDOM}};
+  data_13_pdInfo_jumpTarget = _RAND_168[31:0];
+  _RAND_169 = {1{`RANDOM}};
+  data_13_exception_excpTlbRefill = _RAND_169[0:0];
+  _RAND_170 = {1{`RANDOM}};
+  data_13_exception_excpTlbPif = _RAND_170[0:0];
+  _RAND_171 = {1{`RANDOM}};
+  data_13_exception_excpTlbPpi = _RAND_171[0:0];
+  _RAND_172 = {1{`RANDOM}};
+  data_14_instr = _RAND_172[31:0];
+  _RAND_173 = {1{`RANDOM}};
+  data_14_pc = _RAND_173[31:0];
+  _RAND_174 = {1{`RANDOM}};
+  data_14_pdInfo_valid = _RAND_174[0:0];
+  _RAND_175 = {1{`RANDOM}};
+  data_14_pdInfo_isBr = _RAND_175[0:0];
+  _RAND_176 = {1{`RANDOM}};
+  data_14_pdInfo_isJal = _RAND_176[0:0];
+  _RAND_177 = {1{`RANDOM}};
+  data_14_pdInfo_isJalr = _RAND_177[0:0];
+  _RAND_178 = {1{`RANDOM}};
+  data_14_pdInfo_isCall = _RAND_178[0:0];
+  _RAND_179 = {1{`RANDOM}};
+  data_14_pdInfo_isRet = _RAND_179[0:0];
+  _RAND_180 = {1{`RANDOM}};
+  data_14_pdInfo_jumpTarget = _RAND_180[31:0];
+  _RAND_181 = {1{`RANDOM}};
+  data_14_exception_excpTlbRefill = _RAND_181[0:0];
+  _RAND_182 = {1{`RANDOM}};
+  data_14_exception_excpTlbPif = _RAND_182[0:0];
+  _RAND_183 = {1{`RANDOM}};
+  data_14_exception_excpTlbPpi = _RAND_183[0:0];
+  _RAND_184 = {1{`RANDOM}};
+  data_15_instr = _RAND_184[31:0];
+  _RAND_185 = {1{`RANDOM}};
+  data_15_pc = _RAND_185[31:0];
+  _RAND_186 = {1{`RANDOM}};
+  data_15_pdInfo_valid = _RAND_186[0:0];
+  _RAND_187 = {1{`RANDOM}};
+  data_15_pdInfo_isBr = _RAND_187[0:0];
+  _RAND_188 = {1{`RANDOM}};
+  data_15_pdInfo_isJal = _RAND_188[0:0];
+  _RAND_189 = {1{`RANDOM}};
+  data_15_pdInfo_isJalr = _RAND_189[0:0];
+  _RAND_190 = {1{`RANDOM}};
+  data_15_pdInfo_isCall = _RAND_190[0:0];
+  _RAND_191 = {1{`RANDOM}};
+  data_15_pdInfo_isRet = _RAND_191[0:0];
+  _RAND_192 = {1{`RANDOM}};
+  data_15_pdInfo_jumpTarget = _RAND_192[31:0];
+  _RAND_193 = {1{`RANDOM}};
+  data_15_exception_excpTlbRefill = _RAND_193[0:0];
+  _RAND_194 = {1{`RANDOM}};
+  data_15_exception_excpTlbPif = _RAND_194[0:0];
+  _RAND_195 = {1{`RANDOM}};
+  data_15_exception_excpTlbPpi = _RAND_195[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

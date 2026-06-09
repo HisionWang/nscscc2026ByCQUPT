@@ -41,9 +41,8 @@ class SimpleBlockRAM(
   // ... 剩下的读取和写入逻辑保持不变 ...
   when(io.rd_en) {
     dataPipeline(0) := mem(io.rd_addr)
-  }.otherwise {
-    dataPipeline(0) := 0.U
   }
+  
   rdPipeline(0) := io.rd_en
   
   for (i <- 1 until readLatency) {

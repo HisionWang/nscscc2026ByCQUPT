@@ -86,10 +86,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
   //= Stage0时需要干的：发送请求 =
   //读Tag and Data
-  io.arrays_read.req.valid  := s0_fire
+  io.arrays_read.req.valid  := s0_fire && !s0_flush
   io.arrays_read.req.idx    := s0_vidx
   // 向MMU发起地址转换请求
-  io.mmu.req.valid := s0_fire
+  io.mmu.req.valid := s0_fire && !s0_flush
   io.mmu.req.vaddr := s0_vaddr
 
 
@@ -627,6 +627,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         beat_counter := 0.U
       }
     }
+  }
+
+  when (s3_fire){
+    miss_data_buffer := 0.U
   }
   
   // 4. 缺失状态 - 写入data

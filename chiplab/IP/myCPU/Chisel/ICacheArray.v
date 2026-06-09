@@ -111,7 +111,7 @@ module ICacheArray(
   wire  readWriteConflict_2 = _readWriteConflict_0_T_2 & waySel_2; // @[src/main/scala/icache/ICacheArray.scala 152:66]
   wire  readWriteConflict_3 = _readWriteConflict_0_T_2 & waySel_3; // @[src/main/scala/icache/ICacheArray.scala 152:66]
   wire  _T_16 = readWriteConflict_0 | readWriteConflict_1 | readWriteConflict_2 | readWriteConflict_3; // @[src/main/scala/icache/ICacheArray.scala 156:35]
-  SimpleBlockRAM_2 SimpleBlockRAM ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
+  SimpleBlockRAM_4 SimpleBlockRAM ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
     .clock(SimpleBlockRAM_clock),
     .reset(SimpleBlockRAM_reset),
     .io_wr_en(SimpleBlockRAM_io_wr_en),
@@ -121,7 +121,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_io_rd_data)
   );
-  SimpleBlockRAM_2 SimpleBlockRAM_1 ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
+  SimpleBlockRAM_4 SimpleBlockRAM_1 ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
     .clock(SimpleBlockRAM_1_clock),
     .reset(SimpleBlockRAM_1_reset),
     .io_wr_en(SimpleBlockRAM_1_io_wr_en),
@@ -131,7 +131,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_1_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_1_io_rd_data)
   );
-  SimpleBlockRAM_2 SimpleBlockRAM_2 ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
+  SimpleBlockRAM_4 SimpleBlockRAM_2 ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
     .clock(SimpleBlockRAM_2_clock),
     .reset(SimpleBlockRAM_2_reset),
     .io_wr_en(SimpleBlockRAM_2_io_wr_en),
@@ -141,7 +141,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_2_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_2_io_rd_data)
   );
-  SimpleBlockRAM_2 SimpleBlockRAM_3 ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
+  SimpleBlockRAM_4 SimpleBlockRAM_3 ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
     .clock(SimpleBlockRAM_3_clock),
     .reset(SimpleBlockRAM_3_reset),
     .io_wr_en(SimpleBlockRAM_3_io_wr_en),
@@ -151,7 +151,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_3_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_3_io_rd_data)
   );
-  SimpleBlockRAM_6 SimpleBlockRAM_4 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
+  SimpleBlockRAM_8 SimpleBlockRAM_4 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
     .clock(SimpleBlockRAM_4_clock),
     .reset(SimpleBlockRAM_4_reset),
     .io_wr_en(SimpleBlockRAM_4_io_wr_en),
@@ -161,7 +161,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_4_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_4_io_rd_data)
   );
-  SimpleBlockRAM_6 SimpleBlockRAM_5 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
+  SimpleBlockRAM_8 SimpleBlockRAM_5 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
     .clock(SimpleBlockRAM_5_clock),
     .reset(SimpleBlockRAM_5_reset),
     .io_wr_en(SimpleBlockRAM_5_io_wr_en),
@@ -171,7 +171,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_5_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_5_io_rd_data)
   );
-  SimpleBlockRAM_6 SimpleBlockRAM_6 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
+  SimpleBlockRAM_8 SimpleBlockRAM_6 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
     .clock(SimpleBlockRAM_6_clock),
     .reset(SimpleBlockRAM_6_reset),
     .io_wr_en(SimpleBlockRAM_6_io_wr_en),
@@ -181,7 +181,7 @@ module ICacheArray(
     .io_rd_addr(SimpleBlockRAM_6_io_rd_addr),
     .io_rd_data(SimpleBlockRAM_6_io_rd_data)
   );
-  SimpleBlockRAM_6 SimpleBlockRAM_7 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
+  SimpleBlockRAM_8 SimpleBlockRAM_7 ( // @[src/main/scala/icache/ICacheArray.scala 56:11]
     .clock(SimpleBlockRAM_7_clock),
     .reset(SimpleBlockRAM_7_reset),
     .io_wr_en(SimpleBlockRAM_7_io_wr_en),

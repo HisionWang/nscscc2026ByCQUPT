@@ -85,24 +85,34 @@ class Frontend(implicit p: Parameters) extends NSModule {
 
 
   // ==================== bpuQ ↔ pd ====================
-    val hasBpuInfo = bpuInfoQueue.io.deq.valid
-    val processResp = icache.io.icache_resp.valid && hasBpuInfo
-    bpuInfoQueue.io.deq.ready := processResp && predecoder.io.icacheResp.ready
+  val hasBpuInfo = bpuInfoQueue.io.deq.valid
+  val processResp = icache.io.icache_resp.valid && hasBpuInfo
+  bpuInfoQueue.io.deq.ready := processResp && predecoder.io.icacheResp.ready
 
-    predecoder.io.bpuInfo      := bpuInfoQueue.io.deq.bits
-    predecoder.io.bpuInfoValid := hasBpuInfo
+  predecoder.io.bpuInfo      := bpuInfoQueue.io.deq.bits
   
+  predecoder.io.bpuInfoValid := hasBpuInfo
+
 
 
   // ==================== icache ↔ pd ====================
-    icache.io.icache_resp.ready := predecoder.io.icacheResp.ready
+  icache.io.icache_resp.ready := predecoder.io.icacheResp.ready
 
-    predecoder.io.icacheResp <> icache.io.icache_resp
+  predecoder.io.icacheResp <> icache.io.icache_resp
+
+  //使用一下BPU的信息
+    for (i <- 0 until fetchWidth) {
+        predecoder.io.icacheResp.bits.instvalids(i) := icache.io.icache_resp.bits.instvalids(i) && hasBpuInfo &&
+                                                      ( 
+                                                        !bpuInfoQueue.io.deq.bits.taken || 
+                                                        (bpuInfoQueue.io.deq.bits.taken && i.U <= bpuInfoQueue.io.deq.bits.takenOffset)
+                                                      )
+    }
+
+                                                
 
 
-  
-
-    predecoder.io.flush         := backendRedirectValid || frontendRedirectValid
+  predecoder.io.flush         := backendRedirectValid || frontendRedirectValid
 
  
   // ==================== pd → IBuffer ====================剔除

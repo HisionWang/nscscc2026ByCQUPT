@@ -289,7 +289,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val difftest = Module(new DifftestInCore)
  
   // 指令有效: 前端输出第一条指令握手成功
-  difftest.io.inst_valid_diff   := cycleCount === 188.U
+  difftest.io.inst_valid_diff   := cycleCount === 88188.U
   difftest.io.cnt_inst_diff     := cycleCount === 188.U
   difftest.io.timer_64_diff     := cycleCount
  

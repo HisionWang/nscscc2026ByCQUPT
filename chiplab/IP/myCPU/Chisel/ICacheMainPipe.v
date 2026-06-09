@@ -16,6 +16,7 @@ module ICacheMainPipe(
   output         io_icache_resp_bits_instvalids_2, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output         io_icache_resp_bits_instvalids_3, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output [31:0]  io_icache_resp_bits_addr, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
+  output         io_icache_resp_bits_uncached, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output [3:0]   io_axi_ar_data_arid, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output [31:0]  io_axi_ar_data_araddr, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output [7:0]   io_axi_ar_data_arlen, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
@@ -137,10 +138,11 @@ module ICacheMainPipe(
   reg [7:0] s0_vidx; // @[src/main/scala/icache/ICacheMainPipe.scala 69:21]
   wire  io_fire = s0_ready & io_cpu_req_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 72:26]
   wire  _T = ~io_redirect; // @[src/main/scala/icache/ICacheMainPipe.scala 77:25]
+  wire  _io_arrays_read_req_valid_T_1 = s0_fire & _T; // @[src/main/scala/icache/ICacheMainPipe.scala 89:40]
   reg [31:0] s1_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 99:21]
   reg [7:0] s1_vidx; // @[src/main/scala/icache/ICacheMainPipe.scala 100:21]
   wire  _GEN_9 = s1_fire ? 1'h0 : s1_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 118:22 119:15 98:25]
-  wire  _GEN_10 = s0_fire & _T | _GEN_9; // @[src/main/scala/icache/ICacheMainPipe.scala 113:35 114:14]
+  wire  _GEN_10 = _io_arrays_read_req_valid_T_1 | _GEN_9; // @[src/main/scala/icache/ICacheMainPipe.scala 113:35 114:14]
   reg  s1_array_received_data_cacheLine_0_has; // @[src/main/scala/icache/ICacheMainPipe.scala 133:35]
   reg [17:0] s1_array_received_data_cacheLine_0_tag; // @[src/main/scala/icache/ICacheMainPipe.scala 133:35]
   reg [511:0] s1_array_received_data_cacheLine_0_data; // @[src/main/scala/icache/ICacheMainPipe.scala 133:35]
@@ -280,6 +282,7 @@ module ICacheMainPipe(
   wire  _GEN_198 = miss_data_valid & hit_valids_2; // @[src/main/scala/icache/ICacheMainPipe.scala 493:29 495:27]
   wire  _GEN_199 = miss_data_valid & hit_valids_3; // @[src/main/scala/icache/ICacheMainPipe.scala 493:29 495:27]
   wire  _GEN_200 = miss_data_valid | uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 493:29 496:22]
+  wire  _GEN_202 = miss_data_valid ? 1'h0 : uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 493:29 498:25]
   wire [31:0] _GEN_215 = _T_30 ? _GEN_192 : 32'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   wire [31:0] _GEN_216 = _T_30 ? _GEN_193 : 32'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   wire [31:0] _GEN_217 = _T_30 ? _GEN_194 : 32'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
@@ -303,13 +306,14 @@ module ICacheMainPipe(
   wire [9:0] data_offset = beat_counter * 6'h20; // @[src/main/scala/icache/ICacheMainPipe.scala 621:30]
   wire [1054:0] _GEN_4 = {{1023'd0}, io_axi_r_data_rdata}; // @[src/main/scala/icache/ICacheMainPipe.scala 622:67]
   wire [1054:0] _miss_data_buffer_T = _GEN_4 << data_offset; // @[src/main/scala/icache/ICacheMainPipe.scala 622:67]
-  wire [1054:0] _GEN_277 = {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
-  wire [1054:0] _miss_data_buffer_T_1 = _GEN_277 | _miss_data_buffer_T; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
+  wire [1054:0] _GEN_278 = {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
+  wire [1054:0] _miss_data_buffer_T_1 = _GEN_278 | _miss_data_buffer_T; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
   wire [3:0] _beat_counter_T_1 = beat_counter + 4'h1; // @[src/main/scala/icache/ICacheMainPipe.scala 623:36]
   wire  _GEN_255 = io_axi_r_data_rlast | miss_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 625:33 626:25 177:32]
   wire [1054:0] _GEN_257 = io_axi_r_data_rvalid ? _miss_data_buffer_T_1 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 618:32 622:24 188:29]
   wire [1054:0] _GEN_260 = _io_axi_r_rready_T & io_axi_r_data_rvalid & _T_21 ? _GEN_257 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 188:29 614:98]
-  wire  _GEN_270 = _io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_27 | uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 667:104 669:24 445:35]
+  wire [1054:0] _GEN_262 = s3_fire ? 1055'h0 : _GEN_260; // @[src/main/scala/icache/ICacheMainPipe.scala 632:17 633:22]
+  wire  _GEN_271 = _io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_27 | uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 671:104 673:24 445:35]
   assign io_cpu_req_ready = s0_fire | ~s0_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 60:26]
   assign io_icache_resp_valid = _T_10 ? _T_32 : _GEN_223; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_icache_resp_bits_instrs_0 = _T_10 ? _GEN_156 : _GEN_215; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
@@ -321,6 +325,7 @@ module ICacheMainPipe(
   assign io_icache_resp_bits_instvalids_2 = _T_10 ? _GEN_162 : _GEN_221; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_icache_resp_bits_instvalids_3 = _T_10 ? _GEN_163 : _GEN_222; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_icache_resp_bits_addr = s3_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 471:28]
+  assign io_icache_resp_bits_uncached = _T_10 ? 1'h0 : _T_30 & _GEN_202; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_axi_ar_data_arid = {{3'd0}, _GEN_250};
   assign io_axi_ar_data_araddr = state == 4'h2 ? _io_axi_ar_data_araddr_T : _GEN_247; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 584:28]
   assign io_axi_ar_data_arlen = {{4'd0}, _GEN_252};
@@ -328,20 +333,20 @@ module ICacheMainPipe(
   assign io_axi_ar_data_arburst = {{1'd0}, _GEN_254};
   assign io_axi_ar_data_arvalid = state == 4'h2 | _T_38; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 587:28]
   assign io_axi_r_rready = state == 4'h3 | state == 4'h6; // @[src/main/scala/icache/ICacheMainPipe.scala 610:48]
-  assign io_arrays_read_req_valid = s0_valid & s1_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 59:29]
+  assign io_arrays_read_req_valid = s0_fire & _T; // @[src/main/scala/icache/ICacheMainPipe.scala 89:40]
   assign io_arrays_read_req_idx = s0_vidx; // @[src/main/scala/icache/ICacheMainPipe.scala 90:29]
-  assign io_array_write_valid = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 633:50]
-  assign io_array_write_idx = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? s3_pidx : 8'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 633:64 635:26 650:26]
-  assign io_array_write_way = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? io_victim_read_resp : 2'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 633:64 641:26 653:26]
-  assign io_array_write_tag = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? s3_ptag : 18'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 633:64 636:26 651:26]
-  assign io_array_write_data = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? miss_data_buffer : 512'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 633:64 637:26 652:26]
-  assign io_victim_read_req = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 633:50]
+  assign io_array_write_valid = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 637:50]
+  assign io_array_write_idx = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? s3_pidx : 8'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 637:64 639:26 654:26]
+  assign io_array_write_way = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? io_victim_read_resp : 2'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 637:64 645:26 657:26]
+  assign io_array_write_tag = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? s3_ptag : 18'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 637:64 640:26 655:26]
+  assign io_array_write_data = state == 4'h4 & miss_data_valid & io_icache_resp_ready ? miss_data_buffer : 512'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 637:64 641:26 656:26]
+  assign io_victim_read_req = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 637:50]
   assign io_victim_read_idx = s3_paddr[13:6]; // @[src/main/scala/icache/ICacheMainPipe.scala 285:22]
-  assign io_replacer_touch_valid = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 633:50]
+  assign io_replacer_touch_valid = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 637:50]
   assign io_replacer_touch_idx = s3_paddr[13:6]; // @[src/main/scala/icache/ICacheMainPipe.scala 285:22]
-  assign io_replacer_touch_way = io_victim_read_resp; // @[src/main/scala/icache/ICacheMainPipe.scala 633:64 645:27 660:27]
+  assign io_replacer_touch_way = io_victim_read_resp; // @[src/main/scala/icache/ICacheMainPipe.scala 637:64 649:27 664:27]
   assign io_mmu_req_vaddr = s0_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 93:20]
-  assign io_mmu_req_valid = s0_valid & s1_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 59:29]
+  assign io_mmu_req_valid = s0_fire & _T; // @[src/main/scala/icache/ICacheMainPipe.scala 92:31]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/icache/ICacheMainPipe.scala 56:25]
       s0_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 56:25]
@@ -418,12 +423,12 @@ module ICacheMainPipe(
       end
     end
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 111:18]
-      if (s0_fire & _T) begin // @[src/main/scala/icache/ICacheMainPipe.scala 113:35]
+      if (_io_arrays_read_req_valid_T_1) begin // @[src/main/scala/icache/ICacheMainPipe.scala 113:35]
         s1_vaddr <= s0_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 115:14]
       end
     end
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 111:18]
-      if (s0_fire & _T) begin // @[src/main/scala/icache/ICacheMainPipe.scala 113:35]
+      if (_io_arrays_read_req_valid_T_1) begin // @[src/main/scala/icache/ICacheMainPipe.scala 113:35]
         s1_vidx <= s0_vidx; // @[src/main/scala/icache/ICacheMainPipe.scala 116:14]
       end
     end
@@ -630,8 +635,8 @@ module ICacheMainPipe(
     end
     if (reset) begin // @[src/main/scala/icache/ICacheMainPipe.scala 177:32]
       miss_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 177:32]
-    end else if (_s3_ready_T_8) begin // @[src/main/scala/icache/ICacheMainPipe.scala 679:38]
-      miss_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 681:21]
+    end else if (_s3_ready_T_8) begin // @[src/main/scala/icache/ICacheMainPipe.scala 683:38]
+      miss_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 685:21]
     end else if (_io_axi_r_rready_T & io_axi_r_data_rvalid & _T_21) begin // @[src/main/scala/icache/ICacheMainPipe.scala 614:98]
       if (io_axi_r_data_rvalid) begin // @[src/main/scala/icache/ICacheMainPipe.scala 618:32]
         miss_data_valid <= _GEN_255;
@@ -652,7 +657,7 @@ module ICacheMainPipe(
         s3_miss <= s2_cache_miss & (~s2_can_bypass_from_s1 & ~s2_can_bypass); // @[src/main/scala/icache/ICacheMainPipe.scala 274:13]
       end
     end
-    miss_data_buffer <= _GEN_260[511:0];
+    miss_data_buffer <= _GEN_262[511:0];
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 200:18]
       if (s1_fire & _T) begin // @[src/main/scala/icache/ICacheMainPipe.scala 202:36]
         s2_bypass_data_from_s1 <= miss_data_buffer; // @[src/main/scala/icache/ICacheMainPipe.scala 216:28]
@@ -676,15 +681,15 @@ module ICacheMainPipe(
         end
       end
     end
-    if (_io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_27) begin // @[src/main/scala/icache/ICacheMainPipe.scala 667:104]
-      uncache_data_buffer <= io_axi_r_data_rdata; // @[src/main/scala/icache/ICacheMainPipe.scala 668:25]
+    if (_io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_27) begin // @[src/main/scala/icache/ICacheMainPipe.scala 671:104]
+      uncache_data_buffer <= io_axi_r_data_rdata; // @[src/main/scala/icache/ICacheMainPipe.scala 672:25]
     end
     if (reset) begin // @[src/main/scala/icache/ICacheMainPipe.scala 445:35]
       uncache_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 445:35]
-    end else if (_s3_ready_T_8) begin // @[src/main/scala/icache/ICacheMainPipe.scala 679:38]
-      uncache_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 683:24]
+    end else if (_s3_ready_T_8) begin // @[src/main/scala/icache/ICacheMainPipe.scala 683:38]
+      uncache_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 687:24]
     end else begin
-      uncache_data_valid <= _GEN_270;
+      uncache_data_valid <= _GEN_271;
     end
     if (reset) begin // @[src/main/scala/icache/ICacheMainPipe.scala 616:31]
       beat_counter <= 4'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 616:31]
