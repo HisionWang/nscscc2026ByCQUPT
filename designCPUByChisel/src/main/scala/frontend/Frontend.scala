@@ -17,6 +17,9 @@ class Frontend(implicit p: Parameters) extends NSModule {
     // ========== 后端到前端的反馈 ==========
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
+
+    //MMU
+    val mmu = new MMURead
  
     // ========== AXI3 总线 (ICache访存) ==========
     val axi_master = new AXI3MasterIO
@@ -31,6 +34,8 @@ class Frontend(implicit p: Parameters) extends NSModule {
   // 预测信息队列(跟踪ICache流水线中的BPU预测)
   val bpuInfoQueue = Module(new FlushableQueue(new bpuInfoBundle, entries = 8))
   val icache   = Module(new ICache) //it's OK
+
+  icache.io.mmu <> io.mmu
 
   val predecoder = Module(new Predecoder)
   val ibuffer  = Module(new IBF)

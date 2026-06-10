@@ -55,7 +55,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 2: 使用物理地址进行标签比较，判断命中/缺失
   val s0_valid = RegInit(false.B)
   val s1_ready = Wire(Bool())
-  val s0_cango = true.B// TODO：什么时候才能流向下一级
+  val s0_cango = io.mmu.toMmu.ready //true.B// TODO：什么时候才能流向下一级
   val s0_fire = ( s0_valid  && s1_ready ) && s0_cango
   val s0_ready = s0_fire || !s0_valid
   io.cpu_req.ready := s0_ready
@@ -89,8 +89,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   io.arrays_read.req.valid  := s0_fire && !s0_flush
   io.arrays_read.req.idx    := s0_vidx
   // 向MMU发起地址转换请求
-  io.mmu.req.valid := s0_fire && !s0_flush
-  io.mmu.req.vaddr := s0_vaddr
+  io.mmu.toMmu.valid := s0_fire && !s0_flush
+  io.mmu.toMmu.bits.vaddr := s0_vaddr
 
 
 
@@ -118,8 +118,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }.elsewhen(s1_fire){
     s1_valid  := false.B
   }
-
-  val mmu_resp_fire = io.mmu.resp.valid
+  io.mmu.fromMmu.ready := false.B
+  val mmu_resp_fire = io.mmu.fromMmu.valid
   val array_resp_fire = io.arrays_read.resp.valid
 
 
@@ -131,7 +131,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
               (s1_mmu_received || mmu_resp_fire)
 
   val s1_array_received_data = Reg(new arrayReadData)
-  val s1_mmu_received_data = Reg(new mmuReadData)
+  val s1_mmu_received_data = Reg(new MmuToIcache)
     // 记录响应接收状态
   when(s1_fire || s1_flush) {
     s1_array_received := false.B
@@ -144,7 +144,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s1_mmu_received := false.B
   }.elsewhen(mmu_resp_fire) {
     s1_mmu_received := true.B
-    s1_mmu_received_data := io.mmu.resp
+    s1_mmu_received_data := io.mmu.fromMmu.bits
   }
   // === Stage 2: 标签比较和命中判断 ===
   val s2_valid = RegInit(false.B)
@@ -165,9 +165,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   s2_ready := s2_fire || !s2_valid
       // 从物理地址计算索引和标签
 
-  val s1_ptag = Mux(s1_mmu_received, s1_mmu_received_data.data.paddr(31, blockOffBits + idxBits), io.mmu.resp.data.paddr(31, blockOffBits + idxBits))
+  val s1_ptag = Mux(s1_mmu_received, s1_mmu_received_data.paddr(31, blockOffBits + idxBits), io.mmu.fromMmu.bits.paddr(31, blockOffBits + idxBits))
   val s1_array_data_read = Mux(s1_array_received, s1_array_received_data, io.arrays_read.resp.data)
-  val s1_paddr = Mux(s1_mmu_received, s1_mmu_received_data.data.paddr, io.mmu.resp.data.paddr)
+  val s1_paddr = Mux(s1_mmu_received, s1_mmu_received_data.paddr, io.mmu.fromMmu.bits.paddr)
   // s1_vidx has
 
   val s3_ptag    = Wire(UInt(tagBits.W))
@@ -210,8 +210,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s2_vtag  := s1_vtag
     s2_paddr := s1_paddr
     s2_ptag  := s1_ptag
-    s2_uncached := Mux(s1_mmu_received, s1_mmu_received_data.data.uncached, io.mmu.resp.data.uncached)
-    s2_mmu_error := Mux(s1_mmu_received, s1_mmu_received_data.data.error, io.mmu.resp.data.error)
+    s2_uncached := Mux(s1_mmu_received, !s1_mmu_received_data.cacheable, !io.mmu.fromMmu.bits.cacheable)
+    s2_mmu_error := Mux(s1_mmu_received, s1_mmu_received_data.error, io.mmu.fromMmu.bits.error)
 
     s2_bypass_data_from_s1 := s1_bypass_data
     s2_can_bypass_from_s1 := s1_can_bypass

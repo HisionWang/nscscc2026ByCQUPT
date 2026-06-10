@@ -55,10 +55,10 @@ module ICacheMainPipe(
   output         io_replacer_touch_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output [7:0]   io_replacer_touch_idx, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
   output [1:0]   io_replacer_touch_way, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
-  output [31:0]  io_mmu_req_vaddr, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
-  output         io_mmu_req_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
-  input          io_mmu_resp_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
-  input  [31:0]  io_mmu_resp_data_paddr // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
+  output         io_mmu_toMmu_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
+  output [31:0]  io_mmu_toMmu_bits_vaddr, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
+  input          io_mmu_fromMmu_valid, // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
+  input  [31:0]  io_mmu_fromMmu_bits_paddr // @[src/main/scala/icache/ICacheMainPipe.scala 12:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -127,7 +127,7 @@ module ICacheMainPipe(
   wire  s2_ready = s2_fire | ~s2_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 165:23]
   reg  s1_array_received; // @[src/main/scala/icache/ICacheMainPipe.scala 129:34]
   reg  s1_mmu_received; // @[src/main/scala/icache/ICacheMainPipe.scala 128:32]
-  wire  _s1_cango_T_1 = s1_mmu_received | io_mmu_resp_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 131:32]
+  wire  _s1_cango_T_1 = s1_mmu_received | io_mmu_fromMmu_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 131:32]
   wire  s1_cango = (s1_array_received | io_arrays_read_resp_valid) & _s1_cango_T_1; // @[src/main/scala/icache/ICacheMainPipe.scala 130:54]
   wire  s1_fire = s1_valid & s2_ready & s1_cango; // @[src/main/scala/icache/ICacheMainPipe.scala 107:41]
   wire  s1_ready = s1_fire | ~s1_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 108:23]
@@ -155,10 +155,10 @@ module ICacheMainPipe(
   reg  s1_array_received_data_cacheLine_3_has; // @[src/main/scala/icache/ICacheMainPipe.scala 133:35]
   reg [17:0] s1_array_received_data_cacheLine_3_tag; // @[src/main/scala/icache/ICacheMainPipe.scala 133:35]
   reg [511:0] s1_array_received_data_cacheLine_3_data; // @[src/main/scala/icache/ICacheMainPipe.scala 133:35]
-  reg [31:0] s1_mmu_received_data_data_paddr; // @[src/main/scala/icache/ICacheMainPipe.scala 134:33]
+  reg [31:0] s1_mmu_received_data_paddr; // @[src/main/scala/icache/ICacheMainPipe.scala 134:33]
   wire  _T_4 = s1_fire | io_redirect; // @[src/main/scala/icache/ICacheMainPipe.scala 136:16]
   wire  _GEN_18 = io_arrays_read_resp_valid | s1_array_received; // @[src/main/scala/icache/ICacheMainPipe.scala 138:31 139:23 129:34]
-  wire  _GEN_44 = io_mmu_resp_valid | s1_mmu_received; // @[src/main/scala/icache/ICacheMainPipe.scala 145:29 146:21 128:32]
+  wire  _GEN_44 = io_mmu_fromMmu_valid | s1_mmu_received; // @[src/main/scala/icache/ICacheMainPipe.scala 145:29 146:21 128:32]
   reg [31:0] s2_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 151:21]
   reg [31:0] s2_paddr; // @[src/main/scala/icache/ICacheMainPipe.scala 152:21]
   reg [7:0] s2_vidx; // @[src/main/scala/icache/ICacheMainPipe.scala 155:21]
@@ -175,7 +175,7 @@ module ICacheMainPipe(
   reg  s2_array_data_cacheLine_3_has; // @[src/main/scala/icache/ICacheMainPipe.scala 160:26]
   reg [17:0] s2_array_data_cacheLine_3_tag; // @[src/main/scala/icache/ICacheMainPipe.scala 160:26]
   reg [511:0] s2_array_data_cacheLine_3_data; // @[src/main/scala/icache/ICacheMainPipe.scala 160:26]
-  wire [17:0] s1_ptag = s1_mmu_received ? s1_mmu_received_data_data_paddr[31:14] : io_mmu_resp_data_paddr[31:14]; // @[src/main/scala/icache/ICacheMainPipe.scala 168:20]
+  wire [17:0] s1_ptag = s1_mmu_received ? s1_mmu_received_data_paddr[31:14] : io_mmu_fromMmu_bits_paddr[31:14]; // @[src/main/scala/icache/ICacheMainPipe.scala 168:20]
   reg  miss_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 177:32]
   reg [31:0] s3_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 179:21]
   reg [31:0] s3_paddr; // @[src/main/scala/icache/ICacheMainPipe.scala 180:21]
@@ -345,8 +345,8 @@ module ICacheMainPipe(
   assign io_replacer_touch_valid = state == 4'h4 & miss_data_valid & io_icache_resp_ready; // @[src/main/scala/icache/ICacheMainPipe.scala 637:50]
   assign io_replacer_touch_idx = s3_paddr[13:6]; // @[src/main/scala/icache/ICacheMainPipe.scala 285:22]
   assign io_replacer_touch_way = io_victim_read_resp; // @[src/main/scala/icache/ICacheMainPipe.scala 637:64 649:27 664:27]
-  assign io_mmu_req_vaddr = s0_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 93:20]
-  assign io_mmu_req_valid = s0_fire & _T; // @[src/main/scala/icache/ICacheMainPipe.scala 92:31]
+  assign io_mmu_toMmu_valid = s0_fire & _T; // @[src/main/scala/icache/ICacheMainPipe.scala 92:33]
+  assign io_mmu_toMmu_bits_vaddr = s0_vaddr; // @[src/main/scala/icache/ICacheMainPipe.scala 93:27]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/icache/ICacheMainPipe.scala 56:25]
       s0_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 56:25]
@@ -493,8 +493,8 @@ module ICacheMainPipe(
       end
     end
     if (!(_T_4)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 143:29]
-      if (io_mmu_resp_valid) begin // @[src/main/scala/icache/ICacheMainPipe.scala 145:29]
-        s1_mmu_received_data_data_paddr <= io_mmu_resp_data_paddr; // @[src/main/scala/icache/ICacheMainPipe.scala 147:26]
+      if (io_mmu_fromMmu_valid) begin // @[src/main/scala/icache/ICacheMainPipe.scala 145:29]
+        s1_mmu_received_data_paddr <= io_mmu_fromMmu_bits_paddr; // @[src/main/scala/icache/ICacheMainPipe.scala 147:26]
       end
     end
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 200:18]
@@ -505,9 +505,9 @@ module ICacheMainPipe(
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 200:18]
       if (s1_fire & _T) begin // @[src/main/scala/icache/ICacheMainPipe.scala 202:36]
         if (s1_mmu_received) begin // @[src/main/scala/icache/ICacheMainPipe.scala 170:21]
-          s2_paddr <= s1_mmu_received_data_data_paddr;
+          s2_paddr <= s1_mmu_received_data_paddr;
         end else begin
-          s2_paddr <= io_mmu_resp_data_paddr;
+          s2_paddr <= io_mmu_fromMmu_bits_paddr;
         end
       end
     end
@@ -519,9 +519,9 @@ module ICacheMainPipe(
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 200:18]
       if (s1_fire & _T) begin // @[src/main/scala/icache/ICacheMainPipe.scala 202:36]
         if (s1_mmu_received) begin // @[src/main/scala/icache/ICacheMainPipe.scala 168:20]
-          s2_ptag <= s1_mmu_received_data_data_paddr[31:14];
+          s2_ptag <= s1_mmu_received_data_paddr[31:14];
         end else begin
-          s2_ptag <= io_mmu_resp_data_paddr[31:14];
+          s2_ptag <= io_mmu_fromMmu_bits_paddr[31:14];
         end
       end
     end
@@ -786,7 +786,7 @@ initial begin
   _RAND_23 = {16{`RANDOM}};
   s1_array_received_data_cacheLine_3_data = _RAND_23[511:0];
   _RAND_24 = {1{`RANDOM}};
-  s1_mmu_received_data_data_paddr = _RAND_24[31:0];
+  s1_mmu_received_data_paddr = _RAND_24[31:0];
   _RAND_25 = {1{`RANDOM}};
   s2_vaddr = _RAND_25[31:0];
   _RAND_26 = {1{`RANDOM}};

@@ -39,6 +39,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
   val isBusy = state === sBusy
 
   val reqVaddr = io.fromIcache.bits.vaddr
+  dontTouch(reqVaddr)
 
   val isPaging = io.fromCsr.pgda === 2.U
   val isDirect = io.fromCsr.pgda === 1.U
@@ -96,6 +97,13 @@ class Mmu(implicit p: Parameters) extends NSModule {
   tlbOut.hasError     := tlbError.asUInt.orR
 
   io.toIcache.bits  := Mux(dmwHit, directResp, tlbOut)
+
+  dontTouch(dmwHit)
+  dontTouch(isPaging)
+  dontTouch(isDirect)
+  dontTouch(directResp)
+  dontTouch(io.toIcache)
+  dontTouch(io.fromIcache)
 
   private def tlbPaddr(resp: TlbSearchResp): UInt = {
     Mux(resp.ps === 12.U,

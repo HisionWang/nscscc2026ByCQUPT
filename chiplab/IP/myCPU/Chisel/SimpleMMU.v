@@ -1,27 +1,27 @@
 module SimpleMMU(
   input         clock,
   input         reset,
-  input  [31:0] io_mmu_req_vaddr, // @[src/main/scala/icache/simMMU.scala 10:14]
-  input         io_mmu_req_valid, // @[src/main/scala/icache/simMMU.scala 10:14]
-  output        io_mmu_resp_valid, // @[src/main/scala/icache/simMMU.scala 10:14]
-  output [31:0] io_mmu_resp_data_paddr // @[src/main/scala/icache/simMMU.scala 10:14]
+  input         io_mmu_toMmu_valid, // @[src/main/scala/icache/SimpleMMU.scala 10:14]
+  input  [31:0] io_mmu_toMmu_bits_vaddr, // @[src/main/scala/icache/SimpleMMU.scala 10:14]
+  output        io_mmu_fromMmu_valid, // @[src/main/scala/icache/SimpleMMU.scala 10:14]
+  output [31:0] io_mmu_fromMmu_bits_paddr // @[src/main/scala/icache/SimpleMMU.scala 10:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg  stage1_valid; // @[src/main/scala/icache/simMMU.scala 15:29]
-  reg [31:0] stage1_vaddr; // @[src/main/scala/icache/simMMU.scala 16:25]
-  assign io_mmu_resp_valid = stage1_valid; // @[src/main/scala/icache/simMMU.scala 33:21]
-  assign io_mmu_resp_data_paddr = stage1_vaddr; // @[src/main/scala/icache/simMMU.scala 34:26]
+  reg  stage1_valid; // @[src/main/scala/icache/SimpleMMU.scala 15:29]
+  reg [31:0] stage1_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 16:25]
+  assign io_mmu_fromMmu_valid = stage1_valid; // @[src/main/scala/icache/SimpleMMU.scala 34:24]
+  assign io_mmu_fromMmu_bits_paddr = stage1_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 35:29]
   always @(posedge clock) begin
-    if (reset) begin // @[src/main/scala/icache/simMMU.scala 15:29]
-      stage1_valid <= 1'h0; // @[src/main/scala/icache/simMMU.scala 15:29]
+    if (reset) begin // @[src/main/scala/icache/SimpleMMU.scala 15:29]
+      stage1_valid <= 1'h0; // @[src/main/scala/icache/SimpleMMU.scala 15:29]
     end else begin
-      stage1_valid <= io_mmu_req_valid;
+      stage1_valid <= io_mmu_toMmu_valid;
     end
-    if (io_mmu_req_valid) begin // @[src/main/scala/icache/simMMU.scala 21:26]
-      stage1_vaddr <= io_mmu_req_vaddr; // @[src/main/scala/icache/simMMU.scala 23:18]
+    if (io_mmu_toMmu_valid) begin // @[src/main/scala/icache/SimpleMMU.scala 22:28]
+      stage1_vaddr <= io_mmu_toMmu_bits_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 24:18]
     end
   end
 // Register and memory initialization
