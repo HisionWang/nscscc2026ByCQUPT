@@ -100,10 +100,44 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val frontend = Module(new Frontend)
  
   // ---------- MMU / TLB ----------
-  //val mmu = Module(new Mmu)
+  val mmu = Module(new Mmu)
+  val simMMU = Module(new SimpleMMU)
+
+  // frontend.io.mmu.toMmu <> mmu.io.fromIcache
+  // frontend.io.mmu.fromMmu <> mmu.io.toIcache
+
+  frontend.io.mmu.toMmu <> simMMU.io.mmu.toMmu
+  frontend.io.mmu.fromMmu <> simMMU.io.mmu.fromMmu
+
+  mmu.io <> 0.U.asTypeOf(new MmuIoBundle)
  
   // ---------- CSR ----------
-  //val csr = Module(new CsrFile)
+  val csr = Module(new CsrFile)
+  csr.io.irqBus <> intrpt
+  csr.io.rReq <> 0.U.asTypeOf(new CsrFileReadReq)
+  csr.io.wReq <> 0.U.asTypeOf(new CsrFileWriteReq)
+  csr.io.excpEvent <> 0.U.asTypeOf(new ExcpEvent)
+  csr.io.excpInfo <> 0.U.asTypeOf(new ExcpInfo)
+
+  csr.io.tlbCmd :=  0.U.asTypeOf(new TlbCmd)
+  csr.io.fromTlb := 0.U.asTypeOf(new TlbToCsr)
+
+  mmu.io.fromCsr.plv := csr.io.priv.plv
+  mmu.io.fromCsr.pgda := csr.io.tlbCtrl.pgda
+  mmu.io.fromCsr.dmw0 := csr.io.tlbCtrl.dmw0
+  mmu.io.fromCsr.dmw1 := csr.io.tlbCtrl.dmw1
+
+  mmu.io.fromCsr.datm := csr.io.cacheCtrl.datm
+  mmu.io.fromCsr.datf := csr.io.cacheCtrl.datf
+
+  mmu.io.fromCsr.asid := csr.io.toTlb.asid
+
+  mmu.io.fromIcacheFlush := false.B
+
+  mmu.io.maint <> 0.U.asTypeOf(new MmuMaintPort)
+
+
+  
  
   // ---------- DCache / Uncache (黑盒占位) ----------
   val dcache   = Module(new cache_BlackBox)

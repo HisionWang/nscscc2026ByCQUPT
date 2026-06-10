@@ -21,6 +21,8 @@ class ICache(implicit p: Parameters) extends NSModule {
     val icache_resp = Decoupled(new IcacheResp)
 
     val axi_master         = new AXI3MasterIO
+
+    val mmu = new MMURead
     
   })
   
@@ -29,7 +31,7 @@ class ICache(implicit p: Parameters) extends NSModule {
   val mainPipe = Module(new ICacheMainPipe)
   val array = Module(new ICacheArray)
   val replacer = Module(new ICacheReplacer)
-  val simMMU = Module(new SimpleMMU)
+  //val simMMU = Module(new SimpleMMU)
   
   
   // === 连接CPU接口 ===
@@ -49,7 +51,7 @@ class ICache(implicit p: Parameters) extends NSModule {
 
   mainPipe.io.victim_read  <> replacer.io.victim
   mainPipe.io.replacer_touch  <> replacer.io.touch
-  mainPipe.io.mmu <> simMMU.io.mmu
+  mainPipe.io.mmu <> io.mmu
 
   //simMMU OK
   //mainPipe OK

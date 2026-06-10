@@ -123,6 +123,13 @@ class Mmu(implicit p: Parameters) extends NSModule {
   io.toIcache.bits  := Mux(isDirect, directResp,
                        Mux(dmwHit, dmwResp, tlbOut))
 
+  dontTouch(dmwHit)
+  dontTouch(isPaging)
+  dontTouch(isDirect)
+  dontTouch(directResp)
+  dontTouch(io.toIcache)
+  dontTouch(io.fromIcache)
+
   private def tlbPaddr(resp: TlbSearchResp): UInt = {
     Mux(resp.ps === 12.U,
       Cat(resp.ppn, resp.offset(11, 0)),// small page

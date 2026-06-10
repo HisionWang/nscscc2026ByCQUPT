@@ -56,24 +56,27 @@ class victimChange(implicit p: Parameters) extends NSBundle {
     val way   = Output(UInt(wayBits.W))
 }
 
-class mmuReadData(implicit p: Parameters) extends  NSBundle{
-    val valid    = Bool()      // 转换结果有效
-    val data =  new Bundle {
-        val paddr    = UInt(32.W)  // 物理地址
-        val uncached = Bool()      // 是否为uncached访问
-        val error    = new MmuTransError      // 转换错误(如TLB缺失)，我不清楚是否只有这一个异常，如果有很多那这个信号的位数不止一位
-    }
-
-}
+//class mmuReadData(implicit p: Parameters) extends  NSBundle{
+//    val valid    = Bool()      // 转换结果有效
+//    val data =  new Bundle {
+//        val paddr    = UInt(32.W)  // 物理地址
+//        val uncached = Bool()      // 是否为uncached访问
+//        val error    = new MmuTransError      // 转换错误(如TLB缺失)，我不清楚是否只有这一个异常，如果有很多那这个信号的位数不止一位
+//    }
+//
+//}
 
 class MMURead(implicit p: Parameters) extends NSBundle {
   // 请求
-  val req = Output(new Bundle {
-    val vaddr = UInt(32.W)     // 虚拟地址
-    val valid = Bool()         // 转换请求有效
-  })
-  // 响应
-  val resp = Input(new mmuReadData)
+  //val req = Output(new Bundle {
+  //  val vaddr = UInt(32.W)     // 虚拟地址
+  //  val valid = Bool()         // 转换请求有效
+  //})
+  //// 响应
+  //val resp = Input(new mmuReadData)
+
+  val toMmu = (Decoupled(new IcacheToMmu))
+  val fromMmu   = Flipped( Decoupled(new MmuToIcache) )
 }
 
 class IcacheResp(implicit p: Parameters) extends NSBundle {
