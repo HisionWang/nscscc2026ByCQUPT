@@ -31,14 +31,30 @@ class Mmu(implicit p: Parameters) extends NSModule {
   private def isCacheable(mat: UInt): Bool = mat === 1.U
 
   // a mutex lock
-  // useTlb = lock, fire = unlock
+  // req.fire - lock, resp.fire - unlock
   val sIdle :: sBusy :: Nil = Enum(2)
   val state = RegInit(sIdle)
 
   val isIdle = state === sIdle
   val isBusy = state === sBusy
 
-  val reqVaddr = io.fromIcache.bits.vaddr
+  val reqBuffer = RegInit(0.U.asTypeOf(new IcacheToMmu))
+  val reqValid  = RegInit(false.B)
+
+  when (io.fromIcacheFlush) {
+    state := sIdle
+  }.otherwise {
+    when (io.fromIcache.fire) {
+      reqBuffer := io.fromIcache.bits
+      reqValid  := true.B
+      state := sBusy
+    }.elsewhen(io.toIcache.fire) {
+      reqValid  := false.B
+      state := sIdle
+    }
+  }
+
+  val reqVaddr = Mux(isIdle, io.fromIcache.bits.vaddr, reqBuffer.vaddr)
 
   val isPaging = io.fromCsr.pgda === 2.U
   val isDirect = io.fromCsr.pgda === 1.U
@@ -47,18 +63,27 @@ class Mmu(implicit p: Parameters) extends NSModule {
   val dmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, reqVaddr, io.fromCsr.plv)
   val dmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, reqVaddr, io.fromCsr.plv)
   val dmwHit  = dmw0Hit || dmw1Hit
-  val useTlb  = isPaging && !dmwHit // DMW miss
+  val needTlb  = isPaging && !dmwHit // DMW miss
 
   val directResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
-  directResp.paddr := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),
-                      Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), reqVaddr))
+  directResp.paddr := reqVaddr
+
   // TODO: uncomment
-  //directResp.cacheable := Mux(dmw0Hit, isCacheable(io.fromCsr.dmw0(5, 4)),
-  //                        Mux(dmw1Hit, isCacheable(io.fromCsr.dmw1(5, 4)),
-  //                        Mux(isDirect, isCacheable(io.fromCsr.datf), false.B)))
+  //directResp.cacheable := isDirect && isCacheable(io.fromCsr.datf)
   directResp.cacheable := true.B
-  directResp.error    := emptyError()
-  directResp.hasError := false.B
+  directResp.error     := emptyError()
+  directResp.hasError  := false.B
+
+  val dmwResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
+  dmwResp.paddr  := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),
+                    Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), 0.U(XLEN.W)))
+
+  // TODO: uncomment
+  //dmwResp.cacheable := (dmw0Hit && isCacheable(io.fromCsr.dmw0(5, 4)))
+  //                  || (dmw1Hit && isCacheable(io.fromCsr.dmw1(5, 4)))
+  dmwResp.cacheable := true.B
+  dmwResp.error     := emptyError()
+  dmwResp.hasError  := false.B
 
   // iFetch Port
   val ifTlbReq  = tlb.io.search(0).req
@@ -66,20 +91,20 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
   // 非idle不接受请求，每次处理一个search请求
   // locked
-  ifTlbReq.valid        := io.fromIcache.valid && useTlb && !io.fromIcacheFlush
+  ifTlbReq.valid        := isIdle && io.fromIcache.valid && needTlb && !io.fromIcacheFlush
   ifTlbReq.bits.vppn    := reqVaddr(31, 13)
   ifTlbReq.bits.vaBit12 := reqVaddr(12)
-  ifTlbReq.bits.offset  := reqVaddr(22,  0)
+  ifTlbReq.bits.offset  := reqVaddr(21,  0)
   ifTlbReq.bits.asid    := io.fromCsr.asid
 
-  io.fromIcache.ready := isIdle && !io.fromIcacheFlush
+  io.fromIcache.ready := isIdle && (!needTlb || ifTlbReq.ready) && !io.fromIcacheFlush
 
-  ifTlbResp.ready := io.fromIcache.ready && !io.fromIcacheFlush
+  ifTlbResp.ready := isBusy && io.toIcache.ready && !io.fromIcacheFlush
   tlb.io.search(0).flush := io.fromIcacheFlush
 
   // Response
   /* TLB <> MMU <> ICACHE */
-  io.toIcache.valid := (ifTlbResp.valid || dmwHit) && !io.fromIcacheFlush
+  io.toIcache.valid := isBusy && (isDirect || ifTlbResp.valid || dmwHit) && !io.fromIcacheFlush
   val resp       = ifTlbResp.bits
   val tlbError   = WireDefault(emptyError())
   val tlbOut     = WireDefault(0.U.asTypeOf(new MmuToIcache))
@@ -95,23 +120,14 @@ class Mmu(implicit p: Parameters) extends NSModule {
   tlbOut.error        := tlbError
   tlbOut.hasError     := tlbError.asUInt.orR
 
-  io.toIcache.bits  := Mux(dmwHit, directResp, tlbOut)
+  io.toIcache.bits  := Mux(isDirect, directResp,
+                       Mux(dmwHit, dmwResp, tlbOut))
 
   private def tlbPaddr(resp: TlbSearchResp): UInt = {
     Mux(resp.ps === 12.U,
       Cat(resp.ppn, resp.offset(11, 0)),// small page
       Cat(resp.ppn(ppnLen - 1, 10), resp.offset)// big page
     )
-  }
-
-  when (io.fromIcacheFlush) {
-    state := sIdle
-  }.otherwise {
-    when (useTlb) {
-      state := sBusy
-    }.elsewhen(ifTlbResp.fire && isBusy) {
-      state := sIdle
-    }
   }
 
 
