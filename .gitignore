@@ -30,6 +30,13 @@ designCPUByChisel/test_run_dir
 chiplab/toolchains/*
 !chiplab/toolchains/README.md
 #env.sh
+.idea
+.bsp
+.vscode
+
+gen
+target
+project
 
 # mill
 **/out/
