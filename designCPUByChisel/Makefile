@@ -46,6 +46,11 @@ sim:
 	cd $(ENV_SCRIPT) && \
 	source env.sh && \
 	cd $(MAKE_DIR) && $(MAKE) 
+ss:
+	sbt run &&\
+	cd $(ENV_SCRIPT) && \
+	source env.sh && \
+	cd $(MAKE_DIR) && $(MAKE) 
 
 clean:
 	cd $(SBT_DIR) && sbt clean

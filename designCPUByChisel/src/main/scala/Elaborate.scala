@@ -6,7 +6,7 @@ import nscscc.config.NSModule
 import nscscc.config.NSRawModule
 import nscscc.config.NSBundle
 import nscscc.config.Parameters
-
+/*
 object Elaborate extends App {
   implicit val config: Parameters = new Parameters(Map())
 
@@ -46,3 +46,5 @@ object Elaborate extends App {
     )
   }
 }
+
+*/

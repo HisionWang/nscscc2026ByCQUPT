@@ -3,7 +3,7 @@ package nscscc.backend
 import chisel3._
 import chisel3.util._
 import nscscc.config.{NSModule, Parameters}
-import nscscc.frontend.PredecodeResp
+import nscscc.frontend.CtrlFlowIO
 
 object DecodeTable {
   private val y = 1.U(1.W)
@@ -137,12 +137,14 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.ctrl.isBranch := io.valid && decoded(14).asBool
   io.out.ctrl.isJump   := io.valid && decoded(15).asBool
   io.out.ctrl.isPriv   := io.valid && decoded(16).asBool
-  io.out.ctrl.illegal  := io.valid && decoded(17).asBool
+  io.out.ctrl.illegal  := false.B//io.valid && decoded(17).asBool
 }
 
 class DecodeStage(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    val in    = Flipped(DecoupledIO(new PredecodeResp))
+    //val in    = Flipped(DecoupledIO(new PredecodeResp))
+    val in = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
+    
     val out   = DecoupledIO(Vec(CtrlBlockWidth, new DecodedInst))
     val flush = Input(Bool())
   })
@@ -150,23 +152,25 @@ class DecodeStage(implicit p: Parameters) extends NSModule {
   val stageValid = RegInit(false.B)
   val stageData  = Reg(Vec(CtrlBlockWidth, new DecodedInst))
 
-  val inFire  = io.in.valid && io.in.ready
+  val inFire  = io.in(0).valid && io.in(0).ready
   val outFire = io.out.valid && io.out.ready
 
-  io.in.ready  := !stageValid || outFire
+  for (i <- 0 until CtrlBlockWidth) {
+    io.in(i).ready  := !stageValid || outFire
+  }
   io.out.valid := stageValid
   io.out.bits  := stageData
 
   val decoded = Wire(Vec(CtrlBlockWidth, new DecodedInst))
   for (i <- 0 until CtrlBlockWidth) {
     val decoder = Module(new Decoder)
-    val laneValid = if (i < fetchWidth) io.in.bits.instvalids(i) else false.B
-    val laneInst  = if (i < fetchWidth) io.in.bits.instrs(i) else 0.U(32.W)
-    val lanePc    = if (i < fetchWidth) io.in.bits.addr + (i * 4).U else 0.U(XLEN.W)
+    //val laneValid = if (i < fetchWidth) io.in(i).bits.instvalids else false.B
+    val laneInst  =  io.in(i).bits.instr
+    val lanePc    =  io.in(i).bits.pc
 
     decoder.io.inst  := laneInst
     decoder.io.pc    := lanePc
-    decoder.io.valid := io.in.valid && laneValid
+    decoder.io.valid := io.in(i).valid
     decoded(i) := decoder.io.out
   }
 
@@ -178,4 +182,8 @@ class DecodeStage(implicit p: Parameters) extends NSModule {
   }.elsewhen(outFire) {
     stageValid := false.B
   }
+
+  dontTouch(stageData)
+  dontTouch(stageValid)
+  
 }

@@ -118,7 +118,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }.elsewhen(s1_fire){
     s1_valid  := false.B
   }
-  io.mmu.fromMmu.ready := false.B
+  io.mmu.fromMmu.ready := true.B
   val mmu_resp_fire = io.mmu.fromMmu.valid
   val array_resp_fire = io.arrays_read.resp.valid
 

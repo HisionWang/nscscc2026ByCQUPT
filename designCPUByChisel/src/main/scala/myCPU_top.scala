@@ -14,6 +14,7 @@ import nscscc.frontend._
 import nscscc.mmu._
 import nscscc.csr._
 import nscscc.difftest._
+import nscscc.backend.DecodeStage
  
 class core_top(implicit p: Parameters) extends NSRawModule {
   // ========== 时钟与复位 ==========
@@ -98,18 +99,25 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // ---------- 前端 (IFU + BPU + Predecoder + ICache + IBuffer) ----------
   val frontend = Module(new Frontend)
+  val decode = Module(new DecodeStage)
+
+  decode.io.in <> frontend.io.out
+  decode.io.flush := false.B
+  decode.io.out.ready := true.B
+  dontTouch(decode.io.out)
+
  
   // ---------- MMU / TLB ----------
   val mmu = Module(new Mmu)
-  val simMMU = Module(new SimpleMMU)
+  //val simMMU = Module(new SimpleMMU)
 
-  // frontend.io.mmu.toMmu <> mmu.io.fromIcache
-  // frontend.io.mmu.fromMmu <> mmu.io.toIcache
+  frontend.io.mmu.toMmu <> mmu.io.fromIcache
+  frontend.io.mmu.fromMmu <> mmu.io.toIcache
 
-  frontend.io.mmu.toMmu <> simMMU.io.mmu.toMmu
-  frontend.io.mmu.fromMmu <> simMMU.io.mmu.fromMmu
+  //frontend.io.mmu.toMmu <> simMMU.io.mmu.toMmu
+  //frontend.io.mmu.fromMmu <> simMMU.io.mmu.fromMmu
 
-  mmu.io <> 0.U.asTypeOf(new MmuIoBundle)
+  //mmu.io <> 0.U.asTypeOf(new MmuIoBundle)
  
   // ---------- CSR ----------
   val csr = Module(new CsrFile)
