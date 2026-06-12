@@ -98,7 +98,8 @@ class MmuTransError(implicit p: Parameters) extends NSBundle {
   val excpTlbRefill = Bool()
   val excpTlbPif    = Bool()
   val excpTlbPpi    = Bool()
-  def getAnyError: Bool = excpTlbRefill || excpTlbPif || excpTlbPpi
+  val excpAdef      = Bool()
+  def getAnyError: Bool = excpTlbRefill || excpTlbPif || excpTlbPpi || excpAdef
 }
 
 class MmuToIcache(implicit p: Parameters) extends NSBundle {

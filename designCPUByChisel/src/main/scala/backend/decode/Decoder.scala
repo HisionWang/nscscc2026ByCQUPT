@@ -1,4 +1,4 @@
-package nscscc.backend
+package nscscc.backend.decode
 
 import chisel3._
 import chisel3.util._
@@ -12,7 +12,7 @@ object DecodeTable {
   val default: List[UInt] = List(
     n, FuType.none, AluOp.add, BruOp.none, LsuOp.none, CsrOp.none, MulDivOp.none,
     SrcType.none, SrcType.none, ImmType.none,
-    n, n, n, n, n, n, y
+    n, n, n, n, n, n, n, y
   )
 
   private def ctrl(
@@ -100,90 +100,113 @@ object DecodeTable {
     BitPat("b00000110010010000011100000000000") -> ctrl(FuType.priv, rfWen = n, isPriv = y)
   )
 }
-
+// 纯组合逻辑解码器模块
 class Decoder(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    val inst  = Input(UInt(32.W))
-    val pc    = Input(UInt(XLEN.W))
-    val valid = Input(Bool())
-    val out   = Output(new DecodedInst)
+    val inData = Input(new CtrlFlowIO)
+    val extInt = Input(Bool())
+    val out    = Output(new DecodedInst)
   })
 
-  val decoded = ListLookup(io.inst, DecodeTable.default, DecodeTable.table)
+  val inst = io.inData.instr
+  val pc   = io.inData.pc
+  val excp = io.inData.exception
 
-  io.out.pc      := io.pc
-  io.out.inst    := io.inst
-  io.out.valid   := io.valid && decoded(0).asBool
-  io.out.rd      := io.inst(4, 0)
-  io.out.rj      := io.inst(9, 5)
-  io.out.rk      := io.inst(14, 10)
-  io.out.csrAddress := io.inst(23, 10)
-  io.out.imm     := ImmGen(io.inst, decoded(9))
+  // ===========================================================
+  // 1. 基础字段提取
+  // ===========================================================
+  val rd      = inst(4, 0)
+  val rj      = inst(9, 5)
+  val rk      = inst(14, 10)
+  val csrAddress = inst(23, 10)
 
-  io.out.ctrl.valid    := io.valid && decoded(0).asBool
-  io.out.ctrl.fuType   := decoded(1)
-  io.out.ctrl.aluOp    := decoded(2)
-  io.out.ctrl.bruOp    := decoded(3)
-  io.out.ctrl.lsuOp    := decoded(4)
-  io.out.ctrl.csrOp    := decoded(5)
-  io.out.ctrl.mulDivOp := decoded(6)
-  io.out.ctrl.src1Type := decoded(7)
-  io.out.ctrl.src2Type := decoded(8)
-  io.out.ctrl.immType  := decoded(9)
-  io.out.ctrl.rfWen    := io.valid && decoded(10).asBool
-  io.out.ctrl.memRead  := io.valid && decoded(11).asBool
-  io.out.ctrl.memWrite := io.valid && decoded(12).asBool
-  io.out.ctrl.csrWen   := io.valid && decoded(13).asBool
-  io.out.ctrl.isBranch := io.valid && decoded(14).asBool
-  io.out.ctrl.isJump   := io.valid && decoded(15).asBool
-  io.out.ctrl.isPriv   := io.valid && decoded(16).asBool
-  io.out.ctrl.illegal  := false.B//io.valid && decoded(17).asBool
-}
+  // ===========================================================
+  // 2. 特权级/系统异常指令识别
+  // ===========================================================
+  val isSys  = inst === "h002b0000".U
+  val isBrk  = inst === "h002a0000".U
+  val isErtn = inst === "h06483800".U
 
-class DecodeStage(implicit p: Parameters) extends NSModule {
-  val io = IO(new Bundle {
-    //val in    = Flipped(DecoupledIO(new PredecodeResp))
-    val in = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
-    
-    val out   = DecoupledIO(Vec(CtrlBlockWidth, new DecodedInst))
-    val flush = Input(Bool())
-  })
-
-  val stageValid = RegInit(false.B)
-  val stageData  = Reg(Vec(CtrlBlockWidth, new DecodedInst))
-
-  val inFire  = io.in(0).valid && io.in(0).ready
-  val outFire = io.out.valid && io.out.ready
-
-  for (i <- 0 until CtrlBlockWidth) {
-    io.in(i).ready  := !stageValid || outFire
-  }
-  io.out.valid := stageValid
-  io.out.bits  := stageData
-
-  val decoded = Wire(Vec(CtrlBlockWidth, new DecodedInst))
-  for (i <- 0 until CtrlBlockWidth) {
-    val decoder = Module(new Decoder)
-    //val laneValid = if (i < fetchWidth) io.in(i).bits.instvalids else false.B
-    val laneInst  =  io.in(i).bits.instr
-    val lanePc    =  io.in(i).bits.pc
-
-    decoder.io.inst  := laneInst
-    decoder.io.pc    := lanePc
-    decoder.io.valid := io.in(i).valid
-    decoded(i) := decoder.io.out
-  }
-
-  when(io.flush) {
-    stageValid := false.B
-  }.elsewhen(inFire) {
-    stageValid := true.B
-    stageData  := decoded
-  }.elsewhen(outFire) {
-    stageValid := false.B
-  }
-
-  dontTouch(stageData)
-  dontTouch(stageValid)
+  // ===========================================================
+  // 3. 查表解码 (修正索引错位，严格对齐 18 元素列表)
+  // ===========================================================
+  val decoded = ListLookup(inst, DecodeTable.default, DecodeTable.table)
   
+  val isInstValid = decoded(0).asBool // 原始 table 中的第 0 位 valid
+  val fuType   = decoded(1)
+  val aluOp    = decoded(2)
+  val bruOp    = decoded(3)
+  val lsuOp    = decoded(4)
+  val csrOp    = decoded(5)
+  val mulDivOp = decoded(6)
+  val src1Type = decoded(7)
+  val src2Type = decoded(8)
+  val immType  = decoded(9)           // 恢复为 4-bit 的 immType
+  val rfWen    = decoded(10).asBool   // 恢复为 1-bit 的 rfWen
+  val memRead  = decoded(11).asBool
+  val memWrite = decoded(12).asBool
+  val csrWen   = decoded(13).asBool
+  val isBranch = decoded(14).asBool
+  val isJump   = decoded(15).asBool
+  val isPriv   = decoded(16).asBool
+  val isIllegalBase = decoded(17).asBool // 原默认列表的最后一项
+
+  // ===========================================================
+  // 4. 有效寄存器计算
+  // ===========================================================
+  val rs1Valid = src1Type === SrcType.reg
+  val rs2Valid = src2Type === SrcType.reg
+  val rdValid  = rfWen
+
+  // ===========================================================
+  // 5. 异常向量拼接 (高位在前，ExceptionCode 常量索引)
+  // ===========================================================
+  val isIllegal = isIllegalBase && !isSys && !isBrk && !isErtn
+  
+  val currentExcpVec = Cat(
+    isIllegal,          // [9] INE
+    excp.excpAdef,      // [8] ADEF
+    isBrk,              // [7] BRK
+    isSys,              // [6] SYS
+    excp.excpTlbPpi,    // [5] PPI
+    false.B,            // [4] PME
+    excp.excpTlbPif,    // [3] PIF
+    false.B,            // [2] PIS
+    excp.excpTlbRefill, // [1] PIL
+    io.extInt           // [0] INT
+  )
+
+  // ===========================================================
+  // 6. 输出一次性全覆盖赋值
+  // ===========================================================
+  io.out.pc         := pc
+  io.out.inst       := inst
+  io.out.rd         := rd
+  io.out.rj         := rj
+  io.out.rk         := rk
+  io.out.rs1Valid   := rs1Valid
+  io.out.rs2Valid   := rs2Valid
+  io.out.rdValid    := rdValid
+  io.out.csrAddress := csrAddress
+  io.out.imm        := ImmGen(inst, immType)
+  
+  io.out.ctrl.fuType   := fuType
+  io.out.ctrl.aluOp    := aluOp
+  io.out.ctrl.bruOp    := bruOp
+  io.out.ctrl.lsuOp    := lsuOp
+  io.out.ctrl.csrOp    := csrOp
+  io.out.ctrl.mulDivOp := mulDivOp
+  io.out.ctrl.src1Type := src1Type
+  io.out.ctrl.src2Type := src2Type
+  io.out.ctrl.immType  := immType
+  io.out.ctrl.rfWen    := rfWen
+  io.out.ctrl.memRead  := memRead
+  io.out.ctrl.memWrite := memWrite
+  io.out.ctrl.csrWen   := csrWen
+  io.out.ctrl.isBranch := isBranch
+  io.out.ctrl.isJump   := isJump
+  io.out.ctrl.isPriv   := isPriv
+  
+  io.out.excpVec := currentExcpVec
+  io.out.pdInfo  := io.inData.pdInfo
 }

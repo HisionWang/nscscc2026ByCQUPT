@@ -54,6 +54,28 @@ trait HasCoreParameters {
   val  ibufDepth:  Int = 16  // 必须为2的次方倍
   val  CtrlBlockWidth : Int = 3
 
+
+  
+  val IntLogicRegs  = 32           // 逻辑寄存器数量
+  val IntPhyRegs    = 64           // 物理寄存器数量（可调整）
+  val PhyRegIdxWidth = log2Ceil(IntPhyRegs)
+  val RobSize       = 64           // ROB 深度
+  val SnapshotNum   = 8            // 快照数量
+  val CommitWidth   = CtrlBlockWidth  // 提交宽度（通常等于译码宽度）
+
+
+  // ============================================================
+  // === 后端 Dispatch / ROB / IQ 参数 ===
+  // ============================================================
+  val LqSize       : Int = 16      // Load Queue 深度（2的幂）
+  val SqSize       : Int = 16      // Store Queue 深度（2的幂）
+  val WbBusWidth   : Int = 4       // 写回总线宽度（执行单元回写端口数）
+  val IssueQueueNum : Int = 4      // 发射队列数量（ALU/BRU/MULDIV/LSU）
+  val AluIqSize    : Int = 16      // ALU Issue Queue 深度
+  val BruIqSize    : Int = 8       // BRU Issue Queue 深度
+  val MulDivIqSize : Int = 8       // MULDIV Issue Queue 深度
+  val LsuIqSize    : Int = 16      // LSU Issue Queue 深度
+
   /*---- TLB相关 ----*/
   val nrTlb: Int = p(MmuconfigKeys.TlbNum)
   val nrSearchPort: Int = p(MmuconfigKeys.TlbSearchPortNum)

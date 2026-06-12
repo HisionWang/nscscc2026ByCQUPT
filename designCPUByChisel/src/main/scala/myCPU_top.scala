@@ -14,7 +14,7 @@ import nscscc.frontend._
 import nscscc.mmu._
 import nscscc.csr._
 import nscscc.difftest._
-import nscscc.backend.DecodeStage
+import nscscc.backend.Backend
  
 class core_top(implicit p: Parameters) extends NSRawModule {
   // ========== 时钟与复位 ==========
@@ -97,14 +97,33 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // 模块实例化
   // ================================================================
  
-  // ---------- 前端 (IFU + BPU + Predecoder + ICache + IBuffer) ----------
-  val frontend = Module(new Frontend)
-  val decode = Module(new DecodeStage)
+    // ================================================================
+  // 前端 ↔ 后端 接口连接
+  // ================================================================
+ 
 
-  decode.io.in <> frontend.io.out
-  decode.io.flush := false.B
-  decode.io.out.ready := true.B
-  dontTouch(decode.io.out)
+  val frontend = Module(new Frontend)
+  val backend = Module(new Backend)
+
+  frontend.io.out <> backend.io.in
+  backend.io.flush := false.B
+  backend.io.extInt := intrpt =/= 0.U
+  dontTouch(backend.io.out)
+
+
+  for (i <- 0 until 4) {
+    backend.io.out(i).ready := true.B
+  }
+
+    // 后端重定向: 暂无后端, 置为无效
+  frontend.io.redirect.valid  := false.B
+  frontend.io.redirect.target := 0.U
+  frontend.io.redirect.rtype  := 0.U
+  // 后端BPU更新: 暂无后端, 置为无效
+  frontend.io.bpuUpdateBr.valid  := false.B
+  frontend.io.bpuUpdateBr        := DontCare
+
+  dontTouch(frontend.io.out)
 
  
   // ---------- MMU / TLB ----------
@@ -162,23 +181,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // ---------- AXI3 Crossbar ----------
   val axi_crossbar = Module(new AXI3Crossbar4to1)
  
-  // ================================================================
-  // 前端 ↔ 后端 接口连接
-  // ================================================================
- 
-  // 后端重定向: 暂无后端, 置为无效
-  frontend.io.redirect.valid  := false.B
-  frontend.io.redirect.target := 0.U
-  frontend.io.redirect.rtype  := 0.U
-  // 后端BPU更新: 暂无后端, 置为无效
-  frontend.io.bpuUpdateBr.valid  := false.B
-  frontend.io.bpuUpdateBr        := DontCare
-  
-  for (i <- 0 until CtrlBlockWidth) {
-    frontend.io.out(i).ready := true.B  
-  }
 
-  dontTouch(frontend.io.out)
 
  
   // ================================================================

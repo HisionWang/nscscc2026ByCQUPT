@@ -1,10 +1,24 @@
-package nscscc.backend
+package nscscc.backend.decode
 
 import chisel3._
 
+object ExceptionCode {
+  val width = 10
+
+  val INT  = 0  // 外部中断
+  val PIL  = 1  // 取指TLB缺失
+  val PIS  = 2  // 取指页表项无效
+  val PIF  = 3  // 取指特权级违例
+  val PME  = 4  // 取指页表项修改
+  val PPI  = 5  // TLB特权级异常
+  val SYS  = 6  // Syscall
+  val BRK  = 7  // Break
+  val ADEF = 8  // 取指地址非对齐
+  val INE  = 9  // 无效指令
+}
+
 object FuType {
   val width = 4
-
   val none   = 0.U(width.W)
   val alu    = 1.U(width.W)
   val bru    = 2.U(width.W)
@@ -16,7 +30,6 @@ object FuType {
 
 object SrcType {
   val width = 3
-
   val none = 0.U(width.W)
   val reg  = 1.U(width.W)
   val pc   = 2.U(width.W)
@@ -26,7 +39,6 @@ object SrcType {
 
 object ImmType {
   val width = 4
-
   val none = 0.U(width.W)
   val si12 = 1.U(width.W)
   val ui12 = 2.U(width.W)
@@ -38,7 +50,6 @@ object ImmType {
 
 object AluOp {
   val width = 5
-
   val add   = 0.U(width.W)
   val sub   = 1.U(width.W)
   val slt   = 2.U(width.W)
@@ -55,7 +66,6 @@ object AluOp {
 
 object BruOp {
   val width = 4
-
   val none = 0.U(width.W)
   val jirl = 1.U(width.W)
   val b    = 2.U(width.W)
@@ -70,7 +80,6 @@ object BruOp {
 
 object LsuOp {
   val width = 4
-
   val none = 0.U(width.W)
   val ldb  = 1.U(width.W)
   val ldh  = 2.U(width.W)
@@ -84,7 +93,6 @@ object LsuOp {
 
 object CsrOp {
   val width = 3
-
   val none   = 0.U(width.W)
   val read   = 1.U(width.W)
   val write  = 2.U(width.W)
@@ -93,7 +101,6 @@ object CsrOp {
 
 object MulDivOp {
   val width = 4
-
   val none  = 0.U(width.W)
   val mul   = 1.U(width.W)
   val mulh  = 2.U(width.W)

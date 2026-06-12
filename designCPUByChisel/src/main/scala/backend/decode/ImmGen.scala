@@ -1,4 +1,4 @@
-package nscscc.backend
+package nscscc.backend.decode
 
 import chisel3._
 import chisel3.util._
