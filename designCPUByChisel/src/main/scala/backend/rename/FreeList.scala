@@ -32,10 +32,11 @@ class FreeList(implicit p: Parameters) extends NSModule {
   val io = IO(new FreeListIO)
  
   // ================================================================
-  //  1. 核心位图：除 p0 外全部空闲
-  //  (~1.U) = 除第 0 位外全 1
+  //  1. 核心位图：初始时 p0~p31 非空闲（分配给 x0~x31），其余全空闲
+  //  使用 0xFFFFFFFFL 掩盖低 32 位，取反后即低 32 位为 0，高位为 1
   // ================================================================
-  val freeList = RegInit(UInt(IntPhyRegs.W), (~1.U(IntPhyRegs.W)).asUInt)
+  val initMask = (~0xffffffffL.U(IntPhyRegs.W)).asUInt
+  val freeList = RegInit(UInt(IntPhyRegs.W), initMask)
  
   // ================================================================
   //  2. 分支快照：记录每个 brTag 之后分配出去的寄存器集合

@@ -108,12 +108,12 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   frontend.io.out <> backend.io.in
   backend.io.flush := false.B
   backend.io.extInt := intrpt =/= 0.U
-  dontTouch(backend.io.out)
+  //dontTouch(backend.io.out)
 
 
-  for (i <- 0 until 4) {
-    backend.io.out(i).ready := true.B
-  }
+  //for (i <- 0 until 4) {
+  //  backend.io.out(i).ready := true.B
+  //}
 
     // 后端重定向: 暂无后端, 置为无效
   frontend.io.redirect.valid  := false.B

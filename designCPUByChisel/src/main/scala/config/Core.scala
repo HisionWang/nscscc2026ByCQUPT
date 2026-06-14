@@ -45,9 +45,7 @@ trait HasCoreParameters {
   val XLEN : Int = p(CPUConfigKeys.XLENKey)
   val burstNum: Int = p(CPUConfigKeys.burstNumKey)
 
-  // ============ 参数 ============
-  val FtqSize             : Int = 16   // 队列深度（必须是2的幂，CircularQueue要求）
-  val BpRunAheadDistance  : Int = 8    // BPU 最多超前 IFU 几项
+
 
   /*---- 通路位宽相关 ----*/
   val  fetchWidth: Int = 4
@@ -57,7 +55,7 @@ trait HasCoreParameters {
 
   
   val IntLogicRegs  = 32           // 逻辑寄存器数量
-  val IntPhyRegs    = 64           // 物理寄存器数量（可调整）
+  val IntPhyRegs    = 128           // 物理寄存器数量（可调整）
   val PhyRegIdxWidth = log2Ceil(IntPhyRegs)
   val RobSize       = 64           // ROB 深度
   val SnapshotNum   = 8            // 快照数量

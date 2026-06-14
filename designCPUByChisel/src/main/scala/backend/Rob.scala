@@ -87,11 +87,10 @@ class ROB(implicit p: Parameters) extends NSModule {
   // 能否入队：剩余空间 >= 入队数
   io.enq.canEnq := !full && (count +& enqValidCount <= RobSize.U)
  
-  // ✅ 新写法：用 Scala var 累积偏移（与 robIdxHead 同一模式）
   var enqOffset = 0.U(log2Ceil(RobSize).W)
   for (i <- 0 until CtrlBlockWidth) {
     val writeIdx = (enqPtr.value + enqOffset)(log2Ceil(RobSize) - 1, 0)
-   
+
     when(io.enq.valid(i) && io.enq.canEnq) {
       entries(writeIdx).pc          := io.enq.bits(i).pc
       entries(writeIdx).inst        := io.enq.bits(i).inst
@@ -113,7 +112,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   }
  
   // 入队成功后尾指针前进
-  when(io.enq.canEnq && enqValidCount.orR) {
+  when(io.enq.canEnq && enqValidCount.orR && io.enq.valid(0)) {
     enqPtr := enqPtr + enqValidCount
   }
  

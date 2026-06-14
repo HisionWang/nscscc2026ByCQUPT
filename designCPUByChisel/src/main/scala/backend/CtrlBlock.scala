@@ -10,10 +10,29 @@ import nscscc.backend.dispatch._
 import nscscc.backend.rob._
  
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
+  // ── 来自前端 ──
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
-  val out      = Vec(IssueQueueIdx.NUM, Decoupled(new DispatchedInst))
+ 
+  // ── 到各 Issue Queue ──
+  val aluIQEnq     = Vec(IQEnqPorts.ALU,     ValidIO(new DispatchedInst))
+  val bruIQEnq     = Vec(IQEnqPorts.BRU,     ValidIO(new DispatchedInst))
+  val mulDivIQEnq  = Vec(IQEnqPorts.MULDIV,  ValidIO(new DispatchedInst))
+  val loadStaIQEnq = Vec(IQEnqPorts.LOADSTA, ValidIO(new DispatchedInst))
+  val stdIQEnq     = Vec(IQEnqPorts.STD,     ValidIO(new DispatchedInst))
+ 
+  // ── IQ 反馈 ──
+  val iqFeedback = Input(new IssueQueueFeedback)
+ 
+  // ── LSQ ──
+  val lsEnq    = new LsEnqIO
+ 
+  // ── ROB 提交 ──
   val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
+ 
+  // ── 重定向 ──
   val redirect = Output(new RedirectInfo)
+ 
+  // ── 冲刷与外部中断 ──
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
 }
@@ -37,7 +56,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.ratRead <> decodeStage.io.ratRead
   renameStage.io.redirect := io.redirect
   renameStage.io.flush    := io.flush
-
+ 
   // ================================================================
   //  分发级
   // ================================================================
@@ -45,13 +64,19 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   dispatchStage.io.in       <> renameStage.io.out
   dispatchStage.io.flush    := io.flush
   dispatchStage.io.redirect := io.redirect
-  dispatchStage.io.out <> io.out
  
-  // IQ 反馈（当前所有队列都可接收）
-  for (q <- 0 until IssueQueueIdx.NUM) {
-    dispatchStage.io.iqFeedback.canAccept(q) := true.B
-  }
-
+  // ── IQ 入队端口 ──
+  dispatchStage.io.aluIQEnq     <> io.aluIQEnq
+  dispatchStage.io.bruIQEnq     <> io.bruIQEnq
+  dispatchStage.io.mulDivIQEnq  <> io.mulDivIQEnq
+  dispatchStage.io.loadStaIQEnq <> io.loadStaIQEnq
+  dispatchStage.io.stdIQEnq     <> io.stdIQEnq
+ 
+  // ── IQ 反馈 ──
+  dispatchStage.io.iqFeedback <> io.iqFeedback
+ 
+  // ── LSQ ──
+  dispatchStage.io.lsEnq <> io.lsEnq
  
   // ================================================================
   //  ROB
@@ -60,22 +85,22 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
   // ROB 提交信息 → 重命名级（释放旧物理寄存器 + 更新架构表）
   for (i <- 0 until CommitWidth) {
-    renameStage.io.commit(i).valid     := rob.io.commit.valid(i)
-    renameStage.io.commit(i).pdst      := rob.io.commit.bits(i).pdst
-    renameStage.io.commit(i).oldPdst   := rob.io.commit.bits(i).oldPdst
-    renameStage.io.commit(i).ldst      := rob.io.commit.bits(i).ldst
-    renameStage.io.commit(i).rfWen     := rob.io.commit.bits(i).rfWen
-    renameStage.io.commit(i).isWalk    := rob.io.commit.isWalk
+    renameStage.io.commit(i).valid   := rob.io.commit.valid(i)
+    renameStage.io.commit(i).pdst    := rob.io.commit.bits(i).pdst
+    renameStage.io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
+    renameStage.io.commit(i).ldst    := rob.io.commit.bits(i).ldst
+    renameStage.io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
+    renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
   }
  
   // ROB 提交信息 → 外部（供 CSR 等使用）
   for (i <- 0 until CommitWidth) {
-    io.commit(i).valid     := rob.io.commit.valid(i)
-    io.commit(i).pdst      := rob.io.commit.bits(i).pdst
-    io.commit(i).oldPdst   := rob.io.commit.bits(i).oldPdst
-    io.commit(i).ldst      := rob.io.commit.bits(i).ldst
-    io.commit(i).rfWen     := rob.io.commit.bits(i).rfWen
-    io.commit(i).isWalk    := rob.io.commit.isWalk
+    io.commit(i).valid   := rob.io.commit.valid(i)
+    io.commit(i).pdst    := rob.io.commit.bits(i).pdst
+    io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
+    io.commit(i).ldst    := rob.io.commit.bits(i).ldst
+    io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
+    io.commit(i).isWalk  := rob.io.commit.isWalk
   }
  
   // ROB 重定向
@@ -83,25 +108,17 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
   // 写回口（当前无执行单元，置无效）
   for (i <- 0 until WbBusWidth) {
-    rob.io.writeback(i).valid       := false.B
-    rob.io.writeback(i).bits.robIdx := 0.U
+    rob.io.writeback(i).valid        := false.B
+    rob.io.writeback(i).bits.robIdx  := 0.U
     rob.io.writeback(i).bits.excpVec := 0.U
     rob.io.writeback(i).bits.isBypass := false.B
   }
  
-
- 
-  // ROB 入队连接
-  // ❌ 旧写法：直接从 rename 输出入队 ROB
-  // rob.io.enq.valid(i) := renameStage.io.out(i).fire
- 
-  // ✅ 新写法：从 Dispatch 级入队 ROB
+  // ROB 入队连接（从 Dispatch 级发起）
   rob.io.enq <> dispatchStage.io.robEnq
  
   // ================================================================
-  //  重定向信号汇聚
-  //  优先级：ROB 异常重定向 > 外部重定向
+  //  重定向信号
   // ================================================================
-  io.redirect := rob.io.redirect //Mux(rob.io.redirect.valid, rob.io.redirect,
-                // io.redirect)  // 默认透传外部
+  io.redirect := rob.io.redirect
 }
