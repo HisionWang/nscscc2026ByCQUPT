@@ -24,8 +24,9 @@ object FuType {
   val bru    = 2.U(width.W)
   val lsu    = 3.U(width.W)
   val csr    = 4.U(width.W)
-  val mulDiv = 5.U(width.W)
-  val priv   = 6.U(width.W)
+  val mul = 5.U(width.W)
+  val div = 6.U(width.W)
+  val priv   = 7.U(width.W)
 }
 
 object SrcType {
@@ -99,14 +100,21 @@ object CsrOp {
   val xchg   = 3.U(width.W)
 }
 
-object MulDivOp {
-  val width = 4
+object MulOp {
+  val width = 3
   val none  = 0.U(width.W)
   val mul   = 1.U(width.W)
   val mulh  = 2.U(width.W)
   val mulhu = 3.U(width.W)
-  val div   = 4.U(width.W)
-  val mod   = 5.U(width.W)
-  val divu  = 6.U(width.W)
-  val modu  = 7.U(width.W)
+
 }
+
+object DivOp {
+  val width = 3
+  val none  = 0.U(width.W)
+  val div   = 1.U(width.W)
+  val mod   = 2.U(width.W)
+  val divu  = 3.U(width.W)
+  val modu  = 4.U(width.W)
+}
+

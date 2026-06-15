@@ -5,56 +5,108 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
-
+ 
+/**
+ * ═══════════════════════════════════════════════════════════════
+ *  分发流水级（DispatchStage）—— 5 IQ 版本
+ * ═══════════════════════════════════════════════════════════════
+ *
+ *  队列划分：
+ *    Q1: ALU + CSR      (1 入队端口)
+ *    Q2: ALU + DIV      (1 入队端口)
+ *    Q3: ALU + MUL + JMP (1 入队端口)
+ *    Q4: LOAD + STA     (1 入队端口，与原先相同)
+ *    Q5: STD            (1 入队端口，与原先相同)
+ *
+ *  路由策略：
+ *    ① 专属指令优先分配（CSR→Q1, DIV→Q2, MUL/JMP→Q3）
+ *    ② ALU 指令填充剩余空闲端口（Q1→Q2→Q3 顺序）
+ *    ③ Store 的 Sta 和 Std 必须成对分发
+ *    ④ 每类指令超额时截断，留在下周期继续
+ * ═══════════════════════════════════════════════════════════════
+ */
 class DispatchStage(implicit p: Parameters) extends NSModule {
   val io = IO(new DispatchStageIO)
  
-  // ================================================================
-  //  子模块
-  // ================================================================
   val busyTable = Module(new BusyTable)
  
   // ================================================================
-  //  Phase 1: 流水级寄存器
+  //  流水级寄存器
   // ================================================================
-  val stgValid  = RegInit(false.B)
-  val laneValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
-  val iqSent    = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))   // ★ 独立信号：是否已送入 IQ
-  val stgData   = Reg(Vec(CtrlBlockWidth, new RenamedInst))
+  val laneValid   = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+  val robWritten  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+  val lsqWritten  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+  val iqSent      = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+  val stgData     = Reg(Vec(CtrlBlockWidth, new RenamedInst))
+  val stgLqIdx    = Reg(Vec(CtrlBlockWidth, UInt(log2Ceil(LqSize).W)))
+  val stgSqIdx    = Reg(Vec(CtrlBlockWidth, UInt(log2Ceil(SqSize).W)))
  
-  // ── 仍在等待发射的 lane ──
-  val lanePending = VecInit((0 until CtrlBlockWidth).map(i => laneValid(i) && !iqSent(i)))
- 
-  // ── 所有 lane 是否都已处理完毕（无效 或 已发射） ──
-  val allLanesDone = laneValid.zip(iqSent).map { case (v, s) => !v || s }.reduce(_ && _)
- 
-  // ── 指令分类（仅看 lanePending） ──
-  val isAluLane    = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && stgData(i).ctrl.fuType === FuType.alu))
-  val isBruLane    = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && stgData(i).ctrl.fuType === FuType.bru))
-  val isCsrLane    = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && (stgData(i).ctrl.fuType === FuType.csr || stgData(i).ctrl.isPriv)))
-  val isMulDivLane = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && stgData(i).ctrl.fuType === FuType.mulDiv))
-  val isLoadLane   = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memRead))
-  val isStoreLane  = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memWrite))
- 
-  // BRU IQ 接收 BRU + CSR/Priv
-  val isBruTargetLane = VecInit((0 until CtrlBlockWidth).map(i =>
-    isBruLane(i) || isCsrLane(i)))
- 
-  // Load/Sta IQ 接收 Load + Store-Addr
-  val isLoadStaLane = VecInit((0 until CtrlBlockWidth).map(i =>
-    isLoadLane(i) || isStoreLane(i)))
- 
-  // Std IQ 只接收 Store-Data
-  val isStdLane = isStoreLane
+  // ── 需求掩码 ──
+  // 分出几组掩码
+  // 1.目前还需要Rob的通路有哪些
+  val needRob = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && !robWritten(i)))
+
+
+  //2.需要Load/Store Q 的通路有哪些
+  val isMemLane = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && stgData(i).ctrl.fuType === FuType.lsu))
+  val needLsq = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && !lsqWritten(i) && isMemLane(i)))
+
+  //3.需要Iq的通路有哪些
+  val needIq = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && !iqSent(i)))
+  
+
+  // 以上的三类请求
+  // Rob和SLQ 都会在一个周期内完成
+  // 只有IQ的请求有可能涉及到多个周期
+  // * 所以说IQ是木桶的短板
+  // 直接看所有的通路是否还需要IQ
+  // 以判断在此流水级的微操作是否都已经完成使命
+  val stgValid = needIq.asUInt.orR
+    
+  // ================================================================
+  //  Part One 开始处理 IQ 相关的分配
+  // ================================================================
  
   // ================================================================
-  //  截断逻辑
+  //  一、先对需要iq的每一条通路进行指令的分类（基于 needIq）
+  // ================================================================
+  // 1.哪些通路需要ALU
+  val isAluLane   = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && stgData(i).ctrl.fuType === FuType.alu))
+  // 2.哪些通路需要CSR
+  val isCsrLane   = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && (stgData(i).ctrl.fuType === FuType.csr || stgData(i).ctrl.isPriv)))
+  // 3.哪些通路需要除法
+  val isDivLane   = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && stgData(i).ctrl.fuType === FuType.div))
+  // 4.哪些通路需要乘法
+  val isMulLane   = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && stgData(i).ctrl.fuType === FuType.mul))
+  // 5.哪些通路需要Jump运算单元
+  val isJmpLane   = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && stgData(i).ctrl.fuType === FuType.bru))
+  // 6.哪些通路是Load
+  val isLoadLane  = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memRead))
+  // 7.哪些通路是Store
+  val isStoreLane = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memWrite))
+ 
+  // ================================================================
+  //  二、计算IQ 可用性（来自反馈信号）
+  // ================================================================
+  val q1Avail = io.iqFeedback.q1FreeEntries > 0.U
+  val q2Avail = io.iqFeedback.q2FreeEntries > 0.U
+  val q3Avail = io.iqFeedback.q3FreeEntries > 0.U
+  val q4Avail = io.iqFeedback.q4FreeEntries > 0.U
+  val q5Avail = io.iqFeedback.q5FreeEntries > 0.U
+ 
+  // ================================================================
+  //  截断工具函数，只选择固定数量的掩码出来
   // ================================================================
   def truncateMask(isMatch: Vec[Bool], maxPorts: Int): Vec[Bool] = {
     val result = Wire(Vec(CtrlBlockWidth, Bool()))
@@ -66,114 +118,279 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     result
   }
  
-  val aluAccepted     = truncateMask(isAluLane,         IQEnqPorts.ALU)
-  val bruAccepted     = truncateMask(isBruTargetLane,   IQEnqPorts.BRU)
-  val mulDivAccepted  = truncateMask(isMulDivLane,      IQEnqPorts.MULDIV)
-  val loadStaAccepted = truncateMask(isLoadStaLane,     IQEnqPorts.LOADSTA)
-  val stdAccepted     = truncateMask(isStdLane,         IQEnqPorts.STD)
+  // ================================================================
+  //  Phase 1: 计算除ALU和访存指令外的——专属指令路由
+  //    CSR → Q1（只能去 Q1）
+  //    DIV → Q2（只能去 Q2）
+  //    MUL/JMP → Q3（只能去 Q3，两者竞争 1 个端口）
+  // ================================================================
+  // 1.选择出一条 [当前周期可以往后发送的一条Csr指令]
+  val csrToQ1 = truncateMask(
+    VecInit((0 until CtrlBlockWidth).map(i => isCsrLane(i) && q1Avail)), 1)
+  
+  // 2.选择出一条 [当前周期可以往后发送的一条Div指令]
+  val divToQ2 = truncateMask(
+    VecInit( (0 until CtrlBlockWidth).map(i => isDivLane(i) && q2Avail)), 1)
+  
+  // 3.选择出一条 [当前周期可以往后发送的一条Mul/Jump指令]
+  val isMulOrJmpLane = VecInit((0 until CtrlBlockWidth).map(i =>
+    (isMulLane(i) || isJmpLane(i)) && q3Avail))
+  val mulJmpToQ3 = truncateMask(isMulOrJmpLane, 1)
+  
+  //    综合以上的结果
+  // ── 已被专属指令占用的 lane 位掩码 ──
+  var consumedMask = csrToQ1.asUInt | divToQ2.asUInt | mulJmpToQ3.asUInt
+  
+  // ── 各 IQ 专属指令占用后是否还有空位 ──
+  val q1FreeAfterExclusive = !csrToQ1.asUInt.orR && q1Avail
+  val q2FreeAfterExclusive = !divToQ2.asUInt.orR && q2Avail
+  val q3FreeAfterExclusive = !mulJmpToQ3.asUInt.orR && q3Avail
  
-  // ── dispatchMask(i)=true 表示 lane i 本周期被接受发射 ──
-  val dispatchMask = VecInit((0 until CtrlBlockWidth).map(i =>
-    (isAluLane(i)       && aluAccepted(i))     ||
-    (isBruTargetLane(i) && bruAccepted(i))     ||
-    (isMulDivLane(i)    && mulDivAccepted(i))  ||
-    (isLoadStaLane(i)   && loadStaAccepted(i)) ||
-    (isStdLane(i)       && stdAccepted(i))
+// ================================================================
+//  Phase 2: ALU 动态负载均衡分配
+//
+//  策略：按 IQ 空闲条目数降序分配 ALU，空闲越多越优先
+//  约束：每个 IQ 只有 1 个端口，专属指令占用后不能再收 ALU
+//
+//  步骤：
+//    1.计算各 IQ 对 ALU 的可用优先级（freeEntries，不可用则为 0）
+//    2.三轮排序确定 rank0/rank1/rank2（降序，同值按 Q1>Q2>Q3）
+//    3.按排序结果逐轮分配：rank0 的 IQ 得到第一条 ALU，以此类推
+// ================================================================
+ 
+// ── 各 IQ 对 ALU 的可用性 ──
+//  端口被专属指令占用 → 该 IQ 不能再收 ALU
+val q1CanAcceptAlu = q1FreeAfterExclusive
+val q2CanAcceptAlu = q2FreeAfterExclusive
+val q3CanAcceptAlu = q3FreeAfterExclusive
+ 
+//  优先级 = freeEntries（可用于 ALU 时）或 0（不可用）
+val q1AluPriority = Mux(q1CanAcceptAlu, io.iqFeedback.q1FreeEntries, 0.U(IQFeedbackWidth.value.W))
+val q2AluPriority = Mux(q2CanAcceptAlu, io.iqFeedback.q2FreeEntries, 0.U(IQFeedbackWidth.value.W))
+val q3AluPriority = Mux(q3CanAcceptAlu, io.iqFeedback.q3FreeEntries, 0.U(IQFeedbackWidth.value.W))
+ 
+// ── 三轮排序：rank0 = 最空闲, rank1 = 次空闲, rank2 = 最忙 ──
+//  同值时按 Q1 > Q2 > Q3 消歧（>= 保证小索引优先）
+ 
+// rank0: 三个 IQ 中 priority 最大的
+val rank0OH = Wire(Vec(3, Bool()))  // one-hot: (Q1, Q2, Q3)
+rank0OH(0) := (q1AluPriority >= q2AluPriority) && (q1AluPriority >= q3AluPriority)
+rank0OH(1) := !rank0OH(0) && (q2AluPriority >= q3AluPriority)
+rank0OH(2) := !rank0OH(0) && !rank0OH(1)
+
+// rank1: 去掉 rank0 后，剩余两个中 priority 更大的
+val exclRank0 = VecInit(Seq(q1AluPriority, q2AluPriority, q3AluPriority).zip(rank0OH).map {
+  case (p, oh) => Mux(oh, 0.U, p)
+})
+val rank1OH = Wire(Vec(3, Bool()))
+rank1OH(0) := !rank0OH(0) && (exclRank0(0) >= exclRank0(1)) && (exclRank0(0) >= exclRank0(2))
+rank1OH(1) := !rank0OH(1) && !rank1OH(0) && (exclRank0(1) >= exclRank0(2))
+rank1OH(2) := !rank0OH(2) && !rank1OH(0) && !rank1OH(1)
+ 
+// rank2: 剩余的那一个
+val rank2OH = Wire(Vec(3, Bool()))
+rank2OH(0) := !rank0OH(0) && !rank1OH(0)
+rank2OH(1) := !rank0OH(1) && !rank1OH(1)
+rank2OH(2) := !rank0OH(2) && !rank1OH(2)
+
+// 上面处理好优先级之后
+// 还要检验是否可以接收ALU指令
+// 每个 rank 对应的 IQ 是否有 ALU 容量（priority > 0）
+
+// 1.最空闲的那个IQ是否可以接收ALU指令
+val rank0HasCap = Mux(rank0OH(0), q1CanAcceptAlu,
+                  Mux(rank0OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
+// 2.次空闲的那个IQ是否可以接收ALU指令
+val rank1HasCap = Mux(rank1OH(0), q1CanAcceptAlu,
+                  Mux(rank1OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
+// 3.最忙碌的那个IQ是否可以接收ALU指令
+val rank2HasCap = Mux(rank2OH(0), q1CanAcceptAlu,
+                  Mux(rank2OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
+
+// ── 逐轮分配 ALU ──
+ 
+// Round 1: 操作对象是：优先级最高的那个端口
+val aluCandR1 = VecInit((0 until CtrlBlockWidth).map(i =>
+  isAluLane(i) && !consumedMask(i)))
+val aluRound1 = truncateMask(aluCandR1, 1)
+val aluRound1Valid = aluRound1.asUInt.orR && rank0HasCap //最闲的那个是否成功分配到ALU指令
+val aluRound1ToQ1 = aluRound1Valid && rank0OH(0)
+val aluRound1ToQ2 = aluRound1Valid && rank0OH(1)
+val aluRound1ToQ3 = aluRound1Valid && rank0OH(2)
+ 
+consumedMask = consumedMask | Mux(aluRound1Valid, aluRound1.asUInt, 0.U)
+ 
+// Round 2: 操作对象是：优先级次高的那个端口
+val aluCandR2 = VecInit((0 until CtrlBlockWidth).map(i =>
+  isAluLane(i) && !consumedMask(i)))
+val aluRound2 = truncateMask(aluCandR2, 1)
+val aluRound2Valid = aluRound2.asUInt.orR && rank1HasCap //次闲的那个是否成功分配到ALU指令
+val aluRound2ToQ1 = aluRound2Valid && rank1OH(0)
+val aluRound2ToQ2 = aluRound2Valid && rank1OH(1)
+val aluRound2ToQ3 = aluRound2Valid && rank1OH(2)
+ 
+consumedMask = consumedMask | Mux(aluRound2Valid, aluRound2.asUInt, 0.U)
+ 
+// Round 3: 操作对象是：最忙碌的那个端口
+val aluCandR3 = VecInit((0 until CtrlBlockWidth).map(i =>
+  isAluLane(i) && !consumedMask(i)))
+val aluRound3 = truncateMask(aluCandR3, 1)
+val aluRound3Valid = aluRound3.asUInt.orR && rank2HasCap //最忙的那个是否成功分配到ALU指令
+val aluRound3ToQ1 = aluRound3Valid && rank2OH(0)
+val aluRound3ToQ2 = aluRound3Valid && rank2OH(1)
+val aluRound3ToQ3 = aluRound3Valid && rank2OH(2)
+ 
+consumedMask = consumedMask | Mux(aluRound3Valid, aluRound3.asUInt, 0.U)
+ 
+// ── 合并：各 IQ 最终分配 = 专属 + ALU ──
+//  每条 lane 最多在一轮中被选中，所以不会重复
+val aluToQ1 = VecInit((0 until CtrlBlockWidth).map(i =>
+  (aluRound1(i) && aluRound1ToQ1) || (aluRound2(i) && aluRound2ToQ1) || (aluRound3(i) && aluRound3ToQ1)))
+val aluToQ2 = VecInit((0 until CtrlBlockWidth).map(i =>
+  (aluRound1(i) && aluRound1ToQ2) || (aluRound2(i) && aluRound2ToQ2) || (aluRound3(i) && aluRound3ToQ2)))
+val aluToQ3 = VecInit((0 until CtrlBlockWidth).map(i =>
+  (aluRound1(i) && aluRound1ToQ3) || (aluRound2(i) && aluRound2ToQ3) || (aluRound3(i) && aluRound3ToQ3)))
+ 
+val q1Final = VecInit((0 until CtrlBlockWidth).map(i => csrToQ1(i) || aluToQ1(i)))
+val q2Final = VecInit((0 until CtrlBlockWidth).map(i => divToQ2(i) || aluToQ2(i)))
+val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3(i)))
+ 
+  // ================================================================
+  //  Q4/Q5 路由（LOADSTA 和 STD，与原先逻辑相同）
+  //    Q4: Load 或 Store-Addr（1 端口）
+  //    Q5: Store-Data（1 端口）
+  //    约束：Store 的 Sta 和 Std 必须成对分发
+  //    Store 只有在 Q4 和 Q5 都可用时才能成为候选
+  // ================================================================
+  val q4Cand = VecInit((0 until CtrlBlockWidth).map(i =>
+    (isLoadLane(i) || (isStoreLane(i) && q5Avail)) && q4Avail ))
+
+  val q4Selected = truncateMask(q4Cand, 1)
+  dontTouch(q4Selected)
+ 
+  // Q4 选中的是 Store 吗？
+  // Q5: Std 仅在对应 Store 的 Sta 被选中时才发
+  val q5Selected = VecInit((0 until CtrlBlockWidth).map(i =>
+    q4Selected(i) && isStoreLane(i)))
+    
+  dontTouch(q5Selected)
+ 
+  // ================================================================
+  //  IQ 分发掩码 & 目标队列
+  // ================================================================
+  val iqDispatchMask = VecInit((0 until CtrlBlockWidth).map(i =>
+    q1Final(i) || q2Final(i) || q3Final(i) || q4Selected(i) || q5Selected(i)
   ))
+
+
+
  
-  // ── 统计各类实际发射数 ──
-  val aluDispatchCount     = PopCount(VecInit((0 until CtrlBlockWidth).map(i => isAluLane(i)       && aluAccepted(i))))
-  val bruDispatchCount     = PopCount(VecInit((0 until CtrlBlockWidth).map(i => isBruTargetLane(i) && bruAccepted(i))))
-  val mulDivDispatchCount  = PopCount(VecInit((0 until CtrlBlockWidth).map(i => isMulDivLane(i)    && mulDivAccepted(i))))
-  val loadStaDispatchCount = PopCount(VecInit((0 until CtrlBlockWidth).map(i => isLoadStaLane(i)   && loadStaAccepted(i))))
-  val stdDispatchCount     = PopCount(VecInit((0 until CtrlBlockWidth).map(i => isStdLane(i)       && stdAccepted(i))))
+  val laneTargetQ = Wire(Vec(CtrlBlockWidth, UInt(IssueQueueId.width.W)))
+  for (i <- 0 until CtrlBlockWidth) {
+    laneTargetQ(i) := MuxCase(IssueQueueId.Q1.U, Seq(
+      q1Final(i)    -> IssueQueueId.Q1.U,
+      q2Final(i)    -> IssueQueueId.Q2.U,
+      q3Final(i)    -> IssueQueueId.Q3.U,
+      q4Selected(i) -> IssueQueueId.Q4.U,
+      q5Selected(i) -> IssueQueueId.Q5.U,
+    ))
+  }
  
-  // ── IQ 端口容量检查 ──
-  val iqReady = aluDispatchCount     <= io.iqFeedback.aluCanAccept &&
-                bruDispatchCount     <= io.iqFeedback.bruCanAccept &&
-                mulDivDispatchCount  <= io.iqFeedback.mulDivCanAccept &&
-                loadStaDispatchCount <= io.iqFeedback.loadStaCanAccept &&
-                stdDispatchCount     <= io.iqFeedback.stdCanAccept
+  // ================================================================
+  //  资源就绪检查
+  // ================================================================
  
-  // ── LSQ 容量检查 ──
-  val hasLoad  = isLoadLane.asUInt.orR
-  val hasStore = isStoreLane.asUInt.orR
-  val lsqReady = (!hasLoad || !io.lsEnq.lqFull) &&
-                 (!hasStore || !io.lsEnq.sqFull)
+  // ── IQ 容量（路由已考虑可用性，此处做安全冗余检查） ──
+  val q1WillSend = q1Final.asUInt.orR
+  val q2WillSend = q2Final.asUInt.orR
+  val q3WillSend = q3Final.asUInt.orR
+  val q4WillSend = q4Selected.asUInt.orR
+  val q5WillSend = q5Selected.asUInt.orR
  
-  // ── ROB 空间检查 ──
-  val robReady = io.robEnq.canEnq
+  val iqReady = (q1WillSend <= io.iqFeedback.q1FreeEntries) &&
+                (q2WillSend <= io.iqFeedback.q2FreeEntries) &&
+                (q3WillSend <= io.iqFeedback.q3FreeEntries) &&
+                (q4WillSend <= io.iqFeedback.q4FreeEntries) &&
+                (q5WillSend <= io.iqFeedback.q5FreeEntries)
+
+  dontTouch(iqReady)
  
-  // ── 本周期是否有任何 lane 被接受 ──
-  val hasAccepted = dispatchMask.zip(lanePending).map { case (m, v) => m && v }.reduce(_ || _)
+  // ── ROB 批量容量 ──
+  val anyNeedRob = needRob.asUInt.orR
+  val robBatchReady = !anyNeedRob || io.robEnq.canEnq
+
+  // ── LSQ 批量容量 ──
+  val anyNeedLsq = needLsq.asUInt.orR
+  val needLsqLoadCount  = PopCount(VecInit((0 until CtrlBlockWidth).map(i =>
+    needLsq(i) && stgData(i).ctrl.memRead)))
+  val needLsqStoreCount = PopCount(VecInit((0 until CtrlBlockWidth).map(i =>
+    needLsq(i) && stgData(i).ctrl.memWrite)))
+  val lsqBatchReady = (needLsqLoadCount === 0.U  || !io.lsEnq.lqFull) &&
+                      (needLsqStoreCount === 0.U || !io.lsEnq.sqFull)
+  
+  // ── 本周期是否有 lane 可分发到 IQ ──
+  val hasIqDispatch = iqDispatchMask.zip(needIq).map { case (d, n) => d && n }.reduce(_ || _)
+
+  // ── 发射条件 ──             隐含有iqready的信息
+  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob) && ( lsqBatchReady || !anyNeedLsq )//&& iqReady
+
+  val AllWillFire = VecInit((0 until CtrlBlockWidth).map(i => (needIq(i) && iqDispatchMask(i)) || !needIq(i)  )).reduce(_ && _)
+  // VecInit((0 until CtrlBlockWidth).map(i =>
+  //  !laneValid(i) || iqSent(i) || (needIq(i) && iqDispatchMask(i))
+  // )).reduce(_ && _)
+
+  val canAcceptNew = !stgValid || ( dispatchFire && AllWillFire )
  
-  // ── 发射条件 ──
-  val dispatchFire = stgValid && hasAccepted && iqReady && lsqReady && robReady
- 
-  // ── 能否接收新数据：本级空闲 或 所有 lane 都已发射完毕 ──
-  val canAcceptNew = !stgValid || allLanesDone
- 
+  // ── 接收新数据 ──
   val inValid = io.in.map(_.valid).reduce(_ || _)
   val inFire  = inValid && canAcceptNew
- 
   for (i <- 0 until CtrlBlockWidth) {
     io.in(i).ready := canAcceptNew
   }
  
-  // ── 发射后仍待处理的 lane ──
-  val willStillBePending = VecInit((0 until CtrlBlockWidth).map(i =>
-    lanePending(i) && !dispatchMask(i)
-  ))
- 
-  // ── 状态转移 ──
+  // ================================================================
+  //  状态转移
+  // ================================================================
   when(io.flush || io.redirect.valid) {
-    stgValid := false.B
     for (i <- 0 until CtrlBlockWidth) {
-      laneValid(i) := false.B
-      iqSent(i)    := false.B
+      laneValid(i)  := false.B
+      robWritten(i) := false.B
+      lsqWritten(i) := false.B
+      iqSent(i)     := false.B
     }
   }.elsewhen(inFire) {
-    // 新数据整批进入
-    stgValid := true.B
     for (i <- 0 until CtrlBlockWidth) {
-      laneValid(i) := io.in(i).valid
-      iqSent(i)    := false.B
-      stgData(i)   := io.in(i).bits
+      laneValid(i)  := io.in(i).valid
+      robWritten(i) := false.B
+      lsqWritten(i) := false.B
+      iqSent(i)     := false.B
+      stgData(i)    := io.in(i).bits
+      stgLqIdx(i)   := 0.U
+      stgSqIdx(i)   := 0.U
     }
   }.elsewhen(dispatchFire) {
-    // 仅标记已发射的 lane，不清除 laneValid
     for (i <- 0 until CtrlBlockWidth) {
-      when(dispatchMask(i) && lanePending(i)) {
-        iqSent(i) := true.B
-      }
+      when(needRob(i)) { robWritten(i) := true.B }
+      when(needLsq(i)) { lsqWritten(i) := true.B }
+      when(iqDispatchMask(i) && needIq(i)) { iqSent(i) := true.B }
     }
-    // 如果没有剩余待发射的 lane，标记空闲
-    stgValid := willStillBePending.asUInt.orR
   }
  
   // ================================================================
-  //  Phase 2: 组合逻辑
-  // ================================================================
- 
-  // ================================================================
-  //  2-1. LQ/SQ 指针生成
-  //  仅被接受的 Load/Store 才消耗指针
+  //  LQ / SQ 指针生成
   // ================================================================
   val lqHeadPtr = RegInit(UInt(log2Ceil(LqSize).W), 0.U)
   val sqHeadPtr = RegInit(UInt(log2Ceil(SqSize).W), 0.U)
  
-  when(dispatchFire) {
-    lqHeadPtr := lqHeadPtr + PopCount(VecInit((0 until CtrlBlockWidth).map(i =>
-      isLoadLane(i) && dispatchMask(i))))
-    sqHeadPtr := sqHeadPtr + PopCount(VecInit((0 until CtrlBlockWidth).map(i =>
-      isStoreLane(i) && dispatchMask(i))))
+  when(dispatchFire && anyNeedLsq) {
+    lqHeadPtr := lqHeadPtr + needLsqLoadCount
+    sqHeadPtr := sqHeadPtr + needLsqStoreCount
   }
   when(io.flush || io.redirect.valid) {
     lqHeadPtr := 0.U
     sqHeadPtr := 0.U
   }
  
-  // 为每条 lane 计算 LQ/SQ 索引（前缀和方式）
   val lqIndices = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(LqSize).W)))
   val sqIndices = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(SqSize).W)))
   var lqOffset  = 0.U(log2Ceil(LqSize).W)
@@ -181,26 +398,38 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CtrlBlockWidth) {
     lqIndices(i) := lqHeadPtr + lqOffset
     sqIndices(i) := sqHeadPtr + sqOffset
-    lqOffset = lqOffset + (isLoadLane(i) && dispatchMask(i)).asUInt
-    sqOffset = sqOffset + (isStoreLane(i) && dispatchMask(i)).asUInt
+    lqOffset = lqOffset + (needLsq(i) && stgData(i).ctrl.memRead).asUInt
+    sqOffset = sqOffset + (needLsq(i) && stgData(i).ctrl.memWrite).asUInt
+  }
+ 
+  when(dispatchFire) {
+    for (i <- 0 until CtrlBlockWidth) {
+      when(needLsq(i)) {
+        stgLqIdx(i) := lqIndices(i)
+        stgSqIdx(i) := sqIndices(i)
+      }
+    }
+  }
+ 
+  val effLqIdx = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(LqSize).W)))
+  val effSqIdx = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(SqSize).W)))
+  for (i <- 0 until CtrlBlockWidth) {
+    effLqIdx(i) := Mux(needLsq(i), lqIndices(i), stgLqIdx(i))
+    effSqIdx(i) := Mux(needLsq(i), sqIndices(i), stgSqIdx(i))
   }
  
   // ================================================================
-  //  2-2. BusyTable 查询
+  //  BusyTable 查询
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
     busyTable.io.readReq(i * 2)     := stgData(i).prs1
     busyTable.io.readReq(i * 2 + 1) := stgData(i).prs2
   }
- 
-  // 分配置忙：仅被接受且写回 PRF 的指令
   for (i <- 0 until CtrlBlockWidth) {
-    busyTable.io.allocReq(i).valid := dispatchFire && dispatchMask(i) &&
-                                      lanePending(i) && stgData(i).rdValid && stgData(i).ldst =/= 0.U
+    busyTable.io.allocReq(i).valid := dispatchFire && needRob(i) &&
+                                      stgData(i).rdValid && stgData(i).ldst =/= 0.U
     busyTable.io.allocReq(i).bits  := stgData(i).pdst
   }
- 
-  // 写回清忙：当前无执行单元，置无效
   for (i <- 0 until WbBusWidth) {
     busyTable.io.wbReq(i).valid := false.B
     busyTable.io.wbReq(i).bits  := 0.U
@@ -210,7 +439,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val prs2BusyRaw = VecInit((0 until CtrlBlockWidth).map(i => busyTable.io.readResp(i * 2 + 1)))
  
   // ================================================================
-  //  2-3. 构造微操作
+  //  微操作构造
   // ================================================================
   def makeBaseUop(i: Int): DispatchedInst = {
     val u = Wire(new DispatchedInst)
@@ -235,7 +464,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.robIdxFull := Cat(false.B, stgData(i).robIdx)
     u.sqIdx      := 0.U
     u.lqIdx      := 0.U
-    u.issueQueue := 0.U
+    u.issueQueue := laneTargetQ(i)
     u.prs1Busy   := Mux(stgData(i).rs1Valid && stgData(i).lrs1 =/= 0.U,
                         prs1BusyRaw(i), false.B)
     u.prs2Busy   := Mux(stgData(i).rs2Valid && stgData(i).lrs2 =/= 0.U,
@@ -247,15 +476,15 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
  
   def makeLoadUop(i: Int): DispatchedInst = {
     val u = makeBaseUop(i)
-    u.lqIdx      := lqIndices(i)
-    u.issueQueue := IssueQueueId.LOADSTA.U
+    u.lqIdx      := effLqIdx(i)
+    u.issueQueue := IssueQueueId.Q4.U
     u
   }
  
   def makeStaUop(i: Int): DispatchedInst = {
     val u = makeBaseUop(i)
-    u.sqIdx      := sqIndices(i)
-    u.issueQueue := IssueQueueId.LOADSTA.U
+    u.sqIdx      := effSqIdx(i)
+    u.issueQueue := IssueQueueId.Q4.U
     u.isSta      := true.B
     u.rs2Valid   := false.B
     u.prs2Busy   := false.B
@@ -266,8 +495,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
  
   def makeStdUop(i: Int): DispatchedInst = {
     val u = makeBaseUop(i)
-    u.sqIdx      := sqIndices(i)
-    u.issueQueue := IssueQueueId.STD.U
+    u.sqIdx      := effSqIdx(i)
+    u.issueQueue := IssueQueueId.Q5.U
     u.isStd      := true.B
     u.rs1Valid   := false.B
     u.prs1Busy   := false.B
@@ -278,140 +507,85 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  2-4. IQ 端口分配（前缀和 + Mux1H）
+  //  IQ 端口分配（每个 IQ 1 个端口，Mux1H 选择）
   // ================================================================
+  io.q1IQEnq(0).valid := false.B;  io.q1IQEnq(0).bits := DontCare
+  io.q2IQEnq(0).valid := false.B;  io.q2IQEnq(0).bits := DontCare
+  io.q3IQEnq(0).valid := false.B;  io.q3IQEnq(0).bits := DontCare
+  io.q4IQEnq(0).valid := false.B;  io.q4IQEnq(0).bits := DontCare
+  io.q5IQEnq(0).valid := false.B;  io.q5IQEnq(0).bits := DontCare
  
-  // ── 默认所有 IQ 端口无效 ──
-  for (p <- 0 until IQEnqPorts.ALU)     { io.aluIQEnq(p).valid := false.B;     io.aluIQEnq(p).bits := DontCare }
-  for (p <- 0 until IQEnqPorts.BRU)     { io.bruIQEnq(p).valid := false.B;     io.bruIQEnq(p).bits := DontCare }
-  for (p <- 0 until IQEnqPorts.MULDIV)  { io.mulDivIQEnq(p).valid := false.B;  io.mulDivIQEnq(p).bits := DontCare }
-  for (p <- 0 until IQEnqPorts.LOADSTA) { io.loadStaIQEnq(p).valid := false.B; io.loadStaIQEnq(p).bits := DontCare }
-  for (p <- 0 until IQEnqPorts.STD)     { io.stdIQEnq(p).valid := false.B;     io.stdIQEnq(p).bits := DontCare }
- 
-  // ── ALU IQ（2 端口） ──
-  var aluPSum = 0.U(log2Ceil(IQEnqPorts.ALU + 1).W)
-  val aluPrefixSum = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(IQEnqPorts.ALU + 1).W)))
-  for (i <- 0 until CtrlBlockWidth) {
-    aluPrefixSum(i) := aluPSum
-    aluPSum = aluPSum + (isAluLane(i) && aluAccepted(i)).asUInt
-  }
-  val aluUops = (0 until CtrlBlockWidth).map(i => makeBaseUop(i))
- 
-  for (p <- 0 until IQEnqPorts.ALU) {
-    val matchOH = VecInit((0 until CtrlBlockWidth).map(i =>
-      isAluLane(i) && aluAccepted(i) && aluPrefixSum(i) === p.U
-    ))
-    when(matchOH.asUInt.orR && dispatchFire) {
-      io.aluIQEnq(p).valid := true.B
-      io.aluIQEnq(p).bits  := Mux1H(matchOH, aluUops)
-    }
+  // ── Q1 (ALU + CSR) ──
+  val q1Uops = (0 until CtrlBlockWidth).map(i => {
+    val u = Wire(new DispatchedInst)
+    u := makeBaseUop(i)
+    u.issueQueue := IssueQueueId.Q1.U
+    u
+  })
+  when(q1Final.asUInt.orR && dispatchFire) {
+    io.q1IQEnq(0).valid := true.B
+    io.q1IQEnq(0).bits  := Mux1H(q1Final, q1Uops)
   }
  
-  // ── BRU IQ（1 端口，BRU + CSR/Priv） ──
-  var bruPSum = 0.U(log2Ceil(IQEnqPorts.BRU + 1).W)
-  val bruPrefixSum = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(IQEnqPorts.BRU + 1).W)))
-  for (i <- 0 until CtrlBlockWidth) {
-    bruPrefixSum(i) := bruPSum
-    bruPSum = bruPSum + (isBruTargetLane(i) && bruAccepted(i)).asUInt
-  }
-  val bruUops = (0 until CtrlBlockWidth).map(i => makeBaseUop(i))
- 
-  for (p <- 0 until IQEnqPorts.BRU) {
-    val matchOH = VecInit((0 until CtrlBlockWidth).map(i =>
-      isBruTargetLane(i) && bruAccepted(i) && bruPrefixSum(i) === p.U
-    ))
-    when(matchOH.asUInt.orR && dispatchFire) {
-      io.bruIQEnq(p).valid := true.B
-      io.bruIQEnq(p).bits  := Mux1H(matchOH, bruUops)
-    }
+  // ── Q2 (ALU + DIV) ──
+  val q2Uops = (0 until CtrlBlockWidth).map(i => {
+    val u = Wire(new DispatchedInst)
+    u := makeBaseUop(i)
+    u.issueQueue := IssueQueueId.Q2.U
+    u
+  })
+  when(q2Final.asUInt.orR && dispatchFire) {
+    io.q2IQEnq(0).valid := true.B
+    io.q2IQEnq(0).bits  := Mux1H(q2Final, q2Uops)
   }
  
-  // ── MULDIV IQ（1 端口） ──
-  var mulDivPSum = 0.U(log2Ceil(IQEnqPorts.MULDIV + 1).W)
-  val mulDivPrefixSum = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(IQEnqPorts.MULDIV + 1).W)))
-  for (i <- 0 until CtrlBlockWidth) {
-    mulDivPrefixSum(i) := mulDivPSum
-    mulDivPSum = mulDivPSum + (isMulDivLane(i) && mulDivAccepted(i)).asUInt
-  }
-  val mulDivUops = (0 until CtrlBlockWidth).map(i => makeBaseUop(i))
- 
-  for (p <- 0 until IQEnqPorts.MULDIV) {
-    val matchOH = VecInit((0 until CtrlBlockWidth).map(i =>
-      isMulDivLane(i) && mulDivAccepted(i) && mulDivPrefixSum(i) === p.U
-    ))
-    when(matchOH.asUInt.orR && dispatchFire) {
-      io.mulDivIQEnq(p).valid := true.B
-      io.mulDivIQEnq(p).bits  := Mux1H(matchOH, mulDivUops)
-    }
+  // ── Q3 (ALU + MUL + JMP) ──
+  val q3Uops = (0 until CtrlBlockWidth).map(i => {
+    val u = Wire(new DispatchedInst)
+    u := makeBaseUop(i)
+    u.issueQueue := IssueQueueId.Q3.U
+    u
+  })
+  when(q3Final.asUInt.orR && dispatchFire) {
+    io.q3IQEnq(0).valid := true.B
+    io.q3IQEnq(0).bits  := Mux1H(q3Final, q3Uops)
   }
  
-  // ── Load/Sta IQ（2 端口） ──
-  var loadStaPSum = 0.U(log2Ceil(IQEnqPorts.LOADSTA + 1).W)
-  val loadStaPrefixSum = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(IQEnqPorts.LOADSTA + 1).W)))
-  for (i <- 0 until CtrlBlockWidth) {
-    loadStaPrefixSum(i) := loadStaPSum
-    loadStaPSum = loadStaPSum + (isLoadStaLane(i) && loadStaAccepted(i)).asUInt
-  }
-  val loadStaUops = (0 until CtrlBlockWidth).map(i =>
+  // ── Q4 (LOAD + STA) ──
+  //  Load → LoadUop, Store → StaUop
+  val q4Uops = (0 until CtrlBlockWidth).map(i =>
     Mux(isStoreLane(i), makeStaUop(i), makeLoadUop(i))
   )
- 
-  for (p <- 0 until IQEnqPorts.LOADSTA) {
-    val matchOH = VecInit((0 until CtrlBlockWidth).map(i =>
-      isLoadStaLane(i) && loadStaAccepted(i) && loadStaPrefixSum(i) === p.U
-    ))
-    when(matchOH.asUInt.orR && dispatchFire) {
-      io.loadStaIQEnq(p).valid := true.B
-      io.loadStaIQEnq(p).bits  := Mux1H(matchOH, loadStaUops)
-    }
+  when(q4Selected.asUInt.orR && dispatchFire) {
+    io.q4IQEnq(0).valid := true.B
+    io.q4IQEnq(0).bits  := Mux1H(q4Selected, q4Uops)
   }
  
-  // ── Std IQ（1 端口） ──
-  var stdPSum = 0.U(log2Ceil(IQEnqPorts.STD + 1).W)
-  val stdPrefixSum = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(IQEnqPorts.STD + 1).W)))
-  for (i <- 0 until CtrlBlockWidth) {
-    stdPrefixSum(i) := stdPSum
-    stdPSum = stdPSum + (isStdLane(i) && stdAccepted(i)).asUInt
-  }
-  val stdUops = (0 until CtrlBlockWidth).map(i => makeStdUop(i))
- 
-  for (p <- 0 until IQEnqPorts.STD) {
-    val matchOH = VecInit((0 until CtrlBlockWidth).map(i =>
-      isStdLane(i) && stdAccepted(i) && stdPrefixSum(i) === p.U
-    ))
-    when(matchOH.asUInt.orR && dispatchFire) {
-      io.stdIQEnq(p).valid := true.B
-      io.stdIQEnq(p).bits  := Mux1H(matchOH, stdUops)
-    }
+  // ── Q5 (STD) ──
+  val q5Uops = (0 until CtrlBlockWidth).map(i => makeStdUop(i))
+  when(q5Selected.asUInt.orR && dispatchFire) {
+    io.q5IQEnq(0).valid := true.B
+    io.q5IQEnq(0).bits  := Mux1H(q5Selected, q5Uops)
   }
  
   // ================================================================
-  //  2-5. LSQ 请求
-  //  仅被接受的 Load/Store 才分配 LSQ 条目
+  //  LSQ 批量写入
   // ================================================================
-    val enqOK =RegInit(false.B) // RegNext(dispatchFire)
-    when(inFire){
-      enqOK := false.B
-    }.elsewhen(dispatchFire){
-      enqOK := true.B
-    }
   for (i <- 0 until CtrlBlockWidth) {
-    io.lsEnq.req(i).valid        := dispatchFire && !enqOK && laneValid(i) && stgValid &&
-                                    (isLoadLane(i) || isStoreLane(i))
+    io.lsEnq.req(i).valid        := dispatchFire && needLsq(i)
     io.lsEnq.req(i).bits.robIdx  := stgData(i).robIdx
-    io.lsEnq.req(i).bits.isLoad  := isLoadLane(i)
-    io.lsEnq.req(i).bits.isStore := isStoreLane(i)
+    io.lsEnq.req(i).bits.isLoad  := stgData(i).ctrl.memRead
+    io.lsEnq.req(i).bits.isStore := stgData(i).ctrl.memWrite
     io.lsEnq.req(i).bits.sqIdx   := sqIndices(i)
     io.lsEnq.req(i).bits.lqIdx   := lqIndices(i)
   }
  
   // ================================================================
-  //  2-6. ROB 入队
-  //  仅被接受的 lane 才入队，Store 分裂但只占 1 个 ROB 表项
+  //  ROB 批量写入
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
-    io.robEnq.valid(i)  := dispatchFire  && !enqOK && laneValid(i) && stgValid
-    io.robEnq.valids(i) := laneValid(i) && stgValid
+    io.robEnq.valid(i)  := dispatchFire && needRob(i)
+    io.robEnq.valids(i) := needRob(i)
     io.robEnq.bits(i).pc       := stgData(i).pc
     io.robEnq.bits(i).inst     := stgData(i).inst
     io.robEnq.bits(i).pdst     := stgData(i).pdst

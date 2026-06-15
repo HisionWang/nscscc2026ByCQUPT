@@ -14,11 +14,11 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
  
   // ── 到各 Issue Queue ──
-  val aluIQEnq     = Vec(IQEnqPorts.ALU,     ValidIO(new DispatchedInst))
-  val bruIQEnq     = Vec(IQEnqPorts.BRU,     ValidIO(new DispatchedInst))
-  val mulDivIQEnq  = Vec(IQEnqPorts.MULDIV,  ValidIO(new DispatchedInst))
-  val loadStaIQEnq = Vec(IQEnqPorts.LOADSTA, ValidIO(new DispatchedInst))
-  val stdIQEnq     = Vec(IQEnqPorts.STD,     ValidIO(new DispatchedInst))
+  val q1IQEnq  = Vec(IQEnqPorts.Q1, ValidIO(new DispatchedInst))
+  val q2IQEnq  = Vec(IQEnqPorts.Q2, ValidIO(new DispatchedInst))
+  val q3IQEnq  = Vec(IQEnqPorts.Q3, ValidIO(new DispatchedInst))
+  val q4IQEnq  = Vec(IQEnqPorts.Q4, ValidIO(new DispatchedInst))
+  val q5IQEnq  = Vec(IQEnqPorts.Q5, ValidIO(new DispatchedInst))
  
   // ── IQ 反馈 ──
   val iqFeedback = Input(new IssueQueueFeedback)
@@ -66,11 +66,11 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   dispatchStage.io.redirect := io.redirect
  
   // ── IQ 入队端口 ──
-  dispatchStage.io.aluIQEnq     <> io.aluIQEnq
-  dispatchStage.io.bruIQEnq     <> io.bruIQEnq
-  dispatchStage.io.mulDivIQEnq  <> io.mulDivIQEnq
-  dispatchStage.io.loadStaIQEnq <> io.loadStaIQEnq
-  dispatchStage.io.stdIQEnq     <> io.stdIQEnq
+  dispatchStage.io.q1IQEnq     <> io.q1IQEnq
+  dispatchStage.io.q2IQEnq     <> io.q2IQEnq
+  dispatchStage.io.q3IQEnq     <> io.q3IQEnq
+  dispatchStage.io.q4IQEnq     <> io.q4IQEnq
+  dispatchStage.io.q5IQEnq     <> io.q5IQEnq
  
   // ── IQ 反馈 ──
   dispatchStage.io.iqFeedback <> io.iqFeedback

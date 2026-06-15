@@ -7,31 +7,19 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.frontend.PredecodeInfo
  
-// ================================================================
-//  发射队列标识（5 个 Issue Queue）
-// ================================================================
 object IssueQueueId {
-  val ALU     = 0
-  val BRU     = 1   // BRU + CSR/Priv 共享
-  val MULDIV  = 2
-  val LOADSTA = 3   // Load + Store-Addr 共享
-  val STD     = 4   // Store-Data 独占
-  val NUM     = 5
-  val width   = log2Ceil(NUM)
+  val Q1 = 0   // ALU + CSR
+  val Q2 = 1   // ALU + DIV
+  val Q3 = 2   // ALU + MUL + JMP
+  val Q4 = 3   // LOAD + STA
+  val Q5 = 4   // STD
+  val NUM = 5
+  val width = log2Ceil(NUM)
 }
  
-// ================================================================
-//  每个 IQ 的入队端口数
-//  ALU 最频繁需 2 端口；其余各 1 端口即可覆盖 4-wide 典型场景
-//  若同周期某类指令超过端口数，同进同出机制会暂压一拍
-// ================================================================
 object IQEnqPorts {
-  val ALU     = 2
-  val BRU     = 1
-  val MULDIV  = 1
-  val LOADSTA = 2   // Load 和 Sta 竞争这 2 个端口
-  val STD     = 1
-  val TOTAL   = ALU + BRU + MULDIV + LOADSTA + STD  // 7
+  val Q1 = 1; val Q2 = 1; val Q3 = 1; val Q4 = 1; val Q5 = 1
+  val TOTAL = 5
 }
  
 // ================================================================
@@ -77,17 +65,25 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val isSta    = Bool()   // Store-Addr 微操作
   val isStd    = Bool()   // Store-Data 微操作
 }
+
+//class IssueQueueFeedback(implicit p: Parameters) extends NSBundle {
+//  val q1CanAccept = UInt(1.W)
+//  val q2CanAccept = UInt(1.W)
+//  val q3CanAccept = UInt(1.W)
+//  val q4CanAccept = UInt(1.W)
+//  val q5CanAccept = UInt(1.W)
+//}
+
+object IQFeedbackWidth { val value = 5 }  // 支持 0~31，覆盖最大深度 16
  
-// ================================================================
-//  Issue Queue 反馈信号（IQ → Dispatch：本周期可接收几条）
-// ================================================================
 class IssueQueueFeedback(implicit p: Parameters) extends NSBundle {
-  val aluCanAccept     = UInt((log2Ceil(IQEnqPorts.ALU + 1)).W)
-  val bruCanAccept     = UInt((log2Ceil(IQEnqPorts.BRU + 1)).W)
-  val mulDivCanAccept  = UInt((log2Ceil(IQEnqPorts.MULDIV + 1)).W)
-  val loadStaCanAccept = UInt((log2Ceil(IQEnqPorts.LOADSTA + 1)).W)
-  val stdCanAccept     = UInt((log2Ceil(IQEnqPorts.STD + 1)).W)
+  val q1FreeEntries = UInt(IQFeedbackWidth.value.W)  // Q1 当前空闲条目数
+  val q2FreeEntries = UInt(IQFeedbackWidth.value.W)
+  val q3FreeEntries = UInt(IQFeedbackWidth.value.W)
+  val q4FreeEntries = UInt(IQFeedbackWidth.value.W)
+  val q5FreeEntries = UInt(IQFeedbackWidth.value.W)
 }
+ 
  
 // ================================================================
 //  LSQ 入队请求（仅分配条目，地址/数据后续由执行单元填入）
@@ -198,26 +194,15 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
 //  Dispatch 级 IO
 // ================================================================
 class DispatchStageIO(implicit p: Parameters) extends NSBundle {
-  // ── 来自重命名级 ──
-  val in           = Vec(CtrlBlockWidth, Flipped(Decoupled(new RenamedInst)))
- 
-  // ── 到各 Issue Queue（各自独立的入队端口） ──
-  val aluIQEnq     = Vec(IQEnqPorts.ALU,     ValidIO(new DispatchedInst))
-  val bruIQEnq     = Vec(IQEnqPorts.BRU,     ValidIO(new DispatchedInst))
-  val mulDivIQEnq  = Vec(IQEnqPorts.MULDIV,  ValidIO(new DispatchedInst))
-  val loadStaIQEnq = Vec(IQEnqPorts.LOADSTA, ValidIO(new DispatchedInst))
-  val stdIQEnq     = Vec(IQEnqPorts.STD,     ValidIO(new DispatchedInst))
- 
-  // ── IQ 反馈（各 IQ 报告本周期可接收几条） ──
-  val iqFeedback   = Input(new IssueQueueFeedback)
- 
-  // ── 到 LSQ（LQ + SQ 条目分配） ──
-  val lsEnq        = new LsEnqIO
- 
-  // ── 到 ROB ──
-  val robEnq       = Flipped(new RobEnqIO)
- 
-  // ── 冲刷与重定向 ──
-  val flush        = Input(Bool())
-  val redirect     = Input(new RedirectInfo)
+  val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new RenamedInst)))
+  val q1IQEnq  = Vec(IQEnqPorts.Q1, ValidIO(new DispatchedInst))
+  val q2IQEnq  = Vec(IQEnqPorts.Q2, ValidIO(new DispatchedInst))
+  val q3IQEnq  = Vec(IQEnqPorts.Q3, ValidIO(new DispatchedInst))
+  val q4IQEnq  = Vec(IQEnqPorts.Q4, ValidIO(new DispatchedInst))
+  val q5IQEnq  = Vec(IQEnqPorts.Q5, ValidIO(new DispatchedInst))
+  val iqFeedback = Input(new IssueQueueFeedback)
+  val lsEnq   = new LsEnqIO
+  val robEnq  = Flipped(new RobEnqIO)
+  val flush   = Input(Bool())
+  val redirect = Input(new RedirectInfo)
 }

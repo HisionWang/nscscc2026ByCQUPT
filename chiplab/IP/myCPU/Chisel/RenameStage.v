@@ -18,7 +18,8 @@ module RenameStage(
   input  [3:0]  io_in_0_bits_ctrl_bruOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [3:0]  io_in_0_bits_ctrl_lsuOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_0_bits_ctrl_csrOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [3:0]  io_in_0_bits_ctrl_mulDivOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [2:0]  io_in_0_bits_ctrl_mulOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [2:0]  io_in_0_bits_ctrl_divOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_0_bits_ctrl_src1Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_0_bits_ctrl_src2Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [3:0]  io_in_0_bits_ctrl_immType, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -54,7 +55,8 @@ module RenameStage(
   input  [3:0]  io_in_1_bits_ctrl_bruOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [3:0]  io_in_1_bits_ctrl_lsuOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_1_bits_ctrl_csrOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [3:0]  io_in_1_bits_ctrl_mulDivOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [2:0]  io_in_1_bits_ctrl_mulOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [2:0]  io_in_1_bits_ctrl_divOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_1_bits_ctrl_src1Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_1_bits_ctrl_src2Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [3:0]  io_in_1_bits_ctrl_immType, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -90,7 +92,8 @@ module RenameStage(
   input  [3:0]  io_in_2_bits_ctrl_bruOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [3:0]  io_in_2_bits_ctrl_lsuOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_2_bits_ctrl_csrOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [3:0]  io_in_2_bits_ctrl_mulDivOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [2:0]  io_in_2_bits_ctrl_mulOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [2:0]  io_in_2_bits_ctrl_divOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_2_bits_ctrl_src1Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [2:0]  io_in_2_bits_ctrl_src2Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [3:0]  io_in_2_bits_ctrl_immType, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -124,7 +127,8 @@ module RenameStage(
   output [3:0]  io_out_0_bits_ctrl_bruOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [3:0]  io_out_0_bits_ctrl_lsuOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_0_bits_ctrl_csrOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  output [3:0]  io_out_0_bits_ctrl_mulDivOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [2:0]  io_out_0_bits_ctrl_mulOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [2:0]  io_out_0_bits_ctrl_divOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_0_bits_ctrl_src1Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_0_bits_ctrl_src2Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [3:0]  io_out_0_bits_ctrl_immType, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -165,7 +169,8 @@ module RenameStage(
   output [3:0]  io_out_1_bits_ctrl_bruOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [3:0]  io_out_1_bits_ctrl_lsuOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_1_bits_ctrl_csrOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  output [3:0]  io_out_1_bits_ctrl_mulDivOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [2:0]  io_out_1_bits_ctrl_mulOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [2:0]  io_out_1_bits_ctrl_divOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_1_bits_ctrl_src1Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_1_bits_ctrl_src2Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [3:0]  io_out_1_bits_ctrl_immType, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -206,7 +211,8 @@ module RenameStage(
   output [3:0]  io_out_2_bits_ctrl_bruOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [3:0]  io_out_2_bits_ctrl_lsuOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_2_bits_ctrl_csrOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  output [3:0]  io_out_2_bits_ctrl_mulDivOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [2:0]  io_out_2_bits_ctrl_mulOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [2:0]  io_out_2_bits_ctrl_divOp, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_2_bits_ctrl_src1Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [2:0]  io_out_2_bits_ctrl_src2Type, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [3:0]  io_out_2_bits_ctrl_immType, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -365,6 +371,9 @@ module RenameStage(
   reg [31:0] _RAND_104;
   reg [31:0] _RAND_105;
   reg [31:0] _RAND_106;
+  reg [31:0] _RAND_107;
+  reg [31:0] _RAND_108;
+  reg [31:0] _RAND_109;
 `endif // RANDOMIZE_REG_INIT
   wire  rat_clock; // @[src/main/scala/backend/rename/RenameStage.scala 57:24]
   wire  rat_reset; // @[src/main/scala/backend/rename/RenameStage.scala 57:24]
@@ -450,7 +459,8 @@ module RenameStage(
   reg [3:0] stgData_0_ctrl_bruOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [3:0] stgData_0_ctrl_lsuOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_0_ctrl_csrOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
-  reg [3:0] stgData_0_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
+  reg [2:0] stgData_0_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
+  reg [2:0] stgData_0_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_0_ctrl_src1Type; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_0_ctrl_src2Type; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [3:0] stgData_0_ctrl_immType; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
@@ -484,7 +494,8 @@ module RenameStage(
   reg [3:0] stgData_1_ctrl_bruOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [3:0] stgData_1_ctrl_lsuOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_1_ctrl_csrOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
-  reg [3:0] stgData_1_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
+  reg [2:0] stgData_1_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
+  reg [2:0] stgData_1_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_1_ctrl_src1Type; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_1_ctrl_src2Type; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [3:0] stgData_1_ctrl_immType; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
@@ -518,7 +529,8 @@ module RenameStage(
   reg [3:0] stgData_2_ctrl_bruOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [3:0] stgData_2_ctrl_lsuOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_2_ctrl_csrOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
-  reg [3:0] stgData_2_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
+  reg [2:0] stgData_2_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
+  reg [2:0] stgData_2_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_2_ctrl_src1Type; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [2:0] stgData_2_ctrl_src2Type; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
   reg [3:0] stgData_2_ctrl_immType; // @[src/main/scala/backend/rename/RenameStage.scala 70:22]
@@ -566,35 +578,35 @@ module RenameStage(
   wire [6:0] oldPdstRaw_1 = rat_io_readPorts_7_data; // @[src/main/scala/backend/rename/RenameStage.scala 267:{27,27}]
   wire [6:0] oldPdstFinal_1 = jHasAlloc & stgData_0_rd == stgData_1_rd ? freeList_io_allocPdest_0_bits : oldPdstRaw_1; // @[src/main/scala/backend/rename/RenameStage.scala 279:21 296:58 297:25]
   wire [6:0] prs1Raw_2 = rat_io_readPorts_2_data; // @[src/main/scala/backend/rename/RenameStage.scala 261:{29,29}]
-  wire [6:0] _GEN_219 = jHasAlloc & stgData_0_rd == stgData_2_rj & stgData_2_rs1Valid ? freeList_io_allocPdest_0_bits :
+  wire [6:0] _GEN_225 = jHasAlloc & stgData_0_rd == stgData_2_rj & stgData_2_rs1Valid ? freeList_io_allocPdest_0_bits :
     prs1Raw_2; // @[src/main/scala/backend/rename/RenameStage.scala 287:81 288:22 277:23]
   wire [6:0] prs2Raw_2 = rat_io_readPorts_5_data; // @[src/main/scala/backend/rename/RenameStage.scala 264:{29,29}]
-  wire [6:0] _GEN_220 = jHasAlloc & stgData_0_rd == stgData_2_rk & stgData_2_rs2Valid ? freeList_io_allocPdest_0_bits :
+  wire [6:0] _GEN_226 = jHasAlloc & stgData_0_rd == stgData_2_rk & stgData_2_rs2Valid ? freeList_io_allocPdest_0_bits :
     prs2Raw_2; // @[src/main/scala/backend/rename/RenameStage.scala 291:81 292:22 278:23]
   wire [6:0] oldPdstRaw_2 = rat_io_readPorts_8_data; // @[src/main/scala/backend/rename/RenameStage.scala 267:{27,27}]
-  wire [6:0] _GEN_221 = jHasAlloc & stgData_0_rd == stgData_2_rd ? freeList_io_allocPdest_0_bits : oldPdstRaw_2; // @[src/main/scala/backend/rename/RenameStage.scala 279:21 296:58 297:25]
+  wire [6:0] _GEN_227 = jHasAlloc & stgData_0_rd == stgData_2_rd ? freeList_io_allocPdest_0_bits : oldPdstRaw_2; // @[src/main/scala/backend/rename/RenameStage.scala 279:21 296:58 297:25]
   wire  jHasAlloc_2 = laneValid_1 & needAllocVec_1 & _needAllocVec_T_6; // @[src/main/scala/backend/rename/RenameStage.scala 283:55]
   wire [6:0] prs1Final_2 = jHasAlloc_2 & stgData_1_rd == stgData_2_rj & stgData_2_rs1Valid ?
-    freeList_io_allocPdest_1_bits : _GEN_219; // @[src/main/scala/backend/rename/RenameStage.scala 287:81 288:22]
+    freeList_io_allocPdest_1_bits : _GEN_225; // @[src/main/scala/backend/rename/RenameStage.scala 287:81 288:22]
   wire [6:0] prs2Final_2 = jHasAlloc_2 & stgData_1_rd == stgData_2_rk & stgData_2_rs2Valid ?
-    freeList_io_allocPdest_1_bits : _GEN_220; // @[src/main/scala/backend/rename/RenameStage.scala 291:81 292:22]
-  wire [6:0] oldPdstFinal_2 = jHasAlloc_2 & stgData_1_rd == stgData_2_rd ? freeList_io_allocPdest_1_bits : _GEN_221; // @[src/main/scala/backend/rename/RenameStage.scala 296:58 297:25]
+    freeList_io_allocPdest_1_bits : _GEN_226; // @[src/main/scala/backend/rename/RenameStage.scala 291:81 292:22]
+  wire [6:0] oldPdstFinal_2 = jHasAlloc_2 & stgData_1_rd == stgData_2_rd ? freeList_io_allocPdest_1_bits : _GEN_227; // @[src/main/scala/backend/rename/RenameStage.scala 296:58 297:25]
   reg [5:0] robIdxHead_value; // @[src/main/scala/backend/rename/RenameStage.scala 312:27]
   wire [1:0] _validCount_T_3 = _needAllocVec_T_4 + _needAllocVec_T_8; // @[src/main/scala/backend/rename/RenameStage.scala 320:28]
-  wire [1:0] _GEN_229 = {{1'd0}, _needAllocVec_T}; // @[src/main/scala/backend/rename/RenameStage.scala 320:28]
-  wire [2:0] _validCount_T_5 = _GEN_229 + _validCount_T_3; // @[src/main/scala/backend/rename/RenameStage.scala 320:28]
+  wire [1:0] _GEN_235 = {{1'd0}, _needAllocVec_T}; // @[src/main/scala/backend/rename/RenameStage.scala 320:28]
+  wire [2:0] _validCount_T_5 = _GEN_235 + _validCount_T_3; // @[src/main/scala/backend/rename/RenameStage.scala 320:28]
   wire [1:0] validCount = _validCount_T_5[1:0]; // @[src/main/scala/backend/rename/RenameStage.scala 320:28]
   wire [5:0] _targetValue_T_1 = io_redirect_robIdx + 6'h1; // @[src/main/scala/backend/rename/RenameStage.scala 333:26]
-  wire [5:0] _GEN_230 = {{4'd0}, validCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
-  wire [6:0] robIdxHeadNext_newIncValue = robIdxHead_value + _GEN_230; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire [5:0] _GEN_236 = {{4'd0}, validCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire [6:0] robIdxHeadNext_newIncValue = robIdxHead_value + _GEN_236; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire [5:0] robIdxHeadNext_newPtr_value = robIdxHeadNext_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
   wire [6:0] thisPtr_newIncValue = {{1'd0}, robIdxHead_value}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire [5:0] thisPtr_value = thisPtr_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
-  wire [5:0] _GEN_231 = {{5'd0}, laneValid_0}; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
-  wire [6:0] _T_24 = {{1'd0}, _GEN_231}; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
+  wire [5:0] _GEN_237 = {{5'd0}, laneValid_0}; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
+  wire [6:0] _T_24 = {{1'd0}, _GEN_237}; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
   wire [6:0] thisPtr_newIncValue_1 = robIdxHead_value + _T_24[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
-  wire [5:0] _GEN_232 = {{5'd0}, laneValid_1}; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
-  wire [5:0] _T_27 = _T_24[5:0] + _GEN_232; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
+  wire [5:0] _GEN_238 = {{5'd0}, laneValid_1}; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
+  wire [5:0] _T_27 = _T_24[5:0] + _GEN_238; // @[src/main/scala/backend/rename/RenameStage.scala 350:27]
   wire [6:0] thisPtr_newIncValue_2 = robIdxHead_value + _T_27; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire [6:0] freeList_io_renBrTags_1_bits_newIncValue = robIdxHead_value + 6'h1; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire [5:0] freeList_io_renBrTags_1_bits_newPtr_value = freeList_io_renBrTags_1_bits_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
@@ -688,7 +700,8 @@ module RenameStage(
   assign io_out_0_bits_ctrl_bruOp = stgData_0_ctrl_bruOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_0_bits_ctrl_lsuOp = stgData_0_ctrl_lsuOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_0_bits_ctrl_csrOp = stgData_0_ctrl_csrOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
-  assign io_out_0_bits_ctrl_mulDivOp = stgData_0_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
+  assign io_out_0_bits_ctrl_mulOp = stgData_0_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
+  assign io_out_0_bits_ctrl_divOp = stgData_0_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_0_bits_ctrl_src1Type = stgData_0_ctrl_src1Type; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_0_bits_ctrl_src2Type = stgData_0_ctrl_src2Type; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_0_bits_ctrl_immType = stgData_0_ctrl_immType; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
@@ -728,7 +741,8 @@ module RenameStage(
   assign io_out_1_bits_ctrl_bruOp = stgData_1_ctrl_bruOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_1_bits_ctrl_lsuOp = stgData_1_ctrl_lsuOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_1_bits_ctrl_csrOp = stgData_1_ctrl_csrOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
-  assign io_out_1_bits_ctrl_mulDivOp = stgData_1_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
+  assign io_out_1_bits_ctrl_mulOp = stgData_1_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
+  assign io_out_1_bits_ctrl_divOp = stgData_1_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_1_bits_ctrl_src1Type = stgData_1_ctrl_src1Type; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_1_bits_ctrl_src2Type = stgData_1_ctrl_src2Type; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_1_bits_ctrl_immType = stgData_1_ctrl_immType; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
@@ -768,7 +782,8 @@ module RenameStage(
   assign io_out_2_bits_ctrl_bruOp = stgData_2_ctrl_bruOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_2_bits_ctrl_lsuOp = stgData_2_ctrl_lsuOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_2_bits_ctrl_csrOp = stgData_2_ctrl_csrOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
-  assign io_out_2_bits_ctrl_mulDivOp = stgData_2_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
+  assign io_out_2_bits_ctrl_mulOp = stgData_2_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
+  assign io_out_2_bits_ctrl_divOp = stgData_2_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_2_bits_ctrl_src1Type = stgData_2_ctrl_src1Type; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_2_bits_ctrl_src2Type = stgData_2_ctrl_src2Type; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
   assign io_out_2_bits_ctrl_immType = stgData_2_ctrl_immType; // @[src/main/scala/backend/rename/RenameStage.scala 393:18]
@@ -964,7 +979,12 @@ module RenameStage(
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
       if (inFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 111:22]
-        stgData_0_ctrl_mulDivOp <= io_in_0_bits_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
+        stgData_0_ctrl_mulOp <= io_in_0_bits_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
+      if (inFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 111:22]
+        stgData_0_ctrl_divOp <= io_in_0_bits_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
       end
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
@@ -1134,7 +1154,12 @@ module RenameStage(
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
       if (inFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 111:22]
-        stgData_1_ctrl_mulDivOp <= io_in_1_bits_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
+        stgData_1_ctrl_mulOp <= io_in_1_bits_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
+      if (inFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 111:22]
+        stgData_1_ctrl_divOp <= io_in_1_bits_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
       end
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
@@ -1304,7 +1329,12 @@ module RenameStage(
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
       if (inFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 111:22]
-        stgData_2_ctrl_mulDivOp <= io_in_2_bits_ctrl_mulDivOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
+        stgData_2_ctrl_mulOp <= io_in_2_bits_ctrl_mulOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
+      if (inFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 111:22]
+        stgData_2_ctrl_divOp <= io_in_2_bits_ctrl_divOp; // @[src/main/scala/backend/rename/RenameStage.scala 116:20]
       end
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/rename/RenameStage.scala 105:17]
@@ -1484,181 +1514,187 @@ initial begin
   _RAND_18 = {1{`RANDOM}};
   stgData_0_ctrl_csrOp = _RAND_18[2:0];
   _RAND_19 = {1{`RANDOM}};
-  stgData_0_ctrl_mulDivOp = _RAND_19[3:0];
+  stgData_0_ctrl_mulOp = _RAND_19[2:0];
   _RAND_20 = {1{`RANDOM}};
-  stgData_0_ctrl_src1Type = _RAND_20[2:0];
+  stgData_0_ctrl_divOp = _RAND_20[2:0];
   _RAND_21 = {1{`RANDOM}};
-  stgData_0_ctrl_src2Type = _RAND_21[2:0];
+  stgData_0_ctrl_src1Type = _RAND_21[2:0];
   _RAND_22 = {1{`RANDOM}};
-  stgData_0_ctrl_immType = _RAND_22[3:0];
+  stgData_0_ctrl_src2Type = _RAND_22[2:0];
   _RAND_23 = {1{`RANDOM}};
-  stgData_0_ctrl_rfWen = _RAND_23[0:0];
+  stgData_0_ctrl_immType = _RAND_23[3:0];
   _RAND_24 = {1{`RANDOM}};
-  stgData_0_ctrl_memRead = _RAND_24[0:0];
+  stgData_0_ctrl_rfWen = _RAND_24[0:0];
   _RAND_25 = {1{`RANDOM}};
-  stgData_0_ctrl_memWrite = _RAND_25[0:0];
+  stgData_0_ctrl_memRead = _RAND_25[0:0];
   _RAND_26 = {1{`RANDOM}};
-  stgData_0_ctrl_csrWen = _RAND_26[0:0];
+  stgData_0_ctrl_memWrite = _RAND_26[0:0];
   _RAND_27 = {1{`RANDOM}};
-  stgData_0_ctrl_isBranch = _RAND_27[0:0];
+  stgData_0_ctrl_csrWen = _RAND_27[0:0];
   _RAND_28 = {1{`RANDOM}};
-  stgData_0_ctrl_isJump = _RAND_28[0:0];
+  stgData_0_ctrl_isBranch = _RAND_28[0:0];
   _RAND_29 = {1{`RANDOM}};
-  stgData_0_ctrl_isPriv = _RAND_29[0:0];
+  stgData_0_ctrl_isJump = _RAND_29[0:0];
   _RAND_30 = {1{`RANDOM}};
-  stgData_0_excpVec = _RAND_30[9:0];
+  stgData_0_ctrl_isPriv = _RAND_30[0:0];
   _RAND_31 = {1{`RANDOM}};
-  stgData_0_pdInfo_valid = _RAND_31[0:0];
+  stgData_0_excpVec = _RAND_31[9:0];
   _RAND_32 = {1{`RANDOM}};
-  stgData_0_pdInfo_isBr = _RAND_32[0:0];
+  stgData_0_pdInfo_valid = _RAND_32[0:0];
   _RAND_33 = {1{`RANDOM}};
-  stgData_0_pdInfo_isJal = _RAND_33[0:0];
+  stgData_0_pdInfo_isBr = _RAND_33[0:0];
   _RAND_34 = {1{`RANDOM}};
-  stgData_0_pdInfo_isJalr = _RAND_34[0:0];
+  stgData_0_pdInfo_isJal = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  stgData_0_pdInfo_isCall = _RAND_35[0:0];
+  stgData_0_pdInfo_isJalr = _RAND_35[0:0];
   _RAND_36 = {1{`RANDOM}};
-  stgData_0_pdInfo_isRet = _RAND_36[0:0];
+  stgData_0_pdInfo_isCall = _RAND_36[0:0];
   _RAND_37 = {1{`RANDOM}};
-  stgData_0_pdInfo_jumpTarget = _RAND_37[31:0];
+  stgData_0_pdInfo_isRet = _RAND_37[0:0];
   _RAND_38 = {1{`RANDOM}};
-  stgData_1_pc = _RAND_38[31:0];
+  stgData_0_pdInfo_jumpTarget = _RAND_38[31:0];
   _RAND_39 = {1{`RANDOM}};
-  stgData_1_inst = _RAND_39[31:0];
+  stgData_1_pc = _RAND_39[31:0];
   _RAND_40 = {1{`RANDOM}};
-  stgData_1_rd = _RAND_40[4:0];
+  stgData_1_inst = _RAND_40[31:0];
   _RAND_41 = {1{`RANDOM}};
-  stgData_1_rj = _RAND_41[4:0];
+  stgData_1_rd = _RAND_41[4:0];
   _RAND_42 = {1{`RANDOM}};
-  stgData_1_rk = _RAND_42[4:0];
+  stgData_1_rj = _RAND_42[4:0];
   _RAND_43 = {1{`RANDOM}};
-  stgData_1_rs1Valid = _RAND_43[0:0];
+  stgData_1_rk = _RAND_43[4:0];
   _RAND_44 = {1{`RANDOM}};
-  stgData_1_rs2Valid = _RAND_44[0:0];
+  stgData_1_rs1Valid = _RAND_44[0:0];
   _RAND_45 = {1{`RANDOM}};
-  stgData_1_rdValid = _RAND_45[0:0];
+  stgData_1_rs2Valid = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  stgData_1_csrAddress = _RAND_46[13:0];
+  stgData_1_rdValid = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  stgData_1_imm = _RAND_47[31:0];
+  stgData_1_csrAddress = _RAND_47[13:0];
   _RAND_48 = {1{`RANDOM}};
-  stgData_1_ctrl_fuType = _RAND_48[3:0];
+  stgData_1_imm = _RAND_48[31:0];
   _RAND_49 = {1{`RANDOM}};
-  stgData_1_ctrl_aluOp = _RAND_49[4:0];
+  stgData_1_ctrl_fuType = _RAND_49[3:0];
   _RAND_50 = {1{`RANDOM}};
-  stgData_1_ctrl_bruOp = _RAND_50[3:0];
+  stgData_1_ctrl_aluOp = _RAND_50[4:0];
   _RAND_51 = {1{`RANDOM}};
-  stgData_1_ctrl_lsuOp = _RAND_51[3:0];
+  stgData_1_ctrl_bruOp = _RAND_51[3:0];
   _RAND_52 = {1{`RANDOM}};
-  stgData_1_ctrl_csrOp = _RAND_52[2:0];
+  stgData_1_ctrl_lsuOp = _RAND_52[3:0];
   _RAND_53 = {1{`RANDOM}};
-  stgData_1_ctrl_mulDivOp = _RAND_53[3:0];
+  stgData_1_ctrl_csrOp = _RAND_53[2:0];
   _RAND_54 = {1{`RANDOM}};
-  stgData_1_ctrl_src1Type = _RAND_54[2:0];
+  stgData_1_ctrl_mulOp = _RAND_54[2:0];
   _RAND_55 = {1{`RANDOM}};
-  stgData_1_ctrl_src2Type = _RAND_55[2:0];
+  stgData_1_ctrl_divOp = _RAND_55[2:0];
   _RAND_56 = {1{`RANDOM}};
-  stgData_1_ctrl_immType = _RAND_56[3:0];
+  stgData_1_ctrl_src1Type = _RAND_56[2:0];
   _RAND_57 = {1{`RANDOM}};
-  stgData_1_ctrl_rfWen = _RAND_57[0:0];
+  stgData_1_ctrl_src2Type = _RAND_57[2:0];
   _RAND_58 = {1{`RANDOM}};
-  stgData_1_ctrl_memRead = _RAND_58[0:0];
+  stgData_1_ctrl_immType = _RAND_58[3:0];
   _RAND_59 = {1{`RANDOM}};
-  stgData_1_ctrl_memWrite = _RAND_59[0:0];
+  stgData_1_ctrl_rfWen = _RAND_59[0:0];
   _RAND_60 = {1{`RANDOM}};
-  stgData_1_ctrl_csrWen = _RAND_60[0:0];
+  stgData_1_ctrl_memRead = _RAND_60[0:0];
   _RAND_61 = {1{`RANDOM}};
-  stgData_1_ctrl_isBranch = _RAND_61[0:0];
+  stgData_1_ctrl_memWrite = _RAND_61[0:0];
   _RAND_62 = {1{`RANDOM}};
-  stgData_1_ctrl_isJump = _RAND_62[0:0];
+  stgData_1_ctrl_csrWen = _RAND_62[0:0];
   _RAND_63 = {1{`RANDOM}};
-  stgData_1_ctrl_isPriv = _RAND_63[0:0];
+  stgData_1_ctrl_isBranch = _RAND_63[0:0];
   _RAND_64 = {1{`RANDOM}};
-  stgData_1_excpVec = _RAND_64[9:0];
+  stgData_1_ctrl_isJump = _RAND_64[0:0];
   _RAND_65 = {1{`RANDOM}};
-  stgData_1_pdInfo_valid = _RAND_65[0:0];
+  stgData_1_ctrl_isPriv = _RAND_65[0:0];
   _RAND_66 = {1{`RANDOM}};
-  stgData_1_pdInfo_isBr = _RAND_66[0:0];
+  stgData_1_excpVec = _RAND_66[9:0];
   _RAND_67 = {1{`RANDOM}};
-  stgData_1_pdInfo_isJal = _RAND_67[0:0];
+  stgData_1_pdInfo_valid = _RAND_67[0:0];
   _RAND_68 = {1{`RANDOM}};
-  stgData_1_pdInfo_isJalr = _RAND_68[0:0];
+  stgData_1_pdInfo_isBr = _RAND_68[0:0];
   _RAND_69 = {1{`RANDOM}};
-  stgData_1_pdInfo_isCall = _RAND_69[0:0];
+  stgData_1_pdInfo_isJal = _RAND_69[0:0];
   _RAND_70 = {1{`RANDOM}};
-  stgData_1_pdInfo_isRet = _RAND_70[0:0];
+  stgData_1_pdInfo_isJalr = _RAND_70[0:0];
   _RAND_71 = {1{`RANDOM}};
-  stgData_1_pdInfo_jumpTarget = _RAND_71[31:0];
+  stgData_1_pdInfo_isCall = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  stgData_2_pc = _RAND_72[31:0];
+  stgData_1_pdInfo_isRet = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
-  stgData_2_inst = _RAND_73[31:0];
+  stgData_1_pdInfo_jumpTarget = _RAND_73[31:0];
   _RAND_74 = {1{`RANDOM}};
-  stgData_2_rd = _RAND_74[4:0];
+  stgData_2_pc = _RAND_74[31:0];
   _RAND_75 = {1{`RANDOM}};
-  stgData_2_rj = _RAND_75[4:0];
+  stgData_2_inst = _RAND_75[31:0];
   _RAND_76 = {1{`RANDOM}};
-  stgData_2_rk = _RAND_76[4:0];
+  stgData_2_rd = _RAND_76[4:0];
   _RAND_77 = {1{`RANDOM}};
-  stgData_2_rs1Valid = _RAND_77[0:0];
+  stgData_2_rj = _RAND_77[4:0];
   _RAND_78 = {1{`RANDOM}};
-  stgData_2_rs2Valid = _RAND_78[0:0];
+  stgData_2_rk = _RAND_78[4:0];
   _RAND_79 = {1{`RANDOM}};
-  stgData_2_rdValid = _RAND_79[0:0];
+  stgData_2_rs1Valid = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  stgData_2_csrAddress = _RAND_80[13:0];
+  stgData_2_rs2Valid = _RAND_80[0:0];
   _RAND_81 = {1{`RANDOM}};
-  stgData_2_imm = _RAND_81[31:0];
+  stgData_2_rdValid = _RAND_81[0:0];
   _RAND_82 = {1{`RANDOM}};
-  stgData_2_ctrl_fuType = _RAND_82[3:0];
+  stgData_2_csrAddress = _RAND_82[13:0];
   _RAND_83 = {1{`RANDOM}};
-  stgData_2_ctrl_aluOp = _RAND_83[4:0];
+  stgData_2_imm = _RAND_83[31:0];
   _RAND_84 = {1{`RANDOM}};
-  stgData_2_ctrl_bruOp = _RAND_84[3:0];
+  stgData_2_ctrl_fuType = _RAND_84[3:0];
   _RAND_85 = {1{`RANDOM}};
-  stgData_2_ctrl_lsuOp = _RAND_85[3:0];
+  stgData_2_ctrl_aluOp = _RAND_85[4:0];
   _RAND_86 = {1{`RANDOM}};
-  stgData_2_ctrl_csrOp = _RAND_86[2:0];
+  stgData_2_ctrl_bruOp = _RAND_86[3:0];
   _RAND_87 = {1{`RANDOM}};
-  stgData_2_ctrl_mulDivOp = _RAND_87[3:0];
+  stgData_2_ctrl_lsuOp = _RAND_87[3:0];
   _RAND_88 = {1{`RANDOM}};
-  stgData_2_ctrl_src1Type = _RAND_88[2:0];
+  stgData_2_ctrl_csrOp = _RAND_88[2:0];
   _RAND_89 = {1{`RANDOM}};
-  stgData_2_ctrl_src2Type = _RAND_89[2:0];
+  stgData_2_ctrl_mulOp = _RAND_89[2:0];
   _RAND_90 = {1{`RANDOM}};
-  stgData_2_ctrl_immType = _RAND_90[3:0];
+  stgData_2_ctrl_divOp = _RAND_90[2:0];
   _RAND_91 = {1{`RANDOM}};
-  stgData_2_ctrl_rfWen = _RAND_91[0:0];
+  stgData_2_ctrl_src1Type = _RAND_91[2:0];
   _RAND_92 = {1{`RANDOM}};
-  stgData_2_ctrl_memRead = _RAND_92[0:0];
+  stgData_2_ctrl_src2Type = _RAND_92[2:0];
   _RAND_93 = {1{`RANDOM}};
-  stgData_2_ctrl_memWrite = _RAND_93[0:0];
+  stgData_2_ctrl_immType = _RAND_93[3:0];
   _RAND_94 = {1{`RANDOM}};
-  stgData_2_ctrl_csrWen = _RAND_94[0:0];
+  stgData_2_ctrl_rfWen = _RAND_94[0:0];
   _RAND_95 = {1{`RANDOM}};
-  stgData_2_ctrl_isBranch = _RAND_95[0:0];
+  stgData_2_ctrl_memRead = _RAND_95[0:0];
   _RAND_96 = {1{`RANDOM}};
-  stgData_2_ctrl_isJump = _RAND_96[0:0];
+  stgData_2_ctrl_memWrite = _RAND_96[0:0];
   _RAND_97 = {1{`RANDOM}};
-  stgData_2_ctrl_isPriv = _RAND_97[0:0];
+  stgData_2_ctrl_csrWen = _RAND_97[0:0];
   _RAND_98 = {1{`RANDOM}};
-  stgData_2_excpVec = _RAND_98[9:0];
+  stgData_2_ctrl_isBranch = _RAND_98[0:0];
   _RAND_99 = {1{`RANDOM}};
-  stgData_2_pdInfo_valid = _RAND_99[0:0];
+  stgData_2_ctrl_isJump = _RAND_99[0:0];
   _RAND_100 = {1{`RANDOM}};
-  stgData_2_pdInfo_isBr = _RAND_100[0:0];
+  stgData_2_ctrl_isPriv = _RAND_100[0:0];
   _RAND_101 = {1{`RANDOM}};
-  stgData_2_pdInfo_isJal = _RAND_101[0:0];
+  stgData_2_excpVec = _RAND_101[9:0];
   _RAND_102 = {1{`RANDOM}};
-  stgData_2_pdInfo_isJalr = _RAND_102[0:0];
+  stgData_2_pdInfo_valid = _RAND_102[0:0];
   _RAND_103 = {1{`RANDOM}};
-  stgData_2_pdInfo_isCall = _RAND_103[0:0];
+  stgData_2_pdInfo_isBr = _RAND_103[0:0];
   _RAND_104 = {1{`RANDOM}};
-  stgData_2_pdInfo_isRet = _RAND_104[0:0];
+  stgData_2_pdInfo_isJal = _RAND_104[0:0];
   _RAND_105 = {1{`RANDOM}};
-  stgData_2_pdInfo_jumpTarget = _RAND_105[31:0];
+  stgData_2_pdInfo_isJalr = _RAND_105[0:0];
   _RAND_106 = {1{`RANDOM}};
-  robIdxHead_value = _RAND_106[5:0];
+  stgData_2_pdInfo_isCall = _RAND_106[0:0];
+  _RAND_107 = {1{`RANDOM}};
+  stgData_2_pdInfo_isRet = _RAND_107[0:0];
+  _RAND_108 = {1{`RANDOM}};
+  stgData_2_pdInfo_jumpTarget = _RAND_108[31:0];
+  _RAND_109 = {1{`RANDOM}};
+  robIdxHead_value = _RAND_109[5:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

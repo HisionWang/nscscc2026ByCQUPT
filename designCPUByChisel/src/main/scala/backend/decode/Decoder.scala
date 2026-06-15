@@ -4,13 +4,14 @@ import chisel3._
 import chisel3.util._
 import nscscc.config.{NSModule, Parameters}
 import nscscc.frontend.CtrlFlowIO
+import firrtl.PrimOps.Div
 
 object DecodeTable {
   private val y = 1.U(1.W)
   private val n = 0.U(1.W)
 
   val default: List[UInt] = List(
-    n, FuType.none, AluOp.add, BruOp.none, LsuOp.none, CsrOp.none, MulDivOp.none,
+    n, FuType.none, AluOp.add, BruOp.none, LsuOp.none, CsrOp.none, MulOp.none, DivOp.none,
     SrcType.none, SrcType.none, ImmType.none,
     n, n, n, n, n, n, n, y
   )
@@ -21,7 +22,8 @@ object DecodeTable {
     bruOp: UInt = BruOp.none,
     lsuOp: UInt = LsuOp.none,
     csrOp: UInt = CsrOp.none,
-    mulDivOp: UInt = MulDivOp.none,
+    mulOp: UInt = MulOp.none,
+    divOp: UInt = DivOp.none,
     src1Type: UInt = SrcType.reg,
     src2Type: UInt = SrcType.reg,
     immType: UInt = ImmType.none,
@@ -33,7 +35,7 @@ object DecodeTable {
     isJump: UInt = n,
     isPriv: UInt = n
   ): List[UInt] = List(
-    y, fuType, aluOp, bruOp, lsuOp, csrOp, mulDivOp,
+    y, fuType, aluOp, bruOp, lsuOp, csrOp, mulOp, divOp,
     src1Type, src2Type, immType,
     rfWen, memRead, memWrite, csrWen, isBranch, isJump, isPriv, n
   )
@@ -51,13 +53,13 @@ object DecodeTable {
     BitPat("b00000000000101111???????????????") -> ctrl(FuType.alu, aluOp = AluOp.srl),
     BitPat("b00000000000110000???????????????") -> ctrl(FuType.alu, aluOp = AluOp.sra),
 
-    BitPat("b00000000000111000???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.mul),
-    BitPat("b00000000000111001???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.mulh),
-    BitPat("b00000000000111010???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.mulhu),
-    BitPat("b00000000001000000???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.div),
-    BitPat("b00000000001000001???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.mod),
-    BitPat("b00000000001000010???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.divu),
-    BitPat("b00000000001000011???????????????") -> ctrl(FuType.mulDiv, mulDivOp = MulDivOp.modu),
+    BitPat("b00000000000111000???????????????") -> ctrl(FuType.mul, mulOp = MulOp.mul),
+    BitPat("b00000000000111001???????????????") -> ctrl(FuType.mul, mulOp = MulOp.mulh),
+    BitPat("b00000000000111010???????????????") -> ctrl(FuType.mul, mulOp = MulOp.mulhu),
+    BitPat("b00000000001000000???????????????") -> ctrl(FuType.div, divOp = DivOp.div),
+    BitPat("b00000000001000001???????????????") -> ctrl(FuType.div, divOp = DivOp.mod),
+    BitPat("b00000000001000010???????????????") -> ctrl(FuType.div, divOp = DivOp.divu),
+    BitPat("b00000000001000011???????????????") -> ctrl(FuType.div, divOp = DivOp.modu),
 
     BitPat("b00000000010000001???????????????") -> ctrl(FuType.alu, aluOp = AluOp.sll, src2Type = SrcType.imm, immType = ImmType.ui5),
     BitPat("b00000000010001001???????????????") -> ctrl(FuType.alu, aluOp = AluOp.srl, src2Type = SrcType.imm, immType = ImmType.ui5),
@@ -138,18 +140,19 @@ class Decoder(implicit p: Parameters) extends NSModule {
   val bruOp    = decoded(3)
   val lsuOp    = decoded(4)
   val csrOp    = decoded(5)
-  val mulDivOp = decoded(6)
-  val src1Type = decoded(7)
-  val src2Type = decoded(8)
-  val immType  = decoded(9)           // 恢复为 4-bit 的 immType
-  val rfWen    = decoded(10).asBool   // 恢复为 1-bit 的 rfWen
-  val memRead  = decoded(11).asBool
-  val memWrite = decoded(12).asBool
-  val csrWen   = decoded(13).asBool
-  val isBranch = decoded(14).asBool
-  val isJump   = decoded(15).asBool
-  val isPriv   = decoded(16).asBool
-  val isIllegalBase = decoded(17).asBool // 原默认列表的最后一项
+  val mulOp = decoded(6)
+  val divOp = decoded(7)
+  val src1Type = decoded(8)
+  val src2Type = decoded(9)
+  val immType  = decoded(10)           // 恢复为 4-bit 的 immType
+  val rfWen    = decoded(11).asBool   // 恢复为 1-bit 的 rfWen
+  val memRead  = decoded(12).asBool
+  val memWrite = decoded(13).asBool
+  val csrWen   = decoded(14).asBool
+  val isBranch = decoded(15).asBool
+  val isJump   = decoded(16).asBool
+  val isPriv   = decoded(17).asBool
+  val isIllegalBase = decoded(18).asBool // 原默认列表的最后一项
 
   // ===========================================================
   // 4. 有效寄存器计算
@@ -195,7 +198,8 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.ctrl.bruOp    := bruOp
   io.out.ctrl.lsuOp    := lsuOp
   io.out.ctrl.csrOp    := csrOp
-  io.out.ctrl.mulDivOp := mulDivOp
+  io.out.ctrl.mulOp := mulOp
+  io.out.ctrl.divOp := divOp
   io.out.ctrl.src1Type := src1Type
   io.out.ctrl.src2Type := src2Type
   io.out.ctrl.immType  := immType

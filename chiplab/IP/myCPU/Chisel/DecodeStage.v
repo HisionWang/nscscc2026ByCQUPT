@@ -63,7 +63,8 @@ module DecodeStage(
   output [3:0]  io_out_0_bits_ctrl_bruOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [3:0]  io_out_0_bits_ctrl_lsuOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_0_bits_ctrl_csrOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
-  output [3:0]  io_out_0_bits_ctrl_mulDivOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
+  output [2:0]  io_out_0_bits_ctrl_mulOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
+  output [2:0]  io_out_0_bits_ctrl_divOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_0_bits_ctrl_src1Type, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_0_bits_ctrl_src2Type, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [3:0]  io_out_0_bits_ctrl_immType, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
@@ -99,7 +100,8 @@ module DecodeStage(
   output [3:0]  io_out_1_bits_ctrl_bruOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [3:0]  io_out_1_bits_ctrl_lsuOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_1_bits_ctrl_csrOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
-  output [3:0]  io_out_1_bits_ctrl_mulDivOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
+  output [2:0]  io_out_1_bits_ctrl_mulOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
+  output [2:0]  io_out_1_bits_ctrl_divOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_1_bits_ctrl_src1Type, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_1_bits_ctrl_src2Type, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [3:0]  io_out_1_bits_ctrl_immType, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
@@ -135,7 +137,8 @@ module DecodeStage(
   output [3:0]  io_out_2_bits_ctrl_bruOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [3:0]  io_out_2_bits_ctrl_lsuOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_2_bits_ctrl_csrOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
-  output [3:0]  io_out_2_bits_ctrl_mulDivOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
+  output [2:0]  io_out_2_bits_ctrl_mulOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
+  output [2:0]  io_out_2_bits_ctrl_divOp, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_2_bits_ctrl_src1Type, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [2:0]  io_out_2_bits_ctrl_src2Type, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
   output [3:0]  io_out_2_bits_ctrl_immType, // @[src/main/scala/backend/decode/DecodeStage.scala 9:14]
@@ -237,7 +240,8 @@ module DecodeStage(
   wire [3:0] decoder_io_out_ctrl_bruOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [3:0] decoder_io_out_ctrl_lsuOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_io_out_ctrl_csrOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
-  wire [3:0] decoder_io_out_ctrl_mulDivOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
+  wire [2:0] decoder_io_out_ctrl_mulOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
+  wire [2:0] decoder_io_out_ctrl_divOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_io_out_ctrl_src1Type; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_io_out_ctrl_src2Type; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [3:0] decoder_io_out_ctrl_immType; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
@@ -285,7 +289,8 @@ module DecodeStage(
   wire [3:0] decoder_1_io_out_ctrl_bruOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [3:0] decoder_1_io_out_ctrl_lsuOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_1_io_out_ctrl_csrOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
-  wire [3:0] decoder_1_io_out_ctrl_mulDivOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
+  wire [2:0] decoder_1_io_out_ctrl_mulOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
+  wire [2:0] decoder_1_io_out_ctrl_divOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_1_io_out_ctrl_src1Type; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_1_io_out_ctrl_src2Type; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [3:0] decoder_1_io_out_ctrl_immType; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
@@ -333,7 +338,8 @@ module DecodeStage(
   wire [3:0] decoder_2_io_out_ctrl_bruOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [3:0] decoder_2_io_out_ctrl_lsuOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_2_io_out_ctrl_csrOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
-  wire [3:0] decoder_2_io_out_ctrl_mulDivOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
+  wire [2:0] decoder_2_io_out_ctrl_mulOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
+  wire [2:0] decoder_2_io_out_ctrl_divOp; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_2_io_out_ctrl_src1Type; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [2:0] decoder_2_io_out_ctrl_src2Type; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
   wire [3:0] decoder_2_io_out_ctrl_immType; // @[src/main/scala/backend/decode/DecodeStage.scala 64:25]
@@ -433,7 +439,8 @@ module DecodeStage(
     .io_out_ctrl_bruOp(decoder_io_out_ctrl_bruOp),
     .io_out_ctrl_lsuOp(decoder_io_out_ctrl_lsuOp),
     .io_out_ctrl_csrOp(decoder_io_out_ctrl_csrOp),
-    .io_out_ctrl_mulDivOp(decoder_io_out_ctrl_mulDivOp),
+    .io_out_ctrl_mulOp(decoder_io_out_ctrl_mulOp),
+    .io_out_ctrl_divOp(decoder_io_out_ctrl_divOp),
     .io_out_ctrl_src1Type(decoder_io_out_ctrl_src1Type),
     .io_out_ctrl_src2Type(decoder_io_out_ctrl_src2Type),
     .io_out_ctrl_immType(decoder_io_out_ctrl_immType),
@@ -483,7 +490,8 @@ module DecodeStage(
     .io_out_ctrl_bruOp(decoder_1_io_out_ctrl_bruOp),
     .io_out_ctrl_lsuOp(decoder_1_io_out_ctrl_lsuOp),
     .io_out_ctrl_csrOp(decoder_1_io_out_ctrl_csrOp),
-    .io_out_ctrl_mulDivOp(decoder_1_io_out_ctrl_mulDivOp),
+    .io_out_ctrl_mulOp(decoder_1_io_out_ctrl_mulOp),
+    .io_out_ctrl_divOp(decoder_1_io_out_ctrl_divOp),
     .io_out_ctrl_src1Type(decoder_1_io_out_ctrl_src1Type),
     .io_out_ctrl_src2Type(decoder_1_io_out_ctrl_src2Type),
     .io_out_ctrl_immType(decoder_1_io_out_ctrl_immType),
@@ -533,7 +541,8 @@ module DecodeStage(
     .io_out_ctrl_bruOp(decoder_2_io_out_ctrl_bruOp),
     .io_out_ctrl_lsuOp(decoder_2_io_out_ctrl_lsuOp),
     .io_out_ctrl_csrOp(decoder_2_io_out_ctrl_csrOp),
-    .io_out_ctrl_mulDivOp(decoder_2_io_out_ctrl_mulDivOp),
+    .io_out_ctrl_mulOp(decoder_2_io_out_ctrl_mulOp),
+    .io_out_ctrl_divOp(decoder_2_io_out_ctrl_divOp),
     .io_out_ctrl_src1Type(decoder_2_io_out_ctrl_src1Type),
     .io_out_ctrl_src2Type(decoder_2_io_out_ctrl_src2Type),
     .io_out_ctrl_immType(decoder_2_io_out_ctrl_immType),
@@ -572,7 +581,8 @@ module DecodeStage(
   assign io_out_0_bits_ctrl_bruOp = decoder_io_out_ctrl_bruOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_0_bits_ctrl_lsuOp = decoder_io_out_ctrl_lsuOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_0_bits_ctrl_csrOp = decoder_io_out_ctrl_csrOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
-  assign io_out_0_bits_ctrl_mulDivOp = decoder_io_out_ctrl_mulDivOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
+  assign io_out_0_bits_ctrl_mulOp = decoder_io_out_ctrl_mulOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
+  assign io_out_0_bits_ctrl_divOp = decoder_io_out_ctrl_divOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_0_bits_ctrl_src1Type = decoder_io_out_ctrl_src1Type; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_0_bits_ctrl_src2Type = decoder_io_out_ctrl_src2Type; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_0_bits_ctrl_immType = decoder_io_out_ctrl_immType; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
@@ -607,7 +617,8 @@ module DecodeStage(
   assign io_out_1_bits_ctrl_bruOp = decoder_1_io_out_ctrl_bruOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_1_bits_ctrl_lsuOp = decoder_1_io_out_ctrl_lsuOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_1_bits_ctrl_csrOp = decoder_1_io_out_ctrl_csrOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
-  assign io_out_1_bits_ctrl_mulDivOp = decoder_1_io_out_ctrl_mulDivOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
+  assign io_out_1_bits_ctrl_mulOp = decoder_1_io_out_ctrl_mulOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
+  assign io_out_1_bits_ctrl_divOp = decoder_1_io_out_ctrl_divOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_1_bits_ctrl_src1Type = decoder_1_io_out_ctrl_src1Type; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_1_bits_ctrl_src2Type = decoder_1_io_out_ctrl_src2Type; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_1_bits_ctrl_immType = decoder_1_io_out_ctrl_immType; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
@@ -642,7 +653,8 @@ module DecodeStage(
   assign io_out_2_bits_ctrl_bruOp = decoder_2_io_out_ctrl_bruOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_2_bits_ctrl_lsuOp = decoder_2_io_out_ctrl_lsuOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_2_bits_ctrl_csrOp = decoder_2_io_out_ctrl_csrOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
-  assign io_out_2_bits_ctrl_mulDivOp = decoder_2_io_out_ctrl_mulDivOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
+  assign io_out_2_bits_ctrl_mulOp = decoder_2_io_out_ctrl_mulOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
+  assign io_out_2_bits_ctrl_divOp = decoder_2_io_out_ctrl_divOp; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_2_bits_ctrl_src1Type = decoder_2_io_out_ctrl_src1Type; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_2_bits_ctrl_src2Type = decoder_2_io_out_ctrl_src2Type; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]
   assign io_out_2_bits_ctrl_immType = decoder_2_io_out_ctrl_immType; // @[src/main/scala/backend/decode/DecodeStage.scala 72:21]

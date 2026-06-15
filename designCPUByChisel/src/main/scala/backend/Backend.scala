@@ -29,18 +29,18 @@ class Backend(implicit p: Parameters) extends NSModule {
   io.redirect := ctrlBlock.io.redirect
  
   // ── IQ 入队端口：暂不外传，dontTouch 保留调试可见性 ──
-  dontTouch(ctrlBlock.io.aluIQEnq)
-  dontTouch(ctrlBlock.io.bruIQEnq)
-  dontTouch(ctrlBlock.io.mulDivIQEnq)
-  dontTouch(ctrlBlock.io.loadStaIQEnq)
-  dontTouch(ctrlBlock.io.stdIQEnq)
+  dontTouch(ctrlBlock.io.q1IQEnq)
+  dontTouch(ctrlBlock.io.q2IQEnq)
+  dontTouch(ctrlBlock.io.q3IQEnq)
+  dontTouch(ctrlBlock.io.q4IQEnq)
+  dontTouch(ctrlBlock.io.q5IQEnq)
  
   // ── IQ 反馈：当前所有队列默认可接收最大端口数 ──
-  ctrlBlock.io.iqFeedback.aluCanAccept     := IQEnqPorts.ALU.U
-  ctrlBlock.io.iqFeedback.bruCanAccept     := IQEnqPorts.BRU.U
-  ctrlBlock.io.iqFeedback.mulDivCanAccept  := IQEnqPorts.MULDIV.U
-  ctrlBlock.io.iqFeedback.loadStaCanAccept := IQEnqPorts.LOADSTA.U
-  ctrlBlock.io.iqFeedback.stdCanAccept     := IQEnqPorts.STD.U
+  ctrlBlock.io.iqFeedback.q1FreeEntries     := 3.U
+  ctrlBlock.io.iqFeedback.q2FreeEntries     := 1.U
+  ctrlBlock.io.iqFeedback.q3FreeEntries     := 2.U
+  ctrlBlock.io.iqFeedback.q4FreeEntries     := IQEnqPorts.Q4.U
+  ctrlBlock.io.iqFeedback.q5FreeEntries     := IQEnqPorts.Q5.U
  
   // ── LSQ：当前未实现，LQ/SQ 默认不满 ──
   ctrlBlock.io.lsEnq.lqFull := false.B
