@@ -11,7 +11,7 @@ source env.sh
 
 有什么笔记的话写好放在doc里面
 
-## 4月5日 王豪：
+## 4月5日
 
 我这边chiplab那些工具链（toolchains）应该都是搭建好了的，应该可以正常用
 
@@ -22,11 +22,11 @@ source env.sh
 目前我的chisel框架大致搭建好了，就在designCPUbyChisel里面，现在是一坨AI生成的代码
 但是可以成功转换成v，有可行性，里面也有黑盒，你们可以去看一下
 
-## 4月7日 王豪：
+## 4月7日
 
 把chisel中的difftest模块加上了
 
-## 4月13日 王豪：
+## 4月13日
 
 1. 把香山/Rocket的传参的方法加进去了（nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/config）
     后面参数的传递应该就很方便了，直接可以在designCPUByChisel/src/main/scala/config/NSCore.scala或者designCPUByChisel/src/main/scala/config/Arch.scala  
@@ -36,14 +36,14 @@ source env.sh
 
 **修改之后sbt、仿真未见错误**
 
-## 4月15日 王豪：
+## 4月15日
 注意写代码的时候，各种变量名不要和Parameters里面的定义的东西一样！！这个报错很难找到是这样，这样搞不会很明显得报错  
 然后把Icache的流水架构稍微用AI仿照香山的Icache架构写了一下，虽然逻辑是依托  
 但代码里应该还存在问题，非语法错误，但属于Verilog中的连线错误。  
 （verilog的连线错误只有在编译时才看得出来，但是对于语法错误：写chisel的时候一定要配metals，百分之99.99的语法错误可以在写的时候解决，不像verilog编译的时候才检测得出语法错误）  
 并且还把AXI的AXI3MasterIO和AXI3SlaveIO整理清晰了
 
-## 4月16日 王豪：
+## 4月16日
 解决了目前模块中所有的连线错误，稍微跑出来的一点波形，Icache的逻辑还没看，不过AXI桥的逻辑应该对的（也没对完）  
 学到了：
 1. Chisel库中自带的Arbiter使用方法
@@ -53,13 +53,28 @@ source env.sh
 > 在Chisel生成的代码将保存在myCPU/Chisel文件夹中
 > 但这样的话，用VERILATOR仿真的话，就得在makefile里面的VERILATOR_INCLUDE和VERILATOR_SRC加上/Chisel文件夹了
 
-## 4月底 王豪：
+## 4月底
 Icache的大致流水线都做好了
 核心代码在CachePipe流水线中
 分成了很多级的流水线，每一级干不同的事情，并且还有bypass路径，每一级干不同的事情
 在Icache中uncahe访问和miss访问用同一个通道，用同一个状态机控制
 在目前的开发阶段而言效果已经已经达到了理想状态
+## 5月
+？玩了一个月？
+不是玩，没空
 
 ## 6月1日这周：
 这周最大的成就就是
 创建好了环形队列~
+
+## 截至6月中旬（6月15日）
+6月前两周的进度还是挺快
+### 1.前端（第一周）
+- 整体流水线通路顺利打通，包括BPU-IFU-ICache & bpuQ-predecode-IBF，功能正确
+- BPU的读数据换成了BlockMemory式的读（下一周期出数据）
+- 初步的mmu接入，有小性能问题但功能完好
+### 2.后端顺序部分ctrlBlock（第二周）
+- 整体流水线打通 decode-rename-dispatch
+- 重要组件包括 freelist、Rat、Rob等
+- 发射队列有五个，目前只接好了接口
+- 重点优化了dispatch的分发到各个端口的逻辑
