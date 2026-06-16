@@ -725,7 +725,7 @@ module RenameStage(
   assign io_out_0_bits_lrs2 = stgData_0_ctrl_memWrite ? stgData_0_rd : stgData_0_rk; // @[src/main/scala/backend/rename/RenameStage.scala 415:18]
   assign io_out_0_bits_pdst = needAllocVec_0 ? freeList_io_allocPdest_0_bits : 7'h0; // @[src/main/scala/backend/rename/RenameStage.scala 423:18]
   assign io_out_0_bits_prs1 = stgData_0_rj == 5'h0 | ~stgData_0_rs1Valid ? 7'h0 : prs1Raw_0; // @[src/main/scala/backend/rename/RenameStage.scala 419:18]
-  assign io_out_0_bits_prs2 = stgData_0_rk == 5'h0 | ~stgData_0_rs2Valid ? 7'h0 : prs2Raw_0; // @[src/main/scala/backend/rename/RenameStage.scala 421:18]
+  assign io_out_0_bits_prs2 = stgData_0_rk == 5'h0 & ~stgData_0_ctrl_memWrite | ~stgData_0_rs2Valid ? 7'h0 : prs2Raw_0; // @[src/main/scala/backend/rename/RenameStage.scala 421:18]
   assign io_out_0_bits_oldPdst = needAllocVec_0 & _needAllocVec_T_2 ? oldPdstRaw_0 : 7'h0; // @[src/main/scala/backend/rename/RenameStage.scala 424:21]
   assign io_out_0_bits_rs1Valid = stgData_0_rs1Valid; // @[src/main/scala/backend/rename/RenameStage.scala 428:16]
   assign io_out_0_bits_rs2Valid = stgData_0_rs2Valid; // @[src/main/scala/backend/rename/RenameStage.scala 429:16]
@@ -766,7 +766,8 @@ module RenameStage(
   assign io_out_1_bits_lrs2 = stgData_1_ctrl_memWrite ? stgData_1_rd : stgData_1_rk; // @[src/main/scala/backend/rename/RenameStage.scala 415:18]
   assign io_out_1_bits_pdst = needAllocVec_1 ? freeList_io_allocPdest_1_bits : 7'h0; // @[src/main/scala/backend/rename/RenameStage.scala 423:18]
   assign io_out_1_bits_prs1 = stgData_1_rj == 5'h0 | ~stgData_1_rs1Valid ? 7'h0 : prs1Final_1; // @[src/main/scala/backend/rename/RenameStage.scala 419:18]
-  assign io_out_1_bits_prs2 = stgData_1_rk == 5'h0 | ~stgData_1_rs2Valid ? 7'h0 : prs2Final_1; // @[src/main/scala/backend/rename/RenameStage.scala 421:18]
+  assign io_out_1_bits_prs2 = stgData_1_rk == 5'h0 & ~stgData_1_ctrl_memWrite | ~stgData_1_rs2Valid ? 7'h0 : prs2Final_1
+    ; // @[src/main/scala/backend/rename/RenameStage.scala 421:18]
   assign io_out_1_bits_oldPdst = needAllocVec_1 & _needAllocVec_T_6 ? oldPdstFinal_1 : 7'h0; // @[src/main/scala/backend/rename/RenameStage.scala 424:21]
   assign io_out_1_bits_rs1Valid = stgData_1_rs1Valid; // @[src/main/scala/backend/rename/RenameStage.scala 428:16]
   assign io_out_1_bits_rs2Valid = stgData_1_rs2Valid; // @[src/main/scala/backend/rename/RenameStage.scala 429:16]
@@ -807,7 +808,8 @@ module RenameStage(
   assign io_out_2_bits_lrs2 = stgData_2_ctrl_memWrite ? stgData_2_rd : stgData_2_rk; // @[src/main/scala/backend/rename/RenameStage.scala 415:18]
   assign io_out_2_bits_pdst = needAllocVec_2 ? freeList_io_allocPdest_2_bits : 7'h0; // @[src/main/scala/backend/rename/RenameStage.scala 423:18]
   assign io_out_2_bits_prs1 = stgData_2_rj == 5'h0 | ~stgData_2_rs1Valid ? 7'h0 : prs1Final_2; // @[src/main/scala/backend/rename/RenameStage.scala 419:18]
-  assign io_out_2_bits_prs2 = stgData_2_rk == 5'h0 | ~stgData_2_rs2Valid ? 7'h0 : prs2Final_2; // @[src/main/scala/backend/rename/RenameStage.scala 421:18]
+  assign io_out_2_bits_prs2 = stgData_2_rk == 5'h0 & ~stgData_2_ctrl_memWrite | ~stgData_2_rs2Valid ? 7'h0 : prs2Final_2
+    ; // @[src/main/scala/backend/rename/RenameStage.scala 421:18]
   assign io_out_2_bits_oldPdst = needAllocVec_2 & _needAllocVec_T_10 ? oldPdstFinal_2 : 7'h0; // @[src/main/scala/backend/rename/RenameStage.scala 424:21]
   assign io_out_2_bits_rs1Valid = stgData_2_rs1Valid; // @[src/main/scala/backend/rename/RenameStage.scala 428:16]
   assign io_out_2_bits_rs2Valid = stgData_2_rs2Valid; // @[src/main/scala/backend/rename/RenameStage.scala 429:16]

@@ -418,7 +418,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // r0 固定映射 p0（值恒为 0），不需要读 RAT
     u.prs1 := Mux(stgData(i).rj === 0.U || !stgData(i).rs1Valid,
                   0.U, prs1Final(i))
-    u.prs2 := Mux(stgData(i).rk === 0.U || !stgData(i).rs2Valid,
+    u.prs2 := Mux( (stgData(i).rk === 0.U && !stgData(i).ctrl.memWrite) || !stgData(i).rs2Valid,
                   0.U, prs2Final(i))
     u.pdst := Mux(needAllocVec(i), freeList.io.allocPdest(i).bits, 0.U)
     u.oldPdst := Mux(needAllocVec(i) && stgData(i).rd =/= 0.U,
