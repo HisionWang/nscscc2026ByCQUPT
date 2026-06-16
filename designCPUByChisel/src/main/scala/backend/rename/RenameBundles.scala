@@ -63,7 +63,7 @@ class RobCommitInfo(implicit p: Parameters) extends NSBundle {
 class RedirectInfo(implicit p: Parameters) extends NSBundle {
   val valid     = Bool()
   val robIdx    = UInt(log2Ceil(RobSize).W)   // 误预测指令的 ROB 索引
-  val flushSelf = Bool()                      // 是否冲刷误预测指令本身
+  //val flushSelf = Bool()                      // 是否冲刷误预测指令本身
 }
  
 // ================================================================
@@ -105,21 +105,21 @@ class RatWritePort(implicit p: Parameters) extends NSBundle {
 // ================================================================
 //  RenameStage IO
 // ================================================================
-class RenameStageIO(implicit p: Parameters) extends NSBundle {
-  // ── 来自译码级 ──
-  val in      = Vec(CtrlBlockWidth, Flipped(Decoupled(new DecodedInst)))
-  // ── 译码级给出的 RAT 读请求（T0 组合信号，直接接入 RAT） ──
-  val ratRead = Vec(CtrlBlockWidth, Flipped(new RATReadIO))
- 
-  // ── 向 Dispatch 输出 ──
-  val out     = Vec(CtrlBlockWidth, Decoupled(new RenamedInst))
- 
-  // ── ROB 提交回传 ──
-  val commit  = Input(Vec(CommitWidth, new RobCommitInfo))
- 
-  // ── 重定向 ──
-  val redirect = Input(new RedirectInfo)
- 
-  // ── 全局冲刷 ──
-  val flush   = Input(Bool())
-}
+//class RenameStageIO(implicit p: Parameters) extends NSBundle {
+//  // ── 来自译码级 ──
+//  val in      = Vec(CtrlBlockWidth, Flipped(Decoupled(new DecodedInst)))
+//  // ── 译码级给出的 RAT 读请求（T0 组合信号，直接接入 RAT） ──
+//  val ratRead = Vec(CtrlBlockWidth, Flipped(new RATReadIO))
+// 
+//  // ── 向 Dispatch 输出 ──
+//  val out     = Vec(CtrlBlockWidth, Decoupled(new RenamedInst))
+// 
+//  // ── ROB 提交回传 ──
+//  val commit  = Input(Vec(CommitWidth, new RobCommitInfo))
+// 
+//  // ── 重定向 ──
+//  val redirect = Input(new RedirectInfo)
+// 
+//  // ── 全局冲刷 ──
+//  val flush   = Input(Bool())
+//}

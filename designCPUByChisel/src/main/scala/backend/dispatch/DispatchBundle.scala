@@ -65,23 +65,13 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val isSta    = Bool()   // Store-Addr 微操作
   val isStd    = Bool()   // Store-Data 微操作
 }
-
-//class IssueQueueFeedback(implicit p: Parameters) extends NSBundle {
-//  val q1CanAccept = UInt(1.W)
-//  val q2CanAccept = UInt(1.W)
-//  val q3CanAccept = UInt(1.W)
-//  val q4CanAccept = UInt(1.W)
-//  val q5CanAccept = UInt(1.W)
-//}
-
-object IQFeedbackWidth { val value = 5 }  // 支持 0~31，覆盖最大深度 16
  
 class IssueQueueFeedback(implicit p: Parameters) extends NSBundle {
-  val q1FreeEntries = UInt(IQFeedbackWidth.value.W)  // Q1 当前空闲条目数
-  val q2FreeEntries = UInt(IQFeedbackWidth.value.W)
-  val q3FreeEntries = UInt(IQFeedbackWidth.value.W)
-  val q4FreeEntries = UInt(IQFeedbackWidth.value.W)
-  val q5FreeEntries = UInt(IQFeedbackWidth.value.W)
+  val q1FreeEntries = UInt(IQ1Width.W)  // Q1 当前空闲条目数
+  val q2FreeEntries = UInt(IQ2Width.W)
+  val q3FreeEntries = UInt(IQ3Width.W)
+  val q4FreeEntries = UInt(IQ4Width.W)
+  val q5FreeEntries = UInt(IQ5Width.W)
 }
  
  
@@ -193,16 +183,16 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
 // ================================================================
 //  Dispatch 级 IO
 // ================================================================
-class DispatchStageIO(implicit p: Parameters) extends NSBundle {
-  val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new RenamedInst)))
-  val q1IQEnq  = Vec(IQEnqPorts.Q1, ValidIO(new DispatchedInst))
-  val q2IQEnq  = Vec(IQEnqPorts.Q2, ValidIO(new DispatchedInst))
-  val q3IQEnq  = Vec(IQEnqPorts.Q3, ValidIO(new DispatchedInst))
-  val q4IQEnq  = Vec(IQEnqPorts.Q4, ValidIO(new DispatchedInst))
-  val q5IQEnq  = Vec(IQEnqPorts.Q5, ValidIO(new DispatchedInst))
-  val iqFeedback = Input(new IssueQueueFeedback)
-  val lsEnq   = new LsEnqIO
-  val robEnq  = Flipped(new RobEnqIO)
-  val flush   = Input(Bool())
-  val redirect = Input(new RedirectInfo)
-}
+// class DispatchStageIO(implicit p: Parameters) extends NSBundle {
+//   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new RenamedInst)))
+//   val q1IQEnq  = Vec(IQEnqPorts.Q1, ValidIO(new DispatchedInst))
+//   val q2IQEnq  = Vec(IQEnqPorts.Q2, ValidIO(new DispatchedInst))
+//   val q3IQEnq  = Vec(IQEnqPorts.Q3, ValidIO(new DispatchedInst))
+//   val q4IQEnq  = Vec(IQEnqPorts.Q4, ValidIO(new DispatchedInst))
+//   val q5IQEnq  = Vec(IQEnqPorts.Q5, ValidIO(new DispatchedInst))
+//   val iqFeedback = Input(new IssueQueueFeedback)
+//   val lsEnq   = new LsEnqIO
+//   val robEnq  = Flipped(new RobEnqIO)
+//   val flush   = Input(Bool())
+//   val redirect = Input(new RedirectInfo)
+// }

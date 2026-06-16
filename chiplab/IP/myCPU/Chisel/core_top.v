@@ -169,6 +169,8 @@ module core_top(
   wire  backend_io_in_2_bits_exception_excpTlbPif; // @[src/main/scala/myCPU_top.scala 106:23]
   wire  backend_io_in_2_bits_exception_excpTlbPpi; // @[src/main/scala/myCPU_top.scala 106:23]
   wire  backend_io_in_2_bits_exception_excpAdef; // @[src/main/scala/myCPU_top.scala 106:23]
+  wire  backend_io_redirect_valid; // @[src/main/scala/myCPU_top.scala 106:23]
+  wire [5:0] backend_io_redirect_robIdx; // @[src/main/scala/myCPU_top.scala 106:23]
   wire  backend_io_extInt; // @[src/main/scala/myCPU_top.scala 106:23]
   wire  mmu_clock; // @[src/main/scala/myCPU_top.scala 130:19]
   wire  mmu_reset; // @[src/main/scala/myCPU_top.scala 130:19]
@@ -592,6 +594,8 @@ module core_top(
     .io_in_2_bits_exception_excpTlbPif(backend_io_in_2_bits_exception_excpTlbPif),
     .io_in_2_bits_exception_excpTlbPpi(backend_io_in_2_bits_exception_excpTlbPpi),
     .io_in_2_bits_exception_excpAdef(backend_io_in_2_bits_exception_excpAdef),
+    .io_redirect_valid(backend_io_redirect_valid),
+    .io_redirect_robIdx(backend_io_redirect_robIdx),
     .io_extInt(backend_io_extInt)
   );
   Mmu mmu ( // @[src/main/scala/myCPU_top.scala 130:19]

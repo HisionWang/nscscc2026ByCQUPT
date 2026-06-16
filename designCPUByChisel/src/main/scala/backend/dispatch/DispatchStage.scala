@@ -26,7 +26,19 @@ import nscscc.backend.rename._
  * ═══════════════════════════════════════════════════════════════
  */
 class DispatchStage(implicit p: Parameters) extends NSModule {
-  val io = IO(new DispatchStageIO)
+  val io = IO(new Bundle {
+    val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new RenamedInst)))
+    val q1IQEnq  = Vec(IQEnqPorts.Q1, ValidIO(new DispatchedInst))
+    val q2IQEnq  = Vec(IQEnqPorts.Q2, ValidIO(new DispatchedInst))
+    val q3IQEnq  = Vec(IQEnqPorts.Q3, ValidIO(new DispatchedInst))
+    val q4IQEnq  = Vec(IQEnqPorts.Q4, ValidIO(new DispatchedInst))
+    val q5IQEnq  = Vec(IQEnqPorts.Q5, ValidIO(new DispatchedInst))
+    val iqFeedback = Input(new IssueQueueFeedback)
+    val lsEnq   = new LsEnqIO
+    val robEnq  = Flipped(new RobEnqIO)
+    val flush   = Input(Bool())
+    val redirect = Input(new RedirectInfo)
+  })
  
   val busyTable = Module(new BusyTable)
  
@@ -165,9 +177,9 @@ val q2CanAcceptAlu = q2FreeAfterExclusive
 val q3CanAcceptAlu = q3FreeAfterExclusive
  
 //  优先级 = freeEntries（可用于 ALU 时）或 0（不可用）
-val q1AluPriority = Mux(q1CanAcceptAlu, io.iqFeedback.q1FreeEntries, 0.U(IQFeedbackWidth.value.W))
-val q2AluPriority = Mux(q2CanAcceptAlu, io.iqFeedback.q2FreeEntries, 0.U(IQFeedbackWidth.value.W))
-val q3AluPriority = Mux(q3CanAcceptAlu, io.iqFeedback.q3FreeEntries, 0.U(IQFeedbackWidth.value.W))
+val q1AluPriority = Mux(q1CanAcceptAlu, io.iqFeedback.q1FreeEntries, 0.U(IQ1Width.W))
+val q2AluPriority = Mux(q2CanAcceptAlu, io.iqFeedback.q2FreeEntries, 0.U(IQ2Width.W))
+val q3AluPriority = Mux(q3CanAcceptAlu, io.iqFeedback.q3FreeEntries, 0.U(IQ3Width.W))
  
 // ── 三轮排序：rank0 = 最空闲, rank1 = 次空闲, rank2 = 最忙 ──
 //  同值时按 Q1 > Q2 > Q3 消歧（>= 保证小索引优先）
@@ -272,7 +284,7 @@ val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3
   // Q5: Std 仅在对应 Store 的 Sta 被选中时才发
   val q5Selected = VecInit((0 until CtrlBlockWidth).map(i =>
     q4Selected(i) && isStoreLane(i)))
-    
+
   dontTouch(q5Selected)
  
   // ================================================================

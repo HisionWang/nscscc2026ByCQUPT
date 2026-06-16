@@ -157,8 +157,8 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 4. 有效寄存器计算
   // ===========================================================
-  val rs1Valid = src1Type === SrcType.reg
-  val rs2Valid = src2Type === SrcType.reg
+  val rs1Valid = src1Type === SrcType.reg 
+  val rs2Valid = src2Type === SrcType.reg || (fuType === FuType.lsu && (lsuOp === LsuOp.stb || lsuOp === LsuOp.sth || lsuOp === LsuOp.stw) )
   val rdValid  = rfWen
 
   // ===========================================================

@@ -85,10 +85,4 @@ class DecodedInst(implicit p: Parameters) extends NSBundle {
   val pdInfo     = new PredecodeInfo
 }
 
-class DecodeStageIO(implicit p: Parameters) extends NSBundle {
-  val in      = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
-  val out     = Vec(CtrlBlockWidth, Decoupled(new DecodedInst))
-  val ratRead = Vec(CtrlBlockWidth, Output(new RATReadIO))
-  val extInt  = Input(Bool())
-  val flush   = Input(Bool())
-}
+

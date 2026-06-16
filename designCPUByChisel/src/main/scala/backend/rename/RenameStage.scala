@@ -44,7 +44,20 @@ import nscscc.util.CircularQueuePtr
  */
 class RenameStage(implicit p: Parameters) extends NSModule {
  
-  val io = IO(new RenameStageIO)
+  val io = IO(new Bundle {
+    // ── 来自译码级 ──
+    val in      = Vec(CtrlBlockWidth, Flipped(Decoupled(new DecodedInst)))
+    // ── 译码级给出的 RAT 读请求（T0 组合信号，直接接入 RAT） ──
+    val ratRead = Vec(CtrlBlockWidth, Flipped(new RATReadIO))
+    // ── 向 Dispatch 输出 ──
+    val out     = Vec(CtrlBlockWidth, Decoupled(new RenamedInst))
+    // ── ROB 提交回传 ──
+    val commit  = Input(Vec(CommitWidth, new RobCommitInfo))
+    // ── 重定向 ──
+    val redirect = Input(new RedirectInfo)
+    // ── 全局冲刷 ──
+    val flush   = Input(Bool())
+  })
  
   // ================================================================
   //  ROB 指针类型（复用 CircularQueuePtr）在Bundles中使用
@@ -327,11 +340,11 @@ class RenameStage(implicit p: Parameters) extends NSModule {
  
   when(io.redirect.valid) {
     // 重定向：跳转到指定位置
-    val targetValue = Mux(
-      io.redirect.flushSelf,
-      io.redirect.robIdx,
-      io.redirect.robIdx + 1.U
-    )
+    val targetValue = //Mux(
+      //io.redirect.flushSelf,
+      io.redirect.robIdx //,
+      //io.redirect.robIdx + 1.U
+   // )
     robIdxHeadNext.value := targetValue
     robIdxHeadNext.flag  := false.B
   }.elsewhen(outFire) {
@@ -399,7 +412,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // ── 逻辑寄存器号 ──
     u.ldst := stgData(i).rd
     u.lrs1 := stgData(i).rj
-    u.lrs2 := stgData(i).rk
+    u.lrs2 := Mux(stgData(i).ctrl.memWrite, stgData(i).rd, stgData(i).rk)
  
     // ── 物理寄存器号 ──
     // r0 固定映射 p0（值恒为 0），不需要读 RAT
