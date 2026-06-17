@@ -357,7 +357,7 @@ val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3
   val inValid = io.in.map(_.valid).reduce(_ || _)
   val inFire  = inValid && canAcceptNew
   for (i <- 0 until CtrlBlockWidth) {
-    io.in(i).ready := canAcceptNew
+    io.in(i).ready := canAcceptNew // && io.in(0).bits.pc =/= 0x1c0100c0.U
   }
  
   // ================================================================

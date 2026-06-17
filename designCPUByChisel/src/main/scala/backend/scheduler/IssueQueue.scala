@@ -46,7 +46,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   val p2Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
  
   // ================================================================
-  //  年龄矩阵 age[i][j]=1 表示 entry[i] 比 entry[j] 更老
+  //  年龄矩阵 age[i][j]=1 表示 entry[i] 比 entry[j] 更老 这算法还牛的 
   // ================================================================
   val age = RegInit(VecInit(Seq.fill(N)(VecInit(Seq.fill(N)(false.B)))))
  

@@ -351,6 +351,8 @@ module CtrlBlock(
   wire [4:0] decodeStage_io_out_0_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_out_0_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_out_0_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire [4:0] decodeStage_io_out_0_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire [4:0] decodeStage_io_out_0_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
@@ -388,6 +390,8 @@ module CtrlBlock(
   wire [4:0] decodeStage_io_out_1_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_out_1_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_out_1_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire [4:0] decodeStage_io_out_1_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire [4:0] decodeStage_io_out_1_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_1_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_1_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
@@ -425,6 +429,8 @@ module CtrlBlock(
   wire [4:0] decodeStage_io_out_2_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_out_2_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_out_2_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire [4:0] decodeStage_io_out_2_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire [4:0] decodeStage_io_out_2_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_2_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_out_2_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
@@ -457,10 +463,16 @@ module CtrlBlock(
   wire [31:0] decodeStage_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_ratRead_0_rs1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_ratRead_0_rs2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire  decodeStage_io_ratRead_0_hold1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire  decodeStage_io_ratRead_0_hold2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_ratRead_1_rs1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_ratRead_1_rs2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire  decodeStage_io_ratRead_1_hold1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire  decodeStage_io_ratRead_1_hold2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_ratRead_2_rs1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire [4:0] decodeStage_io_ratRead_2_rs2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire  decodeStage_io_ratRead_2_hold1; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
+  wire  decodeStage_io_ratRead_2_hold2; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_extInt; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  decodeStage_io_flush; // @[src/main/scala/backend/CtrlBlock.scala 46:27]
   wire  renameStage_clock; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
@@ -472,6 +484,8 @@ module CtrlBlock(
   wire [4:0] renameStage_io_in_0_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_in_0_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_in_0_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire [4:0] renameStage_io_in_0_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire [4:0] renameStage_io_in_0_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
@@ -509,6 +523,8 @@ module CtrlBlock(
   wire [4:0] renameStage_io_in_1_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_in_1_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_in_1_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire [4:0] renameStage_io_in_1_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire [4:0] renameStage_io_in_1_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_1_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_1_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
@@ -546,6 +562,8 @@ module CtrlBlock(
   wire [4:0] renameStage_io_in_2_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_in_2_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_in_2_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire [4:0] renameStage_io_in_2_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire [4:0] renameStage_io_in_2_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_2_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_in_2_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
@@ -578,10 +596,16 @@ module CtrlBlock(
   wire [31:0] renameStage_io_in_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_ratRead_0_rs1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_ratRead_0_rs2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire  renameStage_io_ratRead_0_hold1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire  renameStage_io_ratRead_0_hold2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_ratRead_1_rs1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_ratRead_1_rs2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire  renameStage_io_ratRead_1_hold1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire  renameStage_io_ratRead_1_hold2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_ratRead_2_rs1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [4:0] renameStage_io_ratRead_2_rs2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire  renameStage_io_ratRead_2_hold1; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
+  wire  renameStage_io_ratRead_2_hold2; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_out_0_ready; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire  renameStage_io_out_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
   wire [31:0] renameStage_io_out_0_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 54:27]
@@ -1254,6 +1278,8 @@ module CtrlBlock(
     .io_out_0_bits_rd(decodeStage_io_out_0_bits_rd),
     .io_out_0_bits_rj(decodeStage_io_out_0_bits_rj),
     .io_out_0_bits_rk(decodeStage_io_out_0_bits_rk),
+    .io_out_0_bits_rs1(decodeStage_io_out_0_bits_rs1),
+    .io_out_0_bits_rs2(decodeStage_io_out_0_bits_rs2),
     .io_out_0_bits_rs1Valid(decodeStage_io_out_0_bits_rs1Valid),
     .io_out_0_bits_rs2Valid(decodeStage_io_out_0_bits_rs2Valid),
     .io_out_0_bits_rdValid(decodeStage_io_out_0_bits_rdValid),
@@ -1291,6 +1317,8 @@ module CtrlBlock(
     .io_out_1_bits_rd(decodeStage_io_out_1_bits_rd),
     .io_out_1_bits_rj(decodeStage_io_out_1_bits_rj),
     .io_out_1_bits_rk(decodeStage_io_out_1_bits_rk),
+    .io_out_1_bits_rs1(decodeStage_io_out_1_bits_rs1),
+    .io_out_1_bits_rs2(decodeStage_io_out_1_bits_rs2),
     .io_out_1_bits_rs1Valid(decodeStage_io_out_1_bits_rs1Valid),
     .io_out_1_bits_rs2Valid(decodeStage_io_out_1_bits_rs2Valid),
     .io_out_1_bits_rdValid(decodeStage_io_out_1_bits_rdValid),
@@ -1328,6 +1356,8 @@ module CtrlBlock(
     .io_out_2_bits_rd(decodeStage_io_out_2_bits_rd),
     .io_out_2_bits_rj(decodeStage_io_out_2_bits_rj),
     .io_out_2_bits_rk(decodeStage_io_out_2_bits_rk),
+    .io_out_2_bits_rs1(decodeStage_io_out_2_bits_rs1),
+    .io_out_2_bits_rs2(decodeStage_io_out_2_bits_rs2),
     .io_out_2_bits_rs1Valid(decodeStage_io_out_2_bits_rs1Valid),
     .io_out_2_bits_rs2Valid(decodeStage_io_out_2_bits_rs2Valid),
     .io_out_2_bits_rdValid(decodeStage_io_out_2_bits_rdValid),
@@ -1360,10 +1390,16 @@ module CtrlBlock(
     .io_out_2_bits_pdInfo_jumpTarget(decodeStage_io_out_2_bits_pdInfo_jumpTarget),
     .io_ratRead_0_rs1(decodeStage_io_ratRead_0_rs1),
     .io_ratRead_0_rs2(decodeStage_io_ratRead_0_rs2),
+    .io_ratRead_0_hold1(decodeStage_io_ratRead_0_hold1),
+    .io_ratRead_0_hold2(decodeStage_io_ratRead_0_hold2),
     .io_ratRead_1_rs1(decodeStage_io_ratRead_1_rs1),
     .io_ratRead_1_rs2(decodeStage_io_ratRead_1_rs2),
+    .io_ratRead_1_hold1(decodeStage_io_ratRead_1_hold1),
+    .io_ratRead_1_hold2(decodeStage_io_ratRead_1_hold2),
     .io_ratRead_2_rs1(decodeStage_io_ratRead_2_rs1),
     .io_ratRead_2_rs2(decodeStage_io_ratRead_2_rs2),
+    .io_ratRead_2_hold1(decodeStage_io_ratRead_2_hold1),
+    .io_ratRead_2_hold2(decodeStage_io_ratRead_2_hold2),
     .io_extInt(decodeStage_io_extInt),
     .io_flush(decodeStage_io_flush)
   );
@@ -1377,6 +1413,8 @@ module CtrlBlock(
     .io_in_0_bits_rd(renameStage_io_in_0_bits_rd),
     .io_in_0_bits_rj(renameStage_io_in_0_bits_rj),
     .io_in_0_bits_rk(renameStage_io_in_0_bits_rk),
+    .io_in_0_bits_rs1(renameStage_io_in_0_bits_rs1),
+    .io_in_0_bits_rs2(renameStage_io_in_0_bits_rs2),
     .io_in_0_bits_rs1Valid(renameStage_io_in_0_bits_rs1Valid),
     .io_in_0_bits_rs2Valid(renameStage_io_in_0_bits_rs2Valid),
     .io_in_0_bits_rdValid(renameStage_io_in_0_bits_rdValid),
@@ -1414,6 +1452,8 @@ module CtrlBlock(
     .io_in_1_bits_rd(renameStage_io_in_1_bits_rd),
     .io_in_1_bits_rj(renameStage_io_in_1_bits_rj),
     .io_in_1_bits_rk(renameStage_io_in_1_bits_rk),
+    .io_in_1_bits_rs1(renameStage_io_in_1_bits_rs1),
+    .io_in_1_bits_rs2(renameStage_io_in_1_bits_rs2),
     .io_in_1_bits_rs1Valid(renameStage_io_in_1_bits_rs1Valid),
     .io_in_1_bits_rs2Valid(renameStage_io_in_1_bits_rs2Valid),
     .io_in_1_bits_rdValid(renameStage_io_in_1_bits_rdValid),
@@ -1451,6 +1491,8 @@ module CtrlBlock(
     .io_in_2_bits_rd(renameStage_io_in_2_bits_rd),
     .io_in_2_bits_rj(renameStage_io_in_2_bits_rj),
     .io_in_2_bits_rk(renameStage_io_in_2_bits_rk),
+    .io_in_2_bits_rs1(renameStage_io_in_2_bits_rs1),
+    .io_in_2_bits_rs2(renameStage_io_in_2_bits_rs2),
     .io_in_2_bits_rs1Valid(renameStage_io_in_2_bits_rs1Valid),
     .io_in_2_bits_rs2Valid(renameStage_io_in_2_bits_rs2Valid),
     .io_in_2_bits_rdValid(renameStage_io_in_2_bits_rdValid),
@@ -1483,10 +1525,16 @@ module CtrlBlock(
     .io_in_2_bits_pdInfo_jumpTarget(renameStage_io_in_2_bits_pdInfo_jumpTarget),
     .io_ratRead_0_rs1(renameStage_io_ratRead_0_rs1),
     .io_ratRead_0_rs2(renameStage_io_ratRead_0_rs2),
+    .io_ratRead_0_hold1(renameStage_io_ratRead_0_hold1),
+    .io_ratRead_0_hold2(renameStage_io_ratRead_0_hold2),
     .io_ratRead_1_rs1(renameStage_io_ratRead_1_rs1),
     .io_ratRead_1_rs2(renameStage_io_ratRead_1_rs2),
+    .io_ratRead_1_hold1(renameStage_io_ratRead_1_hold1),
+    .io_ratRead_1_hold2(renameStage_io_ratRead_1_hold2),
     .io_ratRead_2_rs1(renameStage_io_ratRead_2_rs1),
     .io_ratRead_2_rs2(renameStage_io_ratRead_2_rs2),
+    .io_ratRead_2_hold1(renameStage_io_ratRead_2_hold1),
+    .io_ratRead_2_hold2(renameStage_io_ratRead_2_hold2),
     .io_out_0_ready(renameStage_io_out_0_ready),
     .io_out_0_valid(renameStage_io_out_0_valid),
     .io_out_0_bits_pc(renameStage_io_out_0_bits_pc),
@@ -2413,6 +2461,8 @@ module CtrlBlock(
   assign renameStage_io_in_0_bits_rd = decodeStage_io_out_0_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_0_bits_rj = decodeStage_io_out_0_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_0_bits_rk = decodeStage_io_out_0_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
+  assign renameStage_io_in_0_bits_rs1 = decodeStage_io_out_0_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
+  assign renameStage_io_in_0_bits_rs2 = decodeStage_io_out_0_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_0_bits_rs1Valid = decodeStage_io_out_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_0_bits_rs2Valid = decodeStage_io_out_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_0_bits_rdValid = decodeStage_io_out_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
@@ -2449,6 +2499,8 @@ module CtrlBlock(
   assign renameStage_io_in_1_bits_rd = decodeStage_io_out_1_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_1_bits_rj = decodeStage_io_out_1_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_1_bits_rk = decodeStage_io_out_1_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
+  assign renameStage_io_in_1_bits_rs1 = decodeStage_io_out_1_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
+  assign renameStage_io_in_1_bits_rs2 = decodeStage_io_out_1_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_1_bits_rs1Valid = decodeStage_io_out_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_1_bits_rs2Valid = decodeStage_io_out_1_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_1_bits_rdValid = decodeStage_io_out_1_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
@@ -2485,6 +2537,8 @@ module CtrlBlock(
   assign renameStage_io_in_2_bits_rd = decodeStage_io_out_2_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_2_bits_rj = decodeStage_io_out_2_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_2_bits_rk = decodeStage_io_out_2_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
+  assign renameStage_io_in_2_bits_rs1 = decodeStage_io_out_2_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
+  assign renameStage_io_in_2_bits_rs2 = decodeStage_io_out_2_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_2_bits_rs1Valid = decodeStage_io_out_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_2_bits_rs2Valid = decodeStage_io_out_2_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_in_2_bits_rdValid = decodeStage_io_out_2_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
@@ -2517,10 +2571,16 @@ module CtrlBlock(
   assign renameStage_io_in_2_bits_pdInfo_jumpTarget = decodeStage_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 55:26]
   assign renameStage_io_ratRead_0_rs1 = decodeStage_io_ratRead_0_rs1; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
   assign renameStage_io_ratRead_0_rs2 = decodeStage_io_ratRead_0_rs2; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
+  assign renameStage_io_ratRead_0_hold1 = decodeStage_io_ratRead_0_hold1; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
+  assign renameStage_io_ratRead_0_hold2 = decodeStage_io_ratRead_0_hold2; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
   assign renameStage_io_ratRead_1_rs1 = decodeStage_io_ratRead_1_rs1; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
   assign renameStage_io_ratRead_1_rs2 = decodeStage_io_ratRead_1_rs2; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
+  assign renameStage_io_ratRead_1_hold1 = decodeStage_io_ratRead_1_hold1; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
+  assign renameStage_io_ratRead_1_hold2 = decodeStage_io_ratRead_1_hold2; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
   assign renameStage_io_ratRead_2_rs1 = decodeStage_io_ratRead_2_rs1; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
   assign renameStage_io_ratRead_2_rs2 = decodeStage_io_ratRead_2_rs2; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
+  assign renameStage_io_ratRead_2_hold1 = decodeStage_io_ratRead_2_hold1; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
+  assign renameStage_io_ratRead_2_hold2 = decodeStage_io_ratRead_2_hold2; // @[src/main/scala/backend/CtrlBlock.scala 56:26]
   assign renameStage_io_out_0_ready = dispatchStage_io_in_0_ready; // @[src/main/scala/backend/CtrlBlock.scala 64:29]
   assign renameStage_io_out_1_ready = dispatchStage_io_in_1_ready; // @[src/main/scala/backend/CtrlBlock.scala 64:29]
   assign renameStage_io_out_2_ready = dispatchStage_io_in_2_ready; // @[src/main/scala/backend/CtrlBlock.scala 64:29]

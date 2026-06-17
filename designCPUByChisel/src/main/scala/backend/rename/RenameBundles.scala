@@ -69,33 +69,34 @@ class RedirectInfo(implicit p: Parameters) extends NSBundle {
 // ================================================================
 //  FreeList IO
 // ================================================================
-class FreeListIO(implicit p: Parameters) extends NSBundle {
-  // ── 分配侧 ──
-  val allocReqs   = Input(Vec(CtrlBlockWidth, Bool()))
-  val allocPdest  = Vec(CtrlBlockWidth, Valid(UInt(PhyRegIdxWidth.W)))
-  val canAlloc    = Output(Bool())
-  val doAlloc     = Input(Bool())
- 
-  // ── 释放侧（ROB 提交） ──
-  val deallocReqs = Input(Vec(CommitWidth, Valid(UInt(PhyRegIdxWidth.W))))
- 
-  // ── 分支快照相关 ──
-  val renBrTags   = Input(Vec(CtrlBlockWidth, Valid(UInt(log2Ceil(SnapshotNum).W))))
-  val brMispredict = Input(Bool())
-  val brMispredTag = Input(UInt(log2Ceil(SnapshotNum).W))
- 
-  // ── 全局冲刷 ──
-  val flush       = Input(Bool())
-}
+//class FreeListIO(implicit p: Parameters) extends NSBundle {
+//  // ── 分配侧 ──
+//  val allocReqs   = Input(Vec(CtrlBlockWidth, Bool()))
+//  val allocPdest  = Vec(CtrlBlockWidth, Valid(UInt(PhyRegIdxWidth.W)))
+//  val canAlloc    = Output(Bool())
+//  val doAlloc     = Input(Bool())
+// 
+//  // ── 释放侧（ROB 提交） ──
+//  val deallocReqs = Input(Vec(CommitWidth, Valid(UInt(PhyRegIdxWidth.W))))
+// 
+//  // ── 分支快照相关 ──
+//  val renBrTags   = Input(Vec(CtrlBlockWidth, Valid(UInt(log2Ceil(SnapshotNum).W))))
+//  val brMispredict = Input(Bool())
+//  val brMispredTag = Input(UInt(log2Ceil(SnapshotNum).W))
+// 
+//  // ── 全局冲刷 ──
+//  val flush       = Input(Bool())
+//}
  
 // ================================================================
 //  RAT 读写端口
 // ================================================================
 class RatReadPort(implicit p: Parameters) extends NSBundle {
   val addr = Input(UInt(5.W))
+  val hold = Input(Bool())
   val data = Output(UInt(PhyRegIdxWidth.W))
 }
- 
+
 class RatWritePort(implicit p: Parameters) extends NSBundle {
   val wen  = Bool()
   val addr = UInt(5.W)

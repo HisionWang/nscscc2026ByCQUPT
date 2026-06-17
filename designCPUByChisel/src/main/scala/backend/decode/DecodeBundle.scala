@@ -39,8 +39,8 @@ import nscscc.mmu.{MmuTransError}
 class RATReadIO extends Bundle {
   val rs1      = UInt(5.W)
   val rs2      = UInt(5.W)
-  val rs1Valid = Bool()
-  val rs2Valid = Bool()
+  val hold1 = Bool()
+  val hold2 = Bool()
 }
 
 // 控制信号打平
@@ -73,6 +73,9 @@ class DecodedInst(implicit p: Parameters) extends NSBundle {
   val rd         = UInt(5.W)
   val rj         = UInt(5.W)
   val rk         = UInt(5.W)
+
+  val rs1         = UInt(5.W) //计算真正的源操作数，因为后面马上就得开始读取Rat表了
+  val rs2         = UInt(5.W) //计算真正的源操作数，因为后面马上就得开始读取Rat表了
   val rs1Valid   = Bool()
   val rs2Valid   = Bool()
   val rdValid    = Bool()

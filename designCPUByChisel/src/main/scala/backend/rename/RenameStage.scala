@@ -160,8 +160,10 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CtrlBlockWidth) {
     // rs1 读端口：直接使用译码级给出的读地址 这是直接用到前面的译码传来的数据，无经过流水线
     rat.io.readPorts(i).addr               := io.ratRead(i).rs1
+    rat.io.readPorts(i).hold               := io.ratRead(i).hold1
     // rs2 读端口
     rat.io.readPorts(CtrlBlockWidth + i).addr   := io.ratRead(i).rs2
+    rat.io.readPorts(CtrlBlockWidth + i).hold   := io.ratRead(i).hold2
     // rd（old_pdst）读端口：读地址同样在 T0 由译码级给出
     // 这里使用 io.ratRead 的 rs1 字段作为 rd 的代理读地址
     // 注意：io.ratRead 没有 rd 字段，需要从 io.in 或 stgData 取
@@ -176,6 +178,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // 实际上 RAT 在 T0 收到的是上一级的 rd，打一拍后 T1 读出
     rat.io.readPorts(2 * CtrlBlockWidth + i).addr :=
       Mux(stgValid, stgData(i).rd, io.in(i).bits.rd)
+    rat.io.readPorts(2 * CtrlBlockWidth + i).hold := false.B
   }
  
   // ================================================================
@@ -283,7 +286,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // 同周期旁路后的最终值
   val prs1Final      = Wire(Vec(CtrlBlockWidth, UInt(PhyRegIdxWidth.W)))
   val prs2Final      = Wire(Vec(CtrlBlockWidth, UInt(PhyRegIdxWidth.W)))
-  val oldPdstFinal = Wire(Vec(CtrlBlockWidth, UInt(PhyRegIdxWidth.W)))
+  val oldPdstFinal   = Wire(Vec(CtrlBlockWidth, UInt(PhyRegIdxWidth.W)))
  
   for (i <- 0 until CtrlBlockWidth) {
     // ── 默认值：使用 RAT 读出的值 ──
@@ -294,6 +297,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     for (j <- 0 until i) {
       // 前序通道 j 分配了新 pdst 且目标寄存器非零
       val jHasAlloc = laneValid(j) && needAllocVec(j) && stgData(j).rd =/= 0.U
+      dontTouch(jHasAlloc)
       val jPdst     = freeList.io.allocPdest(j).bits
  
       // rs1 旁路：j 写了 i 的 rs1
@@ -411,8 +415,8 @@ class RenameStage(implicit p: Parameters) extends NSModule {
  
     // ── 逻辑寄存器号 ──
     u.ldst := stgData(i).rd
-    u.lrs1 := stgData(i).rj
-    u.lrs2 := Mux(stgData(i).ctrl.memWrite, stgData(i).rd, stgData(i).rk)
+    u.lrs1 := stgData(i).rs1
+    u.lrs2 := stgData(i).rs2
  
     // ── 物理寄存器号 ──
     // r0 固定映射 p0（值恒为 0），不需要读 RAT

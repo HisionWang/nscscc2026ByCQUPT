@@ -13,6 +13,7 @@ class DecodeStage(implicit p: Parameters) extends NSModule {
     val extInt  = Input(Bool())
     val flush   = Input(Bool())
   })
+  dontTouch(io.out)
 
   // ===========================================================
   // Phase 1: 严格的流水级数据保持 (Input -> Register)
@@ -78,9 +79,9 @@ class DecodeStage(implicit p: Parameters) extends NSModule {
     io.out(i).bits  := decoder.io.out
 
     // 3. 读 RAT 请求挂载：只在流水级有效且确实需要读时触发
-    io.ratRead(i).rs1      := decoder.io.out.rj
-    io.ratRead(i).rs2      := Mux(decoder.io.out.ctrl.memWrite, decoder.io.out.rd, decoder.io.out.rk)
-    io.ratRead(i).rs1Valid := stgValid && laneValid(i) && decoder.io.out.rs1Valid
-    io.ratRead(i).rs2Valid := stgValid && laneValid(i) && decoder.io.out.rs2Valid
+    io.ratRead(i).rs1      := decoder.io.out.rs1
+    io.ratRead(i).rs2      := decoder.io.out.rs2
+    io.ratRead(i).hold1    := !outFire
+    io.ratRead(i).hold2    := !outFire
   }
 }

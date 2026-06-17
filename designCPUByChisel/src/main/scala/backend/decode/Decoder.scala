@@ -157,8 +157,10 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 4. 有效寄存器计算
   // ===========================================================
+  val rs2UseRd = memWrite
+  
   val rs1Valid = src1Type === SrcType.reg 
-  val rs2Valid = src2Type === SrcType.reg || (fuType === FuType.lsu && (lsuOp === LsuOp.stb || lsuOp === LsuOp.sth || lsuOp === LsuOp.stw) )
+  val rs2Valid = src2Type === SrcType.reg || memWrite
   val rdValid  = rfWen
 
   // ===========================================================
@@ -182,11 +184,14 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 6. 输出一次性全覆盖赋值
   // ===========================================================
+  
   io.out.pc         := pc
   io.out.inst       := inst
   io.out.rd         := rd
   io.out.rj         := rj
   io.out.rk         := rk
+  io.out.rs1        := rj
+  io.out.rs2        := Mux(rs2UseRd, rd, rk)
   io.out.rs1Valid   := rs1Valid
   io.out.rs2Valid   := rs2Valid
   io.out.rdValid    := rdValid

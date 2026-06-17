@@ -69,6 +69,7 @@ trait HasCoreParameters {
 
   // ── IssueQueue 参数 ──
   val IQNumWakeupPorts : Int = 4 
+  val IQNum : Int = 5 
   
   val IQ1Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts))) //ALU_CSR
   val IQ2Params = p(new Field[IQParams](IQParams(12, IQNumWakeupPorts))) //ALU_DIV
@@ -81,6 +82,9 @@ trait HasCoreParameters {
   val IQ3Width = log2Ceil(IQ3Params.numEntries + 1)
   val IQ4Width = log2Ceil(IQ4Params.numEntries + 1)
   val IQ5Width = log2Ceil(IQ5Params.numEntries + 1)
+
+  val intRegFileReadPorts  : Int = 8
+  val intRegFileWritePorts : Int = 5 
 
   /*---- TLB相关 ----*/
   val nrTlb: Int = p(MmuconfigKeys.TlbNum)

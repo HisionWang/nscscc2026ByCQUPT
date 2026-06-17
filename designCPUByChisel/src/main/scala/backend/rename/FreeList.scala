@@ -18,7 +18,7 @@ import nscscc.config._
  *
  *  【分配策略：迭代 mask + 预缓存】（iFuCore 风格）
  *    · 使用迭代 mask 依次为各通道找最低空闲位（独热码）
- *    · regIndices/regValids 缓存已找好的候选，避免关键路径上有全位图扫描
+ *    · regIndices/regValid 缓存已找好的候选，避免关键路径上有全位图扫描
  *    · 每周期只要缓存被消耗（req=true）或为空，就从位图补充新候选
  *
  *  【分支快照：allocsAfterBr】（iFuCore 风格）
@@ -29,7 +29,23 @@ import nscscc.config._
  */
 class FreeList(implicit p: Parameters) extends NSModule {
  
-  val io = IO(new FreeListIO)
+  val io = IO(new Bundle {
+    val allocReqs   = Input(Vec(CtrlBlockWidth, Bool()))
+    val allocPdest  = Vec(CtrlBlockWidth, Valid(UInt(PhyRegIdxWidth.W)))
+    val canAlloc    = Output(Bool())
+    val doAlloc     = Input(Bool())
+  
+    // ── 释放侧（ROB 提交） ──
+    val deallocReqs = Input(Vec(CommitWidth, Valid(UInt(PhyRegIdxWidth.W))))
+  
+    // ── 分支快照相关 ──
+    val renBrTags   = Input(Vec(CtrlBlockWidth, Valid(UInt(log2Ceil(SnapshotNum).W))))
+    val brMispredict = Input(Bool())
+    val brMispredTag = Input(UInt(log2Ceil(SnapshotNum).W))
+  
+    // ── 全局冲刷 ──
+    val flush       = Input(Bool())
+  })
  
   // ================================================================
   //  1. 核心位图：初始时 p0~p31 非空闲（分配给 x0~x31），其余全空闲
@@ -61,38 +77,44 @@ class FreeList(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  4. 预缓存机制：避免关键路径上有组合逻辑链
   // ================================================================
-  val regValids  = Seq.fill(CtrlBlockWidth)(RegInit(false.B))
+  val regValid  = Seq.fill(CtrlBlockWidth)(RegInit(false.B))
   val regIndices = Seq.fill(CtrlBlockWidth)(Reg(UInt(PhyRegIdxWidth.W)))
  
   // selPregFire(i)：第 i 通道是否需要补充新候选
   val selPregFire = VecInit(
-    (selPregsValid zip regValids zip io.allocReqs).map {
-      case ((selValid, regValid), req) =>
-        (!regValid || req) && selValid
+    (selPregsValid zip regValid zip io.allocReqs).map {
+      case ((selPregsValid, regValid), req) =>
+        (!regValid || (req && io.doAlloc)) && selPregsValid
     }
   )
  
   // 更新缓存有效性
-  (regValids zip selPregsValid zip io.allocReqs).foreach {
-    case ((regValid, selValid), req) =>
-      regValid := selValid || (regValid && !req)
+  (regValid zip selPregsValid zip io.allocReqs).foreach {
+    case ((regValid, selPregsValid), req) =>
+      regValid := selPregsValid || (regValid && !req)
+      // 新选 OR 保持原值
   }
  
   // 补充新候选
   (regIndices zip selPregs zip selPregFire).foreach {
-    case ((regIdx, selPreg), fire) =>
-      when(fire) { regIdx := OHToUInt(selPreg) }
+    case ((regIndices, selPreg), selPregFire) =>
+      when(selPregFire) { regIndices := OHToUInt(selPreg) }
   }
+
+  //更新候选的freeList
+  val selMask = (selPregs zip selPregFire).map {
+    case (selPregs, selPregFire) => Mux(selPregFire, selPregs, 0.U)
+  }.reduce(_ | _)
  
   // ================================================================
   //  5. 分配结果输出
   //  canAlloc：所有有分配请求的通道都有有效候选
   // ================================================================
   io.canAlloc := VecInit(
-    (io.allocReqs zip regValids).map { case (req, valid) => !req || valid }
+    (io.allocReqs zip regValid).map { case (req, valid) => !req || valid }
   ).asUInt.andR
  
-  (io.allocPdest zip regValids zip regIndices).foreach {
+  (io.allocPdest zip regValid zip regIndices).foreach {
     case ((port, valid), idx) =>
       port.valid := valid
       port.bits  := idx
@@ -128,9 +150,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
   val deallocMask = commitDeallocMask | brDeallocs
  
   // 本周期实际消耗的寄存器掩码
-  val selMask = (selPregs zip selPregFire).map {
-    case (preg, fire) => Mux(fire, preg, 0.U)
-  }.reduce(_ | _)
+
  
   // 更新 allocsAfterBr
   for (i <- 0 until SnapshotNum) {
