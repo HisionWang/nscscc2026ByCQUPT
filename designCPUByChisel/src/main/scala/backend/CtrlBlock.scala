@@ -8,6 +8,7 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.backend.dispatch._
 import nscscc.backend.rob._
+import nscscc.backend.issue._
  
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
@@ -25,9 +26,13 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
  
   // ── LSQ ──
   val lsEnq    = new LsEnqIO
+
+
+  val writeback = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
  
   // ── ROB 提交 ──
-  val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
+  //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
+  val commit  = new RobCommitIO
  
   // ── 重定向 ──
   val redirect = Output(new RedirectInfo)
@@ -35,6 +40,10 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 冲刷与外部中断 ──
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
+
+
+  val debugArchState = Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W)))
+  val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
 }
  
 class CtrlBlock(implicit p: Parameters) extends NSModule {
@@ -56,6 +65,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.ratRead <> decodeStage.io.ratRead
   renameStage.io.redirect := io.redirect
   renameStage.io.flush    := io.flush
+
+  io.debugArchState := renameStage.io.debugArchState
  
   // ================================================================
   //  分发级
@@ -93,26 +104,15 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
     renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
   }
  
-  // ROB 提交信息 → 外部（供 CSR 等使用）
-  for (i <- 0 until CommitWidth) {
-    io.commit(i).valid   := rob.io.commit.valid(i)
-    io.commit(i).pdst    := rob.io.commit.bits(i).pdst
-    io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
-    io.commit(i).ldst    := rob.io.commit.bits(i).ldst
-    io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
-    io.commit(i).isWalk  := rob.io.commit.isWalk
-  }
+
+  io.commit   := rob.io.commit
  
   // ROB 重定向
   rob.io.flush := io.flush || io.redirect.valid
- 
-  // 写回口（当前无执行单元，置无效）
-  for (i <- 0 until WbBusWidth) {
-    rob.io.writeback(i).valid        := false.B
-    rob.io.writeback(i).bits.robIdx  := 0.U
-    rob.io.writeback(i).bits.excpVec := 0.U
-    rob.io.writeback(i).bits.isBypass := false.B
-  }
+
+  rob.io.writeback <> io.writeback
+  dispatchStage.io.wakeupPorts <> io.wakeupPorts
+
  
   // ROB 入队连接（从 Dispatch 级发起）
   rob.io.enq <> dispatchStage.io.robEnq

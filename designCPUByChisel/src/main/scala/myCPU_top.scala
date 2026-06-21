@@ -104,6 +104,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
+  dontTouch(backend.io.debugLogicRegs)
 
   frontend.io.out <> backend.io.in
   backend.io.flush := false.B

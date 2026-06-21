@@ -3,60 +3,110 @@ package nscscc.backend.writeback
 import chisel3._
 import chisel3.util._
 import nscscc.config._
-import nscscc.backend.dispatch.DispatchedInst
+import nscscc.backend.dispatch._
 import nscscc.backend.execute.ExeResult
 import nscscc.backend.issue.IssueWakeup
 import nscscc.backend.regfile.PRFWritePortIO
 import nscscc.backend.rename.RedirectInfo
  
 // ═══════════════════════════════════════════════════════════════
-//  写回级（Writeback）
+//  写回级（Writeback Stage）
 //
 //  功能：
-//    1. 接收各执行单元的结果，写入 PRF
+//    1. 接收各执行单元的结果（打一拍存入本级寄存器）
 //    2. 广播 wakeup 信号给所有 IQ
-//    3. 传递重定向信号
-//    4. 传递结果到 ROB 用于提交
+//    3. 将结果写入 PRF
+//    4. 传递重定向信号
+//    5. 传递结果到 ROB 用于提交
+//
+//  【流水线时序特征】
+//    · 独立通道：各个执行单元的结果互相独立，谁到了就存谁，不需等待其他通道。
+//    · 无下游反压：写回级的下游是 PRF、ROB、IQ。由于资源在 Rename 阶段
+//      已经预留好，写回级本质上是“永远 Ready”的。
 // ═══════════════════════════════════════════════════════════════
 class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val io = IO(new Bundle {
     // ── 从各执行单元接收结果 ──
-    val exeResults = Input(Vec(numExeUnits, Valid(new ExeResult)))
+    // 【修改】为了和 ExeUnit 握手，改为 Decoupled 接口
+    val InExeResults = Vec(numExeUnits, Flipped(Decoupled(new ExeResult)))
  
     // ── 写 PRF 端口 ──
-    val rfWritePorts = Vec(intRegFileWritePorts, new PRFWritePortIO)
+    val rfWritePorts = Vec(intRegFileWritePorts, Flipped(new PRFWritePortIO))
  
     // ── 唤醒广播给 IQ ──
-    val wakeupPorts = Vec(IQNumWakeupPorts, Valid(new IssueWakeup))
+    val wakeupPorts  = Vec(IQNumWakeupPorts, Valid(new IssueWakeup))
  
     // ── 重定向 ──
-    val redirect = Output(Valid(new RedirectInfo))
+    val redirect     = Output(Valid(new RedirectInfo))
  
     // ── 送到 ROB 用于提交 ──
-    val commitResults = Vec(numExeUnits, Valid(new DispatchedInst))
+    val toRObResults = Vec(numExeUnits, Valid(new RobWriteback))
+
+    // ── 增加：全局冲刷信号 ──
+    val flush        = Input(Bool())
   })
  
-  // ══════════════════════════════════════════════════════════════
-  //  执行单元 → PRF 写端口映射
-  //
-  //  当前只有 3 个 ALU 通道（ch0, ch1, ch2）会产生写回，
-  //  加上 BRU 共 4 个写回源。
-  //  写回端口映射：
-  //    writePort(0) ← exeResult(0)  // Q1: ALU/CSR
-  //    writePort(1) ← exeResult(1)  // Q2: ALU/DIV
-  //    writePort(2) ← exeResult(2)  // Q3: ALU/MUL/BRU
-  //    writePort(3) ← exeResult(2)  // BRU 可能和 ALU 共享，但不会同拍有效
-  //    writePort(4..8): 预留给 MUL/DIV/CSR/LOAD/LOAD
-  // ══════════════════════════════════════════════════════════════
- 
-  // 目前只使用前 numExeUnits 个写端口
+  // ================================================================
+  //  Phase 1: 流水级寄存器（每个通道独立握手与打拍）
+  // ================================================================
+  
+  // 各通道独立的有效位和数据寄存器
+  val stgValid = RegInit(VecInit(Seq.fill(numExeUnits)(false.B)))
+  val stgData  = Reg(Vec(numExeUnits, new ExeResult))
+  dontTouch(stgData)
+
+  for (i <- 0 until numExeUnits) {
+    // 因为下游是 PRF 和 ROB（不反压），本级数据只要有效，下个周期必定能发走
+    val outFire = stgValid(i) 
+    
+    // 本级永远能接收新数据（要么本级为空，要么本级数据本周期发走）
+    val stgReady = !stgValid(i) || outFire // 永远为 true.B
+    
+    val inFire = io.InExeResults(i).valid && stgReady
+
+    // 将 ready 信号反馈给对应的执行单元
+    io.InExeResults(i).ready := stgReady
+
+    // 严格状态转移
+    when(io.flush) {
+      stgValid(i) := false.B
+    }.elsewhen(inFire) {
+      stgValid(i) := true.B
+      stgData(i)  := io.InExeResults(i).bits
+    }.elsewhen(outFire) {
+      stgValid(i) := false.B
+    }
+  }
+
+  // ================================================================
+  //  Phase 2: 组合逻辑 —— 驱动各模块写端口
+  //  注意：全部使用打过一拍的稳定数据 stgData
+  // ================================================================
+  
+  // ── 1. 驱动 PRF 写端口与 IQ 唤醒、ROB 提交 ──
   for (w <- 0 until numExeUnits) {
-    val res = io.exeResults(w)
-    val needWrite = res.valid && res.bits.uop.ctrl.rfWen && res.bits.uop.rdValid
+    val valid = stgValid(w)
+    val res   = stgData(w)
+    
+    // 是否需要写回目的寄存器
+    val needWrite = valid && res.uop.ctrl.rfWen && res.uop.rdValid
  
+    // PRF 写回
     io.rfWritePorts(w).valid := needWrite
-    io.rfWritePorts(w).addr  := res.bits.uop.pdst
-    io.rfWritePorts(w).data  := res.bits.data
+    io.rfWritePorts(w).addr  := res.uop.pdst
+    io.rfWritePorts(w).data  := res.data
+ 
+    // 唤醒广播
+    io.wakeupPorts(w).valid     := needWrite
+    io.wakeupPorts(w).bits.pdst := res.uop.pdst
+
+    // 送到 ROB 提交通知 (带有执行单元的数据和标志)
+    io.toRObResults(w).valid := valid
+    io.toRObResults(w).bits.excpVec  := 0.U
+    io.toRObResults(w).bits.isBypass  := false.B
+    io.toRObResults(w).bits.robIdx   := res.uop.robIdx
+    io.toRObResults(w).bits.rfdata   := res.data
+
   }
  
   // 多余的写端口暂置无效
@@ -65,43 +115,26 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
     io.rfWritePorts(w).addr  := 0.U
     io.rfWritePorts(w).data  := 0.U
   }
- 
-  // ══════════════════════════════════════════════════════════════
-  //  唤醒广播
-  //  将写回的 pdst 广播给所有 IQ 的 wakeup 端口
-  //  目前 3 个 ALU 通道各占 1 个唤醒端口
-  //  预留 9 个唤醒端口：ALU×3 + MUL + DIV + BRU + CSR + LOAD×2
-  // ══════════════════════════════════════════════════════════════
-  for (w <- 0 until numExeUnits) {
-    val res = io.exeResults(w)
-    val needWakeup = res.valid && res.bits.uop.ctrl.rfWen && res.bits.uop.rdValid
- 
-    io.wakeupPorts(w).valid    := needWakeup
-    io.wakeupPorts(w).bits.pdst := res.bits.uop.pdst
-  }
- 
+  
   // 多余的唤醒端口暂置无效
   for (w <- numExeUnits until IQNumWakeupPorts) {
-    io.wakeupPorts(w).valid    := false.B
+    io.wakeupPorts(w).valid     := false.B
     io.wakeupPorts(w).bits.pdst := 0.U
   }
  
-  // ══════════════════════════════════════════════════════════════
-  //  重定向
-  //  选取优先级最高的重定向（当前只可能有一个 BRU 产生）
-  // ══════════════════════════════════════════════════════════════
-  val redirectCandidates = io.exeResults.map(_.bits.redirect)
-  val anyRedirect = redirectCandidates.map(_.valid).reduce(_ || _)
+  // ================================================================
+  //  Phase 3: 重定向信号处理
+  // ================================================================
+  // 提取所有有效的重定向请求：只有该通道数据有效，并且带有的 redirect.valid 为真时才生效
+  val redirectCandidates = (0 until numExeUnits).map { i =>
+    val r = stgData(i).redirect
+    (stgValid(i) && r.valid, r.bits)
+  }
+  
+  val anyRedirect = redirectCandidates.map(_._1).reduce(_ || _)
  
   io.redirect.valid := anyRedirect
-  // 优先选择 robIdx 最小的（最早的重定向）
-  io.redirect.bits := PriorityMux(redirectCandidates.map(r => (r.valid, r.bits)))
- 
-  // ══════════════════════════════════════════════════════════════
-  //  送到 ROB
-  // ══════════════════════════════════════════════════════════════
-  for (i <- 0 until numExeUnits) {
-    io.commitResults(i).valid := io.exeResults(i).valid
-    io.commitResults(i).bits  := io.exeResults(i).bits.uop
-  }
+  // 优先选择 index 靠前的重定向（也可以根据你的设计，把 robIdx 加入判断，选择最老的指令）
+  io.redirect.bits  := PriorityMux(redirectCandidates)
+
 }

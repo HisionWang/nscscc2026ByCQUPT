@@ -25,74 +25,130 @@ case class ExeUnitParams(
   hasStd: Boolean = false
 )
  
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * 执行单元（ExeUnit）
+ * ═══════════════════════════════════════════════════════════════
+ *
+ * 【流水线位置】
+ * RegReadStage ──▶ ExeUnit ──▶ WriteBack / Forwarding
+ *
+ * 【时序设计原则】
+ * 1. 先打拍，后计算：
+ * 从 io.inReq 进来的数据首先被寄存到 stgReq 中（Phase 1）。
+ * 2. 单周期与多周期混合处理：
+ * - ALU/BRU：利用 stgReq 组合逻辑直出，1周期完成。
+ * - MUL/DIV：触发后需要多周期，期间拉高 fuBusy 阻塞本级流水（Phase 2）。
+ * 3. 严格的握手协议：
+ * 只有当本级非忙 (!fuBusy) 且下游准备好 (outResult.ready) 时，
+ * 才能 outFire，并允许上游输入新数据 (inFire)。
+ * ═══════════════════════════════════════════════════════════════
+ */
 class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    val req      = Flipped(Decoupled(new ExeReq))
-    val result   = Valid(new ExeResult)
+    val inReq      = Flipped(Decoupled(new ExeReq))
+    val outResult  = Decoupled(new ExeResult)
+    // 增加全局冲刷信号（因为现在模块内部有状态寄存器了，必须能被冲刷）
+    val flush      = Input(Bool()) 
   })
  
-  val req    = io.req.bits
-  val fuType = req.uop.ctrl.fuType
- 
-  // ══════════════════════════════════════════════════════════════
-  //  功能子单元实例化
-  // ══════════════════════════════════════════════════════════════
- 
-  // ── ALU ──
-  val aluValid_in = if (params.hasAlu) io.req.fire && fuType === FuType.alu else false.B
+  // ================================================================
+  //  Phase 1: 流水级寄存器（严格规范的握手与打拍）
+  // ================================================================
+  val stgValid = RegInit(false.B)
+  val stgReq   = Reg(new ExeReq)
+  
+  // ── 预留多周期阻塞接口 (MUL/DIV) ──
+  // TODO: 后续接入乘除法器时，将这里替换为实际的 busy 信号
+  // 例如：val fuBusy = mulDiv.io.busy || !mulDiv.io.done
+  val fuBusy = WireDefault(false.B) 
+
+  // ── 1-1. 发射判定：本级有效且运算完毕且下游 ready ──
+  val outFire = stgValid && !fuBusy && io.outResult.ready
+
+  // ── 1-2. 接收判定：本级为空，或者本级数据能在这一拍成功发走 ──
+  val stgReady = !stgValid || outFire
+  
+  // ── 1-3. 输入判定 ──
+  val inFire = io.inReq.valid && stgReady
+
+  // ── 1-4. 将 ready 信号反压给上游 ──
+  io.inReq.ready := stgReady
+
+  // ── 1-5. 严格状态转移 ──
+  when(io.flush) {
+    // 冲刷：清空本级，丢弃正在执行或等待执行的数据
+    stgValid := false.B
+  }.elsewhen(inFire) {
+    // 接收新数据：打入寄存器
+    stgValid := true.B
+    stgReq   := io.inReq.bits
+  }.elsewhen(outFire) {
+    // 旧数据成功发射且没有新数据进来：清空本级
+    stgValid := false.B
+  }
+  // else：阻塞中，stgValid 和 stgReq 保持不变，让多周期运算器继续算
+
+  // ================================================================
+  //  Phase 2: 组合逻辑 —— 功能单元 (FU) 核心计算
+  //  注意：这里的所有计算都基于已经稳定的 stgReq（T1 寄存器值）
+  // ================================================================
+  val fuType = stgReq.uop.ctrl.fuType
+
+  // ── ALU (单周期运算) ──
+  val aluValid = if (params.hasAlu) stgValid && fuType === FuType.alu else false.B
   val alu = if (params.hasAlu) Module(new ALU) else null
   if (params.hasAlu) {
-    alu.io.valid := aluValid_in
-    alu.io.uop   := req.uop
-    alu.io.rs1   := req.rs1Data
-    alu.io.rs2   := req.rs2Data
+    // 直接使用稳定打拍后的 stgReq 数据
+    alu.io.valid := aluValid
+    alu.io.uop   := stgReq.uop
+    alu.io.rs1   := stgReq.rs1Data
+    alu.io.rs2   := stgReq.rs2Data
   }
-  val aluValid_out = if (params.hasAlu) RegNext(aluValid_in, false.B) else false.B
-  val aluUop      = if (params.hasAlu) RegEnable(req.uop, aluValid_in) else WireDefault(0.U.asTypeOf(new DispatchedInst))
-  val aluData     = if (params.hasAlu) alu.io.result else 0.U
- 
-  // ── BRU ──
-  val bruValid_in = if (params.hasBru) io.req.fire && fuType === FuType.bru else false.B
+  val aluData = if (params.hasAlu) alu.io.result else 0.U
+
+  // ── BRU (单周期运算) ──
+  val bruValid = if (params.hasBru) stgValid && fuType === FuType.bru else false.B
   val bru = if (params.hasBru) Module(new BRU) else null
   if (params.hasBru) {
-    bru.io.valid := bruValid_in
-    bru.io.uop   := req.uop
-    bru.io.rs1   := req.rs1Data
-    bru.io.rs2   := req.rs2Data
+    bru.io.valid := bruValid
+    bru.io.uop   := stgReq.uop
+    bru.io.rs1   := stgReq.rs1Data
+    bru.io.rs2   := stgReq.rs2Data
   }
-  val bruValid_out = if (params.hasBru) RegNext(bruValid_in, false.B) else false.B
-  val bruUop      = if (params.hasBru) RegEnable(req.uop, bruValid_in) else WireDefault(0.U.asTypeOf(new DispatchedInst))
-  val bruData     = if (params.hasBru) bru.io.result else 0.U
- 
-  // ══════════════════════════════════════════════════════════════
-  //  结果仲裁
-  // ══════════════════════════════════════════════════════════════
-  // 收集所有有效的子单元输出，用优先级选择
+  val bruData = if (params.hasBru) bru.io.result else 0.U
+
+  // ================================================================
+  //  Phase 3: 组装输出到下游
+  // ================================================================
+  
+  // 收集单周期结果（如果是多周期，也在这里收集它的 done 数据）
   val subValids = Seq(
-    if (params.hasAlu) aluValid_out else false.B,
-    if (params.hasBru) bruValid_out else false.B
-  )
-  val subUops = Seq(
-    if (params.hasAlu) aluUop else 0.U.asTypeOf(new DispatchedInst),
-    if (params.hasBru) bruUop else 0.U.asTypeOf(new DispatchedInst)
+    if (params.hasAlu) aluValid else false.B,
+    if (params.hasBru) bruValid else false.B
   )
   val subData = Seq(
     if (params.hasAlu) aluData else 0.U,
     if (params.hasBru) bruData else 0.U
   )
- 
-  io.result.valid      := subValids.reduce(_ || _)
-  io.result.bits.uop   := Mux1H(subValids, subUops)
-  io.result.bits.data  := Mux1H(subValids, subData)
- 
-  // ── 重定向：BRU 产生 ──
+
+  // 输出的 valid 信号必须满足：本级有数据，且多周期计算不处于忙碌状态
+  io.outResult.valid     := stgValid && !fuBusy
+  
+  // 将寄存的 uop 透传出去
+  io.outResult.bits.uop  := stgReq.uop
+  
+  // 仲裁并输出计算结果数据
+  io.outResult.bits.data := Mux1H(subValids, subData)
+
+  // ── 重定向：BRU 产生的分支预测结果 ──
   if (params.hasBru) {
-    io.result.bits.redirect <> bru.io.redirect
+    // 只有在 BRU 有效执行时，才允许向外发出重定向请求
+    io.outResult.bits.redirect.valid := bruValid && bru.io.redirect.valid
+    io.outResult.bits.redirect.bits  := bru.io.redirect.bits
   } else {
-    io.result.bits.redirect.valid := false.B
-    io.result.bits.redirect.bits  := DontCare
+    io.outResult.bits.redirect.valid := false.B
+    io.outResult.bits.redirect.bits  := DontCare
   }
- 
-  // ── 握手 ──
-  io.req.ready := true.B
+
 }

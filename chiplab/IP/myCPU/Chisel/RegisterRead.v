@@ -147,112 +147,20 @@ module RegisterRead(
   input         io_iqIssues_2_bits_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_iqIssues_3_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_3_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_3_bits_pc, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_3_bits_inst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_3_bits_ctrl_fuType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_3_bits_ctrl_aluOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_3_bits_ctrl_bruOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_3_bits_ctrl_lsuOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_3_bits_ctrl_csrOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_3_bits_ctrl_mulOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_3_bits_ctrl_divOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_3_bits_ctrl_src1Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_3_bits_ctrl_src2Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_3_bits_ctrl_immType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_rfWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_memRead, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_memWrite, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_csrWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_isBranch, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_isJump, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_ctrl_isPriv, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [9:0]  io_iqIssues_3_bits_excpVec, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_3_bits_imm, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [13:0] io_iqIssues_3_bits_csrAddress, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_pdInfo_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_pdInfo_isBr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_pdInfo_isJal, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_pdInfo_isJalr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_pdInfo_isCall, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_pdInfo_isRet, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_3_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_3_bits_ldst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_3_bits_lrs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_3_bits_lrs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_3_bits_pdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_3_bits_prs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_3_bits_prs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_3_bits_oldPdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [5:0]  io_iqIssues_3_bits_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_3_bits_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_3_bits_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_3_bits_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_3_bits_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_3_bits_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_iqIssues_4_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_4_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_4_bits_pc, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_4_bits_inst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_4_bits_ctrl_fuType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_4_bits_ctrl_aluOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_4_bits_ctrl_bruOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_4_bits_ctrl_lsuOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_4_bits_ctrl_csrOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_4_bits_ctrl_mulOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_4_bits_ctrl_divOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_4_bits_ctrl_src1Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_4_bits_ctrl_src2Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_4_bits_ctrl_immType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_rfWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_memRead, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_memWrite, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_csrWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_isBranch, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_isJump, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_ctrl_isPriv, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [9:0]  io_iqIssues_4_bits_excpVec, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [13:0] io_iqIssues_4_bits_csrAddress, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_pdInfo_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_pdInfo_isBr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_pdInfo_isJal, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_pdInfo_isJalr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_pdInfo_isCall, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_pdInfo_isRet, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_iqIssues_4_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_4_bits_ldst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_4_bits_lrs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [4:0]  io_iqIssues_4_bits_lrs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_4_bits_prs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_4_bits_prs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_4_bits_oldPdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [5:0]  io_iqIssues_4_bits_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_4_bits_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_4_bits_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [2:0]  io_iqIssues_4_bits_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_iqIssues_4_bits_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_rfReadAddrs_0, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_rfReadAddrs_1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_rfReadAddrs_2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_rfReadAddrs_3, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_rfReadAddrs_4, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_rfReadAddrs_5, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_rfReadAddrs_6, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_rfReadAddrs_7, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_rfReadData_0, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_rfReadData_1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_rfReadData_2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_rfReadData_3, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_rfReadData_4, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_rfReadData_5, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_rfReadData_6, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [31:0] io_rfReadData_7, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_exeReqs_0_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_0_bits_uop_pc, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -302,7 +210,6 @@ module RegisterRead(
   output        io_exeReqs_0_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_0_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_0_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_0_bits_rs2Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_exeReqs_1_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -348,13 +255,9 @@ module RegisterRead(
   output        io_exeReqs_1_bits_uop_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [5:0]  io_exeReqs_1_bits_uop_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [6:0]  io_exeReqs_1_bits_uop_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_1_bits_uop_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_1_bits_uop_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [2:0]  io_exeReqs_1_bits_uop_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_1_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_1_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_1_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_1_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_1_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_1_bits_rs2Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_exeReqs_2_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -406,115 +309,8 @@ module RegisterRead(
   output        io_exeReqs_2_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_2_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_2_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_2_bits_rs2Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_exeReqs_3_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_3_bits_uop_pc, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_3_bits_uop_inst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_3_bits_uop_ctrl_fuType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_3_bits_uop_ctrl_aluOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_3_bits_uop_ctrl_bruOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_3_bits_uop_ctrl_lsuOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_3_bits_uop_ctrl_csrOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_3_bits_uop_ctrl_mulOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_3_bits_uop_ctrl_divOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_3_bits_uop_ctrl_src1Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_3_bits_uop_ctrl_src2Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_3_bits_uop_ctrl_immType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_rfWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_memRead, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_memWrite, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_csrWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_isBranch, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_isJump, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_ctrl_isPriv, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [9:0]  io_exeReqs_3_bits_uop_excpVec, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_3_bits_uop_imm, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [13:0] io_exeReqs_3_bits_uop_csrAddress, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_pdInfo_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_pdInfo_isBr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_pdInfo_isJal, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_pdInfo_isJalr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_pdInfo_isCall, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_pdInfo_isRet, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_3_bits_uop_pdInfo_jumpTarget, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_3_bits_uop_ldst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_3_bits_uop_lrs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_3_bits_uop_lrs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_3_bits_uop_pdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_3_bits_uop_prs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_3_bits_uop_prs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_3_bits_uop_oldPdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [5:0]  io_exeReqs_3_bits_uop_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_3_bits_uop_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_3_bits_uop_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_3_bits_uop_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_3_bits_uop_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_3_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_3_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_3_bits_rs2Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_exeReqs_4_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_4_bits_uop_pc, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_4_bits_uop_inst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_4_bits_uop_ctrl_fuType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_4_bits_uop_ctrl_aluOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_4_bits_uop_ctrl_bruOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_4_bits_uop_ctrl_lsuOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_4_bits_uop_ctrl_csrOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_4_bits_uop_ctrl_mulOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_4_bits_uop_ctrl_divOp, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_4_bits_uop_ctrl_src1Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_4_bits_uop_ctrl_src2Type, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_4_bits_uop_ctrl_immType, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_rfWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_memRead, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_memWrite, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_csrWen, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_isBranch, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_isJump, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_ctrl_isPriv, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [9:0]  io_exeReqs_4_bits_uop_excpVec, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_4_bits_uop_imm, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [13:0] io_exeReqs_4_bits_uop_csrAddress, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_pdInfo_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_pdInfo_isBr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_pdInfo_isJal, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_pdInfo_isJalr, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_pdInfo_isCall, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_pdInfo_isRet, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_4_bits_uop_pdInfo_jumpTarget, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_4_bits_uop_ldst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_4_bits_uop_lrs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [4:0]  io_exeReqs_4_bits_uop_lrs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_4_bits_uop_pdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_4_bits_uop_prs1, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_4_bits_uop_prs2, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_4_bits_uop_oldPdst, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [5:0]  io_exeReqs_4_bits_uop_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_4_bits_uop_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_4_bits_uop_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_4_bits_uop_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [2:0]  io_exeReqs_4_bits_uop_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output        io_exeReqs_4_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_4_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [31:0] io_exeReqs_4_bits_rs2Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input         io_redirect_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [5:0]  io_redirect_robIdx // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [31:0] io_exeReqs_2_bits_rs2Data // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -809,185 +605,6 @@ module RegisterRead(
   reg [31:0] _RAND_289;
   reg [31:0] _RAND_290;
   reg [31:0] _RAND_291;
-  reg [31:0] _RAND_292;
-  reg [31:0] _RAND_293;
-  reg [31:0] _RAND_294;
-  reg [31:0] _RAND_295;
-  reg [31:0] _RAND_296;
-  reg [31:0] _RAND_297;
-  reg [31:0] _RAND_298;
-  reg [31:0] _RAND_299;
-  reg [31:0] _RAND_300;
-  reg [31:0] _RAND_301;
-  reg [31:0] _RAND_302;
-  reg [31:0] _RAND_303;
-  reg [31:0] _RAND_304;
-  reg [31:0] _RAND_305;
-  reg [31:0] _RAND_306;
-  reg [31:0] _RAND_307;
-  reg [31:0] _RAND_308;
-  reg [31:0] _RAND_309;
-  reg [31:0] _RAND_310;
-  reg [31:0] _RAND_311;
-  reg [31:0] _RAND_312;
-  reg [31:0] _RAND_313;
-  reg [31:0] _RAND_314;
-  reg [31:0] _RAND_315;
-  reg [31:0] _RAND_316;
-  reg [31:0] _RAND_317;
-  reg [31:0] _RAND_318;
-  reg [31:0] _RAND_319;
-  reg [31:0] _RAND_320;
-  reg [31:0] _RAND_321;
-  reg [31:0] _RAND_322;
-  reg [31:0] _RAND_323;
-  reg [31:0] _RAND_324;
-  reg [31:0] _RAND_325;
-  reg [31:0] _RAND_326;
-  reg [31:0] _RAND_327;
-  reg [31:0] _RAND_328;
-  reg [31:0] _RAND_329;
-  reg [31:0] _RAND_330;
-  reg [31:0] _RAND_331;
-  reg [31:0] _RAND_332;
-  reg [31:0] _RAND_333;
-  reg [31:0] _RAND_334;
-  reg [31:0] _RAND_335;
-  reg [31:0] _RAND_336;
-  reg [31:0] _RAND_337;
-  reg [31:0] _RAND_338;
-  reg [31:0] _RAND_339;
-  reg [31:0] _RAND_340;
-  reg [31:0] _RAND_341;
-  reg [31:0] _RAND_342;
-  reg [31:0] _RAND_343;
-  reg [31:0] _RAND_344;
-  reg [31:0] _RAND_345;
-  reg [31:0] _RAND_346;
-  reg [31:0] _RAND_347;
-  reg [31:0] _RAND_348;
-  reg [31:0] _RAND_349;
-  reg [31:0] _RAND_350;
-  reg [31:0] _RAND_351;
-  reg [31:0] _RAND_352;
-  reg [31:0] _RAND_353;
-  reg [31:0] _RAND_354;
-  reg [31:0] _RAND_355;
-  reg [31:0] _RAND_356;
-  reg [31:0] _RAND_357;
-  reg [31:0] _RAND_358;
-  reg [31:0] _RAND_359;
-  reg [31:0] _RAND_360;
-  reg [31:0] _RAND_361;
-  reg [31:0] _RAND_362;
-  reg [31:0] _RAND_363;
-  reg [31:0] _RAND_364;
-  reg [31:0] _RAND_365;
-  reg [31:0] _RAND_366;
-  reg [31:0] _RAND_367;
-  reg [31:0] _RAND_368;
-  reg [31:0] _RAND_369;
-  reg [31:0] _RAND_370;
-  reg [31:0] _RAND_371;
-  reg [31:0] _RAND_372;
-  reg [31:0] _RAND_373;
-  reg [31:0] _RAND_374;
-  reg [31:0] _RAND_375;
-  reg [31:0] _RAND_376;
-  reg [31:0] _RAND_377;
-  reg [31:0] _RAND_378;
-  reg [31:0] _RAND_379;
-  reg [31:0] _RAND_380;
-  reg [31:0] _RAND_381;
-  reg [31:0] _RAND_382;
-  reg [31:0] _RAND_383;
-  reg [31:0] _RAND_384;
-  reg [31:0] _RAND_385;
-  reg [31:0] _RAND_386;
-  reg [31:0] _RAND_387;
-  reg [31:0] _RAND_388;
-  reg [31:0] _RAND_389;
-  reg [31:0] _RAND_390;
-  reg [31:0] _RAND_391;
-  reg [31:0] _RAND_392;
-  reg [31:0] _RAND_393;
-  reg [31:0] _RAND_394;
-  reg [31:0] _RAND_395;
-  reg [31:0] _RAND_396;
-  reg [31:0] _RAND_397;
-  reg [31:0] _RAND_398;
-  reg [31:0] _RAND_399;
-  reg [31:0] _RAND_400;
-  reg [31:0] _RAND_401;
-  reg [31:0] _RAND_402;
-  reg [31:0] _RAND_403;
-  reg [31:0] _RAND_404;
-  reg [31:0] _RAND_405;
-  reg [31:0] _RAND_406;
-  reg [31:0] _RAND_407;
-  reg [31:0] _RAND_408;
-  reg [31:0] _RAND_409;
-  reg [31:0] _RAND_410;
-  reg [31:0] _RAND_411;
-  reg [31:0] _RAND_412;
-  reg [31:0] _RAND_413;
-  reg [31:0] _RAND_414;
-  reg [31:0] _RAND_415;
-  reg [31:0] _RAND_416;
-  reg [31:0] _RAND_417;
-  reg [31:0] _RAND_418;
-  reg [31:0] _RAND_419;
-  reg [31:0] _RAND_420;
-  reg [31:0] _RAND_421;
-  reg [31:0] _RAND_422;
-  reg [31:0] _RAND_423;
-  reg [31:0] _RAND_424;
-  reg [31:0] _RAND_425;
-  reg [31:0] _RAND_426;
-  reg [31:0] _RAND_427;
-  reg [31:0] _RAND_428;
-  reg [31:0] _RAND_429;
-  reg [31:0] _RAND_430;
-  reg [31:0] _RAND_431;
-  reg [31:0] _RAND_432;
-  reg [31:0] _RAND_433;
-  reg [31:0] _RAND_434;
-  reg [31:0] _RAND_435;
-  reg [31:0] _RAND_436;
-  reg [31:0] _RAND_437;
-  reg [31:0] _RAND_438;
-  reg [31:0] _RAND_439;
-  reg [31:0] _RAND_440;
-  reg [31:0] _RAND_441;
-  reg [31:0] _RAND_442;
-  reg [31:0] _RAND_443;
-  reg [31:0] _RAND_444;
-  reg [31:0] _RAND_445;
-  reg [31:0] _RAND_446;
-  reg [31:0] _RAND_447;
-  reg [31:0] _RAND_448;
-  reg [31:0] _RAND_449;
-  reg [31:0] _RAND_450;
-  reg [31:0] _RAND_451;
-  reg [31:0] _RAND_452;
-  reg [31:0] _RAND_453;
-  reg [31:0] _RAND_454;
-  reg [31:0] _RAND_455;
-  reg [31:0] _RAND_456;
-  reg [31:0] _RAND_457;
-  reg [31:0] _RAND_458;
-  reg [31:0] _RAND_459;
-  reg [31:0] _RAND_460;
-  reg [31:0] _RAND_461;
-  reg [31:0] _RAND_462;
-  reg [31:0] _RAND_463;
-  reg [31:0] _RAND_464;
-  reg [31:0] _RAND_465;
-  reg [31:0] _RAND_466;
-  reg [31:0] _RAND_467;
-  reg [31:0] _RAND_468;
-  reg [31:0] _RAND_469;
-  reg [31:0] _RAND_470;
 `endif // RANDOMIZE_REG_INIT
   reg  rrd_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
   reg [31:0] rrd_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
@@ -1087,20 +704,8 @@ module RegisterRead(
   reg  out_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_rs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 94:24]
   reg [31:0] out_rs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
-  wire  rrd_killed_aFlag = rrd_uop_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire  rrd_killed_bFlag = io_redirect_robIdx[5]; // @[src/main/scala/backend/regfile/RegisterRead.scala 67:18]
-  wire [5:0] rrd_killed_aVal = rrd_uop_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire [4:0] rrd_killed_bVal = io_redirect_robIdx[4:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 69:18]
-  wire [5:0] _GEN_1510 = {{1'd0}, rrd_killed_bVal}; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:31]
-  wire  _rrd_killed_T_4 = rrd_killed_aFlag == rrd_killed_bFlag ? rrd_killed_aVal > _GEN_1510 : rrd_killed_aFlag; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  rrd_killed = rrd_valid & io_redirect_valid & _rrd_killed_T_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 100:53]
-  wire  out_killed_aFlag = out_uop_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] out_killed_aVal = out_uop_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _out_killed_T_4 = out_killed_aFlag == rrd_killed_bFlag ? out_killed_aVal > _GEN_1510 : out_killed_aFlag; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  out_killed = out_valid & io_redirect_valid & _out_killed_T_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 102:53]
-  wire  _out_fire_T = ~out_killed; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:35]
-  wire  out_fire = out_valid & ~out_killed & io_exeReqs_0_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
-  wire  rrd_to_out = rrd_valid & ~rrd_killed & (~out_valid | out_fire); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
+  wire  out_fire = out_valid & io_exeReqs_0_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
+  wire  rrd_to_out = rrd_valid & (~out_valid | out_fire); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready = ~rrd_valid | rrd_to_out; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire = io_iqIssues_0_valid & rrd_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
   wire [6:0] _io_rfReadAddrs_0_T = rrd_valid ? rrd_uop_prs1 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 123:42]
@@ -1201,17 +806,8 @@ module RegisterRead(
   reg  out_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_rs1_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 94:24]
   reg [31:0] out_rs2_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
-  wire  rrd_killed_aFlag_1 = rrd_uop_1_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] rrd_killed_aVal_1 = rrd_uop_1_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _rrd_killed_T_9 = rrd_killed_aFlag_1 == rrd_killed_bFlag ? rrd_killed_aVal_1 > _GEN_1510 : rrd_killed_aFlag_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  rrd_killed_1 = rrd_valid_1 & io_redirect_valid & _rrd_killed_T_9; // @[src/main/scala/backend/regfile/RegisterRead.scala 100:53]
-  wire  out_killed_aFlag_1 = out_uop_1_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] out_killed_aVal_1 = out_uop_1_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _out_killed_T_9 = out_killed_aFlag_1 == rrd_killed_bFlag ? out_killed_aVal_1 > _GEN_1510 : out_killed_aFlag_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  out_killed_1 = out_valid_1 & io_redirect_valid & _out_killed_T_9; // @[src/main/scala/backend/regfile/RegisterRead.scala 102:53]
-  wire  _out_fire_T_2 = ~out_killed_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:35]
-  wire  out_fire_1 = out_valid_1 & ~out_killed_1 & io_exeReqs_1_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
-  wire  rrd_to_out_1 = rrd_valid_1 & ~rrd_killed_1 & (~out_valid_1 | out_fire_1); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
+  wire  out_fire_1 = out_valid_1 & io_exeReqs_1_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
+  wire  rrd_to_out_1 = rrd_valid_1 & (~out_valid_1 | out_fire_1); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready_1 = ~rrd_valid_1 | rrd_to_out_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire_1 = io_iqIssues_1_valid & rrd_ready_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
   wire [6:0] _io_rfReadAddrs_2_T = rrd_valid_1 ? rrd_uop_1_prs1 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 123:42]
@@ -1318,17 +914,8 @@ module RegisterRead(
   reg  out_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_rs1_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 94:24]
   reg [31:0] out_rs2_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
-  wire  rrd_killed_aFlag_2 = rrd_uop_2_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] rrd_killed_aVal_2 = rrd_uop_2_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _rrd_killed_T_14 = rrd_killed_aFlag_2 == rrd_killed_bFlag ? rrd_killed_aVal_2 > _GEN_1510 : rrd_killed_aFlag_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  rrd_killed_2 = rrd_valid_2 & io_redirect_valid & _rrd_killed_T_14; // @[src/main/scala/backend/regfile/RegisterRead.scala 100:53]
-  wire  out_killed_aFlag_2 = out_uop_2_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] out_killed_aVal_2 = out_uop_2_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _out_killed_T_14 = out_killed_aFlag_2 == rrd_killed_bFlag ? out_killed_aVal_2 > _GEN_1510 : out_killed_aFlag_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  out_killed_2 = out_valid_2 & io_redirect_valid & _out_killed_T_14; // @[src/main/scala/backend/regfile/RegisterRead.scala 102:53]
-  wire  _out_fire_T_4 = ~out_killed_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:35]
-  wire  out_fire_2 = out_valid_2 & ~out_killed_2 & io_exeReqs_2_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
-  wire  rrd_to_out_2 = rrd_valid_2 & ~rrd_killed_2 & (~out_valid_2 | out_fire_2); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
+  wire  out_fire_2 = out_valid_2 & io_exeReqs_2_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
+  wire  rrd_to_out_2 = rrd_valid_2 & (~out_valid_2 | out_fire_2); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready_2 = ~rrd_valid_2 | rrd_to_out_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire_2 = io_iqIssues_2_valid & rrd_ready_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
   wire [6:0] _io_rfReadAddrs_4_T = rrd_valid_2 ? rrd_uop_2_prs1 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 123:42]
@@ -1338,224 +925,21 @@ module RegisterRead(
   wire  _GEN_703 = out_fire_2 ? 1'h0 : out_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
   wire  _GEN_704 = rrd_to_out_2 | _GEN_703; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   reg  rrd_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-  reg [31:0] rrd_uop_3_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [31:0] rrd_uop_3_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_3_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_3_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_3_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_3_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_3_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_3_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_3_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_3_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_3_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_3_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [9:0] rrd_uop_3_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [31:0] rrd_uop_3_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [13:0] rrd_uop_3_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [31:0] rrd_uop_3_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_3_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_3_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_3_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_3_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_3_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_3_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_3_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [5:0] rrd_uop_3_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_3_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_3_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_3_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_3_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_3_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-  reg [31:0] out_uop_3_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_uop_3_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_3_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_3_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_3_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_3_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_3_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_3_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_3_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_3_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_3_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_3_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [9:0] out_uop_3_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_uop_3_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [13:0] out_uop_3_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_uop_3_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_3_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_3_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_3_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_3_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_3_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_3_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_3_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [5:0] out_uop_3_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_3_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_3_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_3_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_3_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_3_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_rs1_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 94:24]
-  reg [31:0] out_rs2_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
-  wire  rrd_killed_aFlag_3 = rrd_uop_3_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] rrd_killed_aVal_3 = rrd_uop_3_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _rrd_killed_T_19 = rrd_killed_aFlag_3 == rrd_killed_bFlag ? rrd_killed_aVal_3 > _GEN_1510 : rrd_killed_aFlag_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  rrd_killed_3 = rrd_valid_3 & io_redirect_valid & _rrd_killed_T_19; // @[src/main/scala/backend/regfile/RegisterRead.scala 100:53]
-  wire  out_killed_aFlag_3 = out_uop_3_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] out_killed_aVal_3 = out_uop_3_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _out_killed_T_19 = out_killed_aFlag_3 == rrd_killed_bFlag ? out_killed_aVal_3 > _GEN_1510 : out_killed_aFlag_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  out_killed_3 = out_valid_3 & io_redirect_valid & _out_killed_T_19; // @[src/main/scala/backend/regfile/RegisterRead.scala 102:53]
-  wire  _out_fire_T_6 = ~out_killed_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:35]
-  wire  out_fire_3 = out_valid_3 & ~out_killed_3 & io_exeReqs_3_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
-  wire  rrd_to_out_3 = rrd_valid_3 & ~rrd_killed_3 & (~out_valid_3 | out_fire_3); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
+  wire  rrd_to_out_3 = rrd_valid_3 & ~out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready_3 = ~rrd_valid_3 | rrd_to_out_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire_3 = io_iqIssues_3_valid & rrd_ready_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
-  wire [6:0] _readSrc_T_2 = rrd_valid_3 ? rrd_uop_3_prs1 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 130:52]
   wire  _GEN_906 = rrd_to_out_3 ? 1'h0 : rrd_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
   wire  _GEN_907 = iq_fire_3 | _GEN_906; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_1005 = out_fire_3 ? 1'h0 : out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
-  wire  _GEN_1006 = rrd_to_out_3 | _GEN_1005; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_1006 = rrd_to_out_3 | out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   reg  rrd_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-  reg [31:0] rrd_uop_4_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [31:0] rrd_uop_4_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_4_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_4_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_4_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_4_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_4_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_4_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_4_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_4_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_4_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_4_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [9:0] rrd_uop_4_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [13:0] rrd_uop_4_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [31:0] rrd_uop_4_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_4_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_4_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [4:0] rrd_uop_4_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_4_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_4_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_4_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [5:0] rrd_uop_4_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_4_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_4_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [2:0] rrd_uop_4_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg  rrd_uop_4_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-  reg [31:0] out_uop_4_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_uop_4_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_4_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_4_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_4_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_4_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_4_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_4_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_4_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_4_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_4_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_4_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [9:0] out_uop_4_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [13:0] out_uop_4_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_uop_4_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_4_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_4_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [4:0] out_uop_4_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_4_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_4_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_4_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [5:0] out_uop_4_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_4_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_4_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [2:0] out_uop_4_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg  out_uop_4_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [31:0] out_rs2_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
-  wire  rrd_killed_aFlag_4 = rrd_uop_4_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] rrd_killed_aVal_4 = rrd_uop_4_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _rrd_killed_T_24 = rrd_killed_aFlag_4 == rrd_killed_bFlag ? rrd_killed_aVal_4 > _GEN_1510 : rrd_killed_aFlag_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  rrd_killed_4 = rrd_valid_4 & io_redirect_valid & _rrd_killed_T_24; // @[src/main/scala/backend/regfile/RegisterRead.scala 100:53]
-  wire  out_killed_aFlag_4 = out_uop_4_robIdxFull[6]; // @[src/main/scala/backend/regfile/RegisterRead.scala 66:18]
-  wire [5:0] out_killed_aVal_4 = out_uop_4_robIdxFull[5:0]; // @[src/main/scala/backend/regfile/RegisterRead.scala 68:18]
-  wire  _out_killed_T_24 = out_killed_aFlag_4 == rrd_killed_bFlag ? out_killed_aVal_4 > _GEN_1510 : out_killed_aFlag_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 70:8]
-  wire  out_killed_4 = out_valid_4 & io_redirect_valid & _out_killed_T_24; // @[src/main/scala/backend/regfile/RegisterRead.scala 102:53]
-  wire  _out_fire_T_8 = ~out_killed_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:35]
-  wire  out_fire_4 = out_valid_4 & ~out_killed_4 & io_exeReqs_4_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
-  wire  rrd_to_out_4 = rrd_valid_4 & ~rrd_killed_4 & (~out_valid_4 | out_fire_4); // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
+  wire  rrd_to_out_4 = rrd_valid_4 & ~out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready_4 = ~rrd_valid_4 | rrd_to_out_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire_4 = io_iqIssues_4_valid & rrd_ready_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
-  wire [6:0] _readSrc_T_4 = rrd_valid_4 ? rrd_uop_4_prs2 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 129:52]
   wire  _GEN_1208 = rrd_to_out_4 ? 1'h0 : rrd_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
   wire  _GEN_1209 = iq_fire_4 | _GEN_1208; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_1307 = out_fire_4 ? 1'h0 : out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
-  wire  _GEN_1308 = rrd_to_out_4 | _GEN_1307; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_1308 = rrd_to_out_4 | out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   assign io_iqIssues_0_ready = ~rrd_valid | rrd_to_out; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   assign io_iqIssues_1_ready = ~rrd_valid_1 | rrd_to_out_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   assign io_iqIssues_2_ready = ~rrd_valid_2 | rrd_to_out_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
@@ -1567,9 +951,7 @@ module RegisterRead(
   assign io_rfReadAddrs_3 = iq_fire_1 ? io_iqIssues_1_bits_prs2 : _io_rfReadAddrs_3_T; // @[src/main/scala/backend/regfile/RegisterRead.scala 124:42]
   assign io_rfReadAddrs_4 = iq_fire_2 ? io_iqIssues_2_bits_prs1 : _io_rfReadAddrs_4_T; // @[src/main/scala/backend/regfile/RegisterRead.scala 122:42]
   assign io_rfReadAddrs_5 = iq_fire_2 ? io_iqIssues_2_bits_prs2 : _io_rfReadAddrs_5_T; // @[src/main/scala/backend/regfile/RegisterRead.scala 124:42]
-  assign io_rfReadAddrs_6 = iq_fire_3 ? io_iqIssues_3_bits_prs1 : _readSrc_T_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 130:12]
-  assign io_rfReadAddrs_7 = iq_fire_4 ? io_iqIssues_4_bits_prs2 : _readSrc_T_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 129:12]
-  assign io_exeReqs_0_valid = out_valid & _out_fire_T; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
+  assign io_exeReqs_0_valid = out_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
   assign io_exeReqs_0_bits_uop_pc = out_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_inst = out_uop_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_ctrl_fuType = out_uop_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
@@ -1617,10 +999,9 @@ module RegisterRead(
   assign io_exeReqs_0_bits_uop_prs1Busy = out_uop_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_prs2Busy = out_uop_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_isSta = out_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_0_bits_uop_isStd = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_rs1Data = out_rs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
   assign io_exeReqs_0_bits_rs2Data = out_rs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
-  assign io_exeReqs_1_valid = out_valid_1 & _out_fire_T_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
+  assign io_exeReqs_1_valid = out_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
   assign io_exeReqs_1_bits_uop_pc = out_uop_1_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_inst = out_uop_1_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_ctrl_fuType = out_uop_1_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
@@ -1662,16 +1043,12 @@ module RegisterRead(
   assign io_exeReqs_1_bits_uop_rdValid = out_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_robIdx = out_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_robIdxFull = out_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_1_bits_uop_lqIdx = 4'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_1_bits_uop_sqIdx = 4'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_issueQueue = out_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_prs1Busy = out_uop_1_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_prs2Busy = out_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_1_bits_uop_isSta = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_1_bits_uop_isStd = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_rs1Data = out_rs1_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
   assign io_exeReqs_1_bits_rs2Data = out_rs2_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
-  assign io_exeReqs_2_valid = out_valid_2 & _out_fire_T_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
+  assign io_exeReqs_2_valid = out_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
   assign io_exeReqs_2_bits_uop_pc = out_uop_2_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_inst = out_uop_2_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_ctrl_fuType = out_uop_2_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
@@ -1719,2540 +1096,940 @@ module RegisterRead(
   assign io_exeReqs_2_bits_uop_prs1Busy = out_uop_2_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_prs2Busy = out_uop_2_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_isSta = out_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_2_bits_uop_isStd = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_rs1Data = out_rs1_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
   assign io_exeReqs_2_bits_rs2Data = out_rs2_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
-  assign io_exeReqs_3_valid = out_valid_3 & _out_fire_T_6; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
-  assign io_exeReqs_3_bits_uop_pc = out_uop_3_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_inst = out_uop_3_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_fuType = out_uop_3_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_aluOp = out_uop_3_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_bruOp = out_uop_3_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_lsuOp = out_uop_3_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_csrOp = out_uop_3_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_mulOp = out_uop_3_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_divOp = out_uop_3_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_src1Type = out_uop_3_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_src2Type = out_uop_3_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_immType = out_uop_3_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_rfWen = out_uop_3_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_memRead = out_uop_3_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_memWrite = out_uop_3_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_csrWen = out_uop_3_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_isBranch = out_uop_3_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_isJump = out_uop_3_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ctrl_isPriv = out_uop_3_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_excpVec = out_uop_3_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_imm = out_uop_3_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_csrAddress = out_uop_3_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_valid = out_uop_3_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_isBr = out_uop_3_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_isJal = out_uop_3_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_isJalr = out_uop_3_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_isCall = out_uop_3_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_isRet = out_uop_3_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdInfo_jumpTarget = out_uop_3_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_ldst = out_uop_3_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_lrs1 = out_uop_3_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_lrs2 = out_uop_3_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_pdst = out_uop_3_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_prs1 = out_uop_3_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_prs2 = out_uop_3_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_oldPdst = out_uop_3_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_rs1Valid = out_uop_3_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_rs2Valid = out_uop_3_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_rdValid = out_uop_3_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_robIdx = out_uop_3_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_robIdxFull = out_uop_3_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_lqIdx = out_uop_3_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_sqIdx = out_uop_3_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_issueQueue = out_uop_3_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_prs1Busy = out_uop_3_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_prs2Busy = out_uop_3_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_isSta = out_uop_3_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_uop_isStd = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_3_bits_rs1Data = out_rs1_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
-  assign io_exeReqs_3_bits_rs2Data = out_rs2_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
-  assign io_exeReqs_4_valid = out_valid_4 & _out_fire_T_8; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
-  assign io_exeReqs_4_bits_uop_pc = out_uop_4_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_inst = out_uop_4_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_fuType = out_uop_4_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_aluOp = out_uop_4_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_bruOp = out_uop_4_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_lsuOp = out_uop_4_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_csrOp = out_uop_4_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_mulOp = out_uop_4_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_divOp = out_uop_4_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_src1Type = out_uop_4_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_src2Type = out_uop_4_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_immType = out_uop_4_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_rfWen = out_uop_4_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_memRead = out_uop_4_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_memWrite = out_uop_4_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_csrWen = out_uop_4_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_isBranch = out_uop_4_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_isJump = out_uop_4_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ctrl_isPriv = out_uop_4_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_excpVec = out_uop_4_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_imm = 32'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_csrAddress = out_uop_4_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_valid = out_uop_4_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_isBr = out_uop_4_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_isJal = out_uop_4_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_isJalr = out_uop_4_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_isCall = out_uop_4_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_isRet = out_uop_4_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdInfo_jumpTarget = out_uop_4_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_ldst = out_uop_4_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_lrs1 = out_uop_4_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_lrs2 = out_uop_4_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_pdst = 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_prs1 = out_uop_4_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_prs2 = out_uop_4_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_oldPdst = out_uop_4_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_rs1Valid = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_rs2Valid = out_uop_4_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_rdValid = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_robIdx = out_uop_4_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_robIdxFull = out_uop_4_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_lqIdx = 4'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_sqIdx = out_uop_4_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_issueQueue = out_uop_4_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_prs1Busy = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_prs2Busy = out_uop_4_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_isSta = 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_uop_isStd = out_uop_4_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_4_bits_rs1Data = 32'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
-  assign io_exeReqs_4_bits_rs2Data = out_rs2_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-    end else if (rrd_killed) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      rrd_valid <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 162:19]
     end else begin
       rrd_valid <= _GEN_1;
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pc <= io_iqIssues_0_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pc <= io_iqIssues_0_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_inst <= io_iqIssues_0_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_inst <= io_iqIssues_0_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_fuType <= io_iqIssues_0_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_fuType <= io_iqIssues_0_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_aluOp <= io_iqIssues_0_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_aluOp <= io_iqIssues_0_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_bruOp <= io_iqIssues_0_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_bruOp <= io_iqIssues_0_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_lsuOp <= io_iqIssues_0_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_lsuOp <= io_iqIssues_0_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_csrOp <= io_iqIssues_0_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_csrOp <= io_iqIssues_0_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_mulOp <= io_iqIssues_0_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_mulOp <= io_iqIssues_0_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_divOp <= io_iqIssues_0_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_divOp <= io_iqIssues_0_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_src1Type <= io_iqIssues_0_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_src1Type <= io_iqIssues_0_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_src2Type <= io_iqIssues_0_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_src2Type <= io_iqIssues_0_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_immType <= io_iqIssues_0_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_immType <= io_iqIssues_0_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_rfWen <= io_iqIssues_0_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_rfWen <= io_iqIssues_0_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_memRead <= io_iqIssues_0_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_memRead <= io_iqIssues_0_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_memWrite <= io_iqIssues_0_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_memWrite <= io_iqIssues_0_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_csrWen <= io_iqIssues_0_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_csrWen <= io_iqIssues_0_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_isBranch <= io_iqIssues_0_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_isBranch <= io_iqIssues_0_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_isJump <= io_iqIssues_0_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_isJump <= io_iqIssues_0_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ctrl_isPriv <= io_iqIssues_0_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ctrl_isPriv <= io_iqIssues_0_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_excpVec <= io_iqIssues_0_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_excpVec <= io_iqIssues_0_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_imm <= io_iqIssues_0_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_imm <= io_iqIssues_0_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_csrAddress <= io_iqIssues_0_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_csrAddress <= io_iqIssues_0_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_valid <= io_iqIssues_0_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_valid <= io_iqIssues_0_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_isBr <= io_iqIssues_0_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_isBr <= io_iqIssues_0_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_isJal <= io_iqIssues_0_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_isJal <= io_iqIssues_0_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_isJalr <= io_iqIssues_0_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_isJalr <= io_iqIssues_0_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_isCall <= io_iqIssues_0_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_isCall <= io_iqIssues_0_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_isRet <= io_iqIssues_0_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_isRet <= io_iqIssues_0_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdInfo_jumpTarget <= io_iqIssues_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdInfo_jumpTarget <= io_iqIssues_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_ldst <= io_iqIssues_0_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_ldst <= io_iqIssues_0_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_lrs1 <= io_iqIssues_0_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_lrs1 <= io_iqIssues_0_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_lrs2 <= io_iqIssues_0_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_lrs2 <= io_iqIssues_0_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_pdst <= io_iqIssues_0_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_pdst <= io_iqIssues_0_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_prs1 <= io_iqIssues_0_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_prs1 <= io_iqIssues_0_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_prs2 <= io_iqIssues_0_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_prs2 <= io_iqIssues_0_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_oldPdst <= io_iqIssues_0_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_oldPdst <= io_iqIssues_0_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_rs1Valid <= io_iqIssues_0_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_rs1Valid <= io_iqIssues_0_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_rs2Valid <= io_iqIssues_0_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_rs2Valid <= io_iqIssues_0_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_rdValid <= io_iqIssues_0_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_rdValid <= io_iqIssues_0_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_robIdx <= io_iqIssues_0_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_robIdx <= io_iqIssues_0_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_robIdxFull <= io_iqIssues_0_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_robIdxFull <= io_iqIssues_0_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_lqIdx <= io_iqIssues_0_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_lqIdx <= io_iqIssues_0_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_sqIdx <= io_iqIssues_0_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_sqIdx <= io_iqIssues_0_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_issueQueue <= io_iqIssues_0_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_issueQueue <= io_iqIssues_0_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_prs1Busy <= io_iqIssues_0_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_prs1Busy <= io_iqIssues_0_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_prs2Busy <= io_iqIssues_0_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_prs2Busy <= io_iqIssues_0_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_isSta <= io_iqIssues_0_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_isSta <= io_iqIssues_0_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-    end else if (out_killed) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      out_valid <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 172:19]
     end else begin
       out_valid <= _GEN_100;
     end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pc <= rrd_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pc <= rrd_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_inst <= rrd_uop_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_fuType <= rrd_uop_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_aluOp <= rrd_uop_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_bruOp <= rrd_uop_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_lsuOp <= rrd_uop_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_csrOp <= rrd_uop_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_mulOp <= rrd_uop_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_divOp <= rrd_uop_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_src1Type <= rrd_uop_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_src2Type <= rrd_uop_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_immType <= rrd_uop_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_rfWen <= rrd_uop_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_memRead <= rrd_uop_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_memWrite <= rrd_uop_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_csrWen <= rrd_uop_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_isBranch <= rrd_uop_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_isJump <= rrd_uop_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ctrl_isPriv <= rrd_uop_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_excpVec <= rrd_uop_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_imm <= rrd_uop_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_csrAddress <= rrd_uop_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_valid <= rrd_uop_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_isBr <= rrd_uop_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_isJal <= rrd_uop_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_isJalr <= rrd_uop_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_isCall <= rrd_uop_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_isRet <= rrd_uop_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdInfo_jumpTarget <= rrd_uop_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_ldst <= rrd_uop_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_lrs1 <= rrd_uop_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_lrs2 <= rrd_uop_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_pdst <= rrd_uop_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_prs1 <= rrd_uop_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_prs2 <= rrd_uop_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_oldPdst <= rrd_uop_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_rs1Valid <= rrd_uop_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_rs2Valid <= rrd_uop_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_rdValid <= rrd_uop_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_robIdx <= rrd_uop_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_robIdxFull <= rrd_uop_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_lqIdx <= rrd_uop_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_sqIdx <= rrd_uop_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_issueQueue <= rrd_uop_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_prs1Busy <= rrd_uop_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_prs2Busy <= rrd_uop_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_isSta <= rrd_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      if (~rrd_uop_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
+        out_rs1 <= 32'h0;
+      end else if (rrd_uop_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
+        out_rs1 <= 32'h0;
+      end else begin
+        out_rs1 <= io_rfReadData_0;
       end
     end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_inst <= rrd_uop_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_fuType <= rrd_uop_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_aluOp <= rrd_uop_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_bruOp <= rrd_uop_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_lsuOp <= rrd_uop_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_csrOp <= rrd_uop_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_mulOp <= rrd_uop_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_divOp <= rrd_uop_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_src1Type <= rrd_uop_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_src2Type <= rrd_uop_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_immType <= rrd_uop_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_rfWen <= rrd_uop_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_memRead <= rrd_uop_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_memWrite <= rrd_uop_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_csrWen <= rrd_uop_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_isBranch <= rrd_uop_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_isJump <= rrd_uop_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ctrl_isPriv <= rrd_uop_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_excpVec <= rrd_uop_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_imm <= rrd_uop_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_csrAddress <= rrd_uop_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_valid <= rrd_uop_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_isBr <= rrd_uop_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_isJal <= rrd_uop_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_isJalr <= rrd_uop_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_isCall <= rrd_uop_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_isRet <= rrd_uop_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdInfo_jumpTarget <= rrd_uop_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_ldst <= rrd_uop_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_lrs1 <= rrd_uop_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_lrs2 <= rrd_uop_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_pdst <= rrd_uop_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_prs1 <= rrd_uop_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_prs2 <= rrd_uop_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_oldPdst <= rrd_uop_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_rs1Valid <= rrd_uop_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_rs2Valid <= rrd_uop_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_rdValid <= rrd_uop_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_robIdx <= rrd_uop_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_robIdxFull <= rrd_uop_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_lqIdx <= rrd_uop_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_sqIdx <= rrd_uop_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_issueQueue <= rrd_uop_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_prs1Busy <= rrd_uop_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_prs2Busy <= rrd_uop_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_isSta <= rrd_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
-          out_rs1 <= 32'h0;
-        end else if (rrd_uop_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
-          out_rs1 <= 32'h0;
-        end else begin
-          out_rs1 <= io_rfReadData_0;
-        end
-      end
-    end
-    if (!(out_killed)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 144:10]
-          out_rs2 <= 32'h0;
-        end else if (rrd_uop_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 145:10]
-          out_rs2 <= 32'h0;
-        end else begin
-          out_rs2 <= io_rfReadData_1;
-        end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      if (~rrd_uop_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 144:10]
+        out_rs2 <= 32'h0;
+      end else if (rrd_uop_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 145:10]
+        out_rs2 <= 32'h0;
+      end else begin
+        out_rs2 <= io_rfReadData_1;
       end
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_1 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-    end else if (rrd_killed_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      rrd_valid_1 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 162:19]
     end else begin
       rrd_valid_1 <= _GEN_303;
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pc <= io_iqIssues_1_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pc <= io_iqIssues_1_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_inst <= io_iqIssues_1_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_inst <= io_iqIssues_1_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_fuType <= io_iqIssues_1_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_fuType <= io_iqIssues_1_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_aluOp <= io_iqIssues_1_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_aluOp <= io_iqIssues_1_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_bruOp <= io_iqIssues_1_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_bruOp <= io_iqIssues_1_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_lsuOp <= io_iqIssues_1_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_lsuOp <= io_iqIssues_1_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_csrOp <= io_iqIssues_1_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_csrOp <= io_iqIssues_1_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_mulOp <= io_iqIssues_1_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_mulOp <= io_iqIssues_1_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_divOp <= io_iqIssues_1_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_divOp <= io_iqIssues_1_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_src1Type <= io_iqIssues_1_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_src1Type <= io_iqIssues_1_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_src2Type <= io_iqIssues_1_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_src2Type <= io_iqIssues_1_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_immType <= io_iqIssues_1_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_immType <= io_iqIssues_1_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_rfWen <= io_iqIssues_1_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_rfWen <= io_iqIssues_1_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_memRead <= io_iqIssues_1_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_memRead <= io_iqIssues_1_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_memWrite <= io_iqIssues_1_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_memWrite <= io_iqIssues_1_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_csrWen <= io_iqIssues_1_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_csrWen <= io_iqIssues_1_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_isBranch <= io_iqIssues_1_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_isBranch <= io_iqIssues_1_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_isJump <= io_iqIssues_1_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_isJump <= io_iqIssues_1_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ctrl_isPriv <= io_iqIssues_1_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ctrl_isPriv <= io_iqIssues_1_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_excpVec <= io_iqIssues_1_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_excpVec <= io_iqIssues_1_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_imm <= io_iqIssues_1_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_imm <= io_iqIssues_1_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_csrAddress <= io_iqIssues_1_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_csrAddress <= io_iqIssues_1_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_valid <= io_iqIssues_1_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_valid <= io_iqIssues_1_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_isBr <= io_iqIssues_1_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_isBr <= io_iqIssues_1_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_isJal <= io_iqIssues_1_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_isJal <= io_iqIssues_1_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_isJalr <= io_iqIssues_1_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_isJalr <= io_iqIssues_1_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_isCall <= io_iqIssues_1_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_isCall <= io_iqIssues_1_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_isRet <= io_iqIssues_1_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_isRet <= io_iqIssues_1_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdInfo_jumpTarget <= io_iqIssues_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdInfo_jumpTarget <= io_iqIssues_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_ldst <= io_iqIssues_1_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_ldst <= io_iqIssues_1_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_lrs1 <= io_iqIssues_1_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_lrs1 <= io_iqIssues_1_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_lrs2 <= io_iqIssues_1_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_lrs2 <= io_iqIssues_1_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_pdst <= io_iqIssues_1_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_pdst <= io_iqIssues_1_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_prs1 <= io_iqIssues_1_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_prs1 <= io_iqIssues_1_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_prs2 <= io_iqIssues_1_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_prs2 <= io_iqIssues_1_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_oldPdst <= io_iqIssues_1_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_oldPdst <= io_iqIssues_1_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_rs1Valid <= io_iqIssues_1_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_rs1Valid <= io_iqIssues_1_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_rs2Valid <= io_iqIssues_1_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_rs2Valid <= io_iqIssues_1_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_rdValid <= io_iqIssues_1_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_rdValid <= io_iqIssues_1_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_robIdx <= io_iqIssues_1_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_robIdx <= io_iqIssues_1_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_robIdxFull <= io_iqIssues_1_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_robIdxFull <= io_iqIssues_1_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_issueQueue <= io_iqIssues_1_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_issueQueue <= io_iqIssues_1_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_prs1Busy <= io_iqIssues_1_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_prs1Busy <= io_iqIssues_1_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_1_prs2Busy <= io_iqIssues_1_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_prs2Busy <= io_iqIssues_1_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_1 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-    end else if (out_killed_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      out_valid_1 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 172:19]
     end else begin
       out_valid_1 <= _GEN_402;
     end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pc <= rrd_uop_1_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pc <= rrd_uop_1_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_inst <= rrd_uop_1_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_fuType <= rrd_uop_1_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_aluOp <= rrd_uop_1_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_bruOp <= rrd_uop_1_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_lsuOp <= rrd_uop_1_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_csrOp <= rrd_uop_1_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_mulOp <= rrd_uop_1_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_divOp <= rrd_uop_1_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_src1Type <= rrd_uop_1_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_src2Type <= rrd_uop_1_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_immType <= rrd_uop_1_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_rfWen <= rrd_uop_1_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_memRead <= rrd_uop_1_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_memWrite <= rrd_uop_1_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_csrWen <= rrd_uop_1_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_isBranch <= rrd_uop_1_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_isJump <= rrd_uop_1_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ctrl_isPriv <= rrd_uop_1_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_excpVec <= rrd_uop_1_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_imm <= rrd_uop_1_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_csrAddress <= rrd_uop_1_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_valid <= rrd_uop_1_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_isBr <= rrd_uop_1_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_isJal <= rrd_uop_1_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_isJalr <= rrd_uop_1_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_isCall <= rrd_uop_1_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_isRet <= rrd_uop_1_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdInfo_jumpTarget <= rrd_uop_1_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_ldst <= rrd_uop_1_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_lrs1 <= rrd_uop_1_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_lrs2 <= rrd_uop_1_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_pdst <= rrd_uop_1_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_prs1 <= rrd_uop_1_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_prs2 <= rrd_uop_1_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_oldPdst <= rrd_uop_1_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_rs1Valid <= rrd_uop_1_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_rs2Valid <= rrd_uop_1_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_rdValid <= rrd_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_robIdx <= rrd_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_robIdxFull <= rrd_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_issueQueue <= rrd_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_prs1Busy <= rrd_uop_1_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_prs2Busy <= rrd_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      if (~rrd_uop_1_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
+        out_rs1_1 <= 32'h0;
+      end else if (rrd_uop_1_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
+        out_rs1_1 <= 32'h0;
+      end else begin
+        out_rs1_1 <= io_rfReadData_2;
       end
     end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_inst <= rrd_uop_1_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_fuType <= rrd_uop_1_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_aluOp <= rrd_uop_1_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_bruOp <= rrd_uop_1_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_lsuOp <= rrd_uop_1_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_csrOp <= rrd_uop_1_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_mulOp <= rrd_uop_1_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_divOp <= rrd_uop_1_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_src1Type <= rrd_uop_1_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_src2Type <= rrd_uop_1_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_immType <= rrd_uop_1_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_rfWen <= rrd_uop_1_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_memRead <= rrd_uop_1_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_memWrite <= rrd_uop_1_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_csrWen <= rrd_uop_1_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_isBranch <= rrd_uop_1_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_isJump <= rrd_uop_1_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ctrl_isPriv <= rrd_uop_1_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_excpVec <= rrd_uop_1_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_imm <= rrd_uop_1_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_csrAddress <= rrd_uop_1_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_valid <= rrd_uop_1_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_isBr <= rrd_uop_1_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_isJal <= rrd_uop_1_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_isJalr <= rrd_uop_1_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_isCall <= rrd_uop_1_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_isRet <= rrd_uop_1_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdInfo_jumpTarget <= rrd_uop_1_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_ldst <= rrd_uop_1_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_lrs1 <= rrd_uop_1_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_lrs2 <= rrd_uop_1_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_pdst <= rrd_uop_1_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_prs1 <= rrd_uop_1_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_prs2 <= rrd_uop_1_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_oldPdst <= rrd_uop_1_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_rs1Valid <= rrd_uop_1_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_rs2Valid <= rrd_uop_1_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_rdValid <= rrd_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_robIdx <= rrd_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_robIdxFull <= rrd_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_issueQueue <= rrd_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_prs1Busy <= rrd_uop_1_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_1_prs2Busy <= rrd_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_1_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
-          out_rs1_1 <= 32'h0;
-        end else if (rrd_uop_1_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
-          out_rs1_1 <= 32'h0;
-        end else begin
-          out_rs1_1 <= io_rfReadData_2;
-        end
-      end
-    end
-    if (!(out_killed_1)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_1_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 144:10]
-          out_rs2_1 <= 32'h0;
-        end else if (rrd_uop_1_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 145:10]
-          out_rs2_1 <= 32'h0;
-        end else begin
-          out_rs2_1 <= io_rfReadData_3;
-        end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      if (~rrd_uop_1_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 144:10]
+        out_rs2_1 <= 32'h0;
+      end else if (rrd_uop_1_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 145:10]
+        out_rs2_1 <= 32'h0;
+      end else begin
+        out_rs2_1 <= io_rfReadData_3;
       end
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_2 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-    end else if (rrd_killed_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      rrd_valid_2 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 162:19]
     end else begin
       rrd_valid_2 <= _GEN_605;
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pc <= io_iqIssues_2_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pc <= io_iqIssues_2_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_inst <= io_iqIssues_2_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_inst <= io_iqIssues_2_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_fuType <= io_iqIssues_2_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_fuType <= io_iqIssues_2_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_aluOp <= io_iqIssues_2_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_aluOp <= io_iqIssues_2_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_bruOp <= io_iqIssues_2_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_bruOp <= io_iqIssues_2_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_lsuOp <= io_iqIssues_2_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_lsuOp <= io_iqIssues_2_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_csrOp <= io_iqIssues_2_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_csrOp <= io_iqIssues_2_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_mulOp <= io_iqIssues_2_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_mulOp <= io_iqIssues_2_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_divOp <= io_iqIssues_2_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_divOp <= io_iqIssues_2_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_src1Type <= io_iqIssues_2_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_src1Type <= io_iqIssues_2_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_src2Type <= io_iqIssues_2_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_src2Type <= io_iqIssues_2_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_immType <= io_iqIssues_2_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_immType <= io_iqIssues_2_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_rfWen <= io_iqIssues_2_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_rfWen <= io_iqIssues_2_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_memRead <= io_iqIssues_2_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_memRead <= io_iqIssues_2_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_memWrite <= io_iqIssues_2_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_memWrite <= io_iqIssues_2_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_csrWen <= io_iqIssues_2_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_csrWen <= io_iqIssues_2_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_isBranch <= io_iqIssues_2_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_isBranch <= io_iqIssues_2_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_isJump <= io_iqIssues_2_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_isJump <= io_iqIssues_2_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ctrl_isPriv <= io_iqIssues_2_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ctrl_isPriv <= io_iqIssues_2_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_excpVec <= io_iqIssues_2_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_excpVec <= io_iqIssues_2_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_imm <= io_iqIssues_2_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_imm <= io_iqIssues_2_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_csrAddress <= io_iqIssues_2_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_csrAddress <= io_iqIssues_2_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_valid <= io_iqIssues_2_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_valid <= io_iqIssues_2_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_isBr <= io_iqIssues_2_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_isBr <= io_iqIssues_2_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_isJal <= io_iqIssues_2_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_isJal <= io_iqIssues_2_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_isJalr <= io_iqIssues_2_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_isJalr <= io_iqIssues_2_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_isCall <= io_iqIssues_2_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_isCall <= io_iqIssues_2_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_isRet <= io_iqIssues_2_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_isRet <= io_iqIssues_2_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdInfo_jumpTarget <= io_iqIssues_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdInfo_jumpTarget <= io_iqIssues_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_ldst <= io_iqIssues_2_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_ldst <= io_iqIssues_2_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_lrs1 <= io_iqIssues_2_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_lrs1 <= io_iqIssues_2_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_lrs2 <= io_iqIssues_2_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_lrs2 <= io_iqIssues_2_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_pdst <= io_iqIssues_2_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_pdst <= io_iqIssues_2_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_prs1 <= io_iqIssues_2_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_prs1 <= io_iqIssues_2_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_prs2 <= io_iqIssues_2_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_prs2 <= io_iqIssues_2_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_oldPdst <= io_iqIssues_2_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_oldPdst <= io_iqIssues_2_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_rs1Valid <= io_iqIssues_2_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_rs1Valid <= io_iqIssues_2_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_rs2Valid <= io_iqIssues_2_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_rs2Valid <= io_iqIssues_2_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_rdValid <= io_iqIssues_2_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_rdValid <= io_iqIssues_2_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_robIdx <= io_iqIssues_2_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_robIdx <= io_iqIssues_2_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_robIdxFull <= io_iqIssues_2_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_robIdxFull <= io_iqIssues_2_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_lqIdx <= io_iqIssues_2_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_lqIdx <= io_iqIssues_2_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_sqIdx <= io_iqIssues_2_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_sqIdx <= io_iqIssues_2_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_issueQueue <= io_iqIssues_2_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_issueQueue <= io_iqIssues_2_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_prs1Busy <= io_iqIssues_2_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_prs1Busy <= io_iqIssues_2_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_prs2Busy <= io_iqIssues_2_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_prs2Busy <= io_iqIssues_2_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
-    if (!(rrd_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_2_isSta <= io_iqIssues_2_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_isSta <= io_iqIssues_2_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_2 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-    end else if (out_killed_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      out_valid_2 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 172:19]
     end else begin
       out_valid_2 <= _GEN_704;
     end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pc <= rrd_uop_2_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pc <= rrd_uop_2_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_inst <= rrd_uop_2_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_fuType <= rrd_uop_2_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_aluOp <= rrd_uop_2_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_bruOp <= rrd_uop_2_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_lsuOp <= rrd_uop_2_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_csrOp <= rrd_uop_2_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_mulOp <= rrd_uop_2_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_divOp <= rrd_uop_2_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_src1Type <= rrd_uop_2_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_src2Type <= rrd_uop_2_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_immType <= rrd_uop_2_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_rfWen <= rrd_uop_2_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_memRead <= rrd_uop_2_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_memWrite <= rrd_uop_2_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_csrWen <= rrd_uop_2_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_isBranch <= rrd_uop_2_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_isJump <= rrd_uop_2_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ctrl_isPriv <= rrd_uop_2_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_excpVec <= rrd_uop_2_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_imm <= rrd_uop_2_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_csrAddress <= rrd_uop_2_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_valid <= rrd_uop_2_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_isBr <= rrd_uop_2_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_isJal <= rrd_uop_2_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_isJalr <= rrd_uop_2_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_isCall <= rrd_uop_2_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_isRet <= rrd_uop_2_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdInfo_jumpTarget <= rrd_uop_2_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_ldst <= rrd_uop_2_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_lrs1 <= rrd_uop_2_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_lrs2 <= rrd_uop_2_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_pdst <= rrd_uop_2_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_prs1 <= rrd_uop_2_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_prs2 <= rrd_uop_2_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_oldPdst <= rrd_uop_2_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_rs1Valid <= rrd_uop_2_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_rs2Valid <= rrd_uop_2_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_rdValid <= rrd_uop_2_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_robIdx <= rrd_uop_2_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_robIdxFull <= rrd_uop_2_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_lqIdx <= rrd_uop_2_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_sqIdx <= rrd_uop_2_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_issueQueue <= rrd_uop_2_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_prs1Busy <= rrd_uop_2_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_prs2Busy <= rrd_uop_2_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_isSta <= rrd_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      if (~rrd_uop_2_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
+        out_rs1_2 <= 32'h0;
+      end else if (rrd_uop_2_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
+        out_rs1_2 <= 32'h0;
+      end else begin
+        out_rs1_2 <= io_rfReadData_4;
       end
     end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_inst <= rrd_uop_2_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_fuType <= rrd_uop_2_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_aluOp <= rrd_uop_2_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_bruOp <= rrd_uop_2_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_lsuOp <= rrd_uop_2_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_csrOp <= rrd_uop_2_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_mulOp <= rrd_uop_2_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_divOp <= rrd_uop_2_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_src1Type <= rrd_uop_2_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_src2Type <= rrd_uop_2_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_immType <= rrd_uop_2_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_rfWen <= rrd_uop_2_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_memRead <= rrd_uop_2_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_memWrite <= rrd_uop_2_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_csrWen <= rrd_uop_2_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_isBranch <= rrd_uop_2_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_isJump <= rrd_uop_2_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ctrl_isPriv <= rrd_uop_2_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_excpVec <= rrd_uop_2_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_imm <= rrd_uop_2_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_csrAddress <= rrd_uop_2_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_valid <= rrd_uop_2_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_isBr <= rrd_uop_2_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_isJal <= rrd_uop_2_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_isJalr <= rrd_uop_2_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_isCall <= rrd_uop_2_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_isRet <= rrd_uop_2_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdInfo_jumpTarget <= rrd_uop_2_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_ldst <= rrd_uop_2_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_lrs1 <= rrd_uop_2_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_lrs2 <= rrd_uop_2_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_pdst <= rrd_uop_2_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_prs1 <= rrd_uop_2_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_prs2 <= rrd_uop_2_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_oldPdst <= rrd_uop_2_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_rs1Valid <= rrd_uop_2_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_rs2Valid <= rrd_uop_2_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_rdValid <= rrd_uop_2_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_robIdx <= rrd_uop_2_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_robIdxFull <= rrd_uop_2_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_lqIdx <= rrd_uop_2_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_sqIdx <= rrd_uop_2_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_issueQueue <= rrd_uop_2_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_prs1Busy <= rrd_uop_2_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_prs2Busy <= rrd_uop_2_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_2_isSta <= rrd_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_2_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
-          out_rs1_2 <= 32'h0;
-        end else if (rrd_uop_2_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
-          out_rs1_2 <= 32'h0;
-        end else begin
-          out_rs1_2 <= io_rfReadData_4;
-        end
-      end
-    end
-    if (!(out_killed_2)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_2_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 144:10]
-          out_rs2_2 <= 32'h0;
-        end else if (rrd_uop_2_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 145:10]
-          out_rs2_2 <= 32'h0;
-        end else begin
-          out_rs2_2 <= io_rfReadData_5;
-        end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      if (~rrd_uop_2_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 144:10]
+        out_rs2_2 <= 32'h0;
+      end else if (rrd_uop_2_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 145:10]
+        out_rs2_2 <= 32'h0;
+      end else begin
+        out_rs2_2 <= io_rfReadData_5;
       end
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_3 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-    end else if (rrd_killed_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      rrd_valid_3 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 162:19]
     end else begin
       rrd_valid_3 <= _GEN_907;
     end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pc <= io_iqIssues_3_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_inst <= io_iqIssues_3_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_fuType <= io_iqIssues_3_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_aluOp <= io_iqIssues_3_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_bruOp <= io_iqIssues_3_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_lsuOp <= io_iqIssues_3_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_csrOp <= io_iqIssues_3_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_mulOp <= io_iqIssues_3_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_divOp <= io_iqIssues_3_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_src1Type <= io_iqIssues_3_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_src2Type <= io_iqIssues_3_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_immType <= io_iqIssues_3_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_rfWen <= io_iqIssues_3_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_memRead <= io_iqIssues_3_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_memWrite <= io_iqIssues_3_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_csrWen <= io_iqIssues_3_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_isBranch <= io_iqIssues_3_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_isJump <= io_iqIssues_3_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ctrl_isPriv <= io_iqIssues_3_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_excpVec <= io_iqIssues_3_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_imm <= io_iqIssues_3_bits_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_csrAddress <= io_iqIssues_3_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_valid <= io_iqIssues_3_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_isBr <= io_iqIssues_3_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_isJal <= io_iqIssues_3_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_isJalr <= io_iqIssues_3_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_isCall <= io_iqIssues_3_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_isRet <= io_iqIssues_3_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdInfo_jumpTarget <= io_iqIssues_3_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_ldst <= io_iqIssues_3_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_lrs1 <= io_iqIssues_3_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_lrs2 <= io_iqIssues_3_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_pdst <= io_iqIssues_3_bits_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_prs1 <= io_iqIssues_3_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_prs2 <= io_iqIssues_3_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_oldPdst <= io_iqIssues_3_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_rs1Valid <= io_iqIssues_3_bits_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_rs2Valid <= io_iqIssues_3_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_rdValid <= io_iqIssues_3_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_robIdx <= io_iqIssues_3_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_robIdxFull <= io_iqIssues_3_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_lqIdx <= io_iqIssues_3_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_sqIdx <= io_iqIssues_3_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_issueQueue <= io_iqIssues_3_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_prs1Busy <= io_iqIssues_3_bits_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_prs2Busy <= io_iqIssues_3_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_3_isSta <= io_iqIssues_3_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_3 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-    end else if (out_killed_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      out_valid_3 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 172:19]
     end else begin
       out_valid_3 <= _GEN_1006;
     end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pc <= rrd_uop_3_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_inst <= rrd_uop_3_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_fuType <= rrd_uop_3_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_aluOp <= rrd_uop_3_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_bruOp <= rrd_uop_3_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_lsuOp <= rrd_uop_3_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_csrOp <= rrd_uop_3_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_mulOp <= rrd_uop_3_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_divOp <= rrd_uop_3_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_src1Type <= rrd_uop_3_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_src2Type <= rrd_uop_3_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_immType <= rrd_uop_3_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_rfWen <= rrd_uop_3_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_memRead <= rrd_uop_3_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_memWrite <= rrd_uop_3_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_csrWen <= rrd_uop_3_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_isBranch <= rrd_uop_3_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_isJump <= rrd_uop_3_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ctrl_isPriv <= rrd_uop_3_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_excpVec <= rrd_uop_3_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_imm <= rrd_uop_3_imm; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_csrAddress <= rrd_uop_3_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_valid <= rrd_uop_3_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_isBr <= rrd_uop_3_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_isJal <= rrd_uop_3_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_isJalr <= rrd_uop_3_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_isCall <= rrd_uop_3_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_isRet <= rrd_uop_3_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdInfo_jumpTarget <= rrd_uop_3_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_ldst <= rrd_uop_3_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_lrs1 <= rrd_uop_3_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_lrs2 <= rrd_uop_3_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_pdst <= rrd_uop_3_pdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_prs1 <= rrd_uop_3_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_prs2 <= rrd_uop_3_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_oldPdst <= rrd_uop_3_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_rs1Valid <= rrd_uop_3_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_rs2Valid <= rrd_uop_3_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_rdValid <= rrd_uop_3_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_robIdx <= rrd_uop_3_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_robIdxFull <= rrd_uop_3_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_lqIdx <= rrd_uop_3_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_sqIdx <= rrd_uop_3_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_issueQueue <= rrd_uop_3_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_prs1Busy <= rrd_uop_3_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_prs2Busy <= rrd_uop_3_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_3_isSta <= rrd_uop_3_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_3_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
-          out_rs1_3 <= 32'h0;
-        end else if (rrd_uop_3_prs1 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 142:22]
-          out_rs1_3 <= 32'h0;
-        end else begin
-          out_rs1_3 <= io_rfReadData_6;
-        end
-      end
-    end
-    if (!(out_killed_3)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_3) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_3_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 148:10]
-          out_rs2_3 <= 32'h0;
-        end else if (rrd_uop_3_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 149:10]
-          out_rs2_3 <= 32'h0;
-        end else begin
-          out_rs2_3 <= io_rfReadData_6;
-        end
-      end
-    end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_4 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
-    end else if (rrd_killed_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      rrd_valid_4 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 162:19]
     end else begin
       rrd_valid_4 <= _GEN_1209;
     end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pc <= io_iqIssues_4_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_inst <= io_iqIssues_4_bits_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_fuType <= io_iqIssues_4_bits_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_aluOp <= io_iqIssues_4_bits_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_bruOp <= io_iqIssues_4_bits_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_lsuOp <= io_iqIssues_4_bits_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_csrOp <= io_iqIssues_4_bits_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_mulOp <= io_iqIssues_4_bits_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_divOp <= io_iqIssues_4_bits_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_src1Type <= io_iqIssues_4_bits_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_src2Type <= io_iqIssues_4_bits_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_immType <= io_iqIssues_4_bits_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_rfWen <= io_iqIssues_4_bits_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_memRead <= io_iqIssues_4_bits_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_memWrite <= io_iqIssues_4_bits_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_csrWen <= io_iqIssues_4_bits_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_isBranch <= io_iqIssues_4_bits_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_isJump <= io_iqIssues_4_bits_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ctrl_isPriv <= io_iqIssues_4_bits_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_excpVec <= io_iqIssues_4_bits_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_csrAddress <= io_iqIssues_4_bits_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_valid <= io_iqIssues_4_bits_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_isBr <= io_iqIssues_4_bits_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_isJal <= io_iqIssues_4_bits_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_isJalr <= io_iqIssues_4_bits_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_isCall <= io_iqIssues_4_bits_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_isRet <= io_iqIssues_4_bits_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_pdInfo_jumpTarget <= io_iqIssues_4_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_ldst <= io_iqIssues_4_bits_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_lrs1 <= io_iqIssues_4_bits_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_lrs2 <= io_iqIssues_4_bits_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_prs1 <= io_iqIssues_4_bits_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_prs2 <= io_iqIssues_4_bits_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_oldPdst <= io_iqIssues_4_bits_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_rs2Valid <= io_iqIssues_4_bits_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_robIdx <= io_iqIssues_4_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_robIdxFull <= io_iqIssues_4_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_sqIdx <= io_iqIssues_4_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_issueQueue <= io_iqIssues_4_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_prs2Busy <= io_iqIssues_4_bits_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
-    if (!(rrd_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 161:24]
-      if (iq_fire_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-        rrd_uop_4_isStd <= io_iqIssues_4_bits_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
-      end
-    end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_4 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
-    end else if (out_killed_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      out_valid_4 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 172:19]
     end else begin
       out_valid_4 <= _GEN_1308;
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pc <= rrd_uop_4_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_inst <= rrd_uop_4_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_fuType <= rrd_uop_4_ctrl_fuType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_aluOp <= rrd_uop_4_ctrl_aluOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_bruOp <= rrd_uop_4_ctrl_bruOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_lsuOp <= rrd_uop_4_ctrl_lsuOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_csrOp <= rrd_uop_4_ctrl_csrOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_mulOp <= rrd_uop_4_ctrl_mulOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_divOp <= rrd_uop_4_ctrl_divOp; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_src1Type <= rrd_uop_4_ctrl_src1Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_src2Type <= rrd_uop_4_ctrl_src2Type; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_immType <= rrd_uop_4_ctrl_immType; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_rfWen <= rrd_uop_4_ctrl_rfWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_memRead <= rrd_uop_4_ctrl_memRead; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_memWrite <= rrd_uop_4_ctrl_memWrite; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_csrWen <= rrd_uop_4_ctrl_csrWen; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_isBranch <= rrd_uop_4_ctrl_isBranch; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_isJump <= rrd_uop_4_ctrl_isJump; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ctrl_isPriv <= rrd_uop_4_ctrl_isPriv; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_excpVec <= rrd_uop_4_excpVec; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_csrAddress <= rrd_uop_4_csrAddress; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_valid <= rrd_uop_4_pdInfo_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_isBr <= rrd_uop_4_pdInfo_isBr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_isJal <= rrd_uop_4_pdInfo_isJal; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_isJalr <= rrd_uop_4_pdInfo_isJalr; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_isCall <= rrd_uop_4_pdInfo_isCall; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_isRet <= rrd_uop_4_pdInfo_isRet; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_pdInfo_jumpTarget <= rrd_uop_4_pdInfo_jumpTarget; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_ldst <= rrd_uop_4_ldst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_lrs1 <= rrd_uop_4_lrs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_lrs2 <= rrd_uop_4_lrs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_prs1 <= rrd_uop_4_prs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_prs2 <= rrd_uop_4_prs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_oldPdst <= rrd_uop_4_oldPdst; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_rs2Valid <= rrd_uop_4_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_robIdx <= rrd_uop_4_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_robIdxFull <= rrd_uop_4_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_sqIdx <= rrd_uop_4_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_issueQueue <= rrd_uop_4_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_prs2Busy <= rrd_uop_4_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        out_uop_4_isStd <= rrd_uop_4_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
-      end
-    end
-    if (!(out_killed_4)) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 171:24]
-      if (rrd_to_out_4) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-        if (~rrd_uop_4_rs2Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 148:10]
-          out_rs2_4 <= 32'h0;
-        end else if (rrd_uop_4_prs2 == 7'h0) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 149:10]
-          out_rs2_4 <= 32'h0;
-        end else begin
-          out_rs2_4 <= io_rfReadData_7;
-        end
-      end
     end
   end
 // Register and memory initialization
@@ -4870,369 +2647,11 @@ initial begin
   _RAND_288 = {1{`RANDOM}};
   rrd_valid_3 = _RAND_288[0:0];
   _RAND_289 = {1{`RANDOM}};
-  rrd_uop_3_pc = _RAND_289[31:0];
+  out_valid_3 = _RAND_289[0:0];
   _RAND_290 = {1{`RANDOM}};
-  rrd_uop_3_inst = _RAND_290[31:0];
+  rrd_valid_4 = _RAND_290[0:0];
   _RAND_291 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_fuType = _RAND_291[3:0];
-  _RAND_292 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_aluOp = _RAND_292[4:0];
-  _RAND_293 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_bruOp = _RAND_293[3:0];
-  _RAND_294 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_lsuOp = _RAND_294[3:0];
-  _RAND_295 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_csrOp = _RAND_295[2:0];
-  _RAND_296 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_mulOp = _RAND_296[2:0];
-  _RAND_297 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_divOp = _RAND_297[2:0];
-  _RAND_298 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_src1Type = _RAND_298[2:0];
-  _RAND_299 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_src2Type = _RAND_299[2:0];
-  _RAND_300 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_immType = _RAND_300[3:0];
-  _RAND_301 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_rfWen = _RAND_301[0:0];
-  _RAND_302 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_memRead = _RAND_302[0:0];
-  _RAND_303 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_memWrite = _RAND_303[0:0];
-  _RAND_304 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_csrWen = _RAND_304[0:0];
-  _RAND_305 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_isBranch = _RAND_305[0:0];
-  _RAND_306 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_isJump = _RAND_306[0:0];
-  _RAND_307 = {1{`RANDOM}};
-  rrd_uop_3_ctrl_isPriv = _RAND_307[0:0];
-  _RAND_308 = {1{`RANDOM}};
-  rrd_uop_3_excpVec = _RAND_308[9:0];
-  _RAND_309 = {1{`RANDOM}};
-  rrd_uop_3_imm = _RAND_309[31:0];
-  _RAND_310 = {1{`RANDOM}};
-  rrd_uop_3_csrAddress = _RAND_310[13:0];
-  _RAND_311 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_valid = _RAND_311[0:0];
-  _RAND_312 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_isBr = _RAND_312[0:0];
-  _RAND_313 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_isJal = _RAND_313[0:0];
-  _RAND_314 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_isJalr = _RAND_314[0:0];
-  _RAND_315 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_isCall = _RAND_315[0:0];
-  _RAND_316 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_isRet = _RAND_316[0:0];
-  _RAND_317 = {1{`RANDOM}};
-  rrd_uop_3_pdInfo_jumpTarget = _RAND_317[31:0];
-  _RAND_318 = {1{`RANDOM}};
-  rrd_uop_3_ldst = _RAND_318[4:0];
-  _RAND_319 = {1{`RANDOM}};
-  rrd_uop_3_lrs1 = _RAND_319[4:0];
-  _RAND_320 = {1{`RANDOM}};
-  rrd_uop_3_lrs2 = _RAND_320[4:0];
-  _RAND_321 = {1{`RANDOM}};
-  rrd_uop_3_pdst = _RAND_321[6:0];
-  _RAND_322 = {1{`RANDOM}};
-  rrd_uop_3_prs1 = _RAND_322[6:0];
-  _RAND_323 = {1{`RANDOM}};
-  rrd_uop_3_prs2 = _RAND_323[6:0];
-  _RAND_324 = {1{`RANDOM}};
-  rrd_uop_3_oldPdst = _RAND_324[6:0];
-  _RAND_325 = {1{`RANDOM}};
-  rrd_uop_3_rs1Valid = _RAND_325[0:0];
-  _RAND_326 = {1{`RANDOM}};
-  rrd_uop_3_rs2Valid = _RAND_326[0:0];
-  _RAND_327 = {1{`RANDOM}};
-  rrd_uop_3_rdValid = _RAND_327[0:0];
-  _RAND_328 = {1{`RANDOM}};
-  rrd_uop_3_robIdx = _RAND_328[5:0];
-  _RAND_329 = {1{`RANDOM}};
-  rrd_uop_3_robIdxFull = _RAND_329[6:0];
-  _RAND_330 = {1{`RANDOM}};
-  rrd_uop_3_lqIdx = _RAND_330[3:0];
-  _RAND_331 = {1{`RANDOM}};
-  rrd_uop_3_sqIdx = _RAND_331[3:0];
-  _RAND_332 = {1{`RANDOM}};
-  rrd_uop_3_issueQueue = _RAND_332[2:0];
-  _RAND_333 = {1{`RANDOM}};
-  rrd_uop_3_prs1Busy = _RAND_333[0:0];
-  _RAND_334 = {1{`RANDOM}};
-  rrd_uop_3_prs2Busy = _RAND_334[0:0];
-  _RAND_335 = {1{`RANDOM}};
-  rrd_uop_3_isSta = _RAND_335[0:0];
-  _RAND_336 = {1{`RANDOM}};
-  out_valid_3 = _RAND_336[0:0];
-  _RAND_337 = {1{`RANDOM}};
-  out_uop_3_pc = _RAND_337[31:0];
-  _RAND_338 = {1{`RANDOM}};
-  out_uop_3_inst = _RAND_338[31:0];
-  _RAND_339 = {1{`RANDOM}};
-  out_uop_3_ctrl_fuType = _RAND_339[3:0];
-  _RAND_340 = {1{`RANDOM}};
-  out_uop_3_ctrl_aluOp = _RAND_340[4:0];
-  _RAND_341 = {1{`RANDOM}};
-  out_uop_3_ctrl_bruOp = _RAND_341[3:0];
-  _RAND_342 = {1{`RANDOM}};
-  out_uop_3_ctrl_lsuOp = _RAND_342[3:0];
-  _RAND_343 = {1{`RANDOM}};
-  out_uop_3_ctrl_csrOp = _RAND_343[2:0];
-  _RAND_344 = {1{`RANDOM}};
-  out_uop_3_ctrl_mulOp = _RAND_344[2:0];
-  _RAND_345 = {1{`RANDOM}};
-  out_uop_3_ctrl_divOp = _RAND_345[2:0];
-  _RAND_346 = {1{`RANDOM}};
-  out_uop_3_ctrl_src1Type = _RAND_346[2:0];
-  _RAND_347 = {1{`RANDOM}};
-  out_uop_3_ctrl_src2Type = _RAND_347[2:0];
-  _RAND_348 = {1{`RANDOM}};
-  out_uop_3_ctrl_immType = _RAND_348[3:0];
-  _RAND_349 = {1{`RANDOM}};
-  out_uop_3_ctrl_rfWen = _RAND_349[0:0];
-  _RAND_350 = {1{`RANDOM}};
-  out_uop_3_ctrl_memRead = _RAND_350[0:0];
-  _RAND_351 = {1{`RANDOM}};
-  out_uop_3_ctrl_memWrite = _RAND_351[0:0];
-  _RAND_352 = {1{`RANDOM}};
-  out_uop_3_ctrl_csrWen = _RAND_352[0:0];
-  _RAND_353 = {1{`RANDOM}};
-  out_uop_3_ctrl_isBranch = _RAND_353[0:0];
-  _RAND_354 = {1{`RANDOM}};
-  out_uop_3_ctrl_isJump = _RAND_354[0:0];
-  _RAND_355 = {1{`RANDOM}};
-  out_uop_3_ctrl_isPriv = _RAND_355[0:0];
-  _RAND_356 = {1{`RANDOM}};
-  out_uop_3_excpVec = _RAND_356[9:0];
-  _RAND_357 = {1{`RANDOM}};
-  out_uop_3_imm = _RAND_357[31:0];
-  _RAND_358 = {1{`RANDOM}};
-  out_uop_3_csrAddress = _RAND_358[13:0];
-  _RAND_359 = {1{`RANDOM}};
-  out_uop_3_pdInfo_valid = _RAND_359[0:0];
-  _RAND_360 = {1{`RANDOM}};
-  out_uop_3_pdInfo_isBr = _RAND_360[0:0];
-  _RAND_361 = {1{`RANDOM}};
-  out_uop_3_pdInfo_isJal = _RAND_361[0:0];
-  _RAND_362 = {1{`RANDOM}};
-  out_uop_3_pdInfo_isJalr = _RAND_362[0:0];
-  _RAND_363 = {1{`RANDOM}};
-  out_uop_3_pdInfo_isCall = _RAND_363[0:0];
-  _RAND_364 = {1{`RANDOM}};
-  out_uop_3_pdInfo_isRet = _RAND_364[0:0];
-  _RAND_365 = {1{`RANDOM}};
-  out_uop_3_pdInfo_jumpTarget = _RAND_365[31:0];
-  _RAND_366 = {1{`RANDOM}};
-  out_uop_3_ldst = _RAND_366[4:0];
-  _RAND_367 = {1{`RANDOM}};
-  out_uop_3_lrs1 = _RAND_367[4:0];
-  _RAND_368 = {1{`RANDOM}};
-  out_uop_3_lrs2 = _RAND_368[4:0];
-  _RAND_369 = {1{`RANDOM}};
-  out_uop_3_pdst = _RAND_369[6:0];
-  _RAND_370 = {1{`RANDOM}};
-  out_uop_3_prs1 = _RAND_370[6:0];
-  _RAND_371 = {1{`RANDOM}};
-  out_uop_3_prs2 = _RAND_371[6:0];
-  _RAND_372 = {1{`RANDOM}};
-  out_uop_3_oldPdst = _RAND_372[6:0];
-  _RAND_373 = {1{`RANDOM}};
-  out_uop_3_rs1Valid = _RAND_373[0:0];
-  _RAND_374 = {1{`RANDOM}};
-  out_uop_3_rs2Valid = _RAND_374[0:0];
-  _RAND_375 = {1{`RANDOM}};
-  out_uop_3_rdValid = _RAND_375[0:0];
-  _RAND_376 = {1{`RANDOM}};
-  out_uop_3_robIdx = _RAND_376[5:0];
-  _RAND_377 = {1{`RANDOM}};
-  out_uop_3_robIdxFull = _RAND_377[6:0];
-  _RAND_378 = {1{`RANDOM}};
-  out_uop_3_lqIdx = _RAND_378[3:0];
-  _RAND_379 = {1{`RANDOM}};
-  out_uop_3_sqIdx = _RAND_379[3:0];
-  _RAND_380 = {1{`RANDOM}};
-  out_uop_3_issueQueue = _RAND_380[2:0];
-  _RAND_381 = {1{`RANDOM}};
-  out_uop_3_prs1Busy = _RAND_381[0:0];
-  _RAND_382 = {1{`RANDOM}};
-  out_uop_3_prs2Busy = _RAND_382[0:0];
-  _RAND_383 = {1{`RANDOM}};
-  out_uop_3_isSta = _RAND_383[0:0];
-  _RAND_384 = {1{`RANDOM}};
-  out_rs1_3 = _RAND_384[31:0];
-  _RAND_385 = {1{`RANDOM}};
-  out_rs2_3 = _RAND_385[31:0];
-  _RAND_386 = {1{`RANDOM}};
-  rrd_valid_4 = _RAND_386[0:0];
-  _RAND_387 = {1{`RANDOM}};
-  rrd_uop_4_pc = _RAND_387[31:0];
-  _RAND_388 = {1{`RANDOM}};
-  rrd_uop_4_inst = _RAND_388[31:0];
-  _RAND_389 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_fuType = _RAND_389[3:0];
-  _RAND_390 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_aluOp = _RAND_390[4:0];
-  _RAND_391 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_bruOp = _RAND_391[3:0];
-  _RAND_392 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_lsuOp = _RAND_392[3:0];
-  _RAND_393 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_csrOp = _RAND_393[2:0];
-  _RAND_394 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_mulOp = _RAND_394[2:0];
-  _RAND_395 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_divOp = _RAND_395[2:0];
-  _RAND_396 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_src1Type = _RAND_396[2:0];
-  _RAND_397 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_src2Type = _RAND_397[2:0];
-  _RAND_398 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_immType = _RAND_398[3:0];
-  _RAND_399 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_rfWen = _RAND_399[0:0];
-  _RAND_400 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_memRead = _RAND_400[0:0];
-  _RAND_401 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_memWrite = _RAND_401[0:0];
-  _RAND_402 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_csrWen = _RAND_402[0:0];
-  _RAND_403 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_isBranch = _RAND_403[0:0];
-  _RAND_404 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_isJump = _RAND_404[0:0];
-  _RAND_405 = {1{`RANDOM}};
-  rrd_uop_4_ctrl_isPriv = _RAND_405[0:0];
-  _RAND_406 = {1{`RANDOM}};
-  rrd_uop_4_excpVec = _RAND_406[9:0];
-  _RAND_407 = {1{`RANDOM}};
-  rrd_uop_4_csrAddress = _RAND_407[13:0];
-  _RAND_408 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_valid = _RAND_408[0:0];
-  _RAND_409 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_isBr = _RAND_409[0:0];
-  _RAND_410 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_isJal = _RAND_410[0:0];
-  _RAND_411 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_isJalr = _RAND_411[0:0];
-  _RAND_412 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_isCall = _RAND_412[0:0];
-  _RAND_413 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_isRet = _RAND_413[0:0];
-  _RAND_414 = {1{`RANDOM}};
-  rrd_uop_4_pdInfo_jumpTarget = _RAND_414[31:0];
-  _RAND_415 = {1{`RANDOM}};
-  rrd_uop_4_ldst = _RAND_415[4:0];
-  _RAND_416 = {1{`RANDOM}};
-  rrd_uop_4_lrs1 = _RAND_416[4:0];
-  _RAND_417 = {1{`RANDOM}};
-  rrd_uop_4_lrs2 = _RAND_417[4:0];
-  _RAND_418 = {1{`RANDOM}};
-  rrd_uop_4_prs1 = _RAND_418[6:0];
-  _RAND_419 = {1{`RANDOM}};
-  rrd_uop_4_prs2 = _RAND_419[6:0];
-  _RAND_420 = {1{`RANDOM}};
-  rrd_uop_4_oldPdst = _RAND_420[6:0];
-  _RAND_421 = {1{`RANDOM}};
-  rrd_uop_4_rs2Valid = _RAND_421[0:0];
-  _RAND_422 = {1{`RANDOM}};
-  rrd_uop_4_robIdx = _RAND_422[5:0];
-  _RAND_423 = {1{`RANDOM}};
-  rrd_uop_4_robIdxFull = _RAND_423[6:0];
-  _RAND_424 = {1{`RANDOM}};
-  rrd_uop_4_sqIdx = _RAND_424[3:0];
-  _RAND_425 = {1{`RANDOM}};
-  rrd_uop_4_issueQueue = _RAND_425[2:0];
-  _RAND_426 = {1{`RANDOM}};
-  rrd_uop_4_prs2Busy = _RAND_426[0:0];
-  _RAND_427 = {1{`RANDOM}};
-  rrd_uop_4_isStd = _RAND_427[0:0];
-  _RAND_428 = {1{`RANDOM}};
-  out_valid_4 = _RAND_428[0:0];
-  _RAND_429 = {1{`RANDOM}};
-  out_uop_4_pc = _RAND_429[31:0];
-  _RAND_430 = {1{`RANDOM}};
-  out_uop_4_inst = _RAND_430[31:0];
-  _RAND_431 = {1{`RANDOM}};
-  out_uop_4_ctrl_fuType = _RAND_431[3:0];
-  _RAND_432 = {1{`RANDOM}};
-  out_uop_4_ctrl_aluOp = _RAND_432[4:0];
-  _RAND_433 = {1{`RANDOM}};
-  out_uop_4_ctrl_bruOp = _RAND_433[3:0];
-  _RAND_434 = {1{`RANDOM}};
-  out_uop_4_ctrl_lsuOp = _RAND_434[3:0];
-  _RAND_435 = {1{`RANDOM}};
-  out_uop_4_ctrl_csrOp = _RAND_435[2:0];
-  _RAND_436 = {1{`RANDOM}};
-  out_uop_4_ctrl_mulOp = _RAND_436[2:0];
-  _RAND_437 = {1{`RANDOM}};
-  out_uop_4_ctrl_divOp = _RAND_437[2:0];
-  _RAND_438 = {1{`RANDOM}};
-  out_uop_4_ctrl_src1Type = _RAND_438[2:0];
-  _RAND_439 = {1{`RANDOM}};
-  out_uop_4_ctrl_src2Type = _RAND_439[2:0];
-  _RAND_440 = {1{`RANDOM}};
-  out_uop_4_ctrl_immType = _RAND_440[3:0];
-  _RAND_441 = {1{`RANDOM}};
-  out_uop_4_ctrl_rfWen = _RAND_441[0:0];
-  _RAND_442 = {1{`RANDOM}};
-  out_uop_4_ctrl_memRead = _RAND_442[0:0];
-  _RAND_443 = {1{`RANDOM}};
-  out_uop_4_ctrl_memWrite = _RAND_443[0:0];
-  _RAND_444 = {1{`RANDOM}};
-  out_uop_4_ctrl_csrWen = _RAND_444[0:0];
-  _RAND_445 = {1{`RANDOM}};
-  out_uop_4_ctrl_isBranch = _RAND_445[0:0];
-  _RAND_446 = {1{`RANDOM}};
-  out_uop_4_ctrl_isJump = _RAND_446[0:0];
-  _RAND_447 = {1{`RANDOM}};
-  out_uop_4_ctrl_isPriv = _RAND_447[0:0];
-  _RAND_448 = {1{`RANDOM}};
-  out_uop_4_excpVec = _RAND_448[9:0];
-  _RAND_449 = {1{`RANDOM}};
-  out_uop_4_csrAddress = _RAND_449[13:0];
-  _RAND_450 = {1{`RANDOM}};
-  out_uop_4_pdInfo_valid = _RAND_450[0:0];
-  _RAND_451 = {1{`RANDOM}};
-  out_uop_4_pdInfo_isBr = _RAND_451[0:0];
-  _RAND_452 = {1{`RANDOM}};
-  out_uop_4_pdInfo_isJal = _RAND_452[0:0];
-  _RAND_453 = {1{`RANDOM}};
-  out_uop_4_pdInfo_isJalr = _RAND_453[0:0];
-  _RAND_454 = {1{`RANDOM}};
-  out_uop_4_pdInfo_isCall = _RAND_454[0:0];
-  _RAND_455 = {1{`RANDOM}};
-  out_uop_4_pdInfo_isRet = _RAND_455[0:0];
-  _RAND_456 = {1{`RANDOM}};
-  out_uop_4_pdInfo_jumpTarget = _RAND_456[31:0];
-  _RAND_457 = {1{`RANDOM}};
-  out_uop_4_ldst = _RAND_457[4:0];
-  _RAND_458 = {1{`RANDOM}};
-  out_uop_4_lrs1 = _RAND_458[4:0];
-  _RAND_459 = {1{`RANDOM}};
-  out_uop_4_lrs2 = _RAND_459[4:0];
-  _RAND_460 = {1{`RANDOM}};
-  out_uop_4_prs1 = _RAND_460[6:0];
-  _RAND_461 = {1{`RANDOM}};
-  out_uop_4_prs2 = _RAND_461[6:0];
-  _RAND_462 = {1{`RANDOM}};
-  out_uop_4_oldPdst = _RAND_462[6:0];
-  _RAND_463 = {1{`RANDOM}};
-  out_uop_4_rs2Valid = _RAND_463[0:0];
-  _RAND_464 = {1{`RANDOM}};
-  out_uop_4_robIdx = _RAND_464[5:0];
-  _RAND_465 = {1{`RANDOM}};
-  out_uop_4_robIdxFull = _RAND_465[6:0];
-  _RAND_466 = {1{`RANDOM}};
-  out_uop_4_sqIdx = _RAND_466[3:0];
-  _RAND_467 = {1{`RANDOM}};
-  out_uop_4_issueQueue = _RAND_467[2:0];
-  _RAND_468 = {1{`RANDOM}};
-  out_uop_4_prs2Busy = _RAND_468[0:0];
-  _RAND_469 = {1{`RANDOM}};
-  out_uop_4_isStd = _RAND_469[0:0];
-  _RAND_470 = {1{`RANDOM}};
-  out_rs2_4 = _RAND_470[31:0];
+  out_valid_4 = _RAND_291[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

@@ -65,7 +65,7 @@ trait HasCoreParameters {
 
   val LqSize       : Int = 16      // Load Queue 深度（2的幂）
   val SqSize       : Int = 16      // Store Queue 深度（2的幂）
-  val WbBusWidth   : Int = 4       // 写回总线宽度（执行单元回写端口数）
+  val WbBusWidth   : Int = 3       // 写回总线宽度（执行单元回写端口数）
 
   // ── IssueQueue 参数 ──
   val IQNumWakeupPorts : Int = 4 

@@ -23,9 +23,23 @@ class ALU(implicit p: Parameters) extends NSModule {
   })
  
   val op    = io.uop.ctrl.aluOp
-  val src1  = io.rs1
-  val src2  = io.rs2
- 
+
+  val src1 = WireDefault(0.U(XLEN.W))
+  switch(io.uop.ctrl.src1Type) {
+    is(SrcType.reg)  { src1 := io.rs1 }
+    is(SrcType.pc)   { src1 := io.uop.pc }
+    is(SrcType.imm)  { src1 := io.uop.imm }
+    is(SrcType.zero) { src1 := 0.U }
+  }
+  
+  val src2 = WireDefault(0.U(XLEN.W))
+  switch(io.uop.ctrl.src2Type) {
+    is(SrcType.reg)  { src2 := io.rs2 }
+    is(SrcType.pc)   { src2 := io.uop.pc }
+    is(SrcType.imm)  { src2 := io.uop.imm }
+    is(SrcType.zero) { src2 := 0.U }
+  }
+
   // ── 加减法 ──
   val addResult  = (src1 + src2)(XLEN - 1, 0)
   val subResult  = (src1 - src2)(XLEN - 1, 0)

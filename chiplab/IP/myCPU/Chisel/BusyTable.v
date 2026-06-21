@@ -18,12 +18,26 @@ module BusyTable(
   input        io_allocReq_1_valid, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
   input  [6:0] io_allocReq_1_bits, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
   input        io_allocReq_2_valid, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
-  input  [6:0] io_allocReq_2_bits // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input  [6:0] io_allocReq_2_bits, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input        io_wbReq_0_valid, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input  [6:0] io_wbReq_0_bits, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input        io_wbReq_1_valid, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input  [6:0] io_wbReq_1_bits, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input        io_wbReq_2_valid, // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
+  input  [6:0] io_wbReq_2_bits // @[src/main/scala/backend/dispatch/BusyTable.scala 23:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [127:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
   reg [127:0] table_; // @[src/main/scala/backend/dispatch/BusyTable.scala 29:22]
+  wire [127:0] _wbClearMask_T = 128'h1 << io_wbReq_0_bits; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
+  wire [127:0] _wbClearMask_T_2 = io_wbReq_0_valid ? _wbClearMask_T : 128'h0; // @[src/main/scala/backend/dispatch/BusyTable.scala 35:8]
+  wire [127:0] _wbClearMask_T_3 = 128'h1 << io_wbReq_1_bits; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
+  wire [127:0] _wbClearMask_T_5 = io_wbReq_1_valid ? _wbClearMask_T_3 : 128'h0; // @[src/main/scala/backend/dispatch/BusyTable.scala 35:8]
+  wire [127:0] _wbClearMask_T_6 = 128'h1 << io_wbReq_2_bits; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
+  wire [127:0] _wbClearMask_T_8 = io_wbReq_2_valid ? _wbClearMask_T_6 : 128'h0; // @[src/main/scala/backend/dispatch/BusyTable.scala 35:8]
+  wire [127:0] _wbClearMask_T_9 = _wbClearMask_T_2 | _wbClearMask_T_5; // @[src/main/scala/backend/dispatch/BusyTable.scala 36:14]
+  wire [127:0] wbClearMask = _wbClearMask_T_9 | _wbClearMask_T_8; // @[src/main/scala/backend/dispatch/BusyTable.scala 36:14]
   wire [127:0] _allocSetMask_T = 128'h1 << io_allocReq_0_bits; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
   wire [127:0] _allocSetMask_T_2 = io_allocReq_0_valid ? _allocSetMask_T : 128'h0; // @[src/main/scala/backend/dispatch/BusyTable.scala 42:8]
   wire [127:0] _allocSetMask_T_3 = 128'h1 << io_allocReq_1_bits; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
@@ -32,7 +46,9 @@ module BusyTable(
   wire [127:0] _allocSetMask_T_8 = io_allocReq_2_valid ? _allocSetMask_T_6 : 128'h0; // @[src/main/scala/backend/dispatch/BusyTable.scala 42:8]
   wire [127:0] _allocSetMask_T_9 = _allocSetMask_T_2 | _allocSetMask_T_5; // @[src/main/scala/backend/dispatch/BusyTable.scala 43:14]
   wire [127:0] allocSetMask = _allocSetMask_T_9 | _allocSetMask_T_8; // @[src/main/scala/backend/dispatch/BusyTable.scala 43:14]
-  wire [127:0] _table_T_2 = table_ | allocSetMask; // @[src/main/scala/backend/dispatch/BusyTable.scala 49:45]
+  wire [127:0] _table_T = ~wbClearMask; // @[src/main/scala/backend/dispatch/BusyTable.scala 49:23]
+  wire [127:0] _table_T_1 = table_ & _table_T; // @[src/main/scala/backend/dispatch/BusyTable.scala 49:20]
+  wire [127:0] _table_T_2 = _table_T_1 | allocSetMask; // @[src/main/scala/backend/dispatch/BusyTable.scala 49:45]
   wire [127:0] _table_T_4 = _table_T_2 & 128'hfffffffffffffffffffffffffffffffe; // @[src/main/scala/backend/dispatch/BusyTable.scala 49:61]
   wire  allocBypass = io_allocReq_0_valid & io_allocReq_0_bits == io_readReq_0 | io_allocReq_1_valid &
     io_allocReq_1_bits == io_readReq_0 | io_allocReq_2_valid & io_allocReq_2_bits == io_readReq_0; // @[src/main/scala/backend/dispatch/BusyTable.scala 56:90]

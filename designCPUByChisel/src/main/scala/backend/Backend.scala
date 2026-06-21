@@ -18,6 +18,8 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val redirect = Output(new RedirectInfo)
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
+
+  val debugLogicRegs = Output(Vec(IntLogicRegs, UInt(XLEN.W)))
 }
  
 class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
@@ -27,9 +29,23 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
+  dontTouch(ctrlBlock.io.commit)
   val scheduler   = Module(new Scheduler)
   val regRead     = Module(new RegisterRead)
   val regFile     = Module(new RegFile)
+  // ══════════════════════════════════════════════════════════════
+  //  全局调试信号连接：生成最终的逻辑寄存器架构状态
+  // ══════════════════════════════════════════════════════════════
+  val archState = ctrlBlock.io.debugArchState
+  val phyState  = regFile.io.debugState
+
+  // 遍历 32 个逻辑寄存器，用架构表的值作为物理寄存器堆的索引
+  for (i <- 0 until IntLogicRegs) {
+    io.debugLogicRegs(i) := phyState(archState(i))
+  }
+  dontTouch(io.debugLogicRegs)
+
+
  
   // 3 个执行单元：
   //   eu0: Q1 → ALU + CSR
@@ -90,7 +106,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //    ch4 (Q5: STD)      → 暂不连接（LSU 未实现）
   // ══════════════════════════════════════════════════════════════
   for ((eu, ch) <- exeUnits.zipWithIndex) {
-    eu.io.req <> regRead.io.exeReqs(ch)
+    eu.io.inReq <> regRead.io.exeReqs(ch)
   }
  
   // Q4, Q5 暂不接收（LSU 未实现）
@@ -101,41 +117,45 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  ExeUnits → Writeback：执行结果
   // ══════════════════════════════════════════════════════════════
   for (i <- 0 until numExeUnits) {
-    writeback.io.exeResults(i) := exeUnits(i).io.result
+    writeback.io.InExeResults(i) <> exeUnits(i).io.outResult
   }
+  writeback.io.flush := io.flush
+  exeUnits.foreach(_.io.flush := io.flush)
  
   // ══════════════════════════════════════════════════════════════
   //  Writeback → RegFile：写端口
   // ══════════════════════════════════════════════════════════════
   writeback.io.rfWritePorts <> regFile.io.writePorts
+  dontTouch(writeback.io.rfWritePorts)
  
   // ══════════════════════════════════════════════════════════════
   //  Writeback → Scheduler：唤醒广播
   // ══════════════════════════════════════════════════════════════
   scheduler.io.wakeupPorts <> writeback.io.wakeupPorts
+  ctrlBlock.io.wakeupPorts <> writeback.io.wakeupPorts
  
-  // ══════════════════════════════════════════════════════════════
+  // ═════════════════════════════════════════════════════════════
   //  重定向 / 冲刷
-  // ══════════════════════════════════════════════════════════════
-  // 优先级：Writeback 产生的重定向 > CtrlBlock 产生的重定向
+  // ══════════════════════════════════════════════════
   val wbRedirect = writeback.io.redirect
   val ctrlRedirect = ctrlBlock.io.redirect
   val finalRedirect = Mux(wbRedirect.valid, wbRedirect.bits, ctrlRedirect)
  
-  io.redirect := finalRedirect
+  io.redirect := 0.U.asTypeOf(new RedirectInfo)//finalRedirect
  
-  scheduler.io.redirect.valid      := wbRedirect.valid || ctrlRedirect.valid
-  scheduler.io.redirect.robIdx := finalRedirect.robIdx
+  scheduler.io.redirect      := 0.U.asTypeOf(new RedirectInfo) //wbRedirect.valid || ctrlRedirect.valid
+  //scheduler.io.redirect.robIdx := finalRedirect.robIdx
   scheduler.io.flushPipeline       := io.flush
  
-  regRead.io.redirect.valid      := wbRedirect.valid || ctrlRedirect.valid
-  regRead.io.redirect.robIdx := finalRedirect.robIdx
+  regRead.io.redirect      := 0.U.asTypeOf(new RedirectInfo) //wbRedirect.valid || ctrlRedirect.valid
+  //regRead.io.redirect.robIdx := finalRedirect.robIdx
   regRead.io.flushPipeline       := io.flush
  
   // ══════════════════════════════════════════════════════════════
   //  ROB 提交：暂不实现，dontTouch 保留可见性
   // ══════════════════════════════════════════════════════════════
-  dontTouch(writeback.io.commitResults)
+  dontTouch(writeback.io.toRObResults)
+  ctrlBlock.io.writeback <> writeback.io.toRObResults
  
   // ══════════════════════════════════════════════════════════════
   //  LSQ：当前未实现

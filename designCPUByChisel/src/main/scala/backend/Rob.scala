@@ -40,6 +40,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val oldPdst     = UInt(PhyRegIdxWidth.W)
   val ldst        = UInt(5.W)
   val rfWen       = Bool()
+  val rfdata       = UInt(XLEN.W)
   val memRead     = Bool()
   val memWrite    = Bool()
   val csrWen      = Bool()
@@ -50,8 +51,15 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
 }
  
 class ROB(implicit p: Parameters) extends NSModule {
-  val io = IO(new RobIO)
- 
+  val io = IO(new Bundle {
+    val flush   = Input(Bool())
+    val enq     = new RobEnqIO
+    val commit  = new RobCommitIO
+    val redirect = new RobRedirectIO
+    val writeback = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
+  })
+
+
   // ================================================================
   //  1. 指针类型（复用 CircularQueuePtr）
   // ================================================================
@@ -122,6 +130,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   for (wb <- io.writeback) {
     when(wb.valid) {
       entries(wb.bits.robIdx).writtenBack := true.B
+      entries(wb.bits.robIdx).rfdata := wb.bits.rfdata
       // 如果有异常，更新异常向量
       when(wb.bits.excpVec.orR) {
         entries(wb.bits.robIdx).excpVec := wb.bits.excpVec
@@ -154,6 +163,9 @@ class ROB(implicit p: Parameters) extends NSModule {
     commitCandidates(i).oldPdst := entry.oldPdst
     commitCandidates(i).ldst    := entry.ldst
     commitCandidates(i).rfWen   := entry.rfWen
+
+    commitCandidates(i).pc       := entry.pc
+    commitCandidates(i).wrdata   := entry.rfdata
    
     // 累积条件：前序都能提交 && 本身就绪（异常也算就绪，但会停止后续）
     prevCanCommit = prevCanCommit && thisReady

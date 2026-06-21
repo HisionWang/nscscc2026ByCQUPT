@@ -146,6 +146,8 @@ class RobCommitIO(implicit p: Parameters) extends NSBundle {
  
 class RobCommitEntry(implicit p: Parameters) extends NSBundle {
   val pdst     = UInt(PhyRegIdxWidth.W)
+  val pc     = UInt(XLEN.W)
+  val wrdata     = UInt(XLEN.W)
   val oldPdst  = UInt(PhyRegIdxWidth.W)
   val ldst     = UInt(5.W)
   val rfWen    = Bool()
@@ -166,16 +168,18 @@ class RobRedirectIO(implicit p: Parameters) extends NSBundle {
 // ================================================================
 //  ROB 完整 IO
 // ================================================================
-class RobIO(implicit p: Parameters) extends NSBundle {
-  val enq     = new RobEnqIO
-  val commit  = new RobCommitIO
-  val redirect = new RobRedirectIO
-  val flush   = Input(Bool())
-  val writeback = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
-}
- 
+//class RobIO(implicit p: Parameters) extends NSBundle {
+//  val enq     = new RobEnqIO
+//  val commit  = new RobCommitIO
+//  val redirect = new RobRedirectIO
+//  val flush   = Input(Bool())
+//  val writeback = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
+//}
+
 class RobWriteback(implicit p: Parameters) extends NSBundle {
   val robIdx  = UInt(log2Ceil(RobSize).W)
+  val rfdata  = UInt(XLEN.W)
+
   val excpVec = UInt(ExceptionCode.width.W)
   val isBypass = Bool()  // 异常/误预测标记
 }

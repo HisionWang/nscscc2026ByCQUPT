@@ -5,6 +5,8 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
+import nscscc.backend.regfile._
+import nscscc.backend.issue._
  
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -38,6 +40,16 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     val robEnq  = Flipped(new RobEnqIO)
     val flush   = Input(Bool())
     val redirect = Input(new RedirectInfo)
+
+
+    //val writePRF = Vec(intRegFileWritePorts, new PRFWritePortIO)
+    //val writePRF = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
+    val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
+    /*
+    class IssueWakeup(implicit p: Parameters) extends NSBundle {
+      val pdst = UInt(PhyRegIdxWidth.W)
+    }
+    */
   })
  
   val busyTable = Module(new BusyTable)
@@ -431,24 +443,70 @@ val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3
   }
  
   // ================================================================
-  //  BusyTable 查询
+  //  BusyTable 读写与更新逻辑 (包含当拍唤醒与级内分配旁路)
   // ================================================================
+  
+  // 1. 发起读请求
   for (i <- 0 until CtrlBlockWidth) {
     busyTable.io.readReq(i * 2)     := stgData(i).prs1
     busyTable.io.readReq(i * 2 + 1) := stgData(i).prs2
   }
+
+  // 2. 发起分配(Alloc)请求 (产生新的目的寄存器，设为 Busy)
+  // 提取 valid 信号以便后续进行级内依赖检查
+  val allocValids = Wire(Vec(CtrlBlockWidth, Bool()))
   for (i <- 0 until CtrlBlockWidth) {
-    busyTable.io.allocReq(i).valid := dispatchFire && needRob(i) &&
-                                      stgData(i).rdValid && stgData(i).ldst =/= 0.U
+    allocValids(i) := dispatchFire && needRob(i) && 
+                      stgData(i).rdValid && stgData(i).ldst =/= 0.U
+    busyTable.io.allocReq(i).valid := allocValids(i)
     busyTable.io.allocReq(i).bits  := stgData(i).pdst
   }
+  
+  val wakeupPorts = io.wakeupPorts
+  
+  // 3. 正确设置写操作 (唤醒请求/Writeback)
+  // 将 wakeupPorts 的有效唤醒信号接入 busyTable 的写端口，用于清除 Busy 状态
   for (i <- 0 until WbBusWidth) {
-    busyTable.io.wbReq(i).valid := false.B
-    busyTable.io.wbReq(i).bits  := 0.U
+    busyTable.io.wbReq(i).valid := wakeupPorts(i).valid
+    busyTable.io.wbReq(i).bits  := wakeupPorts(i).bits.pdst
   }
- 
+
+  // ================================================================
+  //  Busy 状态旁路处理 (当拍唤醒旁路 + 级内分配旁路)
+  // ================================================================
+  
+  // 读出原始的 Busy 状态
   val prs1BusyRaw = VecInit((0 until CtrlBlockWidth).map(i => busyTable.io.readResp(i * 2)))
   val prs2BusyRaw = VecInit((0 until CtrlBlockWidth).map(i => busyTable.io.readResp(i * 2 + 1)))
+
+  // 声明最终使用的修正版 Busy 信号
+  val prs1Busy = Wire(Vec(CtrlBlockWidth, Bool()))
+  val prs2Busy = Wire(Vec(CtrlBlockWidth, Bool()))
+  
+  for (i <- 0 until CtrlBlockWidth) {
+    // A. 检查当拍是否有外部唤醒 (试图清除 Busy)
+    val prs1WakeupHits = wakeupPorts.map(w => w.valid && (w.bits.pdst === stgData(i).prs1))
+    val prs1WokenUp    = VecInit(prs1WakeupHits).asUInt.orR
+
+    val prs2WakeupHits = wakeupPorts.map(w => w.valid && (w.bits.pdst === stgData(i).prs2))
+    val prs2WokenUp    = VecInit(prs2WakeupHits).asUInt.orR
+
+    // B. 检查同周期更早的指令 (j < i) 是否分配了该物理寄存器 (试图设置 Busy)
+    val prs1AllocByOlder = if (i == 0) false.B else {
+      VecInit((0 until i).map(j => allocValids(j) && (stgData(j).pdst === stgData(i).prs1))).asUInt.orR
+    }
+    val prs2AllocByOlder = if (i == 0) false.B else {
+      VecInit((0 until i).map(j => allocValids(j) && (stgData(j).pdst === stgData(i).prs2))).asUInt.orR
+    }
+
+    // C. 最终状态合并 (语义覆盖规则)
+    // 优先级 1: 如果被当拍更早的指令分配 (AllocByOlder)，说明存在级内 RAW 依赖，必然为 Busy。
+    // 优先级 2: 如果没有被重新分配，则查看原始状态，并扣除当拍被唤醒 (WokenUp) 的情况。
+    prs1Busy(i) := prs1AllocByOlder || (prs1BusyRaw(i) && !prs1WokenUp)
+    prs2Busy(i) := prs2AllocByOlder || (prs2BusyRaw(i) && !prs2WokenUp)
+  }
+
+  // 后续逻辑中请使用修正后的 prs1Busy(i) 和 prs2Busy(i)
  
   // ================================================================
   //  微操作构造
@@ -478,9 +536,9 @@ val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3
     u.lqIdx      := 0.U
     u.issueQueue := laneTargetQ(i)
     u.prs1Busy   := Mux(stgData(i).rs1Valid && stgData(i).lrs1 =/= 0.U,
-                        prs1BusyRaw(i), false.B)
+                        prs1Busy(i), false.B)
     u.prs2Busy   := Mux(stgData(i).rs2Valid && stgData(i).lrs2 =/= 0.U,
-                        prs2BusyRaw(i), false.B)
+                        prs2Busy(i), false.B)
     u.isSta      := false.B
     u.isStd      := false.B
     u

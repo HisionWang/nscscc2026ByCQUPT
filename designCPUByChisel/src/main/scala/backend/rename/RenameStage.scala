@@ -57,6 +57,8 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     val redirect = Input(new RedirectInfo)
     // ── 全局冲刷 ──
     val flush   = Input(Bool())
+
+    val debugArchState = Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W)))
   })
  
   // ================================================================
@@ -70,6 +72,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val rat      = Module(new RenameTable)
   val freeList = Module(new FreeList)
  
+  io.debugArchState := rat.io.debugArchState
   // ================================================================
   //  Phase 1: 流水级寄存器（严格对齐 DecodeStage 风格）
   //
@@ -248,8 +251,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   //  2-6. FreeList 释放端口（ROB 提交时释放旧物理寄存器）
   // ================================================================
   for (i <- 0 until CommitWidth) {
+    rat.io.archReadPorts(i).laddr    := io.commit(i).ldst
     freeList.io.deallocReqs(i).valid := io.commit(i).valid && io.commit(i).rfWen
-    freeList.io.deallocReqs(i).bits  := io.commit(i).oldPdst
+    freeList.io.deallocReqs(i).bits  := rat.io.archReadPorts(i).pdata
   }
  
 

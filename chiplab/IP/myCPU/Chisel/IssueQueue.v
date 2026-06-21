@@ -98,8 +98,12 @@ module IssueQueue(
   output        io_issue_bits_prs1Busy, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output        io_issue_bits_prs2Busy, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output        io_issue_bits_isSta, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
-  input         io_redirect_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
-  input  [5:0]  io_redirect_robIdx, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_wakeupPorts_0_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [6:0]  io_wakeupPorts_0_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_wakeupPorts_1_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [6:0]  io_wakeupPorts_1_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_wakeupPorts_2_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [6:0]  io_wakeupPorts_2_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output [4:0]  io_freeEntries // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -2184,105 +2188,198 @@ module IssueQueue(
   reg  age_15_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
   reg  age_15_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
   reg  age_15_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-  wire  killed_0_aFlag = uops_0_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire  killed_0_bFlag = io_redirect_robIdx[5]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 87:18]
-  wire [5:0] killed_0_aVal = uops_0_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire [4:0] killed_0_bVal = io_redirect_robIdx[4:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 89:18]
-  wire [5:0] _GEN_1856 = {{1'd0}, killed_0_bVal}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:31]
-  wire  _killed_0_T_4 = killed_0_aFlag == killed_0_bFlag ? killed_0_aVal > _GEN_1856 : killed_0_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_0 = valid_0 & io_redirect_valid & _killed_0_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_1_aFlag = uops_1_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_1_aVal = uops_1_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_1_T_4 = killed_1_aFlag == killed_0_bFlag ? killed_1_aVal > _GEN_1856 : killed_1_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_1 = valid_1 & io_redirect_valid & _killed_1_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_2_aFlag = uops_2_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_2_aVal = uops_2_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_2_T_4 = killed_2_aFlag == killed_0_bFlag ? killed_2_aVal > _GEN_1856 : killed_2_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_2 = valid_2 & io_redirect_valid & _killed_2_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_3_aFlag = uops_3_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_3_aVal = uops_3_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_3_T_4 = killed_3_aFlag == killed_0_bFlag ? killed_3_aVal > _GEN_1856 : killed_3_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_3 = valid_3 & io_redirect_valid & _killed_3_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_4_aFlag = uops_4_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_4_aVal = uops_4_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_4_T_4 = killed_4_aFlag == killed_0_bFlag ? killed_4_aVal > _GEN_1856 : killed_4_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_4 = valid_4 & io_redirect_valid & _killed_4_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_5_aFlag = uops_5_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_5_aVal = uops_5_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_5_T_4 = killed_5_aFlag == killed_0_bFlag ? killed_5_aVal > _GEN_1856 : killed_5_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_5 = valid_5 & io_redirect_valid & _killed_5_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_6_aFlag = uops_6_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_6_aVal = uops_6_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_6_T_4 = killed_6_aFlag == killed_0_bFlag ? killed_6_aVal > _GEN_1856 : killed_6_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_6 = valid_6 & io_redirect_valid & _killed_6_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_7_aFlag = uops_7_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_7_aVal = uops_7_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_7_T_4 = killed_7_aFlag == killed_0_bFlag ? killed_7_aVal > _GEN_1856 : killed_7_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_7 = valid_7 & io_redirect_valid & _killed_7_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_8_aFlag = uops_8_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_8_aVal = uops_8_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_8_T_4 = killed_8_aFlag == killed_0_bFlag ? killed_8_aVal > _GEN_1856 : killed_8_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_8 = valid_8 & io_redirect_valid & _killed_8_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_9_aFlag = uops_9_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_9_aVal = uops_9_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_9_T_4 = killed_9_aFlag == killed_0_bFlag ? killed_9_aVal > _GEN_1856 : killed_9_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_9 = valid_9 & io_redirect_valid & _killed_9_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_10_aFlag = uops_10_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_10_aVal = uops_10_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_10_T_4 = killed_10_aFlag == killed_0_bFlag ? killed_10_aVal > _GEN_1856 : killed_10_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_10 = valid_10 & io_redirect_valid & _killed_10_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_11_aFlag = uops_11_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_11_aVal = uops_11_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_11_T_4 = killed_11_aFlag == killed_0_bFlag ? killed_11_aVal > _GEN_1856 : killed_11_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_11 = valid_11 & io_redirect_valid & _killed_11_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_12_aFlag = uops_12_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_12_aVal = uops_12_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_12_T_4 = killed_12_aFlag == killed_0_bFlag ? killed_12_aVal > _GEN_1856 : killed_12_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_12 = valid_12 & io_redirect_valid & _killed_12_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_13_aFlag = uops_13_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_13_aVal = uops_13_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_13_T_4 = killed_13_aFlag == killed_0_bFlag ? killed_13_aVal > _GEN_1856 : killed_13_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_13 = valid_13 & io_redirect_valid & _killed_13_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_14_aFlag = uops_14_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_14_aVal = uops_14_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_14_T_4 = killed_14_aFlag == killed_0_bFlag ? killed_14_aVal > _GEN_1856 : killed_14_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_14 = valid_14 & io_redirect_valid & _killed_14_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  killed_15_aFlag = uops_15_robIdxFull[6]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 86:18]
-  wire [5:0] killed_15_aVal = uops_15_robIdxFull[5:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 88:18]
-  wire  _killed_15_T_4 = killed_15_aFlag == killed_0_bFlag ? killed_15_aVal > _GEN_1856 : killed_15_aFlag; // @[src/main/scala/backend/scheduler/IssueQueue.scala 90:8]
-  wire  killed_15 = valid_15 & io_redirect_valid & _killed_15_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 95:48]
-  wire  _request_0_T_2 = ~killed_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_0 = valid_0 & p1Ready_0 & p2Ready_0 & ~killed_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_1_T_2 = ~killed_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_1 = valid_1 & p1Ready_1 & p2Ready_1 & ~killed_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_2_T_2 = ~killed_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_2 = valid_2 & p1Ready_2 & p2Ready_2 & ~killed_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_3_T_2 = ~killed_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_3 = valid_3 & p1Ready_3 & p2Ready_3 & ~killed_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_4_T_2 = ~killed_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_4 = valid_4 & p1Ready_4 & p2Ready_4 & ~killed_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_5_T_2 = ~killed_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_5 = valid_5 & p1Ready_5 & p2Ready_5 & ~killed_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_6_T_2 = ~killed_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_6 = valid_6 & p1Ready_6 & p2Ready_6 & ~killed_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_7_T_2 = ~killed_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_7 = valid_7 & p1Ready_7 & p2Ready_7 & ~killed_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_8_T_2 = ~killed_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_8 = valid_8 & p1Ready_8 & p2Ready_8 & ~killed_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_9_T_2 = ~killed_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_9 = valid_9 & p1Ready_9 & p2Ready_9 & ~killed_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_10_T_2 = ~killed_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_10 = valid_10 & p1Ready_10 & p2Ready_10 & ~killed_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_11_T_2 = ~killed_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_11 = valid_11 & p1Ready_11 & p2Ready_11 & ~killed_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_12_T_2 = ~killed_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_12 = valid_12 & p1Ready_12 & p2Ready_12 & ~killed_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_13_T_2 = ~killed_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_13 = valid_13 & p1Ready_13 & p2Ready_13 & ~killed_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_14_T_2 = ~killed_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_14 = valid_14 & p1Ready_14 & p2Ready_14 & ~killed_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
-  wire  _request_15_T_2 = ~killed_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:55]
-  wire  request_15 = valid_15 & p1Ready_15 & p2Ready_15 & ~killed_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:52]
+  wire  wValid = io_wakeupPorts_0_valid & valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_1 = io_wakeupPorts_1_valid & valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_2 = io_wakeupPorts_2_valid & valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_0 = wValid & uops_0_rs1Valid & uops_0_prs1 == io_wakeupPorts_0_bits_pdst | wValid_1 & uops_0_rs1Valid
+     & uops_0_prs1 == io_wakeupPorts_1_bits_pdst | wValid_2 & uops_0_rs1Valid & uops_0_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_0 = wValid & uops_0_rs2Valid & uops_0_prs2 == io_wakeupPorts_0_bits_pdst | wValid_1 & uops_0_rs2Valid
+     & uops_0_prs2 == io_wakeupPorts_1_bits_pdst | wValid_2 & uops_0_rs2Valid & uops_0_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_4 = io_wakeupPorts_0_valid & valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_5 = io_wakeupPorts_1_valid & valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_6 = io_wakeupPorts_2_valid & valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_1 = wValid_4 & uops_1_rs1Valid & uops_1_prs1 == io_wakeupPorts_0_bits_pdst | wValid_5 & uops_1_rs1Valid
+     & uops_1_prs1 == io_wakeupPorts_1_bits_pdst | wValid_6 & uops_1_rs1Valid & uops_1_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_1 = wValid_4 & uops_1_rs2Valid & uops_1_prs2 == io_wakeupPorts_0_bits_pdst | wValid_5 & uops_1_rs2Valid
+     & uops_1_prs2 == io_wakeupPorts_1_bits_pdst | wValid_6 & uops_1_rs2Valid & uops_1_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_8 = io_wakeupPorts_0_valid & valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_9 = io_wakeupPorts_1_valid & valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_10 = io_wakeupPorts_2_valid & valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_2 = wValid_8 & uops_2_rs1Valid & uops_2_prs1 == io_wakeupPorts_0_bits_pdst | wValid_9 & uops_2_rs1Valid
+     & uops_2_prs1 == io_wakeupPorts_1_bits_pdst | wValid_10 & uops_2_rs1Valid & uops_2_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_2 = wValid_8 & uops_2_rs2Valid & uops_2_prs2 == io_wakeupPorts_0_bits_pdst | wValid_9 & uops_2_rs2Valid
+     & uops_2_prs2 == io_wakeupPorts_1_bits_pdst | wValid_10 & uops_2_rs2Valid & uops_2_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_12 = io_wakeupPorts_0_valid & valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_13 = io_wakeupPorts_1_valid & valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_14 = io_wakeupPorts_2_valid & valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_3 = wValid_12 & uops_3_rs1Valid & uops_3_prs1 == io_wakeupPorts_0_bits_pdst | wValid_13 &
+    uops_3_rs1Valid & uops_3_prs1 == io_wakeupPorts_1_bits_pdst | wValid_14 & uops_3_rs1Valid & uops_3_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_3 = wValid_12 & uops_3_rs2Valid & uops_3_prs2 == io_wakeupPorts_0_bits_pdst | wValid_13 &
+    uops_3_rs2Valid & uops_3_prs2 == io_wakeupPorts_1_bits_pdst | wValid_14 & uops_3_rs2Valid & uops_3_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_16 = io_wakeupPorts_0_valid & valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_17 = io_wakeupPorts_1_valid & valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_18 = io_wakeupPorts_2_valid & valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_4 = wValid_16 & uops_4_rs1Valid & uops_4_prs1 == io_wakeupPorts_0_bits_pdst | wValid_17 &
+    uops_4_rs1Valid & uops_4_prs1 == io_wakeupPorts_1_bits_pdst | wValid_18 & uops_4_rs1Valid & uops_4_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_4 = wValid_16 & uops_4_rs2Valid & uops_4_prs2 == io_wakeupPorts_0_bits_pdst | wValid_17 &
+    uops_4_rs2Valid & uops_4_prs2 == io_wakeupPorts_1_bits_pdst | wValid_18 & uops_4_rs2Valid & uops_4_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_20 = io_wakeupPorts_0_valid & valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_21 = io_wakeupPorts_1_valid & valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_22 = io_wakeupPorts_2_valid & valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_5 = wValid_20 & uops_5_rs1Valid & uops_5_prs1 == io_wakeupPorts_0_bits_pdst | wValid_21 &
+    uops_5_rs1Valid & uops_5_prs1 == io_wakeupPorts_1_bits_pdst | wValid_22 & uops_5_rs1Valid & uops_5_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_5 = wValid_20 & uops_5_rs2Valid & uops_5_prs2 == io_wakeupPorts_0_bits_pdst | wValid_21 &
+    uops_5_rs2Valid & uops_5_prs2 == io_wakeupPorts_1_bits_pdst | wValid_22 & uops_5_rs2Valid & uops_5_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_24 = io_wakeupPorts_0_valid & valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_25 = io_wakeupPorts_1_valid & valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_26 = io_wakeupPorts_2_valid & valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_6 = wValid_24 & uops_6_rs1Valid & uops_6_prs1 == io_wakeupPorts_0_bits_pdst | wValid_25 &
+    uops_6_rs1Valid & uops_6_prs1 == io_wakeupPorts_1_bits_pdst | wValid_26 & uops_6_rs1Valid & uops_6_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_6 = wValid_24 & uops_6_rs2Valid & uops_6_prs2 == io_wakeupPorts_0_bits_pdst | wValid_25 &
+    uops_6_rs2Valid & uops_6_prs2 == io_wakeupPorts_1_bits_pdst | wValid_26 & uops_6_rs2Valid & uops_6_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_28 = io_wakeupPorts_0_valid & valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_29 = io_wakeupPorts_1_valid & valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_30 = io_wakeupPorts_2_valid & valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_7 = wValid_28 & uops_7_rs1Valid & uops_7_prs1 == io_wakeupPorts_0_bits_pdst | wValid_29 &
+    uops_7_rs1Valid & uops_7_prs1 == io_wakeupPorts_1_bits_pdst | wValid_30 & uops_7_rs1Valid & uops_7_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_7 = wValid_28 & uops_7_rs2Valid & uops_7_prs2 == io_wakeupPorts_0_bits_pdst | wValid_29 &
+    uops_7_rs2Valid & uops_7_prs2 == io_wakeupPorts_1_bits_pdst | wValid_30 & uops_7_rs2Valid & uops_7_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_32 = io_wakeupPorts_0_valid & valid_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_33 = io_wakeupPorts_1_valid & valid_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_34 = io_wakeupPorts_2_valid & valid_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_8 = wValid_32 & uops_8_rs1Valid & uops_8_prs1 == io_wakeupPorts_0_bits_pdst | wValid_33 &
+    uops_8_rs1Valid & uops_8_prs1 == io_wakeupPorts_1_bits_pdst | wValid_34 & uops_8_rs1Valid & uops_8_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_8 = wValid_32 & uops_8_rs2Valid & uops_8_prs2 == io_wakeupPorts_0_bits_pdst | wValid_33 &
+    uops_8_rs2Valid & uops_8_prs2 == io_wakeupPorts_1_bits_pdst | wValid_34 & uops_8_rs2Valid & uops_8_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_36 = io_wakeupPorts_0_valid & valid_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_37 = io_wakeupPorts_1_valid & valid_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_38 = io_wakeupPorts_2_valid & valid_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_9 = wValid_36 & uops_9_rs1Valid & uops_9_prs1 == io_wakeupPorts_0_bits_pdst | wValid_37 &
+    uops_9_rs1Valid & uops_9_prs1 == io_wakeupPorts_1_bits_pdst | wValid_38 & uops_9_rs1Valid & uops_9_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_9 = wValid_36 & uops_9_rs2Valid & uops_9_prs2 == io_wakeupPorts_0_bits_pdst | wValid_37 &
+    uops_9_rs2Valid & uops_9_prs2 == io_wakeupPorts_1_bits_pdst | wValid_38 & uops_9_rs2Valid & uops_9_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_40 = io_wakeupPorts_0_valid & valid_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_41 = io_wakeupPorts_1_valid & valid_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_42 = io_wakeupPorts_2_valid & valid_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_10 = wValid_40 & uops_10_rs1Valid & uops_10_prs1 == io_wakeupPorts_0_bits_pdst | wValid_41 &
+    uops_10_rs1Valid & uops_10_prs1 == io_wakeupPorts_1_bits_pdst | wValid_42 & uops_10_rs1Valid & uops_10_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_10 = wValid_40 & uops_10_rs2Valid & uops_10_prs2 == io_wakeupPorts_0_bits_pdst | wValid_41 &
+    uops_10_rs2Valid & uops_10_prs2 == io_wakeupPorts_1_bits_pdst | wValid_42 & uops_10_rs2Valid & uops_10_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_44 = io_wakeupPorts_0_valid & valid_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_45 = io_wakeupPorts_1_valid & valid_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_46 = io_wakeupPorts_2_valid & valid_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_11 = wValid_44 & uops_11_rs1Valid & uops_11_prs1 == io_wakeupPorts_0_bits_pdst | wValid_45 &
+    uops_11_rs1Valid & uops_11_prs1 == io_wakeupPorts_1_bits_pdst | wValid_46 & uops_11_rs1Valid & uops_11_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_11 = wValid_44 & uops_11_rs2Valid & uops_11_prs2 == io_wakeupPorts_0_bits_pdst | wValid_45 &
+    uops_11_rs2Valid & uops_11_prs2 == io_wakeupPorts_1_bits_pdst | wValid_46 & uops_11_rs2Valid & uops_11_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_48 = io_wakeupPorts_0_valid & valid_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_49 = io_wakeupPorts_1_valid & valid_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_50 = io_wakeupPorts_2_valid & valid_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_12 = wValid_48 & uops_12_rs1Valid & uops_12_prs1 == io_wakeupPorts_0_bits_pdst | wValid_49 &
+    uops_12_rs1Valid & uops_12_prs1 == io_wakeupPorts_1_bits_pdst | wValid_50 & uops_12_rs1Valid & uops_12_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_12 = wValid_48 & uops_12_rs2Valid & uops_12_prs2 == io_wakeupPorts_0_bits_pdst | wValid_49 &
+    uops_12_rs2Valid & uops_12_prs2 == io_wakeupPorts_1_bits_pdst | wValid_50 & uops_12_rs2Valid & uops_12_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_52 = io_wakeupPorts_0_valid & valid_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_53 = io_wakeupPorts_1_valid & valid_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_54 = io_wakeupPorts_2_valid & valid_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_13 = wValid_52 & uops_13_rs1Valid & uops_13_prs1 == io_wakeupPorts_0_bits_pdst | wValid_53 &
+    uops_13_rs1Valid & uops_13_prs1 == io_wakeupPorts_1_bits_pdst | wValid_54 & uops_13_rs1Valid & uops_13_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_13 = wValid_52 & uops_13_rs2Valid & uops_13_prs2 == io_wakeupPorts_0_bits_pdst | wValid_53 &
+    uops_13_rs2Valid & uops_13_prs2 == io_wakeupPorts_1_bits_pdst | wValid_54 & uops_13_rs2Valid & uops_13_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_56 = io_wakeupPorts_0_valid & valid_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_57 = io_wakeupPorts_1_valid & valid_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_58 = io_wakeupPorts_2_valid & valid_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_14 = wValid_56 & uops_14_rs1Valid & uops_14_prs1 == io_wakeupPorts_0_bits_pdst | wValid_57 &
+    uops_14_rs1Valid & uops_14_prs1 == io_wakeupPorts_1_bits_pdst | wValid_58 & uops_14_rs1Valid & uops_14_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_14 = wValid_56 & uops_14_rs2Valid & uops_14_prs2 == io_wakeupPorts_0_bits_pdst | wValid_57 &
+    uops_14_rs2Valid & uops_14_prs2 == io_wakeupPorts_1_bits_pdst | wValid_58 & uops_14_rs2Valid & uops_14_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  wValid_60 = io_wakeupPorts_0_valid & valid_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_61 = io_wakeupPorts_1_valid & valid_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  wValid_62 = io_wakeupPorts_2_valid & valid_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_15 = wValid_60 & uops_15_rs1Valid & uops_15_prs1 == io_wakeupPorts_0_bits_pdst | wValid_61 &
+    uops_15_rs1Valid & uops_15_prs1 == io_wakeupPorts_1_bits_pdst | wValid_62 & uops_15_rs1Valid & uops_15_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
+  wire  p2Wakeup_15 = wValid_60 & uops_15_rs2Valid & uops_15_prs2 == io_wakeupPorts_0_bits_pdst | wValid_61 &
+    uops_15_rs2Valid & uops_15_prs2 == io_wakeupPorts_1_bits_pdst | wValid_62 & uops_15_rs2Valid & uops_15_prs2 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  p1Eff_0 = p1Ready_0 | p1Wakeup_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_0 = p2Ready_0 | p2Wakeup_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_1 = p1Ready_1 | p1Wakeup_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_1 = p2Ready_1 | p2Wakeup_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_2 = p1Ready_2 | p1Wakeup_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_2 = p2Ready_2 | p2Wakeup_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_3 = p1Ready_3 | p1Wakeup_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_3 = p2Ready_3 | p2Wakeup_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_4 = p1Ready_4 | p1Wakeup_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_4 = p2Ready_4 | p2Wakeup_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_5 = p1Ready_5 | p1Wakeup_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_5 = p2Ready_5 | p2Wakeup_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_6 = p1Ready_6 | p1Wakeup_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_6 = p2Ready_6 | p2Wakeup_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_7 = p1Ready_7 | p1Wakeup_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_7 = p2Ready_7 | p2Wakeup_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_8 = p1Ready_8 | p1Wakeup_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_8 = p2Ready_8 | p2Wakeup_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_9 = p1Ready_9 | p1Wakeup_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_9 = p2Ready_9 | p2Wakeup_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_10 = p1Ready_10 | p1Wakeup_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_10 = p2Ready_10 | p2Wakeup_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_11 = p1Ready_11 | p1Wakeup_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_11 = p2Ready_11 | p2Wakeup_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_12 = p1Ready_12 | p1Wakeup_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_12 = p2Ready_12 | p2Wakeup_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_13 = p1Ready_13 | p1Wakeup_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_13 = p2Ready_13 | p2Wakeup_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_14 = p1Ready_14 | p1Wakeup_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_14 = p2Ready_14 | p2Wakeup_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_15 = p1Ready_15 | p1Wakeup_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
+  wire  p2Eff_15 = p2Ready_15 | p2Wakeup_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  request_0 = valid_0 & p1Eff_0 & p2Eff_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_1 = valid_1 & p1Eff_1 & p2Eff_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_2 = valid_2 & p1Eff_2 & p2Eff_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_3 = valid_3 & p1Eff_3 & p2Eff_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_4 = valid_4 & p1Eff_4 & p2Eff_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_5 = valid_5 & p1Eff_5 & p2Eff_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_6 = valid_6 & p1Eff_6 & p2Eff_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_7 = valid_7 & p1Eff_7 & p2Eff_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_8 = valid_8 & p1Eff_8 & p2Eff_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_9 = valid_9 & p1Eff_9 & p2Eff_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_10 = valid_10 & p1Eff_10 & p2Eff_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_11 = valid_11 & p1Eff_11 & p2Eff_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_12 = valid_12 & p1Eff_12 & p2Eff_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_13 = valid_13 & p1Eff_13 & p2Eff_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_14 = valid_14 & p1Eff_14 & p2Eff_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_15 = valid_15 & p1Eff_15 & p2Eff_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
   wire  _T_543 = request_11 & ~age_0_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 120:42]
   wire  _T_544 = request_1 & ~age_0_1 | request_2 & ~age_0_2 | request_3 & ~age_0_3 | request_4 & ~age_0_4 | request_5
      & ~age_0_5 | request_6 & ~age_0_6 | request_7 & ~age_0_7 | request_8 & ~age_0_8 | request_9 & ~age_0_9 | request_10
@@ -3292,37 +3389,37 @@ module IssueQueue(
   wire  hasFree = |_hasFree_T; // @[src/main/scala/backend/scheduler/IssueQueue.scala 141:34]
   wire  enqFire = io_enq_valid & hasFree; // @[src/main/scala/backend/scheduler/IssueQueue.scala 142:31]
   wire  _validAfterKillGrant_0_T_2 = oldest_0 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_0 = valid_0 & _request_0_T_2 & ~(oldest_0 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_0 = valid_0 & ~(oldest_0 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_1_T_2 = oldest_1 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_1 = valid_1 & _request_1_T_2 & ~(oldest_1 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_1 = valid_1 & ~(oldest_1 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_2_T_2 = oldest_2 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_2 = valid_2 & _request_2_T_2 & ~(oldest_2 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_2 = valid_2 & ~(oldest_2 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_3_T_2 = oldest_3 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_3 = valid_3 & _request_3_T_2 & ~(oldest_3 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_3 = valid_3 & ~(oldest_3 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_4_T_2 = oldest_4 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_4 = valid_4 & _request_4_T_2 & ~(oldest_4 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_4 = valid_4 & ~(oldest_4 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_5_T_2 = oldest_5 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_5 = valid_5 & _request_5_T_2 & ~(oldest_5 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_5 = valid_5 & ~(oldest_5 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_6_T_2 = oldest_6 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_6 = valid_6 & _request_6_T_2 & ~(oldest_6 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_6 = valid_6 & ~(oldest_6 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_7_T_2 = oldest_7 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_7 = valid_7 & _request_7_T_2 & ~(oldest_7 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_7 = valid_7 & ~(oldest_7 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_8_T_2 = oldest_8 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_8 = valid_8 & _request_8_T_2 & ~(oldest_8 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_8 = valid_8 & ~(oldest_8 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_9_T_2 = oldest_9 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_9 = valid_9 & _request_9_T_2 & ~(oldest_9 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_9 = valid_9 & ~(oldest_9 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_10_T_2 = oldest_10 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_10 = valid_10 & _request_10_T_2 & ~(oldest_10 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_10 = valid_10 & ~(oldest_10 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_11_T_2 = oldest_11 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_11 = valid_11 & _request_11_T_2 & ~(oldest_11 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_11 = valid_11 & ~(oldest_11 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_12_T_2 = oldest_12 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_12 = valid_12 & _request_12_T_2 & ~(oldest_12 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_12 = valid_12 & ~(oldest_12 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_13_T_2 = oldest_13 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_13 = valid_13 & _request_13_T_2 & ~(oldest_13 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_13 = valid_13 & ~(oldest_13 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_14_T_2 = oldest_14 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_14 = valid_14 & _request_14_T_2 & ~(oldest_14 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_14 = valid_14 & ~(oldest_14 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _validAfterKillGrant_15_T_2 = oldest_15 & issueFire; // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:68]
-  wire  validAfterKillGrant_15 = valid_15 & _request_15_T_2 & ~(oldest_15 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
+  wire  validAfterKillGrant_15 = valid_15 & ~(oldest_15 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _T_1234 = enqFire & enqIdx == 4'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:24]
   wire  _GEN_0 = enqFire & enqIdx == 4'h0 | valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
   wire  _T_1248 = enqFire & enqIdx == 4'h1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
@@ -3505,8 +3602,6 @@ module IssueQueue(
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_0) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3514,8 +3609,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3523,8 +3616,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3532,8 +3623,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3541,8 +3630,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3550,8 +3637,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3559,8 +3644,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3568,8 +3651,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3577,8 +3658,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3586,8 +3665,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3595,8 +3672,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_10) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3604,8 +3679,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_11) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3613,8 +3686,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_12) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3622,8 +3693,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_13) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3631,8 +3700,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_14) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -3640,8 +3707,6 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
-    end else if (killed_15) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 159:27]
-      valid_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 160:16]
     end else if (_validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
@@ -5905,231 +5970,295 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_0 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_0 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_0 <= p1Eff_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_1 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1248) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_1 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_1 <= p1Eff_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1257) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_2 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_2 <= p1Eff_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_3 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1266) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_3 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_3 <= p1Eff_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_4 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1275) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_4 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_4 <= p1Eff_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_5 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1284) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_5 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_5 <= p1Eff_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_6 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1293) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_6 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_6 <= p1Eff_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_7 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1302) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_7 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_7 <= p1Eff_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_8 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1311) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_8 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_8 <= p1Eff_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_9 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1320) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_9 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_9 <= p1Eff_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_10 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1329) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_10 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_10 <= p1Eff_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_11 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1338) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_11 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_11 <= p1Eff_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_12 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1347) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_12 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_12 <= p1Eff_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_13 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1356) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_13 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_13 <= p1Eff_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_14 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1365) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_14 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_14 <= p1Eff_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
-    end else if (killed_15 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
     end else if (_T_1374) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p1Ready_15 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
+    end else begin
+      p1Ready_15 <= p1Eff_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_0 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_0 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_0 <= p2Eff_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_1 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1248) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_1 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_1 <= p2Eff_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1257) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_2 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_2 <= p2Eff_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_3 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1266) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_3 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_3 <= p2Eff_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_4 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1275) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_4 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_4 <= p2Eff_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_5 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1284) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_5 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_5 <= p2Eff_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_6 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1293) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_6 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_6 <= p2Eff_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_7 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1302) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_7 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_7 <= p2Eff_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_8 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1311) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_8 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_8 <= p2Eff_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_9 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1320) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_9 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_9 <= p2Eff_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_10 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1329) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_10 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_10 <= p2Eff_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_11 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1338) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_11 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_11 <= p2Eff_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_12 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1347) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_12 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_12 <= p2Eff_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_13 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1356) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_13 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_13 <= p2Eff_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_14 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1365) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_14 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_14 <= p2Eff_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
-    end else if (killed_15 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
+    end else if (_validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p2Ready_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 170:18]
     end else if (_T_1374) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
       p2Ready_15 <= ~io_enq_bits_prs2Busy | ~io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 173:18]
+    end else begin
+      p2Ready_15 <= p2Eff_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 176:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_1 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_1 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6138,7 +6267,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_2 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_2 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6147,7 +6276,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_3 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_3 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6156,7 +6285,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_4 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_4 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6165,7 +6294,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_5 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_5 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6174,7 +6303,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_6 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_6 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6183,7 +6312,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_7 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_7 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6192,7 +6321,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_8 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_8 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6201,7 +6330,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_9 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_9 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6210,7 +6339,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_10 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_10 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6219,7 +6348,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_11 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_11 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6228,7 +6357,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_12 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_12 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6237,7 +6366,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_13 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_13 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6246,7 +6375,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_14 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_14 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6255,7 +6384,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_0_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_0 | killed_15 | _validAfterKillGrant_0_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_0_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_0_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_0_15 <= validAfterKillGrant_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6264,7 +6393,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_0 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_0 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6273,7 +6402,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_2 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_2 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6282,7 +6411,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_3 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_3 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6291,7 +6420,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_4 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_4 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6300,7 +6429,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_5 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_5 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6309,7 +6438,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_6 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_6 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6318,7 +6447,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_7 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_7 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6327,7 +6456,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_8 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_8 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6336,7 +6465,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_9 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_9 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6345,7 +6474,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_10 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_10 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6354,7 +6483,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_11 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_11 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6363,7 +6492,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_12 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_12 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6372,7 +6501,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_13 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_13 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6381,7 +6510,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_14 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_14 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6390,7 +6519,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_1_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_1 | killed_15 | _validAfterKillGrant_1_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_1_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_1_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_1_15 <= validAfterKillGrant_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6399,7 +6528,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_0 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_0 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6408,7 +6537,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_1 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_1 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6417,7 +6546,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_3 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_3 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6426,7 +6555,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_4 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_4 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6435,7 +6564,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_5 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_5 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6444,7 +6573,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_6 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_6 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6453,7 +6582,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_7 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_7 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6462,7 +6591,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_8 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_8 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6471,7 +6600,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_9 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_9 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6480,7 +6609,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_10 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_10 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6489,7 +6618,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_11 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_11 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6498,7 +6627,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_12 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_12 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6507,7 +6636,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_13 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_13 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6516,7 +6645,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_14 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_14 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6525,7 +6654,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_2_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_2 | killed_15 | _validAfterKillGrant_2_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_2_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_2_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_2_15 <= validAfterKillGrant_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6534,7 +6663,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_0 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_0 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6543,7 +6672,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_1 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_1 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6552,7 +6681,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_2 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_2 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6561,7 +6690,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_4 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_4 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6570,7 +6699,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_5 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_5 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6579,7 +6708,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_6 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_6 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6588,7 +6717,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_7 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_7 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6597,7 +6726,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_8 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_8 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6606,7 +6735,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_9 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_9 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6615,7 +6744,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_10 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_10 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6624,7 +6753,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_11 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_11 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6633,7 +6762,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_12 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_12 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6642,7 +6771,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_13 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_13 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6651,7 +6780,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_14 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_14 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6660,7 +6789,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_3_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_3 | killed_15 | _validAfterKillGrant_3_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_3_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_3_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_3_15 <= validAfterKillGrant_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6669,7 +6798,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_0 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_0 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6678,7 +6807,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_1 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_1 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6687,7 +6816,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_2 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_2 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6696,7 +6825,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_3 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_3 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6705,7 +6834,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_5 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_5 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6714,7 +6843,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_6 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_6 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6723,7 +6852,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_7 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_7 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6732,7 +6861,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_8 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_8 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6741,7 +6870,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_9 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_9 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6750,7 +6879,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_10 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_10 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6759,7 +6888,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_11 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_11 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6768,7 +6897,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_12 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_12 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6777,7 +6906,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_13 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_13 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6786,7 +6915,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_14 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_14 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6795,7 +6924,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_4_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_4 | killed_15 | _validAfterKillGrant_4_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_4_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_4_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_4_15 <= validAfterKillGrant_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6804,7 +6933,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_0 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_0 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6813,7 +6942,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_1 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_1 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6822,7 +6951,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_2 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_2 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6831,7 +6960,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_3 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_3 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6840,7 +6969,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_4 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_4 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6849,7 +6978,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_6 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_6 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6858,7 +6987,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_7 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_7 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6867,7 +6996,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_8 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_8 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6876,7 +7005,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_9 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_9 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6885,7 +7014,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_10 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_10 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6894,7 +7023,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_11 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_11 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6903,7 +7032,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_12 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_12 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6912,7 +7041,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_13 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_13 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6921,7 +7050,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_14 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_14 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6930,7 +7059,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_5_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_5 | killed_15 | _validAfterKillGrant_5_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_5_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_5_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_5_15 <= validAfterKillGrant_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6939,7 +7068,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_0 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_0 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6948,7 +7077,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_1 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_1 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6957,7 +7086,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_2 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_2 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6966,7 +7095,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_3 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_3 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6975,7 +7104,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_4 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_4 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6984,7 +7113,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_5 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_5 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -6993,7 +7122,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_7 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_7 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7002,7 +7131,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_8 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_8 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7011,7 +7140,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_9 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_9 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7020,7 +7149,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_10 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_10 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7029,7 +7158,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_11 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_11 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7038,7 +7167,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_12 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_12 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7047,7 +7176,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_13 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_13 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7056,7 +7185,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_14 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_14 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7065,7 +7194,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_6_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_6 | killed_15 | _validAfterKillGrant_6_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_6_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_6_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_6_15 <= validAfterKillGrant_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7074,7 +7203,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_0 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_0 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7083,7 +7212,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_1 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_1 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7092,7 +7221,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_2 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_2 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7101,7 +7230,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_3 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_3 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7110,7 +7239,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_4 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_4 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7119,7 +7248,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_5 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_5 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7128,7 +7257,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_6 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_6 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7137,7 +7266,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_8 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_8 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7146,7 +7275,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_9 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_9 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7155,7 +7284,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_10 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_10 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7164,7 +7293,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_11 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_11 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7173,7 +7302,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_12 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_12 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7182,7 +7311,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_13 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_13 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7191,7 +7320,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_14 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_14 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7200,7 +7329,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_7_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_7 | killed_15 | _validAfterKillGrant_7_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_7_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_7_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_7_15 <= validAfterKillGrant_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7209,7 +7338,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_0 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_0 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7218,7 +7347,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_1 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_1 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7227,7 +7356,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_2 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_2 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7236,7 +7365,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_3 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_3 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7245,7 +7374,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_4 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_4 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7254,7 +7383,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_5 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_5 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7263,7 +7392,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_6 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_6 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7272,7 +7401,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_7 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_7 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7281,7 +7410,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_9 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_9 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7290,7 +7419,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_10 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_10 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7299,7 +7428,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_11 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_11 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7308,7 +7437,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_12 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_12 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7317,7 +7446,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_13 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_13 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7326,7 +7455,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_14 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_14 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7335,7 +7464,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_8_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_8 | killed_15 | _validAfterKillGrant_8_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_8_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_8_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_8_15 <= validAfterKillGrant_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7344,7 +7473,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_0 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_0 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7353,7 +7482,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_1 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_1 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7362,7 +7491,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_2 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_2 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7371,7 +7500,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_3 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_3 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7380,7 +7509,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_4 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_4 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7389,7 +7518,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_5 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_5 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7398,7 +7527,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_6 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_6 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7407,7 +7536,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_7 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_7 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7416,7 +7545,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_8 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_8 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7425,7 +7554,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_10 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_10 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7434,7 +7563,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_11 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_11 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7443,7 +7572,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_12 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_12 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7452,7 +7581,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_13 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_13 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7461,7 +7590,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_14 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_14 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7470,7 +7599,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_9_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_9 | killed_15 | _validAfterKillGrant_9_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_9_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_9_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_9_15 <= validAfterKillGrant_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7479,7 +7608,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_0 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_0 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7488,7 +7617,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_1 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_1 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7497,7 +7626,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_2 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_2 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7506,7 +7635,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_3 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_3 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7515,7 +7644,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_4 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_4 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7524,7 +7653,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_5 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_5 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7533,7 +7662,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_6 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_6 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7542,7 +7671,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_7 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_7 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7551,7 +7680,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_8 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_8 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7560,7 +7689,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_9 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_9 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7569,7 +7698,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_11 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_11 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7578,7 +7707,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_12 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_12 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7587,7 +7716,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_13 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_13 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7596,7 +7725,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_14 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_14 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7605,7 +7734,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_10_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_10 | killed_15 | _validAfterKillGrant_10_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_10_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_10_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_10_15 <= validAfterKillGrant_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7614,7 +7743,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_0 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_0 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7623,7 +7752,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_1 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_1 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7632,7 +7761,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_2 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_2 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7641,7 +7770,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_3 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_3 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7650,7 +7779,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_4 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_4 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7659,7 +7788,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_5 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_5 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7668,7 +7797,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_6 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_6 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7677,7 +7806,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_7 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_7 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7686,7 +7815,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_8 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_8 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7695,7 +7824,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_9 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_9 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7704,7 +7833,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_10 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_10 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7713,7 +7842,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_12 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_12 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7722,7 +7851,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_13 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_13 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7731,7 +7860,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_14 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_14 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7740,7 +7869,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_11_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_11 | killed_15 | _validAfterKillGrant_11_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_11_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_11_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_11_15 <= validAfterKillGrant_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7749,7 +7878,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_0 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_0 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7758,7 +7887,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_1 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_1 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7767,7 +7896,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_2 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_2 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7776,7 +7905,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_3 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_3 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7785,7 +7914,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_4 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_4 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7794,7 +7923,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_5 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_5 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7803,7 +7932,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_6 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_6 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7812,7 +7941,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_7 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_7 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7821,7 +7950,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_8 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_8 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7830,7 +7959,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_9 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_9 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7839,7 +7968,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_10 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_10 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7848,7 +7977,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_11 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_11 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7857,7 +7986,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_13 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_13 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7866,7 +7995,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_14 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_14 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7875,7 +8004,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_12_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_12 | killed_15 | _validAfterKillGrant_12_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_12_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_12_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_12_15 <= validAfterKillGrant_12; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7884,7 +8013,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_0 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_0 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7893,7 +8022,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_1 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_1 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7902,7 +8031,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_2 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_2 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7911,7 +8040,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_3 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_3 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7920,7 +8049,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_4 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_4 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7929,7 +8058,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_5 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_5 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7938,7 +8067,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_6 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_6 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7947,7 +8076,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_7 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_7 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7956,7 +8085,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_8 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_8 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7965,7 +8094,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_9 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_9 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7974,7 +8103,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_10 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_10 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7983,7 +8112,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_11 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_11 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -7992,7 +8121,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_12 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_12 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8001,7 +8130,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_14 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_14 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8010,7 +8139,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_13_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_13 | killed_15 | _validAfterKillGrant_13_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_13_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_13_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_13_15 <= validAfterKillGrant_13; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8019,7 +8148,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_0 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_0 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8028,7 +8157,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_1 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_1 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8037,7 +8166,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_2 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_2 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8046,7 +8175,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_3 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_3 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8055,7 +8184,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_4 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_4 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8064,7 +8193,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_5 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_5 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8073,7 +8202,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_6 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_6 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8082,7 +8211,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_7 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_7 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8091,7 +8220,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_8 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_8 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8100,7 +8229,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_9 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_9 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8109,7 +8238,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_10 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_10 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8118,7 +8247,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_11 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_11 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8127,7 +8256,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_12 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_12 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8136,7 +8265,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_13 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_13 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8145,7 +8274,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_14_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_14 | killed_15 | _validAfterKillGrant_14_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_14_T_2 | _validAfterKillGrant_15_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_14_15 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hf) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_14_15 <= validAfterKillGrant_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8154,7 +8283,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_0 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (_T_1234) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_0 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8163,7 +8292,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_1 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h1) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_1 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8172,7 +8301,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_2 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_2 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8181,7 +8310,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_3 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h3) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_3 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8190,7 +8319,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_4 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h4) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_4 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8199,7 +8328,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_5 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h5) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_5 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8208,7 +8337,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_6 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h6) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_6 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8217,7 +8346,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_7 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h7) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_7 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8226,7 +8355,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_8 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h8) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_8 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8235,7 +8364,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_9 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'h9) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_9 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8244,7 +8373,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_10 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'ha) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_10 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8253,7 +8382,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_11 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hb) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_11 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8262,7 +8391,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_12 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_12_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_12 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hc) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_12 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8271,7 +8400,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_13 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_13_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_13 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'hd) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_13 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
@@ -8280,7 +8409,7 @@ module IssueQueue(
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
       age_15_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 51:20]
-    end else if (killed_15 | killed_14 | _validAfterKillGrant_15_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
+    end else if (_validAfterKillGrant_15_T_2 | _validAfterKillGrant_14_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 189:96]
       age_15_14 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 190:19]
     end else if (enqFire & enqIdx == 4'he) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:45]
       age_15_14 <= validAfterKillGrant_15; // @[src/main/scala/backend/scheduler/IssueQueue.scala 193:19]
