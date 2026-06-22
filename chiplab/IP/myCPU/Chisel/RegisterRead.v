@@ -42,14 +42,19 @@ module RegisterRead(
   input         io_iqIssues_0_bits_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_0_bits_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_0_bits_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [5:0]  io_iqIssues_0_bits_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_0_bits_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_0_bits_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_0_bits_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [5:0]  io_iqIssues_0_bits_robIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_0_bits_robIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [5:0]  io_iqIssues_0_bits_robIdxFull_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_0_bits_robIdxFull_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [3:0]  io_iqIssues_0_bits_lqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_0_bits_lqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [3:0]  io_iqIssues_0_bits_sqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_0_bits_sqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [2:0]  io_iqIssues_0_bits_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_0_bits_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_0_bits_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_0_bits_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_0_bits_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_iqIssues_1_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_1_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [31:0] io_iqIssues_1_bits_pc, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -91,8 +96,10 @@ module RegisterRead(
   input         io_iqIssues_1_bits_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_1_bits_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_1_bits_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [5:0]  io_iqIssues_1_bits_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_1_bits_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [5:0]  io_iqIssues_1_bits_robIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_1_bits_robIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [5:0]  io_iqIssues_1_bits_robIdxFull_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_1_bits_robIdxFull_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [2:0]  io_iqIssues_1_bits_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_1_bits_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_1_bits_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -137,14 +144,19 @@ module RegisterRead(
   input         io_iqIssues_2_bits_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_2_bits_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_2_bits_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [5:0]  io_iqIssues_2_bits_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [6:0]  io_iqIssues_2_bits_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_2_bits_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  input  [3:0]  io_iqIssues_2_bits_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [5:0]  io_iqIssues_2_bits_robIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_2_bits_robIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [5:0]  io_iqIssues_2_bits_robIdxFull_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_2_bits_robIdxFull_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [3:0]  io_iqIssues_2_bits_lqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_2_bits_lqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input  [3:0]  io_iqIssues_2_bits_sqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_2_bits_sqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input  [2:0]  io_iqIssues_2_bits_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_2_bits_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_2_bits_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_2_bits_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  input         io_iqIssues_2_bits_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_iqIssues_3_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_iqIssues_3_valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_iqIssues_4_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -202,14 +214,19 @@ module RegisterRead(
   output        io_exeReqs_0_bits_uop_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [5:0]  io_exeReqs_0_bits_uop_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_0_bits_uop_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_0_bits_uop_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_0_bits_uop_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [5:0]  io_exeReqs_0_bits_uop_robIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_0_bits_uop_robIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [5:0]  io_exeReqs_0_bits_uop_robIdxFull_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_0_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [3:0]  io_exeReqs_0_bits_uop_lqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_0_bits_uop_lqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [3:0]  io_exeReqs_0_bits_uop_sqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_0_bits_uop_sqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [2:0]  io_exeReqs_0_bits_uop_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_0_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_0_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_0_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_0_bits_rs2Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   input         io_exeReqs_1_ready, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -253,8 +270,10 @@ module RegisterRead(
   output        io_exeReqs_1_bits_uop_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_1_bits_uop_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_1_bits_uop_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [5:0]  io_exeReqs_1_bits_uop_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_1_bits_uop_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [5:0]  io_exeReqs_1_bits_uop_robIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_1_bits_uop_robIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [5:0]  io_exeReqs_1_bits_uop_robIdxFull_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_1_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [2:0]  io_exeReqs_1_bits_uop_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_1_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_1_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
@@ -301,14 +320,19 @@ module RegisterRead(
   output        io_exeReqs_2_bits_uop_rs1Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_rs2Valid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_rdValid, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [5:0]  io_exeReqs_2_bits_uop_robIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [6:0]  io_exeReqs_2_bits_uop_robIdxFull, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_2_bits_uop_lqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
-  output [3:0]  io_exeReqs_2_bits_uop_sqIdx, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [5:0]  io_exeReqs_2_bits_uop_robIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_2_bits_uop_robIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [5:0]  io_exeReqs_2_bits_uop_robIdxFull_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_2_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [3:0]  io_exeReqs_2_bits_uop_lqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_2_bits_uop_lqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output [3:0]  io_exeReqs_2_bits_uop_sqIdx_value, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_2_bits_uop_sqIdx_flag, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [2:0]  io_exeReqs_2_bits_uop_issueQueue, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_prs1Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_prs2Busy, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output        io_exeReqs_2_bits_uop_isSta, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
+  output        io_exeReqs_2_bits_uop_isStd, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_2_bits_rs1Data, // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
   output [31:0] io_exeReqs_2_bits_rs2Data // @[src/main/scala/backend/regfile/RegisterRead.scala 46:14]
 );
@@ -605,6 +629,30 @@ module RegisterRead(
   reg [31:0] _RAND_289;
   reg [31:0] _RAND_290;
   reg [31:0] _RAND_291;
+  reg [31:0] _RAND_292;
+  reg [31:0] _RAND_293;
+  reg [31:0] _RAND_294;
+  reg [31:0] _RAND_295;
+  reg [31:0] _RAND_296;
+  reg [31:0] _RAND_297;
+  reg [31:0] _RAND_298;
+  reg [31:0] _RAND_299;
+  reg [31:0] _RAND_300;
+  reg [31:0] _RAND_301;
+  reg [31:0] _RAND_302;
+  reg [31:0] _RAND_303;
+  reg [31:0] _RAND_304;
+  reg [31:0] _RAND_305;
+  reg [31:0] _RAND_306;
+  reg [31:0] _RAND_307;
+  reg [31:0] _RAND_308;
+  reg [31:0] _RAND_309;
+  reg [31:0] _RAND_310;
+  reg [31:0] _RAND_311;
+  reg [31:0] _RAND_312;
+  reg [31:0] _RAND_313;
+  reg [31:0] _RAND_314;
+  reg [31:0] _RAND_315;
 `endif // RANDOMIZE_REG_INIT
   reg  rrd_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
   reg [31:0] rrd_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
@@ -646,14 +694,19 @@ module RegisterRead(
   reg  rrd_uop_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [5:0] rrd_uop_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [5:0] rrd_uop_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [5:0] rrd_uop_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [3:0] rrd_uop_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [3:0] rrd_uop_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg [2:0] rrd_uop_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  out_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
   reg [31:0] out_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_uop_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
@@ -694,14 +747,19 @@ module RegisterRead(
   reg  out_uop_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [5:0] out_uop_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [5:0] out_uop_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [5:0] out_uop_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [3:0] out_uop_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [3:0] out_uop_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [2:0] out_uop_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_rs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 94:24]
   reg [31:0] out_rs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
   wire  out_fire = out_valid & io_exeReqs_0_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
@@ -712,8 +770,8 @@ module RegisterRead(
   wire [6:0] _io_rfReadAddrs_1_T = rrd_valid ? rrd_uop_prs2 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 125:42]
   wire  _GEN_0 = rrd_to_out ? 1'h0 : rrd_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
   wire  _GEN_1 = iq_fire | _GEN_0; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_99 = out_fire ? 1'h0 : out_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
-  wire  _GEN_100 = rrd_to_out | _GEN_99; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_107 = out_fire ? 1'h0 : out_valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
+  wire  _GEN_108 = rrd_to_out | _GEN_107; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   reg  rrd_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
   reg [31:0] rrd_uop_1_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg [31:0] rrd_uop_1_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
@@ -754,8 +812,10 @@ module RegisterRead(
   reg  rrd_uop_1_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_1_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [5:0] rrd_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [5:0] rrd_uop_1_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_1_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [5:0] rrd_uop_1_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_1_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg [2:0] rrd_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_1_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
@@ -799,8 +859,10 @@ module RegisterRead(
   reg  out_uop_1_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_1_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [5:0] out_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [5:0] out_uop_1_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_1_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [5:0] out_uop_1_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_1_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [2:0] out_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_1_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
@@ -812,10 +874,10 @@ module RegisterRead(
   wire  iq_fire_1 = io_iqIssues_1_valid & rrd_ready_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
   wire [6:0] _io_rfReadAddrs_2_T = rrd_valid_1 ? rrd_uop_1_prs1 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 123:42]
   wire [6:0] _io_rfReadAddrs_3_T = rrd_valid_1 ? rrd_uop_1_prs2 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 125:42]
-  wire  _GEN_302 = rrd_to_out_1 ? 1'h0 : rrd_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
-  wire  _GEN_303 = iq_fire_1 | _GEN_302; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_401 = out_fire_1 ? 1'h0 : out_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
-  wire  _GEN_402 = rrd_to_out_1 | _GEN_401; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_326 = rrd_to_out_1 ? 1'h0 : rrd_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
+  wire  _GEN_327 = iq_fire_1 | _GEN_326; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
+  wire  _GEN_433 = out_fire_1 ? 1'h0 : out_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
+  wire  _GEN_434 = rrd_to_out_1 | _GEN_433; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   reg  rrd_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
   reg [31:0] rrd_uop_2_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg [31:0] rrd_uop_2_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
@@ -856,14 +918,19 @@ module RegisterRead(
   reg  rrd_uop_2_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_2_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_2_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [5:0] rrd_uop_2_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [6:0] rrd_uop_2_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_2_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
-  reg [3:0] rrd_uop_2_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [5:0] rrd_uop_2_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_2_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [5:0] rrd_uop_2_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_2_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [3:0] rrd_uop_2_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_2_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg [3:0] rrd_uop_2_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_2_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg [2:0] rrd_uop_2_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_2_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_2_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  rrd_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
+  reg  rrd_uop_2_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 87:24]
   reg  out_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
   reg [31:0] out_uop_2_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_uop_2_inst; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
@@ -904,14 +971,19 @@ module RegisterRead(
   reg  out_uop_2_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_2_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_2_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [5:0] out_uop_2_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [6:0] out_uop_2_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_2_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
-  reg [3:0] out_uop_2_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [5:0] out_uop_2_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_2_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [5:0] out_uop_2_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_2_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [3:0] out_uop_2_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_2_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg [3:0] out_uop_2_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_2_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [2:0] out_uop_2_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_2_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_2_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg  out_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
+  reg  out_uop_2_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 93:24]
   reg [31:0] out_rs1_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 94:24]
   reg [31:0] out_rs2_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 95:24]
   wire  out_fire_2 = out_valid_2 & io_exeReqs_2_ready; // @[src/main/scala/backend/regfile/RegisterRead.scala 108:47]
@@ -920,26 +992,26 @@ module RegisterRead(
   wire  iq_fire_2 = io_iqIssues_2_valid & rrd_ready_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
   wire [6:0] _io_rfReadAddrs_4_T = rrd_valid_2 ? rrd_uop_2_prs1 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 123:42]
   wire [6:0] _io_rfReadAddrs_5_T = rrd_valid_2 ? rrd_uop_2_prs2 : 7'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 125:42]
-  wire  _GEN_604 = rrd_to_out_2 ? 1'h0 : rrd_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
-  wire  _GEN_605 = iq_fire_2 | _GEN_604; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_703 = out_fire_2 ? 1'h0 : out_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
-  wire  _GEN_704 = rrd_to_out_2 | _GEN_703; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_652 = rrd_to_out_2 ? 1'h0 : rrd_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
+  wire  _GEN_653 = iq_fire_2 | _GEN_652; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
+  wire  _GEN_759 = out_fire_2 ? 1'h0 : out_valid_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 178:28 179:19 92:28]
+  wire  _GEN_760 = rrd_to_out_2 | _GEN_759; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   reg  rrd_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
   reg  out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
   wire  rrd_to_out_3 = rrd_valid_3 & ~out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready_3 = ~rrd_valid_3 | rrd_to_out_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire_3 = io_iqIssues_3_valid & rrd_ready_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
-  wire  _GEN_906 = rrd_to_out_3 ? 1'h0 : rrd_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
-  wire  _GEN_907 = iq_fire_3 | _GEN_906; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_1006 = rrd_to_out_3 | out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_978 = rrd_to_out_3 ? 1'h0 : rrd_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
+  wire  _GEN_979 = iq_fire_3 | _GEN_978; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
+  wire  _GEN_1086 = rrd_to_out_3 | out_valid_3; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   reg  rrd_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
   reg  out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
   wire  rrd_to_out_4 = rrd_valid_4 & ~out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 109:47]
   wire  rrd_ready_4 = ~rrd_valid_4 | rrd_to_out_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   wire  iq_fire_4 = io_iqIssues_4_valid & rrd_ready_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 111:44]
-  wire  _GEN_1208 = rrd_to_out_4 ? 1'h0 : rrd_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
-  wire  _GEN_1209 = iq_fire_4 | _GEN_1208; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
-  wire  _GEN_1308 = rrd_to_out_4 | out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
+  wire  _GEN_1304 = rrd_to_out_4 ? 1'h0 : rrd_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 166:30 167:19 86:28]
+  wire  _GEN_1305 = iq_fire_4 | _GEN_1304; // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27 164:19]
+  wire  _GEN_1412 = rrd_to_out_4 | out_valid_4; // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30 174:19]
   assign io_iqIssues_0_ready = ~rrd_valid | rrd_to_out; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   assign io_iqIssues_1_ready = ~rrd_valid_1 | rrd_to_out_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
   assign io_iqIssues_2_ready = ~rrd_valid_2 | rrd_to_out_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 110:33]
@@ -991,14 +1063,19 @@ module RegisterRead(
   assign io_exeReqs_0_bits_uop_rs1Valid = out_uop_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_rs2Valid = out_uop_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_rdValid = out_uop_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_0_bits_uop_robIdx = out_uop_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_0_bits_uop_robIdxFull = out_uop_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_0_bits_uop_lqIdx = out_uop_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_0_bits_uop_sqIdx = out_uop_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_robIdx_value = out_uop_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_robIdx_flag = out_uop_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_robIdxFull_value = out_uop_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_robIdxFull_flag = out_uop_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_lqIdx_value = out_uop_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_lqIdx_flag = out_uop_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_sqIdx_value = out_uop_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_sqIdx_flag = out_uop_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_issueQueue = out_uop_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_prs1Busy = out_uop_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_prs2Busy = out_uop_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_uop_isSta = out_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_0_bits_uop_isStd = out_uop_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_0_bits_rs1Data = out_rs1; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
   assign io_exeReqs_0_bits_rs2Data = out_rs2; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
   assign io_exeReqs_1_valid = out_valid_1; // @[src/main/scala/backend/regfile/RegisterRead.scala 186:47]
@@ -1041,8 +1118,10 @@ module RegisterRead(
   assign io_exeReqs_1_bits_uop_rs1Valid = out_uop_1_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_rs2Valid = out_uop_1_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_rdValid = out_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_1_bits_uop_robIdx = out_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_1_bits_uop_robIdxFull = out_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_1_bits_uop_robIdx_value = out_uop_1_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_1_bits_uop_robIdx_flag = out_uop_1_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_1_bits_uop_robIdxFull_value = out_uop_1_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_1_bits_uop_robIdxFull_flag = out_uop_1_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_issueQueue = out_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_prs1Busy = out_uop_1_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_1_bits_uop_prs2Busy = out_uop_1_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
@@ -1088,14 +1167,19 @@ module RegisterRead(
   assign io_exeReqs_2_bits_uop_rs1Valid = out_uop_2_rs1Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_rs2Valid = out_uop_2_rs2Valid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_rdValid = out_uop_2_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_2_bits_uop_robIdx = out_uop_2_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_2_bits_uop_robIdxFull = out_uop_2_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_2_bits_uop_lqIdx = out_uop_2_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
-  assign io_exeReqs_2_bits_uop_sqIdx = out_uop_2_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_robIdx_value = out_uop_2_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_robIdx_flag = out_uop_2_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_robIdxFull_value = out_uop_2_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_robIdxFull_flag = out_uop_2_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_lqIdx_value = out_uop_2_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_lqIdx_flag = out_uop_2_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_sqIdx_value = out_uop_2_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_sqIdx_flag = out_uop_2_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_issueQueue = out_uop_2_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_prs1Busy = out_uop_2_prs1Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_prs2Busy = out_uop_2_prs2Busy; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_uop_isSta = out_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
+  assign io_exeReqs_2_bits_uop_isStd = out_uop_2_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 187:34]
   assign io_exeReqs_2_bits_rs1Data = out_rs1_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 188:34]
   assign io_exeReqs_2_bits_rs2Data = out_rs2_2; // @[src/main/scala/backend/regfile/RegisterRead.scala 189:34]
   always @(posedge clock) begin
@@ -1222,16 +1306,28 @@ module RegisterRead(
       rrd_uop_rdValid <= io_iqIssues_0_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_robIdx <= io_iqIssues_0_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_robIdx_value <= io_iqIssues_0_bits_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_robIdxFull <= io_iqIssues_0_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_robIdx_flag <= io_iqIssues_0_bits_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_lqIdx <= io_iqIssues_0_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_robIdxFull_value <= io_iqIssues_0_bits_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_sqIdx <= io_iqIssues_0_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_robIdxFull_flag <= io_iqIssues_0_bits_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_lqIdx_value <= io_iqIssues_0_bits_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_lqIdx_flag <= io_iqIssues_0_bits_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_sqIdx_value <= io_iqIssues_0_bits_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_sqIdx_flag <= io_iqIssues_0_bits_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_issueQueue <= io_iqIssues_0_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
@@ -1245,10 +1341,13 @@ module RegisterRead(
     if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_isSta <= io_iqIssues_0_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
+    if (iq_fire) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_isStd <= io_iqIssues_0_bits_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
     end else begin
-      out_valid <= _GEN_100;
+      out_valid <= _GEN_108;
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_pc <= rrd_uop_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
@@ -1368,16 +1467,28 @@ module RegisterRead(
       out_uop_rdValid <= rrd_uop_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_robIdx <= rrd_uop_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_robIdx_value <= rrd_uop_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_robIdxFull <= rrd_uop_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_robIdx_flag <= rrd_uop_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_lqIdx <= rrd_uop_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_robIdxFull_value <= rrd_uop_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_sqIdx <= rrd_uop_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_robIdxFull_flag <= rrd_uop_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_lqIdx_value <= rrd_uop_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_lqIdx_flag <= rrd_uop_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_sqIdx_value <= rrd_uop_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_sqIdx_flag <= rrd_uop_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_issueQueue <= rrd_uop_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
@@ -1390,6 +1501,9 @@ module RegisterRead(
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_isSta <= rrd_uop_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_isStd <= rrd_uop_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       if (~rrd_uop_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
@@ -1412,7 +1526,7 @@ module RegisterRead(
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_1 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
     end else begin
-      rrd_valid_1 <= _GEN_303;
+      rrd_valid_1 <= _GEN_327;
     end
     if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_1_pc <= io_iqIssues_1_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
@@ -1532,10 +1646,16 @@ module RegisterRead(
       rrd_uop_1_rdValid <= io_iqIssues_1_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_1_robIdx <= io_iqIssues_1_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_1_robIdx_value <= io_iqIssues_1_bits_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_1_robIdxFull <= io_iqIssues_1_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_1_robIdx_flag <= io_iqIssues_1_bits_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_robIdxFull_value <= io_iqIssues_1_bits_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_1_robIdxFull_flag <= io_iqIssues_1_bits_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_1_issueQueue <= io_iqIssues_1_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
@@ -1549,7 +1669,7 @@ module RegisterRead(
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_1 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
     end else begin
-      out_valid_1 <= _GEN_402;
+      out_valid_1 <= _GEN_434;
     end
     if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_1_pc <= rrd_uop_1_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
@@ -1669,10 +1789,16 @@ module RegisterRead(
       out_uop_1_rdValid <= rrd_uop_1_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_1_robIdx <= rrd_uop_1_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_1_robIdx_value <= rrd_uop_1_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_1_robIdxFull <= rrd_uop_1_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_1_robIdx_flag <= rrd_uop_1_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_robIdxFull_value <= rrd_uop_1_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_1_robIdxFull_flag <= rrd_uop_1_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_1) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_1_issueQueue <= rrd_uop_1_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
@@ -1704,7 +1830,7 @@ module RegisterRead(
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_2 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
     end else begin
-      rrd_valid_2 <= _GEN_605;
+      rrd_valid_2 <= _GEN_653;
     end
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_2_pc <= io_iqIssues_2_bits_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
@@ -1824,16 +1950,28 @@ module RegisterRead(
       rrd_uop_2_rdValid <= io_iqIssues_2_bits_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_2_robIdx <= io_iqIssues_2_bits_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_2_robIdx_value <= io_iqIssues_2_bits_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_2_robIdxFull <= io_iqIssues_2_bits_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_2_robIdx_flag <= io_iqIssues_2_bits_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_2_lqIdx <= io_iqIssues_2_bits_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_2_robIdxFull_value <= io_iqIssues_2_bits_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
-      rrd_uop_2_sqIdx <= io_iqIssues_2_bits_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+      rrd_uop_2_robIdxFull_flag <= io_iqIssues_2_bits_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_lqIdx_value <= io_iqIssues_2_bits_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_lqIdx_flag <= io_iqIssues_2_bits_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_sqIdx_value <= io_iqIssues_2_bits_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_sqIdx_flag <= io_iqIssues_2_bits_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_2_issueQueue <= io_iqIssues_2_bits_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
@@ -1847,10 +1985,13 @@ module RegisterRead(
     if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
       rrd_uop_2_isSta <= io_iqIssues_2_bits_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
     end
+    if (iq_fire_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 163:27]
+      rrd_uop_2_isStd <= io_iqIssues_2_bits_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 165:19]
+    end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_2 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
     end else begin
-      out_valid_2 <= _GEN_704;
+      out_valid_2 <= _GEN_760;
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_2_pc <= rrd_uop_2_pc; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
@@ -1970,16 +2111,28 @@ module RegisterRead(
       out_uop_2_rdValid <= rrd_uop_2_rdValid; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_2_robIdx <= rrd_uop_2_robIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_2_robIdx_value <= rrd_uop_2_robIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_2_robIdxFull <= rrd_uop_2_robIdxFull; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_2_robIdx_flag <= rrd_uop_2_robIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_2_lqIdx <= rrd_uop_2_lqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_2_robIdxFull_value <= rrd_uop_2_robIdxFull_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
-      out_uop_2_sqIdx <= rrd_uop_2_sqIdx; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+      out_uop_2_robIdxFull_flag <= rrd_uop_2_robIdxFull_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_lqIdx_value <= rrd_uop_2_lqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_lqIdx_flag <= rrd_uop_2_lqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_sqIdx_value <= rrd_uop_2_sqIdx_value; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_sqIdx_flag <= rrd_uop_2_sqIdx_flag; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_2_issueQueue <= rrd_uop_2_issueQueue; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
@@ -1992,6 +2145,9 @@ module RegisterRead(
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       out_uop_2_isSta <= rrd_uop_2_isSta; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
+    end
+    if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
+      out_uop_2_isStd <= rrd_uop_2_isStd; // @[src/main/scala/backend/regfile/RegisterRead.scala 175:19]
     end
     if (rrd_to_out_2) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 173:30]
       if (~rrd_uop_2_rs1Valid) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 141:22]
@@ -2014,22 +2170,22 @@ module RegisterRead(
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_3 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
     end else begin
-      rrd_valid_3 <= _GEN_907;
+      rrd_valid_3 <= _GEN_979;
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_3 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
     end else begin
-      out_valid_3 <= _GEN_1006;
+      out_valid_3 <= _GEN_1086;
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
       rrd_valid_4 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 86:28]
     end else begin
-      rrd_valid_4 <= _GEN_1209;
+      rrd_valid_4 <= _GEN_1305;
     end
     if (reset) begin // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
       out_valid_4 <= 1'h0; // @[src/main/scala/backend/regfile/RegisterRead.scala 92:28]
     end else begin
-      out_valid_4 <= _GEN_1308;
+      out_valid_4 <= _GEN_1412;
     end
   end
 // Register and memory initialization
@@ -2149,509 +2305,557 @@ initial begin
   _RAND_39 = {1{`RANDOM}};
   rrd_uop_rdValid = _RAND_39[0:0];
   _RAND_40 = {1{`RANDOM}};
-  rrd_uop_robIdx = _RAND_40[5:0];
+  rrd_uop_robIdx_value = _RAND_40[5:0];
   _RAND_41 = {1{`RANDOM}};
-  rrd_uop_robIdxFull = _RAND_41[6:0];
+  rrd_uop_robIdx_flag = _RAND_41[0:0];
   _RAND_42 = {1{`RANDOM}};
-  rrd_uop_lqIdx = _RAND_42[3:0];
+  rrd_uop_robIdxFull_value = _RAND_42[5:0];
   _RAND_43 = {1{`RANDOM}};
-  rrd_uop_sqIdx = _RAND_43[3:0];
+  rrd_uop_robIdxFull_flag = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  rrd_uop_issueQueue = _RAND_44[2:0];
+  rrd_uop_lqIdx_value = _RAND_44[3:0];
   _RAND_45 = {1{`RANDOM}};
-  rrd_uop_prs1Busy = _RAND_45[0:0];
+  rrd_uop_lqIdx_flag = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  rrd_uop_prs2Busy = _RAND_46[0:0];
+  rrd_uop_sqIdx_value = _RAND_46[3:0];
   _RAND_47 = {1{`RANDOM}};
-  rrd_uop_isSta = _RAND_47[0:0];
+  rrd_uop_sqIdx_flag = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  out_valid = _RAND_48[0:0];
+  rrd_uop_issueQueue = _RAND_48[2:0];
   _RAND_49 = {1{`RANDOM}};
-  out_uop_pc = _RAND_49[31:0];
+  rrd_uop_prs1Busy = _RAND_49[0:0];
   _RAND_50 = {1{`RANDOM}};
-  out_uop_inst = _RAND_50[31:0];
+  rrd_uop_prs2Busy = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  out_uop_ctrl_fuType = _RAND_51[3:0];
+  rrd_uop_isSta = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
-  out_uop_ctrl_aluOp = _RAND_52[4:0];
+  rrd_uop_isStd = _RAND_52[0:0];
   _RAND_53 = {1{`RANDOM}};
-  out_uop_ctrl_bruOp = _RAND_53[3:0];
+  out_valid = _RAND_53[0:0];
   _RAND_54 = {1{`RANDOM}};
-  out_uop_ctrl_lsuOp = _RAND_54[3:0];
+  out_uop_pc = _RAND_54[31:0];
   _RAND_55 = {1{`RANDOM}};
-  out_uop_ctrl_csrOp = _RAND_55[2:0];
+  out_uop_inst = _RAND_55[31:0];
   _RAND_56 = {1{`RANDOM}};
-  out_uop_ctrl_mulOp = _RAND_56[2:0];
+  out_uop_ctrl_fuType = _RAND_56[3:0];
   _RAND_57 = {1{`RANDOM}};
-  out_uop_ctrl_divOp = _RAND_57[2:0];
+  out_uop_ctrl_aluOp = _RAND_57[4:0];
   _RAND_58 = {1{`RANDOM}};
-  out_uop_ctrl_src1Type = _RAND_58[2:0];
+  out_uop_ctrl_bruOp = _RAND_58[3:0];
   _RAND_59 = {1{`RANDOM}};
-  out_uop_ctrl_src2Type = _RAND_59[2:0];
+  out_uop_ctrl_lsuOp = _RAND_59[3:0];
   _RAND_60 = {1{`RANDOM}};
-  out_uop_ctrl_immType = _RAND_60[3:0];
+  out_uop_ctrl_csrOp = _RAND_60[2:0];
   _RAND_61 = {1{`RANDOM}};
-  out_uop_ctrl_rfWen = _RAND_61[0:0];
+  out_uop_ctrl_mulOp = _RAND_61[2:0];
   _RAND_62 = {1{`RANDOM}};
-  out_uop_ctrl_memRead = _RAND_62[0:0];
+  out_uop_ctrl_divOp = _RAND_62[2:0];
   _RAND_63 = {1{`RANDOM}};
-  out_uop_ctrl_memWrite = _RAND_63[0:0];
+  out_uop_ctrl_src1Type = _RAND_63[2:0];
   _RAND_64 = {1{`RANDOM}};
-  out_uop_ctrl_csrWen = _RAND_64[0:0];
+  out_uop_ctrl_src2Type = _RAND_64[2:0];
   _RAND_65 = {1{`RANDOM}};
-  out_uop_ctrl_isBranch = _RAND_65[0:0];
+  out_uop_ctrl_immType = _RAND_65[3:0];
   _RAND_66 = {1{`RANDOM}};
-  out_uop_ctrl_isJump = _RAND_66[0:0];
+  out_uop_ctrl_rfWen = _RAND_66[0:0];
   _RAND_67 = {1{`RANDOM}};
-  out_uop_ctrl_isPriv = _RAND_67[0:0];
+  out_uop_ctrl_memRead = _RAND_67[0:0];
   _RAND_68 = {1{`RANDOM}};
-  out_uop_excpVec = _RAND_68[9:0];
+  out_uop_ctrl_memWrite = _RAND_68[0:0];
   _RAND_69 = {1{`RANDOM}};
-  out_uop_imm = _RAND_69[31:0];
+  out_uop_ctrl_csrWen = _RAND_69[0:0];
   _RAND_70 = {1{`RANDOM}};
-  out_uop_csrAddress = _RAND_70[13:0];
+  out_uop_ctrl_isBranch = _RAND_70[0:0];
   _RAND_71 = {1{`RANDOM}};
-  out_uop_pdInfo_valid = _RAND_71[0:0];
+  out_uop_ctrl_isJump = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  out_uop_pdInfo_isBr = _RAND_72[0:0];
+  out_uop_ctrl_isPriv = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
-  out_uop_pdInfo_isJal = _RAND_73[0:0];
+  out_uop_excpVec = _RAND_73[9:0];
   _RAND_74 = {1{`RANDOM}};
-  out_uop_pdInfo_isJalr = _RAND_74[0:0];
+  out_uop_imm = _RAND_74[31:0];
   _RAND_75 = {1{`RANDOM}};
-  out_uop_pdInfo_isCall = _RAND_75[0:0];
+  out_uop_csrAddress = _RAND_75[13:0];
   _RAND_76 = {1{`RANDOM}};
-  out_uop_pdInfo_isRet = _RAND_76[0:0];
+  out_uop_pdInfo_valid = _RAND_76[0:0];
   _RAND_77 = {1{`RANDOM}};
-  out_uop_pdInfo_jumpTarget = _RAND_77[31:0];
+  out_uop_pdInfo_isBr = _RAND_77[0:0];
   _RAND_78 = {1{`RANDOM}};
-  out_uop_ldst = _RAND_78[4:0];
+  out_uop_pdInfo_isJal = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  out_uop_lrs1 = _RAND_79[4:0];
+  out_uop_pdInfo_isJalr = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  out_uop_lrs2 = _RAND_80[4:0];
+  out_uop_pdInfo_isCall = _RAND_80[0:0];
   _RAND_81 = {1{`RANDOM}};
-  out_uop_pdst = _RAND_81[6:0];
+  out_uop_pdInfo_isRet = _RAND_81[0:0];
   _RAND_82 = {1{`RANDOM}};
-  out_uop_prs1 = _RAND_82[6:0];
+  out_uop_pdInfo_jumpTarget = _RAND_82[31:0];
   _RAND_83 = {1{`RANDOM}};
-  out_uop_prs2 = _RAND_83[6:0];
+  out_uop_ldst = _RAND_83[4:0];
   _RAND_84 = {1{`RANDOM}};
-  out_uop_oldPdst = _RAND_84[6:0];
+  out_uop_lrs1 = _RAND_84[4:0];
   _RAND_85 = {1{`RANDOM}};
-  out_uop_rs1Valid = _RAND_85[0:0];
+  out_uop_lrs2 = _RAND_85[4:0];
   _RAND_86 = {1{`RANDOM}};
-  out_uop_rs2Valid = _RAND_86[0:0];
+  out_uop_pdst = _RAND_86[6:0];
   _RAND_87 = {1{`RANDOM}};
-  out_uop_rdValid = _RAND_87[0:0];
+  out_uop_prs1 = _RAND_87[6:0];
   _RAND_88 = {1{`RANDOM}};
-  out_uop_robIdx = _RAND_88[5:0];
+  out_uop_prs2 = _RAND_88[6:0];
   _RAND_89 = {1{`RANDOM}};
-  out_uop_robIdxFull = _RAND_89[6:0];
+  out_uop_oldPdst = _RAND_89[6:0];
   _RAND_90 = {1{`RANDOM}};
-  out_uop_lqIdx = _RAND_90[3:0];
+  out_uop_rs1Valid = _RAND_90[0:0];
   _RAND_91 = {1{`RANDOM}};
-  out_uop_sqIdx = _RAND_91[3:0];
+  out_uop_rs2Valid = _RAND_91[0:0];
   _RAND_92 = {1{`RANDOM}};
-  out_uop_issueQueue = _RAND_92[2:0];
+  out_uop_rdValid = _RAND_92[0:0];
   _RAND_93 = {1{`RANDOM}};
-  out_uop_prs1Busy = _RAND_93[0:0];
+  out_uop_robIdx_value = _RAND_93[5:0];
   _RAND_94 = {1{`RANDOM}};
-  out_uop_prs2Busy = _RAND_94[0:0];
+  out_uop_robIdx_flag = _RAND_94[0:0];
   _RAND_95 = {1{`RANDOM}};
-  out_uop_isSta = _RAND_95[0:0];
+  out_uop_robIdxFull_value = _RAND_95[5:0];
   _RAND_96 = {1{`RANDOM}};
-  out_rs1 = _RAND_96[31:0];
+  out_uop_robIdxFull_flag = _RAND_96[0:0];
   _RAND_97 = {1{`RANDOM}};
-  out_rs2 = _RAND_97[31:0];
+  out_uop_lqIdx_value = _RAND_97[3:0];
   _RAND_98 = {1{`RANDOM}};
-  rrd_valid_1 = _RAND_98[0:0];
+  out_uop_lqIdx_flag = _RAND_98[0:0];
   _RAND_99 = {1{`RANDOM}};
-  rrd_uop_1_pc = _RAND_99[31:0];
+  out_uop_sqIdx_value = _RAND_99[3:0];
   _RAND_100 = {1{`RANDOM}};
-  rrd_uop_1_inst = _RAND_100[31:0];
+  out_uop_sqIdx_flag = _RAND_100[0:0];
   _RAND_101 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_fuType = _RAND_101[3:0];
+  out_uop_issueQueue = _RAND_101[2:0];
   _RAND_102 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_aluOp = _RAND_102[4:0];
+  out_uop_prs1Busy = _RAND_102[0:0];
   _RAND_103 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_bruOp = _RAND_103[3:0];
+  out_uop_prs2Busy = _RAND_103[0:0];
   _RAND_104 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_lsuOp = _RAND_104[3:0];
+  out_uop_isSta = _RAND_104[0:0];
   _RAND_105 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_csrOp = _RAND_105[2:0];
+  out_uop_isStd = _RAND_105[0:0];
   _RAND_106 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_mulOp = _RAND_106[2:0];
+  out_rs1 = _RAND_106[31:0];
   _RAND_107 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_divOp = _RAND_107[2:0];
+  out_rs2 = _RAND_107[31:0];
   _RAND_108 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_src1Type = _RAND_108[2:0];
+  rrd_valid_1 = _RAND_108[0:0];
   _RAND_109 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_src2Type = _RAND_109[2:0];
+  rrd_uop_1_pc = _RAND_109[31:0];
   _RAND_110 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_immType = _RAND_110[3:0];
+  rrd_uop_1_inst = _RAND_110[31:0];
   _RAND_111 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_rfWen = _RAND_111[0:0];
+  rrd_uop_1_ctrl_fuType = _RAND_111[3:0];
   _RAND_112 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_memRead = _RAND_112[0:0];
+  rrd_uop_1_ctrl_aluOp = _RAND_112[4:0];
   _RAND_113 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_memWrite = _RAND_113[0:0];
+  rrd_uop_1_ctrl_bruOp = _RAND_113[3:0];
   _RAND_114 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_csrWen = _RAND_114[0:0];
+  rrd_uop_1_ctrl_lsuOp = _RAND_114[3:0];
   _RAND_115 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_isBranch = _RAND_115[0:0];
+  rrd_uop_1_ctrl_csrOp = _RAND_115[2:0];
   _RAND_116 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_isJump = _RAND_116[0:0];
+  rrd_uop_1_ctrl_mulOp = _RAND_116[2:0];
   _RAND_117 = {1{`RANDOM}};
-  rrd_uop_1_ctrl_isPriv = _RAND_117[0:0];
+  rrd_uop_1_ctrl_divOp = _RAND_117[2:0];
   _RAND_118 = {1{`RANDOM}};
-  rrd_uop_1_excpVec = _RAND_118[9:0];
+  rrd_uop_1_ctrl_src1Type = _RAND_118[2:0];
   _RAND_119 = {1{`RANDOM}};
-  rrd_uop_1_imm = _RAND_119[31:0];
+  rrd_uop_1_ctrl_src2Type = _RAND_119[2:0];
   _RAND_120 = {1{`RANDOM}};
-  rrd_uop_1_csrAddress = _RAND_120[13:0];
+  rrd_uop_1_ctrl_immType = _RAND_120[3:0];
   _RAND_121 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_valid = _RAND_121[0:0];
+  rrd_uop_1_ctrl_rfWen = _RAND_121[0:0];
   _RAND_122 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_isBr = _RAND_122[0:0];
+  rrd_uop_1_ctrl_memRead = _RAND_122[0:0];
   _RAND_123 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_isJal = _RAND_123[0:0];
+  rrd_uop_1_ctrl_memWrite = _RAND_123[0:0];
   _RAND_124 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_isJalr = _RAND_124[0:0];
+  rrd_uop_1_ctrl_csrWen = _RAND_124[0:0];
   _RAND_125 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_isCall = _RAND_125[0:0];
+  rrd_uop_1_ctrl_isBranch = _RAND_125[0:0];
   _RAND_126 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_isRet = _RAND_126[0:0];
+  rrd_uop_1_ctrl_isJump = _RAND_126[0:0];
   _RAND_127 = {1{`RANDOM}};
-  rrd_uop_1_pdInfo_jumpTarget = _RAND_127[31:0];
+  rrd_uop_1_ctrl_isPriv = _RAND_127[0:0];
   _RAND_128 = {1{`RANDOM}};
-  rrd_uop_1_ldst = _RAND_128[4:0];
+  rrd_uop_1_excpVec = _RAND_128[9:0];
   _RAND_129 = {1{`RANDOM}};
-  rrd_uop_1_lrs1 = _RAND_129[4:0];
+  rrd_uop_1_imm = _RAND_129[31:0];
   _RAND_130 = {1{`RANDOM}};
-  rrd_uop_1_lrs2 = _RAND_130[4:0];
+  rrd_uop_1_csrAddress = _RAND_130[13:0];
   _RAND_131 = {1{`RANDOM}};
-  rrd_uop_1_pdst = _RAND_131[6:0];
+  rrd_uop_1_pdInfo_valid = _RAND_131[0:0];
   _RAND_132 = {1{`RANDOM}};
-  rrd_uop_1_prs1 = _RAND_132[6:0];
+  rrd_uop_1_pdInfo_isBr = _RAND_132[0:0];
   _RAND_133 = {1{`RANDOM}};
-  rrd_uop_1_prs2 = _RAND_133[6:0];
+  rrd_uop_1_pdInfo_isJal = _RAND_133[0:0];
   _RAND_134 = {1{`RANDOM}};
-  rrd_uop_1_oldPdst = _RAND_134[6:0];
+  rrd_uop_1_pdInfo_isJalr = _RAND_134[0:0];
   _RAND_135 = {1{`RANDOM}};
-  rrd_uop_1_rs1Valid = _RAND_135[0:0];
+  rrd_uop_1_pdInfo_isCall = _RAND_135[0:0];
   _RAND_136 = {1{`RANDOM}};
-  rrd_uop_1_rs2Valid = _RAND_136[0:0];
+  rrd_uop_1_pdInfo_isRet = _RAND_136[0:0];
   _RAND_137 = {1{`RANDOM}};
-  rrd_uop_1_rdValid = _RAND_137[0:0];
+  rrd_uop_1_pdInfo_jumpTarget = _RAND_137[31:0];
   _RAND_138 = {1{`RANDOM}};
-  rrd_uop_1_robIdx = _RAND_138[5:0];
+  rrd_uop_1_ldst = _RAND_138[4:0];
   _RAND_139 = {1{`RANDOM}};
-  rrd_uop_1_robIdxFull = _RAND_139[6:0];
+  rrd_uop_1_lrs1 = _RAND_139[4:0];
   _RAND_140 = {1{`RANDOM}};
-  rrd_uop_1_issueQueue = _RAND_140[2:0];
+  rrd_uop_1_lrs2 = _RAND_140[4:0];
   _RAND_141 = {1{`RANDOM}};
-  rrd_uop_1_prs1Busy = _RAND_141[0:0];
+  rrd_uop_1_pdst = _RAND_141[6:0];
   _RAND_142 = {1{`RANDOM}};
-  rrd_uop_1_prs2Busy = _RAND_142[0:0];
+  rrd_uop_1_prs1 = _RAND_142[6:0];
   _RAND_143 = {1{`RANDOM}};
-  out_valid_1 = _RAND_143[0:0];
+  rrd_uop_1_prs2 = _RAND_143[6:0];
   _RAND_144 = {1{`RANDOM}};
-  out_uop_1_pc = _RAND_144[31:0];
+  rrd_uop_1_oldPdst = _RAND_144[6:0];
   _RAND_145 = {1{`RANDOM}};
-  out_uop_1_inst = _RAND_145[31:0];
+  rrd_uop_1_rs1Valid = _RAND_145[0:0];
   _RAND_146 = {1{`RANDOM}};
-  out_uop_1_ctrl_fuType = _RAND_146[3:0];
+  rrd_uop_1_rs2Valid = _RAND_146[0:0];
   _RAND_147 = {1{`RANDOM}};
-  out_uop_1_ctrl_aluOp = _RAND_147[4:0];
+  rrd_uop_1_rdValid = _RAND_147[0:0];
   _RAND_148 = {1{`RANDOM}};
-  out_uop_1_ctrl_bruOp = _RAND_148[3:0];
+  rrd_uop_1_robIdx_value = _RAND_148[5:0];
   _RAND_149 = {1{`RANDOM}};
-  out_uop_1_ctrl_lsuOp = _RAND_149[3:0];
+  rrd_uop_1_robIdx_flag = _RAND_149[0:0];
   _RAND_150 = {1{`RANDOM}};
-  out_uop_1_ctrl_csrOp = _RAND_150[2:0];
+  rrd_uop_1_robIdxFull_value = _RAND_150[5:0];
   _RAND_151 = {1{`RANDOM}};
-  out_uop_1_ctrl_mulOp = _RAND_151[2:0];
+  rrd_uop_1_robIdxFull_flag = _RAND_151[0:0];
   _RAND_152 = {1{`RANDOM}};
-  out_uop_1_ctrl_divOp = _RAND_152[2:0];
+  rrd_uop_1_issueQueue = _RAND_152[2:0];
   _RAND_153 = {1{`RANDOM}};
-  out_uop_1_ctrl_src1Type = _RAND_153[2:0];
+  rrd_uop_1_prs1Busy = _RAND_153[0:0];
   _RAND_154 = {1{`RANDOM}};
-  out_uop_1_ctrl_src2Type = _RAND_154[2:0];
+  rrd_uop_1_prs2Busy = _RAND_154[0:0];
   _RAND_155 = {1{`RANDOM}};
-  out_uop_1_ctrl_immType = _RAND_155[3:0];
+  out_valid_1 = _RAND_155[0:0];
   _RAND_156 = {1{`RANDOM}};
-  out_uop_1_ctrl_rfWen = _RAND_156[0:0];
+  out_uop_1_pc = _RAND_156[31:0];
   _RAND_157 = {1{`RANDOM}};
-  out_uop_1_ctrl_memRead = _RAND_157[0:0];
+  out_uop_1_inst = _RAND_157[31:0];
   _RAND_158 = {1{`RANDOM}};
-  out_uop_1_ctrl_memWrite = _RAND_158[0:0];
+  out_uop_1_ctrl_fuType = _RAND_158[3:0];
   _RAND_159 = {1{`RANDOM}};
-  out_uop_1_ctrl_csrWen = _RAND_159[0:0];
+  out_uop_1_ctrl_aluOp = _RAND_159[4:0];
   _RAND_160 = {1{`RANDOM}};
-  out_uop_1_ctrl_isBranch = _RAND_160[0:0];
+  out_uop_1_ctrl_bruOp = _RAND_160[3:0];
   _RAND_161 = {1{`RANDOM}};
-  out_uop_1_ctrl_isJump = _RAND_161[0:0];
+  out_uop_1_ctrl_lsuOp = _RAND_161[3:0];
   _RAND_162 = {1{`RANDOM}};
-  out_uop_1_ctrl_isPriv = _RAND_162[0:0];
+  out_uop_1_ctrl_csrOp = _RAND_162[2:0];
   _RAND_163 = {1{`RANDOM}};
-  out_uop_1_excpVec = _RAND_163[9:0];
+  out_uop_1_ctrl_mulOp = _RAND_163[2:0];
   _RAND_164 = {1{`RANDOM}};
-  out_uop_1_imm = _RAND_164[31:0];
+  out_uop_1_ctrl_divOp = _RAND_164[2:0];
   _RAND_165 = {1{`RANDOM}};
-  out_uop_1_csrAddress = _RAND_165[13:0];
+  out_uop_1_ctrl_src1Type = _RAND_165[2:0];
   _RAND_166 = {1{`RANDOM}};
-  out_uop_1_pdInfo_valid = _RAND_166[0:0];
+  out_uop_1_ctrl_src2Type = _RAND_166[2:0];
   _RAND_167 = {1{`RANDOM}};
-  out_uop_1_pdInfo_isBr = _RAND_167[0:0];
+  out_uop_1_ctrl_immType = _RAND_167[3:0];
   _RAND_168 = {1{`RANDOM}};
-  out_uop_1_pdInfo_isJal = _RAND_168[0:0];
+  out_uop_1_ctrl_rfWen = _RAND_168[0:0];
   _RAND_169 = {1{`RANDOM}};
-  out_uop_1_pdInfo_isJalr = _RAND_169[0:0];
+  out_uop_1_ctrl_memRead = _RAND_169[0:0];
   _RAND_170 = {1{`RANDOM}};
-  out_uop_1_pdInfo_isCall = _RAND_170[0:0];
+  out_uop_1_ctrl_memWrite = _RAND_170[0:0];
   _RAND_171 = {1{`RANDOM}};
-  out_uop_1_pdInfo_isRet = _RAND_171[0:0];
+  out_uop_1_ctrl_csrWen = _RAND_171[0:0];
   _RAND_172 = {1{`RANDOM}};
-  out_uop_1_pdInfo_jumpTarget = _RAND_172[31:0];
+  out_uop_1_ctrl_isBranch = _RAND_172[0:0];
   _RAND_173 = {1{`RANDOM}};
-  out_uop_1_ldst = _RAND_173[4:0];
+  out_uop_1_ctrl_isJump = _RAND_173[0:0];
   _RAND_174 = {1{`RANDOM}};
-  out_uop_1_lrs1 = _RAND_174[4:0];
+  out_uop_1_ctrl_isPriv = _RAND_174[0:0];
   _RAND_175 = {1{`RANDOM}};
-  out_uop_1_lrs2 = _RAND_175[4:0];
+  out_uop_1_excpVec = _RAND_175[9:0];
   _RAND_176 = {1{`RANDOM}};
-  out_uop_1_pdst = _RAND_176[6:0];
+  out_uop_1_imm = _RAND_176[31:0];
   _RAND_177 = {1{`RANDOM}};
-  out_uop_1_prs1 = _RAND_177[6:0];
+  out_uop_1_csrAddress = _RAND_177[13:0];
   _RAND_178 = {1{`RANDOM}};
-  out_uop_1_prs2 = _RAND_178[6:0];
+  out_uop_1_pdInfo_valid = _RAND_178[0:0];
   _RAND_179 = {1{`RANDOM}};
-  out_uop_1_oldPdst = _RAND_179[6:0];
+  out_uop_1_pdInfo_isBr = _RAND_179[0:0];
   _RAND_180 = {1{`RANDOM}};
-  out_uop_1_rs1Valid = _RAND_180[0:0];
+  out_uop_1_pdInfo_isJal = _RAND_180[0:0];
   _RAND_181 = {1{`RANDOM}};
-  out_uop_1_rs2Valid = _RAND_181[0:0];
+  out_uop_1_pdInfo_isJalr = _RAND_181[0:0];
   _RAND_182 = {1{`RANDOM}};
-  out_uop_1_rdValid = _RAND_182[0:0];
+  out_uop_1_pdInfo_isCall = _RAND_182[0:0];
   _RAND_183 = {1{`RANDOM}};
-  out_uop_1_robIdx = _RAND_183[5:0];
+  out_uop_1_pdInfo_isRet = _RAND_183[0:0];
   _RAND_184 = {1{`RANDOM}};
-  out_uop_1_robIdxFull = _RAND_184[6:0];
+  out_uop_1_pdInfo_jumpTarget = _RAND_184[31:0];
   _RAND_185 = {1{`RANDOM}};
-  out_uop_1_issueQueue = _RAND_185[2:0];
+  out_uop_1_ldst = _RAND_185[4:0];
   _RAND_186 = {1{`RANDOM}};
-  out_uop_1_prs1Busy = _RAND_186[0:0];
+  out_uop_1_lrs1 = _RAND_186[4:0];
   _RAND_187 = {1{`RANDOM}};
-  out_uop_1_prs2Busy = _RAND_187[0:0];
+  out_uop_1_lrs2 = _RAND_187[4:0];
   _RAND_188 = {1{`RANDOM}};
-  out_rs1_1 = _RAND_188[31:0];
+  out_uop_1_pdst = _RAND_188[6:0];
   _RAND_189 = {1{`RANDOM}};
-  out_rs2_1 = _RAND_189[31:0];
+  out_uop_1_prs1 = _RAND_189[6:0];
   _RAND_190 = {1{`RANDOM}};
-  rrd_valid_2 = _RAND_190[0:0];
+  out_uop_1_prs2 = _RAND_190[6:0];
   _RAND_191 = {1{`RANDOM}};
-  rrd_uop_2_pc = _RAND_191[31:0];
+  out_uop_1_oldPdst = _RAND_191[6:0];
   _RAND_192 = {1{`RANDOM}};
-  rrd_uop_2_inst = _RAND_192[31:0];
+  out_uop_1_rs1Valid = _RAND_192[0:0];
   _RAND_193 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_fuType = _RAND_193[3:0];
+  out_uop_1_rs2Valid = _RAND_193[0:0];
   _RAND_194 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_aluOp = _RAND_194[4:0];
+  out_uop_1_rdValid = _RAND_194[0:0];
   _RAND_195 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_bruOp = _RAND_195[3:0];
+  out_uop_1_robIdx_value = _RAND_195[5:0];
   _RAND_196 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_lsuOp = _RAND_196[3:0];
+  out_uop_1_robIdx_flag = _RAND_196[0:0];
   _RAND_197 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_csrOp = _RAND_197[2:0];
+  out_uop_1_robIdxFull_value = _RAND_197[5:0];
   _RAND_198 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_mulOp = _RAND_198[2:0];
+  out_uop_1_robIdxFull_flag = _RAND_198[0:0];
   _RAND_199 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_divOp = _RAND_199[2:0];
+  out_uop_1_issueQueue = _RAND_199[2:0];
   _RAND_200 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_src1Type = _RAND_200[2:0];
+  out_uop_1_prs1Busy = _RAND_200[0:0];
   _RAND_201 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_src2Type = _RAND_201[2:0];
+  out_uop_1_prs2Busy = _RAND_201[0:0];
   _RAND_202 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_immType = _RAND_202[3:0];
+  out_rs1_1 = _RAND_202[31:0];
   _RAND_203 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_rfWen = _RAND_203[0:0];
+  out_rs2_1 = _RAND_203[31:0];
   _RAND_204 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_memRead = _RAND_204[0:0];
+  rrd_valid_2 = _RAND_204[0:0];
   _RAND_205 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_memWrite = _RAND_205[0:0];
+  rrd_uop_2_pc = _RAND_205[31:0];
   _RAND_206 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_csrWen = _RAND_206[0:0];
+  rrd_uop_2_inst = _RAND_206[31:0];
   _RAND_207 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_isBranch = _RAND_207[0:0];
+  rrd_uop_2_ctrl_fuType = _RAND_207[3:0];
   _RAND_208 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_isJump = _RAND_208[0:0];
+  rrd_uop_2_ctrl_aluOp = _RAND_208[4:0];
   _RAND_209 = {1{`RANDOM}};
-  rrd_uop_2_ctrl_isPriv = _RAND_209[0:0];
+  rrd_uop_2_ctrl_bruOp = _RAND_209[3:0];
   _RAND_210 = {1{`RANDOM}};
-  rrd_uop_2_excpVec = _RAND_210[9:0];
+  rrd_uop_2_ctrl_lsuOp = _RAND_210[3:0];
   _RAND_211 = {1{`RANDOM}};
-  rrd_uop_2_imm = _RAND_211[31:0];
+  rrd_uop_2_ctrl_csrOp = _RAND_211[2:0];
   _RAND_212 = {1{`RANDOM}};
-  rrd_uop_2_csrAddress = _RAND_212[13:0];
+  rrd_uop_2_ctrl_mulOp = _RAND_212[2:0];
   _RAND_213 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_valid = _RAND_213[0:0];
+  rrd_uop_2_ctrl_divOp = _RAND_213[2:0];
   _RAND_214 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_isBr = _RAND_214[0:0];
+  rrd_uop_2_ctrl_src1Type = _RAND_214[2:0];
   _RAND_215 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_isJal = _RAND_215[0:0];
+  rrd_uop_2_ctrl_src2Type = _RAND_215[2:0];
   _RAND_216 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_isJalr = _RAND_216[0:0];
+  rrd_uop_2_ctrl_immType = _RAND_216[3:0];
   _RAND_217 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_isCall = _RAND_217[0:0];
+  rrd_uop_2_ctrl_rfWen = _RAND_217[0:0];
   _RAND_218 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_isRet = _RAND_218[0:0];
+  rrd_uop_2_ctrl_memRead = _RAND_218[0:0];
   _RAND_219 = {1{`RANDOM}};
-  rrd_uop_2_pdInfo_jumpTarget = _RAND_219[31:0];
+  rrd_uop_2_ctrl_memWrite = _RAND_219[0:0];
   _RAND_220 = {1{`RANDOM}};
-  rrd_uop_2_ldst = _RAND_220[4:0];
+  rrd_uop_2_ctrl_csrWen = _RAND_220[0:0];
   _RAND_221 = {1{`RANDOM}};
-  rrd_uop_2_lrs1 = _RAND_221[4:0];
+  rrd_uop_2_ctrl_isBranch = _RAND_221[0:0];
   _RAND_222 = {1{`RANDOM}};
-  rrd_uop_2_lrs2 = _RAND_222[4:0];
+  rrd_uop_2_ctrl_isJump = _RAND_222[0:0];
   _RAND_223 = {1{`RANDOM}};
-  rrd_uop_2_pdst = _RAND_223[6:0];
+  rrd_uop_2_ctrl_isPriv = _RAND_223[0:0];
   _RAND_224 = {1{`RANDOM}};
-  rrd_uop_2_prs1 = _RAND_224[6:0];
+  rrd_uop_2_excpVec = _RAND_224[9:0];
   _RAND_225 = {1{`RANDOM}};
-  rrd_uop_2_prs2 = _RAND_225[6:0];
+  rrd_uop_2_imm = _RAND_225[31:0];
   _RAND_226 = {1{`RANDOM}};
-  rrd_uop_2_oldPdst = _RAND_226[6:0];
+  rrd_uop_2_csrAddress = _RAND_226[13:0];
   _RAND_227 = {1{`RANDOM}};
-  rrd_uop_2_rs1Valid = _RAND_227[0:0];
+  rrd_uop_2_pdInfo_valid = _RAND_227[0:0];
   _RAND_228 = {1{`RANDOM}};
-  rrd_uop_2_rs2Valid = _RAND_228[0:0];
+  rrd_uop_2_pdInfo_isBr = _RAND_228[0:0];
   _RAND_229 = {1{`RANDOM}};
-  rrd_uop_2_rdValid = _RAND_229[0:0];
+  rrd_uop_2_pdInfo_isJal = _RAND_229[0:0];
   _RAND_230 = {1{`RANDOM}};
-  rrd_uop_2_robIdx = _RAND_230[5:0];
+  rrd_uop_2_pdInfo_isJalr = _RAND_230[0:0];
   _RAND_231 = {1{`RANDOM}};
-  rrd_uop_2_robIdxFull = _RAND_231[6:0];
+  rrd_uop_2_pdInfo_isCall = _RAND_231[0:0];
   _RAND_232 = {1{`RANDOM}};
-  rrd_uop_2_lqIdx = _RAND_232[3:0];
+  rrd_uop_2_pdInfo_isRet = _RAND_232[0:0];
   _RAND_233 = {1{`RANDOM}};
-  rrd_uop_2_sqIdx = _RAND_233[3:0];
+  rrd_uop_2_pdInfo_jumpTarget = _RAND_233[31:0];
   _RAND_234 = {1{`RANDOM}};
-  rrd_uop_2_issueQueue = _RAND_234[2:0];
+  rrd_uop_2_ldst = _RAND_234[4:0];
   _RAND_235 = {1{`RANDOM}};
-  rrd_uop_2_prs1Busy = _RAND_235[0:0];
+  rrd_uop_2_lrs1 = _RAND_235[4:0];
   _RAND_236 = {1{`RANDOM}};
-  rrd_uop_2_prs2Busy = _RAND_236[0:0];
+  rrd_uop_2_lrs2 = _RAND_236[4:0];
   _RAND_237 = {1{`RANDOM}};
-  rrd_uop_2_isSta = _RAND_237[0:0];
+  rrd_uop_2_pdst = _RAND_237[6:0];
   _RAND_238 = {1{`RANDOM}};
-  out_valid_2 = _RAND_238[0:0];
+  rrd_uop_2_prs1 = _RAND_238[6:0];
   _RAND_239 = {1{`RANDOM}};
-  out_uop_2_pc = _RAND_239[31:0];
+  rrd_uop_2_prs2 = _RAND_239[6:0];
   _RAND_240 = {1{`RANDOM}};
-  out_uop_2_inst = _RAND_240[31:0];
+  rrd_uop_2_oldPdst = _RAND_240[6:0];
   _RAND_241 = {1{`RANDOM}};
-  out_uop_2_ctrl_fuType = _RAND_241[3:0];
+  rrd_uop_2_rs1Valid = _RAND_241[0:0];
   _RAND_242 = {1{`RANDOM}};
-  out_uop_2_ctrl_aluOp = _RAND_242[4:0];
+  rrd_uop_2_rs2Valid = _RAND_242[0:0];
   _RAND_243 = {1{`RANDOM}};
-  out_uop_2_ctrl_bruOp = _RAND_243[3:0];
+  rrd_uop_2_rdValid = _RAND_243[0:0];
   _RAND_244 = {1{`RANDOM}};
-  out_uop_2_ctrl_lsuOp = _RAND_244[3:0];
+  rrd_uop_2_robIdx_value = _RAND_244[5:0];
   _RAND_245 = {1{`RANDOM}};
-  out_uop_2_ctrl_csrOp = _RAND_245[2:0];
+  rrd_uop_2_robIdx_flag = _RAND_245[0:0];
   _RAND_246 = {1{`RANDOM}};
-  out_uop_2_ctrl_mulOp = _RAND_246[2:0];
+  rrd_uop_2_robIdxFull_value = _RAND_246[5:0];
   _RAND_247 = {1{`RANDOM}};
-  out_uop_2_ctrl_divOp = _RAND_247[2:0];
+  rrd_uop_2_robIdxFull_flag = _RAND_247[0:0];
   _RAND_248 = {1{`RANDOM}};
-  out_uop_2_ctrl_src1Type = _RAND_248[2:0];
+  rrd_uop_2_lqIdx_value = _RAND_248[3:0];
   _RAND_249 = {1{`RANDOM}};
-  out_uop_2_ctrl_src2Type = _RAND_249[2:0];
+  rrd_uop_2_lqIdx_flag = _RAND_249[0:0];
   _RAND_250 = {1{`RANDOM}};
-  out_uop_2_ctrl_immType = _RAND_250[3:0];
+  rrd_uop_2_sqIdx_value = _RAND_250[3:0];
   _RAND_251 = {1{`RANDOM}};
-  out_uop_2_ctrl_rfWen = _RAND_251[0:0];
+  rrd_uop_2_sqIdx_flag = _RAND_251[0:0];
   _RAND_252 = {1{`RANDOM}};
-  out_uop_2_ctrl_memRead = _RAND_252[0:0];
+  rrd_uop_2_issueQueue = _RAND_252[2:0];
   _RAND_253 = {1{`RANDOM}};
-  out_uop_2_ctrl_memWrite = _RAND_253[0:0];
+  rrd_uop_2_prs1Busy = _RAND_253[0:0];
   _RAND_254 = {1{`RANDOM}};
-  out_uop_2_ctrl_csrWen = _RAND_254[0:0];
+  rrd_uop_2_prs2Busy = _RAND_254[0:0];
   _RAND_255 = {1{`RANDOM}};
-  out_uop_2_ctrl_isBranch = _RAND_255[0:0];
+  rrd_uop_2_isSta = _RAND_255[0:0];
   _RAND_256 = {1{`RANDOM}};
-  out_uop_2_ctrl_isJump = _RAND_256[0:0];
+  rrd_uop_2_isStd = _RAND_256[0:0];
   _RAND_257 = {1{`RANDOM}};
-  out_uop_2_ctrl_isPriv = _RAND_257[0:0];
+  out_valid_2 = _RAND_257[0:0];
   _RAND_258 = {1{`RANDOM}};
-  out_uop_2_excpVec = _RAND_258[9:0];
+  out_uop_2_pc = _RAND_258[31:0];
   _RAND_259 = {1{`RANDOM}};
-  out_uop_2_imm = _RAND_259[31:0];
+  out_uop_2_inst = _RAND_259[31:0];
   _RAND_260 = {1{`RANDOM}};
-  out_uop_2_csrAddress = _RAND_260[13:0];
+  out_uop_2_ctrl_fuType = _RAND_260[3:0];
   _RAND_261 = {1{`RANDOM}};
-  out_uop_2_pdInfo_valid = _RAND_261[0:0];
+  out_uop_2_ctrl_aluOp = _RAND_261[4:0];
   _RAND_262 = {1{`RANDOM}};
-  out_uop_2_pdInfo_isBr = _RAND_262[0:0];
+  out_uop_2_ctrl_bruOp = _RAND_262[3:0];
   _RAND_263 = {1{`RANDOM}};
-  out_uop_2_pdInfo_isJal = _RAND_263[0:0];
+  out_uop_2_ctrl_lsuOp = _RAND_263[3:0];
   _RAND_264 = {1{`RANDOM}};
-  out_uop_2_pdInfo_isJalr = _RAND_264[0:0];
+  out_uop_2_ctrl_csrOp = _RAND_264[2:0];
   _RAND_265 = {1{`RANDOM}};
-  out_uop_2_pdInfo_isCall = _RAND_265[0:0];
+  out_uop_2_ctrl_mulOp = _RAND_265[2:0];
   _RAND_266 = {1{`RANDOM}};
-  out_uop_2_pdInfo_isRet = _RAND_266[0:0];
+  out_uop_2_ctrl_divOp = _RAND_266[2:0];
   _RAND_267 = {1{`RANDOM}};
-  out_uop_2_pdInfo_jumpTarget = _RAND_267[31:0];
+  out_uop_2_ctrl_src1Type = _RAND_267[2:0];
   _RAND_268 = {1{`RANDOM}};
-  out_uop_2_ldst = _RAND_268[4:0];
+  out_uop_2_ctrl_src2Type = _RAND_268[2:0];
   _RAND_269 = {1{`RANDOM}};
-  out_uop_2_lrs1 = _RAND_269[4:0];
+  out_uop_2_ctrl_immType = _RAND_269[3:0];
   _RAND_270 = {1{`RANDOM}};
-  out_uop_2_lrs2 = _RAND_270[4:0];
+  out_uop_2_ctrl_rfWen = _RAND_270[0:0];
   _RAND_271 = {1{`RANDOM}};
-  out_uop_2_pdst = _RAND_271[6:0];
+  out_uop_2_ctrl_memRead = _RAND_271[0:0];
   _RAND_272 = {1{`RANDOM}};
-  out_uop_2_prs1 = _RAND_272[6:0];
+  out_uop_2_ctrl_memWrite = _RAND_272[0:0];
   _RAND_273 = {1{`RANDOM}};
-  out_uop_2_prs2 = _RAND_273[6:0];
+  out_uop_2_ctrl_csrWen = _RAND_273[0:0];
   _RAND_274 = {1{`RANDOM}};
-  out_uop_2_oldPdst = _RAND_274[6:0];
+  out_uop_2_ctrl_isBranch = _RAND_274[0:0];
   _RAND_275 = {1{`RANDOM}};
-  out_uop_2_rs1Valid = _RAND_275[0:0];
+  out_uop_2_ctrl_isJump = _RAND_275[0:0];
   _RAND_276 = {1{`RANDOM}};
-  out_uop_2_rs2Valid = _RAND_276[0:0];
+  out_uop_2_ctrl_isPriv = _RAND_276[0:0];
   _RAND_277 = {1{`RANDOM}};
-  out_uop_2_rdValid = _RAND_277[0:0];
+  out_uop_2_excpVec = _RAND_277[9:0];
   _RAND_278 = {1{`RANDOM}};
-  out_uop_2_robIdx = _RAND_278[5:0];
+  out_uop_2_imm = _RAND_278[31:0];
   _RAND_279 = {1{`RANDOM}};
-  out_uop_2_robIdxFull = _RAND_279[6:0];
+  out_uop_2_csrAddress = _RAND_279[13:0];
   _RAND_280 = {1{`RANDOM}};
-  out_uop_2_lqIdx = _RAND_280[3:0];
+  out_uop_2_pdInfo_valid = _RAND_280[0:0];
   _RAND_281 = {1{`RANDOM}};
-  out_uop_2_sqIdx = _RAND_281[3:0];
+  out_uop_2_pdInfo_isBr = _RAND_281[0:0];
   _RAND_282 = {1{`RANDOM}};
-  out_uop_2_issueQueue = _RAND_282[2:0];
+  out_uop_2_pdInfo_isJal = _RAND_282[0:0];
   _RAND_283 = {1{`RANDOM}};
-  out_uop_2_prs1Busy = _RAND_283[0:0];
+  out_uop_2_pdInfo_isJalr = _RAND_283[0:0];
   _RAND_284 = {1{`RANDOM}};
-  out_uop_2_prs2Busy = _RAND_284[0:0];
+  out_uop_2_pdInfo_isCall = _RAND_284[0:0];
   _RAND_285 = {1{`RANDOM}};
-  out_uop_2_isSta = _RAND_285[0:0];
+  out_uop_2_pdInfo_isRet = _RAND_285[0:0];
   _RAND_286 = {1{`RANDOM}};
-  out_rs1_2 = _RAND_286[31:0];
+  out_uop_2_pdInfo_jumpTarget = _RAND_286[31:0];
   _RAND_287 = {1{`RANDOM}};
-  out_rs2_2 = _RAND_287[31:0];
+  out_uop_2_ldst = _RAND_287[4:0];
   _RAND_288 = {1{`RANDOM}};
-  rrd_valid_3 = _RAND_288[0:0];
+  out_uop_2_lrs1 = _RAND_288[4:0];
   _RAND_289 = {1{`RANDOM}};
-  out_valid_3 = _RAND_289[0:0];
+  out_uop_2_lrs2 = _RAND_289[4:0];
   _RAND_290 = {1{`RANDOM}};
-  rrd_valid_4 = _RAND_290[0:0];
+  out_uop_2_pdst = _RAND_290[6:0];
   _RAND_291 = {1{`RANDOM}};
-  out_valid_4 = _RAND_291[0:0];
+  out_uop_2_prs1 = _RAND_291[6:0];
+  _RAND_292 = {1{`RANDOM}};
+  out_uop_2_prs2 = _RAND_292[6:0];
+  _RAND_293 = {1{`RANDOM}};
+  out_uop_2_oldPdst = _RAND_293[6:0];
+  _RAND_294 = {1{`RANDOM}};
+  out_uop_2_rs1Valid = _RAND_294[0:0];
+  _RAND_295 = {1{`RANDOM}};
+  out_uop_2_rs2Valid = _RAND_295[0:0];
+  _RAND_296 = {1{`RANDOM}};
+  out_uop_2_rdValid = _RAND_296[0:0];
+  _RAND_297 = {1{`RANDOM}};
+  out_uop_2_robIdx_value = _RAND_297[5:0];
+  _RAND_298 = {1{`RANDOM}};
+  out_uop_2_robIdx_flag = _RAND_298[0:0];
+  _RAND_299 = {1{`RANDOM}};
+  out_uop_2_robIdxFull_value = _RAND_299[5:0];
+  _RAND_300 = {1{`RANDOM}};
+  out_uop_2_robIdxFull_flag = _RAND_300[0:0];
+  _RAND_301 = {1{`RANDOM}};
+  out_uop_2_lqIdx_value = _RAND_301[3:0];
+  _RAND_302 = {1{`RANDOM}};
+  out_uop_2_lqIdx_flag = _RAND_302[0:0];
+  _RAND_303 = {1{`RANDOM}};
+  out_uop_2_sqIdx_value = _RAND_303[3:0];
+  _RAND_304 = {1{`RANDOM}};
+  out_uop_2_sqIdx_flag = _RAND_304[0:0];
+  _RAND_305 = {1{`RANDOM}};
+  out_uop_2_issueQueue = _RAND_305[2:0];
+  _RAND_306 = {1{`RANDOM}};
+  out_uop_2_prs1Busy = _RAND_306[0:0];
+  _RAND_307 = {1{`RANDOM}};
+  out_uop_2_prs2Busy = _RAND_307[0:0];
+  _RAND_308 = {1{`RANDOM}};
+  out_uop_2_isSta = _RAND_308[0:0];
+  _RAND_309 = {1{`RANDOM}};
+  out_uop_2_isStd = _RAND_309[0:0];
+  _RAND_310 = {1{`RANDOM}};
+  out_rs1_2 = _RAND_310[31:0];
+  _RAND_311 = {1{`RANDOM}};
+  out_rs2_2 = _RAND_311[31:0];
+  _RAND_312 = {1{`RANDOM}};
+  rrd_valid_3 = _RAND_312[0:0];
+  _RAND_313 = {1{`RANDOM}};
+  out_valid_3 = _RAND_313[0:0];
+  _RAND_314 = {1{`RANDOM}};
+  rrd_valid_4 = _RAND_314[0:0];
+  _RAND_315 = {1{`RANDOM}};
+  out_valid_4 = _RAND_315[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

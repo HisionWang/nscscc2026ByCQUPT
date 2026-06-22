@@ -171,7 +171,8 @@ module RenameStage(
   output        io_out_0_bits_rs1Valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_0_bits_rs2Valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_0_bits_rdValid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  output [5:0]  io_out_0_bits_robIdx, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [5:0]  io_out_0_bits_robIdx_value, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output        io_out_0_bits_robIdx_flag, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_out_1_ready, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_1_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [31:0] io_out_1_bits_pc, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -213,7 +214,8 @@ module RenameStage(
   output        io_out_1_bits_rs1Valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_1_bits_rs2Valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_1_bits_rdValid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  output [5:0]  io_out_1_bits_robIdx, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [5:0]  io_out_1_bits_robIdx_value, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output        io_out_1_bits_robIdx_flag, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_out_2_ready, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_2_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [31:0] io_out_2_bits_pc, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -255,7 +257,8 @@ module RenameStage(
   output        io_out_2_bits_rs1Valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_2_bits_rs2Valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output        io_out_2_bits_rdValid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  output [5:0]  io_out_2_bits_robIdx, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output [5:0]  io_out_2_bits_robIdx_value, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  output        io_out_2_bits_robIdx_flag, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_commit_0_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [4:0]  io_commit_0_ldst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [6:0]  io_commit_0_pdst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -269,7 +272,7 @@ module RenameStage(
   input  [6:0]  io_commit_2_pdst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_commit_2_rfWen, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_redirect_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [5:0]  io_redirect_robIdx, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
+  input  [5:0]  io_redirect_robIdx_value, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [6:0]  io_debugArchState_0, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [6:0]  io_debugArchState_1, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [6:0]  io_debugArchState_2, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -420,6 +423,7 @@ module RenameStage(
   reg [31:0] _RAND_113;
   reg [31:0] _RAND_114;
   reg [31:0] _RAND_115;
+  reg [31:0] _RAND_116;
 `endif // RANDOMIZE_REG_INIT
   wire  rat_clock; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire  rat_reset; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
@@ -689,21 +693,26 @@ module RenameStage(
     freeList_io_allocPdest_1_bits : _GEN_238; // @[src/main/scala/backend/rename/RenameStage.scala 312:81 313:22]
   wire [6:0] oldPdstFinal_2 = jHasAlloc_2 & stgData_1_rd == stgData_2_rd ? freeList_io_allocPdest_1_bits : _GEN_239; // @[src/main/scala/backend/rename/RenameStage.scala 317:58 318:25]
   reg [5:0] robIdxHead_value; // @[src/main/scala/backend/rename/RenameStage.scala 333:27]
+  reg  robIdxHead_flag; // @[src/main/scala/backend/rename/RenameStage.scala 333:27]
   wire [1:0] _validCount_T_3 = _needAllocVec_T_4 + _needAllocVec_T_8; // @[src/main/scala/backend/rename/RenameStage.scala 341:28]
   wire [1:0] _GEN_247 = {{1'd0}, _needAllocVec_T}; // @[src/main/scala/backend/rename/RenameStage.scala 341:28]
   wire [2:0] _validCount_T_5 = _GEN_247 + _validCount_T_3; // @[src/main/scala/backend/rename/RenameStage.scala 341:28]
   wire [1:0] validCount = _validCount_T_5[1:0]; // @[src/main/scala/backend/rename/RenameStage.scala 341:28]
   wire [5:0] _GEN_248 = {{4'd0}, validCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire [6:0] robIdxHeadNext_newIncValue = robIdxHead_value + _GEN_248; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire  robIdxHeadNext_wrap = robIdxHeadNext_newIncValue >= 7'h40; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [5:0] robIdxHeadNext_newPtr_value = robIdxHeadNext_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
   wire [6:0] thisPtr_newIncValue = {{1'd0}, robIdxHead_value}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire  thisPtr_wrap = thisPtr_newIncValue >= 7'h40; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [5:0] thisPtr_value = thisPtr_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
   wire [5:0] _GEN_249 = {{5'd0}, laneValid_0}; // @[src/main/scala/backend/rename/RenameStage.scala 371:27]
   wire [6:0] _T_24 = {{1'd0}, _GEN_249}; // @[src/main/scala/backend/rename/RenameStage.scala 371:27]
   wire [6:0] thisPtr_newIncValue_1 = robIdxHead_value + _T_24[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire  thisPtr_wrap_1 = thisPtr_newIncValue_1 >= 7'h40; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [5:0] _GEN_250 = {{5'd0}, laneValid_1}; // @[src/main/scala/backend/rename/RenameStage.scala 371:27]
   wire [5:0] _T_27 = _T_24[5:0] + _GEN_250; // @[src/main/scala/backend/rename/RenameStage.scala 371:27]
   wire [6:0] thisPtr_newIncValue_2 = robIdxHead_value + _T_27; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire  thisPtr_wrap_2 = thisPtr_newIncValue_2 >= 7'h40; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [6:0] freeList_io_renBrTags_1_bits_newIncValue = robIdxHead_value + 6'h1; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire [5:0] freeList_io_renBrTags_1_bits_newPtr_value = freeList_io_renBrTags_1_bits_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
   wire [6:0] freeList_io_renBrTags_2_bits_newIncValue = robIdxHead_value + 6'h2; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
@@ -872,7 +881,8 @@ module RenameStage(
   assign io_out_0_bits_rs1Valid = stgData_0_rs1Valid; // @[src/main/scala/backend/rename/RenameStage.scala 436:16]
   assign io_out_0_bits_rs2Valid = stgData_0_rs2Valid; // @[src/main/scala/backend/rename/RenameStage.scala 437:16]
   assign io_out_0_bits_rdValid = stgData_0_rdValid; // @[src/main/scala/backend/rename/RenameStage.scala 438:16]
-  assign io_out_0_bits_robIdx = thisPtr_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
+  assign io_out_0_bits_robIdx_value = thisPtr_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
+  assign io_out_0_bits_robIdx_flag = thisPtr_wrap ? ~robIdxHead_flag : robIdxHead_flag; // @[src/main/scala/util/CircularQueuePtr.scala 88:24]
   assign io_out_1_valid = _needAllocVec_T_4 & freeList_io_canAlloc; // @[src/main/scala/backend/rename/RenameStage.scala 445:49]
   assign io_out_1_bits_pc = stgData_1_pc; // @[src/main/scala/backend/rename/RenameStage.scala 412:18]
   assign io_out_1_bits_inst = stgData_1_inst; // @[src/main/scala/backend/rename/RenameStage.scala 413:18]
@@ -914,7 +924,8 @@ module RenameStage(
   assign io_out_1_bits_rs1Valid = stgData_1_rs1Valid; // @[src/main/scala/backend/rename/RenameStage.scala 436:16]
   assign io_out_1_bits_rs2Valid = stgData_1_rs2Valid; // @[src/main/scala/backend/rename/RenameStage.scala 437:16]
   assign io_out_1_bits_rdValid = stgData_1_rdValid; // @[src/main/scala/backend/rename/RenameStage.scala 438:16]
-  assign io_out_1_bits_robIdx = thisPtr_newIncValue_1[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
+  assign io_out_1_bits_robIdx_value = thisPtr_newIncValue_1[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
+  assign io_out_1_bits_robIdx_flag = thisPtr_wrap_1 ? ~robIdxHead_flag : robIdxHead_flag; // @[src/main/scala/util/CircularQueuePtr.scala 88:24]
   assign io_out_2_valid = _needAllocVec_T_8 & freeList_io_canAlloc; // @[src/main/scala/backend/rename/RenameStage.scala 445:49]
   assign io_out_2_bits_pc = stgData_2_pc; // @[src/main/scala/backend/rename/RenameStage.scala 412:18]
   assign io_out_2_bits_inst = stgData_2_inst; // @[src/main/scala/backend/rename/RenameStage.scala 413:18]
@@ -956,7 +967,8 @@ module RenameStage(
   assign io_out_2_bits_rs1Valid = stgData_2_rs1Valid; // @[src/main/scala/backend/rename/RenameStage.scala 436:16]
   assign io_out_2_bits_rs2Valid = stgData_2_rs2Valid; // @[src/main/scala/backend/rename/RenameStage.scala 437:16]
   assign io_out_2_bits_rdValid = stgData_2_rdValid; // @[src/main/scala/backend/rename/RenameStage.scala 438:16]
-  assign io_out_2_bits_robIdx = thisPtr_newIncValue_2[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
+  assign io_out_2_bits_robIdx_value = thisPtr_newIncValue_2[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
+  assign io_out_2_bits_robIdx_flag = thisPtr_wrap_2 ? ~robIdxHead_flag : robIdxHead_flag; // @[src/main/scala/util/CircularQueuePtr.scala 88:24]
   assign io_debugArchState_0 = rat_io_debugArchState_0; // @[src/main/scala/backend/rename/RenameStage.scala 75:21]
   assign io_debugArchState_1 = rat_io_debugArchState_1; // @[src/main/scala/backend/rename/RenameStage.scala 75:21]
   assign io_debugArchState_2 = rat_io_debugArchState_2; // @[src/main/scala/backend/rename/RenameStage.scala 75:21]
@@ -1029,7 +1041,7 @@ module RenameStage(
   assign rat_io_archReadPorts_1_laddr = io_commit_1_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 254:38]
   assign rat_io_archReadPorts_2_laddr = io_commit_2_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 254:38]
   assign rat_io_snptEnq = hasBranch & outFire; // @[src/main/scala/backend/rename/RenameStage.scala 399:36]
-  assign rat_io_snptSelect = io_redirect_robIdx[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 403:44]
+  assign rat_io_snptSelect = io_redirect_robIdx_value[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 403:50]
   assign freeList_clock = clock;
   assign freeList_reset = reset;
   assign freeList_io_allocReqs_0 = stgValid & laneValid_0 & stgData_0_rdValid & stgData_0_rd != 5'h0; // @[src/main/scala/backend/rename/RenameStage.scala 97:52]
@@ -1049,7 +1061,7 @@ module RenameStage(
   assign freeList_io_renBrTags_2_valid = outFire & laneValid_2 & stgData_2_ctrl_isBranch; // @[src/main/scala/backend/rename/RenameStage.scala 384:63]
   assign freeList_io_renBrTags_2_bits = freeList_io_renBrTags_2_bits_newPtr_value[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 386:31]
   assign freeList_io_brMispredict = io_redirect_valid; // @[src/main/scala/backend/rename/RenameStage.scala 378:28]
-  assign freeList_io_brMispredTag = io_redirect_robIdx[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 379:49]
+  assign freeList_io_brMispredTag = io_redirect_robIdx_value[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 379:55]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/backend/rename/RenameStage.scala 84:26]
       stgValid <= 1'h0; // @[src/main/scala/backend/rename/RenameStage.scala 84:26]
@@ -1643,9 +1655,18 @@ module RenameStage(
     if (reset) begin // @[src/main/scala/backend/rename/RenameStage.scala 333:27]
       robIdxHead_value <= 6'h0; // @[src/main/scala/backend/rename/RenameStage.scala 333:27]
     end else if (io_redirect_valid) begin // @[src/main/scala/backend/rename/RenameStage.scala 349:27]
-      robIdxHead_value <= io_redirect_robIdx; // @[src/main/scala/backend/rename/RenameStage.scala 356:26]
+      robIdxHead_value <= io_redirect_robIdx_value; // @[src/main/scala/backend/rename/RenameStage.scala 356:26]
     end else if (outFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 358:23]
       robIdxHead_value <= robIdxHeadNext_newPtr_value; // @[src/main/scala/backend/rename/RenameStage.scala 360:20]
+    end
+    if (reset) begin // @[src/main/scala/backend/rename/RenameStage.scala 333:27]
+      robIdxHead_flag <= 1'h0; // @[src/main/scala/backend/rename/RenameStage.scala 333:27]
+    end else if (io_redirect_valid) begin // @[src/main/scala/backend/rename/RenameStage.scala 349:27]
+      robIdxHead_flag <= 1'h0; // @[src/main/scala/backend/rename/RenameStage.scala 357:26]
+    end else if (outFire) begin // @[src/main/scala/backend/rename/RenameStage.scala 358:23]
+      if (robIdxHeadNext_wrap) begin // @[src/main/scala/util/CircularQueuePtr.scala 88:24]
+        robIdxHead_flag <= ~robIdxHead_flag;
+      end
     end
   end
 // Register and memory initialization
@@ -1916,6 +1937,8 @@ initial begin
   stgData_2_pdInfo_jumpTarget = _RAND_114[31:0];
   _RAND_115 = {1{`RANDOM}};
   robIdxHead_value = _RAND_115[5:0];
+  _RAND_116 = {1{`RANDOM}};
+  robIdxHead_flag = _RAND_116[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

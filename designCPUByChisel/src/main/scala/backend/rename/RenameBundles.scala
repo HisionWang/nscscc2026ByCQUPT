@@ -6,7 +6,8 @@ import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.frontend.PredecodeInfo
 import nscscc.util.CircularQueuePtr
- 
+
+
 // ================================================================
 //  ROB 指针：复用 CircularQueuePtr，entries 由外部传入
 // ================================================================
@@ -42,7 +43,7 @@ class RenamedInst(implicit p: Parameters) extends NSBundle {
   val rdValid  = Bool()
  
   // ── ROB 索引（环形队列 value 部分，flag 由 ROB 内部维护） ──
-  val robIdx = UInt(log2Ceil(RobSize).W)
+  val robIdx = new RobPtr(RobSize)
 }
  
 // ================================================================
@@ -62,7 +63,7 @@ class RobCommitInfo(implicit p: Parameters) extends NSBundle {
 // ================================================================
 class RedirectInfo(implicit p: Parameters) extends NSBundle {
   val valid     = Bool()
-  val robIdx    = UInt(log2Ceil(RobSize).W)   // 误预测指令的 ROB 索引
+  val robIdx    = new RobPtr(RobSize)   // 误预测指令的 ROB 索引
   //val flushSelf = Bool()                      // 是否冲刷误预测指令本身
 }
  

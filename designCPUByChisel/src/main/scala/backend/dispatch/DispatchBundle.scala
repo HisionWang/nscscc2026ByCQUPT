@@ -6,7 +6,8 @@ import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.frontend.PredecodeInfo
- 
+import nscscc.util.CircularQueuePtr
+
 object IssueQueueId {
   val Q1 = 0   // ALU + CSR
   val Q2 = 1   // ALU + DIV
@@ -25,6 +26,8 @@ object IQEnqPorts {
 // ================================================================
 //  Dispatch 输出的已分发指令（发给各 Issue Queue）
 // ================================================================
+class LqPtr(LqSize: Int) extends CircularQueuePtr[LqPtr](LqSize)
+class SqPtr(SqSize: Int) extends CircularQueuePtr[SqPtr](SqSize)
 class DispatchedInst(implicit p: Parameters) extends NSBundle {
   // ── 来自 RenamedInst 的全部字段 ──
   val pc         = UInt(XLEN.W)
@@ -48,13 +51,13 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val rs2Valid = Bool()
   val rdValid  = Bool()
  
-  val robIdx   = UInt(log2Ceil(RobSize).W)
+  val robIdx   = new RobPtr(RobSize)
  
   // ── Dispatch 新增字段 ──
-  val robIdxFull = UInt((log2Ceil(RobSize) + 1).W)  // 含 flag 的完整 ROB 指针
+  val robIdxFull = new RobPtr(RobSize)  // 含 flag 的完整 ROB 指针
  
-  val lqIdx    = UInt(log2Ceil(LqSize).W)   // Load Queue 指针
-  val sqIdx    = UInt(log2Ceil(SqSize).W)   // Store Queue 指针
+  val lqIdx    = new SqPtr(SqSize)//UInt(log2Ceil(LqSize).W)   // Load Queue 指针
+  val sqIdx    =  new LqPtr(LqSize)//UInt(log2Ceil(SqSize).W)   // Store Queue 指针
  
   val issueQueue = UInt(IssueQueueId.width.W)  // 分发目标队列编号
  
@@ -79,15 +82,15 @@ class IssueQueueFeedback(implicit p: Parameters) extends NSBundle {
 //  LSQ 入队请求（仅分配条目，地址/数据后续由执行单元填入）
 // ================================================================
 class LsEnqEntry(implicit p: Parameters) extends NSBundle {
-  val robIdx  = UInt(log2Ceil(RobSize).W)
+  val robIdx  = new RobPtr(RobSize)
   val isLoad  = Bool()
   val isStore = Bool()
-  val sqIdx   = UInt(log2Ceil(SqSize).W)
-  val lqIdx   = UInt(log2Ceil(LqSize).W)
+  val sqIdx   = new SqPtr(SqSize)
+  val lqIdx   = new LqPtr(LqSize)
 }
  
 class LsEnqIO(implicit p: Parameters) extends NSBundle {
-  val req    = Vec(CtrlBlockWidth, Valid(new LsEnqEntry))
+  val req    = Valid(new LsEnqEntry)
   val lqFull = Input(Bool())
   val sqFull = Input(Bool())
 }
@@ -132,7 +135,7 @@ class RobEntry(implicit p: Parameters) extends NSBundle {
   val csrWen   = Bool()
   val excpVec  = UInt(ExceptionCode.width.W)
   val fuType   = UInt(FuType.width.W)
-  val robIdx   = UInt(log2Ceil(RobSize).W)
+  val robIdx   = new RobPtr(RobSize)
 }
  
 // ================================================================
@@ -158,7 +161,7 @@ class RobCommitEntry(implicit p: Parameters) extends NSBundle {
 // ================================================================
 class RobRedirectIO(implicit p: Parameters) extends NSBundle {
   val valid    = Output(Bool())
-  val robIdx   = Output(UInt(log2Ceil(RobSize).W))
+  val robIdx   = new RobPtr(RobSize)
   val flushSelf = Output(Bool())
   val pc       = Output(UInt(XLEN.W))
   val excpVec  = Output(UInt(ExceptionCode.width.W))
@@ -177,7 +180,7 @@ class RobRedirectIO(implicit p: Parameters) extends NSBundle {
 //}
 
 class RobWriteback(implicit p: Parameters) extends NSBundle {
-  val robIdx  = UInt(log2Ceil(RobSize).W)
+  val robIdx  = new RobPtr(RobSize)
   val rfdata  = UInt(XLEN.W)
 
   val excpVec = UInt(ExceptionCode.width.W)

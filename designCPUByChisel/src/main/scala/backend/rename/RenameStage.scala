@@ -353,7 +353,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
       io.redirect.robIdx //,
       //io.redirect.robIdx + 1.U
    // )
-    robIdxHeadNext.value := targetValue
+    robIdxHeadNext.value := targetValue.value
     robIdxHeadNext.flag  := false.B
   }.elsewhen(outFire) {
     // 正常发射：head 前进 validCount 步（利用 CircularQueuePtr 的 + 运算）
@@ -362,11 +362,11 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   robIdxHead := robIdxHeadNext
  
   // 为每条有效指令分配 robIdx（累积偏移）
-  val robIndices = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(RobSize).W)))
+  val robIndices = Wire(Vec(CtrlBlockWidth, new RobPtr(RobSize) ))
   var robOffset  = 0.U(log2Ceil(RobSize).W)
   for (i <- 0 until CtrlBlockWidth) {
     val thisPtr = robIdxHead + robOffset
-    robIndices(i) := thisPtr.value
+    robIndices(i) := thisPtr
     // 仅当该路有效时才前进偏移（无效路不占 ROB 条目）
     robOffset = robOffset + laneValid(i).asUInt
   }
@@ -376,7 +376,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   freeList.io.flush        := io.flush
   freeList.io.brMispredict := io.redirect.valid
-  freeList.io.brMispredTag := io.redirect.robIdx(log2Ceil(SnapshotNum) - 1, 0)
+  freeList.io.brMispredTag := io.redirect.robIdx.value(log2Ceil(SnapshotNum) - 1, 0)
  
   // 分支标记：检测本周期是否有条件分支指令
   // brTag 由 ROB 分配，这里用 robIdx 的低位作为 brTag 索引
@@ -400,7 +400,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // 分支正确提交时释放快照（由外部 ROB 提交逻辑驱动）
   rat.io.snptDeq      := false.B   // 外部接入
   rat.io.snptRedirect := io.redirect.valid
-  rat.io.snptSelect   := io.redirect.robIdx(log2Ceil(SnapshotNum) - 1, 0)
+  rat.io.snptSelect   := io.redirect.robIdx.value(log2Ceil(SnapshotNum) - 1, 0)
  
   // ================================================================
   //  2-11. 组装输出

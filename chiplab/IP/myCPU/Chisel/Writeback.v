@@ -42,14 +42,19 @@ module Writeback(
   input         io_InExeResults_0_bits_uop_rs1Valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_0_bits_uop_rs2Valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_0_bits_uop_rdValid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [5:0]  io_InExeResults_0_bits_uop_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [6:0]  io_InExeResults_0_bits_uop_robIdxFull, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [3:0]  io_InExeResults_0_bits_uop_lqIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [3:0]  io_InExeResults_0_bits_uop_sqIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_0_bits_uop_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_0_bits_uop_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_0_bits_uop_robIdxFull_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_0_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [3:0]  io_InExeResults_0_bits_uop_lqIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_0_bits_uop_lqIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [3:0]  io_InExeResults_0_bits_uop_sqIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_0_bits_uop_sqIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input  [2:0]  io_InExeResults_0_bits_uop_issueQueue, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_0_bits_uop_prs1Busy, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_0_bits_uop_prs2Busy, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_0_bits_uop_isSta, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_0_bits_uop_isStd, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input  [31:0] io_InExeResults_0_bits_data, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_InExeResults_1_ready, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_1_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
@@ -92,14 +97,19 @@ module Writeback(
   input         io_InExeResults_1_bits_uop_rs1Valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_1_bits_uop_rs2Valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_1_bits_uop_rdValid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [5:0]  io_InExeResults_1_bits_uop_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [6:0]  io_InExeResults_1_bits_uop_robIdxFull, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [3:0]  io_InExeResults_1_bits_uop_lqIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [3:0]  io_InExeResults_1_bits_uop_sqIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_1_bits_uop_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_1_bits_uop_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_1_bits_uop_robIdxFull_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_1_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [3:0]  io_InExeResults_1_bits_uop_lqIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_1_bits_uop_lqIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [3:0]  io_InExeResults_1_bits_uop_sqIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_1_bits_uop_sqIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input  [2:0]  io_InExeResults_1_bits_uop_issueQueue, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_1_bits_uop_prs1Busy, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_1_bits_uop_prs2Busy, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_1_bits_uop_isSta, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_1_bits_uop_isStd, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input  [31:0] io_InExeResults_1_bits_data, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_InExeResults_2_ready, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
@@ -142,17 +152,23 @@ module Writeback(
   input         io_InExeResults_2_bits_uop_rs1Valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_bits_uop_rs2Valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_bits_uop_rdValid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [5:0]  io_InExeResults_2_bits_uop_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [6:0]  io_InExeResults_2_bits_uop_robIdxFull, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [3:0]  io_InExeResults_2_bits_uop_lqIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [3:0]  io_InExeResults_2_bits_uop_sqIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_2_bits_uop_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_2_bits_uop_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_2_bits_uop_robIdxFull_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_2_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [3:0]  io_InExeResults_2_bits_uop_lqIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_2_bits_uop_lqIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [3:0]  io_InExeResults_2_bits_uop_sqIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_2_bits_uop_sqIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input  [2:0]  io_InExeResults_2_bits_uop_issueQueue, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_bits_uop_prs1Busy, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_bits_uop_prs2Busy, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_bits_uop_isSta, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_2_bits_uop_isStd, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input  [31:0] io_InExeResults_2_bits_data, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   input         io_InExeResults_2_bits_redirect_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  input  [5:0]  io_InExeResults_2_bits_redirect_bits_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input  [5:0]  io_InExeResults_2_bits_redirect_bits_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  input         io_InExeResults_2_bits_redirect_bits_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_rfWritePorts_0_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [6:0]  io_rfWritePorts_0_addr, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [31:0] io_rfWritePorts_0_data, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
@@ -175,17 +191,20 @@ module Writeback(
   output        io_wakeupPorts_2_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [6:0]  io_wakeupPorts_2_bits_pdst, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_toRObResults_0_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  output [5:0]  io_toRObResults_0_bits_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  output [5:0]  io_toRObResults_0_bits_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  output        io_toRObResults_0_bits_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [31:0] io_toRObResults_0_bits_rfdata, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [9:0]  io_toRObResults_0_bits_excpVec, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_toRObResults_0_bits_isBypass, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_toRObResults_1_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  output [5:0]  io_toRObResults_1_bits_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  output [5:0]  io_toRObResults_1_bits_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  output        io_toRObResults_1_bits_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [31:0] io_toRObResults_1_bits_rfdata, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [9:0]  io_toRObResults_1_bits_excpVec, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_toRObResults_1_bits_isBypass, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_toRObResults_2_valid, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
-  output [5:0]  io_toRObResults_2_bits_robIdx, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  output [5:0]  io_toRObResults_2_bits_robIdx_value, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
+  output        io_toRObResults_2_bits_robIdx_flag, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [31:0] io_toRObResults_2_bits_rfdata, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output [9:0]  io_toRObResults_2_bits_excpVec, // @[src/main/scala/backend/execute/Writeback.scala 28:14]
   output        io_toRObResults_2_bits_isBypass // @[src/main/scala/backend/execute/Writeback.scala 28:14]
@@ -350,6 +369,21 @@ module Writeback(
   reg [31:0] _RAND_156;
   reg [31:0] _RAND_157;
   reg [31:0] _RAND_158;
+  reg [31:0] _RAND_159;
+  reg [31:0] _RAND_160;
+  reg [31:0] _RAND_161;
+  reg [31:0] _RAND_162;
+  reg [31:0] _RAND_163;
+  reg [31:0] _RAND_164;
+  reg [31:0] _RAND_165;
+  reg [31:0] _RAND_166;
+  reg [31:0] _RAND_167;
+  reg [31:0] _RAND_168;
+  reg [31:0] _RAND_169;
+  reg [31:0] _RAND_170;
+  reg [31:0] _RAND_171;
+  reg [31:0] _RAND_172;
+  reg [31:0] _RAND_173;
 `endif // RANDOMIZE_REG_INIT
   reg  stgValid_0; // @[src/main/scala/backend/execute/Writeback.scala 54:25]
   reg  stgValid_1; // @[src/main/scala/backend/execute/Writeback.scala 54:25]
@@ -393,10 +427,14 @@ module Writeback(
   reg  stgData_0_uop_rs1Valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_0_uop_rs2Valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_0_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [5:0] stgData_0_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [6:0] stgData_0_uop_robIdxFull; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [3:0] stgData_0_uop_lqIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [3:0] stgData_0_uop_sqIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_0_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_0_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_0_uop_robIdxFull_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_0_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [3:0] stgData_0_uop_lqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_0_uop_lqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [3:0] stgData_0_uop_sqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_0_uop_sqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [2:0] stgData_0_uop_issueQueue; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_0_uop_prs1Busy; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_0_uop_prs2Busy; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
@@ -405,7 +443,8 @@ module Writeback(
   reg [31:0] stgData_0_data; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_0_redirect_valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_0_redirect_bits_valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [5:0] stgData_0_redirect_bits_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_0_redirect_bits_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_0_redirect_bits_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [31:0] stgData_1_uop_pc; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [31:0] stgData_1_uop_inst; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [3:0] stgData_1_uop_ctrl_fuType; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
@@ -445,10 +484,14 @@ module Writeback(
   reg  stgData_1_uop_rs1Valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_1_uop_rs2Valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_1_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [5:0] stgData_1_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [6:0] stgData_1_uop_robIdxFull; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [3:0] stgData_1_uop_lqIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [3:0] stgData_1_uop_sqIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_1_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_1_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_1_uop_robIdxFull_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_1_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [3:0] stgData_1_uop_lqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_1_uop_lqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [3:0] stgData_1_uop_sqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_1_uop_sqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [2:0] stgData_1_uop_issueQueue; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_1_uop_prs1Busy; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_1_uop_prs2Busy; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
@@ -457,7 +500,8 @@ module Writeback(
   reg [31:0] stgData_1_data; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_1_redirect_valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_1_redirect_bits_valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [5:0] stgData_1_redirect_bits_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_1_redirect_bits_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_1_redirect_bits_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [31:0] stgData_2_uop_pc; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [31:0] stgData_2_uop_inst; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [3:0] stgData_2_uop_ctrl_fuType; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
@@ -497,10 +541,14 @@ module Writeback(
   reg  stgData_2_uop_rs1Valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_2_uop_rs2Valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_2_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [5:0] stgData_2_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [6:0] stgData_2_uop_robIdxFull; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [3:0] stgData_2_uop_lqIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [3:0] stgData_2_uop_sqIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_2_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_2_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_2_uop_robIdxFull_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_2_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [3:0] stgData_2_uop_lqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_2_uop_lqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [3:0] stgData_2_uop_sqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_2_uop_sqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg [2:0] stgData_2_uop_issueQueue; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_2_uop_prs1Busy; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_2_uop_prs2Busy; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
@@ -509,19 +557,20 @@ module Writeback(
   reg [31:0] stgData_2_data; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_2_redirect_valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   reg  stgData_2_redirect_bits_valid; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
-  reg [5:0] stgData_2_redirect_bits_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg [5:0] stgData_2_redirect_bits_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
+  reg  stgData_2_redirect_bits_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 55:21]
   wire  stgReady = ~stgValid_0 | stgValid_0; // @[src/main/scala/backend/execute/Writeback.scala 63:33]
   wire  inFire = io_InExeResults_0_valid & stgReady; // @[src/main/scala/backend/execute/Writeback.scala 65:43]
   wire  _GEN_0 = stgValid_0 ? 1'h0 : stgValid_0; // @[src/main/scala/backend/execute/Writeback.scala 76:25 77:19 54:25]
   wire  _GEN_1 = inFire | _GEN_0; // @[src/main/scala/backend/execute/Writeback.scala 73:24 74:19]
   wire  stgReady_1 = ~stgValid_1 | stgValid_1; // @[src/main/scala/backend/execute/Writeback.scala 63:33]
   wire  inFire_1 = io_InExeResults_1_valid & stgReady_1; // @[src/main/scala/backend/execute/Writeback.scala 65:43]
-  wire  _GEN_107 = stgValid_1 ? 1'h0 : stgValid_1; // @[src/main/scala/backend/execute/Writeback.scala 76:25 77:19 54:25]
-  wire  _GEN_108 = inFire_1 | _GEN_107; // @[src/main/scala/backend/execute/Writeback.scala 73:24 74:19]
+  wire  _GEN_117 = stgValid_1 ? 1'h0 : stgValid_1; // @[src/main/scala/backend/execute/Writeback.scala 76:25 77:19 54:25]
+  wire  _GEN_118 = inFire_1 | _GEN_117; // @[src/main/scala/backend/execute/Writeback.scala 73:24 74:19]
   wire  stgReady_2 = ~stgValid_2 | stgValid_2; // @[src/main/scala/backend/execute/Writeback.scala 63:33]
   wire  inFire_2 = io_InExeResults_2_valid & stgReady_2; // @[src/main/scala/backend/execute/Writeback.scala 65:43]
-  wire  _GEN_214 = stgValid_2 ? 1'h0 : stgValid_2; // @[src/main/scala/backend/execute/Writeback.scala 76:25 77:19 54:25]
-  wire  _GEN_215 = inFire_2 | _GEN_214; // @[src/main/scala/backend/execute/Writeback.scala 73:24 74:19]
+  wire  _GEN_234 = stgValid_2 ? 1'h0 : stgValid_2; // @[src/main/scala/backend/execute/Writeback.scala 76:25 77:19 54:25]
+  wire  _GEN_235 = inFire_2 | _GEN_234; // @[src/main/scala/backend/execute/Writeback.scala 73:24 74:19]
   assign io_InExeResults_0_ready = ~stgValid_0 | stgValid_0; // @[src/main/scala/backend/execute/Writeback.scala 63:33]
   assign io_InExeResults_1_ready = ~stgValid_1 | stgValid_1; // @[src/main/scala/backend/execute/Writeback.scala 63:33]
   assign io_InExeResults_2_ready = ~stgValid_2 | stgValid_2; // @[src/main/scala/backend/execute/Writeback.scala 63:33]
@@ -547,17 +596,20 @@ module Writeback(
   assign io_wakeupPorts_2_valid = stgValid_2 & stgData_2_uop_ctrl_rfWen & stgData_2_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 92:49]
   assign io_wakeupPorts_2_bits_pdst = stgData_2_uop_pdst; // @[src/main/scala/backend/execute/Writeback.scala 101:33]
   assign io_toRObResults_0_valid = stgValid_0; // @[src/main/scala/backend/execute/Writeback.scala 104:30]
-  assign io_toRObResults_0_bits_robIdx = stgData_0_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
+  assign io_toRObResults_0_bits_robIdx_value = stgData_0_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
+  assign io_toRObResults_0_bits_robIdx_flag = stgData_0_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
   assign io_toRObResults_0_bits_rfdata = stgData_0_data; // @[src/main/scala/backend/execute/Writeback.scala 108:38]
   assign io_toRObResults_0_bits_excpVec = 10'h0; // @[src/main/scala/backend/execute/Writeback.scala 105:38]
   assign io_toRObResults_0_bits_isBypass = 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 106:39]
   assign io_toRObResults_1_valid = stgValid_1; // @[src/main/scala/backend/execute/Writeback.scala 104:30]
-  assign io_toRObResults_1_bits_robIdx = stgData_1_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
+  assign io_toRObResults_1_bits_robIdx_value = stgData_1_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
+  assign io_toRObResults_1_bits_robIdx_flag = stgData_1_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
   assign io_toRObResults_1_bits_rfdata = stgData_1_data; // @[src/main/scala/backend/execute/Writeback.scala 108:38]
   assign io_toRObResults_1_bits_excpVec = 10'h0; // @[src/main/scala/backend/execute/Writeback.scala 105:38]
   assign io_toRObResults_1_bits_isBypass = 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 106:39]
   assign io_toRObResults_2_valid = stgValid_2; // @[src/main/scala/backend/execute/Writeback.scala 104:30]
-  assign io_toRObResults_2_bits_robIdx = stgData_2_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
+  assign io_toRObResults_2_bits_robIdx_value = stgData_2_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
+  assign io_toRObResults_2_bits_robIdx_flag = stgData_2_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 107:38]
   assign io_toRObResults_2_bits_rfdata = stgData_2_data; // @[src/main/scala/backend/execute/Writeback.scala 108:38]
   assign io_toRObResults_2_bits_excpVec = 10'h0; // @[src/main/scala/backend/execute/Writeback.scala 105:38]
   assign io_toRObResults_2_bits_isBypass = 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 106:39]
@@ -570,12 +622,12 @@ module Writeback(
     if (reset) begin // @[src/main/scala/backend/execute/Writeback.scala 54:25]
       stgValid_1 <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 54:25]
     end else begin
-      stgValid_1 <= _GEN_108;
+      stgValid_1 <= _GEN_118;
     end
     if (reset) begin // @[src/main/scala/backend/execute/Writeback.scala 54:25]
       stgValid_2 <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 54:25]
     end else begin
-      stgValid_2 <= _GEN_215;
+      stgValid_2 <= _GEN_235;
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_0_uop_pc <= io_InExeResults_0_bits_uop_pc; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -695,16 +747,28 @@ module Writeback(
       stgData_0_uop_rdValid <= io_InExeResults_0_bits_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_0_uop_robIdx <= io_InExeResults_0_bits_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_0_uop_robIdx_value <= io_InExeResults_0_bits_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_0_uop_robIdxFull <= io_InExeResults_0_bits_uop_robIdxFull; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_0_uop_robIdx_flag <= io_InExeResults_0_bits_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_0_uop_lqIdx <= io_InExeResults_0_bits_uop_lqIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_0_uop_robIdxFull_value <= io_InExeResults_0_bits_uop_robIdxFull_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_0_uop_sqIdx <= io_InExeResults_0_bits_uop_sqIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_0_uop_robIdxFull_flag <= io_InExeResults_0_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_0_uop_lqIdx_value <= io_InExeResults_0_bits_uop_lqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_0_uop_lqIdx_flag <= io_InExeResults_0_bits_uop_lqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_0_uop_sqIdx_value <= io_InExeResults_0_bits_uop_sqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_0_uop_sqIdx_flag <= io_InExeResults_0_bits_uop_sqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_0_uop_issueQueue <= io_InExeResults_0_bits_uop_issueQueue; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -719,7 +783,7 @@ module Writeback(
       stgData_0_uop_isSta <= io_InExeResults_0_bits_uop_isSta; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_0_uop_isStd <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_0_uop_isStd <= io_InExeResults_0_bits_uop_isStd; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_0_data <= io_InExeResults_0_bits_data; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -731,7 +795,10 @@ module Writeback(
       stgData_0_redirect_bits_valid <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_0_redirect_bits_robIdx <= 6'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_0_redirect_bits_robIdx_value <= 6'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_0_redirect_bits_robIdx_flag <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_1_uop_pc <= io_InExeResults_1_bits_uop_pc; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -851,16 +918,28 @@ module Writeback(
       stgData_1_uop_rdValid <= io_InExeResults_1_bits_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_1_uop_robIdx <= io_InExeResults_1_bits_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_1_uop_robIdx_value <= io_InExeResults_1_bits_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_1_uop_robIdxFull <= io_InExeResults_1_bits_uop_robIdxFull; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_1_uop_robIdx_flag <= io_InExeResults_1_bits_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_1_uop_lqIdx <= io_InExeResults_1_bits_uop_lqIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_1_uop_robIdxFull_value <= io_InExeResults_1_bits_uop_robIdxFull_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_1_uop_sqIdx <= io_InExeResults_1_bits_uop_sqIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_1_uop_robIdxFull_flag <= io_InExeResults_1_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_1_uop_lqIdx_value <= io_InExeResults_1_bits_uop_lqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_1_uop_lqIdx_flag <= io_InExeResults_1_bits_uop_lqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_1_uop_sqIdx_value <= io_InExeResults_1_bits_uop_sqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_1_uop_sqIdx_flag <= io_InExeResults_1_bits_uop_sqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_1_uop_issueQueue <= io_InExeResults_1_bits_uop_issueQueue; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -875,7 +954,7 @@ module Writeback(
       stgData_1_uop_isSta <= io_InExeResults_1_bits_uop_isSta; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_1_uop_isStd <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_1_uop_isStd <= io_InExeResults_1_bits_uop_isStd; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_1_data <= io_InExeResults_1_bits_data; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -887,7 +966,10 @@ module Writeback(
       stgData_1_redirect_bits_valid <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_1_redirect_bits_robIdx <= 6'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_1_redirect_bits_robIdx_value <= 6'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_1) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_1_redirect_bits_robIdx_flag <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_2_uop_pc <= io_InExeResults_2_bits_uop_pc; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -1007,16 +1089,28 @@ module Writeback(
       stgData_2_uop_rdValid <= io_InExeResults_2_bits_uop_rdValid; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_2_uop_robIdx <= io_InExeResults_2_bits_uop_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_2_uop_robIdx_value <= io_InExeResults_2_bits_uop_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_2_uop_robIdxFull <= io_InExeResults_2_bits_uop_robIdxFull; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_2_uop_robIdx_flag <= io_InExeResults_2_bits_uop_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_2_uop_lqIdx <= io_InExeResults_2_bits_uop_lqIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_2_uop_robIdxFull_value <= io_InExeResults_2_bits_uop_robIdxFull_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_2_uop_sqIdx <= io_InExeResults_2_bits_uop_sqIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_2_uop_robIdxFull_flag <= io_InExeResults_2_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_2_uop_lqIdx_value <= io_InExeResults_2_bits_uop_lqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_2_uop_lqIdx_flag <= io_InExeResults_2_bits_uop_lqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_2_uop_sqIdx_value <= io_InExeResults_2_bits_uop_sqIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_2_uop_sqIdx_flag <= io_InExeResults_2_bits_uop_sqIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_2_uop_issueQueue <= io_InExeResults_2_bits_uop_issueQueue; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -1031,7 +1125,7 @@ module Writeback(
       stgData_2_uop_isSta <= io_InExeResults_2_bits_uop_isSta; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_2_uop_isStd <= 1'h0; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_2_uop_isStd <= io_InExeResults_2_bits_uop_isStd; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
       stgData_2_data <= io_InExeResults_2_bits_data; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
@@ -1041,7 +1135,10 @@ module Writeback(
     end
     stgData_2_redirect_bits_valid <= inFire_2 | stgData_2_redirect_bits_valid; // @[src/main/scala/backend/execute/Writeback.scala 73:24 75:19 55:21]
     if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
-      stgData_2_redirect_bits_robIdx <= io_InExeResults_2_bits_redirect_bits_robIdx; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+      stgData_2_redirect_bits_robIdx_value <= io_InExeResults_2_bits_redirect_bits_robIdx_value; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
+    end
+    if (inFire_2) begin // @[src/main/scala/backend/execute/Writeback.scala 73:24]
+      stgData_2_redirect_bits_robIdx_flag <= io_InExeResults_2_bits_redirect_bits_robIdx_flag; // @[src/main/scala/backend/execute/Writeback.scala 75:19]
     end
   end
 // Register and memory initialization
@@ -1165,239 +1262,269 @@ initial begin
   _RAND_41 = {1{`RANDOM}};
   stgData_0_uop_rdValid = _RAND_41[0:0];
   _RAND_42 = {1{`RANDOM}};
-  stgData_0_uop_robIdx = _RAND_42[5:0];
+  stgData_0_uop_robIdx_value = _RAND_42[5:0];
   _RAND_43 = {1{`RANDOM}};
-  stgData_0_uop_robIdxFull = _RAND_43[6:0];
+  stgData_0_uop_robIdx_flag = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  stgData_0_uop_lqIdx = _RAND_44[3:0];
+  stgData_0_uop_robIdxFull_value = _RAND_44[5:0];
   _RAND_45 = {1{`RANDOM}};
-  stgData_0_uop_sqIdx = _RAND_45[3:0];
+  stgData_0_uop_robIdxFull_flag = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  stgData_0_uop_issueQueue = _RAND_46[2:0];
+  stgData_0_uop_lqIdx_value = _RAND_46[3:0];
   _RAND_47 = {1{`RANDOM}};
-  stgData_0_uop_prs1Busy = _RAND_47[0:0];
+  stgData_0_uop_lqIdx_flag = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  stgData_0_uop_prs2Busy = _RAND_48[0:0];
+  stgData_0_uop_sqIdx_value = _RAND_48[3:0];
   _RAND_49 = {1{`RANDOM}};
-  stgData_0_uop_isSta = _RAND_49[0:0];
+  stgData_0_uop_sqIdx_flag = _RAND_49[0:0];
   _RAND_50 = {1{`RANDOM}};
-  stgData_0_uop_isStd = _RAND_50[0:0];
+  stgData_0_uop_issueQueue = _RAND_50[2:0];
   _RAND_51 = {1{`RANDOM}};
-  stgData_0_data = _RAND_51[31:0];
+  stgData_0_uop_prs1Busy = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
-  stgData_0_redirect_valid = _RAND_52[0:0];
+  stgData_0_uop_prs2Busy = _RAND_52[0:0];
   _RAND_53 = {1{`RANDOM}};
-  stgData_0_redirect_bits_valid = _RAND_53[0:0];
+  stgData_0_uop_isSta = _RAND_53[0:0];
   _RAND_54 = {1{`RANDOM}};
-  stgData_0_redirect_bits_robIdx = _RAND_54[5:0];
+  stgData_0_uop_isStd = _RAND_54[0:0];
   _RAND_55 = {1{`RANDOM}};
-  stgData_1_uop_pc = _RAND_55[31:0];
+  stgData_0_data = _RAND_55[31:0];
   _RAND_56 = {1{`RANDOM}};
-  stgData_1_uop_inst = _RAND_56[31:0];
+  stgData_0_redirect_valid = _RAND_56[0:0];
   _RAND_57 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_fuType = _RAND_57[3:0];
+  stgData_0_redirect_bits_valid = _RAND_57[0:0];
   _RAND_58 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_aluOp = _RAND_58[4:0];
+  stgData_0_redirect_bits_robIdx_value = _RAND_58[5:0];
   _RAND_59 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_bruOp = _RAND_59[3:0];
+  stgData_0_redirect_bits_robIdx_flag = _RAND_59[0:0];
   _RAND_60 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_lsuOp = _RAND_60[3:0];
+  stgData_1_uop_pc = _RAND_60[31:0];
   _RAND_61 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_csrOp = _RAND_61[2:0];
+  stgData_1_uop_inst = _RAND_61[31:0];
   _RAND_62 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_mulOp = _RAND_62[2:0];
+  stgData_1_uop_ctrl_fuType = _RAND_62[3:0];
   _RAND_63 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_divOp = _RAND_63[2:0];
+  stgData_1_uop_ctrl_aluOp = _RAND_63[4:0];
   _RAND_64 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_src1Type = _RAND_64[2:0];
+  stgData_1_uop_ctrl_bruOp = _RAND_64[3:0];
   _RAND_65 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_src2Type = _RAND_65[2:0];
+  stgData_1_uop_ctrl_lsuOp = _RAND_65[3:0];
   _RAND_66 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_immType = _RAND_66[3:0];
+  stgData_1_uop_ctrl_csrOp = _RAND_66[2:0];
   _RAND_67 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_rfWen = _RAND_67[0:0];
+  stgData_1_uop_ctrl_mulOp = _RAND_67[2:0];
   _RAND_68 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_memRead = _RAND_68[0:0];
+  stgData_1_uop_ctrl_divOp = _RAND_68[2:0];
   _RAND_69 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_memWrite = _RAND_69[0:0];
+  stgData_1_uop_ctrl_src1Type = _RAND_69[2:0];
   _RAND_70 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_csrWen = _RAND_70[0:0];
+  stgData_1_uop_ctrl_src2Type = _RAND_70[2:0];
   _RAND_71 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_isBranch = _RAND_71[0:0];
+  stgData_1_uop_ctrl_immType = _RAND_71[3:0];
   _RAND_72 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_isJump = _RAND_72[0:0];
+  stgData_1_uop_ctrl_rfWen = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
-  stgData_1_uop_ctrl_isPriv = _RAND_73[0:0];
+  stgData_1_uop_ctrl_memRead = _RAND_73[0:0];
   _RAND_74 = {1{`RANDOM}};
-  stgData_1_uop_excpVec = _RAND_74[9:0];
+  stgData_1_uop_ctrl_memWrite = _RAND_74[0:0];
   _RAND_75 = {1{`RANDOM}};
-  stgData_1_uop_imm = _RAND_75[31:0];
+  stgData_1_uop_ctrl_csrWen = _RAND_75[0:0];
   _RAND_76 = {1{`RANDOM}};
-  stgData_1_uop_csrAddress = _RAND_76[13:0];
+  stgData_1_uop_ctrl_isBranch = _RAND_76[0:0];
   _RAND_77 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_valid = _RAND_77[0:0];
+  stgData_1_uop_ctrl_isJump = _RAND_77[0:0];
   _RAND_78 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_isBr = _RAND_78[0:0];
+  stgData_1_uop_ctrl_isPriv = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_isJal = _RAND_79[0:0];
+  stgData_1_uop_excpVec = _RAND_79[9:0];
   _RAND_80 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_isJalr = _RAND_80[0:0];
+  stgData_1_uop_imm = _RAND_80[31:0];
   _RAND_81 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_isCall = _RAND_81[0:0];
+  stgData_1_uop_csrAddress = _RAND_81[13:0];
   _RAND_82 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_isRet = _RAND_82[0:0];
+  stgData_1_uop_pdInfo_valid = _RAND_82[0:0];
   _RAND_83 = {1{`RANDOM}};
-  stgData_1_uop_pdInfo_jumpTarget = _RAND_83[31:0];
+  stgData_1_uop_pdInfo_isBr = _RAND_83[0:0];
   _RAND_84 = {1{`RANDOM}};
-  stgData_1_uop_ldst = _RAND_84[4:0];
+  stgData_1_uop_pdInfo_isJal = _RAND_84[0:0];
   _RAND_85 = {1{`RANDOM}};
-  stgData_1_uop_lrs1 = _RAND_85[4:0];
+  stgData_1_uop_pdInfo_isJalr = _RAND_85[0:0];
   _RAND_86 = {1{`RANDOM}};
-  stgData_1_uop_lrs2 = _RAND_86[4:0];
+  stgData_1_uop_pdInfo_isCall = _RAND_86[0:0];
   _RAND_87 = {1{`RANDOM}};
-  stgData_1_uop_pdst = _RAND_87[6:0];
+  stgData_1_uop_pdInfo_isRet = _RAND_87[0:0];
   _RAND_88 = {1{`RANDOM}};
-  stgData_1_uop_prs1 = _RAND_88[6:0];
+  stgData_1_uop_pdInfo_jumpTarget = _RAND_88[31:0];
   _RAND_89 = {1{`RANDOM}};
-  stgData_1_uop_prs2 = _RAND_89[6:0];
+  stgData_1_uop_ldst = _RAND_89[4:0];
   _RAND_90 = {1{`RANDOM}};
-  stgData_1_uop_oldPdst = _RAND_90[6:0];
+  stgData_1_uop_lrs1 = _RAND_90[4:0];
   _RAND_91 = {1{`RANDOM}};
-  stgData_1_uop_rs1Valid = _RAND_91[0:0];
+  stgData_1_uop_lrs2 = _RAND_91[4:0];
   _RAND_92 = {1{`RANDOM}};
-  stgData_1_uop_rs2Valid = _RAND_92[0:0];
+  stgData_1_uop_pdst = _RAND_92[6:0];
   _RAND_93 = {1{`RANDOM}};
-  stgData_1_uop_rdValid = _RAND_93[0:0];
+  stgData_1_uop_prs1 = _RAND_93[6:0];
   _RAND_94 = {1{`RANDOM}};
-  stgData_1_uop_robIdx = _RAND_94[5:0];
+  stgData_1_uop_prs2 = _RAND_94[6:0];
   _RAND_95 = {1{`RANDOM}};
-  stgData_1_uop_robIdxFull = _RAND_95[6:0];
+  stgData_1_uop_oldPdst = _RAND_95[6:0];
   _RAND_96 = {1{`RANDOM}};
-  stgData_1_uop_lqIdx = _RAND_96[3:0];
+  stgData_1_uop_rs1Valid = _RAND_96[0:0];
   _RAND_97 = {1{`RANDOM}};
-  stgData_1_uop_sqIdx = _RAND_97[3:0];
+  stgData_1_uop_rs2Valid = _RAND_97[0:0];
   _RAND_98 = {1{`RANDOM}};
-  stgData_1_uop_issueQueue = _RAND_98[2:0];
+  stgData_1_uop_rdValid = _RAND_98[0:0];
   _RAND_99 = {1{`RANDOM}};
-  stgData_1_uop_prs1Busy = _RAND_99[0:0];
+  stgData_1_uop_robIdx_value = _RAND_99[5:0];
   _RAND_100 = {1{`RANDOM}};
-  stgData_1_uop_prs2Busy = _RAND_100[0:0];
+  stgData_1_uop_robIdx_flag = _RAND_100[0:0];
   _RAND_101 = {1{`RANDOM}};
-  stgData_1_uop_isSta = _RAND_101[0:0];
+  stgData_1_uop_robIdxFull_value = _RAND_101[5:0];
   _RAND_102 = {1{`RANDOM}};
-  stgData_1_uop_isStd = _RAND_102[0:0];
+  stgData_1_uop_robIdxFull_flag = _RAND_102[0:0];
   _RAND_103 = {1{`RANDOM}};
-  stgData_1_data = _RAND_103[31:0];
+  stgData_1_uop_lqIdx_value = _RAND_103[3:0];
   _RAND_104 = {1{`RANDOM}};
-  stgData_1_redirect_valid = _RAND_104[0:0];
+  stgData_1_uop_lqIdx_flag = _RAND_104[0:0];
   _RAND_105 = {1{`RANDOM}};
-  stgData_1_redirect_bits_valid = _RAND_105[0:0];
+  stgData_1_uop_sqIdx_value = _RAND_105[3:0];
   _RAND_106 = {1{`RANDOM}};
-  stgData_1_redirect_bits_robIdx = _RAND_106[5:0];
+  stgData_1_uop_sqIdx_flag = _RAND_106[0:0];
   _RAND_107 = {1{`RANDOM}};
-  stgData_2_uop_pc = _RAND_107[31:0];
+  stgData_1_uop_issueQueue = _RAND_107[2:0];
   _RAND_108 = {1{`RANDOM}};
-  stgData_2_uop_inst = _RAND_108[31:0];
+  stgData_1_uop_prs1Busy = _RAND_108[0:0];
   _RAND_109 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_fuType = _RAND_109[3:0];
+  stgData_1_uop_prs2Busy = _RAND_109[0:0];
   _RAND_110 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_aluOp = _RAND_110[4:0];
+  stgData_1_uop_isSta = _RAND_110[0:0];
   _RAND_111 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_bruOp = _RAND_111[3:0];
+  stgData_1_uop_isStd = _RAND_111[0:0];
   _RAND_112 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_lsuOp = _RAND_112[3:0];
+  stgData_1_data = _RAND_112[31:0];
   _RAND_113 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_csrOp = _RAND_113[2:0];
+  stgData_1_redirect_valid = _RAND_113[0:0];
   _RAND_114 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_mulOp = _RAND_114[2:0];
+  stgData_1_redirect_bits_valid = _RAND_114[0:0];
   _RAND_115 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_divOp = _RAND_115[2:0];
+  stgData_1_redirect_bits_robIdx_value = _RAND_115[5:0];
   _RAND_116 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_src1Type = _RAND_116[2:0];
+  stgData_1_redirect_bits_robIdx_flag = _RAND_116[0:0];
   _RAND_117 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_src2Type = _RAND_117[2:0];
+  stgData_2_uop_pc = _RAND_117[31:0];
   _RAND_118 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_immType = _RAND_118[3:0];
+  stgData_2_uop_inst = _RAND_118[31:0];
   _RAND_119 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_rfWen = _RAND_119[0:0];
+  stgData_2_uop_ctrl_fuType = _RAND_119[3:0];
   _RAND_120 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_memRead = _RAND_120[0:0];
+  stgData_2_uop_ctrl_aluOp = _RAND_120[4:0];
   _RAND_121 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_memWrite = _RAND_121[0:0];
+  stgData_2_uop_ctrl_bruOp = _RAND_121[3:0];
   _RAND_122 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_csrWen = _RAND_122[0:0];
+  stgData_2_uop_ctrl_lsuOp = _RAND_122[3:0];
   _RAND_123 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_isBranch = _RAND_123[0:0];
+  stgData_2_uop_ctrl_csrOp = _RAND_123[2:0];
   _RAND_124 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_isJump = _RAND_124[0:0];
+  stgData_2_uop_ctrl_mulOp = _RAND_124[2:0];
   _RAND_125 = {1{`RANDOM}};
-  stgData_2_uop_ctrl_isPriv = _RAND_125[0:0];
+  stgData_2_uop_ctrl_divOp = _RAND_125[2:0];
   _RAND_126 = {1{`RANDOM}};
-  stgData_2_uop_excpVec = _RAND_126[9:0];
+  stgData_2_uop_ctrl_src1Type = _RAND_126[2:0];
   _RAND_127 = {1{`RANDOM}};
-  stgData_2_uop_imm = _RAND_127[31:0];
+  stgData_2_uop_ctrl_src2Type = _RAND_127[2:0];
   _RAND_128 = {1{`RANDOM}};
-  stgData_2_uop_csrAddress = _RAND_128[13:0];
+  stgData_2_uop_ctrl_immType = _RAND_128[3:0];
   _RAND_129 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_valid = _RAND_129[0:0];
+  stgData_2_uop_ctrl_rfWen = _RAND_129[0:0];
   _RAND_130 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_isBr = _RAND_130[0:0];
+  stgData_2_uop_ctrl_memRead = _RAND_130[0:0];
   _RAND_131 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_isJal = _RAND_131[0:0];
+  stgData_2_uop_ctrl_memWrite = _RAND_131[0:0];
   _RAND_132 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_isJalr = _RAND_132[0:0];
+  stgData_2_uop_ctrl_csrWen = _RAND_132[0:0];
   _RAND_133 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_isCall = _RAND_133[0:0];
+  stgData_2_uop_ctrl_isBranch = _RAND_133[0:0];
   _RAND_134 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_isRet = _RAND_134[0:0];
+  stgData_2_uop_ctrl_isJump = _RAND_134[0:0];
   _RAND_135 = {1{`RANDOM}};
-  stgData_2_uop_pdInfo_jumpTarget = _RAND_135[31:0];
+  stgData_2_uop_ctrl_isPriv = _RAND_135[0:0];
   _RAND_136 = {1{`RANDOM}};
-  stgData_2_uop_ldst = _RAND_136[4:0];
+  stgData_2_uop_excpVec = _RAND_136[9:0];
   _RAND_137 = {1{`RANDOM}};
-  stgData_2_uop_lrs1 = _RAND_137[4:0];
+  stgData_2_uop_imm = _RAND_137[31:0];
   _RAND_138 = {1{`RANDOM}};
-  stgData_2_uop_lrs2 = _RAND_138[4:0];
+  stgData_2_uop_csrAddress = _RAND_138[13:0];
   _RAND_139 = {1{`RANDOM}};
-  stgData_2_uop_pdst = _RAND_139[6:0];
+  stgData_2_uop_pdInfo_valid = _RAND_139[0:0];
   _RAND_140 = {1{`RANDOM}};
-  stgData_2_uop_prs1 = _RAND_140[6:0];
+  stgData_2_uop_pdInfo_isBr = _RAND_140[0:0];
   _RAND_141 = {1{`RANDOM}};
-  stgData_2_uop_prs2 = _RAND_141[6:0];
+  stgData_2_uop_pdInfo_isJal = _RAND_141[0:0];
   _RAND_142 = {1{`RANDOM}};
-  stgData_2_uop_oldPdst = _RAND_142[6:0];
+  stgData_2_uop_pdInfo_isJalr = _RAND_142[0:0];
   _RAND_143 = {1{`RANDOM}};
-  stgData_2_uop_rs1Valid = _RAND_143[0:0];
+  stgData_2_uop_pdInfo_isCall = _RAND_143[0:0];
   _RAND_144 = {1{`RANDOM}};
-  stgData_2_uop_rs2Valid = _RAND_144[0:0];
+  stgData_2_uop_pdInfo_isRet = _RAND_144[0:0];
   _RAND_145 = {1{`RANDOM}};
-  stgData_2_uop_rdValid = _RAND_145[0:0];
+  stgData_2_uop_pdInfo_jumpTarget = _RAND_145[31:0];
   _RAND_146 = {1{`RANDOM}};
-  stgData_2_uop_robIdx = _RAND_146[5:0];
+  stgData_2_uop_ldst = _RAND_146[4:0];
   _RAND_147 = {1{`RANDOM}};
-  stgData_2_uop_robIdxFull = _RAND_147[6:0];
+  stgData_2_uop_lrs1 = _RAND_147[4:0];
   _RAND_148 = {1{`RANDOM}};
-  stgData_2_uop_lqIdx = _RAND_148[3:0];
+  stgData_2_uop_lrs2 = _RAND_148[4:0];
   _RAND_149 = {1{`RANDOM}};
-  stgData_2_uop_sqIdx = _RAND_149[3:0];
+  stgData_2_uop_pdst = _RAND_149[6:0];
   _RAND_150 = {1{`RANDOM}};
-  stgData_2_uop_issueQueue = _RAND_150[2:0];
+  stgData_2_uop_prs1 = _RAND_150[6:0];
   _RAND_151 = {1{`RANDOM}};
-  stgData_2_uop_prs1Busy = _RAND_151[0:0];
+  stgData_2_uop_prs2 = _RAND_151[6:0];
   _RAND_152 = {1{`RANDOM}};
-  stgData_2_uop_prs2Busy = _RAND_152[0:0];
+  stgData_2_uop_oldPdst = _RAND_152[6:0];
   _RAND_153 = {1{`RANDOM}};
-  stgData_2_uop_isSta = _RAND_153[0:0];
+  stgData_2_uop_rs1Valid = _RAND_153[0:0];
   _RAND_154 = {1{`RANDOM}};
-  stgData_2_uop_isStd = _RAND_154[0:0];
+  stgData_2_uop_rs2Valid = _RAND_154[0:0];
   _RAND_155 = {1{`RANDOM}};
-  stgData_2_data = _RAND_155[31:0];
+  stgData_2_uop_rdValid = _RAND_155[0:0];
   _RAND_156 = {1{`RANDOM}};
-  stgData_2_redirect_valid = _RAND_156[0:0];
+  stgData_2_uop_robIdx_value = _RAND_156[5:0];
   _RAND_157 = {1{`RANDOM}};
-  stgData_2_redirect_bits_valid = _RAND_157[0:0];
+  stgData_2_uop_robIdx_flag = _RAND_157[0:0];
   _RAND_158 = {1{`RANDOM}};
-  stgData_2_redirect_bits_robIdx = _RAND_158[5:0];
+  stgData_2_uop_robIdxFull_value = _RAND_158[5:0];
+  _RAND_159 = {1{`RANDOM}};
+  stgData_2_uop_robIdxFull_flag = _RAND_159[0:0];
+  _RAND_160 = {1{`RANDOM}};
+  stgData_2_uop_lqIdx_value = _RAND_160[3:0];
+  _RAND_161 = {1{`RANDOM}};
+  stgData_2_uop_lqIdx_flag = _RAND_161[0:0];
+  _RAND_162 = {1{`RANDOM}};
+  stgData_2_uop_sqIdx_value = _RAND_162[3:0];
+  _RAND_163 = {1{`RANDOM}};
+  stgData_2_uop_sqIdx_flag = _RAND_163[0:0];
+  _RAND_164 = {1{`RANDOM}};
+  stgData_2_uop_issueQueue = _RAND_164[2:0];
+  _RAND_165 = {1{`RANDOM}};
+  stgData_2_uop_prs1Busy = _RAND_165[0:0];
+  _RAND_166 = {1{`RANDOM}};
+  stgData_2_uop_prs2Busy = _RAND_166[0:0];
+  _RAND_167 = {1{`RANDOM}};
+  stgData_2_uop_isSta = _RAND_167[0:0];
+  _RAND_168 = {1{`RANDOM}};
+  stgData_2_uop_isStd = _RAND_168[0:0];
+  _RAND_169 = {1{`RANDOM}};
+  stgData_2_data = _RAND_169[31:0];
+  _RAND_170 = {1{`RANDOM}};
+  stgData_2_redirect_valid = _RAND_170[0:0];
+  _RAND_171 = {1{`RANDOM}};
+  stgData_2_redirect_bits_valid = _RAND_171[0:0];
+  _RAND_172 = {1{`RANDOM}};
+  stgData_2_redirect_bits_robIdx_value = _RAND_172[5:0];
+  _RAND_173 = {1{`RANDOM}};
+  stgData_2_redirect_bits_robIdx_flag = _RAND_173[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

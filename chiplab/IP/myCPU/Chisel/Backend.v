@@ -167,8 +167,10 @@ module Backend(
   wire  ctrlBlock_io_q1IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q1IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q1IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_q1IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [6:0] ctrlBlock_io_q1IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q1IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q1IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q1IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q1IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q1IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q1IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q2IQEnq_0_valid; // @[src/main/scala/backend/Backend.scala 31:27]
@@ -211,8 +213,10 @@ module Backend(
   wire  ctrlBlock_io_q2IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q2IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q2IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_q2IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [6:0] ctrlBlock_io_q2IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q2IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q2IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q2IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q2IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [2:0] ctrlBlock_io_q2IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q2IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q2IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 31:27]
@@ -256,8 +260,10 @@ module Backend(
   wire  ctrlBlock_io_q3IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q3IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q3IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_q3IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [6:0] ctrlBlock_io_q3IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q3IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q3IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q3IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q3IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [2:0] ctrlBlock_io_q3IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q3IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q3IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 31:27]
@@ -301,51 +307,50 @@ module Backend(
   wire  ctrlBlock_io_q4IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q4IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q4IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_q4IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [6:0] ctrlBlock_io_q4IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_q4IQEnq_0_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_q4IQEnq_0_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q4IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q4IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_q4IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q4IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [3:0] ctrlBlock_io_q4IQEnq_0_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q4IQEnq_0_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [3:0] ctrlBlock_io_q4IQEnq_0_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q4IQEnq_0_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [2:0] ctrlBlock_io_q4IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q4IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q4IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q4IQEnq_0_bits_isSta; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q4IQEnq_0_bits_isStd; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q5IQEnq_0_valid; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [6:0] ctrlBlock_io_q5IQEnq_0_bits_prs1; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [6:0] ctrlBlock_io_q5IQEnq_0_bits_prs2; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q5IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q5IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_q5IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_q5IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [4:0] ctrlBlock_io_iqFeedback_q1FreeEntries; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [3:0] ctrlBlock_io_iqFeedback_q2FreeEntries; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [4:0] ctrlBlock_io_iqFeedback_q3FreeEntries; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [4:0] ctrlBlock_io_iqFeedback_q4FreeEntries; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [3:0] ctrlBlock_io_iqFeedback_q5FreeEntries; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_0_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_lsEnq_req_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_0_bits_isLoad; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_0_bits_isStore; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_lsEnq_req_0_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_lsEnq_req_0_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_1_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_lsEnq_req_1_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_1_bits_isLoad; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_1_bits_isStore; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_lsEnq_req_1_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_lsEnq_req_1_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_2_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_lsEnq_req_2_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_2_bits_isLoad; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire  ctrlBlock_io_lsEnq_req_2_bits_isStore; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_lsEnq_req_2_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [3:0] ctrlBlock_io_lsEnq_req_2_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_lsEnq_req_valid; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_lsEnq_req_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_lsEnq_req_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_lsEnq_req_bits_isLoad; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_lsEnq_req_bits_isStore; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [3:0] ctrlBlock_io_lsEnq_req_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_lsEnq_req_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [3:0] ctrlBlock_io_lsEnq_req_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire  ctrlBlock_io_lsEnq_req_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_writeback_0_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_writeback_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_writeback_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [31:0] ctrlBlock_io_writeback_0_bits_rfdata; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [9:0] ctrlBlock_io_writeback_0_bits_excpVec; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_writeback_1_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_writeback_1_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_writeback_1_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [31:0] ctrlBlock_io_writeback_1_bits_rfdata; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [9:0] ctrlBlock_io_writeback_1_bits_excpVec; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_writeback_2_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_writeback_2_bits_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_writeback_2_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [31:0] ctrlBlock_io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [9:0] ctrlBlock_io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_commit_valid_0; // @[src/main/scala/backend/Backend.scala 31:27]
@@ -371,7 +376,7 @@ module Backend(
   wire  ctrlBlock_io_commit_bits_2_rfWen; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_commit_isWalk; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_redirect_valid; // @[src/main/scala/backend/Backend.scala 31:27]
-  wire [5:0] ctrlBlock_io_redirect_robIdx; // @[src/main/scala/backend/Backend.scala 31:27]
+  wire [5:0] ctrlBlock_io_redirect_robIdx_value; // @[src/main/scala/backend/Backend.scala 31:27]
   wire  ctrlBlock_io_extInt; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [6:0] ctrlBlock_io_debugArchState_0; // @[src/main/scala/backend/Backend.scala 31:27]
   wire [6:0] ctrlBlock_io_debugArchState_1; // @[src/main/scala/backend/Backend.scala 31:27]
@@ -453,8 +458,10 @@ module Backend(
   wire  scheduler_io_q1IQEnq_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1IQEnq_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1IQEnq_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q1IQEnq_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q1IQEnq_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q1IQEnq_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1IQEnq_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q1IQEnq_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1IQEnq_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1IQEnq_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1IQEnq_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2IQEnq_valid; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -497,8 +504,10 @@ module Backend(
   wire  scheduler_io_q2IQEnq_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2IQEnq_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2IQEnq_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q2IQEnq_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q2IQEnq_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q2IQEnq_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q2IQEnq_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q2IQEnq_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q2IQEnq_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [2:0] scheduler_io_q2IQEnq_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2IQEnq_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2IQEnq_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -542,8 +551,10 @@ module Backend(
   wire  scheduler_io_q3IQEnq_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3IQEnq_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3IQEnq_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q3IQEnq_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q3IQEnq_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q3IQEnq_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3IQEnq_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q3IQEnq_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3IQEnq_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [2:0] scheduler_io_q3IQEnq_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3IQEnq_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3IQEnq_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -587,17 +598,25 @@ module Backend(
   wire  scheduler_io_q4IQEnq_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4IQEnq_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4IQEnq_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q4IQEnq_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q4IQEnq_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [3:0] scheduler_io_q4IQEnq_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [3:0] scheduler_io_q4IQEnq_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q4IQEnq_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q4IQEnq_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q4IQEnq_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q4IQEnq_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [3:0] scheduler_io_q4IQEnq_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q4IQEnq_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [3:0] scheduler_io_q4IQEnq_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q4IQEnq_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [2:0] scheduler_io_q4IQEnq_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4IQEnq_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4IQEnq_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4IQEnq_bits_isSta; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q4IQEnq_bits_isStd; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q5IQEnq_valid; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [6:0] scheduler_io_q5IQEnq_bits_prs1; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [6:0] scheduler_io_q5IQEnq_bits_prs2; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q5IQEnq_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q5IQEnq_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q5IQEnq_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q5IQEnq_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_ready; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_valid; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -640,14 +659,19 @@ module Backend(
   wire  scheduler_io_q1Issue_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q1Issue_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q1Issue_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [3:0] scheduler_io_q1Issue_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [3:0] scheduler_io_q1Issue_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q1Issue_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1Issue_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q1Issue_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1Issue_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [3:0] scheduler_io_q1Issue_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1Issue_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [3:0] scheduler_io_q1Issue_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1Issue_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [2:0] scheduler_io_q1Issue_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q1Issue_bits_isSta; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q1Issue_bits_isStd; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2Issue_ready; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2Issue_valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [31:0] scheduler_io_q2Issue_bits_pc; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -689,8 +713,10 @@ module Backend(
   wire  scheduler_io_q2Issue_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2Issue_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2Issue_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q2Issue_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q2Issue_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q2Issue_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q2Issue_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q2Issue_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q2Issue_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [2:0] scheduler_io_q2Issue_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2Issue_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q2Issue_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -735,14 +761,19 @@ module Backend(
   wire  scheduler_io_q3Issue_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3Issue_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3Issue_bits_rdValid; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [5:0] scheduler_io_q3Issue_bits_robIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [6:0] scheduler_io_q3Issue_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [3:0] scheduler_io_q3Issue_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 33:27]
-  wire [3:0] scheduler_io_q3Issue_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q3Issue_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3Issue_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [5:0] scheduler_io_q3Issue_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3Issue_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [3:0] scheduler_io_q3Issue_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3Issue_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire [3:0] scheduler_io_q3Issue_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3Issue_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 33:27]
   wire [2:0] scheduler_io_q3Issue_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3Issue_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3Issue_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q3Issue_bits_isSta; // @[src/main/scala/backend/Backend.scala 33:27]
+  wire  scheduler_io_q3Issue_bits_isStd; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4Issue_ready; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q4Issue_valid; // @[src/main/scala/backend/Backend.scala 33:27]
   wire  scheduler_io_q5Issue_ready; // @[src/main/scala/backend/Backend.scala 33:27]
@@ -801,14 +832,19 @@ module Backend(
   wire  regRead_io_iqIssues_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [5:0] regRead_io_iqIssues_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [6:0] regRead_io_iqIssues_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_iqIssues_0_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_iqIssues_0_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_iqIssues_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_iqIssues_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_iqIssues_0_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_0_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_iqIssues_0_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_0_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [2:0] regRead_io_iqIssues_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_0_bits_isSta; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_0_bits_isStd; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_1_ready; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_1_valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [31:0] regRead_io_iqIssues_1_bits_pc; // @[src/main/scala/backend/Backend.scala 34:27]
@@ -850,8 +886,10 @@ module Backend(
   wire  regRead_io_iqIssues_1_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_1_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_1_bits_rdValid; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [5:0] regRead_io_iqIssues_1_bits_robIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [6:0] regRead_io_iqIssues_1_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_iqIssues_1_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_1_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_iqIssues_1_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_1_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [2:0] regRead_io_iqIssues_1_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_1_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_1_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 34:27]
@@ -896,14 +934,19 @@ module Backend(
   wire  regRead_io_iqIssues_2_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_2_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_2_bits_rdValid; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [5:0] regRead_io_iqIssues_2_bits_robIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [6:0] regRead_io_iqIssues_2_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_iqIssues_2_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_iqIssues_2_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_iqIssues_2_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_2_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_iqIssues_2_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_2_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_iqIssues_2_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_2_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_iqIssues_2_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_2_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [2:0] regRead_io_iqIssues_2_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_2_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_2_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_2_bits_isSta; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_iqIssues_2_bits_isStd; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_3_ready; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_3_valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_iqIssues_4_ready; // @[src/main/scala/backend/Backend.scala 34:27]
@@ -961,14 +1004,19 @@ module Backend(
   wire  regRead_io_exeReqs_0_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_0_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_0_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [5:0] regRead_io_exeReqs_0_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [6:0] regRead_io_exeReqs_0_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_exeReqs_0_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_exeReqs_0_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_exeReqs_0_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_0_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_exeReqs_0_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_0_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_exeReqs_0_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_0_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_exeReqs_0_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_0_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [2:0] regRead_io_exeReqs_0_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_0_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_0_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_0_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_0_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [31:0] regRead_io_exeReqs_0_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [31:0] regRead_io_exeReqs_0_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_1_ready; // @[src/main/scala/backend/Backend.scala 34:27]
@@ -1012,8 +1060,10 @@ module Backend(
   wire  regRead_io_exeReqs_1_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_1_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_1_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [5:0] regRead_io_exeReqs_1_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [6:0] regRead_io_exeReqs_1_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_exeReqs_1_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_1_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_exeReqs_1_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_1_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [2:0] regRead_io_exeReqs_1_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_1_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_1_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 34:27]
@@ -1060,14 +1110,19 @@ module Backend(
   wire  regRead_io_exeReqs_2_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_2_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_2_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [5:0] regRead_io_exeReqs_2_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [6:0] regRead_io_exeReqs_2_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_exeReqs_2_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
-  wire [3:0] regRead_io_exeReqs_2_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_exeReqs_2_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_2_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [5:0] regRead_io_exeReqs_2_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_2_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_exeReqs_2_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_2_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire [3:0] regRead_io_exeReqs_2_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_2_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [2:0] regRead_io_exeReqs_2_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_2_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_2_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regRead_io_exeReqs_2_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 34:27]
+  wire  regRead_io_exeReqs_2_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [31:0] regRead_io_exeReqs_2_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 34:27]
   wire [31:0] regRead_io_exeReqs_2_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 34:27]
   wire  regFile_clock; // @[src/main/scala/backend/Backend.scala 35:27]
@@ -1270,14 +1325,19 @@ module Backend(
   wire  exeUnits_0_io_inReq_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_inReq_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_inReq_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [5:0] exeUnits_0_io_inReq_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [6:0] exeUnits_0_io_inReq_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [3:0] exeUnits_0_io_inReq_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [3:0] exeUnits_0_io_inReq_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [5:0] exeUnits_0_io_inReq_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_inReq_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [5:0] exeUnits_0_io_inReq_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_inReq_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [3:0] exeUnits_0_io_inReq_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_inReq_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [3:0] exeUnits_0_io_inReq_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_inReq_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 55:11]
   wire [2:0] exeUnits_0_io_inReq_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_inReq_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_inReq_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_inReq_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_inReq_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 55:11]
   wire [31:0] exeUnits_0_io_inReq_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 55:11]
   wire [31:0] exeUnits_0_io_inReq_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_outResult_ready; // @[src/main/scala/backend/Backend.scala 55:11]
@@ -1321,14 +1381,19 @@ module Backend(
   wire  exeUnits_0_io_outResult_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_outResult_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_outResult_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [5:0] exeUnits_0_io_outResult_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [6:0] exeUnits_0_io_outResult_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [3:0] exeUnits_0_io_outResult_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 55:11]
-  wire [3:0] exeUnits_0_io_outResult_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [5:0] exeUnits_0_io_outResult_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_outResult_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [5:0] exeUnits_0_io_outResult_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_outResult_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [3:0] exeUnits_0_io_outResult_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_outResult_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire [3:0] exeUnits_0_io_outResult_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_outResult_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 55:11]
   wire [2:0] exeUnits_0_io_outResult_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_outResult_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_outResult_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_0_io_outResult_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 55:11]
+  wire  exeUnits_0_io_outResult_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 55:11]
   wire [31:0] exeUnits_0_io_outResult_bits_data; // @[src/main/scala/backend/Backend.scala 55:11]
   wire  exeUnits_1_clock; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_reset; // @[src/main/scala/backend/Backend.scala 56:11]
@@ -1373,14 +1438,19 @@ module Backend(
   wire  exeUnits_1_io_inReq_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_inReq_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_inReq_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [5:0] exeUnits_1_io_inReq_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [6:0] exeUnits_1_io_inReq_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [3:0] exeUnits_1_io_inReq_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [3:0] exeUnits_1_io_inReq_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [5:0] exeUnits_1_io_inReq_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_inReq_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [5:0] exeUnits_1_io_inReq_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_inReq_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [3:0] exeUnits_1_io_inReq_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_inReq_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [3:0] exeUnits_1_io_inReq_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_inReq_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 56:11]
   wire [2:0] exeUnits_1_io_inReq_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_inReq_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_inReq_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_inReq_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_inReq_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 56:11]
   wire [31:0] exeUnits_1_io_inReq_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 56:11]
   wire [31:0] exeUnits_1_io_inReq_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_outResult_ready; // @[src/main/scala/backend/Backend.scala 56:11]
@@ -1424,14 +1494,19 @@ module Backend(
   wire  exeUnits_1_io_outResult_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_outResult_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_outResult_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [5:0] exeUnits_1_io_outResult_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [6:0] exeUnits_1_io_outResult_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [3:0] exeUnits_1_io_outResult_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 56:11]
-  wire [3:0] exeUnits_1_io_outResult_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [5:0] exeUnits_1_io_outResult_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_outResult_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [5:0] exeUnits_1_io_outResult_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_outResult_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [3:0] exeUnits_1_io_outResult_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_outResult_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire [3:0] exeUnits_1_io_outResult_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_outResult_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 56:11]
   wire [2:0] exeUnits_1_io_outResult_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_outResult_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_outResult_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_1_io_outResult_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 56:11]
+  wire  exeUnits_1_io_outResult_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 56:11]
   wire [31:0] exeUnits_1_io_outResult_bits_data; // @[src/main/scala/backend/Backend.scala 56:11]
   wire  exeUnits_2_clock; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_reset; // @[src/main/scala/backend/Backend.scala 57:11]
@@ -1476,14 +1551,19 @@ module Backend(
   wire  exeUnits_2_io_inReq_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_inReq_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_inReq_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [5:0] exeUnits_2_io_inReq_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [6:0] exeUnits_2_io_inReq_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [3:0] exeUnits_2_io_inReq_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [3:0] exeUnits_2_io_inReq_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [5:0] exeUnits_2_io_inReq_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_inReq_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [5:0] exeUnits_2_io_inReq_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_inReq_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [3:0] exeUnits_2_io_inReq_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_inReq_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [3:0] exeUnits_2_io_inReq_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_inReq_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
   wire [2:0] exeUnits_2_io_inReq_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_inReq_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_inReq_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_inReq_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_inReq_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 57:11]
   wire [31:0] exeUnits_2_io_inReq_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 57:11]
   wire [31:0] exeUnits_2_io_inReq_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_ready; // @[src/main/scala/backend/Backend.scala 57:11]
@@ -1527,17 +1607,23 @@ module Backend(
   wire  exeUnits_2_io_outResult_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [5:0] exeUnits_2_io_outResult_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [6:0] exeUnits_2_io_outResult_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [3:0] exeUnits_2_io_outResult_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [3:0] exeUnits_2_io_outResult_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [5:0] exeUnits_2_io_outResult_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_outResult_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [5:0] exeUnits_2_io_outResult_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_outResult_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [3:0] exeUnits_2_io_outResult_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_outResult_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [3:0] exeUnits_2_io_outResult_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_outResult_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
   wire [2:0] exeUnits_2_io_outResult_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_outResult_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 57:11]
   wire [31:0] exeUnits_2_io_outResult_bits_data; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  exeUnits_2_io_outResult_bits_redirect_valid; // @[src/main/scala/backend/Backend.scala 57:11]
-  wire [5:0] exeUnits_2_io_outResult_bits_redirect_bits_robIdx; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire [5:0] exeUnits_2_io_outResult_bits_redirect_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 57:11]
+  wire  exeUnits_2_io_outResult_bits_redirect_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 57:11]
   wire  writeback_clock; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_reset; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_0_ready; // @[src/main/scala/backend/Backend.scala 61:25]
@@ -1581,14 +1667,19 @@ module Backend(
   wire  writeback_io_InExeResults_0_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_0_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_0_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_InExeResults_0_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [6:0] writeback_io_InExeResults_0_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [3:0] writeback_io_InExeResults_0_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [3:0] writeback_io_InExeResults_0_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_0_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_0_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_0_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_0_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [3:0] writeback_io_InExeResults_0_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_0_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [3:0] writeback_io_InExeResults_0_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_0_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [2:0] writeback_io_InExeResults_0_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_0_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_0_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_0_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_0_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_InExeResults_0_bits_data; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_ready; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_valid; // @[src/main/scala/backend/Backend.scala 61:25]
@@ -1631,14 +1722,19 @@ module Backend(
   wire  writeback_io_InExeResults_1_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_InExeResults_1_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [6:0] writeback_io_InExeResults_1_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [3:0] writeback_io_InExeResults_1_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [3:0] writeback_io_InExeResults_1_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_1_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_1_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_1_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_1_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [3:0] writeback_io_InExeResults_1_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_1_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [3:0] writeback_io_InExeResults_1_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_1_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [2:0] writeback_io_InExeResults_1_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_1_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_1_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_InExeResults_1_bits_data; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_ready; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_valid; // @[src/main/scala/backend/Backend.scala 61:25]
@@ -1681,17 +1777,23 @@ module Backend(
   wire  writeback_io_InExeResults_2_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_InExeResults_2_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [6:0] writeback_io_InExeResults_2_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [3:0] writeback_io_InExeResults_2_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [3:0] writeback_io_InExeResults_2_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_2_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_2_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_2_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_2_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [3:0] writeback_io_InExeResults_2_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_2_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [3:0] writeback_io_InExeResults_2_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_2_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [2:0] writeback_io_InExeResults_2_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_2_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_InExeResults_2_bits_data; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_InExeResults_2_bits_redirect_valid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_InExeResults_2_bits_redirect_bits_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_InExeResults_2_bits_redirect_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_InExeResults_2_bits_redirect_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_rfWritePorts_0_valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [6:0] writeback_io_rfWritePorts_0_addr; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_rfWritePorts_0_data; // @[src/main/scala/backend/Backend.scala 61:25]
@@ -1714,17 +1816,20 @@ module Backend(
   wire  writeback_io_wakeupPorts_2_valid; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [6:0] writeback_io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_toRObResults_0_valid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_toRObResults_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_toRObResults_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_toRObResults_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_toRObResults_0_bits_rfdata; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [9:0] writeback_io_toRObResults_0_bits_excpVec; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_toRObResults_0_bits_isBypass; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_toRObResults_1_valid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_toRObResults_1_bits_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_toRObResults_1_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_toRObResults_1_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_toRObResults_1_bits_rfdata; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [9:0] writeback_io_toRObResults_1_bits_excpVec; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_toRObResults_1_bits_isBypass; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_toRObResults_2_valid; // @[src/main/scala/backend/Backend.scala 61:25]
-  wire [5:0] writeback_io_toRObResults_2_bits_robIdx; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire [5:0] writeback_io_toRObResults_2_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 61:25]
+  wire  writeback_io_toRObResults_2_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [31:0] writeback_io_toRObResults_2_bits_rfdata; // @[src/main/scala/backend/Backend.scala 61:25]
   wire [9:0] writeback_io_toRObResults_2_bits_excpVec; // @[src/main/scala/backend/Backend.scala 61:25]
   wire  writeback_io_toRObResults_2_bits_isBypass; // @[src/main/scala/backend/Backend.scala 61:25]
@@ -5849,8 +5954,10 @@ module Backend(
     .io_q1IQEnq_0_bits_rs1Valid(ctrlBlock_io_q1IQEnq_0_bits_rs1Valid),
     .io_q1IQEnq_0_bits_rs2Valid(ctrlBlock_io_q1IQEnq_0_bits_rs2Valid),
     .io_q1IQEnq_0_bits_rdValid(ctrlBlock_io_q1IQEnq_0_bits_rdValid),
-    .io_q1IQEnq_0_bits_robIdx(ctrlBlock_io_q1IQEnq_0_bits_robIdx),
-    .io_q1IQEnq_0_bits_robIdxFull(ctrlBlock_io_q1IQEnq_0_bits_robIdxFull),
+    .io_q1IQEnq_0_bits_robIdx_value(ctrlBlock_io_q1IQEnq_0_bits_robIdx_value),
+    .io_q1IQEnq_0_bits_robIdx_flag(ctrlBlock_io_q1IQEnq_0_bits_robIdx_flag),
+    .io_q1IQEnq_0_bits_robIdxFull_value(ctrlBlock_io_q1IQEnq_0_bits_robIdxFull_value),
+    .io_q1IQEnq_0_bits_robIdxFull_flag(ctrlBlock_io_q1IQEnq_0_bits_robIdxFull_flag),
     .io_q1IQEnq_0_bits_prs1Busy(ctrlBlock_io_q1IQEnq_0_bits_prs1Busy),
     .io_q1IQEnq_0_bits_prs2Busy(ctrlBlock_io_q1IQEnq_0_bits_prs2Busy),
     .io_q2IQEnq_0_valid(ctrlBlock_io_q2IQEnq_0_valid),
@@ -5893,8 +6000,10 @@ module Backend(
     .io_q2IQEnq_0_bits_rs1Valid(ctrlBlock_io_q2IQEnq_0_bits_rs1Valid),
     .io_q2IQEnq_0_bits_rs2Valid(ctrlBlock_io_q2IQEnq_0_bits_rs2Valid),
     .io_q2IQEnq_0_bits_rdValid(ctrlBlock_io_q2IQEnq_0_bits_rdValid),
-    .io_q2IQEnq_0_bits_robIdx(ctrlBlock_io_q2IQEnq_0_bits_robIdx),
-    .io_q2IQEnq_0_bits_robIdxFull(ctrlBlock_io_q2IQEnq_0_bits_robIdxFull),
+    .io_q2IQEnq_0_bits_robIdx_value(ctrlBlock_io_q2IQEnq_0_bits_robIdx_value),
+    .io_q2IQEnq_0_bits_robIdx_flag(ctrlBlock_io_q2IQEnq_0_bits_robIdx_flag),
+    .io_q2IQEnq_0_bits_robIdxFull_value(ctrlBlock_io_q2IQEnq_0_bits_robIdxFull_value),
+    .io_q2IQEnq_0_bits_robIdxFull_flag(ctrlBlock_io_q2IQEnq_0_bits_robIdxFull_flag),
     .io_q2IQEnq_0_bits_issueQueue(ctrlBlock_io_q2IQEnq_0_bits_issueQueue),
     .io_q2IQEnq_0_bits_prs1Busy(ctrlBlock_io_q2IQEnq_0_bits_prs1Busy),
     .io_q2IQEnq_0_bits_prs2Busy(ctrlBlock_io_q2IQEnq_0_bits_prs2Busy),
@@ -5938,8 +6047,10 @@ module Backend(
     .io_q3IQEnq_0_bits_rs1Valid(ctrlBlock_io_q3IQEnq_0_bits_rs1Valid),
     .io_q3IQEnq_0_bits_rs2Valid(ctrlBlock_io_q3IQEnq_0_bits_rs2Valid),
     .io_q3IQEnq_0_bits_rdValid(ctrlBlock_io_q3IQEnq_0_bits_rdValid),
-    .io_q3IQEnq_0_bits_robIdx(ctrlBlock_io_q3IQEnq_0_bits_robIdx),
-    .io_q3IQEnq_0_bits_robIdxFull(ctrlBlock_io_q3IQEnq_0_bits_robIdxFull),
+    .io_q3IQEnq_0_bits_robIdx_value(ctrlBlock_io_q3IQEnq_0_bits_robIdx_value),
+    .io_q3IQEnq_0_bits_robIdx_flag(ctrlBlock_io_q3IQEnq_0_bits_robIdx_flag),
+    .io_q3IQEnq_0_bits_robIdxFull_value(ctrlBlock_io_q3IQEnq_0_bits_robIdxFull_value),
+    .io_q3IQEnq_0_bits_robIdxFull_flag(ctrlBlock_io_q3IQEnq_0_bits_robIdxFull_flag),
     .io_q3IQEnq_0_bits_issueQueue(ctrlBlock_io_q3IQEnq_0_bits_issueQueue),
     .io_q3IQEnq_0_bits_prs1Busy(ctrlBlock_io_q3IQEnq_0_bits_prs1Busy),
     .io_q3IQEnq_0_bits_prs2Busy(ctrlBlock_io_q3IQEnq_0_bits_prs2Busy),
@@ -5983,51 +6094,50 @@ module Backend(
     .io_q4IQEnq_0_bits_rs1Valid(ctrlBlock_io_q4IQEnq_0_bits_rs1Valid),
     .io_q4IQEnq_0_bits_rs2Valid(ctrlBlock_io_q4IQEnq_0_bits_rs2Valid),
     .io_q4IQEnq_0_bits_rdValid(ctrlBlock_io_q4IQEnq_0_bits_rdValid),
-    .io_q4IQEnq_0_bits_robIdx(ctrlBlock_io_q4IQEnq_0_bits_robIdx),
-    .io_q4IQEnq_0_bits_robIdxFull(ctrlBlock_io_q4IQEnq_0_bits_robIdxFull),
-    .io_q4IQEnq_0_bits_lqIdx(ctrlBlock_io_q4IQEnq_0_bits_lqIdx),
-    .io_q4IQEnq_0_bits_sqIdx(ctrlBlock_io_q4IQEnq_0_bits_sqIdx),
+    .io_q4IQEnq_0_bits_robIdx_value(ctrlBlock_io_q4IQEnq_0_bits_robIdx_value),
+    .io_q4IQEnq_0_bits_robIdx_flag(ctrlBlock_io_q4IQEnq_0_bits_robIdx_flag),
+    .io_q4IQEnq_0_bits_robIdxFull_value(ctrlBlock_io_q4IQEnq_0_bits_robIdxFull_value),
+    .io_q4IQEnq_0_bits_robIdxFull_flag(ctrlBlock_io_q4IQEnq_0_bits_robIdxFull_flag),
+    .io_q4IQEnq_0_bits_lqIdx_value(ctrlBlock_io_q4IQEnq_0_bits_lqIdx_value),
+    .io_q4IQEnq_0_bits_lqIdx_flag(ctrlBlock_io_q4IQEnq_0_bits_lqIdx_flag),
+    .io_q4IQEnq_0_bits_sqIdx_value(ctrlBlock_io_q4IQEnq_0_bits_sqIdx_value),
+    .io_q4IQEnq_0_bits_sqIdx_flag(ctrlBlock_io_q4IQEnq_0_bits_sqIdx_flag),
     .io_q4IQEnq_0_bits_issueQueue(ctrlBlock_io_q4IQEnq_0_bits_issueQueue),
     .io_q4IQEnq_0_bits_prs1Busy(ctrlBlock_io_q4IQEnq_0_bits_prs1Busy),
     .io_q4IQEnq_0_bits_prs2Busy(ctrlBlock_io_q4IQEnq_0_bits_prs2Busy),
     .io_q4IQEnq_0_bits_isSta(ctrlBlock_io_q4IQEnq_0_bits_isSta),
+    .io_q4IQEnq_0_bits_isStd(ctrlBlock_io_q4IQEnq_0_bits_isStd),
     .io_q5IQEnq_0_valid(ctrlBlock_io_q5IQEnq_0_valid),
+    .io_q5IQEnq_0_bits_prs1(ctrlBlock_io_q5IQEnq_0_bits_prs1),
     .io_q5IQEnq_0_bits_prs2(ctrlBlock_io_q5IQEnq_0_bits_prs2),
+    .io_q5IQEnq_0_bits_rs1Valid(ctrlBlock_io_q5IQEnq_0_bits_rs1Valid),
     .io_q5IQEnq_0_bits_rs2Valid(ctrlBlock_io_q5IQEnq_0_bits_rs2Valid),
+    .io_q5IQEnq_0_bits_prs1Busy(ctrlBlock_io_q5IQEnq_0_bits_prs1Busy),
     .io_q5IQEnq_0_bits_prs2Busy(ctrlBlock_io_q5IQEnq_0_bits_prs2Busy),
     .io_iqFeedback_q1FreeEntries(ctrlBlock_io_iqFeedback_q1FreeEntries),
     .io_iqFeedback_q2FreeEntries(ctrlBlock_io_iqFeedback_q2FreeEntries),
     .io_iqFeedback_q3FreeEntries(ctrlBlock_io_iqFeedback_q3FreeEntries),
     .io_iqFeedback_q4FreeEntries(ctrlBlock_io_iqFeedback_q4FreeEntries),
     .io_iqFeedback_q5FreeEntries(ctrlBlock_io_iqFeedback_q5FreeEntries),
-    .io_lsEnq_req_0_valid(ctrlBlock_io_lsEnq_req_0_valid),
-    .io_lsEnq_req_0_bits_robIdx(ctrlBlock_io_lsEnq_req_0_bits_robIdx),
-    .io_lsEnq_req_0_bits_isLoad(ctrlBlock_io_lsEnq_req_0_bits_isLoad),
-    .io_lsEnq_req_0_bits_isStore(ctrlBlock_io_lsEnq_req_0_bits_isStore),
-    .io_lsEnq_req_0_bits_sqIdx(ctrlBlock_io_lsEnq_req_0_bits_sqIdx),
-    .io_lsEnq_req_0_bits_lqIdx(ctrlBlock_io_lsEnq_req_0_bits_lqIdx),
-    .io_lsEnq_req_1_valid(ctrlBlock_io_lsEnq_req_1_valid),
-    .io_lsEnq_req_1_bits_robIdx(ctrlBlock_io_lsEnq_req_1_bits_robIdx),
-    .io_lsEnq_req_1_bits_isLoad(ctrlBlock_io_lsEnq_req_1_bits_isLoad),
-    .io_lsEnq_req_1_bits_isStore(ctrlBlock_io_lsEnq_req_1_bits_isStore),
-    .io_lsEnq_req_1_bits_sqIdx(ctrlBlock_io_lsEnq_req_1_bits_sqIdx),
-    .io_lsEnq_req_1_bits_lqIdx(ctrlBlock_io_lsEnq_req_1_bits_lqIdx),
-    .io_lsEnq_req_2_valid(ctrlBlock_io_lsEnq_req_2_valid),
-    .io_lsEnq_req_2_bits_robIdx(ctrlBlock_io_lsEnq_req_2_bits_robIdx),
-    .io_lsEnq_req_2_bits_isLoad(ctrlBlock_io_lsEnq_req_2_bits_isLoad),
-    .io_lsEnq_req_2_bits_isStore(ctrlBlock_io_lsEnq_req_2_bits_isStore),
-    .io_lsEnq_req_2_bits_sqIdx(ctrlBlock_io_lsEnq_req_2_bits_sqIdx),
-    .io_lsEnq_req_2_bits_lqIdx(ctrlBlock_io_lsEnq_req_2_bits_lqIdx),
+    .io_lsEnq_req_valid(ctrlBlock_io_lsEnq_req_valid),
+    .io_lsEnq_req_bits_robIdx_value(ctrlBlock_io_lsEnq_req_bits_robIdx_value),
+    .io_lsEnq_req_bits_robIdx_flag(ctrlBlock_io_lsEnq_req_bits_robIdx_flag),
+    .io_lsEnq_req_bits_isLoad(ctrlBlock_io_lsEnq_req_bits_isLoad),
+    .io_lsEnq_req_bits_isStore(ctrlBlock_io_lsEnq_req_bits_isStore),
+    .io_lsEnq_req_bits_sqIdx_value(ctrlBlock_io_lsEnq_req_bits_sqIdx_value),
+    .io_lsEnq_req_bits_sqIdx_flag(ctrlBlock_io_lsEnq_req_bits_sqIdx_flag),
+    .io_lsEnq_req_bits_lqIdx_value(ctrlBlock_io_lsEnq_req_bits_lqIdx_value),
+    .io_lsEnq_req_bits_lqIdx_flag(ctrlBlock_io_lsEnq_req_bits_lqIdx_flag),
     .io_writeback_0_valid(ctrlBlock_io_writeback_0_valid),
-    .io_writeback_0_bits_robIdx(ctrlBlock_io_writeback_0_bits_robIdx),
+    .io_writeback_0_bits_robIdx_value(ctrlBlock_io_writeback_0_bits_robIdx_value),
     .io_writeback_0_bits_rfdata(ctrlBlock_io_writeback_0_bits_rfdata),
     .io_writeback_0_bits_excpVec(ctrlBlock_io_writeback_0_bits_excpVec),
     .io_writeback_1_valid(ctrlBlock_io_writeback_1_valid),
-    .io_writeback_1_bits_robIdx(ctrlBlock_io_writeback_1_bits_robIdx),
+    .io_writeback_1_bits_robIdx_value(ctrlBlock_io_writeback_1_bits_robIdx_value),
     .io_writeback_1_bits_rfdata(ctrlBlock_io_writeback_1_bits_rfdata),
     .io_writeback_1_bits_excpVec(ctrlBlock_io_writeback_1_bits_excpVec),
     .io_writeback_2_valid(ctrlBlock_io_writeback_2_valid),
-    .io_writeback_2_bits_robIdx(ctrlBlock_io_writeback_2_bits_robIdx),
+    .io_writeback_2_bits_robIdx_value(ctrlBlock_io_writeback_2_bits_robIdx_value),
     .io_writeback_2_bits_rfdata(ctrlBlock_io_writeback_2_bits_rfdata),
     .io_writeback_2_bits_excpVec(ctrlBlock_io_writeback_2_bits_excpVec),
     .io_commit_valid_0(ctrlBlock_io_commit_valid_0),
@@ -6053,7 +6163,7 @@ module Backend(
     .io_commit_bits_2_rfWen(ctrlBlock_io_commit_bits_2_rfWen),
     .io_commit_isWalk(ctrlBlock_io_commit_isWalk),
     .io_redirect_valid(ctrlBlock_io_redirect_valid),
-    .io_redirect_robIdx(ctrlBlock_io_redirect_robIdx),
+    .io_redirect_robIdx_value(ctrlBlock_io_redirect_robIdx_value),
     .io_extInt(ctrlBlock_io_extInt),
     .io_debugArchState_0(ctrlBlock_io_debugArchState_0),
     .io_debugArchState_1(ctrlBlock_io_debugArchState_1),
@@ -6137,8 +6247,10 @@ module Backend(
     .io_q1IQEnq_bits_rs1Valid(scheduler_io_q1IQEnq_bits_rs1Valid),
     .io_q1IQEnq_bits_rs2Valid(scheduler_io_q1IQEnq_bits_rs2Valid),
     .io_q1IQEnq_bits_rdValid(scheduler_io_q1IQEnq_bits_rdValid),
-    .io_q1IQEnq_bits_robIdx(scheduler_io_q1IQEnq_bits_robIdx),
-    .io_q1IQEnq_bits_robIdxFull(scheduler_io_q1IQEnq_bits_robIdxFull),
+    .io_q1IQEnq_bits_robIdx_value(scheduler_io_q1IQEnq_bits_robIdx_value),
+    .io_q1IQEnq_bits_robIdx_flag(scheduler_io_q1IQEnq_bits_robIdx_flag),
+    .io_q1IQEnq_bits_robIdxFull_value(scheduler_io_q1IQEnq_bits_robIdxFull_value),
+    .io_q1IQEnq_bits_robIdxFull_flag(scheduler_io_q1IQEnq_bits_robIdxFull_flag),
     .io_q1IQEnq_bits_prs1Busy(scheduler_io_q1IQEnq_bits_prs1Busy),
     .io_q1IQEnq_bits_prs2Busy(scheduler_io_q1IQEnq_bits_prs2Busy),
     .io_q2IQEnq_valid(scheduler_io_q2IQEnq_valid),
@@ -6181,8 +6293,10 @@ module Backend(
     .io_q2IQEnq_bits_rs1Valid(scheduler_io_q2IQEnq_bits_rs1Valid),
     .io_q2IQEnq_bits_rs2Valid(scheduler_io_q2IQEnq_bits_rs2Valid),
     .io_q2IQEnq_bits_rdValid(scheduler_io_q2IQEnq_bits_rdValid),
-    .io_q2IQEnq_bits_robIdx(scheduler_io_q2IQEnq_bits_robIdx),
-    .io_q2IQEnq_bits_robIdxFull(scheduler_io_q2IQEnq_bits_robIdxFull),
+    .io_q2IQEnq_bits_robIdx_value(scheduler_io_q2IQEnq_bits_robIdx_value),
+    .io_q2IQEnq_bits_robIdx_flag(scheduler_io_q2IQEnq_bits_robIdx_flag),
+    .io_q2IQEnq_bits_robIdxFull_value(scheduler_io_q2IQEnq_bits_robIdxFull_value),
+    .io_q2IQEnq_bits_robIdxFull_flag(scheduler_io_q2IQEnq_bits_robIdxFull_flag),
     .io_q2IQEnq_bits_issueQueue(scheduler_io_q2IQEnq_bits_issueQueue),
     .io_q2IQEnq_bits_prs1Busy(scheduler_io_q2IQEnq_bits_prs1Busy),
     .io_q2IQEnq_bits_prs2Busy(scheduler_io_q2IQEnq_bits_prs2Busy),
@@ -6226,8 +6340,10 @@ module Backend(
     .io_q3IQEnq_bits_rs1Valid(scheduler_io_q3IQEnq_bits_rs1Valid),
     .io_q3IQEnq_bits_rs2Valid(scheduler_io_q3IQEnq_bits_rs2Valid),
     .io_q3IQEnq_bits_rdValid(scheduler_io_q3IQEnq_bits_rdValid),
-    .io_q3IQEnq_bits_robIdx(scheduler_io_q3IQEnq_bits_robIdx),
-    .io_q3IQEnq_bits_robIdxFull(scheduler_io_q3IQEnq_bits_robIdxFull),
+    .io_q3IQEnq_bits_robIdx_value(scheduler_io_q3IQEnq_bits_robIdx_value),
+    .io_q3IQEnq_bits_robIdx_flag(scheduler_io_q3IQEnq_bits_robIdx_flag),
+    .io_q3IQEnq_bits_robIdxFull_value(scheduler_io_q3IQEnq_bits_robIdxFull_value),
+    .io_q3IQEnq_bits_robIdxFull_flag(scheduler_io_q3IQEnq_bits_robIdxFull_flag),
     .io_q3IQEnq_bits_issueQueue(scheduler_io_q3IQEnq_bits_issueQueue),
     .io_q3IQEnq_bits_prs1Busy(scheduler_io_q3IQEnq_bits_prs1Busy),
     .io_q3IQEnq_bits_prs2Busy(scheduler_io_q3IQEnq_bits_prs2Busy),
@@ -6271,17 +6387,25 @@ module Backend(
     .io_q4IQEnq_bits_rs1Valid(scheduler_io_q4IQEnq_bits_rs1Valid),
     .io_q4IQEnq_bits_rs2Valid(scheduler_io_q4IQEnq_bits_rs2Valid),
     .io_q4IQEnq_bits_rdValid(scheduler_io_q4IQEnq_bits_rdValid),
-    .io_q4IQEnq_bits_robIdx(scheduler_io_q4IQEnq_bits_robIdx),
-    .io_q4IQEnq_bits_robIdxFull(scheduler_io_q4IQEnq_bits_robIdxFull),
-    .io_q4IQEnq_bits_lqIdx(scheduler_io_q4IQEnq_bits_lqIdx),
-    .io_q4IQEnq_bits_sqIdx(scheduler_io_q4IQEnq_bits_sqIdx),
+    .io_q4IQEnq_bits_robIdx_value(scheduler_io_q4IQEnq_bits_robIdx_value),
+    .io_q4IQEnq_bits_robIdx_flag(scheduler_io_q4IQEnq_bits_robIdx_flag),
+    .io_q4IQEnq_bits_robIdxFull_value(scheduler_io_q4IQEnq_bits_robIdxFull_value),
+    .io_q4IQEnq_bits_robIdxFull_flag(scheduler_io_q4IQEnq_bits_robIdxFull_flag),
+    .io_q4IQEnq_bits_lqIdx_value(scheduler_io_q4IQEnq_bits_lqIdx_value),
+    .io_q4IQEnq_bits_lqIdx_flag(scheduler_io_q4IQEnq_bits_lqIdx_flag),
+    .io_q4IQEnq_bits_sqIdx_value(scheduler_io_q4IQEnq_bits_sqIdx_value),
+    .io_q4IQEnq_bits_sqIdx_flag(scheduler_io_q4IQEnq_bits_sqIdx_flag),
     .io_q4IQEnq_bits_issueQueue(scheduler_io_q4IQEnq_bits_issueQueue),
     .io_q4IQEnq_bits_prs1Busy(scheduler_io_q4IQEnq_bits_prs1Busy),
     .io_q4IQEnq_bits_prs2Busy(scheduler_io_q4IQEnq_bits_prs2Busy),
     .io_q4IQEnq_bits_isSta(scheduler_io_q4IQEnq_bits_isSta),
+    .io_q4IQEnq_bits_isStd(scheduler_io_q4IQEnq_bits_isStd),
     .io_q5IQEnq_valid(scheduler_io_q5IQEnq_valid),
+    .io_q5IQEnq_bits_prs1(scheduler_io_q5IQEnq_bits_prs1),
     .io_q5IQEnq_bits_prs2(scheduler_io_q5IQEnq_bits_prs2),
+    .io_q5IQEnq_bits_rs1Valid(scheduler_io_q5IQEnq_bits_rs1Valid),
     .io_q5IQEnq_bits_rs2Valid(scheduler_io_q5IQEnq_bits_rs2Valid),
+    .io_q5IQEnq_bits_prs1Busy(scheduler_io_q5IQEnq_bits_prs1Busy),
     .io_q5IQEnq_bits_prs2Busy(scheduler_io_q5IQEnq_bits_prs2Busy),
     .io_q1Issue_ready(scheduler_io_q1Issue_ready),
     .io_q1Issue_valid(scheduler_io_q1Issue_valid),
@@ -6324,14 +6448,19 @@ module Backend(
     .io_q1Issue_bits_rs1Valid(scheduler_io_q1Issue_bits_rs1Valid),
     .io_q1Issue_bits_rs2Valid(scheduler_io_q1Issue_bits_rs2Valid),
     .io_q1Issue_bits_rdValid(scheduler_io_q1Issue_bits_rdValid),
-    .io_q1Issue_bits_robIdx(scheduler_io_q1Issue_bits_robIdx),
-    .io_q1Issue_bits_robIdxFull(scheduler_io_q1Issue_bits_robIdxFull),
-    .io_q1Issue_bits_lqIdx(scheduler_io_q1Issue_bits_lqIdx),
-    .io_q1Issue_bits_sqIdx(scheduler_io_q1Issue_bits_sqIdx),
+    .io_q1Issue_bits_robIdx_value(scheduler_io_q1Issue_bits_robIdx_value),
+    .io_q1Issue_bits_robIdx_flag(scheduler_io_q1Issue_bits_robIdx_flag),
+    .io_q1Issue_bits_robIdxFull_value(scheduler_io_q1Issue_bits_robIdxFull_value),
+    .io_q1Issue_bits_robIdxFull_flag(scheduler_io_q1Issue_bits_robIdxFull_flag),
+    .io_q1Issue_bits_lqIdx_value(scheduler_io_q1Issue_bits_lqIdx_value),
+    .io_q1Issue_bits_lqIdx_flag(scheduler_io_q1Issue_bits_lqIdx_flag),
+    .io_q1Issue_bits_sqIdx_value(scheduler_io_q1Issue_bits_sqIdx_value),
+    .io_q1Issue_bits_sqIdx_flag(scheduler_io_q1Issue_bits_sqIdx_flag),
     .io_q1Issue_bits_issueQueue(scheduler_io_q1Issue_bits_issueQueue),
     .io_q1Issue_bits_prs1Busy(scheduler_io_q1Issue_bits_prs1Busy),
     .io_q1Issue_bits_prs2Busy(scheduler_io_q1Issue_bits_prs2Busy),
     .io_q1Issue_bits_isSta(scheduler_io_q1Issue_bits_isSta),
+    .io_q1Issue_bits_isStd(scheduler_io_q1Issue_bits_isStd),
     .io_q2Issue_ready(scheduler_io_q2Issue_ready),
     .io_q2Issue_valid(scheduler_io_q2Issue_valid),
     .io_q2Issue_bits_pc(scheduler_io_q2Issue_bits_pc),
@@ -6373,8 +6502,10 @@ module Backend(
     .io_q2Issue_bits_rs1Valid(scheduler_io_q2Issue_bits_rs1Valid),
     .io_q2Issue_bits_rs2Valid(scheduler_io_q2Issue_bits_rs2Valid),
     .io_q2Issue_bits_rdValid(scheduler_io_q2Issue_bits_rdValid),
-    .io_q2Issue_bits_robIdx(scheduler_io_q2Issue_bits_robIdx),
-    .io_q2Issue_bits_robIdxFull(scheduler_io_q2Issue_bits_robIdxFull),
+    .io_q2Issue_bits_robIdx_value(scheduler_io_q2Issue_bits_robIdx_value),
+    .io_q2Issue_bits_robIdx_flag(scheduler_io_q2Issue_bits_robIdx_flag),
+    .io_q2Issue_bits_robIdxFull_value(scheduler_io_q2Issue_bits_robIdxFull_value),
+    .io_q2Issue_bits_robIdxFull_flag(scheduler_io_q2Issue_bits_robIdxFull_flag),
     .io_q2Issue_bits_issueQueue(scheduler_io_q2Issue_bits_issueQueue),
     .io_q2Issue_bits_prs1Busy(scheduler_io_q2Issue_bits_prs1Busy),
     .io_q2Issue_bits_prs2Busy(scheduler_io_q2Issue_bits_prs2Busy),
@@ -6419,14 +6550,19 @@ module Backend(
     .io_q3Issue_bits_rs1Valid(scheduler_io_q3Issue_bits_rs1Valid),
     .io_q3Issue_bits_rs2Valid(scheduler_io_q3Issue_bits_rs2Valid),
     .io_q3Issue_bits_rdValid(scheduler_io_q3Issue_bits_rdValid),
-    .io_q3Issue_bits_robIdx(scheduler_io_q3Issue_bits_robIdx),
-    .io_q3Issue_bits_robIdxFull(scheduler_io_q3Issue_bits_robIdxFull),
-    .io_q3Issue_bits_lqIdx(scheduler_io_q3Issue_bits_lqIdx),
-    .io_q3Issue_bits_sqIdx(scheduler_io_q3Issue_bits_sqIdx),
+    .io_q3Issue_bits_robIdx_value(scheduler_io_q3Issue_bits_robIdx_value),
+    .io_q3Issue_bits_robIdx_flag(scheduler_io_q3Issue_bits_robIdx_flag),
+    .io_q3Issue_bits_robIdxFull_value(scheduler_io_q3Issue_bits_robIdxFull_value),
+    .io_q3Issue_bits_robIdxFull_flag(scheduler_io_q3Issue_bits_robIdxFull_flag),
+    .io_q3Issue_bits_lqIdx_value(scheduler_io_q3Issue_bits_lqIdx_value),
+    .io_q3Issue_bits_lqIdx_flag(scheduler_io_q3Issue_bits_lqIdx_flag),
+    .io_q3Issue_bits_sqIdx_value(scheduler_io_q3Issue_bits_sqIdx_value),
+    .io_q3Issue_bits_sqIdx_flag(scheduler_io_q3Issue_bits_sqIdx_flag),
     .io_q3Issue_bits_issueQueue(scheduler_io_q3Issue_bits_issueQueue),
     .io_q3Issue_bits_prs1Busy(scheduler_io_q3Issue_bits_prs1Busy),
     .io_q3Issue_bits_prs2Busy(scheduler_io_q3Issue_bits_prs2Busy),
     .io_q3Issue_bits_isSta(scheduler_io_q3Issue_bits_isSta),
+    .io_q3Issue_bits_isStd(scheduler_io_q3Issue_bits_isStd),
     .io_q4Issue_ready(scheduler_io_q4Issue_ready),
     .io_q4Issue_valid(scheduler_io_q4Issue_valid),
     .io_q5Issue_ready(scheduler_io_q5Issue_ready),
@@ -6487,14 +6623,19 @@ module Backend(
     .io_iqIssues_0_bits_rs1Valid(regRead_io_iqIssues_0_bits_rs1Valid),
     .io_iqIssues_0_bits_rs2Valid(regRead_io_iqIssues_0_bits_rs2Valid),
     .io_iqIssues_0_bits_rdValid(regRead_io_iqIssues_0_bits_rdValid),
-    .io_iqIssues_0_bits_robIdx(regRead_io_iqIssues_0_bits_robIdx),
-    .io_iqIssues_0_bits_robIdxFull(regRead_io_iqIssues_0_bits_robIdxFull),
-    .io_iqIssues_0_bits_lqIdx(regRead_io_iqIssues_0_bits_lqIdx),
-    .io_iqIssues_0_bits_sqIdx(regRead_io_iqIssues_0_bits_sqIdx),
+    .io_iqIssues_0_bits_robIdx_value(regRead_io_iqIssues_0_bits_robIdx_value),
+    .io_iqIssues_0_bits_robIdx_flag(regRead_io_iqIssues_0_bits_robIdx_flag),
+    .io_iqIssues_0_bits_robIdxFull_value(regRead_io_iqIssues_0_bits_robIdxFull_value),
+    .io_iqIssues_0_bits_robIdxFull_flag(regRead_io_iqIssues_0_bits_robIdxFull_flag),
+    .io_iqIssues_0_bits_lqIdx_value(regRead_io_iqIssues_0_bits_lqIdx_value),
+    .io_iqIssues_0_bits_lqIdx_flag(regRead_io_iqIssues_0_bits_lqIdx_flag),
+    .io_iqIssues_0_bits_sqIdx_value(regRead_io_iqIssues_0_bits_sqIdx_value),
+    .io_iqIssues_0_bits_sqIdx_flag(regRead_io_iqIssues_0_bits_sqIdx_flag),
     .io_iqIssues_0_bits_issueQueue(regRead_io_iqIssues_0_bits_issueQueue),
     .io_iqIssues_0_bits_prs1Busy(regRead_io_iqIssues_0_bits_prs1Busy),
     .io_iqIssues_0_bits_prs2Busy(regRead_io_iqIssues_0_bits_prs2Busy),
     .io_iqIssues_0_bits_isSta(regRead_io_iqIssues_0_bits_isSta),
+    .io_iqIssues_0_bits_isStd(regRead_io_iqIssues_0_bits_isStd),
     .io_iqIssues_1_ready(regRead_io_iqIssues_1_ready),
     .io_iqIssues_1_valid(regRead_io_iqIssues_1_valid),
     .io_iqIssues_1_bits_pc(regRead_io_iqIssues_1_bits_pc),
@@ -6536,8 +6677,10 @@ module Backend(
     .io_iqIssues_1_bits_rs1Valid(regRead_io_iqIssues_1_bits_rs1Valid),
     .io_iqIssues_1_bits_rs2Valid(regRead_io_iqIssues_1_bits_rs2Valid),
     .io_iqIssues_1_bits_rdValid(regRead_io_iqIssues_1_bits_rdValid),
-    .io_iqIssues_1_bits_robIdx(regRead_io_iqIssues_1_bits_robIdx),
-    .io_iqIssues_1_bits_robIdxFull(regRead_io_iqIssues_1_bits_robIdxFull),
+    .io_iqIssues_1_bits_robIdx_value(regRead_io_iqIssues_1_bits_robIdx_value),
+    .io_iqIssues_1_bits_robIdx_flag(regRead_io_iqIssues_1_bits_robIdx_flag),
+    .io_iqIssues_1_bits_robIdxFull_value(regRead_io_iqIssues_1_bits_robIdxFull_value),
+    .io_iqIssues_1_bits_robIdxFull_flag(regRead_io_iqIssues_1_bits_robIdxFull_flag),
     .io_iqIssues_1_bits_issueQueue(regRead_io_iqIssues_1_bits_issueQueue),
     .io_iqIssues_1_bits_prs1Busy(regRead_io_iqIssues_1_bits_prs1Busy),
     .io_iqIssues_1_bits_prs2Busy(regRead_io_iqIssues_1_bits_prs2Busy),
@@ -6582,14 +6725,19 @@ module Backend(
     .io_iqIssues_2_bits_rs1Valid(regRead_io_iqIssues_2_bits_rs1Valid),
     .io_iqIssues_2_bits_rs2Valid(regRead_io_iqIssues_2_bits_rs2Valid),
     .io_iqIssues_2_bits_rdValid(regRead_io_iqIssues_2_bits_rdValid),
-    .io_iqIssues_2_bits_robIdx(regRead_io_iqIssues_2_bits_robIdx),
-    .io_iqIssues_2_bits_robIdxFull(regRead_io_iqIssues_2_bits_robIdxFull),
-    .io_iqIssues_2_bits_lqIdx(regRead_io_iqIssues_2_bits_lqIdx),
-    .io_iqIssues_2_bits_sqIdx(regRead_io_iqIssues_2_bits_sqIdx),
+    .io_iqIssues_2_bits_robIdx_value(regRead_io_iqIssues_2_bits_robIdx_value),
+    .io_iqIssues_2_bits_robIdx_flag(regRead_io_iqIssues_2_bits_robIdx_flag),
+    .io_iqIssues_2_bits_robIdxFull_value(regRead_io_iqIssues_2_bits_robIdxFull_value),
+    .io_iqIssues_2_bits_robIdxFull_flag(regRead_io_iqIssues_2_bits_robIdxFull_flag),
+    .io_iqIssues_2_bits_lqIdx_value(regRead_io_iqIssues_2_bits_lqIdx_value),
+    .io_iqIssues_2_bits_lqIdx_flag(regRead_io_iqIssues_2_bits_lqIdx_flag),
+    .io_iqIssues_2_bits_sqIdx_value(regRead_io_iqIssues_2_bits_sqIdx_value),
+    .io_iqIssues_2_bits_sqIdx_flag(regRead_io_iqIssues_2_bits_sqIdx_flag),
     .io_iqIssues_2_bits_issueQueue(regRead_io_iqIssues_2_bits_issueQueue),
     .io_iqIssues_2_bits_prs1Busy(regRead_io_iqIssues_2_bits_prs1Busy),
     .io_iqIssues_2_bits_prs2Busy(regRead_io_iqIssues_2_bits_prs2Busy),
     .io_iqIssues_2_bits_isSta(regRead_io_iqIssues_2_bits_isSta),
+    .io_iqIssues_2_bits_isStd(regRead_io_iqIssues_2_bits_isStd),
     .io_iqIssues_3_ready(regRead_io_iqIssues_3_ready),
     .io_iqIssues_3_valid(regRead_io_iqIssues_3_valid),
     .io_iqIssues_4_ready(regRead_io_iqIssues_4_ready),
@@ -6647,14 +6795,19 @@ module Backend(
     .io_exeReqs_0_bits_uop_rs1Valid(regRead_io_exeReqs_0_bits_uop_rs1Valid),
     .io_exeReqs_0_bits_uop_rs2Valid(regRead_io_exeReqs_0_bits_uop_rs2Valid),
     .io_exeReqs_0_bits_uop_rdValid(regRead_io_exeReqs_0_bits_uop_rdValid),
-    .io_exeReqs_0_bits_uop_robIdx(regRead_io_exeReqs_0_bits_uop_robIdx),
-    .io_exeReqs_0_bits_uop_robIdxFull(regRead_io_exeReqs_0_bits_uop_robIdxFull),
-    .io_exeReqs_0_bits_uop_lqIdx(regRead_io_exeReqs_0_bits_uop_lqIdx),
-    .io_exeReqs_0_bits_uop_sqIdx(regRead_io_exeReqs_0_bits_uop_sqIdx),
+    .io_exeReqs_0_bits_uop_robIdx_value(regRead_io_exeReqs_0_bits_uop_robIdx_value),
+    .io_exeReqs_0_bits_uop_robIdx_flag(regRead_io_exeReqs_0_bits_uop_robIdx_flag),
+    .io_exeReqs_0_bits_uop_robIdxFull_value(regRead_io_exeReqs_0_bits_uop_robIdxFull_value),
+    .io_exeReqs_0_bits_uop_robIdxFull_flag(regRead_io_exeReqs_0_bits_uop_robIdxFull_flag),
+    .io_exeReqs_0_bits_uop_lqIdx_value(regRead_io_exeReqs_0_bits_uop_lqIdx_value),
+    .io_exeReqs_0_bits_uop_lqIdx_flag(regRead_io_exeReqs_0_bits_uop_lqIdx_flag),
+    .io_exeReqs_0_bits_uop_sqIdx_value(regRead_io_exeReqs_0_bits_uop_sqIdx_value),
+    .io_exeReqs_0_bits_uop_sqIdx_flag(regRead_io_exeReqs_0_bits_uop_sqIdx_flag),
     .io_exeReqs_0_bits_uop_issueQueue(regRead_io_exeReqs_0_bits_uop_issueQueue),
     .io_exeReqs_0_bits_uop_prs1Busy(regRead_io_exeReqs_0_bits_uop_prs1Busy),
     .io_exeReqs_0_bits_uop_prs2Busy(regRead_io_exeReqs_0_bits_uop_prs2Busy),
     .io_exeReqs_0_bits_uop_isSta(regRead_io_exeReqs_0_bits_uop_isSta),
+    .io_exeReqs_0_bits_uop_isStd(regRead_io_exeReqs_0_bits_uop_isStd),
     .io_exeReqs_0_bits_rs1Data(regRead_io_exeReqs_0_bits_rs1Data),
     .io_exeReqs_0_bits_rs2Data(regRead_io_exeReqs_0_bits_rs2Data),
     .io_exeReqs_1_ready(regRead_io_exeReqs_1_ready),
@@ -6698,8 +6851,10 @@ module Backend(
     .io_exeReqs_1_bits_uop_rs1Valid(regRead_io_exeReqs_1_bits_uop_rs1Valid),
     .io_exeReqs_1_bits_uop_rs2Valid(regRead_io_exeReqs_1_bits_uop_rs2Valid),
     .io_exeReqs_1_bits_uop_rdValid(regRead_io_exeReqs_1_bits_uop_rdValid),
-    .io_exeReqs_1_bits_uop_robIdx(regRead_io_exeReqs_1_bits_uop_robIdx),
-    .io_exeReqs_1_bits_uop_robIdxFull(regRead_io_exeReqs_1_bits_uop_robIdxFull),
+    .io_exeReqs_1_bits_uop_robIdx_value(regRead_io_exeReqs_1_bits_uop_robIdx_value),
+    .io_exeReqs_1_bits_uop_robIdx_flag(regRead_io_exeReqs_1_bits_uop_robIdx_flag),
+    .io_exeReqs_1_bits_uop_robIdxFull_value(regRead_io_exeReqs_1_bits_uop_robIdxFull_value),
+    .io_exeReqs_1_bits_uop_robIdxFull_flag(regRead_io_exeReqs_1_bits_uop_robIdxFull_flag),
     .io_exeReqs_1_bits_uop_issueQueue(regRead_io_exeReqs_1_bits_uop_issueQueue),
     .io_exeReqs_1_bits_uop_prs1Busy(regRead_io_exeReqs_1_bits_uop_prs1Busy),
     .io_exeReqs_1_bits_uop_prs2Busy(regRead_io_exeReqs_1_bits_uop_prs2Busy),
@@ -6746,14 +6901,19 @@ module Backend(
     .io_exeReqs_2_bits_uop_rs1Valid(regRead_io_exeReqs_2_bits_uop_rs1Valid),
     .io_exeReqs_2_bits_uop_rs2Valid(regRead_io_exeReqs_2_bits_uop_rs2Valid),
     .io_exeReqs_2_bits_uop_rdValid(regRead_io_exeReqs_2_bits_uop_rdValid),
-    .io_exeReqs_2_bits_uop_robIdx(regRead_io_exeReqs_2_bits_uop_robIdx),
-    .io_exeReqs_2_bits_uop_robIdxFull(regRead_io_exeReqs_2_bits_uop_robIdxFull),
-    .io_exeReqs_2_bits_uop_lqIdx(regRead_io_exeReqs_2_bits_uop_lqIdx),
-    .io_exeReqs_2_bits_uop_sqIdx(regRead_io_exeReqs_2_bits_uop_sqIdx),
+    .io_exeReqs_2_bits_uop_robIdx_value(regRead_io_exeReqs_2_bits_uop_robIdx_value),
+    .io_exeReqs_2_bits_uop_robIdx_flag(regRead_io_exeReqs_2_bits_uop_robIdx_flag),
+    .io_exeReqs_2_bits_uop_robIdxFull_value(regRead_io_exeReqs_2_bits_uop_robIdxFull_value),
+    .io_exeReqs_2_bits_uop_robIdxFull_flag(regRead_io_exeReqs_2_bits_uop_robIdxFull_flag),
+    .io_exeReqs_2_bits_uop_lqIdx_value(regRead_io_exeReqs_2_bits_uop_lqIdx_value),
+    .io_exeReqs_2_bits_uop_lqIdx_flag(regRead_io_exeReqs_2_bits_uop_lqIdx_flag),
+    .io_exeReqs_2_bits_uop_sqIdx_value(regRead_io_exeReqs_2_bits_uop_sqIdx_value),
+    .io_exeReqs_2_bits_uop_sqIdx_flag(regRead_io_exeReqs_2_bits_uop_sqIdx_flag),
     .io_exeReqs_2_bits_uop_issueQueue(regRead_io_exeReqs_2_bits_uop_issueQueue),
     .io_exeReqs_2_bits_uop_prs1Busy(regRead_io_exeReqs_2_bits_uop_prs1Busy),
     .io_exeReqs_2_bits_uop_prs2Busy(regRead_io_exeReqs_2_bits_uop_prs2Busy),
     .io_exeReqs_2_bits_uop_isSta(regRead_io_exeReqs_2_bits_uop_isSta),
+    .io_exeReqs_2_bits_uop_isStd(regRead_io_exeReqs_2_bits_uop_isStd),
     .io_exeReqs_2_bits_rs1Data(regRead_io_exeReqs_2_bits_rs1Data),
     .io_exeReqs_2_bits_rs2Data(regRead_io_exeReqs_2_bits_rs2Data)
   );
@@ -6960,14 +7120,19 @@ module Backend(
     .io_inReq_bits_uop_rs1Valid(exeUnits_0_io_inReq_bits_uop_rs1Valid),
     .io_inReq_bits_uop_rs2Valid(exeUnits_0_io_inReq_bits_uop_rs2Valid),
     .io_inReq_bits_uop_rdValid(exeUnits_0_io_inReq_bits_uop_rdValid),
-    .io_inReq_bits_uop_robIdx(exeUnits_0_io_inReq_bits_uop_robIdx),
-    .io_inReq_bits_uop_robIdxFull(exeUnits_0_io_inReq_bits_uop_robIdxFull),
-    .io_inReq_bits_uop_lqIdx(exeUnits_0_io_inReq_bits_uop_lqIdx),
-    .io_inReq_bits_uop_sqIdx(exeUnits_0_io_inReq_bits_uop_sqIdx),
+    .io_inReq_bits_uop_robIdx_value(exeUnits_0_io_inReq_bits_uop_robIdx_value),
+    .io_inReq_bits_uop_robIdx_flag(exeUnits_0_io_inReq_bits_uop_robIdx_flag),
+    .io_inReq_bits_uop_robIdxFull_value(exeUnits_0_io_inReq_bits_uop_robIdxFull_value),
+    .io_inReq_bits_uop_robIdxFull_flag(exeUnits_0_io_inReq_bits_uop_robIdxFull_flag),
+    .io_inReq_bits_uop_lqIdx_value(exeUnits_0_io_inReq_bits_uop_lqIdx_value),
+    .io_inReq_bits_uop_lqIdx_flag(exeUnits_0_io_inReq_bits_uop_lqIdx_flag),
+    .io_inReq_bits_uop_sqIdx_value(exeUnits_0_io_inReq_bits_uop_sqIdx_value),
+    .io_inReq_bits_uop_sqIdx_flag(exeUnits_0_io_inReq_bits_uop_sqIdx_flag),
     .io_inReq_bits_uop_issueQueue(exeUnits_0_io_inReq_bits_uop_issueQueue),
     .io_inReq_bits_uop_prs1Busy(exeUnits_0_io_inReq_bits_uop_prs1Busy),
     .io_inReq_bits_uop_prs2Busy(exeUnits_0_io_inReq_bits_uop_prs2Busy),
     .io_inReq_bits_uop_isSta(exeUnits_0_io_inReq_bits_uop_isSta),
+    .io_inReq_bits_uop_isStd(exeUnits_0_io_inReq_bits_uop_isStd),
     .io_inReq_bits_rs1Data(exeUnits_0_io_inReq_bits_rs1Data),
     .io_inReq_bits_rs2Data(exeUnits_0_io_inReq_bits_rs2Data),
     .io_outResult_ready(exeUnits_0_io_outResult_ready),
@@ -7011,14 +7176,19 @@ module Backend(
     .io_outResult_bits_uop_rs1Valid(exeUnits_0_io_outResult_bits_uop_rs1Valid),
     .io_outResult_bits_uop_rs2Valid(exeUnits_0_io_outResult_bits_uop_rs2Valid),
     .io_outResult_bits_uop_rdValid(exeUnits_0_io_outResult_bits_uop_rdValid),
-    .io_outResult_bits_uop_robIdx(exeUnits_0_io_outResult_bits_uop_robIdx),
-    .io_outResult_bits_uop_robIdxFull(exeUnits_0_io_outResult_bits_uop_robIdxFull),
-    .io_outResult_bits_uop_lqIdx(exeUnits_0_io_outResult_bits_uop_lqIdx),
-    .io_outResult_bits_uop_sqIdx(exeUnits_0_io_outResult_bits_uop_sqIdx),
+    .io_outResult_bits_uop_robIdx_value(exeUnits_0_io_outResult_bits_uop_robIdx_value),
+    .io_outResult_bits_uop_robIdx_flag(exeUnits_0_io_outResult_bits_uop_robIdx_flag),
+    .io_outResult_bits_uop_robIdxFull_value(exeUnits_0_io_outResult_bits_uop_robIdxFull_value),
+    .io_outResult_bits_uop_robIdxFull_flag(exeUnits_0_io_outResult_bits_uop_robIdxFull_flag),
+    .io_outResult_bits_uop_lqIdx_value(exeUnits_0_io_outResult_bits_uop_lqIdx_value),
+    .io_outResult_bits_uop_lqIdx_flag(exeUnits_0_io_outResult_bits_uop_lqIdx_flag),
+    .io_outResult_bits_uop_sqIdx_value(exeUnits_0_io_outResult_bits_uop_sqIdx_value),
+    .io_outResult_bits_uop_sqIdx_flag(exeUnits_0_io_outResult_bits_uop_sqIdx_flag),
     .io_outResult_bits_uop_issueQueue(exeUnits_0_io_outResult_bits_uop_issueQueue),
     .io_outResult_bits_uop_prs1Busy(exeUnits_0_io_outResult_bits_uop_prs1Busy),
     .io_outResult_bits_uop_prs2Busy(exeUnits_0_io_outResult_bits_uop_prs2Busy),
     .io_outResult_bits_uop_isSta(exeUnits_0_io_outResult_bits_uop_isSta),
+    .io_outResult_bits_uop_isStd(exeUnits_0_io_outResult_bits_uop_isStd),
     .io_outResult_bits_data(exeUnits_0_io_outResult_bits_data)
   );
   ExeUnit exeUnits_1 ( // @[src/main/scala/backend/Backend.scala 56:11]
@@ -7065,14 +7235,19 @@ module Backend(
     .io_inReq_bits_uop_rs1Valid(exeUnits_1_io_inReq_bits_uop_rs1Valid),
     .io_inReq_bits_uop_rs2Valid(exeUnits_1_io_inReq_bits_uop_rs2Valid),
     .io_inReq_bits_uop_rdValid(exeUnits_1_io_inReq_bits_uop_rdValid),
-    .io_inReq_bits_uop_robIdx(exeUnits_1_io_inReq_bits_uop_robIdx),
-    .io_inReq_bits_uop_robIdxFull(exeUnits_1_io_inReq_bits_uop_robIdxFull),
-    .io_inReq_bits_uop_lqIdx(exeUnits_1_io_inReq_bits_uop_lqIdx),
-    .io_inReq_bits_uop_sqIdx(exeUnits_1_io_inReq_bits_uop_sqIdx),
+    .io_inReq_bits_uop_robIdx_value(exeUnits_1_io_inReq_bits_uop_robIdx_value),
+    .io_inReq_bits_uop_robIdx_flag(exeUnits_1_io_inReq_bits_uop_robIdx_flag),
+    .io_inReq_bits_uop_robIdxFull_value(exeUnits_1_io_inReq_bits_uop_robIdxFull_value),
+    .io_inReq_bits_uop_robIdxFull_flag(exeUnits_1_io_inReq_bits_uop_robIdxFull_flag),
+    .io_inReq_bits_uop_lqIdx_value(exeUnits_1_io_inReq_bits_uop_lqIdx_value),
+    .io_inReq_bits_uop_lqIdx_flag(exeUnits_1_io_inReq_bits_uop_lqIdx_flag),
+    .io_inReq_bits_uop_sqIdx_value(exeUnits_1_io_inReq_bits_uop_sqIdx_value),
+    .io_inReq_bits_uop_sqIdx_flag(exeUnits_1_io_inReq_bits_uop_sqIdx_flag),
     .io_inReq_bits_uop_issueQueue(exeUnits_1_io_inReq_bits_uop_issueQueue),
     .io_inReq_bits_uop_prs1Busy(exeUnits_1_io_inReq_bits_uop_prs1Busy),
     .io_inReq_bits_uop_prs2Busy(exeUnits_1_io_inReq_bits_uop_prs2Busy),
     .io_inReq_bits_uop_isSta(exeUnits_1_io_inReq_bits_uop_isSta),
+    .io_inReq_bits_uop_isStd(exeUnits_1_io_inReq_bits_uop_isStd),
     .io_inReq_bits_rs1Data(exeUnits_1_io_inReq_bits_rs1Data),
     .io_inReq_bits_rs2Data(exeUnits_1_io_inReq_bits_rs2Data),
     .io_outResult_ready(exeUnits_1_io_outResult_ready),
@@ -7116,14 +7291,19 @@ module Backend(
     .io_outResult_bits_uop_rs1Valid(exeUnits_1_io_outResult_bits_uop_rs1Valid),
     .io_outResult_bits_uop_rs2Valid(exeUnits_1_io_outResult_bits_uop_rs2Valid),
     .io_outResult_bits_uop_rdValid(exeUnits_1_io_outResult_bits_uop_rdValid),
-    .io_outResult_bits_uop_robIdx(exeUnits_1_io_outResult_bits_uop_robIdx),
-    .io_outResult_bits_uop_robIdxFull(exeUnits_1_io_outResult_bits_uop_robIdxFull),
-    .io_outResult_bits_uop_lqIdx(exeUnits_1_io_outResult_bits_uop_lqIdx),
-    .io_outResult_bits_uop_sqIdx(exeUnits_1_io_outResult_bits_uop_sqIdx),
+    .io_outResult_bits_uop_robIdx_value(exeUnits_1_io_outResult_bits_uop_robIdx_value),
+    .io_outResult_bits_uop_robIdx_flag(exeUnits_1_io_outResult_bits_uop_robIdx_flag),
+    .io_outResult_bits_uop_robIdxFull_value(exeUnits_1_io_outResult_bits_uop_robIdxFull_value),
+    .io_outResult_bits_uop_robIdxFull_flag(exeUnits_1_io_outResult_bits_uop_robIdxFull_flag),
+    .io_outResult_bits_uop_lqIdx_value(exeUnits_1_io_outResult_bits_uop_lqIdx_value),
+    .io_outResult_bits_uop_lqIdx_flag(exeUnits_1_io_outResult_bits_uop_lqIdx_flag),
+    .io_outResult_bits_uop_sqIdx_value(exeUnits_1_io_outResult_bits_uop_sqIdx_value),
+    .io_outResult_bits_uop_sqIdx_flag(exeUnits_1_io_outResult_bits_uop_sqIdx_flag),
     .io_outResult_bits_uop_issueQueue(exeUnits_1_io_outResult_bits_uop_issueQueue),
     .io_outResult_bits_uop_prs1Busy(exeUnits_1_io_outResult_bits_uop_prs1Busy),
     .io_outResult_bits_uop_prs2Busy(exeUnits_1_io_outResult_bits_uop_prs2Busy),
     .io_outResult_bits_uop_isSta(exeUnits_1_io_outResult_bits_uop_isSta),
+    .io_outResult_bits_uop_isStd(exeUnits_1_io_outResult_bits_uop_isStd),
     .io_outResult_bits_data(exeUnits_1_io_outResult_bits_data)
   );
   ExeUnit_2 exeUnits_2 ( // @[src/main/scala/backend/Backend.scala 57:11]
@@ -7170,14 +7350,19 @@ module Backend(
     .io_inReq_bits_uop_rs1Valid(exeUnits_2_io_inReq_bits_uop_rs1Valid),
     .io_inReq_bits_uop_rs2Valid(exeUnits_2_io_inReq_bits_uop_rs2Valid),
     .io_inReq_bits_uop_rdValid(exeUnits_2_io_inReq_bits_uop_rdValid),
-    .io_inReq_bits_uop_robIdx(exeUnits_2_io_inReq_bits_uop_robIdx),
-    .io_inReq_bits_uop_robIdxFull(exeUnits_2_io_inReq_bits_uop_robIdxFull),
-    .io_inReq_bits_uop_lqIdx(exeUnits_2_io_inReq_bits_uop_lqIdx),
-    .io_inReq_bits_uop_sqIdx(exeUnits_2_io_inReq_bits_uop_sqIdx),
+    .io_inReq_bits_uop_robIdx_value(exeUnits_2_io_inReq_bits_uop_robIdx_value),
+    .io_inReq_bits_uop_robIdx_flag(exeUnits_2_io_inReq_bits_uop_robIdx_flag),
+    .io_inReq_bits_uop_robIdxFull_value(exeUnits_2_io_inReq_bits_uop_robIdxFull_value),
+    .io_inReq_bits_uop_robIdxFull_flag(exeUnits_2_io_inReq_bits_uop_robIdxFull_flag),
+    .io_inReq_bits_uop_lqIdx_value(exeUnits_2_io_inReq_bits_uop_lqIdx_value),
+    .io_inReq_bits_uop_lqIdx_flag(exeUnits_2_io_inReq_bits_uop_lqIdx_flag),
+    .io_inReq_bits_uop_sqIdx_value(exeUnits_2_io_inReq_bits_uop_sqIdx_value),
+    .io_inReq_bits_uop_sqIdx_flag(exeUnits_2_io_inReq_bits_uop_sqIdx_flag),
     .io_inReq_bits_uop_issueQueue(exeUnits_2_io_inReq_bits_uop_issueQueue),
     .io_inReq_bits_uop_prs1Busy(exeUnits_2_io_inReq_bits_uop_prs1Busy),
     .io_inReq_bits_uop_prs2Busy(exeUnits_2_io_inReq_bits_uop_prs2Busy),
     .io_inReq_bits_uop_isSta(exeUnits_2_io_inReq_bits_uop_isSta),
+    .io_inReq_bits_uop_isStd(exeUnits_2_io_inReq_bits_uop_isStd),
     .io_inReq_bits_rs1Data(exeUnits_2_io_inReq_bits_rs1Data),
     .io_inReq_bits_rs2Data(exeUnits_2_io_inReq_bits_rs2Data),
     .io_outResult_ready(exeUnits_2_io_outResult_ready),
@@ -7221,17 +7406,23 @@ module Backend(
     .io_outResult_bits_uop_rs1Valid(exeUnits_2_io_outResult_bits_uop_rs1Valid),
     .io_outResult_bits_uop_rs2Valid(exeUnits_2_io_outResult_bits_uop_rs2Valid),
     .io_outResult_bits_uop_rdValid(exeUnits_2_io_outResult_bits_uop_rdValid),
-    .io_outResult_bits_uop_robIdx(exeUnits_2_io_outResult_bits_uop_robIdx),
-    .io_outResult_bits_uop_robIdxFull(exeUnits_2_io_outResult_bits_uop_robIdxFull),
-    .io_outResult_bits_uop_lqIdx(exeUnits_2_io_outResult_bits_uop_lqIdx),
-    .io_outResult_bits_uop_sqIdx(exeUnits_2_io_outResult_bits_uop_sqIdx),
+    .io_outResult_bits_uop_robIdx_value(exeUnits_2_io_outResult_bits_uop_robIdx_value),
+    .io_outResult_bits_uop_robIdx_flag(exeUnits_2_io_outResult_bits_uop_robIdx_flag),
+    .io_outResult_bits_uop_robIdxFull_value(exeUnits_2_io_outResult_bits_uop_robIdxFull_value),
+    .io_outResult_bits_uop_robIdxFull_flag(exeUnits_2_io_outResult_bits_uop_robIdxFull_flag),
+    .io_outResult_bits_uop_lqIdx_value(exeUnits_2_io_outResult_bits_uop_lqIdx_value),
+    .io_outResult_bits_uop_lqIdx_flag(exeUnits_2_io_outResult_bits_uop_lqIdx_flag),
+    .io_outResult_bits_uop_sqIdx_value(exeUnits_2_io_outResult_bits_uop_sqIdx_value),
+    .io_outResult_bits_uop_sqIdx_flag(exeUnits_2_io_outResult_bits_uop_sqIdx_flag),
     .io_outResult_bits_uop_issueQueue(exeUnits_2_io_outResult_bits_uop_issueQueue),
     .io_outResult_bits_uop_prs1Busy(exeUnits_2_io_outResult_bits_uop_prs1Busy),
     .io_outResult_bits_uop_prs2Busy(exeUnits_2_io_outResult_bits_uop_prs2Busy),
     .io_outResult_bits_uop_isSta(exeUnits_2_io_outResult_bits_uop_isSta),
+    .io_outResult_bits_uop_isStd(exeUnits_2_io_outResult_bits_uop_isStd),
     .io_outResult_bits_data(exeUnits_2_io_outResult_bits_data),
     .io_outResult_bits_redirect_valid(exeUnits_2_io_outResult_bits_redirect_valid),
-    .io_outResult_bits_redirect_bits_robIdx(exeUnits_2_io_outResult_bits_redirect_bits_robIdx)
+    .io_outResult_bits_redirect_bits_robIdx_value(exeUnits_2_io_outResult_bits_redirect_bits_robIdx_value),
+    .io_outResult_bits_redirect_bits_robIdx_flag(exeUnits_2_io_outResult_bits_redirect_bits_robIdx_flag)
   );
   Writeback writeback ( // @[src/main/scala/backend/Backend.scala 61:25]
     .clock(writeback_clock),
@@ -7277,14 +7468,19 @@ module Backend(
     .io_InExeResults_0_bits_uop_rs1Valid(writeback_io_InExeResults_0_bits_uop_rs1Valid),
     .io_InExeResults_0_bits_uop_rs2Valid(writeback_io_InExeResults_0_bits_uop_rs2Valid),
     .io_InExeResults_0_bits_uop_rdValid(writeback_io_InExeResults_0_bits_uop_rdValid),
-    .io_InExeResults_0_bits_uop_robIdx(writeback_io_InExeResults_0_bits_uop_robIdx),
-    .io_InExeResults_0_bits_uop_robIdxFull(writeback_io_InExeResults_0_bits_uop_robIdxFull),
-    .io_InExeResults_0_bits_uop_lqIdx(writeback_io_InExeResults_0_bits_uop_lqIdx),
-    .io_InExeResults_0_bits_uop_sqIdx(writeback_io_InExeResults_0_bits_uop_sqIdx),
+    .io_InExeResults_0_bits_uop_robIdx_value(writeback_io_InExeResults_0_bits_uop_robIdx_value),
+    .io_InExeResults_0_bits_uop_robIdx_flag(writeback_io_InExeResults_0_bits_uop_robIdx_flag),
+    .io_InExeResults_0_bits_uop_robIdxFull_value(writeback_io_InExeResults_0_bits_uop_robIdxFull_value),
+    .io_InExeResults_0_bits_uop_robIdxFull_flag(writeback_io_InExeResults_0_bits_uop_robIdxFull_flag),
+    .io_InExeResults_0_bits_uop_lqIdx_value(writeback_io_InExeResults_0_bits_uop_lqIdx_value),
+    .io_InExeResults_0_bits_uop_lqIdx_flag(writeback_io_InExeResults_0_bits_uop_lqIdx_flag),
+    .io_InExeResults_0_bits_uop_sqIdx_value(writeback_io_InExeResults_0_bits_uop_sqIdx_value),
+    .io_InExeResults_0_bits_uop_sqIdx_flag(writeback_io_InExeResults_0_bits_uop_sqIdx_flag),
     .io_InExeResults_0_bits_uop_issueQueue(writeback_io_InExeResults_0_bits_uop_issueQueue),
     .io_InExeResults_0_bits_uop_prs1Busy(writeback_io_InExeResults_0_bits_uop_prs1Busy),
     .io_InExeResults_0_bits_uop_prs2Busy(writeback_io_InExeResults_0_bits_uop_prs2Busy),
     .io_InExeResults_0_bits_uop_isSta(writeback_io_InExeResults_0_bits_uop_isSta),
+    .io_InExeResults_0_bits_uop_isStd(writeback_io_InExeResults_0_bits_uop_isStd),
     .io_InExeResults_0_bits_data(writeback_io_InExeResults_0_bits_data),
     .io_InExeResults_1_ready(writeback_io_InExeResults_1_ready),
     .io_InExeResults_1_valid(writeback_io_InExeResults_1_valid),
@@ -7327,14 +7523,19 @@ module Backend(
     .io_InExeResults_1_bits_uop_rs1Valid(writeback_io_InExeResults_1_bits_uop_rs1Valid),
     .io_InExeResults_1_bits_uop_rs2Valid(writeback_io_InExeResults_1_bits_uop_rs2Valid),
     .io_InExeResults_1_bits_uop_rdValid(writeback_io_InExeResults_1_bits_uop_rdValid),
-    .io_InExeResults_1_bits_uop_robIdx(writeback_io_InExeResults_1_bits_uop_robIdx),
-    .io_InExeResults_1_bits_uop_robIdxFull(writeback_io_InExeResults_1_bits_uop_robIdxFull),
-    .io_InExeResults_1_bits_uop_lqIdx(writeback_io_InExeResults_1_bits_uop_lqIdx),
-    .io_InExeResults_1_bits_uop_sqIdx(writeback_io_InExeResults_1_bits_uop_sqIdx),
+    .io_InExeResults_1_bits_uop_robIdx_value(writeback_io_InExeResults_1_bits_uop_robIdx_value),
+    .io_InExeResults_1_bits_uop_robIdx_flag(writeback_io_InExeResults_1_bits_uop_robIdx_flag),
+    .io_InExeResults_1_bits_uop_robIdxFull_value(writeback_io_InExeResults_1_bits_uop_robIdxFull_value),
+    .io_InExeResults_1_bits_uop_robIdxFull_flag(writeback_io_InExeResults_1_bits_uop_robIdxFull_flag),
+    .io_InExeResults_1_bits_uop_lqIdx_value(writeback_io_InExeResults_1_bits_uop_lqIdx_value),
+    .io_InExeResults_1_bits_uop_lqIdx_flag(writeback_io_InExeResults_1_bits_uop_lqIdx_flag),
+    .io_InExeResults_1_bits_uop_sqIdx_value(writeback_io_InExeResults_1_bits_uop_sqIdx_value),
+    .io_InExeResults_1_bits_uop_sqIdx_flag(writeback_io_InExeResults_1_bits_uop_sqIdx_flag),
     .io_InExeResults_1_bits_uop_issueQueue(writeback_io_InExeResults_1_bits_uop_issueQueue),
     .io_InExeResults_1_bits_uop_prs1Busy(writeback_io_InExeResults_1_bits_uop_prs1Busy),
     .io_InExeResults_1_bits_uop_prs2Busy(writeback_io_InExeResults_1_bits_uop_prs2Busy),
     .io_InExeResults_1_bits_uop_isSta(writeback_io_InExeResults_1_bits_uop_isSta),
+    .io_InExeResults_1_bits_uop_isStd(writeback_io_InExeResults_1_bits_uop_isStd),
     .io_InExeResults_1_bits_data(writeback_io_InExeResults_1_bits_data),
     .io_InExeResults_2_ready(writeback_io_InExeResults_2_ready),
     .io_InExeResults_2_valid(writeback_io_InExeResults_2_valid),
@@ -7377,17 +7578,23 @@ module Backend(
     .io_InExeResults_2_bits_uop_rs1Valid(writeback_io_InExeResults_2_bits_uop_rs1Valid),
     .io_InExeResults_2_bits_uop_rs2Valid(writeback_io_InExeResults_2_bits_uop_rs2Valid),
     .io_InExeResults_2_bits_uop_rdValid(writeback_io_InExeResults_2_bits_uop_rdValid),
-    .io_InExeResults_2_bits_uop_robIdx(writeback_io_InExeResults_2_bits_uop_robIdx),
-    .io_InExeResults_2_bits_uop_robIdxFull(writeback_io_InExeResults_2_bits_uop_robIdxFull),
-    .io_InExeResults_2_bits_uop_lqIdx(writeback_io_InExeResults_2_bits_uop_lqIdx),
-    .io_InExeResults_2_bits_uop_sqIdx(writeback_io_InExeResults_2_bits_uop_sqIdx),
+    .io_InExeResults_2_bits_uop_robIdx_value(writeback_io_InExeResults_2_bits_uop_robIdx_value),
+    .io_InExeResults_2_bits_uop_robIdx_flag(writeback_io_InExeResults_2_bits_uop_robIdx_flag),
+    .io_InExeResults_2_bits_uop_robIdxFull_value(writeback_io_InExeResults_2_bits_uop_robIdxFull_value),
+    .io_InExeResults_2_bits_uop_robIdxFull_flag(writeback_io_InExeResults_2_bits_uop_robIdxFull_flag),
+    .io_InExeResults_2_bits_uop_lqIdx_value(writeback_io_InExeResults_2_bits_uop_lqIdx_value),
+    .io_InExeResults_2_bits_uop_lqIdx_flag(writeback_io_InExeResults_2_bits_uop_lqIdx_flag),
+    .io_InExeResults_2_bits_uop_sqIdx_value(writeback_io_InExeResults_2_bits_uop_sqIdx_value),
+    .io_InExeResults_2_bits_uop_sqIdx_flag(writeback_io_InExeResults_2_bits_uop_sqIdx_flag),
     .io_InExeResults_2_bits_uop_issueQueue(writeback_io_InExeResults_2_bits_uop_issueQueue),
     .io_InExeResults_2_bits_uop_prs1Busy(writeback_io_InExeResults_2_bits_uop_prs1Busy),
     .io_InExeResults_2_bits_uop_prs2Busy(writeback_io_InExeResults_2_bits_uop_prs2Busy),
     .io_InExeResults_2_bits_uop_isSta(writeback_io_InExeResults_2_bits_uop_isSta),
+    .io_InExeResults_2_bits_uop_isStd(writeback_io_InExeResults_2_bits_uop_isStd),
     .io_InExeResults_2_bits_data(writeback_io_InExeResults_2_bits_data),
     .io_InExeResults_2_bits_redirect_valid(writeback_io_InExeResults_2_bits_redirect_valid),
-    .io_InExeResults_2_bits_redirect_bits_robIdx(writeback_io_InExeResults_2_bits_redirect_bits_robIdx),
+    .io_InExeResults_2_bits_redirect_bits_robIdx_value(writeback_io_InExeResults_2_bits_redirect_bits_robIdx_value),
+    .io_InExeResults_2_bits_redirect_bits_robIdx_flag(writeback_io_InExeResults_2_bits_redirect_bits_robIdx_flag),
     .io_rfWritePorts_0_valid(writeback_io_rfWritePorts_0_valid),
     .io_rfWritePorts_0_addr(writeback_io_rfWritePorts_0_addr),
     .io_rfWritePorts_0_data(writeback_io_rfWritePorts_0_data),
@@ -7410,17 +7617,20 @@ module Backend(
     .io_wakeupPorts_2_valid(writeback_io_wakeupPorts_2_valid),
     .io_wakeupPorts_2_bits_pdst(writeback_io_wakeupPorts_2_bits_pdst),
     .io_toRObResults_0_valid(writeback_io_toRObResults_0_valid),
-    .io_toRObResults_0_bits_robIdx(writeback_io_toRObResults_0_bits_robIdx),
+    .io_toRObResults_0_bits_robIdx_value(writeback_io_toRObResults_0_bits_robIdx_value),
+    .io_toRObResults_0_bits_robIdx_flag(writeback_io_toRObResults_0_bits_robIdx_flag),
     .io_toRObResults_0_bits_rfdata(writeback_io_toRObResults_0_bits_rfdata),
     .io_toRObResults_0_bits_excpVec(writeback_io_toRObResults_0_bits_excpVec),
     .io_toRObResults_0_bits_isBypass(writeback_io_toRObResults_0_bits_isBypass),
     .io_toRObResults_1_valid(writeback_io_toRObResults_1_valid),
-    .io_toRObResults_1_bits_robIdx(writeback_io_toRObResults_1_bits_robIdx),
+    .io_toRObResults_1_bits_robIdx_value(writeback_io_toRObResults_1_bits_robIdx_value),
+    .io_toRObResults_1_bits_robIdx_flag(writeback_io_toRObResults_1_bits_robIdx_flag),
     .io_toRObResults_1_bits_rfdata(writeback_io_toRObResults_1_bits_rfdata),
     .io_toRObResults_1_bits_excpVec(writeback_io_toRObResults_1_bits_excpVec),
     .io_toRObResults_1_bits_isBypass(writeback_io_toRObResults_1_bits_isBypass),
     .io_toRObResults_2_valid(writeback_io_toRObResults_2_valid),
-    .io_toRObResults_2_bits_robIdx(writeback_io_toRObResults_2_bits_robIdx),
+    .io_toRObResults_2_bits_robIdx_value(writeback_io_toRObResults_2_bits_robIdx_value),
+    .io_toRObResults_2_bits_robIdx_flag(writeback_io_toRObResults_2_bits_robIdx_flag),
     .io_toRObResults_2_bits_rfdata(writeback_io_toRObResults_2_bits_rfdata),
     .io_toRObResults_2_bits_excpVec(writeback_io_toRObResults_2_bits_excpVec),
     .io_toRObResults_2_bits_isBypass(writeback_io_toRObResults_2_bits_isBypass)
@@ -7510,15 +7720,15 @@ module Backend(
   assign ctrlBlock_io_iqFeedback_q4FreeEntries = scheduler_io_feedback_q4FreeEntries; // @[src/main/scala/backend/Backend.scala 79:27]
   assign ctrlBlock_io_iqFeedback_q5FreeEntries = scheduler_io_feedback_q5FreeEntries; // @[src/main/scala/backend/Backend.scala 79:27]
   assign ctrlBlock_io_writeback_0_valid = writeback_io_toRObResults_0_valid; // @[src/main/scala/backend/Backend.scala 158:26]
-  assign ctrlBlock_io_writeback_0_bits_robIdx = writeback_io_toRObResults_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 158:26]
+  assign ctrlBlock_io_writeback_0_bits_robIdx_value = writeback_io_toRObResults_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_0_bits_rfdata = writeback_io_toRObResults_0_bits_rfdata; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_0_bits_excpVec = writeback_io_toRObResults_0_bits_excpVec; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_1_valid = writeback_io_toRObResults_1_valid; // @[src/main/scala/backend/Backend.scala 158:26]
-  assign ctrlBlock_io_writeback_1_bits_robIdx = writeback_io_toRObResults_1_bits_robIdx; // @[src/main/scala/backend/Backend.scala 158:26]
+  assign ctrlBlock_io_writeback_1_bits_robIdx_value = writeback_io_toRObResults_1_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_1_bits_rfdata = writeback_io_toRObResults_1_bits_rfdata; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_1_bits_excpVec = writeback_io_toRObResults_1_bits_excpVec; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_2_valid = writeback_io_toRObResults_2_valid; // @[src/main/scala/backend/Backend.scala 158:26]
-  assign ctrlBlock_io_writeback_2_bits_robIdx = writeback_io_toRObResults_2_bits_robIdx; // @[src/main/scala/backend/Backend.scala 158:26]
+  assign ctrlBlock_io_writeback_2_bits_robIdx_value = writeback_io_toRObResults_2_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_2_bits_rfdata = writeback_io_toRObResults_2_bits_rfdata; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_writeback_2_bits_excpVec = writeback_io_toRObResults_2_bits_excpVec; // @[src/main/scala/backend/Backend.scala 158:26]
   assign ctrlBlock_io_extInt = io_extInt; // @[src/main/scala/backend/Backend.scala 68:23]
@@ -7570,8 +7780,10 @@ module Backend(
   assign scheduler_io_q1IQEnq_bits_rs1Valid = ctrlBlock_io_q1IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 73:24]
   assign scheduler_io_q1IQEnq_bits_rs2Valid = ctrlBlock_io_q1IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 73:24]
   assign scheduler_io_q1IQEnq_bits_rdValid = ctrlBlock_io_q1IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 73:24]
-  assign scheduler_io_q1IQEnq_bits_robIdx = ctrlBlock_io_q1IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 73:24]
-  assign scheduler_io_q1IQEnq_bits_robIdxFull = ctrlBlock_io_q1IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 73:24]
+  assign scheduler_io_q1IQEnq_bits_robIdx_value = ctrlBlock_io_q1IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 73:24]
+  assign scheduler_io_q1IQEnq_bits_robIdx_flag = ctrlBlock_io_q1IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 73:24]
+  assign scheduler_io_q1IQEnq_bits_robIdxFull_value = ctrlBlock_io_q1IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 73:24]
+  assign scheduler_io_q1IQEnq_bits_robIdxFull_flag = ctrlBlock_io_q1IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 73:24]
   assign scheduler_io_q1IQEnq_bits_prs1Busy = ctrlBlock_io_q1IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 73:24]
   assign scheduler_io_q1IQEnq_bits_prs2Busy = ctrlBlock_io_q1IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 73:24]
   assign scheduler_io_q2IQEnq_valid = ctrlBlock_io_q2IQEnq_0_valid; // @[src/main/scala/backend/Backend.scala 74:24]
@@ -7614,8 +7826,10 @@ module Backend(
   assign scheduler_io_q2IQEnq_bits_rs1Valid = ctrlBlock_io_q2IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 74:24]
   assign scheduler_io_q2IQEnq_bits_rs2Valid = ctrlBlock_io_q2IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 74:24]
   assign scheduler_io_q2IQEnq_bits_rdValid = ctrlBlock_io_q2IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 74:24]
-  assign scheduler_io_q2IQEnq_bits_robIdx = ctrlBlock_io_q2IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 74:24]
-  assign scheduler_io_q2IQEnq_bits_robIdxFull = ctrlBlock_io_q2IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 74:24]
+  assign scheduler_io_q2IQEnq_bits_robIdx_value = ctrlBlock_io_q2IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 74:24]
+  assign scheduler_io_q2IQEnq_bits_robIdx_flag = ctrlBlock_io_q2IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 74:24]
+  assign scheduler_io_q2IQEnq_bits_robIdxFull_value = ctrlBlock_io_q2IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 74:24]
+  assign scheduler_io_q2IQEnq_bits_robIdxFull_flag = ctrlBlock_io_q2IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 74:24]
   assign scheduler_io_q2IQEnq_bits_issueQueue = ctrlBlock_io_q2IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 74:24]
   assign scheduler_io_q2IQEnq_bits_prs1Busy = ctrlBlock_io_q2IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 74:24]
   assign scheduler_io_q2IQEnq_bits_prs2Busy = ctrlBlock_io_q2IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 74:24]
@@ -7659,8 +7873,10 @@ module Backend(
   assign scheduler_io_q3IQEnq_bits_rs1Valid = ctrlBlock_io_q3IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 75:24]
   assign scheduler_io_q3IQEnq_bits_rs2Valid = ctrlBlock_io_q3IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 75:24]
   assign scheduler_io_q3IQEnq_bits_rdValid = ctrlBlock_io_q3IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 75:24]
-  assign scheduler_io_q3IQEnq_bits_robIdx = ctrlBlock_io_q3IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 75:24]
-  assign scheduler_io_q3IQEnq_bits_robIdxFull = ctrlBlock_io_q3IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 75:24]
+  assign scheduler_io_q3IQEnq_bits_robIdx_value = ctrlBlock_io_q3IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 75:24]
+  assign scheduler_io_q3IQEnq_bits_robIdx_flag = ctrlBlock_io_q3IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 75:24]
+  assign scheduler_io_q3IQEnq_bits_robIdxFull_value = ctrlBlock_io_q3IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 75:24]
+  assign scheduler_io_q3IQEnq_bits_robIdxFull_flag = ctrlBlock_io_q3IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 75:24]
   assign scheduler_io_q3IQEnq_bits_issueQueue = ctrlBlock_io_q3IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 75:24]
   assign scheduler_io_q3IQEnq_bits_prs1Busy = ctrlBlock_io_q3IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 75:24]
   assign scheduler_io_q3IQEnq_bits_prs2Busy = ctrlBlock_io_q3IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 75:24]
@@ -7704,17 +7920,25 @@ module Backend(
   assign scheduler_io_q4IQEnq_bits_rs1Valid = ctrlBlock_io_q4IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q4IQEnq_bits_rs2Valid = ctrlBlock_io_q4IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q4IQEnq_bits_rdValid = ctrlBlock_io_q4IQEnq_0_bits_rdValid; // @[src/main/scala/backend/Backend.scala 76:24]
-  assign scheduler_io_q4IQEnq_bits_robIdx = ctrlBlock_io_q4IQEnq_0_bits_robIdx; // @[src/main/scala/backend/Backend.scala 76:24]
-  assign scheduler_io_q4IQEnq_bits_robIdxFull = ctrlBlock_io_q4IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 76:24]
-  assign scheduler_io_q4IQEnq_bits_lqIdx = ctrlBlock_io_q4IQEnq_0_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 76:24]
-  assign scheduler_io_q4IQEnq_bits_sqIdx = ctrlBlock_io_q4IQEnq_0_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_robIdx_value = ctrlBlock_io_q4IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_robIdx_flag = ctrlBlock_io_q4IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_robIdxFull_value = ctrlBlock_io_q4IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_robIdxFull_flag = ctrlBlock_io_q4IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_lqIdx_value = ctrlBlock_io_q4IQEnq_0_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_lqIdx_flag = ctrlBlock_io_q4IQEnq_0_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_sqIdx_value = ctrlBlock_io_q4IQEnq_0_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_sqIdx_flag = ctrlBlock_io_q4IQEnq_0_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q4IQEnq_bits_issueQueue = ctrlBlock_io_q4IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q4IQEnq_bits_prs1Busy = ctrlBlock_io_q4IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q4IQEnq_bits_prs2Busy = ctrlBlock_io_q4IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q4IQEnq_bits_isSta = ctrlBlock_io_q4IQEnq_0_bits_isSta; // @[src/main/scala/backend/Backend.scala 76:24]
+  assign scheduler_io_q4IQEnq_bits_isStd = ctrlBlock_io_q4IQEnq_0_bits_isStd; // @[src/main/scala/backend/Backend.scala 76:24]
   assign scheduler_io_q5IQEnq_valid = ctrlBlock_io_q5IQEnq_0_valid; // @[src/main/scala/backend/Backend.scala 77:24]
+  assign scheduler_io_q5IQEnq_bits_prs1 = ctrlBlock_io_q5IQEnq_0_bits_prs1; // @[src/main/scala/backend/Backend.scala 77:24]
   assign scheduler_io_q5IQEnq_bits_prs2 = ctrlBlock_io_q5IQEnq_0_bits_prs2; // @[src/main/scala/backend/Backend.scala 77:24]
+  assign scheduler_io_q5IQEnq_bits_rs1Valid = ctrlBlock_io_q5IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 77:24]
   assign scheduler_io_q5IQEnq_bits_rs2Valid = ctrlBlock_io_q5IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 77:24]
+  assign scheduler_io_q5IQEnq_bits_prs1Busy = ctrlBlock_io_q5IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 77:24]
   assign scheduler_io_q5IQEnq_bits_prs2Busy = ctrlBlock_io_q5IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 77:24]
   assign scheduler_io_q1Issue_ready = regRead_io_iqIssues_0_ready; // @[src/main/scala/backend/Backend.scala 84:26]
   assign scheduler_io_q2Issue_ready = regRead_io_iqIssues_1_ready; // @[src/main/scala/backend/Backend.scala 85:26]
@@ -7769,14 +7993,19 @@ module Backend(
   assign regRead_io_iqIssues_0_bits_rs1Valid = scheduler_io_q1Issue_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_0_bits_rs2Valid = scheduler_io_q1Issue_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_0_bits_rdValid = scheduler_io_q1Issue_bits_rdValid; // @[src/main/scala/backend/Backend.scala 84:26]
-  assign regRead_io_iqIssues_0_bits_robIdx = scheduler_io_q1Issue_bits_robIdx; // @[src/main/scala/backend/Backend.scala 84:26]
-  assign regRead_io_iqIssues_0_bits_robIdxFull = scheduler_io_q1Issue_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 84:26]
-  assign regRead_io_iqIssues_0_bits_lqIdx = scheduler_io_q1Issue_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 84:26]
-  assign regRead_io_iqIssues_0_bits_sqIdx = scheduler_io_q1Issue_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_robIdx_value = scheduler_io_q1Issue_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_robIdx_flag = scheduler_io_q1Issue_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_robIdxFull_value = scheduler_io_q1Issue_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_robIdxFull_flag = scheduler_io_q1Issue_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_lqIdx_value = scheduler_io_q1Issue_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_lqIdx_flag = scheduler_io_q1Issue_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_sqIdx_value = scheduler_io_q1Issue_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_sqIdx_flag = scheduler_io_q1Issue_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_0_bits_issueQueue = scheduler_io_q1Issue_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_0_bits_prs1Busy = scheduler_io_q1Issue_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_0_bits_prs2Busy = scheduler_io_q1Issue_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_0_bits_isSta = scheduler_io_q1Issue_bits_isSta; // @[src/main/scala/backend/Backend.scala 84:26]
+  assign regRead_io_iqIssues_0_bits_isStd = scheduler_io_q1Issue_bits_isStd; // @[src/main/scala/backend/Backend.scala 84:26]
   assign regRead_io_iqIssues_1_valid = scheduler_io_q2Issue_valid; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_pc = scheduler_io_q2Issue_bits_pc; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_inst = scheduler_io_q2Issue_bits_inst; // @[src/main/scala/backend/Backend.scala 85:26]
@@ -7817,8 +8046,10 @@ module Backend(
   assign regRead_io_iqIssues_1_bits_rs1Valid = scheduler_io_q2Issue_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_rs2Valid = scheduler_io_q2Issue_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_rdValid = scheduler_io_q2Issue_bits_rdValid; // @[src/main/scala/backend/Backend.scala 85:26]
-  assign regRead_io_iqIssues_1_bits_robIdx = scheduler_io_q2Issue_bits_robIdx; // @[src/main/scala/backend/Backend.scala 85:26]
-  assign regRead_io_iqIssues_1_bits_robIdxFull = scheduler_io_q2Issue_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 85:26]
+  assign regRead_io_iqIssues_1_bits_robIdx_value = scheduler_io_q2Issue_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 85:26]
+  assign regRead_io_iqIssues_1_bits_robIdx_flag = scheduler_io_q2Issue_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 85:26]
+  assign regRead_io_iqIssues_1_bits_robIdxFull_value = scheduler_io_q2Issue_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 85:26]
+  assign regRead_io_iqIssues_1_bits_robIdxFull_flag = scheduler_io_q2Issue_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_issueQueue = scheduler_io_q2Issue_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_prs1Busy = scheduler_io_q2Issue_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 85:26]
   assign regRead_io_iqIssues_1_bits_prs2Busy = scheduler_io_q2Issue_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 85:26]
@@ -7862,14 +8093,19 @@ module Backend(
   assign regRead_io_iqIssues_2_bits_rs1Valid = scheduler_io_q3Issue_bits_rs1Valid; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_2_bits_rs2Valid = scheduler_io_q3Issue_bits_rs2Valid; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_2_bits_rdValid = scheduler_io_q3Issue_bits_rdValid; // @[src/main/scala/backend/Backend.scala 86:26]
-  assign regRead_io_iqIssues_2_bits_robIdx = scheduler_io_q3Issue_bits_robIdx; // @[src/main/scala/backend/Backend.scala 86:26]
-  assign regRead_io_iqIssues_2_bits_robIdxFull = scheduler_io_q3Issue_bits_robIdxFull; // @[src/main/scala/backend/Backend.scala 86:26]
-  assign regRead_io_iqIssues_2_bits_lqIdx = scheduler_io_q3Issue_bits_lqIdx; // @[src/main/scala/backend/Backend.scala 86:26]
-  assign regRead_io_iqIssues_2_bits_sqIdx = scheduler_io_q3Issue_bits_sqIdx; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_robIdx_value = scheduler_io_q3Issue_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_robIdx_flag = scheduler_io_q3Issue_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_robIdxFull_value = scheduler_io_q3Issue_bits_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_robIdxFull_flag = scheduler_io_q3Issue_bits_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_lqIdx_value = scheduler_io_q3Issue_bits_lqIdx_value; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_lqIdx_flag = scheduler_io_q3Issue_bits_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_sqIdx_value = scheduler_io_q3Issue_bits_sqIdx_value; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_sqIdx_flag = scheduler_io_q3Issue_bits_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_2_bits_issueQueue = scheduler_io_q3Issue_bits_issueQueue; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_2_bits_prs1Busy = scheduler_io_q3Issue_bits_prs1Busy; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_2_bits_prs2Busy = scheduler_io_q3Issue_bits_prs2Busy; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_2_bits_isSta = scheduler_io_q3Issue_bits_isSta; // @[src/main/scala/backend/Backend.scala 86:26]
+  assign regRead_io_iqIssues_2_bits_isStd = scheduler_io_q3Issue_bits_isStd; // @[src/main/scala/backend/Backend.scala 86:26]
   assign regRead_io_iqIssues_3_valid = scheduler_io_q4Issue_valid; // @[src/main/scala/backend/Backend.scala 87:26]
   assign regRead_io_iqIssues_4_valid = scheduler_io_q5Issue_valid; // @[src/main/scala/backend/Backend.scala 88:26]
   assign regRead_io_rfReadData_0 = regFile_io_readPorts_0_data; // @[src/main/scala/backend/Backend.scala 95:34]
@@ -7946,14 +8182,19 @@ module Backend(
   assign exeUnits_0_io_inReq_bits_uop_rs1Valid = regRead_io_exeReqs_0_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_uop_rs2Valid = regRead_io_exeReqs_0_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_uop_rdValid = regRead_io_exeReqs_0_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_0_io_inReq_bits_uop_robIdx = regRead_io_exeReqs_0_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_0_io_inReq_bits_uop_robIdxFull = regRead_io_exeReqs_0_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_0_io_inReq_bits_uop_lqIdx = regRead_io_exeReqs_0_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_0_io_inReq_bits_uop_sqIdx = regRead_io_exeReqs_0_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_robIdx_value = regRead_io_exeReqs_0_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_robIdx_flag = regRead_io_exeReqs_0_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_robIdxFull_value = regRead_io_exeReqs_0_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_robIdxFull_flag = regRead_io_exeReqs_0_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_lqIdx_value = regRead_io_exeReqs_0_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_lqIdx_flag = regRead_io_exeReqs_0_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_sqIdx_value = regRead_io_exeReqs_0_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_sqIdx_flag = regRead_io_exeReqs_0_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_uop_issueQueue = regRead_io_exeReqs_0_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_uop_prs1Busy = regRead_io_exeReqs_0_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_uop_prs2Busy = regRead_io_exeReqs_0_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_uop_isSta = regRead_io_exeReqs_0_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_0_io_inReq_bits_uop_isStd = regRead_io_exeReqs_0_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_rs1Data = regRead_io_exeReqs_0_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_inReq_bits_rs2Data = regRead_io_exeReqs_0_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_0_io_outResult_ready = writeback_io_InExeResults_0_ready; // @[src/main/scala/backend/Backend.scala 120:34]
@@ -7999,14 +8240,19 @@ module Backend(
   assign exeUnits_1_io_inReq_bits_uop_rs1Valid = regRead_io_exeReqs_1_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_uop_rs2Valid = regRead_io_exeReqs_1_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_uop_rdValid = regRead_io_exeReqs_1_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_1_io_inReq_bits_uop_robIdx = regRead_io_exeReqs_1_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_1_io_inReq_bits_uop_robIdxFull = regRead_io_exeReqs_1_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_1_io_inReq_bits_uop_lqIdx = 4'h0; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_1_io_inReq_bits_uop_sqIdx = 4'h0; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_robIdx_value = regRead_io_exeReqs_1_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_robIdx_flag = regRead_io_exeReqs_1_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_robIdxFull_value = regRead_io_exeReqs_1_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_robIdxFull_flag = regRead_io_exeReqs_1_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_lqIdx_value = 4'h0; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_lqIdx_flag = 1'h0; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_sqIdx_value = 4'h0; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_sqIdx_flag = 1'h0; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_uop_issueQueue = regRead_io_exeReqs_1_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_uop_prs1Busy = regRead_io_exeReqs_1_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_uop_prs2Busy = regRead_io_exeReqs_1_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_uop_isSta = 1'h0; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_1_io_inReq_bits_uop_isStd = 1'h0; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_rs1Data = regRead_io_exeReqs_1_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_inReq_bits_rs2Data = regRead_io_exeReqs_1_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_1_io_outResult_ready = writeback_io_InExeResults_1_ready; // @[src/main/scala/backend/Backend.scala 120:34]
@@ -8052,14 +8298,19 @@ module Backend(
   assign exeUnits_2_io_inReq_bits_uop_rs1Valid = regRead_io_exeReqs_2_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_uop_rs2Valid = regRead_io_exeReqs_2_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_uop_rdValid = regRead_io_exeReqs_2_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_2_io_inReq_bits_uop_robIdx = regRead_io_exeReqs_2_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_2_io_inReq_bits_uop_robIdxFull = regRead_io_exeReqs_2_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_2_io_inReq_bits_uop_lqIdx = regRead_io_exeReqs_2_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 109:17]
-  assign exeUnits_2_io_inReq_bits_uop_sqIdx = regRead_io_exeReqs_2_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_robIdx_value = regRead_io_exeReqs_2_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_robIdx_flag = regRead_io_exeReqs_2_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_robIdxFull_value = regRead_io_exeReqs_2_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_robIdxFull_flag = regRead_io_exeReqs_2_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_lqIdx_value = regRead_io_exeReqs_2_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_lqIdx_flag = regRead_io_exeReqs_2_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_sqIdx_value = regRead_io_exeReqs_2_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_sqIdx_flag = regRead_io_exeReqs_2_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_uop_issueQueue = regRead_io_exeReqs_2_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_uop_prs1Busy = regRead_io_exeReqs_2_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_uop_prs2Busy = regRead_io_exeReqs_2_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_uop_isSta = regRead_io_exeReqs_2_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 109:17]
+  assign exeUnits_2_io_inReq_bits_uop_isStd = regRead_io_exeReqs_2_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_rs1Data = regRead_io_exeReqs_2_bits_rs1Data; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_inReq_bits_rs2Data = regRead_io_exeReqs_2_bits_rs2Data; // @[src/main/scala/backend/Backend.scala 109:17]
   assign exeUnits_2_io_outResult_ready = writeback_io_InExeResults_2_ready; // @[src/main/scala/backend/Backend.scala 120:34]
@@ -8105,14 +8356,19 @@ module Backend(
   assign writeback_io_InExeResults_0_bits_uop_rs1Valid = exeUnits_0_io_outResult_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_uop_rs2Valid = exeUnits_0_io_outResult_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_uop_rdValid = exeUnits_0_io_outResult_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_0_bits_uop_robIdx = exeUnits_0_io_outResult_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_0_bits_uop_robIdxFull = exeUnits_0_io_outResult_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_0_bits_uop_lqIdx = exeUnits_0_io_outResult_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_0_bits_uop_sqIdx = exeUnits_0_io_outResult_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_robIdx_value = exeUnits_0_io_outResult_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_robIdx_flag = exeUnits_0_io_outResult_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_robIdxFull_value = exeUnits_0_io_outResult_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_robIdxFull_flag = exeUnits_0_io_outResult_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_lqIdx_value = exeUnits_0_io_outResult_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_lqIdx_flag = exeUnits_0_io_outResult_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_sqIdx_value = exeUnits_0_io_outResult_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_sqIdx_flag = exeUnits_0_io_outResult_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_uop_issueQueue = exeUnits_0_io_outResult_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_uop_prs1Busy = exeUnits_0_io_outResult_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_uop_prs2Busy = exeUnits_0_io_outResult_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_uop_isSta = exeUnits_0_io_outResult_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_0_bits_uop_isStd = exeUnits_0_io_outResult_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_0_bits_data = exeUnits_0_io_outResult_bits_data; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_valid = exeUnits_1_io_outResult_valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_pc = exeUnits_1_io_outResult_bits_uop_pc; // @[src/main/scala/backend/Backend.scala 120:34]
@@ -8154,14 +8410,19 @@ module Backend(
   assign writeback_io_InExeResults_1_bits_uop_rs1Valid = exeUnits_1_io_outResult_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_rs2Valid = exeUnits_1_io_outResult_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_rdValid = exeUnits_1_io_outResult_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_1_bits_uop_robIdx = exeUnits_1_io_outResult_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_1_bits_uop_robIdxFull = exeUnits_1_io_outResult_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_1_bits_uop_lqIdx = exeUnits_1_io_outResult_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_1_bits_uop_sqIdx = exeUnits_1_io_outResult_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_robIdx_value = exeUnits_1_io_outResult_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_robIdx_flag = exeUnits_1_io_outResult_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_robIdxFull_value = exeUnits_1_io_outResult_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_robIdxFull_flag = exeUnits_1_io_outResult_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_lqIdx_value = exeUnits_1_io_outResult_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_lqIdx_flag = exeUnits_1_io_outResult_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_sqIdx_value = exeUnits_1_io_outResult_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_sqIdx_flag = exeUnits_1_io_outResult_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_issueQueue = exeUnits_1_io_outResult_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_prs1Busy = exeUnits_1_io_outResult_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_prs2Busy = exeUnits_1_io_outResult_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_uop_isSta = exeUnits_1_io_outResult_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_1_bits_uop_isStd = exeUnits_1_io_outResult_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_1_bits_data = exeUnits_1_io_outResult_bits_data; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_valid = exeUnits_2_io_outResult_valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_pc = exeUnits_2_io_outResult_bits_uop_pc; // @[src/main/scala/backend/Backend.scala 120:34]
@@ -8203,15 +8464,23 @@ module Backend(
   assign writeback_io_InExeResults_2_bits_uop_rs1Valid = exeUnits_2_io_outResult_bits_uop_rs1Valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_rs2Valid = exeUnits_2_io_outResult_bits_uop_rs2Valid; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_rdValid = exeUnits_2_io_outResult_bits_uop_rdValid; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_2_bits_uop_robIdx = exeUnits_2_io_outResult_bits_uop_robIdx; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_2_bits_uop_robIdxFull = exeUnits_2_io_outResult_bits_uop_robIdxFull; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_2_bits_uop_lqIdx = exeUnits_2_io_outResult_bits_uop_lqIdx; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_2_bits_uop_sqIdx = exeUnits_2_io_outResult_bits_uop_sqIdx; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_robIdx_value = exeUnits_2_io_outResult_bits_uop_robIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_robIdx_flag = exeUnits_2_io_outResult_bits_uop_robIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_robIdxFull_value = exeUnits_2_io_outResult_bits_uop_robIdxFull_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_robIdxFull_flag = exeUnits_2_io_outResult_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_lqIdx_value = exeUnits_2_io_outResult_bits_uop_lqIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_lqIdx_flag = exeUnits_2_io_outResult_bits_uop_lqIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_sqIdx_value = exeUnits_2_io_outResult_bits_uop_sqIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_sqIdx_flag = exeUnits_2_io_outResult_bits_uop_sqIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_issueQueue = exeUnits_2_io_outResult_bits_uop_issueQueue; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_prs1Busy = exeUnits_2_io_outResult_bits_uop_prs1Busy; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_prs2Busy = exeUnits_2_io_outResult_bits_uop_prs2Busy; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_uop_isSta = exeUnits_2_io_outResult_bits_uop_isSta; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_uop_isStd = exeUnits_2_io_outResult_bits_uop_isStd; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_data = exeUnits_2_io_outResult_bits_data; // @[src/main/scala/backend/Backend.scala 120:34]
   assign writeback_io_InExeResults_2_bits_redirect_valid = exeUnits_2_io_outResult_bits_redirect_valid; // @[src/main/scala/backend/Backend.scala 120:34]
-  assign writeback_io_InExeResults_2_bits_redirect_bits_robIdx = exeUnits_2_io_outResult_bits_redirect_bits_robIdx; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_redirect_bits_robIdx_value =
+    exeUnits_2_io_outResult_bits_redirect_bits_robIdx_value; // @[src/main/scala/backend/Backend.scala 120:34]
+  assign writeback_io_InExeResults_2_bits_redirect_bits_robIdx_flag =
+    exeUnits_2_io_outResult_bits_redirect_bits_robIdx_flag; // @[src/main/scala/backend/Backend.scala 120:34]
 endmodule

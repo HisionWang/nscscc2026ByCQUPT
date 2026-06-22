@@ -86,8 +86,10 @@ module CtrlBlock(
   output        io_q1IQEnq_0_bits_rs1Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q1IQEnq_0_bits_rs2Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q1IQEnq_0_bits_rdValid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_q1IQEnq_0_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [6:0]  io_q1IQEnq_0_bits_robIdxFull, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q1IQEnq_0_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q1IQEnq_0_bits_robIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q1IQEnq_0_bits_robIdxFull_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q1IQEnq_0_bits_robIdxFull_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q1IQEnq_0_bits_prs1Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q1IQEnq_0_bits_prs2Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q2IQEnq_0_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
@@ -130,8 +132,10 @@ module CtrlBlock(
   output        io_q2IQEnq_0_bits_rs1Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q2IQEnq_0_bits_rs2Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q2IQEnq_0_bits_rdValid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_q2IQEnq_0_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [6:0]  io_q2IQEnq_0_bits_robIdxFull, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q2IQEnq_0_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q2IQEnq_0_bits_robIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q2IQEnq_0_bits_robIdxFull_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q2IQEnq_0_bits_robIdxFull_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output [2:0]  io_q2IQEnq_0_bits_issueQueue, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q2IQEnq_0_bits_prs1Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q2IQEnq_0_bits_prs2Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
@@ -175,8 +179,10 @@ module CtrlBlock(
   output        io_q3IQEnq_0_bits_rs1Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q3IQEnq_0_bits_rs2Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q3IQEnq_0_bits_rdValid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_q3IQEnq_0_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [6:0]  io_q3IQEnq_0_bits_robIdxFull, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q3IQEnq_0_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q3IQEnq_0_bits_robIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q3IQEnq_0_bits_robIdxFull_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q3IQEnq_0_bits_robIdxFull_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output [2:0]  io_q3IQEnq_0_bits_issueQueue, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q3IQEnq_0_bits_prs1Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q3IQEnq_0_bits_prs2Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
@@ -220,51 +226,50 @@ module CtrlBlock(
   output        io_q4IQEnq_0_bits_rs1Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q4IQEnq_0_bits_rs2Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q4IQEnq_0_bits_rdValid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_q4IQEnq_0_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [6:0]  io_q4IQEnq_0_bits_robIdxFull, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_q4IQEnq_0_bits_lqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_q4IQEnq_0_bits_sqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q4IQEnq_0_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q4IQEnq_0_bits_robIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_q4IQEnq_0_bits_robIdxFull_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q4IQEnq_0_bits_robIdxFull_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [3:0]  io_q4IQEnq_0_bits_lqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q4IQEnq_0_bits_lqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [3:0]  io_q4IQEnq_0_bits_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q4IQEnq_0_bits_sqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output [2:0]  io_q4IQEnq_0_bits_issueQueue, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q4IQEnq_0_bits_prs1Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q4IQEnq_0_bits_prs2Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q4IQEnq_0_bits_isSta, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q4IQEnq_0_bits_isStd, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q5IQEnq_0_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [6:0]  io_q5IQEnq_0_bits_prs1, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output [6:0]  io_q5IQEnq_0_bits_prs2, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q5IQEnq_0_bits_rs1Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q5IQEnq_0_bits_rs2Valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_q5IQEnq_0_bits_prs1Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_q5IQEnq_0_bits_prs2Busy, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [4:0]  io_iqFeedback_q1FreeEntries, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [3:0]  io_iqFeedback_q2FreeEntries, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [4:0]  io_iqFeedback_q3FreeEntries, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [4:0]  io_iqFeedback_q4FreeEntries, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [3:0]  io_iqFeedback_q5FreeEntries, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_0_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_lsEnq_req_0_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_0_bits_isLoad, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_0_bits_isStore, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_lsEnq_req_0_bits_sqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_lsEnq_req_0_bits_lqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_1_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_lsEnq_req_1_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_1_bits_isLoad, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_1_bits_isStore, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_lsEnq_req_1_bits_sqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_lsEnq_req_1_bits_lqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_2_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_lsEnq_req_2_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_2_bits_isLoad, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output        io_lsEnq_req_2_bits_isStore, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_lsEnq_req_2_bits_sqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [3:0]  io_lsEnq_req_2_bits_lqIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_lsEnq_req_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_lsEnq_req_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_lsEnq_req_bits_robIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_lsEnq_req_bits_isLoad, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_lsEnq_req_bits_isStore, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [3:0]  io_lsEnq_req_bits_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_lsEnq_req_bits_sqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [3:0]  io_lsEnq_req_bits_lqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output        io_lsEnq_req_bits_lqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input         io_writeback_0_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  input  [5:0]  io_writeback_0_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  input  [5:0]  io_writeback_0_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [31:0] io_writeback_0_bits_rfdata, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [9:0]  io_writeback_0_bits_excpVec, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input         io_writeback_1_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  input  [5:0]  io_writeback_1_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  input  [5:0]  io_writeback_1_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [31:0] io_writeback_1_bits_rfdata, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [9:0]  io_writeback_1_bits_excpVec, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input         io_writeback_2_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  input  [5:0]  io_writeback_2_bits_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  input  [5:0]  io_writeback_2_bits_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [31:0] io_writeback_2_bits_rfdata, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input  [9:0]  io_writeback_2_bits_excpVec, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_commit_valid_0, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
@@ -290,7 +295,7 @@ module CtrlBlock(
   output        io_commit_bits_2_rfWen, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_commit_isWalk, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output        io_redirect_valid, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
-  output [5:0]  io_redirect_robIdx, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
+  output [5:0]  io_redirect_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   input         io_extInt, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output [6:0]  io_debugArchState_0, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
   output [6:0]  io_debugArchState_1, // @[src/main/scala/backend/CtrlBlock.scala 50:14]
@@ -681,7 +686,8 @@ module CtrlBlock(
   wire  renameStage_io_out_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
-  wire [5:0] renameStage_io_out_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire [5:0] renameStage_io_out_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire  renameStage_io_out_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_1_ready; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [31:0] renameStage_io_out_1_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
@@ -723,7 +729,8 @@ module CtrlBlock(
   wire  renameStage_io_out_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_1_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_1_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
-  wire [5:0] renameStage_io_out_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire [5:0] renameStage_io_out_1_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire  renameStage_io_out_1_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_2_ready; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [31:0] renameStage_io_out_2_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
@@ -765,7 +772,8 @@ module CtrlBlock(
   wire  renameStage_io_out_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_2_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_out_2_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
-  wire [5:0] renameStage_io_out_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire [5:0] renameStage_io_out_2_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire  renameStage_io_out_2_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_commit_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [4:0] renameStage_io_commit_0_ldst; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [6:0] renameStage_io_commit_0_pdst; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
@@ -779,7 +787,7 @@ module CtrlBlock(
   wire [6:0] renameStage_io_commit_2_pdst; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_commit_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire  renameStage_io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
-  wire [5:0] renameStage_io_redirect_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
+  wire [5:0] renameStage_io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [6:0] renameStage_io_debugArchState_0; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [6:0] renameStage_io_debugArchState_1; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
   wire [6:0] renameStage_io_debugArchState_2; // @[src/main/scala/backend/CtrlBlock.scala 63:27]
@@ -855,7 +863,8 @@ module CtrlBlock(
   wire  dispatchStage_io_in_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_in_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_in_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_in_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_1_ready; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [31:0] dispatchStage_io_in_1_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -897,7 +906,8 @@ module CtrlBlock(
   wire  dispatchStage_io_in_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_1_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_1_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_in_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_in_1_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_in_1_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_2_ready; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [31:0] dispatchStage_io_in_2_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -939,7 +949,8 @@ module CtrlBlock(
   wire  dispatchStage_io_in_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_2_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_in_2_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_in_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_in_2_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_in_2_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q1IQEnq_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [31:0] dispatchStage_io_q1IQEnq_0_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [31:0] dispatchStage_io_q1IQEnq_0_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -980,8 +991,10 @@ module CtrlBlock(
   wire  dispatchStage_io_q1IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q1IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q1IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_q1IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [6:0] dispatchStage_io_q1IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q1IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q1IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q1IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q1IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q2IQEnq_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -1024,8 +1037,10 @@ module CtrlBlock(
   wire  dispatchStage_io_q2IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q2IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q2IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_q2IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [6:0] dispatchStage_io_q2IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q2IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q2IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [2:0] dispatchStage_io_q2IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q2IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q2IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -1069,8 +1084,10 @@ module CtrlBlock(
   wire  dispatchStage_io_q3IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q3IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q3IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_q3IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [6:0] dispatchStage_io_q3IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q3IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q3IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [2:0] dispatchStage_io_q3IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q3IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q3IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -1114,41 +1131,86 @@ module CtrlBlock(
   wire  dispatchStage_io_q4IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q4IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q4IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_q4IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [6:0] dispatchStage_io_q4IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_q4IQEnq_0_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_q4IQEnq_0_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q4IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q4IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q4IQEnq_0_bits_lqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_lqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q4IQEnq_0_bits_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [2:0] dispatchStage_io_q4IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q4IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q4IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q4IQEnq_0_bits_isSta; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_isStd; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q5IQEnq_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_fuType; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [4:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_aluOp; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_bruOp; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_lsuOp; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_csrOp; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_mulOp; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_divOp; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_src1Type; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_src2Type; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q5IQEnq_0_bits_ctrl_immType; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_memRead; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_csrWen; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_isBranch; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_isJump; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_ctrl_isPriv; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [9:0] dispatchStage_io_q5IQEnq_0_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_imm; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [13:0] dispatchStage_io_q5IQEnq_0_bits_csrAddress; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isBr; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isJal; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isJalr; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [4:0] dispatchStage_io_q5IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [4:0] dispatchStage_io_q5IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [4:0] dispatchStage_io_q5IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [6:0] dispatchStage_io_q5IQEnq_0_bits_pdst; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [6:0] dispatchStage_io_q5IQEnq_0_bits_prs1; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [6:0] dispatchStage_io_q5IQEnq_0_bits_prs2; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [6:0] dispatchStage_io_q5IQEnq_0_bits_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q5IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q5IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_q5IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q5IQEnq_0_bits_lqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_lqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_q5IQEnq_0_bits_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_q5IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_isSta; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_isStd; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [4:0] dispatchStage_io_iqFeedback_q1FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [3:0] dispatchStage_io_iqFeedback_q2FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [4:0] dispatchStage_io_iqFeedback_q3FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [4:0] dispatchStage_io_iqFeedback_q4FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire [3:0] dispatchStage_io_iqFeedback_q5FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_lsEnq_req_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_0_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_0_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_lsEnq_req_0_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_lsEnq_req_0_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_lsEnq_req_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_1_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_1_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_lsEnq_req_1_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_lsEnq_req_1_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [5:0] dispatchStage_io_lsEnq_req_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_2_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire  dispatchStage_io_lsEnq_req_2_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_lsEnq_req_2_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
-  wire [3:0] dispatchStage_io_lsEnq_req_2_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_lsEnq_req_valid; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [5:0] dispatchStage_io_lsEnq_req_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_lsEnq_req_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_lsEnq_req_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_lsEnq_req_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_lsEnq_req_bits_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_lsEnq_req_bits_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire [3:0] dispatchStage_io_lsEnq_req_bits_lqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
+  wire  dispatchStage_io_lsEnq_req_bits_lqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_robEnq_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_robEnq_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
   wire  dispatchStage_io_robEnq_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 74:29]
@@ -1261,17 +1323,17 @@ module CtrlBlock(
   wire [4:0] rob_io_commit_bits_2_ldst; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire  rob_io_commit_bits_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire  rob_io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
-  wire [5:0] rob_io_redirect_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
+  wire [5:0] rob_io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire  rob_io_writeback_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
-  wire [5:0] rob_io_writeback_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
+  wire [5:0] rob_io_writeback_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire [31:0] rob_io_writeback_0_bits_rfdata; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire [9:0] rob_io_writeback_0_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire  rob_io_writeback_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
-  wire [5:0] rob_io_writeback_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
+  wire [5:0] rob_io_writeback_1_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire [31:0] rob_io_writeback_1_bits_rfdata; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire [9:0] rob_io_writeback_1_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire  rob_io_writeback_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
-  wire [5:0] rob_io_writeback_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
+  wire [5:0] rob_io_writeback_2_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire [31:0] rob_io_writeback_2_bits_rfdata; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   wire [9:0] rob_io_writeback_2_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 95:19]
   DecodeStage decodeStage ( // @[src/main/scala/backend/CtrlBlock.scala 55:27]
@@ -1627,7 +1689,8 @@ module CtrlBlock(
     .io_out_0_bits_rs1Valid(renameStage_io_out_0_bits_rs1Valid),
     .io_out_0_bits_rs2Valid(renameStage_io_out_0_bits_rs2Valid),
     .io_out_0_bits_rdValid(renameStage_io_out_0_bits_rdValid),
-    .io_out_0_bits_robIdx(renameStage_io_out_0_bits_robIdx),
+    .io_out_0_bits_robIdx_value(renameStage_io_out_0_bits_robIdx_value),
+    .io_out_0_bits_robIdx_flag(renameStage_io_out_0_bits_robIdx_flag),
     .io_out_1_ready(renameStage_io_out_1_ready),
     .io_out_1_valid(renameStage_io_out_1_valid),
     .io_out_1_bits_pc(renameStage_io_out_1_bits_pc),
@@ -1669,7 +1732,8 @@ module CtrlBlock(
     .io_out_1_bits_rs1Valid(renameStage_io_out_1_bits_rs1Valid),
     .io_out_1_bits_rs2Valid(renameStage_io_out_1_bits_rs2Valid),
     .io_out_1_bits_rdValid(renameStage_io_out_1_bits_rdValid),
-    .io_out_1_bits_robIdx(renameStage_io_out_1_bits_robIdx),
+    .io_out_1_bits_robIdx_value(renameStage_io_out_1_bits_robIdx_value),
+    .io_out_1_bits_robIdx_flag(renameStage_io_out_1_bits_robIdx_flag),
     .io_out_2_ready(renameStage_io_out_2_ready),
     .io_out_2_valid(renameStage_io_out_2_valid),
     .io_out_2_bits_pc(renameStage_io_out_2_bits_pc),
@@ -1711,7 +1775,8 @@ module CtrlBlock(
     .io_out_2_bits_rs1Valid(renameStage_io_out_2_bits_rs1Valid),
     .io_out_2_bits_rs2Valid(renameStage_io_out_2_bits_rs2Valid),
     .io_out_2_bits_rdValid(renameStage_io_out_2_bits_rdValid),
-    .io_out_2_bits_robIdx(renameStage_io_out_2_bits_robIdx),
+    .io_out_2_bits_robIdx_value(renameStage_io_out_2_bits_robIdx_value),
+    .io_out_2_bits_robIdx_flag(renameStage_io_out_2_bits_robIdx_flag),
     .io_commit_0_valid(renameStage_io_commit_0_valid),
     .io_commit_0_ldst(renameStage_io_commit_0_ldst),
     .io_commit_0_pdst(renameStage_io_commit_0_pdst),
@@ -1725,7 +1790,7 @@ module CtrlBlock(
     .io_commit_2_pdst(renameStage_io_commit_2_pdst),
     .io_commit_2_rfWen(renameStage_io_commit_2_rfWen),
     .io_redirect_valid(renameStage_io_redirect_valid),
-    .io_redirect_robIdx(renameStage_io_redirect_robIdx),
+    .io_redirect_robIdx_value(renameStage_io_redirect_robIdx_value),
     .io_debugArchState_0(renameStage_io_debugArchState_0),
     .io_debugArchState_1(renameStage_io_debugArchState_1),
     .io_debugArchState_2(renameStage_io_debugArchState_2),
@@ -1803,7 +1868,8 @@ module CtrlBlock(
     .io_in_0_bits_rs1Valid(dispatchStage_io_in_0_bits_rs1Valid),
     .io_in_0_bits_rs2Valid(dispatchStage_io_in_0_bits_rs2Valid),
     .io_in_0_bits_rdValid(dispatchStage_io_in_0_bits_rdValid),
-    .io_in_0_bits_robIdx(dispatchStage_io_in_0_bits_robIdx),
+    .io_in_0_bits_robIdx_value(dispatchStage_io_in_0_bits_robIdx_value),
+    .io_in_0_bits_robIdx_flag(dispatchStage_io_in_0_bits_robIdx_flag),
     .io_in_1_ready(dispatchStage_io_in_1_ready),
     .io_in_1_valid(dispatchStage_io_in_1_valid),
     .io_in_1_bits_pc(dispatchStage_io_in_1_bits_pc),
@@ -1845,7 +1911,8 @@ module CtrlBlock(
     .io_in_1_bits_rs1Valid(dispatchStage_io_in_1_bits_rs1Valid),
     .io_in_1_bits_rs2Valid(dispatchStage_io_in_1_bits_rs2Valid),
     .io_in_1_bits_rdValid(dispatchStage_io_in_1_bits_rdValid),
-    .io_in_1_bits_robIdx(dispatchStage_io_in_1_bits_robIdx),
+    .io_in_1_bits_robIdx_value(dispatchStage_io_in_1_bits_robIdx_value),
+    .io_in_1_bits_robIdx_flag(dispatchStage_io_in_1_bits_robIdx_flag),
     .io_in_2_ready(dispatchStage_io_in_2_ready),
     .io_in_2_valid(dispatchStage_io_in_2_valid),
     .io_in_2_bits_pc(dispatchStage_io_in_2_bits_pc),
@@ -1887,7 +1954,8 @@ module CtrlBlock(
     .io_in_2_bits_rs1Valid(dispatchStage_io_in_2_bits_rs1Valid),
     .io_in_2_bits_rs2Valid(dispatchStage_io_in_2_bits_rs2Valid),
     .io_in_2_bits_rdValid(dispatchStage_io_in_2_bits_rdValid),
-    .io_in_2_bits_robIdx(dispatchStage_io_in_2_bits_robIdx),
+    .io_in_2_bits_robIdx_value(dispatchStage_io_in_2_bits_robIdx_value),
+    .io_in_2_bits_robIdx_flag(dispatchStage_io_in_2_bits_robIdx_flag),
     .io_q1IQEnq_0_valid(dispatchStage_io_q1IQEnq_0_valid),
     .io_q1IQEnq_0_bits_pc(dispatchStage_io_q1IQEnq_0_bits_pc),
     .io_q1IQEnq_0_bits_inst(dispatchStage_io_q1IQEnq_0_bits_inst),
@@ -1928,8 +1996,10 @@ module CtrlBlock(
     .io_q1IQEnq_0_bits_rs1Valid(dispatchStage_io_q1IQEnq_0_bits_rs1Valid),
     .io_q1IQEnq_0_bits_rs2Valid(dispatchStage_io_q1IQEnq_0_bits_rs2Valid),
     .io_q1IQEnq_0_bits_rdValid(dispatchStage_io_q1IQEnq_0_bits_rdValid),
-    .io_q1IQEnq_0_bits_robIdx(dispatchStage_io_q1IQEnq_0_bits_robIdx),
-    .io_q1IQEnq_0_bits_robIdxFull(dispatchStage_io_q1IQEnq_0_bits_robIdxFull),
+    .io_q1IQEnq_0_bits_robIdx_value(dispatchStage_io_q1IQEnq_0_bits_robIdx_value),
+    .io_q1IQEnq_0_bits_robIdx_flag(dispatchStage_io_q1IQEnq_0_bits_robIdx_flag),
+    .io_q1IQEnq_0_bits_robIdxFull_value(dispatchStage_io_q1IQEnq_0_bits_robIdxFull_value),
+    .io_q1IQEnq_0_bits_robIdxFull_flag(dispatchStage_io_q1IQEnq_0_bits_robIdxFull_flag),
     .io_q1IQEnq_0_bits_prs1Busy(dispatchStage_io_q1IQEnq_0_bits_prs1Busy),
     .io_q1IQEnq_0_bits_prs2Busy(dispatchStage_io_q1IQEnq_0_bits_prs2Busy),
     .io_q2IQEnq_0_valid(dispatchStage_io_q2IQEnq_0_valid),
@@ -1972,8 +2042,10 @@ module CtrlBlock(
     .io_q2IQEnq_0_bits_rs1Valid(dispatchStage_io_q2IQEnq_0_bits_rs1Valid),
     .io_q2IQEnq_0_bits_rs2Valid(dispatchStage_io_q2IQEnq_0_bits_rs2Valid),
     .io_q2IQEnq_0_bits_rdValid(dispatchStage_io_q2IQEnq_0_bits_rdValid),
-    .io_q2IQEnq_0_bits_robIdx(dispatchStage_io_q2IQEnq_0_bits_robIdx),
-    .io_q2IQEnq_0_bits_robIdxFull(dispatchStage_io_q2IQEnq_0_bits_robIdxFull),
+    .io_q2IQEnq_0_bits_robIdx_value(dispatchStage_io_q2IQEnq_0_bits_robIdx_value),
+    .io_q2IQEnq_0_bits_robIdx_flag(dispatchStage_io_q2IQEnq_0_bits_robIdx_flag),
+    .io_q2IQEnq_0_bits_robIdxFull_value(dispatchStage_io_q2IQEnq_0_bits_robIdxFull_value),
+    .io_q2IQEnq_0_bits_robIdxFull_flag(dispatchStage_io_q2IQEnq_0_bits_robIdxFull_flag),
     .io_q2IQEnq_0_bits_issueQueue(dispatchStage_io_q2IQEnq_0_bits_issueQueue),
     .io_q2IQEnq_0_bits_prs1Busy(dispatchStage_io_q2IQEnq_0_bits_prs1Busy),
     .io_q2IQEnq_0_bits_prs2Busy(dispatchStage_io_q2IQEnq_0_bits_prs2Busy),
@@ -2017,8 +2089,10 @@ module CtrlBlock(
     .io_q3IQEnq_0_bits_rs1Valid(dispatchStage_io_q3IQEnq_0_bits_rs1Valid),
     .io_q3IQEnq_0_bits_rs2Valid(dispatchStage_io_q3IQEnq_0_bits_rs2Valid),
     .io_q3IQEnq_0_bits_rdValid(dispatchStage_io_q3IQEnq_0_bits_rdValid),
-    .io_q3IQEnq_0_bits_robIdx(dispatchStage_io_q3IQEnq_0_bits_robIdx),
-    .io_q3IQEnq_0_bits_robIdxFull(dispatchStage_io_q3IQEnq_0_bits_robIdxFull),
+    .io_q3IQEnq_0_bits_robIdx_value(dispatchStage_io_q3IQEnq_0_bits_robIdx_value),
+    .io_q3IQEnq_0_bits_robIdx_flag(dispatchStage_io_q3IQEnq_0_bits_robIdx_flag),
+    .io_q3IQEnq_0_bits_robIdxFull_value(dispatchStage_io_q3IQEnq_0_bits_robIdxFull_value),
+    .io_q3IQEnq_0_bits_robIdxFull_flag(dispatchStage_io_q3IQEnq_0_bits_robIdxFull_flag),
     .io_q3IQEnq_0_bits_issueQueue(dispatchStage_io_q3IQEnq_0_bits_issueQueue),
     .io_q3IQEnq_0_bits_prs1Busy(dispatchStage_io_q3IQEnq_0_bits_prs1Busy),
     .io_q3IQEnq_0_bits_prs2Busy(dispatchStage_io_q3IQEnq_0_bits_prs2Busy),
@@ -2062,41 +2136,86 @@ module CtrlBlock(
     .io_q4IQEnq_0_bits_rs1Valid(dispatchStage_io_q4IQEnq_0_bits_rs1Valid),
     .io_q4IQEnq_0_bits_rs2Valid(dispatchStage_io_q4IQEnq_0_bits_rs2Valid),
     .io_q4IQEnq_0_bits_rdValid(dispatchStage_io_q4IQEnq_0_bits_rdValid),
-    .io_q4IQEnq_0_bits_robIdx(dispatchStage_io_q4IQEnq_0_bits_robIdx),
-    .io_q4IQEnq_0_bits_robIdxFull(dispatchStage_io_q4IQEnq_0_bits_robIdxFull),
-    .io_q4IQEnq_0_bits_lqIdx(dispatchStage_io_q4IQEnq_0_bits_lqIdx),
-    .io_q4IQEnq_0_bits_sqIdx(dispatchStage_io_q4IQEnq_0_bits_sqIdx),
+    .io_q4IQEnq_0_bits_robIdx_value(dispatchStage_io_q4IQEnq_0_bits_robIdx_value),
+    .io_q4IQEnq_0_bits_robIdx_flag(dispatchStage_io_q4IQEnq_0_bits_robIdx_flag),
+    .io_q4IQEnq_0_bits_robIdxFull_value(dispatchStage_io_q4IQEnq_0_bits_robIdxFull_value),
+    .io_q4IQEnq_0_bits_robIdxFull_flag(dispatchStage_io_q4IQEnq_0_bits_robIdxFull_flag),
+    .io_q4IQEnq_0_bits_lqIdx_value(dispatchStage_io_q4IQEnq_0_bits_lqIdx_value),
+    .io_q4IQEnq_0_bits_lqIdx_flag(dispatchStage_io_q4IQEnq_0_bits_lqIdx_flag),
+    .io_q4IQEnq_0_bits_sqIdx_value(dispatchStage_io_q4IQEnq_0_bits_sqIdx_value),
+    .io_q4IQEnq_0_bits_sqIdx_flag(dispatchStage_io_q4IQEnq_0_bits_sqIdx_flag),
     .io_q4IQEnq_0_bits_issueQueue(dispatchStage_io_q4IQEnq_0_bits_issueQueue),
     .io_q4IQEnq_0_bits_prs1Busy(dispatchStage_io_q4IQEnq_0_bits_prs1Busy),
     .io_q4IQEnq_0_bits_prs2Busy(dispatchStage_io_q4IQEnq_0_bits_prs2Busy),
     .io_q4IQEnq_0_bits_isSta(dispatchStage_io_q4IQEnq_0_bits_isSta),
+    .io_q4IQEnq_0_bits_isStd(dispatchStage_io_q4IQEnq_0_bits_isStd),
     .io_q5IQEnq_0_valid(dispatchStage_io_q5IQEnq_0_valid),
+    .io_q5IQEnq_0_bits_pc(dispatchStage_io_q5IQEnq_0_bits_pc),
+    .io_q5IQEnq_0_bits_inst(dispatchStage_io_q5IQEnq_0_bits_inst),
+    .io_q5IQEnq_0_bits_ctrl_fuType(dispatchStage_io_q5IQEnq_0_bits_ctrl_fuType),
+    .io_q5IQEnq_0_bits_ctrl_aluOp(dispatchStage_io_q5IQEnq_0_bits_ctrl_aluOp),
+    .io_q5IQEnq_0_bits_ctrl_bruOp(dispatchStage_io_q5IQEnq_0_bits_ctrl_bruOp),
+    .io_q5IQEnq_0_bits_ctrl_lsuOp(dispatchStage_io_q5IQEnq_0_bits_ctrl_lsuOp),
+    .io_q5IQEnq_0_bits_ctrl_csrOp(dispatchStage_io_q5IQEnq_0_bits_ctrl_csrOp),
+    .io_q5IQEnq_0_bits_ctrl_mulOp(dispatchStage_io_q5IQEnq_0_bits_ctrl_mulOp),
+    .io_q5IQEnq_0_bits_ctrl_divOp(dispatchStage_io_q5IQEnq_0_bits_ctrl_divOp),
+    .io_q5IQEnq_0_bits_ctrl_src1Type(dispatchStage_io_q5IQEnq_0_bits_ctrl_src1Type),
+    .io_q5IQEnq_0_bits_ctrl_src2Type(dispatchStage_io_q5IQEnq_0_bits_ctrl_src2Type),
+    .io_q5IQEnq_0_bits_ctrl_immType(dispatchStage_io_q5IQEnq_0_bits_ctrl_immType),
+    .io_q5IQEnq_0_bits_ctrl_rfWen(dispatchStage_io_q5IQEnq_0_bits_ctrl_rfWen),
+    .io_q5IQEnq_0_bits_ctrl_memRead(dispatchStage_io_q5IQEnq_0_bits_ctrl_memRead),
+    .io_q5IQEnq_0_bits_ctrl_memWrite(dispatchStage_io_q5IQEnq_0_bits_ctrl_memWrite),
+    .io_q5IQEnq_0_bits_ctrl_csrWen(dispatchStage_io_q5IQEnq_0_bits_ctrl_csrWen),
+    .io_q5IQEnq_0_bits_ctrl_isBranch(dispatchStage_io_q5IQEnq_0_bits_ctrl_isBranch),
+    .io_q5IQEnq_0_bits_ctrl_isJump(dispatchStage_io_q5IQEnq_0_bits_ctrl_isJump),
+    .io_q5IQEnq_0_bits_ctrl_isPriv(dispatchStage_io_q5IQEnq_0_bits_ctrl_isPriv),
+    .io_q5IQEnq_0_bits_excpVec(dispatchStage_io_q5IQEnq_0_bits_excpVec),
+    .io_q5IQEnq_0_bits_imm(dispatchStage_io_q5IQEnq_0_bits_imm),
+    .io_q5IQEnq_0_bits_csrAddress(dispatchStage_io_q5IQEnq_0_bits_csrAddress),
+    .io_q5IQEnq_0_bits_pdInfo_valid(dispatchStage_io_q5IQEnq_0_bits_pdInfo_valid),
+    .io_q5IQEnq_0_bits_pdInfo_isBr(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isBr),
+    .io_q5IQEnq_0_bits_pdInfo_isJal(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isJal),
+    .io_q5IQEnq_0_bits_pdInfo_isJalr(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isJalr),
+    .io_q5IQEnq_0_bits_pdInfo_isCall(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isCall),
+    .io_q5IQEnq_0_bits_pdInfo_isRet(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isRet),
+    .io_q5IQEnq_0_bits_pdInfo_jumpTarget(dispatchStage_io_q5IQEnq_0_bits_pdInfo_jumpTarget),
+    .io_q5IQEnq_0_bits_ldst(dispatchStage_io_q5IQEnq_0_bits_ldst),
+    .io_q5IQEnq_0_bits_lrs1(dispatchStage_io_q5IQEnq_0_bits_lrs1),
+    .io_q5IQEnq_0_bits_lrs2(dispatchStage_io_q5IQEnq_0_bits_lrs2),
+    .io_q5IQEnq_0_bits_pdst(dispatchStage_io_q5IQEnq_0_bits_pdst),
+    .io_q5IQEnq_0_bits_prs1(dispatchStage_io_q5IQEnq_0_bits_prs1),
     .io_q5IQEnq_0_bits_prs2(dispatchStage_io_q5IQEnq_0_bits_prs2),
+    .io_q5IQEnq_0_bits_oldPdst(dispatchStage_io_q5IQEnq_0_bits_oldPdst),
+    .io_q5IQEnq_0_bits_rs1Valid(dispatchStage_io_q5IQEnq_0_bits_rs1Valid),
     .io_q5IQEnq_0_bits_rs2Valid(dispatchStage_io_q5IQEnq_0_bits_rs2Valid),
+    .io_q5IQEnq_0_bits_rdValid(dispatchStage_io_q5IQEnq_0_bits_rdValid),
+    .io_q5IQEnq_0_bits_robIdx_value(dispatchStage_io_q5IQEnq_0_bits_robIdx_value),
+    .io_q5IQEnq_0_bits_robIdx_flag(dispatchStage_io_q5IQEnq_0_bits_robIdx_flag),
+    .io_q5IQEnq_0_bits_robIdxFull_value(dispatchStage_io_q5IQEnq_0_bits_robIdxFull_value),
+    .io_q5IQEnq_0_bits_robIdxFull_flag(dispatchStage_io_q5IQEnq_0_bits_robIdxFull_flag),
+    .io_q5IQEnq_0_bits_lqIdx_value(dispatchStage_io_q5IQEnq_0_bits_lqIdx_value),
+    .io_q5IQEnq_0_bits_lqIdx_flag(dispatchStage_io_q5IQEnq_0_bits_lqIdx_flag),
+    .io_q5IQEnq_0_bits_sqIdx_value(dispatchStage_io_q5IQEnq_0_bits_sqIdx_value),
+    .io_q5IQEnq_0_bits_sqIdx_flag(dispatchStage_io_q5IQEnq_0_bits_sqIdx_flag),
+    .io_q5IQEnq_0_bits_issueQueue(dispatchStage_io_q5IQEnq_0_bits_issueQueue),
+    .io_q5IQEnq_0_bits_prs1Busy(dispatchStage_io_q5IQEnq_0_bits_prs1Busy),
     .io_q5IQEnq_0_bits_prs2Busy(dispatchStage_io_q5IQEnq_0_bits_prs2Busy),
+    .io_q5IQEnq_0_bits_isSta(dispatchStage_io_q5IQEnq_0_bits_isSta),
+    .io_q5IQEnq_0_bits_isStd(dispatchStage_io_q5IQEnq_0_bits_isStd),
     .io_iqFeedback_q1FreeEntries(dispatchStage_io_iqFeedback_q1FreeEntries),
     .io_iqFeedback_q2FreeEntries(dispatchStage_io_iqFeedback_q2FreeEntries),
     .io_iqFeedback_q3FreeEntries(dispatchStage_io_iqFeedback_q3FreeEntries),
     .io_iqFeedback_q4FreeEntries(dispatchStage_io_iqFeedback_q4FreeEntries),
     .io_iqFeedback_q5FreeEntries(dispatchStage_io_iqFeedback_q5FreeEntries),
-    .io_lsEnq_req_0_valid(dispatchStage_io_lsEnq_req_0_valid),
-    .io_lsEnq_req_0_bits_robIdx(dispatchStage_io_lsEnq_req_0_bits_robIdx),
-    .io_lsEnq_req_0_bits_isLoad(dispatchStage_io_lsEnq_req_0_bits_isLoad),
-    .io_lsEnq_req_0_bits_isStore(dispatchStage_io_lsEnq_req_0_bits_isStore),
-    .io_lsEnq_req_0_bits_sqIdx(dispatchStage_io_lsEnq_req_0_bits_sqIdx),
-    .io_lsEnq_req_0_bits_lqIdx(dispatchStage_io_lsEnq_req_0_bits_lqIdx),
-    .io_lsEnq_req_1_valid(dispatchStage_io_lsEnq_req_1_valid),
-    .io_lsEnq_req_1_bits_robIdx(dispatchStage_io_lsEnq_req_1_bits_robIdx),
-    .io_lsEnq_req_1_bits_isLoad(dispatchStage_io_lsEnq_req_1_bits_isLoad),
-    .io_lsEnq_req_1_bits_isStore(dispatchStage_io_lsEnq_req_1_bits_isStore),
-    .io_lsEnq_req_1_bits_sqIdx(dispatchStage_io_lsEnq_req_1_bits_sqIdx),
-    .io_lsEnq_req_1_bits_lqIdx(dispatchStage_io_lsEnq_req_1_bits_lqIdx),
-    .io_lsEnq_req_2_valid(dispatchStage_io_lsEnq_req_2_valid),
-    .io_lsEnq_req_2_bits_robIdx(dispatchStage_io_lsEnq_req_2_bits_robIdx),
-    .io_lsEnq_req_2_bits_isLoad(dispatchStage_io_lsEnq_req_2_bits_isLoad),
-    .io_lsEnq_req_2_bits_isStore(dispatchStage_io_lsEnq_req_2_bits_isStore),
-    .io_lsEnq_req_2_bits_sqIdx(dispatchStage_io_lsEnq_req_2_bits_sqIdx),
-    .io_lsEnq_req_2_bits_lqIdx(dispatchStage_io_lsEnq_req_2_bits_lqIdx),
+    .io_lsEnq_req_valid(dispatchStage_io_lsEnq_req_valid),
+    .io_lsEnq_req_bits_robIdx_value(dispatchStage_io_lsEnq_req_bits_robIdx_value),
+    .io_lsEnq_req_bits_robIdx_flag(dispatchStage_io_lsEnq_req_bits_robIdx_flag),
+    .io_lsEnq_req_bits_isLoad(dispatchStage_io_lsEnq_req_bits_isLoad),
+    .io_lsEnq_req_bits_isStore(dispatchStage_io_lsEnq_req_bits_isStore),
+    .io_lsEnq_req_bits_sqIdx_value(dispatchStage_io_lsEnq_req_bits_sqIdx_value),
+    .io_lsEnq_req_bits_sqIdx_flag(dispatchStage_io_lsEnq_req_bits_sqIdx_flag),
+    .io_lsEnq_req_bits_lqIdx_value(dispatchStage_io_lsEnq_req_bits_lqIdx_value),
+    .io_lsEnq_req_bits_lqIdx_flag(dispatchStage_io_lsEnq_req_bits_lqIdx_flag),
     .io_robEnq_valid_0(dispatchStage_io_robEnq_valid_0),
     .io_robEnq_valid_1(dispatchStage_io_robEnq_valid_1),
     .io_robEnq_valid_2(dispatchStage_io_robEnq_valid_2),
@@ -2211,17 +2330,17 @@ module CtrlBlock(
     .io_commit_bits_2_ldst(rob_io_commit_bits_2_ldst),
     .io_commit_bits_2_rfWen(rob_io_commit_bits_2_rfWen),
     .io_redirect_valid(rob_io_redirect_valid),
-    .io_redirect_robIdx(rob_io_redirect_robIdx),
+    .io_redirect_robIdx_value(rob_io_redirect_robIdx_value),
     .io_writeback_0_valid(rob_io_writeback_0_valid),
-    .io_writeback_0_bits_robIdx(rob_io_writeback_0_bits_robIdx),
+    .io_writeback_0_bits_robIdx_value(rob_io_writeback_0_bits_robIdx_value),
     .io_writeback_0_bits_rfdata(rob_io_writeback_0_bits_rfdata),
     .io_writeback_0_bits_excpVec(rob_io_writeback_0_bits_excpVec),
     .io_writeback_1_valid(rob_io_writeback_1_valid),
-    .io_writeback_1_bits_robIdx(rob_io_writeback_1_bits_robIdx),
+    .io_writeback_1_bits_robIdx_value(rob_io_writeback_1_bits_robIdx_value),
     .io_writeback_1_bits_rfdata(rob_io_writeback_1_bits_rfdata),
     .io_writeback_1_bits_excpVec(rob_io_writeback_1_bits_excpVec),
     .io_writeback_2_valid(rob_io_writeback_2_valid),
-    .io_writeback_2_bits_robIdx(rob_io_writeback_2_bits_robIdx),
+    .io_writeback_2_bits_robIdx_value(rob_io_writeback_2_bits_robIdx_value),
     .io_writeback_2_bits_rfdata(rob_io_writeback_2_bits_rfdata),
     .io_writeback_2_bits_excpVec(rob_io_writeback_2_bits_excpVec)
   );
@@ -2268,8 +2387,10 @@ module CtrlBlock(
   assign io_q1IQEnq_0_bits_rs1Valid = dispatchStage_io_q1IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
   assign io_q1IQEnq_0_bits_rs2Valid = dispatchStage_io_q1IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
   assign io_q1IQEnq_0_bits_rdValid = dispatchStage_io_q1IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
-  assign io_q1IQEnq_0_bits_robIdx = dispatchStage_io_q1IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
-  assign io_q1IQEnq_0_bits_robIdxFull = dispatchStage_io_q1IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
+  assign io_q1IQEnq_0_bits_robIdx_value = dispatchStage_io_q1IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
+  assign io_q1IQEnq_0_bits_robIdx_flag = dispatchStage_io_q1IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
+  assign io_q1IQEnq_0_bits_robIdxFull_value = dispatchStage_io_q1IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
+  assign io_q1IQEnq_0_bits_robIdxFull_flag = dispatchStage_io_q1IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
   assign io_q1IQEnq_0_bits_prs1Busy = dispatchStage_io_q1IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
   assign io_q1IQEnq_0_bits_prs2Busy = dispatchStage_io_q1IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 80:32]
   assign io_q2IQEnq_0_valid = dispatchStage_io_q2IQEnq_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
@@ -2312,8 +2433,10 @@ module CtrlBlock(
   assign io_q2IQEnq_0_bits_rs1Valid = dispatchStage_io_q2IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q2IQEnq_0_bits_rs2Valid = dispatchStage_io_q2IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q2IQEnq_0_bits_rdValid = dispatchStage_io_q2IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
-  assign io_q2IQEnq_0_bits_robIdx = dispatchStage_io_q2IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
-  assign io_q2IQEnq_0_bits_robIdxFull = dispatchStage_io_q2IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q2IQEnq_0_bits_robIdx_value = dispatchStage_io_q2IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q2IQEnq_0_bits_robIdx_flag = dispatchStage_io_q2IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q2IQEnq_0_bits_robIdxFull_value = dispatchStage_io_q2IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q2IQEnq_0_bits_robIdxFull_flag = dispatchStage_io_q2IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q2IQEnq_0_bits_issueQueue = dispatchStage_io_q2IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q2IQEnq_0_bits_prs1Busy = dispatchStage_io_q2IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q2IQEnq_0_bits_prs2Busy = dispatchStage_io_q2IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
@@ -2357,8 +2480,10 @@ module CtrlBlock(
   assign io_q3IQEnq_0_bits_rs1Valid = dispatchStage_io_q3IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q3IQEnq_0_bits_rs2Valid = dispatchStage_io_q3IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q3IQEnq_0_bits_rdValid = dispatchStage_io_q3IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
-  assign io_q3IQEnq_0_bits_robIdx = dispatchStage_io_q3IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
-  assign io_q3IQEnq_0_bits_robIdxFull = dispatchStage_io_q3IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q3IQEnq_0_bits_robIdx_value = dispatchStage_io_q3IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q3IQEnq_0_bits_robIdx_flag = dispatchStage_io_q3IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q3IQEnq_0_bits_robIdxFull_value = dispatchStage_io_q3IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q3IQEnq_0_bits_robIdxFull_flag = dispatchStage_io_q3IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q3IQEnq_0_bits_issueQueue = dispatchStage_io_q3IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q3IQEnq_0_bits_prs1Busy = dispatchStage_io_q3IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q3IQEnq_0_bits_prs2Busy = dispatchStage_io_q3IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
@@ -2402,36 +2527,35 @@ module CtrlBlock(
   assign io_q4IQEnq_0_bits_rs1Valid = dispatchStage_io_q4IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q4IQEnq_0_bits_rs2Valid = dispatchStage_io_q4IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q4IQEnq_0_bits_rdValid = dispatchStage_io_q4IQEnq_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
-  assign io_q4IQEnq_0_bits_robIdx = dispatchStage_io_q4IQEnq_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
-  assign io_q4IQEnq_0_bits_robIdxFull = dispatchStage_io_q4IQEnq_0_bits_robIdxFull; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
-  assign io_q4IQEnq_0_bits_lqIdx = dispatchStage_io_q4IQEnq_0_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
-  assign io_q4IQEnq_0_bits_sqIdx = dispatchStage_io_q4IQEnq_0_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_robIdx_value = dispatchStage_io_q4IQEnq_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_robIdx_flag = dispatchStage_io_q4IQEnq_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_robIdxFull_value = dispatchStage_io_q4IQEnq_0_bits_robIdxFull_value; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_robIdxFull_flag = dispatchStage_io_q4IQEnq_0_bits_robIdxFull_flag; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_lqIdx_value = dispatchStage_io_q4IQEnq_0_bits_lqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_lqIdx_flag = dispatchStage_io_q4IQEnq_0_bits_lqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_sqIdx_value = dispatchStage_io_q4IQEnq_0_bits_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_sqIdx_flag = dispatchStage_io_q4IQEnq_0_bits_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q4IQEnq_0_bits_issueQueue = dispatchStage_io_q4IQEnq_0_bits_issueQueue; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q4IQEnq_0_bits_prs1Busy = dispatchStage_io_q4IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q4IQEnq_0_bits_prs2Busy = dispatchStage_io_q4IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q4IQEnq_0_bits_isSta = dispatchStage_io_q4IQEnq_0_bits_isSta; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q4IQEnq_0_bits_isStd = dispatchStage_io_q4IQEnq_0_bits_isStd; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q5IQEnq_0_valid = dispatchStage_io_q5IQEnq_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q5IQEnq_0_bits_prs1 = dispatchStage_io_q5IQEnq_0_bits_prs1; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q5IQEnq_0_bits_prs2 = dispatchStage_io_q5IQEnq_0_bits_prs2; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q5IQEnq_0_bits_rs1Valid = dispatchStage_io_q5IQEnq_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q5IQEnq_0_bits_rs2Valid = dispatchStage_io_q5IQEnq_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q5IQEnq_0_bits_prs1Busy = dispatchStage_io_q5IQEnq_0_bits_prs1Busy; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q5IQEnq_0_bits_prs2Busy = dispatchStage_io_q5IQEnq_0_bits_prs2Busy; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
-  assign io_lsEnq_req_0_valid = dispatchStage_io_lsEnq_req_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_0_bits_robIdx = dispatchStage_io_lsEnq_req_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_0_bits_isLoad = dispatchStage_io_lsEnq_req_0_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_0_bits_isStore = dispatchStage_io_lsEnq_req_0_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_0_bits_sqIdx = dispatchStage_io_lsEnq_req_0_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_0_bits_lqIdx = dispatchStage_io_lsEnq_req_0_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_1_valid = dispatchStage_io_lsEnq_req_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_1_bits_robIdx = dispatchStage_io_lsEnq_req_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_1_bits_isLoad = dispatchStage_io_lsEnq_req_1_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_1_bits_isStore = dispatchStage_io_lsEnq_req_1_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_1_bits_sqIdx = dispatchStage_io_lsEnq_req_1_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_1_bits_lqIdx = dispatchStage_io_lsEnq_req_1_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_2_valid = dispatchStage_io_lsEnq_req_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_2_bits_robIdx = dispatchStage_io_lsEnq_req_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_2_bits_isLoad = dispatchStage_io_lsEnq_req_2_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_2_bits_isStore = dispatchStage_io_lsEnq_req_2_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_2_bits_sqIdx = dispatchStage_io_lsEnq_req_2_bits_sqIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
-  assign io_lsEnq_req_2_bits_lqIdx = dispatchStage_io_lsEnq_req_2_bits_lqIdx; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_valid = dispatchStage_io_lsEnq_req_valid; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_robIdx_value = dispatchStage_io_lsEnq_req_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_robIdx_flag = dispatchStage_io_lsEnq_req_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_isLoad = dispatchStage_io_lsEnq_req_bits_isLoad; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_isStore = dispatchStage_io_lsEnq_req_bits_isStore; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_sqIdx_value = dispatchStage_io_lsEnq_req_bits_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_sqIdx_flag = dispatchStage_io_lsEnq_req_bits_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_lqIdx_value = dispatchStage_io_lsEnq_req_bits_lqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
+  assign io_lsEnq_req_bits_lqIdx_flag = dispatchStage_io_lsEnq_req_bits_lqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 90:26]
   assign io_commit_valid_0 = rob_io_commit_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 108:15]
   assign io_commit_valid_1 = rob_io_commit_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 108:15]
   assign io_commit_valid_2 = rob_io_commit_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 108:15]
@@ -2455,7 +2579,7 @@ module CtrlBlock(
   assign io_commit_bits_2_rfWen = rob_io_commit_bits_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 108:15]
   assign io_commit_isWalk = 1'h0; // @[src/main/scala/backend/CtrlBlock.scala 108:15]
   assign io_redirect_valid = rob_io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 123:15]
-  assign io_redirect_robIdx = rob_io_redirect_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 123:15]
+  assign io_redirect_robIdx_value = rob_io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 123:15]
   assign io_debugArchState_0 = renameStage_io_debugArchState_0; // @[src/main/scala/backend/CtrlBlock.scala 69:21]
   assign io_debugArchState_1 = renameStage_io_debugArchState_1; // @[src/main/scala/backend/CtrlBlock.scala 69:21]
   assign io_debugArchState_2 = renameStage_io_debugArchState_2; // @[src/main/scala/backend/CtrlBlock.scala 69:21]
@@ -2681,7 +2805,7 @@ module CtrlBlock(
   assign renameStage_io_commit_2_pdst = rob_io_commit_bits_2_pdst; // @[src/main/scala/backend/CtrlBlock.scala 100:38]
   assign renameStage_io_commit_2_rfWen = rob_io_commit_bits_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 103:38]
   assign renameStage_io_redirect_valid = io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 66:27]
-  assign renameStage_io_redirect_robIdx = io_redirect_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 66:27]
+  assign renameStage_io_redirect_robIdx_value = io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 66:27]
   assign dispatchStage_clock = clock;
   assign dispatchStage_reset = reset;
   assign dispatchStage_io_in_0_valid = renameStage_io_out_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -2724,7 +2848,8 @@ module CtrlBlock(
   assign dispatchStage_io_in_0_bits_rs1Valid = renameStage_io_out_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_0_bits_rs2Valid = renameStage_io_out_0_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_0_bits_rdValid = renameStage_io_out_0_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
-  assign dispatchStage_io_in_0_bits_robIdx = renameStage_io_out_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  assign dispatchStage_io_in_0_bits_robIdx_value = renameStage_io_out_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  assign dispatchStage_io_in_0_bits_robIdx_flag = renameStage_io_out_0_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_1_valid = renameStage_io_out_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_1_bits_pc = renameStage_io_out_1_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_1_bits_inst = renameStage_io_out_1_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -2765,7 +2890,8 @@ module CtrlBlock(
   assign dispatchStage_io_in_1_bits_rs1Valid = renameStage_io_out_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_1_bits_rs2Valid = renameStage_io_out_1_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_1_bits_rdValid = renameStage_io_out_1_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
-  assign dispatchStage_io_in_1_bits_robIdx = renameStage_io_out_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  assign dispatchStage_io_in_1_bits_robIdx_value = renameStage_io_out_1_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  assign dispatchStage_io_in_1_bits_robIdx_flag = renameStage_io_out_1_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_2_valid = renameStage_io_out_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_2_bits_pc = renameStage_io_out_2_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_2_bits_inst = renameStage_io_out_2_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -2806,7 +2932,8 @@ module CtrlBlock(
   assign dispatchStage_io_in_2_bits_rs1Valid = renameStage_io_out_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_2_bits_rs2Valid = renameStage_io_out_2_bits_rs2Valid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_in_2_bits_rdValid = renameStage_io_out_2_bits_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
-  assign dispatchStage_io_in_2_bits_robIdx = renameStage_io_out_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  assign dispatchStage_io_in_2_bits_robIdx_value = renameStage_io_out_2_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  assign dispatchStage_io_in_2_bits_robIdx_flag = renameStage_io_out_2_bits_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   assign dispatchStage_io_iqFeedback_q1FreeEntries = io_iqFeedback_q1FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 87:31]
   assign dispatchStage_io_iqFeedback_q2FreeEntries = io_iqFeedback_q2FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 87:31]
   assign dispatchStage_io_iqFeedback_q3FreeEntries = io_iqFeedback_q3FreeEntries; // @[src/main/scala/backend/CtrlBlock.scala 87:31]
@@ -2863,15 +2990,15 @@ module CtrlBlock(
   assign rob_io_enq_bits_2_excpVec = dispatchStage_io_robEnq_bits_2_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 118:14]
   assign rob_io_enq_bits_2_fuType = dispatchStage_io_robEnq_bits_2_fuType; // @[src/main/scala/backend/CtrlBlock.scala 118:14]
   assign rob_io_writeback_0_valid = io_writeback_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
-  assign rob_io_writeback_0_bits_robIdx = io_writeback_0_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
+  assign rob_io_writeback_0_bits_robIdx_value = io_writeback_0_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_0_bits_rfdata = io_writeback_0_bits_rfdata; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_0_bits_excpVec = io_writeback_0_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_1_valid = io_writeback_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
-  assign rob_io_writeback_1_bits_robIdx = io_writeback_1_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
+  assign rob_io_writeback_1_bits_robIdx_value = io_writeback_1_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_1_bits_rfdata = io_writeback_1_bits_rfdata; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_1_bits_excpVec = io_writeback_1_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_2_valid = io_writeback_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
-  assign rob_io_writeback_2_bits_robIdx = io_writeback_2_bits_robIdx; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
+  assign rob_io_writeback_2_bits_robIdx_value = io_writeback_2_bits_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_2_bits_rfdata = io_writeback_2_bits_rfdata; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
   assign rob_io_writeback_2_bits_excpVec = io_writeback_2_bits_excpVec; // @[src/main/scala/backend/CtrlBlock.scala 113:20]
 endmodule

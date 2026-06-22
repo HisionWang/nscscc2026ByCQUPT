@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.dispatch._
+import nscscc.backend.rename._
 import nscscc.backend.decode._
 import nscscc.util.CircularQueuePtr
  
@@ -129,11 +130,11 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   for (wb <- io.writeback) {
     when(wb.valid) {
-      entries(wb.bits.robIdx).writtenBack := true.B
-      entries(wb.bits.robIdx).rfdata := wb.bits.rfdata
+      entries(wb.bits.robIdx.value).writtenBack := true.B
+      entries(wb.bits.robIdx.value).rfdata := wb.bits.rfdata
       // 如果有异常，更新异常向量
       when(wb.bits.excpVec.orR) {
-        entries(wb.bits.robIdx).excpVec := wb.bits.excpVec
+        entries(wb.bits.robIdx.value).excpVec := wb.bits.excpVec
       }
     }
   }
@@ -198,7 +199,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   //  这里只做异常重定向，分支误预测由 BRU 单独发出。
   // ================================================================
   io.redirect.valid    := false.B
-  io.redirect.robIdx   := 0.U
+  io.redirect.robIdx   := 0.U.asTypeOf(new RobPtr(RobSize))
   io.redirect.flushSelf := true.B
   io.redirect.pc       := 0.U
   io.redirect.excpVec  := 0.U
@@ -210,8 +211,8 @@ class ROB(implicit p: Parameters) extends NSModule {
       io.redirect.valid    := true.B
       io.redirect.robIdx   := wb.bits.robIdx
       io.redirect.flushSelf := true.B
-      io.redirect.excpVec  := entries(wb.bits.robIdx).excpVec
-      io.redirect.pc       := entries(wb.bits.robIdx).pc
+      io.redirect.excpVec  := entries(wb.bits.robIdx.value).excpVec
+      io.redirect.pc       := entries(wb.bits.robIdx.value).pc
     }
   }
  

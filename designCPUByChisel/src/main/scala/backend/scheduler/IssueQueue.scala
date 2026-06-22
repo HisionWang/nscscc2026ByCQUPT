@@ -93,7 +93,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   val killed = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
     killed(i) := valid(i) && io.redirect.valid &&
-                 isRobIdxAfter(uops(i).robIdxFull, io.redirect.robIdx)
+                 isRobIdxAfter(uops(i).robIdxFull.value, io.redirect.robIdx.value)
   }
  
   // ================================================================

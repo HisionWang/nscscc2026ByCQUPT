@@ -2,8 +2,11 @@ module IssueQueue_4(
   input        clock,
   input        reset,
   input        io_enq_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [6:0] io_enq_bits_prs1, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input  [6:0] io_enq_bits_prs2, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input        io_enq_bits_rs1Valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input        io_enq_bits_rs2Valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input        io_enq_bits_prs1Busy, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input        io_enq_bits_prs2Busy, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input        io_issue_ready, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output       io_issue_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
@@ -112,6 +115,22 @@ module IssueQueue_4(
   reg [31:0] _RAND_93;
   reg [31:0] _RAND_94;
   reg [31:0] _RAND_95;
+  reg [31:0] _RAND_96;
+  reg [31:0] _RAND_97;
+  reg [31:0] _RAND_98;
+  reg [31:0] _RAND_99;
+  reg [31:0] _RAND_100;
+  reg [31:0] _RAND_101;
+  reg [31:0] _RAND_102;
+  reg [31:0] _RAND_103;
+  reg [31:0] _RAND_104;
+  reg [31:0] _RAND_105;
+  reg [31:0] _RAND_106;
+  reg [31:0] _RAND_107;
+  reg [31:0] _RAND_108;
+  reg [31:0] _RAND_109;
+  reg [31:0] _RAND_110;
+  reg [31:0] _RAND_111;
 `endif // RANDOMIZE_REG_INIT
   reg  valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
   reg  valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
@@ -121,21 +140,37 @@ module IssueQueue_4(
   reg  valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
   reg  valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
   reg  valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
+  reg [6:0] uops_0_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_0_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_0_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_0_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_1_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_1_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_1_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_1_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_2_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_2_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_2_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_2_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_3_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_3_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_3_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_3_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_4_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_4_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_4_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_4_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_5_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_5_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_5_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_5_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_6_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_6_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_6_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_6_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg [6:0] uops_7_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg [6:0] uops_7_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
+  reg  uops_7_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  uops_7_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 44:20]
   reg  p1Ready_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
   reg  p1Ready_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
@@ -212,67 +247,99 @@ module IssueQueue_4(
   wire  wValid = io_wakeupPorts_0_valid & valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_1 = io_wakeupPorts_1_valid & valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_2 = io_wakeupPorts_2_valid & valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_0 = wValid & uops_0_rs1Valid & uops_0_prs1 == io_wakeupPorts_0_bits_pdst | wValid_1 & uops_0_rs1Valid
+     & uops_0_prs1 == io_wakeupPorts_1_bits_pdst | wValid_2 & uops_0_rs1Valid & uops_0_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_0 = wValid & uops_0_rs2Valid & uops_0_prs2 == io_wakeupPorts_0_bits_pdst | wValid_1 & uops_0_rs2Valid
      & uops_0_prs2 == io_wakeupPorts_1_bits_pdst | wValid_2 & uops_0_rs2Valid & uops_0_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_4 = io_wakeupPorts_0_valid & valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_5 = io_wakeupPorts_1_valid & valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_6 = io_wakeupPorts_2_valid & valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_1 = wValid_4 & uops_1_rs1Valid & uops_1_prs1 == io_wakeupPorts_0_bits_pdst | wValid_5 & uops_1_rs1Valid
+     & uops_1_prs1 == io_wakeupPorts_1_bits_pdst | wValid_6 & uops_1_rs1Valid & uops_1_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_1 = wValid_4 & uops_1_rs2Valid & uops_1_prs2 == io_wakeupPorts_0_bits_pdst | wValid_5 & uops_1_rs2Valid
      & uops_1_prs2 == io_wakeupPorts_1_bits_pdst | wValid_6 & uops_1_rs2Valid & uops_1_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_8 = io_wakeupPorts_0_valid & valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_9 = io_wakeupPorts_1_valid & valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_10 = io_wakeupPorts_2_valid & valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_2 = wValid_8 & uops_2_rs1Valid & uops_2_prs1 == io_wakeupPorts_0_bits_pdst | wValid_9 & uops_2_rs1Valid
+     & uops_2_prs1 == io_wakeupPorts_1_bits_pdst | wValid_10 & uops_2_rs1Valid & uops_2_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_2 = wValid_8 & uops_2_rs2Valid & uops_2_prs2 == io_wakeupPorts_0_bits_pdst | wValid_9 & uops_2_rs2Valid
      & uops_2_prs2 == io_wakeupPorts_1_bits_pdst | wValid_10 & uops_2_rs2Valid & uops_2_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_12 = io_wakeupPorts_0_valid & valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_13 = io_wakeupPorts_1_valid & valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_14 = io_wakeupPorts_2_valid & valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_3 = wValid_12 & uops_3_rs1Valid & uops_3_prs1 == io_wakeupPorts_0_bits_pdst | wValid_13 &
+    uops_3_rs1Valid & uops_3_prs1 == io_wakeupPorts_1_bits_pdst | wValid_14 & uops_3_rs1Valid & uops_3_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_3 = wValid_12 & uops_3_rs2Valid & uops_3_prs2 == io_wakeupPorts_0_bits_pdst | wValid_13 &
     uops_3_rs2Valid & uops_3_prs2 == io_wakeupPorts_1_bits_pdst | wValid_14 & uops_3_rs2Valid & uops_3_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_16 = io_wakeupPorts_0_valid & valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_17 = io_wakeupPorts_1_valid & valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_18 = io_wakeupPorts_2_valid & valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_4 = wValid_16 & uops_4_rs1Valid & uops_4_prs1 == io_wakeupPorts_0_bits_pdst | wValid_17 &
+    uops_4_rs1Valid & uops_4_prs1 == io_wakeupPorts_1_bits_pdst | wValid_18 & uops_4_rs1Valid & uops_4_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_4 = wValid_16 & uops_4_rs2Valid & uops_4_prs2 == io_wakeupPorts_0_bits_pdst | wValid_17 &
     uops_4_rs2Valid & uops_4_prs2 == io_wakeupPorts_1_bits_pdst | wValid_18 & uops_4_rs2Valid & uops_4_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_20 = io_wakeupPorts_0_valid & valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_21 = io_wakeupPorts_1_valid & valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_22 = io_wakeupPorts_2_valid & valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_5 = wValid_20 & uops_5_rs1Valid & uops_5_prs1 == io_wakeupPorts_0_bits_pdst | wValid_21 &
+    uops_5_rs1Valid & uops_5_prs1 == io_wakeupPorts_1_bits_pdst | wValid_22 & uops_5_rs1Valid & uops_5_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_5 = wValid_20 & uops_5_rs2Valid & uops_5_prs2 == io_wakeupPorts_0_bits_pdst | wValid_21 &
     uops_5_rs2Valid & uops_5_prs2 == io_wakeupPorts_1_bits_pdst | wValid_22 & uops_5_rs2Valid & uops_5_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_24 = io_wakeupPorts_0_valid & valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_25 = io_wakeupPorts_1_valid & valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_26 = io_wakeupPorts_2_valid & valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_6 = wValid_24 & uops_6_rs1Valid & uops_6_prs1 == io_wakeupPorts_0_bits_pdst | wValid_25 &
+    uops_6_rs1Valid & uops_6_prs1 == io_wakeupPorts_1_bits_pdst | wValid_26 & uops_6_rs1Valid & uops_6_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_6 = wValid_24 & uops_6_rs2Valid & uops_6_prs2 == io_wakeupPorts_0_bits_pdst | wValid_25 &
     uops_6_rs2Valid & uops_6_prs2 == io_wakeupPorts_1_bits_pdst | wValid_26 & uops_6_rs2Valid & uops_6_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  wValid_28 = io_wakeupPorts_0_valid & valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_29 = io_wakeupPorts_1_valid & valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
   wire  wValid_30 = io_wakeupPorts_2_valid & valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 64:44]
+  wire  p1Wakeup_7 = wValid_28 & uops_7_rs1Valid & uops_7_prs1 == io_wakeupPorts_0_bits_pdst | wValid_29 &
+    uops_7_rs1Valid & uops_7_prs1 == io_wakeupPorts_1_bits_pdst | wValid_30 & uops_7_rs1Valid & uops_7_prs1 ==
+    io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:25]
   wire  p2Wakeup_7 = wValid_28 & uops_7_rs2Valid & uops_7_prs2 == io_wakeupPorts_0_bits_pdst | wValid_29 &
     uops_7_rs2Valid & uops_7_prs2 == io_wakeupPorts_1_bits_pdst | wValid_30 & uops_7_rs2Valid & uops_7_prs2 ==
     io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+  wire  p1Eff_0 = p1Ready_0 | p1Wakeup_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_0 = p2Ready_0 | p2Wakeup_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_1 = p1Ready_1 | p1Wakeup_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_1 = p2Ready_1 | p2Wakeup_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_2 = p1Ready_2 | p1Wakeup_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_2 = p2Ready_2 | p2Wakeup_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_3 = p1Ready_3 | p1Wakeup_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_3 = p2Ready_3 | p2Wakeup_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_4 = p1Ready_4 | p1Wakeup_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_4 = p2Ready_4 | p2Wakeup_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_5 = p1Ready_5 | p1Wakeup_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_5 = p2Ready_5 | p2Wakeup_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_6 = p1Ready_6 | p1Wakeup_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_6 = p2Ready_6 | p2Wakeup_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
+  wire  p1Eff_7 = p1Ready_7 | p1Wakeup_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 76:28]
   wire  p2Eff_7 = p2Ready_7 | p2Wakeup_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:28]
-  wire  request_0 = valid_0 & p1Ready_0 & p2Eff_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_1 = valid_1 & p1Ready_1 & p2Eff_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_2 = valid_2 & p1Ready_2 & p2Eff_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_3 = valid_3 & p1Ready_3 & p2Eff_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_4 = valid_4 & p1Ready_4 & p2Eff_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_5 = valid_5 & p1Ready_5 & p2Eff_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_6 = valid_6 & p1Ready_6 & p2Eff_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
-  wire  request_7 = valid_7 & p1Ready_7 & p2Eff_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_0 = valid_0 & p1Eff_0 & p2Eff_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_1 = valid_1 & p1Eff_1 & p2Eff_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_2 = valid_2 & p1Eff_2 & p2Eff_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_3 = valid_3 & p1Eff_3 & p2Eff_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_4 = valid_4 & p1Eff_4 & p2Eff_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_5 = valid_5 & p1Eff_5 & p2Eff_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_6 = valid_6 & p1Eff_6 & p2Eff_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
+  wire  request_7 = valid_7 & p1Eff_7 & p2Eff_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 104:40]
   wire  _T_276 = request_1 & ~age_0_1 | request_2 & ~age_0_2 | request_3 & ~age_0_3 | request_4 & ~age_0_4 | request_5
      & ~age_0_5 | request_6 & ~age_0_6 | request_7 & ~age_0_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 120:27]
   wire  oldest_0 = request_0 & ~_T_276; // @[src/main/scala/backend/scheduler/IssueQueue.scala 122:29]
@@ -334,7 +401,6 @@ module IssueQueue_4(
   wire  validAfterKillGrant_7 = valid_7 & ~(oldest_7 & issueFire); // @[src/main/scala/backend/scheduler/IssueQueue.scala 147:54]
   wire  _T_426 = enqFire & enqIdx == 3'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:24]
   wire  _GEN_0 = enqFire & enqIdx == 3'h0 | valid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_4 = _T_426 | p1Ready_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
   wire  _T_440 = enqFire & enqIdx == 3'h1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
   wire  _T_449 = enqFire & enqIdx == 3'h2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
   wire  _T_458 = enqFire & enqIdx == 3'h3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
@@ -342,20 +408,13 @@ module IssueQueue_4(
   wire  _T_476 = enqFire & enqIdx == 3'h5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
   wire  _T_485 = enqFire & enqIdx == 3'h6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
   wire  _T_494 = enqFire & enqIdx == 3'h7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 191:26]
-  wire  _GEN_84 = _T_440 | valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_88 = _T_440 | p1Ready_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
-  wire  _GEN_168 = _T_449 | valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_172 = _T_449 | p1Ready_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
-  wire  _GEN_252 = _T_458 | valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_256 = _T_458 | p1Ready_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
-  wire  _GEN_336 = _T_467 | valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_340 = _T_467 | p1Ready_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
-  wire  _GEN_420 = _T_476 | valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_424 = _T_476 | p1Ready_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
-  wire  _GEN_504 = _T_485 | valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_508 = _T_485 | p1Ready_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
-  wire  _GEN_588 = _T_494 | valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
-  wire  _GEN_592 = _T_494 | p1Ready_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43 172:18 175:18]
+  wire  _GEN_88 = _T_440 | valid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
+  wire  _GEN_176 = _T_449 | valid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
+  wire  _GEN_264 = _T_458 | valid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
+  wire  _GEN_352 = _T_467 | valid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
+  wire  _GEN_440 = _T_476 | valid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
+  wire  _GEN_528 = _T_485 | valid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
+  wire  _GEN_616 = _T_494 | valid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:43 164:16 43:24]
   wire [1:0] _io_freeEntries_T = freeMask_0 + freeMask_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 205:29]
   wire [1:0] _io_freeEntries_T_2 = freeMask_2 + freeMask_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 205:29]
   wire [2:0] _io_freeEntries_T_4 = _io_freeEntries_T + _io_freeEntries_T_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 205:29]
@@ -377,94 +436,142 @@ module IssueQueue_4(
     end else if (_validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_1 <= _GEN_84;
+      valid_1 <= _GEN_88;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
     end else if (_validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_2 <= _GEN_168;
+      valid_2 <= _GEN_176;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
     end else if (_validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_3 <= _GEN_252;
+      valid_3 <= _GEN_264;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
     end else if (_validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_4 <= _GEN_336;
+      valid_4 <= _GEN_352;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
     end else if (_validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_5 <= _GEN_420;
+      valid_5 <= _GEN_440;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
     end else if (_validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_6 <= _GEN_504;
+      valid_6 <= _GEN_528;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
       valid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:24]
     end else if (_validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 161:39]
       valid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:16]
     end else begin
-      valid_7 <= _GEN_588;
+      valid_7 <= _GEN_616;
+    end
+    if (_T_426) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_0_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_426) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_0_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_426) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_0_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_426) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_0_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_440) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_1_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_440) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_1_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_440) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_1_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_440) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_1_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_449) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_2_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_449) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_2_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_449) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_2_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_449) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_2_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_458) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_3_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_458) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_3_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_458) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_3_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_458) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_3_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_467) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_4_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_467) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_4_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_467) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_4_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_467) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_4_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_476) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_5_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_476) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_5_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_476) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_5_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_476) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_5_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_485) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_6_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_485) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_6_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_485) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_6_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_485) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_6_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_494) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_7_prs1 <= io_enq_bits_prs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_494) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_7_prs2 <= io_enq_bits_prs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
+    end
+    if (_T_494) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
+      uops_7_rs1Valid <= io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
     end
     if (_T_494) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 180:37]
       uops_7_rs2Valid <= io_enq_bits_rs2Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:15]
@@ -473,57 +580,73 @@ module IssueQueue_4(
       p1Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_0_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_426) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_0 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_0 <= _GEN_4;
+      p1Ready_0 <= p1Eff_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_440) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_1 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_1 <= _GEN_88;
+      p1Ready_1 <= p1Eff_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_449) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_2 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_2 <= _GEN_172;
+      p1Ready_2 <= p1Eff_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_458) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_3 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_3 <= _GEN_256;
+      p1Ready_3 <= p1Eff_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_467) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_4 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_4 <= _GEN_340;
+      p1Ready_4 <= p1Eff_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_476) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_5 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_5 <= _GEN_424;
+      p1Ready_5 <= p1Eff_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_485) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_6 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_6 <= _GEN_508;
+      p1Ready_6 <= p1Eff_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
       p1Ready_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:24]
     end else if (_validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 168:68]
       p1Ready_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 169:18]
+    end else if (_T_494) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 171:43]
+      p1Ready_7 <= ~io_enq_bits_prs1Busy | ~io_enq_bits_rs1Valid; // @[src/main/scala/backend/scheduler/IssueQueue.scala 172:18]
     end else begin
-      p1Ready_7 <= _GEN_592;
+      p1Ready_7 <= p1Eff_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 175:18]
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
       p2Ready_0 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 46:24]
@@ -1155,181 +1278,213 @@ initial begin
   _RAND_7 = {1{`RANDOM}};
   valid_7 = _RAND_7[0:0];
   _RAND_8 = {1{`RANDOM}};
-  uops_0_prs2 = _RAND_8[6:0];
+  uops_0_prs1 = _RAND_8[6:0];
   _RAND_9 = {1{`RANDOM}};
-  uops_0_rs2Valid = _RAND_9[0:0];
+  uops_0_prs2 = _RAND_9[6:0];
   _RAND_10 = {1{`RANDOM}};
-  uops_1_prs2 = _RAND_10[6:0];
+  uops_0_rs1Valid = _RAND_10[0:0];
   _RAND_11 = {1{`RANDOM}};
-  uops_1_rs2Valid = _RAND_11[0:0];
+  uops_0_rs2Valid = _RAND_11[0:0];
   _RAND_12 = {1{`RANDOM}};
-  uops_2_prs2 = _RAND_12[6:0];
+  uops_1_prs1 = _RAND_12[6:0];
   _RAND_13 = {1{`RANDOM}};
-  uops_2_rs2Valid = _RAND_13[0:0];
+  uops_1_prs2 = _RAND_13[6:0];
   _RAND_14 = {1{`RANDOM}};
-  uops_3_prs2 = _RAND_14[6:0];
+  uops_1_rs1Valid = _RAND_14[0:0];
   _RAND_15 = {1{`RANDOM}};
-  uops_3_rs2Valid = _RAND_15[0:0];
+  uops_1_rs2Valid = _RAND_15[0:0];
   _RAND_16 = {1{`RANDOM}};
-  uops_4_prs2 = _RAND_16[6:0];
+  uops_2_prs1 = _RAND_16[6:0];
   _RAND_17 = {1{`RANDOM}};
-  uops_4_rs2Valid = _RAND_17[0:0];
+  uops_2_prs2 = _RAND_17[6:0];
   _RAND_18 = {1{`RANDOM}};
-  uops_5_prs2 = _RAND_18[6:0];
+  uops_2_rs1Valid = _RAND_18[0:0];
   _RAND_19 = {1{`RANDOM}};
-  uops_5_rs2Valid = _RAND_19[0:0];
+  uops_2_rs2Valid = _RAND_19[0:0];
   _RAND_20 = {1{`RANDOM}};
-  uops_6_prs2 = _RAND_20[6:0];
+  uops_3_prs1 = _RAND_20[6:0];
   _RAND_21 = {1{`RANDOM}};
-  uops_6_rs2Valid = _RAND_21[0:0];
+  uops_3_prs2 = _RAND_21[6:0];
   _RAND_22 = {1{`RANDOM}};
-  uops_7_prs2 = _RAND_22[6:0];
+  uops_3_rs1Valid = _RAND_22[0:0];
   _RAND_23 = {1{`RANDOM}};
-  uops_7_rs2Valid = _RAND_23[0:0];
+  uops_3_rs2Valid = _RAND_23[0:0];
   _RAND_24 = {1{`RANDOM}};
-  p1Ready_0 = _RAND_24[0:0];
+  uops_4_prs1 = _RAND_24[6:0];
   _RAND_25 = {1{`RANDOM}};
-  p1Ready_1 = _RAND_25[0:0];
+  uops_4_prs2 = _RAND_25[6:0];
   _RAND_26 = {1{`RANDOM}};
-  p1Ready_2 = _RAND_26[0:0];
+  uops_4_rs1Valid = _RAND_26[0:0];
   _RAND_27 = {1{`RANDOM}};
-  p1Ready_3 = _RAND_27[0:0];
+  uops_4_rs2Valid = _RAND_27[0:0];
   _RAND_28 = {1{`RANDOM}};
-  p1Ready_4 = _RAND_28[0:0];
+  uops_5_prs1 = _RAND_28[6:0];
   _RAND_29 = {1{`RANDOM}};
-  p1Ready_5 = _RAND_29[0:0];
+  uops_5_prs2 = _RAND_29[6:0];
   _RAND_30 = {1{`RANDOM}};
-  p1Ready_6 = _RAND_30[0:0];
+  uops_5_rs1Valid = _RAND_30[0:0];
   _RAND_31 = {1{`RANDOM}};
-  p1Ready_7 = _RAND_31[0:0];
+  uops_5_rs2Valid = _RAND_31[0:0];
   _RAND_32 = {1{`RANDOM}};
-  p2Ready_0 = _RAND_32[0:0];
+  uops_6_prs1 = _RAND_32[6:0];
   _RAND_33 = {1{`RANDOM}};
-  p2Ready_1 = _RAND_33[0:0];
+  uops_6_prs2 = _RAND_33[6:0];
   _RAND_34 = {1{`RANDOM}};
-  p2Ready_2 = _RAND_34[0:0];
+  uops_6_rs1Valid = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  p2Ready_3 = _RAND_35[0:0];
+  uops_6_rs2Valid = _RAND_35[0:0];
   _RAND_36 = {1{`RANDOM}};
-  p2Ready_4 = _RAND_36[0:0];
+  uops_7_prs1 = _RAND_36[6:0];
   _RAND_37 = {1{`RANDOM}};
-  p2Ready_5 = _RAND_37[0:0];
+  uops_7_prs2 = _RAND_37[6:0];
   _RAND_38 = {1{`RANDOM}};
-  p2Ready_6 = _RAND_38[0:0];
+  uops_7_rs1Valid = _RAND_38[0:0];
   _RAND_39 = {1{`RANDOM}};
-  p2Ready_7 = _RAND_39[0:0];
+  uops_7_rs2Valid = _RAND_39[0:0];
   _RAND_40 = {1{`RANDOM}};
-  age_0_1 = _RAND_40[0:0];
+  p1Ready_0 = _RAND_40[0:0];
   _RAND_41 = {1{`RANDOM}};
-  age_0_2 = _RAND_41[0:0];
+  p1Ready_1 = _RAND_41[0:0];
   _RAND_42 = {1{`RANDOM}};
-  age_0_3 = _RAND_42[0:0];
+  p1Ready_2 = _RAND_42[0:0];
   _RAND_43 = {1{`RANDOM}};
-  age_0_4 = _RAND_43[0:0];
+  p1Ready_3 = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  age_0_5 = _RAND_44[0:0];
+  p1Ready_4 = _RAND_44[0:0];
   _RAND_45 = {1{`RANDOM}};
-  age_0_6 = _RAND_45[0:0];
+  p1Ready_5 = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  age_0_7 = _RAND_46[0:0];
+  p1Ready_6 = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  age_1_0 = _RAND_47[0:0];
+  p1Ready_7 = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  age_1_2 = _RAND_48[0:0];
+  p2Ready_0 = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
-  age_1_3 = _RAND_49[0:0];
+  p2Ready_1 = _RAND_49[0:0];
   _RAND_50 = {1{`RANDOM}};
-  age_1_4 = _RAND_50[0:0];
+  p2Ready_2 = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  age_1_5 = _RAND_51[0:0];
+  p2Ready_3 = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
-  age_1_6 = _RAND_52[0:0];
+  p2Ready_4 = _RAND_52[0:0];
   _RAND_53 = {1{`RANDOM}};
-  age_1_7 = _RAND_53[0:0];
+  p2Ready_5 = _RAND_53[0:0];
   _RAND_54 = {1{`RANDOM}};
-  age_2_0 = _RAND_54[0:0];
+  p2Ready_6 = _RAND_54[0:0];
   _RAND_55 = {1{`RANDOM}};
-  age_2_1 = _RAND_55[0:0];
+  p2Ready_7 = _RAND_55[0:0];
   _RAND_56 = {1{`RANDOM}};
-  age_2_3 = _RAND_56[0:0];
+  age_0_1 = _RAND_56[0:0];
   _RAND_57 = {1{`RANDOM}};
-  age_2_4 = _RAND_57[0:0];
+  age_0_2 = _RAND_57[0:0];
   _RAND_58 = {1{`RANDOM}};
-  age_2_5 = _RAND_58[0:0];
+  age_0_3 = _RAND_58[0:0];
   _RAND_59 = {1{`RANDOM}};
-  age_2_6 = _RAND_59[0:0];
+  age_0_4 = _RAND_59[0:0];
   _RAND_60 = {1{`RANDOM}};
-  age_2_7 = _RAND_60[0:0];
+  age_0_5 = _RAND_60[0:0];
   _RAND_61 = {1{`RANDOM}};
-  age_3_0 = _RAND_61[0:0];
+  age_0_6 = _RAND_61[0:0];
   _RAND_62 = {1{`RANDOM}};
-  age_3_1 = _RAND_62[0:0];
+  age_0_7 = _RAND_62[0:0];
   _RAND_63 = {1{`RANDOM}};
-  age_3_2 = _RAND_63[0:0];
+  age_1_0 = _RAND_63[0:0];
   _RAND_64 = {1{`RANDOM}};
-  age_3_4 = _RAND_64[0:0];
+  age_1_2 = _RAND_64[0:0];
   _RAND_65 = {1{`RANDOM}};
-  age_3_5 = _RAND_65[0:0];
+  age_1_3 = _RAND_65[0:0];
   _RAND_66 = {1{`RANDOM}};
-  age_3_6 = _RAND_66[0:0];
+  age_1_4 = _RAND_66[0:0];
   _RAND_67 = {1{`RANDOM}};
-  age_3_7 = _RAND_67[0:0];
+  age_1_5 = _RAND_67[0:0];
   _RAND_68 = {1{`RANDOM}};
-  age_4_0 = _RAND_68[0:0];
+  age_1_6 = _RAND_68[0:0];
   _RAND_69 = {1{`RANDOM}};
-  age_4_1 = _RAND_69[0:0];
+  age_1_7 = _RAND_69[0:0];
   _RAND_70 = {1{`RANDOM}};
-  age_4_2 = _RAND_70[0:0];
+  age_2_0 = _RAND_70[0:0];
   _RAND_71 = {1{`RANDOM}};
-  age_4_3 = _RAND_71[0:0];
+  age_2_1 = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  age_4_5 = _RAND_72[0:0];
+  age_2_3 = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
-  age_4_6 = _RAND_73[0:0];
+  age_2_4 = _RAND_73[0:0];
   _RAND_74 = {1{`RANDOM}};
-  age_4_7 = _RAND_74[0:0];
+  age_2_5 = _RAND_74[0:0];
   _RAND_75 = {1{`RANDOM}};
-  age_5_0 = _RAND_75[0:0];
+  age_2_6 = _RAND_75[0:0];
   _RAND_76 = {1{`RANDOM}};
-  age_5_1 = _RAND_76[0:0];
+  age_2_7 = _RAND_76[0:0];
   _RAND_77 = {1{`RANDOM}};
-  age_5_2 = _RAND_77[0:0];
+  age_3_0 = _RAND_77[0:0];
   _RAND_78 = {1{`RANDOM}};
-  age_5_3 = _RAND_78[0:0];
+  age_3_1 = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  age_5_4 = _RAND_79[0:0];
+  age_3_2 = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  age_5_6 = _RAND_80[0:0];
+  age_3_4 = _RAND_80[0:0];
   _RAND_81 = {1{`RANDOM}};
-  age_5_7 = _RAND_81[0:0];
+  age_3_5 = _RAND_81[0:0];
   _RAND_82 = {1{`RANDOM}};
-  age_6_0 = _RAND_82[0:0];
+  age_3_6 = _RAND_82[0:0];
   _RAND_83 = {1{`RANDOM}};
-  age_6_1 = _RAND_83[0:0];
+  age_3_7 = _RAND_83[0:0];
   _RAND_84 = {1{`RANDOM}};
-  age_6_2 = _RAND_84[0:0];
+  age_4_0 = _RAND_84[0:0];
   _RAND_85 = {1{`RANDOM}};
-  age_6_3 = _RAND_85[0:0];
+  age_4_1 = _RAND_85[0:0];
   _RAND_86 = {1{`RANDOM}};
-  age_6_4 = _RAND_86[0:0];
+  age_4_2 = _RAND_86[0:0];
   _RAND_87 = {1{`RANDOM}};
-  age_6_5 = _RAND_87[0:0];
+  age_4_3 = _RAND_87[0:0];
   _RAND_88 = {1{`RANDOM}};
-  age_6_7 = _RAND_88[0:0];
+  age_4_5 = _RAND_88[0:0];
   _RAND_89 = {1{`RANDOM}};
-  age_7_0 = _RAND_89[0:0];
+  age_4_6 = _RAND_89[0:0];
   _RAND_90 = {1{`RANDOM}};
-  age_7_1 = _RAND_90[0:0];
+  age_4_7 = _RAND_90[0:0];
   _RAND_91 = {1{`RANDOM}};
-  age_7_2 = _RAND_91[0:0];
+  age_5_0 = _RAND_91[0:0];
   _RAND_92 = {1{`RANDOM}};
-  age_7_3 = _RAND_92[0:0];
+  age_5_1 = _RAND_92[0:0];
   _RAND_93 = {1{`RANDOM}};
-  age_7_4 = _RAND_93[0:0];
+  age_5_2 = _RAND_93[0:0];
   _RAND_94 = {1{`RANDOM}};
-  age_7_5 = _RAND_94[0:0];
+  age_5_3 = _RAND_94[0:0];
   _RAND_95 = {1{`RANDOM}};
-  age_7_6 = _RAND_95[0:0];
+  age_5_4 = _RAND_95[0:0];
+  _RAND_96 = {1{`RANDOM}};
+  age_5_6 = _RAND_96[0:0];
+  _RAND_97 = {1{`RANDOM}};
+  age_5_7 = _RAND_97[0:0];
+  _RAND_98 = {1{`RANDOM}};
+  age_6_0 = _RAND_98[0:0];
+  _RAND_99 = {1{`RANDOM}};
+  age_6_1 = _RAND_99[0:0];
+  _RAND_100 = {1{`RANDOM}};
+  age_6_2 = _RAND_100[0:0];
+  _RAND_101 = {1{`RANDOM}};
+  age_6_3 = _RAND_101[0:0];
+  _RAND_102 = {1{`RANDOM}};
+  age_6_4 = _RAND_102[0:0];
+  _RAND_103 = {1{`RANDOM}};
+  age_6_5 = _RAND_103[0:0];
+  _RAND_104 = {1{`RANDOM}};
+  age_6_7 = _RAND_104[0:0];
+  _RAND_105 = {1{`RANDOM}};
+  age_7_0 = _RAND_105[0:0];
+  _RAND_106 = {1{`RANDOM}};
+  age_7_1 = _RAND_106[0:0];
+  _RAND_107 = {1{`RANDOM}};
+  age_7_2 = _RAND_107[0:0];
+  _RAND_108 = {1{`RANDOM}};
+  age_7_3 = _RAND_108[0:0];
+  _RAND_109 = {1{`RANDOM}};
+  age_7_4 = _RAND_109[0:0];
+  _RAND_110 = {1{`RANDOM}};
+  age_7_5 = _RAND_110[0:0];
+  _RAND_111 = {1{`RANDOM}};
+  age_7_6 = _RAND_111[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
