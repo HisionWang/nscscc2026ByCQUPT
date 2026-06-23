@@ -263,6 +263,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   io.lsEnq.req.bits.isStore := selectedIsStore
   io.lsEnq.req.bits.lqIdx   := lqHeadPtr
   io.lsEnq.req.bits.sqIdx   := sqHeadPtr
+  io.lsEnq.toLsqData := selectedMemInst
 
   // 更新当前指针 (仅+1)
   when(memDispatchedThisCycle) {

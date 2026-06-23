@@ -65,10 +65,10 @@ trait HasCoreParameters {
 
   val LqSize       : Int = 16      // Load Queue 深度（2的幂）
   val SqSize       : Int = 16      // Store Queue 深度（2的幂）
-  val WbBusWidth   : Int = 3       // 写回总线宽度（执行单元回写端口数）
+  val WbBusWidth   : Int = 5       // 写回总线宽度（执行单元回写端口数）
 
   // ── IssueQueue 参数 ──
-  val IQNumWakeupPorts : Int = 4 
+  val IQNumWakeupPorts : Int = WbBusWidth
   val IQNum : Int = 5 
   
   val IQ1Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts))) //ALU_CSR

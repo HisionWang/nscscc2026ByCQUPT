@@ -1,4 +1,4 @@
-module ExeUnit(
+module ExeUnit_3(
   input         clock,
   input         reset,
   output        io_inReq_ready, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
@@ -56,7 +56,6 @@ module ExeUnit(
   input         io_inReq_bits_uop_isSta, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input         io_inReq_bits_uop_isStd, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input  [31:0] io_inReq_bits_rs1Data, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input  [31:0] io_inReq_bits_rs2Data, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input         io_outResult_ready, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output        io_outResult_valid, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output [31:0] io_outResult_bits_uop_pc, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
@@ -111,7 +110,11 @@ module ExeUnit(
   output        io_outResult_bits_uop_prs2Busy, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output        io_outResult_bits_uop_isSta, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output        io_outResult_bits_uop_isStd, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output [31:0] io_outResult_bits_data // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
+  output [31:0] io_outResult_bits_data, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
+  output        io_outResult_bits_redirect_valid, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
+  output        io_outResult_bits_redirect_bits_valid, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
+  output [5:0]  io_outResult_bits_redirect_bits_robIdx_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
+  output        io_outResult_bits_redirect_bits_robIdx_flag // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -168,16 +171,7 @@ module ExeUnit(
   reg [31:0] _RAND_51;
   reg [31:0] _RAND_52;
   reg [31:0] _RAND_53;
-  reg [31:0] _RAND_54;
 `endif // RANDOMIZE_REG_INIT
-  wire [31:0] alu_io_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [4:0] alu_io_uop_ctrl_aluOp; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [2:0] alu_io_uop_ctrl_src1Type; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [2:0] alu_io_uop_ctrl_src2Type; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [31:0] alu_io_uop_imm; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [31:0] alu_io_rs1; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [31:0] alu_io_rs2; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-  wire [31:0] alu_io_result; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
   reg  stgValid; // @[src/main/scala/backend/execute/ExeUnit.scala 57:25]
   reg [31:0] stgData_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg [31:0] stgData_uop_inst; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
@@ -232,24 +226,14 @@ module ExeUnit(
   reg  stgData_uop_isSta; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg  stgData_uop_isStd; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg [31:0] stgData_rs1Data; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg [31:0] stgData_rs2Data; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   wire  outFire = stgValid & io_outResult_ready; // @[src/main/scala/backend/execute/ExeUnit.scala 66:37]
   wire  stgReady = ~stgValid | outFire; // @[src/main/scala/backend/execute/ExeUnit.scala 69:28]
   wire  inFire = io_inReq_valid & stgReady; // @[src/main/scala/backend/execute/ExeUnit.scala 72:31]
   wire  _GEN_0 = outFire ? 1'h0 : stgValid; // @[src/main/scala/backend/execute/ExeUnit.scala 85:23 87:14 57:25]
   wire  _GEN_1 = inFire | _GEN_0; // @[src/main/scala/backend/execute/ExeUnit.scala 81:22 83:14]
-  wire  aluValid = stgValid & stgData_uop_ctrl_fuType == 4'h1; // @[src/main/scala/backend/execute/ExeUnit.scala 98:46]
-  wire  fuTypeSupported = io_inReq_bits_uop_ctrl_fuType == 4'h1 | io_inReq_bits_uop_ctrl_fuType == 4'h4; // @[src/main/scala/backend/execute/ExeUnit.scala 187:92]
-  ALU alu ( // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
-    .io_uop_pc(alu_io_uop_pc),
-    .io_uop_ctrl_aluOp(alu_io_uop_ctrl_aluOp),
-    .io_uop_ctrl_src1Type(alu_io_uop_ctrl_src1Type),
-    .io_uop_ctrl_src2Type(alu_io_uop_ctrl_src2Type),
-    .io_uop_imm(alu_io_uop_imm),
-    .io_rs1(alu_io_rs1),
-    .io_rs2(alu_io_rs2),
-    .io_result(alu_io_result)
-  );
+  wire  memAddrValid = stgValid & stgData_uop_ctrl_fuType == 4'h3; // @[src/main/scala/backend/execute/ExeUnit.scala 121:54]
+  wire [31:0] memAddr = stgData_rs1Data + stgData_uop_imm; // @[src/main/scala/backend/execute/ExeUnit.scala 124:49]
+  wire  fuTypeSupported = io_inReq_bits_uop_ctrl_fuType == 4'h3; // @[src/main/scala/backend/execute/ExeUnit.scala 187:76]
   assign io_inReq_ready = ~stgValid | outFire; // @[src/main/scala/backend/execute/ExeUnit.scala 69:28]
   assign io_outResult_valid = stgValid; // @[src/main/scala/backend/execute/ExeUnit.scala 149:38]
   assign io_outResult_bits_uop_pc = stgData_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
@@ -304,14 +288,11 @@ module ExeUnit(
   assign io_outResult_bits_uop_prs2Busy = stgData_uop_prs2Busy; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_isSta = stgData_uop_isSta; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_isStd = stgData_uop_isStd; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_data = aluValid ? alu_io_result : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign alu_io_uop_pc = stgData_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
-  assign alu_io_uop_ctrl_aluOp = stgData_uop_ctrl_aluOp; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
-  assign alu_io_uop_ctrl_src1Type = stgData_uop_ctrl_src1Type; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
-  assign alu_io_uop_ctrl_src2Type = stgData_uop_ctrl_src2Type; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
-  assign alu_io_uop_imm = stgData_uop_imm; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
-  assign alu_io_rs1 = stgData_rs1Data; // @[src/main/scala/backend/execute/ExeUnit.scala 104:18]
-  assign alu_io_rs2 = stgData_rs2Data; // @[src/main/scala/backend/execute/ExeUnit.scala 105:18]
+  assign io_outResult_bits_data = memAddrValid ? memAddr : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_outResult_bits_redirect_valid = 1'h0; // @[src/main/scala/backend/execute/ExeUnit.scala 163:38]
+  assign io_outResult_bits_redirect_bits_valid = 1'h0;
+  assign io_outResult_bits_redirect_bits_robIdx_value = 6'h0;
+  assign io_outResult_bits_redirect_bits_robIdx_flag = 1'h0;
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/backend/execute/ExeUnit.scala 57:25]
       stgValid <= 1'h0; // @[src/main/scala/backend/execute/ExeUnit.scala 57:25]
@@ -476,9 +457,6 @@ module ExeUnit(
     end
     if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
       stgData_rs1Data <= io_inReq_bits_rs1Data; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_rs2Data <= io_inReq_bits_rs2Data; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
     end
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND
@@ -649,8 +627,6 @@ initial begin
   stgData_uop_isStd = _RAND_52[0:0];
   _RAND_53 = {1{`RANDOM}};
   stgData_rs1Data = _RAND_53[31:0];
-  _RAND_54 = {1{`RANDOM}};
-  stgData_rs2Data = _RAND_54[31:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

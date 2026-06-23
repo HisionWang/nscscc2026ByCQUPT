@@ -91,6 +91,7 @@ class LsEnqEntry(implicit p: Parameters) extends NSBundle {
  
 class LsEnqIO(implicit p: Parameters) extends NSBundle {
   val req    = Valid(new LsEnqEntry)
+  val toLsqData = new RenamedInst
   val lqFull = Input(Bool())
   val sqFull = Input(Bool())
 }

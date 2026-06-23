@@ -12,13 +12,15 @@ import nscscc.backend.regfile._
 import nscscc.backend.regread._
 import nscscc.backend.execute._
 import nscscc.backend.writeback._
+import nscscc.mem._
  
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
-
+  val lsEnq    = new LsEnqIO
+  val toMemResult  = Vec(2, Decoupled(new ExeResult) )
   val debugLogicRegs = Output(Vec(IntLogicRegs, UInt(XLEN.W)))
 }
  
@@ -29,6 +31,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
+  io.lsEnq <> ctrlBlock.io.lsEnq
   dontTouch(ctrlBlock.io.commit)
   val scheduler   = Module(new Scheduler)
   val regRead     = Module(new RegisterRead)
@@ -54,7 +57,10 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val exeUnits = Seq(
     Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasCsr = true))),
     Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasDiv = true))),
-    Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasBru = true, hasMul = true)))
+    Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasBru = true, hasMul = true))),
+
+    Module(new ExeUnit(ExeUnitParams(hasMemAddr = true))),
+    Module(new ExeUnit(ExeUnitParams(hasStd = true)))
   )
   val numExeUnits = exeUnits.length  // 3
  
@@ -110,15 +116,41 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   }
  
   // Q4, Q5 暂不接收（LSU 未实现）
-  regRead.io.exeReqs(3).ready := false.B
-  regRead.io.exeReqs(4).ready := false.B
+ // regRead.io.exeReqs(3).ready := false.B
+ // regRead.io.exeReqs(4).ready := false.B
  
   // ══════════════════════════════════════════════════════════════
   //  ExeUnits → Writeback：执行结果
   // ══════════════════════════════════════════════════════════════
-  for (i <- 0 until numExeUnits) {
+  //前几个执行单元的结果直接传
+  for (i <- 0 until numExeUnits -  2) {
     writeback.io.InExeResults(i) <> exeUnits(i).io.outResult
   }
+  //发往ISQ的数据
+  exeUnits(3).io.outResult <> io.toMemResult(0)
+  exeUnits(4).io.outResult <> io.toMemResult(1)
+  dontTouch( exeUnits(3).io.outResult )
+  dontTouch( exeUnits(4).io.outResult )
+  writeback.io.InExeResults(3).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
+  writeback.io.InExeResults(3).bits.data <> 0.U
+  writeback.io.InExeResults(3).valid <> false.B
+  writeback.io.InExeResults(3).bits.redirect <> 0.U.asTypeOf(Valid(new RedirectInfo))
+
+  writeback.io.InExeResults(4).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
+  writeback.io.InExeResults(4).bits.data <> 0.U
+  writeback.io.InExeResults(4).valid <> false.B
+  writeback.io.InExeResults(4).bits.redirect <> 0.U.asTypeOf(Valid(new RedirectInfo))
+
+
+  
+  /*
+  class ExeResult(implicit p: Parameters) extends NSBundle {
+     val uop      = new DispatchedInst
+     val data     = UInt(XLEN.W)
+     val redirect = Valid(new RedirectInfo)
+  }
+  */
+  
   writeback.io.flush := io.flush
   exeUnits.foreach(_.io.flush := io.flush)
  
@@ -156,11 +188,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   // ══════════════════════════════════════════════════════════════
   dontTouch(writeback.io.toRObResults)
   ctrlBlock.io.writeback <> writeback.io.toRObResults
- 
-  // ══════════════════════════════════════════════════════════════
-  //  LSQ：当前未实现
-  // ══════════════════════════════════════════════════════════════
-  ctrlBlock.io.lsEnq.lqFull := false.B
-  ctrlBlock.io.lsEnq.sqFull := false.B
+
+
   dontTouch(ctrlBlock.io.lsEnq.req)
 }

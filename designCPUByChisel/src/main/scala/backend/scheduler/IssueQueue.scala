@@ -40,10 +40,11 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   // ================================================================
   //  表项存储
   // ================================================================
-  val valid   = RegInit(VecInit(Seq.fill(N)(false.B)))
-  val uops    = Reg(Vec(N, new DispatchedInst))
-  val p1Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
-  val p2Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
+  val entryValid   = RegInit(VecInit(Seq.fill(N)(false.B)))
+  
+  val entryUops    = Reg(Vec(N, new DispatchedInst))
+  val entryP1Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
+  val entryP2Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
  
   // ================================================================
   //  年龄矩阵 age[i][j]=1 表示 entry[i] 比 entry[j] 更老 这算法还牛的 
@@ -61,9 +62,9 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     var p2Match = false.B
     for (w <- 0 until iqParams.numWakeupPorts) {
       val pdst = io.wakeupPorts(w).bits.pdst
-      val wValid = io.wakeupPorts(w).valid && valid(i)
-      p1Match = p1Match || (wValid && uops(i).rs1Valid && uops(i).prs1 === pdst)
-      p2Match = p2Match || (wValid && uops(i).rs2Valid && uops(i).prs2 === pdst)
+      val wValid = io.wakeupPorts(w).valid && entryValid(i)
+      p1Match = p1Match || (wValid && entryUops(i).rs1Valid && entryUops(i).prs1 === pdst)
+      p2Match = p2Match || (wValid && entryUops(i).rs2Valid && entryUops(i).prs2 === pdst)
     }
     p1Wakeup(i) := p1Match
     p2Wakeup(i) := p2Match
@@ -73,8 +74,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   val p1Eff = Wire(Vec(N, Bool()))
   val p2Eff = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
-    p1Eff(i) := p1Ready(i) || p1Wakeup(i)
-    p2Eff(i) := p2Ready(i) || p2Wakeup(i)
+    p1Eff(i) := entryP1Ready(i) || p1Wakeup(i)
+    p2Eff(i) := entryP2Ready(i) || p2Wakeup(i)
   }
  
   // ================================================================
@@ -92,8 +93,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
  
   val killed = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
-    killed(i) := valid(i) && io.redirect.valid &&
-                 isRobIdxAfter(uops(i).robIdxFull.value, io.redirect.robIdx.value)
+    killed(i) := entryValid(i) && io.redirect.valid &&
+                 isRobIdxAfter(entryUops(i).robIdxFull.value, io.redirect.robIdx.value)
   }
  
   // ================================================================
@@ -101,7 +102,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   // ================================================================
   val request = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
-    request(i) := valid(i) && p1Eff(i) && p2Eff(i) && !killed(i)
+    request(i) := entryValid(i) && p1Eff(i) && p2Eff(i) && !killed(i)
   }
  
   // oldest[i] = request[i] && 不存在比 i 更老的请求者
@@ -129,14 +130,14 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   //  发射输出（Decoupled 握手）
   // ================================================================
   io.issue.valid := grant.reduce(_ || _)
-  io.issue.bits  := Mux1H(grant, uops)
+  io.issue.bits  := Mux1H(grant, entryUops)
  
   val issueFire = io.issue.valid && io.issue.ready
  
   // ================================================================
   //  入队逻辑（空闲位图 + 优先编码器）
   // ================================================================
-  val freeMask = VecInit((0 until N).map(i => !valid(i)))
+  val freeMask = VecInit((0 until N).map(i => !entryValid(i)))
   val enqIdx   = PriorityEncoder(freeMask)
   val hasFree  = freeMask.asUInt.orR
   val enqFire  = io.enq.valid && hasFree
@@ -144,7 +145,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   // ── Kill/Grant 后的有效掩码（用于年龄矩阵入队更新） ──
   val validAfterKillGrant = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
-    validAfterKillGrant(i) := valid(i) && !killed(i) && !(grant(i) && issueFire)
+    validAfterKillGrant(i) := entryValid(i) && !killed(i) && !(grant(i) && issueFire)
   }
  
   // ================================================================
@@ -155,30 +156,30 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
  
     // ── valid ──
     when(io.flushPipeline) {
-      valid(i) := false.B
+      entryValid(i) := false.B
     }.elsewhen(killed(i)) {
-      valid(i) := false.B
+      entryValid(i) := false.B
     }.elsewhen(grant(i) && issueFire) {
-      valid(i) := false.B
+      entryValid(i) := false.B
     }.elsewhen(enqFire && enqIdx === i.U) {
-      valid(i) := true.B
+      entryValid(i) := true.B
     }
  
-    // ── p1Ready / p2Ready ──
+    // ── entryP1Ready / entryP2Ready ──
     when(io.flushPipeline || killed(i) || (grant(i) && issueFire)) {
-      p1Ready(i) := false.B
-      p2Ready(i) := false.B
+      entryP1Ready(i) := false.B
+      entryP2Ready(i) := false.B
     }.elsewhen(enqFire && enqIdx === i.U) {
-      p1Ready(i) := !io.enq.bits.prs1Busy || !io.enq.bits.rs1Valid
-      p2Ready(i) := !io.enq.bits.prs2Busy || !io.enq.bits.rs2Valid
+      entryP1Ready(i) := !io.enq.bits.prs1Busy || !io.enq.bits.rs1Valid
+      entryP2Ready(i) := !io.enq.bits.prs2Busy || !io.enq.bits.rs2Valid
     }.otherwise {
-      p1Ready(i) := p1Ready(i) || p1Wakeup(i)
-      p2Ready(i) := p2Ready(i) || p2Wakeup(i)
+      entryP1Ready(i) := entryP1Ready(i) || p1Wakeup(i)
+      entryP2Ready(i) := entryP2Ready(i) || p2Wakeup(i)
     }
  
     // ── uop ──
     when(enqFire && enqIdx === i.U) {
-      uops(i) := io.enq.bits
+      entryUops(i) := io.enq.bits
     }
  
     // ── 年龄矩阵 ──

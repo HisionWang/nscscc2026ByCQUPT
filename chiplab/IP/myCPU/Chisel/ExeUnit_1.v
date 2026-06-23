@@ -1,4 +1,4 @@
-module ExeUnit(
+module ExeUnit_1(
   input         clock,
   input         reset,
   output        io_inReq_ready, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
@@ -46,15 +46,9 @@ module ExeUnit(
   input         io_inReq_bits_uop_robIdx_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input  [5:0]  io_inReq_bits_uop_robIdxFull_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input         io_inReq_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input  [3:0]  io_inReq_bits_uop_lqIdx_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input         io_inReq_bits_uop_lqIdx_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input  [3:0]  io_inReq_bits_uop_sqIdx_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input         io_inReq_bits_uop_sqIdx_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input  [2:0]  io_inReq_bits_uop_issueQueue, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input         io_inReq_bits_uop_prs1Busy, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input         io_inReq_bits_uop_prs2Busy, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input         io_inReq_bits_uop_isSta, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  input         io_inReq_bits_uop_isStd, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input  [31:0] io_inReq_bits_rs1Data, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input  [31:0] io_inReq_bits_rs2Data, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   input         io_outResult_ready, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
@@ -102,15 +96,9 @@ module ExeUnit(
   output        io_outResult_bits_uop_robIdx_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output [5:0]  io_outResult_bits_uop_robIdxFull_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output        io_outResult_bits_uop_robIdxFull_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output [3:0]  io_outResult_bits_uop_lqIdx_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output        io_outResult_bits_uop_lqIdx_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output [3:0]  io_outResult_bits_uop_sqIdx_value, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output        io_outResult_bits_uop_sqIdx_flag, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output [2:0]  io_outResult_bits_uop_issueQueue, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output        io_outResult_bits_uop_prs1Busy, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output        io_outResult_bits_uop_prs2Busy, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output        io_outResult_bits_uop_isSta, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
-  output        io_outResult_bits_uop_isStd, // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
   output [31:0] io_outResult_bits_data // @[src/main/scala/backend/execute/ExeUnit.scala 47:14]
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -163,12 +151,6 @@ module ExeUnit(
   reg [31:0] _RAND_46;
   reg [31:0] _RAND_47;
   reg [31:0] _RAND_48;
-  reg [31:0] _RAND_49;
-  reg [31:0] _RAND_50;
-  reg [31:0] _RAND_51;
-  reg [31:0] _RAND_52;
-  reg [31:0] _RAND_53;
-  reg [31:0] _RAND_54;
 `endif // RANDOMIZE_REG_INIT
   wire [31:0] alu_io_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
   wire [4:0] alu_io_uop_ctrl_aluOp; // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
@@ -222,15 +204,9 @@ module ExeUnit(
   reg  stgData_uop_robIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg [5:0] stgData_uop_robIdxFull_value; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg  stgData_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg [3:0] stgData_uop_lqIdx_value; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg  stgData_uop_lqIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg [3:0] stgData_uop_sqIdx_value; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg  stgData_uop_sqIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg [2:0] stgData_uop_issueQueue; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg  stgData_uop_prs1Busy; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg  stgData_uop_prs2Busy; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg  stgData_uop_isSta; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
-  reg  stgData_uop_isStd; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg [31:0] stgData_rs1Data; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   reg [31:0] stgData_rs2Data; // @[src/main/scala/backend/execute/ExeUnit.scala 58:22]
   wire  outFire = stgValid & io_outResult_ready; // @[src/main/scala/backend/execute/ExeUnit.scala 66:37]
@@ -239,7 +215,7 @@ module ExeUnit(
   wire  _GEN_0 = outFire ? 1'h0 : stgValid; // @[src/main/scala/backend/execute/ExeUnit.scala 85:23 87:14 57:25]
   wire  _GEN_1 = inFire | _GEN_0; // @[src/main/scala/backend/execute/ExeUnit.scala 81:22 83:14]
   wire  aluValid = stgValid & stgData_uop_ctrl_fuType == 4'h1; // @[src/main/scala/backend/execute/ExeUnit.scala 98:46]
-  wire  fuTypeSupported = io_inReq_bits_uop_ctrl_fuType == 4'h1 | io_inReq_bits_uop_ctrl_fuType == 4'h4; // @[src/main/scala/backend/execute/ExeUnit.scala 187:92]
+  wire  fuTypeSupported = io_inReq_bits_uop_ctrl_fuType == 4'h1 | io_inReq_bits_uop_ctrl_fuType == 4'h6; // @[src/main/scala/backend/execute/ExeUnit.scala 187:92]
   ALU alu ( // @[src/main/scala/backend/execute/ExeUnit.scala 99:38]
     .io_uop_pc(alu_io_uop_pc),
     .io_uop_ctrl_aluOp(alu_io_uop_ctrl_aluOp),
@@ -295,15 +271,9 @@ module ExeUnit(
   assign io_outResult_bits_uop_robIdx_flag = stgData_uop_robIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_robIdxFull_value = stgData_uop_robIdxFull_value; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_robIdxFull_flag = stgData_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_uop_lqIdx_value = stgData_uop_lqIdx_value; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_uop_lqIdx_flag = stgData_uop_lqIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_uop_sqIdx_value = stgData_uop_sqIdx_value; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_uop_sqIdx_flag = stgData_uop_sqIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_issueQueue = stgData_uop_issueQueue; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_prs1Busy = stgData_uop_prs1Busy; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_uop_prs2Busy = stgData_uop_prs2Busy; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_uop_isSta = stgData_uop_isSta; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
-  assign io_outResult_bits_uop_isStd = stgData_uop_isStd; // @[src/main/scala/backend/execute/ExeUnit.scala 152:26]
   assign io_outResult_bits_data = aluValid ? alu_io_result : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign alu_io_uop_pc = stgData_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
   assign alu_io_uop_ctrl_aluOp = stgData_uop_ctrl_aluOp; // @[src/main/scala/backend/execute/ExeUnit.scala 103:18]
@@ -448,18 +418,6 @@ module ExeUnit(
       stgData_uop_robIdxFull_flag <= io_inReq_bits_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_uop_lqIdx_value <= io_inReq_bits_uop_lqIdx_value; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_uop_lqIdx_flag <= io_inReq_bits_uop_lqIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_uop_sqIdx_value <= io_inReq_bits_uop_sqIdx_value; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_uop_sqIdx_flag <= io_inReq_bits_uop_sqIdx_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
       stgData_uop_issueQueue <= io_inReq_bits_uop_issueQueue; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
@@ -467,12 +425,6 @@ module ExeUnit(
     end
     if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
       stgData_uop_prs2Busy <= io_inReq_bits_uop_prs2Busy; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_uop_isSta <= io_inReq_bits_uop_isSta; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
-    end
-    if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
-      stgData_uop_isStd <= io_inReq_bits_uop_isStd; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
     end
     if (inFire) begin // @[src/main/scala/backend/execute/ExeUnit.scala 81:22]
       stgData_rs1Data <= io_inReq_bits_rs1Data; // @[src/main/scala/backend/execute/ExeUnit.scala 84:15]
@@ -630,27 +582,15 @@ initial begin
   _RAND_43 = {1{`RANDOM}};
   stgData_uop_robIdxFull_flag = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  stgData_uop_lqIdx_value = _RAND_44[3:0];
+  stgData_uop_issueQueue = _RAND_44[2:0];
   _RAND_45 = {1{`RANDOM}};
-  stgData_uop_lqIdx_flag = _RAND_45[0:0];
+  stgData_uop_prs1Busy = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  stgData_uop_sqIdx_value = _RAND_46[3:0];
+  stgData_uop_prs2Busy = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  stgData_uop_sqIdx_flag = _RAND_47[0:0];
+  stgData_rs1Data = _RAND_47[31:0];
   _RAND_48 = {1{`RANDOM}};
-  stgData_uop_issueQueue = _RAND_48[2:0];
-  _RAND_49 = {1{`RANDOM}};
-  stgData_uop_prs1Busy = _RAND_49[0:0];
-  _RAND_50 = {1{`RANDOM}};
-  stgData_uop_prs2Busy = _RAND_50[0:0];
-  _RAND_51 = {1{`RANDOM}};
-  stgData_uop_isSta = _RAND_51[0:0];
-  _RAND_52 = {1{`RANDOM}};
-  stgData_uop_isStd = _RAND_52[0:0];
-  _RAND_53 = {1{`RANDOM}};
-  stgData_rs1Data = _RAND_53[31:0];
-  _RAND_54 = {1{`RANDOM}};
-  stgData_rs2Data = _RAND_54[31:0];
+  stgData_rs2Data = _RAND_48[31:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

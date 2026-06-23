@@ -76,7 +76,15 @@ module ROB(
   input         io_writeback_2_valid, // @[src/main/scala/backend/Rob.scala 55:14]
   input  [5:0]  io_writeback_2_bits_robIdx_value, // @[src/main/scala/backend/Rob.scala 55:14]
   input  [31:0] io_writeback_2_bits_rfdata, // @[src/main/scala/backend/Rob.scala 55:14]
-  input  [9:0]  io_writeback_2_bits_excpVec // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [9:0]  io_writeback_2_bits_excpVec, // @[src/main/scala/backend/Rob.scala 55:14]
+  input         io_writeback_3_valid, // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [5:0]  io_writeback_3_bits_robIdx_value, // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [31:0] io_writeback_3_bits_rfdata, // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [9:0]  io_writeback_3_bits_excpVec, // @[src/main/scala/backend/Rob.scala 55:14]
+  input         io_writeback_4_valid, // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [5:0]  io_writeback_4_bits_robIdx_value, // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [31:0] io_writeback_4_bits_rfdata, // @[src/main/scala/backend/Rob.scala 55:14]
+  input  [9:0]  io_writeback_4_bits_excpVec // @[src/main/scala/backend/Rob.scala 55:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -1883,18 +1891,18 @@ module ROB(
   wire  _empty_T = deqPtr_value == enqPtr_value; // @[src/main/scala/util/CircularQueuePtr.scala 103:39]
   wire  full = _empty_T & deqPtr_flag != enqPtr_flag; // @[src/main/scala/backend/Rob.scala 86:47]
   wire [5:0] _count_T_2 = enqPtr_value - deqPtr_value; // @[src/main/scala/util/CircularQueuePtr.scala 146:18]
-  wire [6:0] _GEN_8922 = {{1'd0}, enqPtr_value}; // @[src/main/scala/util/CircularQueuePtr.scala 147:18]
-  wire [7:0] _count_T_3 = 7'h40 + _GEN_8922; // @[src/main/scala/util/CircularQueuePtr.scala 147:18]
-  wire [7:0] _GEN_8923 = {{2'd0}, deqPtr_value}; // @[src/main/scala/util/CircularQueuePtr.scala 147:33]
-  wire [7:0] _count_T_5 = _count_T_3 - _GEN_8923; // @[src/main/scala/util/CircularQueuePtr.scala 147:33]
+  wire [6:0] _GEN_10086 = {{1'd0}, enqPtr_value}; // @[src/main/scala/util/CircularQueuePtr.scala 147:18]
+  wire [7:0] _count_T_3 = 7'h40 + _GEN_10086; // @[src/main/scala/util/CircularQueuePtr.scala 147:18]
+  wire [7:0] _GEN_10087 = {{2'd0}, deqPtr_value}; // @[src/main/scala/util/CircularQueuePtr.scala 147:33]
+  wire [7:0] _count_T_5 = _count_T_3 - _GEN_10087; // @[src/main/scala/util/CircularQueuePtr.scala 147:33]
   wire [7:0] count = enqPtr_flag == deqPtr_flag ? {{2'd0}, _count_T_2} : _count_T_5; // @[src/main/scala/util/CircularQueuePtr.scala 145:8]
   wire [1:0] _enqValidCount_T = io_enq_valids_1 + io_enq_valids_2; // @[src/main/scala/backend/Rob.scala 94:31]
-  wire [1:0] _GEN_8924 = {{1'd0}, io_enq_valids_0}; // @[src/main/scala/backend/Rob.scala 94:31]
-  wire [2:0] _enqValidCount_T_2 = _GEN_8924 + _enqValidCount_T; // @[src/main/scala/backend/Rob.scala 94:31]
+  wire [1:0] _GEN_10088 = {{1'd0}, io_enq_valids_0}; // @[src/main/scala/backend/Rob.scala 94:31]
+  wire [2:0] _enqValidCount_T_2 = _GEN_10088 + _enqValidCount_T; // @[src/main/scala/backend/Rob.scala 94:31]
   wire [1:0] enqValidCount = _enqValidCount_T_2[1:0]; // @[src/main/scala/backend/Rob.scala 94:31]
-  wire [7:0] _GEN_8925 = {{6'd0}, enqValidCount}; // @[src/main/scala/backend/Rob.scala 97:36]
-  wire [8:0] _io_enq_canEnq_T_1 = count + _GEN_8925; // @[src/main/scala/backend/Rob.scala 97:36]
-  wire [5:0] writeIdx = _GEN_8922[5:0]; // @[src/main/scala/backend/Rob.scala 101:34]
+  wire [7:0] _GEN_10089 = {{6'd0}, enqValidCount}; // @[src/main/scala/backend/Rob.scala 97:36]
+  wire [8:0] _io_enq_canEnq_T_1 = count + _GEN_10089; // @[src/main/scala/backend/Rob.scala 97:36]
+  wire [5:0] writeIdx = _GEN_10086[5:0]; // @[src/main/scala/backend/Rob.scala 101:34]
   wire [31:0] _GEN_0 = 6'h0 == writeIdx ? io_enq_bits_0_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 104:{37,37} 72:20]
   wire [31:0] _GEN_1 = 6'h1 == writeIdx ? io_enq_bits_0_pc : entries_1_pc; // @[src/main/scala/backend/Rob.scala 104:{37,37} 72:20]
   wire [31:0] _GEN_2 = 6'h2 == writeIdx ? io_enq_bits_0_pc : entries_2_pc; // @[src/main/scala/backend/Rob.scala 104:{37,37} 72:20]
@@ -3559,8 +3567,8 @@ module ROB(
   wire  _GEN_1661 = io_enq_valid_0 & io_enq_canEnq ? _GEN_829 : entries_61_valid; // @[src/main/scala/backend/Rob.scala 103:44 72:20]
   wire  _GEN_1662 = io_enq_valid_0 & io_enq_canEnq ? _GEN_830 : entries_62_valid; // @[src/main/scala/backend/Rob.scala 103:44 72:20]
   wire  _GEN_1663 = io_enq_valid_0 & io_enq_canEnq ? _GEN_831 : entries_63_valid; // @[src/main/scala/backend/Rob.scala 103:44 72:20]
-  wire [5:0] _GEN_8990 = {{5'd0}, io_enq_valid_0}; // @[src/main/scala/backend/Rob.scala 120:27]
-  wire [6:0] _T_1 = {{1'd0}, _GEN_8990}; // @[src/main/scala/backend/Rob.scala 120:27]
+  wire [5:0] _GEN_10154 = {{5'd0}, io_enq_valid_0}; // @[src/main/scala/backend/Rob.scala 120:27]
+  wire [6:0] _T_1 = {{1'd0}, _GEN_10154}; // @[src/main/scala/backend/Rob.scala 120:27]
   wire [5:0] writeIdx_1 = enqPtr_value + _T_1[5:0]; // @[src/main/scala/backend/Rob.scala 101:34]
   wire [31:0] _GEN_1664 = 6'h0 == writeIdx_1 ? io_enq_bits_1_pc : _GEN_832; // @[src/main/scala/backend/Rob.scala 104:{37,37}]
   wire [31:0] _GEN_1665 = 6'h1 == writeIdx_1 ? io_enq_bits_1_pc : _GEN_833; // @[src/main/scala/backend/Rob.scala 104:{37,37}]
@@ -5226,8 +5234,8 @@ module ROB(
   wire  _GEN_3325 = io_enq_valid_1 & io_enq_canEnq ? _GEN_2493 : _GEN_1661; // @[src/main/scala/backend/Rob.scala 103:44]
   wire  _GEN_3326 = io_enq_valid_1 & io_enq_canEnq ? _GEN_2494 : _GEN_1662; // @[src/main/scala/backend/Rob.scala 103:44]
   wire  _GEN_3327 = io_enq_valid_1 & io_enq_canEnq ? _GEN_2495 : _GEN_1663; // @[src/main/scala/backend/Rob.scala 103:44]
-  wire [5:0] _GEN_9055 = {{5'd0}, io_enq_valid_1}; // @[src/main/scala/backend/Rob.scala 120:27]
-  wire [5:0] _T_5 = _T_1[5:0] + _GEN_9055; // @[src/main/scala/backend/Rob.scala 120:27]
+  wire [5:0] _GEN_10219 = {{5'd0}, io_enq_valid_1}; // @[src/main/scala/backend/Rob.scala 120:27]
+  wire [5:0] _T_5 = _T_1[5:0] + _GEN_10219; // @[src/main/scala/backend/Rob.scala 120:27]
   wire [5:0] writeIdx_2 = enqPtr_value + _T_5; // @[src/main/scala/backend/Rob.scala 101:34]
   wire [9:0] _GEN_3968 = 6'h0 == writeIdx_2 ? io_enq_bits_2_excpVec : _GEN_3136; // @[src/main/scala/backend/Rob.scala 114:{37,37}]
   wire [9:0] _GEN_3969 = 6'h1 == writeIdx_2 ? io_enq_bits_2_excpVec : _GEN_3137; // @[src/main/scala/backend/Rob.scala 114:{37,37}]
@@ -5613,8 +5621,8 @@ module ROB(
   wire  _GEN_4989 = io_enq_valid_2 & io_enq_canEnq ? _GEN_4157 : _GEN_3325; // @[src/main/scala/backend/Rob.scala 103:44]
   wire  _GEN_4990 = io_enq_valid_2 & io_enq_canEnq ? _GEN_4158 : _GEN_3326; // @[src/main/scala/backend/Rob.scala 103:44]
   wire  _GEN_4991 = io_enq_valid_2 & io_enq_canEnq ? _GEN_4159 : _GEN_3327; // @[src/main/scala/backend/Rob.scala 103:44]
-  wire [5:0] _GEN_9121 = {{4'd0}, enqValidCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
-  wire [6:0] enqPtr_newIncValue = enqPtr_value + _GEN_9121; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire [5:0] _GEN_10285 = {{4'd0}, enqValidCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire [6:0] enqPtr_newIncValue = enqPtr_value + _GEN_10285; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire  enqPtr_wrap = enqPtr_newIncValue >= 7'h40; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [5:0] enqPtr_newPtr_value = enqPtr_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
   wire  _GEN_4994 = 6'h0 == io_writeback_0_bits_robIdx_value | _GEN_4864; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
@@ -6579,1994 +6587,2894 @@ module ROB(
   wire  _GEN_5951 = 6'h3d == io_writeback_2_bits_robIdx_value | _GEN_5759; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
   wire  _GEN_5952 = 6'h3e == io_writeback_2_bits_robIdx_value | _GEN_5760; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
   wire  _GEN_5953 = 6'h3f == io_writeback_2_bits_robIdx_value | _GEN_5761; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire [31:0] _GEN_5954 = 6'h0 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5762; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5955 = 6'h1 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5763; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5956 = 6'h2 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5764; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5957 = 6'h3 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5765; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5958 = 6'h4 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5766; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5959 = 6'h5 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5767; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5960 = 6'h6 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5768; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5961 = 6'h7 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5769; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5962 = 6'h8 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5770; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5963 = 6'h9 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5771; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5964 = 6'ha == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5772; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5965 = 6'hb == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5773; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5966 = 6'hc == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5774; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5967 = 6'hd == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5775; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5968 = 6'he == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5776; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5969 = 6'hf == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5777; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5970 = 6'h10 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5778; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5971 = 6'h11 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5779; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5972 = 6'h12 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5780; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5973 = 6'h13 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5781; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5974 = 6'h14 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5782; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5975 = 6'h15 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5783; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5976 = 6'h16 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5784; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5977 = 6'h17 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5785; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5978 = 6'h18 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5786; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5979 = 6'h19 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5787; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5980 = 6'h1a == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5788; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5981 = 6'h1b == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5789; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5982 = 6'h1c == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5790; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5983 = 6'h1d == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5791; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5984 = 6'h1e == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5792; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5985 = 6'h1f == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5793; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5986 = 6'h20 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5794; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5987 = 6'h21 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5795; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5988 = 6'h22 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5796; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5989 = 6'h23 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5797; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5990 = 6'h24 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5798; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5991 = 6'h25 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5799; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5992 = 6'h26 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5800; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5993 = 6'h27 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5801; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5994 = 6'h28 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5802; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5995 = 6'h29 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5803; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5996 = 6'h2a == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5804; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5997 = 6'h2b == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5805; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5998 = 6'h2c == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5806; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_5999 = 6'h2d == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5807; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6000 = 6'h2e == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5808; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6001 = 6'h2f == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5809; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6002 = 6'h30 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5810; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6003 = 6'h31 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5811; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6004 = 6'h32 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5812; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6005 = 6'h33 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5813; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6006 = 6'h34 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5814; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6007 = 6'h35 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5815; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6008 = 6'h36 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5816; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6009 = 6'h37 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5817; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6010 = 6'h38 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5818; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6011 = 6'h39 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5819; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6012 = 6'h3a == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5820; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6013 = 6'h3b == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5821; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6014 = 6'h3c == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5822; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6015 = 6'h3d == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5823; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6016 = 6'h3e == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5824; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6017 = 6'h3f == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_rfdata : _GEN_5825; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
   wire  _T_14 = |io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 136:28]
+  wire [9:0] _GEN_6018 = 6'h0 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5826; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6019 = 6'h1 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5827; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6020 = 6'h2 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5828; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6021 = 6'h3 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5829; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6022 = 6'h4 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5830; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6023 = 6'h5 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5831; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6024 = 6'h6 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5832; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6025 = 6'h7 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5833; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6026 = 6'h8 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5834; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6027 = 6'h9 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5835; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6028 = 6'ha == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5836; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6029 = 6'hb == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5837; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6030 = 6'hc == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5838; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6031 = 6'hd == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5839; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6032 = 6'he == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5840; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6033 = 6'hf == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5841; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6034 = 6'h10 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5842; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6035 = 6'h11 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5843; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6036 = 6'h12 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5844; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6037 = 6'h13 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5845; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6038 = 6'h14 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5846; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6039 = 6'h15 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5847; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6040 = 6'h16 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5848; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6041 = 6'h17 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5849; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6042 = 6'h18 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5850; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6043 = 6'h19 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5851; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6044 = 6'h1a == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5852; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6045 = 6'h1b == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5853; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6046 = 6'h1c == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5854; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6047 = 6'h1d == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5855; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6048 = 6'h1e == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5856; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6049 = 6'h1f == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5857; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6050 = 6'h20 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5858; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6051 = 6'h21 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5859; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6052 = 6'h22 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5860; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6053 = 6'h23 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5861; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6054 = 6'h24 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5862; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6055 = 6'h25 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5863; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6056 = 6'h26 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5864; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6057 = 6'h27 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5865; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6058 = 6'h28 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5866; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6059 = 6'h29 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5867; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6060 = 6'h2a == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5868; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6061 = 6'h2b == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5869; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6062 = 6'h2c == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5870; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6063 = 6'h2d == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5871; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6064 = 6'h2e == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5872; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6065 = 6'h2f == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5873; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6066 = 6'h30 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5874; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6067 = 6'h31 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5875; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6068 = 6'h32 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5876; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6069 = 6'h33 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5877; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6070 = 6'h34 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5878; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6071 = 6'h35 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5879; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6072 = 6'h36 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5880; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6073 = 6'h37 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5881; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6074 = 6'h38 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5882; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6075 = 6'h39 == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5883; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6076 = 6'h3a == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5884; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6077 = 6'h3b == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5885; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6078 = 6'h3c == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5886; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6079 = 6'h3d == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5887; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6080 = 6'h3e == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5888; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6081 = 6'h3f == io_writeback_2_bits_robIdx_value ? io_writeback_2_bits_excpVec : _GEN_5889; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6082 = |io_writeback_2_bits_excpVec ? _GEN_6018 : _GEN_5826; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6083 = |io_writeback_2_bits_excpVec ? _GEN_6019 : _GEN_5827; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6084 = |io_writeback_2_bits_excpVec ? _GEN_6020 : _GEN_5828; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6085 = |io_writeback_2_bits_excpVec ? _GEN_6021 : _GEN_5829; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6086 = |io_writeback_2_bits_excpVec ? _GEN_6022 : _GEN_5830; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6087 = |io_writeback_2_bits_excpVec ? _GEN_6023 : _GEN_5831; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6088 = |io_writeback_2_bits_excpVec ? _GEN_6024 : _GEN_5832; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6089 = |io_writeback_2_bits_excpVec ? _GEN_6025 : _GEN_5833; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6090 = |io_writeback_2_bits_excpVec ? _GEN_6026 : _GEN_5834; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6091 = |io_writeback_2_bits_excpVec ? _GEN_6027 : _GEN_5835; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6092 = |io_writeback_2_bits_excpVec ? _GEN_6028 : _GEN_5836; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6093 = |io_writeback_2_bits_excpVec ? _GEN_6029 : _GEN_5837; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6094 = |io_writeback_2_bits_excpVec ? _GEN_6030 : _GEN_5838; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6095 = |io_writeback_2_bits_excpVec ? _GEN_6031 : _GEN_5839; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6096 = |io_writeback_2_bits_excpVec ? _GEN_6032 : _GEN_5840; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6097 = |io_writeback_2_bits_excpVec ? _GEN_6033 : _GEN_5841; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6098 = |io_writeback_2_bits_excpVec ? _GEN_6034 : _GEN_5842; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6099 = |io_writeback_2_bits_excpVec ? _GEN_6035 : _GEN_5843; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6100 = |io_writeback_2_bits_excpVec ? _GEN_6036 : _GEN_5844; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6101 = |io_writeback_2_bits_excpVec ? _GEN_6037 : _GEN_5845; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6102 = |io_writeback_2_bits_excpVec ? _GEN_6038 : _GEN_5846; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6103 = |io_writeback_2_bits_excpVec ? _GEN_6039 : _GEN_5847; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6104 = |io_writeback_2_bits_excpVec ? _GEN_6040 : _GEN_5848; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6105 = |io_writeback_2_bits_excpVec ? _GEN_6041 : _GEN_5849; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6106 = |io_writeback_2_bits_excpVec ? _GEN_6042 : _GEN_5850; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6107 = |io_writeback_2_bits_excpVec ? _GEN_6043 : _GEN_5851; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6108 = |io_writeback_2_bits_excpVec ? _GEN_6044 : _GEN_5852; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6109 = |io_writeback_2_bits_excpVec ? _GEN_6045 : _GEN_5853; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6110 = |io_writeback_2_bits_excpVec ? _GEN_6046 : _GEN_5854; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6111 = |io_writeback_2_bits_excpVec ? _GEN_6047 : _GEN_5855; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6112 = |io_writeback_2_bits_excpVec ? _GEN_6048 : _GEN_5856; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6113 = |io_writeback_2_bits_excpVec ? _GEN_6049 : _GEN_5857; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6114 = |io_writeback_2_bits_excpVec ? _GEN_6050 : _GEN_5858; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6115 = |io_writeback_2_bits_excpVec ? _GEN_6051 : _GEN_5859; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6116 = |io_writeback_2_bits_excpVec ? _GEN_6052 : _GEN_5860; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6117 = |io_writeback_2_bits_excpVec ? _GEN_6053 : _GEN_5861; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6118 = |io_writeback_2_bits_excpVec ? _GEN_6054 : _GEN_5862; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6119 = |io_writeback_2_bits_excpVec ? _GEN_6055 : _GEN_5863; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6120 = |io_writeback_2_bits_excpVec ? _GEN_6056 : _GEN_5864; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6121 = |io_writeback_2_bits_excpVec ? _GEN_6057 : _GEN_5865; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6122 = |io_writeback_2_bits_excpVec ? _GEN_6058 : _GEN_5866; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6123 = |io_writeback_2_bits_excpVec ? _GEN_6059 : _GEN_5867; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6124 = |io_writeback_2_bits_excpVec ? _GEN_6060 : _GEN_5868; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6125 = |io_writeback_2_bits_excpVec ? _GEN_6061 : _GEN_5869; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6126 = |io_writeback_2_bits_excpVec ? _GEN_6062 : _GEN_5870; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6127 = |io_writeback_2_bits_excpVec ? _GEN_6063 : _GEN_5871; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6128 = |io_writeback_2_bits_excpVec ? _GEN_6064 : _GEN_5872; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6129 = |io_writeback_2_bits_excpVec ? _GEN_6065 : _GEN_5873; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6130 = |io_writeback_2_bits_excpVec ? _GEN_6066 : _GEN_5874; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6131 = |io_writeback_2_bits_excpVec ? _GEN_6067 : _GEN_5875; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6132 = |io_writeback_2_bits_excpVec ? _GEN_6068 : _GEN_5876; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6133 = |io_writeback_2_bits_excpVec ? _GEN_6069 : _GEN_5877; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6134 = |io_writeback_2_bits_excpVec ? _GEN_6070 : _GEN_5878; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6135 = |io_writeback_2_bits_excpVec ? _GEN_6071 : _GEN_5879; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6136 = |io_writeback_2_bits_excpVec ? _GEN_6072 : _GEN_5880; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6137 = |io_writeback_2_bits_excpVec ? _GEN_6073 : _GEN_5881; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6138 = |io_writeback_2_bits_excpVec ? _GEN_6074 : _GEN_5882; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6139 = |io_writeback_2_bits_excpVec ? _GEN_6075 : _GEN_5883; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6140 = |io_writeback_2_bits_excpVec ? _GEN_6076 : _GEN_5884; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6141 = |io_writeback_2_bits_excpVec ? _GEN_6077 : _GEN_5885; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6142 = |io_writeback_2_bits_excpVec ? _GEN_6078 : _GEN_5886; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6143 = |io_writeback_2_bits_excpVec ? _GEN_6079 : _GEN_5887; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6144 = |io_writeback_2_bits_excpVec ? _GEN_6080 : _GEN_5888; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6145 = |io_writeback_2_bits_excpVec ? _GEN_6081 : _GEN_5889; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire  _GEN_6146 = io_writeback_2_valid ? _GEN_5890 : _GEN_5698; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6147 = io_writeback_2_valid ? _GEN_5891 : _GEN_5699; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6148 = io_writeback_2_valid ? _GEN_5892 : _GEN_5700; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6149 = io_writeback_2_valid ? _GEN_5893 : _GEN_5701; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6150 = io_writeback_2_valid ? _GEN_5894 : _GEN_5702; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6151 = io_writeback_2_valid ? _GEN_5895 : _GEN_5703; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6152 = io_writeback_2_valid ? _GEN_5896 : _GEN_5704; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6153 = io_writeback_2_valid ? _GEN_5897 : _GEN_5705; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6154 = io_writeback_2_valid ? _GEN_5898 : _GEN_5706; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6155 = io_writeback_2_valid ? _GEN_5899 : _GEN_5707; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6156 = io_writeback_2_valid ? _GEN_5900 : _GEN_5708; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6157 = io_writeback_2_valid ? _GEN_5901 : _GEN_5709; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6158 = io_writeback_2_valid ? _GEN_5902 : _GEN_5710; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6159 = io_writeback_2_valid ? _GEN_5903 : _GEN_5711; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6160 = io_writeback_2_valid ? _GEN_5904 : _GEN_5712; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6161 = io_writeback_2_valid ? _GEN_5905 : _GEN_5713; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6162 = io_writeback_2_valid ? _GEN_5906 : _GEN_5714; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6163 = io_writeback_2_valid ? _GEN_5907 : _GEN_5715; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6164 = io_writeback_2_valid ? _GEN_5908 : _GEN_5716; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6165 = io_writeback_2_valid ? _GEN_5909 : _GEN_5717; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6166 = io_writeback_2_valid ? _GEN_5910 : _GEN_5718; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6167 = io_writeback_2_valid ? _GEN_5911 : _GEN_5719; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6168 = io_writeback_2_valid ? _GEN_5912 : _GEN_5720; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6169 = io_writeback_2_valid ? _GEN_5913 : _GEN_5721; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6170 = io_writeback_2_valid ? _GEN_5914 : _GEN_5722; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6171 = io_writeback_2_valid ? _GEN_5915 : _GEN_5723; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6172 = io_writeback_2_valid ? _GEN_5916 : _GEN_5724; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6173 = io_writeback_2_valid ? _GEN_5917 : _GEN_5725; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6174 = io_writeback_2_valid ? _GEN_5918 : _GEN_5726; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6175 = io_writeback_2_valid ? _GEN_5919 : _GEN_5727; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6176 = io_writeback_2_valid ? _GEN_5920 : _GEN_5728; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6177 = io_writeback_2_valid ? _GEN_5921 : _GEN_5729; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6178 = io_writeback_2_valid ? _GEN_5922 : _GEN_5730; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6179 = io_writeback_2_valid ? _GEN_5923 : _GEN_5731; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6180 = io_writeback_2_valid ? _GEN_5924 : _GEN_5732; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6181 = io_writeback_2_valid ? _GEN_5925 : _GEN_5733; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6182 = io_writeback_2_valid ? _GEN_5926 : _GEN_5734; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6183 = io_writeback_2_valid ? _GEN_5927 : _GEN_5735; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6184 = io_writeback_2_valid ? _GEN_5928 : _GEN_5736; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6185 = io_writeback_2_valid ? _GEN_5929 : _GEN_5737; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6186 = io_writeback_2_valid ? _GEN_5930 : _GEN_5738; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6187 = io_writeback_2_valid ? _GEN_5931 : _GEN_5739; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6188 = io_writeback_2_valid ? _GEN_5932 : _GEN_5740; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6189 = io_writeback_2_valid ? _GEN_5933 : _GEN_5741; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6190 = io_writeback_2_valid ? _GEN_5934 : _GEN_5742; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6191 = io_writeback_2_valid ? _GEN_5935 : _GEN_5743; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6192 = io_writeback_2_valid ? _GEN_5936 : _GEN_5744; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6193 = io_writeback_2_valid ? _GEN_5937 : _GEN_5745; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6194 = io_writeback_2_valid ? _GEN_5938 : _GEN_5746; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6195 = io_writeback_2_valid ? _GEN_5939 : _GEN_5747; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6196 = io_writeback_2_valid ? _GEN_5940 : _GEN_5748; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6197 = io_writeback_2_valid ? _GEN_5941 : _GEN_5749; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6198 = io_writeback_2_valid ? _GEN_5942 : _GEN_5750; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6199 = io_writeback_2_valid ? _GEN_5943 : _GEN_5751; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6200 = io_writeback_2_valid ? _GEN_5944 : _GEN_5752; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6201 = io_writeback_2_valid ? _GEN_5945 : _GEN_5753; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6202 = io_writeback_2_valid ? _GEN_5946 : _GEN_5754; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6203 = io_writeback_2_valid ? _GEN_5947 : _GEN_5755; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6204 = io_writeback_2_valid ? _GEN_5948 : _GEN_5756; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6205 = io_writeback_2_valid ? _GEN_5949 : _GEN_5757; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6206 = io_writeback_2_valid ? _GEN_5950 : _GEN_5758; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6207 = io_writeback_2_valid ? _GEN_5951 : _GEN_5759; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6208 = io_writeback_2_valid ? _GEN_5952 : _GEN_5760; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6209 = io_writeback_2_valid ? _GEN_5953 : _GEN_5761; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6210 = io_writeback_2_valid ? _GEN_5954 : _GEN_5762; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6211 = io_writeback_2_valid ? _GEN_5955 : _GEN_5763; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6212 = io_writeback_2_valid ? _GEN_5956 : _GEN_5764; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6213 = io_writeback_2_valid ? _GEN_5957 : _GEN_5765; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6214 = io_writeback_2_valid ? _GEN_5958 : _GEN_5766; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6215 = io_writeback_2_valid ? _GEN_5959 : _GEN_5767; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6216 = io_writeback_2_valid ? _GEN_5960 : _GEN_5768; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6217 = io_writeback_2_valid ? _GEN_5961 : _GEN_5769; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6218 = io_writeback_2_valid ? _GEN_5962 : _GEN_5770; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6219 = io_writeback_2_valid ? _GEN_5963 : _GEN_5771; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6220 = io_writeback_2_valid ? _GEN_5964 : _GEN_5772; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6221 = io_writeback_2_valid ? _GEN_5965 : _GEN_5773; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6222 = io_writeback_2_valid ? _GEN_5966 : _GEN_5774; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6223 = io_writeback_2_valid ? _GEN_5967 : _GEN_5775; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6224 = io_writeback_2_valid ? _GEN_5968 : _GEN_5776; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6225 = io_writeback_2_valid ? _GEN_5969 : _GEN_5777; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6226 = io_writeback_2_valid ? _GEN_5970 : _GEN_5778; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6227 = io_writeback_2_valid ? _GEN_5971 : _GEN_5779; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6228 = io_writeback_2_valid ? _GEN_5972 : _GEN_5780; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6229 = io_writeback_2_valid ? _GEN_5973 : _GEN_5781; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6230 = io_writeback_2_valid ? _GEN_5974 : _GEN_5782; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6231 = io_writeback_2_valid ? _GEN_5975 : _GEN_5783; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6232 = io_writeback_2_valid ? _GEN_5976 : _GEN_5784; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6233 = io_writeback_2_valid ? _GEN_5977 : _GEN_5785; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6234 = io_writeback_2_valid ? _GEN_5978 : _GEN_5786; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6235 = io_writeback_2_valid ? _GEN_5979 : _GEN_5787; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6236 = io_writeback_2_valid ? _GEN_5980 : _GEN_5788; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6237 = io_writeback_2_valid ? _GEN_5981 : _GEN_5789; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6238 = io_writeback_2_valid ? _GEN_5982 : _GEN_5790; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6239 = io_writeback_2_valid ? _GEN_5983 : _GEN_5791; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6240 = io_writeback_2_valid ? _GEN_5984 : _GEN_5792; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6241 = io_writeback_2_valid ? _GEN_5985 : _GEN_5793; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6242 = io_writeback_2_valid ? _GEN_5986 : _GEN_5794; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6243 = io_writeback_2_valid ? _GEN_5987 : _GEN_5795; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6244 = io_writeback_2_valid ? _GEN_5988 : _GEN_5796; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6245 = io_writeback_2_valid ? _GEN_5989 : _GEN_5797; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6246 = io_writeback_2_valid ? _GEN_5990 : _GEN_5798; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6247 = io_writeback_2_valid ? _GEN_5991 : _GEN_5799; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6248 = io_writeback_2_valid ? _GEN_5992 : _GEN_5800; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6249 = io_writeback_2_valid ? _GEN_5993 : _GEN_5801; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6250 = io_writeback_2_valid ? _GEN_5994 : _GEN_5802; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6251 = io_writeback_2_valid ? _GEN_5995 : _GEN_5803; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6252 = io_writeback_2_valid ? _GEN_5996 : _GEN_5804; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6253 = io_writeback_2_valid ? _GEN_5997 : _GEN_5805; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6254 = io_writeback_2_valid ? _GEN_5998 : _GEN_5806; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6255 = io_writeback_2_valid ? _GEN_5999 : _GEN_5807; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6256 = io_writeback_2_valid ? _GEN_6000 : _GEN_5808; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6257 = io_writeback_2_valid ? _GEN_6001 : _GEN_5809; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6258 = io_writeback_2_valid ? _GEN_6002 : _GEN_5810; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6259 = io_writeback_2_valid ? _GEN_6003 : _GEN_5811; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6260 = io_writeback_2_valid ? _GEN_6004 : _GEN_5812; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6261 = io_writeback_2_valid ? _GEN_6005 : _GEN_5813; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6262 = io_writeback_2_valid ? _GEN_6006 : _GEN_5814; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6263 = io_writeback_2_valid ? _GEN_6007 : _GEN_5815; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6264 = io_writeback_2_valid ? _GEN_6008 : _GEN_5816; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6265 = io_writeback_2_valid ? _GEN_6009 : _GEN_5817; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6266 = io_writeback_2_valid ? _GEN_6010 : _GEN_5818; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6267 = io_writeback_2_valid ? _GEN_6011 : _GEN_5819; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6268 = io_writeback_2_valid ? _GEN_6012 : _GEN_5820; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6269 = io_writeback_2_valid ? _GEN_6013 : _GEN_5821; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6270 = io_writeback_2_valid ? _GEN_6014 : _GEN_5822; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6271 = io_writeback_2_valid ? _GEN_6015 : _GEN_5823; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6272 = io_writeback_2_valid ? _GEN_6016 : _GEN_5824; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6273 = io_writeback_2_valid ? _GEN_6017 : _GEN_5825; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6274 = io_writeback_2_valid ? _GEN_6082 : _GEN_5826; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6275 = io_writeback_2_valid ? _GEN_6083 : _GEN_5827; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6276 = io_writeback_2_valid ? _GEN_6084 : _GEN_5828; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6277 = io_writeback_2_valid ? _GEN_6085 : _GEN_5829; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6278 = io_writeback_2_valid ? _GEN_6086 : _GEN_5830; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6279 = io_writeback_2_valid ? _GEN_6087 : _GEN_5831; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6280 = io_writeback_2_valid ? _GEN_6088 : _GEN_5832; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6281 = io_writeback_2_valid ? _GEN_6089 : _GEN_5833; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6282 = io_writeback_2_valid ? _GEN_6090 : _GEN_5834; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6283 = io_writeback_2_valid ? _GEN_6091 : _GEN_5835; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6284 = io_writeback_2_valid ? _GEN_6092 : _GEN_5836; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6285 = io_writeback_2_valid ? _GEN_6093 : _GEN_5837; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6286 = io_writeback_2_valid ? _GEN_6094 : _GEN_5838; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6287 = io_writeback_2_valid ? _GEN_6095 : _GEN_5839; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6288 = io_writeback_2_valid ? _GEN_6096 : _GEN_5840; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6289 = io_writeback_2_valid ? _GEN_6097 : _GEN_5841; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6290 = io_writeback_2_valid ? _GEN_6098 : _GEN_5842; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6291 = io_writeback_2_valid ? _GEN_6099 : _GEN_5843; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6292 = io_writeback_2_valid ? _GEN_6100 : _GEN_5844; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6293 = io_writeback_2_valid ? _GEN_6101 : _GEN_5845; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6294 = io_writeback_2_valid ? _GEN_6102 : _GEN_5846; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6295 = io_writeback_2_valid ? _GEN_6103 : _GEN_5847; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6296 = io_writeback_2_valid ? _GEN_6104 : _GEN_5848; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6297 = io_writeback_2_valid ? _GEN_6105 : _GEN_5849; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6298 = io_writeback_2_valid ? _GEN_6106 : _GEN_5850; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6299 = io_writeback_2_valid ? _GEN_6107 : _GEN_5851; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6300 = io_writeback_2_valid ? _GEN_6108 : _GEN_5852; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6301 = io_writeback_2_valid ? _GEN_6109 : _GEN_5853; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6302 = io_writeback_2_valid ? _GEN_6110 : _GEN_5854; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6303 = io_writeback_2_valid ? _GEN_6111 : _GEN_5855; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6304 = io_writeback_2_valid ? _GEN_6112 : _GEN_5856; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6305 = io_writeback_2_valid ? _GEN_6113 : _GEN_5857; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6306 = io_writeback_2_valid ? _GEN_6114 : _GEN_5858; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6307 = io_writeback_2_valid ? _GEN_6115 : _GEN_5859; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6308 = io_writeback_2_valid ? _GEN_6116 : _GEN_5860; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6309 = io_writeback_2_valid ? _GEN_6117 : _GEN_5861; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6310 = io_writeback_2_valid ? _GEN_6118 : _GEN_5862; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6311 = io_writeback_2_valid ? _GEN_6119 : _GEN_5863; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6312 = io_writeback_2_valid ? _GEN_6120 : _GEN_5864; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6313 = io_writeback_2_valid ? _GEN_6121 : _GEN_5865; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6314 = io_writeback_2_valid ? _GEN_6122 : _GEN_5866; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6315 = io_writeback_2_valid ? _GEN_6123 : _GEN_5867; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6316 = io_writeback_2_valid ? _GEN_6124 : _GEN_5868; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6317 = io_writeback_2_valid ? _GEN_6125 : _GEN_5869; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6318 = io_writeback_2_valid ? _GEN_6126 : _GEN_5870; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6319 = io_writeback_2_valid ? _GEN_6127 : _GEN_5871; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6320 = io_writeback_2_valid ? _GEN_6128 : _GEN_5872; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6321 = io_writeback_2_valid ? _GEN_6129 : _GEN_5873; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6322 = io_writeback_2_valid ? _GEN_6130 : _GEN_5874; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6323 = io_writeback_2_valid ? _GEN_6131 : _GEN_5875; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6324 = io_writeback_2_valid ? _GEN_6132 : _GEN_5876; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6325 = io_writeback_2_valid ? _GEN_6133 : _GEN_5877; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6326 = io_writeback_2_valid ? _GEN_6134 : _GEN_5878; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6327 = io_writeback_2_valid ? _GEN_6135 : _GEN_5879; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6328 = io_writeback_2_valid ? _GEN_6136 : _GEN_5880; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6329 = io_writeback_2_valid ? _GEN_6137 : _GEN_5881; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6330 = io_writeback_2_valid ? _GEN_6138 : _GEN_5882; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6331 = io_writeback_2_valid ? _GEN_6139 : _GEN_5883; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6332 = io_writeback_2_valid ? _GEN_6140 : _GEN_5884; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6333 = io_writeback_2_valid ? _GEN_6141 : _GEN_5885; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6334 = io_writeback_2_valid ? _GEN_6142 : _GEN_5886; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6335 = io_writeback_2_valid ? _GEN_6143 : _GEN_5887; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6336 = io_writeback_2_valid ? _GEN_6144 : _GEN_5888; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6337 = io_writeback_2_valid ? _GEN_6145 : _GEN_5889; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6338 = 6'h0 == io_writeback_3_bits_robIdx_value | _GEN_6146; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6339 = 6'h1 == io_writeback_3_bits_robIdx_value | _GEN_6147; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6340 = 6'h2 == io_writeback_3_bits_robIdx_value | _GEN_6148; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6341 = 6'h3 == io_writeback_3_bits_robIdx_value | _GEN_6149; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6342 = 6'h4 == io_writeback_3_bits_robIdx_value | _GEN_6150; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6343 = 6'h5 == io_writeback_3_bits_robIdx_value | _GEN_6151; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6344 = 6'h6 == io_writeback_3_bits_robIdx_value | _GEN_6152; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6345 = 6'h7 == io_writeback_3_bits_robIdx_value | _GEN_6153; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6346 = 6'h8 == io_writeback_3_bits_robIdx_value | _GEN_6154; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6347 = 6'h9 == io_writeback_3_bits_robIdx_value | _GEN_6155; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6348 = 6'ha == io_writeback_3_bits_robIdx_value | _GEN_6156; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6349 = 6'hb == io_writeback_3_bits_robIdx_value | _GEN_6157; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6350 = 6'hc == io_writeback_3_bits_robIdx_value | _GEN_6158; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6351 = 6'hd == io_writeback_3_bits_robIdx_value | _GEN_6159; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6352 = 6'he == io_writeback_3_bits_robIdx_value | _GEN_6160; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6353 = 6'hf == io_writeback_3_bits_robIdx_value | _GEN_6161; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6354 = 6'h10 == io_writeback_3_bits_robIdx_value | _GEN_6162; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6355 = 6'h11 == io_writeback_3_bits_robIdx_value | _GEN_6163; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6356 = 6'h12 == io_writeback_3_bits_robIdx_value | _GEN_6164; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6357 = 6'h13 == io_writeback_3_bits_robIdx_value | _GEN_6165; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6358 = 6'h14 == io_writeback_3_bits_robIdx_value | _GEN_6166; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6359 = 6'h15 == io_writeback_3_bits_robIdx_value | _GEN_6167; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6360 = 6'h16 == io_writeback_3_bits_robIdx_value | _GEN_6168; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6361 = 6'h17 == io_writeback_3_bits_robIdx_value | _GEN_6169; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6362 = 6'h18 == io_writeback_3_bits_robIdx_value | _GEN_6170; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6363 = 6'h19 == io_writeback_3_bits_robIdx_value | _GEN_6171; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6364 = 6'h1a == io_writeback_3_bits_robIdx_value | _GEN_6172; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6365 = 6'h1b == io_writeback_3_bits_robIdx_value | _GEN_6173; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6366 = 6'h1c == io_writeback_3_bits_robIdx_value | _GEN_6174; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6367 = 6'h1d == io_writeback_3_bits_robIdx_value | _GEN_6175; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6368 = 6'h1e == io_writeback_3_bits_robIdx_value | _GEN_6176; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6369 = 6'h1f == io_writeback_3_bits_robIdx_value | _GEN_6177; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6370 = 6'h20 == io_writeback_3_bits_robIdx_value | _GEN_6178; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6371 = 6'h21 == io_writeback_3_bits_robIdx_value | _GEN_6179; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6372 = 6'h22 == io_writeback_3_bits_robIdx_value | _GEN_6180; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6373 = 6'h23 == io_writeback_3_bits_robIdx_value | _GEN_6181; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6374 = 6'h24 == io_writeback_3_bits_robIdx_value | _GEN_6182; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6375 = 6'h25 == io_writeback_3_bits_robIdx_value | _GEN_6183; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6376 = 6'h26 == io_writeback_3_bits_robIdx_value | _GEN_6184; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6377 = 6'h27 == io_writeback_3_bits_robIdx_value | _GEN_6185; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6378 = 6'h28 == io_writeback_3_bits_robIdx_value | _GEN_6186; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6379 = 6'h29 == io_writeback_3_bits_robIdx_value | _GEN_6187; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6380 = 6'h2a == io_writeback_3_bits_robIdx_value | _GEN_6188; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6381 = 6'h2b == io_writeback_3_bits_robIdx_value | _GEN_6189; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6382 = 6'h2c == io_writeback_3_bits_robIdx_value | _GEN_6190; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6383 = 6'h2d == io_writeback_3_bits_robIdx_value | _GEN_6191; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6384 = 6'h2e == io_writeback_3_bits_robIdx_value | _GEN_6192; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6385 = 6'h2f == io_writeback_3_bits_robIdx_value | _GEN_6193; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6386 = 6'h30 == io_writeback_3_bits_robIdx_value | _GEN_6194; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6387 = 6'h31 == io_writeback_3_bits_robIdx_value | _GEN_6195; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6388 = 6'h32 == io_writeback_3_bits_robIdx_value | _GEN_6196; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6389 = 6'h33 == io_writeback_3_bits_robIdx_value | _GEN_6197; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6390 = 6'h34 == io_writeback_3_bits_robIdx_value | _GEN_6198; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6391 = 6'h35 == io_writeback_3_bits_robIdx_value | _GEN_6199; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6392 = 6'h36 == io_writeback_3_bits_robIdx_value | _GEN_6200; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6393 = 6'h37 == io_writeback_3_bits_robIdx_value | _GEN_6201; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6394 = 6'h38 == io_writeback_3_bits_robIdx_value | _GEN_6202; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6395 = 6'h39 == io_writeback_3_bits_robIdx_value | _GEN_6203; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6396 = 6'h3a == io_writeback_3_bits_robIdx_value | _GEN_6204; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6397 = 6'h3b == io_writeback_3_bits_robIdx_value | _GEN_6205; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6398 = 6'h3c == io_writeback_3_bits_robIdx_value | _GEN_6206; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6399 = 6'h3d == io_writeback_3_bits_robIdx_value | _GEN_6207; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6400 = 6'h3e == io_writeback_3_bits_robIdx_value | _GEN_6208; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6401 = 6'h3f == io_writeback_3_bits_robIdx_value | _GEN_6209; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire [31:0] _GEN_6402 = 6'h0 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6210; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6403 = 6'h1 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6211; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6404 = 6'h2 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6212; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6405 = 6'h3 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6213; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6406 = 6'h4 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6214; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6407 = 6'h5 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6215; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6408 = 6'h6 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6216; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6409 = 6'h7 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6217; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6410 = 6'h8 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6218; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6411 = 6'h9 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6219; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6412 = 6'ha == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6220; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6413 = 6'hb == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6221; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6414 = 6'hc == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6222; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6415 = 6'hd == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6223; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6416 = 6'he == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6224; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6417 = 6'hf == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6225; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6418 = 6'h10 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6226; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6419 = 6'h11 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6227; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6420 = 6'h12 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6228; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6421 = 6'h13 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6229; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6422 = 6'h14 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6230; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6423 = 6'h15 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6231; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6424 = 6'h16 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6232; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6425 = 6'h17 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6233; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6426 = 6'h18 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6234; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6427 = 6'h19 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6235; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6428 = 6'h1a == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6236; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6429 = 6'h1b == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6237; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6430 = 6'h1c == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6238; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6431 = 6'h1d == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6239; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6432 = 6'h1e == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6240; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6433 = 6'h1f == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6241; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6434 = 6'h20 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6242; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6435 = 6'h21 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6243; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6436 = 6'h22 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6244; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6437 = 6'h23 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6245; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6438 = 6'h24 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6246; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6439 = 6'h25 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6247; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6440 = 6'h26 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6248; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6441 = 6'h27 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6249; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6442 = 6'h28 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6250; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6443 = 6'h29 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6251; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6444 = 6'h2a == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6252; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6445 = 6'h2b == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6253; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6446 = 6'h2c == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6254; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6447 = 6'h2d == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6255; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6448 = 6'h2e == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6256; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6449 = 6'h2f == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6257; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6450 = 6'h30 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6258; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6451 = 6'h31 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6259; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6452 = 6'h32 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6260; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6453 = 6'h33 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6261; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6454 = 6'h34 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6262; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6455 = 6'h35 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6263; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6456 = 6'h36 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6264; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6457 = 6'h37 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6265; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6458 = 6'h38 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6266; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6459 = 6'h39 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6267; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6460 = 6'h3a == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6268; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6461 = 6'h3b == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6269; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6462 = 6'h3c == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6270; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6463 = 6'h3d == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6271; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6464 = 6'h3e == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6272; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire [31:0] _GEN_6465 = 6'h3f == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_rfdata : _GEN_6273; // @[src/main/scala/backend/Rob.scala 134:{44,44}]
+  wire  _T_15 = |io_writeback_3_bits_excpVec; // @[src/main/scala/backend/Rob.scala 136:28]
+  wire [9:0] _GEN_6466 = 6'h0 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6274; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6467 = 6'h1 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6275; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6468 = 6'h2 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6276; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6469 = 6'h3 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6277; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6470 = 6'h4 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6278; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6471 = 6'h5 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6279; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6472 = 6'h6 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6280; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6473 = 6'h7 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6281; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6474 = 6'h8 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6282; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6475 = 6'h9 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6283; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6476 = 6'ha == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6284; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6477 = 6'hb == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6285; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6478 = 6'hc == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6286; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6479 = 6'hd == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6287; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6480 = 6'he == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6288; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6481 = 6'hf == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6289; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6482 = 6'h10 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6290; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6483 = 6'h11 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6291; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6484 = 6'h12 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6292; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6485 = 6'h13 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6293; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6486 = 6'h14 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6294; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6487 = 6'h15 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6295; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6488 = 6'h16 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6296; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6489 = 6'h17 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6297; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6490 = 6'h18 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6298; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6491 = 6'h19 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6299; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6492 = 6'h1a == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6300; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6493 = 6'h1b == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6301; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6494 = 6'h1c == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6302; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6495 = 6'h1d == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6303; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6496 = 6'h1e == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6304; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6497 = 6'h1f == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6305; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6498 = 6'h20 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6306; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6499 = 6'h21 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6307; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6500 = 6'h22 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6308; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6501 = 6'h23 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6309; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6502 = 6'h24 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6310; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6503 = 6'h25 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6311; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6504 = 6'h26 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6312; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6505 = 6'h27 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6313; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6506 = 6'h28 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6314; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6507 = 6'h29 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6315; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6508 = 6'h2a == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6316; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6509 = 6'h2b == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6317; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6510 = 6'h2c == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6318; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6511 = 6'h2d == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6319; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6512 = 6'h2e == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6320; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6513 = 6'h2f == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6321; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6514 = 6'h30 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6322; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6515 = 6'h31 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6323; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6516 = 6'h32 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6324; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6517 = 6'h33 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6325; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6518 = 6'h34 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6326; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6519 = 6'h35 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6327; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6520 = 6'h36 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6328; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6521 = 6'h37 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6329; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6522 = 6'h38 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6330; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6523 = 6'h39 == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6331; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6524 = 6'h3a == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6332; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6525 = 6'h3b == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6333; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6526 = 6'h3c == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6334; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6527 = 6'h3d == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6335; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6528 = 6'h3e == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6336; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6529 = 6'h3f == io_writeback_3_bits_robIdx_value ? io_writeback_3_bits_excpVec : _GEN_6337; // @[src/main/scala/backend/Rob.scala 137:{47,47}]
+  wire [9:0] _GEN_6530 = |io_writeback_3_bits_excpVec ? _GEN_6466 : _GEN_6274; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6531 = |io_writeback_3_bits_excpVec ? _GEN_6467 : _GEN_6275; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6532 = |io_writeback_3_bits_excpVec ? _GEN_6468 : _GEN_6276; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6533 = |io_writeback_3_bits_excpVec ? _GEN_6469 : _GEN_6277; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6534 = |io_writeback_3_bits_excpVec ? _GEN_6470 : _GEN_6278; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6535 = |io_writeback_3_bits_excpVec ? _GEN_6471 : _GEN_6279; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6536 = |io_writeback_3_bits_excpVec ? _GEN_6472 : _GEN_6280; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6537 = |io_writeback_3_bits_excpVec ? _GEN_6473 : _GEN_6281; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6538 = |io_writeback_3_bits_excpVec ? _GEN_6474 : _GEN_6282; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6539 = |io_writeback_3_bits_excpVec ? _GEN_6475 : _GEN_6283; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6540 = |io_writeback_3_bits_excpVec ? _GEN_6476 : _GEN_6284; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6541 = |io_writeback_3_bits_excpVec ? _GEN_6477 : _GEN_6285; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6542 = |io_writeback_3_bits_excpVec ? _GEN_6478 : _GEN_6286; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6543 = |io_writeback_3_bits_excpVec ? _GEN_6479 : _GEN_6287; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6544 = |io_writeback_3_bits_excpVec ? _GEN_6480 : _GEN_6288; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6545 = |io_writeback_3_bits_excpVec ? _GEN_6481 : _GEN_6289; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6546 = |io_writeback_3_bits_excpVec ? _GEN_6482 : _GEN_6290; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6547 = |io_writeback_3_bits_excpVec ? _GEN_6483 : _GEN_6291; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6548 = |io_writeback_3_bits_excpVec ? _GEN_6484 : _GEN_6292; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6549 = |io_writeback_3_bits_excpVec ? _GEN_6485 : _GEN_6293; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6550 = |io_writeback_3_bits_excpVec ? _GEN_6486 : _GEN_6294; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6551 = |io_writeback_3_bits_excpVec ? _GEN_6487 : _GEN_6295; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6552 = |io_writeback_3_bits_excpVec ? _GEN_6488 : _GEN_6296; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6553 = |io_writeback_3_bits_excpVec ? _GEN_6489 : _GEN_6297; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6554 = |io_writeback_3_bits_excpVec ? _GEN_6490 : _GEN_6298; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6555 = |io_writeback_3_bits_excpVec ? _GEN_6491 : _GEN_6299; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6556 = |io_writeback_3_bits_excpVec ? _GEN_6492 : _GEN_6300; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6557 = |io_writeback_3_bits_excpVec ? _GEN_6493 : _GEN_6301; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6558 = |io_writeback_3_bits_excpVec ? _GEN_6494 : _GEN_6302; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6559 = |io_writeback_3_bits_excpVec ? _GEN_6495 : _GEN_6303; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6560 = |io_writeback_3_bits_excpVec ? _GEN_6496 : _GEN_6304; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6561 = |io_writeback_3_bits_excpVec ? _GEN_6497 : _GEN_6305; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6562 = |io_writeback_3_bits_excpVec ? _GEN_6498 : _GEN_6306; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6563 = |io_writeback_3_bits_excpVec ? _GEN_6499 : _GEN_6307; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6564 = |io_writeback_3_bits_excpVec ? _GEN_6500 : _GEN_6308; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6565 = |io_writeback_3_bits_excpVec ? _GEN_6501 : _GEN_6309; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6566 = |io_writeback_3_bits_excpVec ? _GEN_6502 : _GEN_6310; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6567 = |io_writeback_3_bits_excpVec ? _GEN_6503 : _GEN_6311; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6568 = |io_writeback_3_bits_excpVec ? _GEN_6504 : _GEN_6312; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6569 = |io_writeback_3_bits_excpVec ? _GEN_6505 : _GEN_6313; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6570 = |io_writeback_3_bits_excpVec ? _GEN_6506 : _GEN_6314; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6571 = |io_writeback_3_bits_excpVec ? _GEN_6507 : _GEN_6315; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6572 = |io_writeback_3_bits_excpVec ? _GEN_6508 : _GEN_6316; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6573 = |io_writeback_3_bits_excpVec ? _GEN_6509 : _GEN_6317; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6574 = |io_writeback_3_bits_excpVec ? _GEN_6510 : _GEN_6318; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6575 = |io_writeback_3_bits_excpVec ? _GEN_6511 : _GEN_6319; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6576 = |io_writeback_3_bits_excpVec ? _GEN_6512 : _GEN_6320; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6577 = |io_writeback_3_bits_excpVec ? _GEN_6513 : _GEN_6321; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6578 = |io_writeback_3_bits_excpVec ? _GEN_6514 : _GEN_6322; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6579 = |io_writeback_3_bits_excpVec ? _GEN_6515 : _GEN_6323; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6580 = |io_writeback_3_bits_excpVec ? _GEN_6516 : _GEN_6324; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6581 = |io_writeback_3_bits_excpVec ? _GEN_6517 : _GEN_6325; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6582 = |io_writeback_3_bits_excpVec ? _GEN_6518 : _GEN_6326; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6583 = |io_writeback_3_bits_excpVec ? _GEN_6519 : _GEN_6327; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6584 = |io_writeback_3_bits_excpVec ? _GEN_6520 : _GEN_6328; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6585 = |io_writeback_3_bits_excpVec ? _GEN_6521 : _GEN_6329; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6586 = |io_writeback_3_bits_excpVec ? _GEN_6522 : _GEN_6330; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6587 = |io_writeback_3_bits_excpVec ? _GEN_6523 : _GEN_6331; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6588 = |io_writeback_3_bits_excpVec ? _GEN_6524 : _GEN_6332; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6589 = |io_writeback_3_bits_excpVec ? _GEN_6525 : _GEN_6333; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6590 = |io_writeback_3_bits_excpVec ? _GEN_6526 : _GEN_6334; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6591 = |io_writeback_3_bits_excpVec ? _GEN_6527 : _GEN_6335; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6592 = |io_writeback_3_bits_excpVec ? _GEN_6528 : _GEN_6336; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire [9:0] _GEN_6593 = |io_writeback_3_bits_excpVec ? _GEN_6529 : _GEN_6337; // @[src/main/scala/backend/Rob.scala 136:33]
+  wire  _GEN_6594 = io_writeback_3_valid ? _GEN_6338 : _GEN_6146; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6595 = io_writeback_3_valid ? _GEN_6339 : _GEN_6147; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6596 = io_writeback_3_valid ? _GEN_6340 : _GEN_6148; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6597 = io_writeback_3_valid ? _GEN_6341 : _GEN_6149; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6598 = io_writeback_3_valid ? _GEN_6342 : _GEN_6150; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6599 = io_writeback_3_valid ? _GEN_6343 : _GEN_6151; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6600 = io_writeback_3_valid ? _GEN_6344 : _GEN_6152; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6601 = io_writeback_3_valid ? _GEN_6345 : _GEN_6153; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6602 = io_writeback_3_valid ? _GEN_6346 : _GEN_6154; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6603 = io_writeback_3_valid ? _GEN_6347 : _GEN_6155; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6604 = io_writeback_3_valid ? _GEN_6348 : _GEN_6156; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6605 = io_writeback_3_valid ? _GEN_6349 : _GEN_6157; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6606 = io_writeback_3_valid ? _GEN_6350 : _GEN_6158; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6607 = io_writeback_3_valid ? _GEN_6351 : _GEN_6159; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6608 = io_writeback_3_valid ? _GEN_6352 : _GEN_6160; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6609 = io_writeback_3_valid ? _GEN_6353 : _GEN_6161; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6610 = io_writeback_3_valid ? _GEN_6354 : _GEN_6162; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6611 = io_writeback_3_valid ? _GEN_6355 : _GEN_6163; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6612 = io_writeback_3_valid ? _GEN_6356 : _GEN_6164; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6613 = io_writeback_3_valid ? _GEN_6357 : _GEN_6165; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6614 = io_writeback_3_valid ? _GEN_6358 : _GEN_6166; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6615 = io_writeback_3_valid ? _GEN_6359 : _GEN_6167; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6616 = io_writeback_3_valid ? _GEN_6360 : _GEN_6168; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6617 = io_writeback_3_valid ? _GEN_6361 : _GEN_6169; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6618 = io_writeback_3_valid ? _GEN_6362 : _GEN_6170; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6619 = io_writeback_3_valid ? _GEN_6363 : _GEN_6171; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6620 = io_writeback_3_valid ? _GEN_6364 : _GEN_6172; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6621 = io_writeback_3_valid ? _GEN_6365 : _GEN_6173; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6622 = io_writeback_3_valid ? _GEN_6366 : _GEN_6174; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6623 = io_writeback_3_valid ? _GEN_6367 : _GEN_6175; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6624 = io_writeback_3_valid ? _GEN_6368 : _GEN_6176; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6625 = io_writeback_3_valid ? _GEN_6369 : _GEN_6177; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6626 = io_writeback_3_valid ? _GEN_6370 : _GEN_6178; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6627 = io_writeback_3_valid ? _GEN_6371 : _GEN_6179; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6628 = io_writeback_3_valid ? _GEN_6372 : _GEN_6180; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6629 = io_writeback_3_valid ? _GEN_6373 : _GEN_6181; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6630 = io_writeback_3_valid ? _GEN_6374 : _GEN_6182; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6631 = io_writeback_3_valid ? _GEN_6375 : _GEN_6183; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6632 = io_writeback_3_valid ? _GEN_6376 : _GEN_6184; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6633 = io_writeback_3_valid ? _GEN_6377 : _GEN_6185; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6634 = io_writeback_3_valid ? _GEN_6378 : _GEN_6186; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6635 = io_writeback_3_valid ? _GEN_6379 : _GEN_6187; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6636 = io_writeback_3_valid ? _GEN_6380 : _GEN_6188; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6637 = io_writeback_3_valid ? _GEN_6381 : _GEN_6189; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6638 = io_writeback_3_valid ? _GEN_6382 : _GEN_6190; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6639 = io_writeback_3_valid ? _GEN_6383 : _GEN_6191; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6640 = io_writeback_3_valid ? _GEN_6384 : _GEN_6192; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6641 = io_writeback_3_valid ? _GEN_6385 : _GEN_6193; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6642 = io_writeback_3_valid ? _GEN_6386 : _GEN_6194; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6643 = io_writeback_3_valid ? _GEN_6387 : _GEN_6195; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6644 = io_writeback_3_valid ? _GEN_6388 : _GEN_6196; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6645 = io_writeback_3_valid ? _GEN_6389 : _GEN_6197; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6646 = io_writeback_3_valid ? _GEN_6390 : _GEN_6198; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6647 = io_writeback_3_valid ? _GEN_6391 : _GEN_6199; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6648 = io_writeback_3_valid ? _GEN_6392 : _GEN_6200; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6649 = io_writeback_3_valid ? _GEN_6393 : _GEN_6201; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6650 = io_writeback_3_valid ? _GEN_6394 : _GEN_6202; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6651 = io_writeback_3_valid ? _GEN_6395 : _GEN_6203; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6652 = io_writeback_3_valid ? _GEN_6396 : _GEN_6204; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6653 = io_writeback_3_valid ? _GEN_6397 : _GEN_6205; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6654 = io_writeback_3_valid ? _GEN_6398 : _GEN_6206; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6655 = io_writeback_3_valid ? _GEN_6399 : _GEN_6207; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6656 = io_writeback_3_valid ? _GEN_6400 : _GEN_6208; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6657 = io_writeback_3_valid ? _GEN_6401 : _GEN_6209; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6658 = io_writeback_3_valid ? _GEN_6402 : _GEN_6210; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6659 = io_writeback_3_valid ? _GEN_6403 : _GEN_6211; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6660 = io_writeback_3_valid ? _GEN_6404 : _GEN_6212; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6661 = io_writeback_3_valid ? _GEN_6405 : _GEN_6213; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6662 = io_writeback_3_valid ? _GEN_6406 : _GEN_6214; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6663 = io_writeback_3_valid ? _GEN_6407 : _GEN_6215; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6664 = io_writeback_3_valid ? _GEN_6408 : _GEN_6216; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6665 = io_writeback_3_valid ? _GEN_6409 : _GEN_6217; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6666 = io_writeback_3_valid ? _GEN_6410 : _GEN_6218; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6667 = io_writeback_3_valid ? _GEN_6411 : _GEN_6219; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6668 = io_writeback_3_valid ? _GEN_6412 : _GEN_6220; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6669 = io_writeback_3_valid ? _GEN_6413 : _GEN_6221; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6670 = io_writeback_3_valid ? _GEN_6414 : _GEN_6222; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6671 = io_writeback_3_valid ? _GEN_6415 : _GEN_6223; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6672 = io_writeback_3_valid ? _GEN_6416 : _GEN_6224; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6673 = io_writeback_3_valid ? _GEN_6417 : _GEN_6225; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6674 = io_writeback_3_valid ? _GEN_6418 : _GEN_6226; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6675 = io_writeback_3_valid ? _GEN_6419 : _GEN_6227; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6676 = io_writeback_3_valid ? _GEN_6420 : _GEN_6228; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6677 = io_writeback_3_valid ? _GEN_6421 : _GEN_6229; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6678 = io_writeback_3_valid ? _GEN_6422 : _GEN_6230; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6679 = io_writeback_3_valid ? _GEN_6423 : _GEN_6231; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6680 = io_writeback_3_valid ? _GEN_6424 : _GEN_6232; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6681 = io_writeback_3_valid ? _GEN_6425 : _GEN_6233; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6682 = io_writeback_3_valid ? _GEN_6426 : _GEN_6234; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6683 = io_writeback_3_valid ? _GEN_6427 : _GEN_6235; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6684 = io_writeback_3_valid ? _GEN_6428 : _GEN_6236; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6685 = io_writeback_3_valid ? _GEN_6429 : _GEN_6237; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6686 = io_writeback_3_valid ? _GEN_6430 : _GEN_6238; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6687 = io_writeback_3_valid ? _GEN_6431 : _GEN_6239; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6688 = io_writeback_3_valid ? _GEN_6432 : _GEN_6240; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6689 = io_writeback_3_valid ? _GEN_6433 : _GEN_6241; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6690 = io_writeback_3_valid ? _GEN_6434 : _GEN_6242; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6691 = io_writeback_3_valid ? _GEN_6435 : _GEN_6243; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6692 = io_writeback_3_valid ? _GEN_6436 : _GEN_6244; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6693 = io_writeback_3_valid ? _GEN_6437 : _GEN_6245; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6694 = io_writeback_3_valid ? _GEN_6438 : _GEN_6246; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6695 = io_writeback_3_valid ? _GEN_6439 : _GEN_6247; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6696 = io_writeback_3_valid ? _GEN_6440 : _GEN_6248; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6697 = io_writeback_3_valid ? _GEN_6441 : _GEN_6249; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6698 = io_writeback_3_valid ? _GEN_6442 : _GEN_6250; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6699 = io_writeback_3_valid ? _GEN_6443 : _GEN_6251; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6700 = io_writeback_3_valid ? _GEN_6444 : _GEN_6252; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6701 = io_writeback_3_valid ? _GEN_6445 : _GEN_6253; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6702 = io_writeback_3_valid ? _GEN_6446 : _GEN_6254; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6703 = io_writeback_3_valid ? _GEN_6447 : _GEN_6255; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6704 = io_writeback_3_valid ? _GEN_6448 : _GEN_6256; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6705 = io_writeback_3_valid ? _GEN_6449 : _GEN_6257; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6706 = io_writeback_3_valid ? _GEN_6450 : _GEN_6258; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6707 = io_writeback_3_valid ? _GEN_6451 : _GEN_6259; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6708 = io_writeback_3_valid ? _GEN_6452 : _GEN_6260; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6709 = io_writeback_3_valid ? _GEN_6453 : _GEN_6261; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6710 = io_writeback_3_valid ? _GEN_6454 : _GEN_6262; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6711 = io_writeback_3_valid ? _GEN_6455 : _GEN_6263; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6712 = io_writeback_3_valid ? _GEN_6456 : _GEN_6264; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6713 = io_writeback_3_valid ? _GEN_6457 : _GEN_6265; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6714 = io_writeback_3_valid ? _GEN_6458 : _GEN_6266; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6715 = io_writeback_3_valid ? _GEN_6459 : _GEN_6267; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6716 = io_writeback_3_valid ? _GEN_6460 : _GEN_6268; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6717 = io_writeback_3_valid ? _GEN_6461 : _GEN_6269; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6718 = io_writeback_3_valid ? _GEN_6462 : _GEN_6270; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6719 = io_writeback_3_valid ? _GEN_6463 : _GEN_6271; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6720 = io_writeback_3_valid ? _GEN_6464 : _GEN_6272; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [31:0] _GEN_6721 = io_writeback_3_valid ? _GEN_6465 : _GEN_6273; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6722 = io_writeback_3_valid ? _GEN_6530 : _GEN_6274; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6723 = io_writeback_3_valid ? _GEN_6531 : _GEN_6275; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6724 = io_writeback_3_valid ? _GEN_6532 : _GEN_6276; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6725 = io_writeback_3_valid ? _GEN_6533 : _GEN_6277; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6726 = io_writeback_3_valid ? _GEN_6534 : _GEN_6278; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6727 = io_writeback_3_valid ? _GEN_6535 : _GEN_6279; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6728 = io_writeback_3_valid ? _GEN_6536 : _GEN_6280; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6729 = io_writeback_3_valid ? _GEN_6537 : _GEN_6281; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6730 = io_writeback_3_valid ? _GEN_6538 : _GEN_6282; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6731 = io_writeback_3_valid ? _GEN_6539 : _GEN_6283; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6732 = io_writeback_3_valid ? _GEN_6540 : _GEN_6284; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6733 = io_writeback_3_valid ? _GEN_6541 : _GEN_6285; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6734 = io_writeback_3_valid ? _GEN_6542 : _GEN_6286; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6735 = io_writeback_3_valid ? _GEN_6543 : _GEN_6287; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6736 = io_writeback_3_valid ? _GEN_6544 : _GEN_6288; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6737 = io_writeback_3_valid ? _GEN_6545 : _GEN_6289; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6738 = io_writeback_3_valid ? _GEN_6546 : _GEN_6290; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6739 = io_writeback_3_valid ? _GEN_6547 : _GEN_6291; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6740 = io_writeback_3_valid ? _GEN_6548 : _GEN_6292; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6741 = io_writeback_3_valid ? _GEN_6549 : _GEN_6293; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6742 = io_writeback_3_valid ? _GEN_6550 : _GEN_6294; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6743 = io_writeback_3_valid ? _GEN_6551 : _GEN_6295; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6744 = io_writeback_3_valid ? _GEN_6552 : _GEN_6296; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6745 = io_writeback_3_valid ? _GEN_6553 : _GEN_6297; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6746 = io_writeback_3_valid ? _GEN_6554 : _GEN_6298; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6747 = io_writeback_3_valid ? _GEN_6555 : _GEN_6299; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6748 = io_writeback_3_valid ? _GEN_6556 : _GEN_6300; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6749 = io_writeback_3_valid ? _GEN_6557 : _GEN_6301; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6750 = io_writeback_3_valid ? _GEN_6558 : _GEN_6302; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6751 = io_writeback_3_valid ? _GEN_6559 : _GEN_6303; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6752 = io_writeback_3_valid ? _GEN_6560 : _GEN_6304; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6753 = io_writeback_3_valid ? _GEN_6561 : _GEN_6305; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6754 = io_writeback_3_valid ? _GEN_6562 : _GEN_6306; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6755 = io_writeback_3_valid ? _GEN_6563 : _GEN_6307; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6756 = io_writeback_3_valid ? _GEN_6564 : _GEN_6308; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6757 = io_writeback_3_valid ? _GEN_6565 : _GEN_6309; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6758 = io_writeback_3_valid ? _GEN_6566 : _GEN_6310; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6759 = io_writeback_3_valid ? _GEN_6567 : _GEN_6311; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6760 = io_writeback_3_valid ? _GEN_6568 : _GEN_6312; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6761 = io_writeback_3_valid ? _GEN_6569 : _GEN_6313; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6762 = io_writeback_3_valid ? _GEN_6570 : _GEN_6314; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6763 = io_writeback_3_valid ? _GEN_6571 : _GEN_6315; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6764 = io_writeback_3_valid ? _GEN_6572 : _GEN_6316; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6765 = io_writeback_3_valid ? _GEN_6573 : _GEN_6317; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6766 = io_writeback_3_valid ? _GEN_6574 : _GEN_6318; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6767 = io_writeback_3_valid ? _GEN_6575 : _GEN_6319; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6768 = io_writeback_3_valid ? _GEN_6576 : _GEN_6320; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6769 = io_writeback_3_valid ? _GEN_6577 : _GEN_6321; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6770 = io_writeback_3_valid ? _GEN_6578 : _GEN_6322; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6771 = io_writeback_3_valid ? _GEN_6579 : _GEN_6323; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6772 = io_writeback_3_valid ? _GEN_6580 : _GEN_6324; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6773 = io_writeback_3_valid ? _GEN_6581 : _GEN_6325; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6774 = io_writeback_3_valid ? _GEN_6582 : _GEN_6326; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6775 = io_writeback_3_valid ? _GEN_6583 : _GEN_6327; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6776 = io_writeback_3_valid ? _GEN_6584 : _GEN_6328; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6777 = io_writeback_3_valid ? _GEN_6585 : _GEN_6329; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6778 = io_writeback_3_valid ? _GEN_6586 : _GEN_6330; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6779 = io_writeback_3_valid ? _GEN_6587 : _GEN_6331; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6780 = io_writeback_3_valid ? _GEN_6588 : _GEN_6332; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6781 = io_writeback_3_valid ? _GEN_6589 : _GEN_6333; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6782 = io_writeback_3_valid ? _GEN_6590 : _GEN_6334; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6783 = io_writeback_3_valid ? _GEN_6591 : _GEN_6335; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6784 = io_writeback_3_valid ? _GEN_6592 : _GEN_6336; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire [9:0] _GEN_6785 = io_writeback_3_valid ? _GEN_6593 : _GEN_6337; // @[src/main/scala/backend/Rob.scala 132:20]
+  wire  _GEN_6786 = 6'h0 == io_writeback_4_bits_robIdx_value | _GEN_6594; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6787 = 6'h1 == io_writeback_4_bits_robIdx_value | _GEN_6595; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6788 = 6'h2 == io_writeback_4_bits_robIdx_value | _GEN_6596; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6789 = 6'h3 == io_writeback_4_bits_robIdx_value | _GEN_6597; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6790 = 6'h4 == io_writeback_4_bits_robIdx_value | _GEN_6598; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6791 = 6'h5 == io_writeback_4_bits_robIdx_value | _GEN_6599; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6792 = 6'h6 == io_writeback_4_bits_robIdx_value | _GEN_6600; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6793 = 6'h7 == io_writeback_4_bits_robIdx_value | _GEN_6601; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6794 = 6'h8 == io_writeback_4_bits_robIdx_value | _GEN_6602; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6795 = 6'h9 == io_writeback_4_bits_robIdx_value | _GEN_6603; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6796 = 6'ha == io_writeback_4_bits_robIdx_value | _GEN_6604; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6797 = 6'hb == io_writeback_4_bits_robIdx_value | _GEN_6605; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6798 = 6'hc == io_writeback_4_bits_robIdx_value | _GEN_6606; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6799 = 6'hd == io_writeback_4_bits_robIdx_value | _GEN_6607; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6800 = 6'he == io_writeback_4_bits_robIdx_value | _GEN_6608; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6801 = 6'hf == io_writeback_4_bits_robIdx_value | _GEN_6609; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6802 = 6'h10 == io_writeback_4_bits_robIdx_value | _GEN_6610; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6803 = 6'h11 == io_writeback_4_bits_robIdx_value | _GEN_6611; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6804 = 6'h12 == io_writeback_4_bits_robIdx_value | _GEN_6612; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6805 = 6'h13 == io_writeback_4_bits_robIdx_value | _GEN_6613; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6806 = 6'h14 == io_writeback_4_bits_robIdx_value | _GEN_6614; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6807 = 6'h15 == io_writeback_4_bits_robIdx_value | _GEN_6615; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6808 = 6'h16 == io_writeback_4_bits_robIdx_value | _GEN_6616; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6809 = 6'h17 == io_writeback_4_bits_robIdx_value | _GEN_6617; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6810 = 6'h18 == io_writeback_4_bits_robIdx_value | _GEN_6618; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6811 = 6'h19 == io_writeback_4_bits_robIdx_value | _GEN_6619; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6812 = 6'h1a == io_writeback_4_bits_robIdx_value | _GEN_6620; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6813 = 6'h1b == io_writeback_4_bits_robIdx_value | _GEN_6621; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6814 = 6'h1c == io_writeback_4_bits_robIdx_value | _GEN_6622; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6815 = 6'h1d == io_writeback_4_bits_robIdx_value | _GEN_6623; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6816 = 6'h1e == io_writeback_4_bits_robIdx_value | _GEN_6624; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6817 = 6'h1f == io_writeback_4_bits_robIdx_value | _GEN_6625; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6818 = 6'h20 == io_writeback_4_bits_robIdx_value | _GEN_6626; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6819 = 6'h21 == io_writeback_4_bits_robIdx_value | _GEN_6627; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6820 = 6'h22 == io_writeback_4_bits_robIdx_value | _GEN_6628; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6821 = 6'h23 == io_writeback_4_bits_robIdx_value | _GEN_6629; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6822 = 6'h24 == io_writeback_4_bits_robIdx_value | _GEN_6630; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6823 = 6'h25 == io_writeback_4_bits_robIdx_value | _GEN_6631; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6824 = 6'h26 == io_writeback_4_bits_robIdx_value | _GEN_6632; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6825 = 6'h27 == io_writeback_4_bits_robIdx_value | _GEN_6633; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6826 = 6'h28 == io_writeback_4_bits_robIdx_value | _GEN_6634; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6827 = 6'h29 == io_writeback_4_bits_robIdx_value | _GEN_6635; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6828 = 6'h2a == io_writeback_4_bits_robIdx_value | _GEN_6636; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6829 = 6'h2b == io_writeback_4_bits_robIdx_value | _GEN_6637; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6830 = 6'h2c == io_writeback_4_bits_robIdx_value | _GEN_6638; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6831 = 6'h2d == io_writeback_4_bits_robIdx_value | _GEN_6639; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6832 = 6'h2e == io_writeback_4_bits_robIdx_value | _GEN_6640; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6833 = 6'h2f == io_writeback_4_bits_robIdx_value | _GEN_6641; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6834 = 6'h30 == io_writeback_4_bits_robIdx_value | _GEN_6642; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6835 = 6'h31 == io_writeback_4_bits_robIdx_value | _GEN_6643; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6836 = 6'h32 == io_writeback_4_bits_robIdx_value | _GEN_6644; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6837 = 6'h33 == io_writeback_4_bits_robIdx_value | _GEN_6645; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6838 = 6'h34 == io_writeback_4_bits_robIdx_value | _GEN_6646; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6839 = 6'h35 == io_writeback_4_bits_robIdx_value | _GEN_6647; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6840 = 6'h36 == io_writeback_4_bits_robIdx_value | _GEN_6648; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6841 = 6'h37 == io_writeback_4_bits_robIdx_value | _GEN_6649; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6842 = 6'h38 == io_writeback_4_bits_robIdx_value | _GEN_6650; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6843 = 6'h39 == io_writeback_4_bits_robIdx_value | _GEN_6651; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6844 = 6'h3a == io_writeback_4_bits_robIdx_value | _GEN_6652; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6845 = 6'h3b == io_writeback_4_bits_robIdx_value | _GEN_6653; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6846 = 6'h3c == io_writeback_4_bits_robIdx_value | _GEN_6654; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6847 = 6'h3d == io_writeback_4_bits_robIdx_value | _GEN_6655; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6848 = 6'h3e == io_writeback_4_bits_robIdx_value | _GEN_6656; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _GEN_6849 = 6'h3f == io_writeback_4_bits_robIdx_value | _GEN_6657; // @[src/main/scala/backend/Rob.scala 133:{49,49}]
+  wire  _T_16 = |io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 136:28]
   wire [6:0] _idx_T = {{1'd0}, deqPtr_value}; // @[src/main/scala/backend/Rob.scala 154:31]
   wire [5:0] idx = _idx_T[5:0]; // @[src/main/scala/backend/Rob.scala 154:31]
-  wire  _GEN_6339 = 6'h1 == idx ? entries_1_valid : entries_0_valid; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6340 = 6'h2 == idx ? entries_2_valid : _GEN_6339; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6341 = 6'h3 == idx ? entries_3_valid : _GEN_6340; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6342 = 6'h4 == idx ? entries_4_valid : _GEN_6341; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6343 = 6'h5 == idx ? entries_5_valid : _GEN_6342; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6344 = 6'h6 == idx ? entries_6_valid : _GEN_6343; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6345 = 6'h7 == idx ? entries_7_valid : _GEN_6344; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6346 = 6'h8 == idx ? entries_8_valid : _GEN_6345; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6347 = 6'h9 == idx ? entries_9_valid : _GEN_6346; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6348 = 6'ha == idx ? entries_10_valid : _GEN_6347; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6349 = 6'hb == idx ? entries_11_valid : _GEN_6348; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6350 = 6'hc == idx ? entries_12_valid : _GEN_6349; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6351 = 6'hd == idx ? entries_13_valid : _GEN_6350; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6352 = 6'he == idx ? entries_14_valid : _GEN_6351; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6353 = 6'hf == idx ? entries_15_valid : _GEN_6352; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6354 = 6'h10 == idx ? entries_16_valid : _GEN_6353; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6355 = 6'h11 == idx ? entries_17_valid : _GEN_6354; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6356 = 6'h12 == idx ? entries_18_valid : _GEN_6355; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6357 = 6'h13 == idx ? entries_19_valid : _GEN_6356; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6358 = 6'h14 == idx ? entries_20_valid : _GEN_6357; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6359 = 6'h15 == idx ? entries_21_valid : _GEN_6358; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6360 = 6'h16 == idx ? entries_22_valid : _GEN_6359; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6361 = 6'h17 == idx ? entries_23_valid : _GEN_6360; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6362 = 6'h18 == idx ? entries_24_valid : _GEN_6361; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6363 = 6'h19 == idx ? entries_25_valid : _GEN_6362; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6364 = 6'h1a == idx ? entries_26_valid : _GEN_6363; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6365 = 6'h1b == idx ? entries_27_valid : _GEN_6364; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6366 = 6'h1c == idx ? entries_28_valid : _GEN_6365; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6367 = 6'h1d == idx ? entries_29_valid : _GEN_6366; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6368 = 6'h1e == idx ? entries_30_valid : _GEN_6367; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6369 = 6'h1f == idx ? entries_31_valid : _GEN_6368; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6370 = 6'h20 == idx ? entries_32_valid : _GEN_6369; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6371 = 6'h21 == idx ? entries_33_valid : _GEN_6370; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6372 = 6'h22 == idx ? entries_34_valid : _GEN_6371; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6373 = 6'h23 == idx ? entries_35_valid : _GEN_6372; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6374 = 6'h24 == idx ? entries_36_valid : _GEN_6373; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6375 = 6'h25 == idx ? entries_37_valid : _GEN_6374; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6376 = 6'h26 == idx ? entries_38_valid : _GEN_6375; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6377 = 6'h27 == idx ? entries_39_valid : _GEN_6376; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6378 = 6'h28 == idx ? entries_40_valid : _GEN_6377; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6379 = 6'h29 == idx ? entries_41_valid : _GEN_6378; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6380 = 6'h2a == idx ? entries_42_valid : _GEN_6379; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6381 = 6'h2b == idx ? entries_43_valid : _GEN_6380; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6382 = 6'h2c == idx ? entries_44_valid : _GEN_6381; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6383 = 6'h2d == idx ? entries_45_valid : _GEN_6382; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6384 = 6'h2e == idx ? entries_46_valid : _GEN_6383; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6385 = 6'h2f == idx ? entries_47_valid : _GEN_6384; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6386 = 6'h30 == idx ? entries_48_valid : _GEN_6385; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6387 = 6'h31 == idx ? entries_49_valid : _GEN_6386; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6388 = 6'h32 == idx ? entries_50_valid : _GEN_6387; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6389 = 6'h33 == idx ? entries_51_valid : _GEN_6388; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6390 = 6'h34 == idx ? entries_52_valid : _GEN_6389; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6391 = 6'h35 == idx ? entries_53_valid : _GEN_6390; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6392 = 6'h36 == idx ? entries_54_valid : _GEN_6391; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6393 = 6'h37 == idx ? entries_55_valid : _GEN_6392; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6394 = 6'h38 == idx ? entries_56_valid : _GEN_6393; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6395 = 6'h39 == idx ? entries_57_valid : _GEN_6394; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6396 = 6'h3a == idx ? entries_58_valid : _GEN_6395; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6397 = 6'h3b == idx ? entries_59_valid : _GEN_6396; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6398 = 6'h3c == idx ? entries_60_valid : _GEN_6397; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6399 = 6'h3d == idx ? entries_61_valid : _GEN_6398; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6400 = 6'h3e == idx ? entries_62_valid : _GEN_6399; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6401 = 6'h3f == idx ? entries_63_valid : _GEN_6400; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6403 = 6'h1 == idx ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6404 = 6'h2 == idx ? entries_2_writtenBack : _GEN_6403; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6405 = 6'h3 == idx ? entries_3_writtenBack : _GEN_6404; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6406 = 6'h4 == idx ? entries_4_writtenBack : _GEN_6405; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6407 = 6'h5 == idx ? entries_5_writtenBack : _GEN_6406; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6408 = 6'h6 == idx ? entries_6_writtenBack : _GEN_6407; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6409 = 6'h7 == idx ? entries_7_writtenBack : _GEN_6408; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6410 = 6'h8 == idx ? entries_8_writtenBack : _GEN_6409; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6411 = 6'h9 == idx ? entries_9_writtenBack : _GEN_6410; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6412 = 6'ha == idx ? entries_10_writtenBack : _GEN_6411; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6413 = 6'hb == idx ? entries_11_writtenBack : _GEN_6412; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6414 = 6'hc == idx ? entries_12_writtenBack : _GEN_6413; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6415 = 6'hd == idx ? entries_13_writtenBack : _GEN_6414; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6416 = 6'he == idx ? entries_14_writtenBack : _GEN_6415; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6417 = 6'hf == idx ? entries_15_writtenBack : _GEN_6416; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6418 = 6'h10 == idx ? entries_16_writtenBack : _GEN_6417; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6419 = 6'h11 == idx ? entries_17_writtenBack : _GEN_6418; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6420 = 6'h12 == idx ? entries_18_writtenBack : _GEN_6419; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6421 = 6'h13 == idx ? entries_19_writtenBack : _GEN_6420; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6422 = 6'h14 == idx ? entries_20_writtenBack : _GEN_6421; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6423 = 6'h15 == idx ? entries_21_writtenBack : _GEN_6422; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6424 = 6'h16 == idx ? entries_22_writtenBack : _GEN_6423; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6425 = 6'h17 == idx ? entries_23_writtenBack : _GEN_6424; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6426 = 6'h18 == idx ? entries_24_writtenBack : _GEN_6425; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6427 = 6'h19 == idx ? entries_25_writtenBack : _GEN_6426; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6428 = 6'h1a == idx ? entries_26_writtenBack : _GEN_6427; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6429 = 6'h1b == idx ? entries_27_writtenBack : _GEN_6428; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6430 = 6'h1c == idx ? entries_28_writtenBack : _GEN_6429; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6431 = 6'h1d == idx ? entries_29_writtenBack : _GEN_6430; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6432 = 6'h1e == idx ? entries_30_writtenBack : _GEN_6431; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6433 = 6'h1f == idx ? entries_31_writtenBack : _GEN_6432; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6434 = 6'h20 == idx ? entries_32_writtenBack : _GEN_6433; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6435 = 6'h21 == idx ? entries_33_writtenBack : _GEN_6434; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6436 = 6'h22 == idx ? entries_34_writtenBack : _GEN_6435; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6437 = 6'h23 == idx ? entries_35_writtenBack : _GEN_6436; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6438 = 6'h24 == idx ? entries_36_writtenBack : _GEN_6437; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6439 = 6'h25 == idx ? entries_37_writtenBack : _GEN_6438; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6440 = 6'h26 == idx ? entries_38_writtenBack : _GEN_6439; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6441 = 6'h27 == idx ? entries_39_writtenBack : _GEN_6440; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6442 = 6'h28 == idx ? entries_40_writtenBack : _GEN_6441; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6443 = 6'h29 == idx ? entries_41_writtenBack : _GEN_6442; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6444 = 6'h2a == idx ? entries_42_writtenBack : _GEN_6443; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6445 = 6'h2b == idx ? entries_43_writtenBack : _GEN_6444; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6446 = 6'h2c == idx ? entries_44_writtenBack : _GEN_6445; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6447 = 6'h2d == idx ? entries_45_writtenBack : _GEN_6446; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6448 = 6'h2e == idx ? entries_46_writtenBack : _GEN_6447; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6449 = 6'h2f == idx ? entries_47_writtenBack : _GEN_6448; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6450 = 6'h30 == idx ? entries_48_writtenBack : _GEN_6449; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6451 = 6'h31 == idx ? entries_49_writtenBack : _GEN_6450; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6452 = 6'h32 == idx ? entries_50_writtenBack : _GEN_6451; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6453 = 6'h33 == idx ? entries_51_writtenBack : _GEN_6452; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6454 = 6'h34 == idx ? entries_52_writtenBack : _GEN_6453; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6455 = 6'h35 == idx ? entries_53_writtenBack : _GEN_6454; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6456 = 6'h36 == idx ? entries_54_writtenBack : _GEN_6455; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6457 = 6'h37 == idx ? entries_55_writtenBack : _GEN_6456; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6458 = 6'h38 == idx ? entries_56_writtenBack : _GEN_6457; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6459 = 6'h39 == idx ? entries_57_writtenBack : _GEN_6458; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6460 = 6'h3a == idx ? entries_58_writtenBack : _GEN_6459; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6461 = 6'h3b == idx ? entries_59_writtenBack : _GEN_6460; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6462 = 6'h3c == idx ? entries_60_writtenBack : _GEN_6461; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6463 = 6'h3d == idx ? entries_61_writtenBack : _GEN_6462; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6464 = 6'h3e == idx ? entries_62_writtenBack : _GEN_6463; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6465 = 6'h3f == idx ? entries_63_writtenBack : _GEN_6464; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  thisReady = _GEN_6401 & _GEN_6465; // @[src/main/scala/backend/Rob.scala 157:33]
-  wire [9:0] _GEN_6467 = 6'h1 == idx ? entries_1_excpVec : entries_0_excpVec; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6468 = 6'h2 == idx ? entries_2_excpVec : _GEN_6467; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6469 = 6'h3 == idx ? entries_3_excpVec : _GEN_6468; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6470 = 6'h4 == idx ? entries_4_excpVec : _GEN_6469; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6471 = 6'h5 == idx ? entries_5_excpVec : _GEN_6470; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6472 = 6'h6 == idx ? entries_6_excpVec : _GEN_6471; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6473 = 6'h7 == idx ? entries_7_excpVec : _GEN_6472; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6474 = 6'h8 == idx ? entries_8_excpVec : _GEN_6473; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6475 = 6'h9 == idx ? entries_9_excpVec : _GEN_6474; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6476 = 6'ha == idx ? entries_10_excpVec : _GEN_6475; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6477 = 6'hb == idx ? entries_11_excpVec : _GEN_6476; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6478 = 6'hc == idx ? entries_12_excpVec : _GEN_6477; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6479 = 6'hd == idx ? entries_13_excpVec : _GEN_6478; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6480 = 6'he == idx ? entries_14_excpVec : _GEN_6479; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6481 = 6'hf == idx ? entries_15_excpVec : _GEN_6480; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6482 = 6'h10 == idx ? entries_16_excpVec : _GEN_6481; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6483 = 6'h11 == idx ? entries_17_excpVec : _GEN_6482; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6484 = 6'h12 == idx ? entries_18_excpVec : _GEN_6483; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6485 = 6'h13 == idx ? entries_19_excpVec : _GEN_6484; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6486 = 6'h14 == idx ? entries_20_excpVec : _GEN_6485; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6487 = 6'h15 == idx ? entries_21_excpVec : _GEN_6486; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6488 = 6'h16 == idx ? entries_22_excpVec : _GEN_6487; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6489 = 6'h17 == idx ? entries_23_excpVec : _GEN_6488; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6490 = 6'h18 == idx ? entries_24_excpVec : _GEN_6489; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6491 = 6'h19 == idx ? entries_25_excpVec : _GEN_6490; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6492 = 6'h1a == idx ? entries_26_excpVec : _GEN_6491; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6493 = 6'h1b == idx ? entries_27_excpVec : _GEN_6492; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6494 = 6'h1c == idx ? entries_28_excpVec : _GEN_6493; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6495 = 6'h1d == idx ? entries_29_excpVec : _GEN_6494; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6496 = 6'h1e == idx ? entries_30_excpVec : _GEN_6495; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6497 = 6'h1f == idx ? entries_31_excpVec : _GEN_6496; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6498 = 6'h20 == idx ? entries_32_excpVec : _GEN_6497; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6499 = 6'h21 == idx ? entries_33_excpVec : _GEN_6498; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6500 = 6'h22 == idx ? entries_34_excpVec : _GEN_6499; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6501 = 6'h23 == idx ? entries_35_excpVec : _GEN_6500; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6502 = 6'h24 == idx ? entries_36_excpVec : _GEN_6501; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6503 = 6'h25 == idx ? entries_37_excpVec : _GEN_6502; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6504 = 6'h26 == idx ? entries_38_excpVec : _GEN_6503; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6505 = 6'h27 == idx ? entries_39_excpVec : _GEN_6504; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6506 = 6'h28 == idx ? entries_40_excpVec : _GEN_6505; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6507 = 6'h29 == idx ? entries_41_excpVec : _GEN_6506; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6508 = 6'h2a == idx ? entries_42_excpVec : _GEN_6507; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6509 = 6'h2b == idx ? entries_43_excpVec : _GEN_6508; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6510 = 6'h2c == idx ? entries_44_excpVec : _GEN_6509; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6511 = 6'h2d == idx ? entries_45_excpVec : _GEN_6510; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6512 = 6'h2e == idx ? entries_46_excpVec : _GEN_6511; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6513 = 6'h2f == idx ? entries_47_excpVec : _GEN_6512; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6514 = 6'h30 == idx ? entries_48_excpVec : _GEN_6513; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6515 = 6'h31 == idx ? entries_49_excpVec : _GEN_6514; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6516 = 6'h32 == idx ? entries_50_excpVec : _GEN_6515; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6517 = 6'h33 == idx ? entries_51_excpVec : _GEN_6516; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6518 = 6'h34 == idx ? entries_52_excpVec : _GEN_6517; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6519 = 6'h35 == idx ? entries_53_excpVec : _GEN_6518; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6520 = 6'h36 == idx ? entries_54_excpVec : _GEN_6519; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6521 = 6'h37 == idx ? entries_55_excpVec : _GEN_6520; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6522 = 6'h38 == idx ? entries_56_excpVec : _GEN_6521; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6523 = 6'h39 == idx ? entries_57_excpVec : _GEN_6522; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6524 = 6'h3a == idx ? entries_58_excpVec : _GEN_6523; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6525 = 6'h3b == idx ? entries_59_excpVec : _GEN_6524; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6526 = 6'h3c == idx ? entries_60_excpVec : _GEN_6525; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6527 = 6'h3d == idx ? entries_61_excpVec : _GEN_6526; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6528 = 6'h3e == idx ? entries_62_excpVec : _GEN_6527; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_6529 = 6'h3f == idx ? entries_63_excpVec : _GEN_6528; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire  hasExcp = |_GEN_6529; // @[src/main/scala/backend/Rob.scala 158:35]
+  wire  _GEN_7235 = 6'h1 == idx ? entries_1_valid : entries_0_valid; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7236 = 6'h2 == idx ? entries_2_valid : _GEN_7235; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7237 = 6'h3 == idx ? entries_3_valid : _GEN_7236; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7238 = 6'h4 == idx ? entries_4_valid : _GEN_7237; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7239 = 6'h5 == idx ? entries_5_valid : _GEN_7238; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7240 = 6'h6 == idx ? entries_6_valid : _GEN_7239; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7241 = 6'h7 == idx ? entries_7_valid : _GEN_7240; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7242 = 6'h8 == idx ? entries_8_valid : _GEN_7241; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7243 = 6'h9 == idx ? entries_9_valid : _GEN_7242; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7244 = 6'ha == idx ? entries_10_valid : _GEN_7243; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7245 = 6'hb == idx ? entries_11_valid : _GEN_7244; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7246 = 6'hc == idx ? entries_12_valid : _GEN_7245; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7247 = 6'hd == idx ? entries_13_valid : _GEN_7246; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7248 = 6'he == idx ? entries_14_valid : _GEN_7247; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7249 = 6'hf == idx ? entries_15_valid : _GEN_7248; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7250 = 6'h10 == idx ? entries_16_valid : _GEN_7249; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7251 = 6'h11 == idx ? entries_17_valid : _GEN_7250; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7252 = 6'h12 == idx ? entries_18_valid : _GEN_7251; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7253 = 6'h13 == idx ? entries_19_valid : _GEN_7252; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7254 = 6'h14 == idx ? entries_20_valid : _GEN_7253; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7255 = 6'h15 == idx ? entries_21_valid : _GEN_7254; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7256 = 6'h16 == idx ? entries_22_valid : _GEN_7255; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7257 = 6'h17 == idx ? entries_23_valid : _GEN_7256; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7258 = 6'h18 == idx ? entries_24_valid : _GEN_7257; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7259 = 6'h19 == idx ? entries_25_valid : _GEN_7258; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7260 = 6'h1a == idx ? entries_26_valid : _GEN_7259; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7261 = 6'h1b == idx ? entries_27_valid : _GEN_7260; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7262 = 6'h1c == idx ? entries_28_valid : _GEN_7261; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7263 = 6'h1d == idx ? entries_29_valid : _GEN_7262; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7264 = 6'h1e == idx ? entries_30_valid : _GEN_7263; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7265 = 6'h1f == idx ? entries_31_valid : _GEN_7264; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7266 = 6'h20 == idx ? entries_32_valid : _GEN_7265; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7267 = 6'h21 == idx ? entries_33_valid : _GEN_7266; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7268 = 6'h22 == idx ? entries_34_valid : _GEN_7267; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7269 = 6'h23 == idx ? entries_35_valid : _GEN_7268; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7270 = 6'h24 == idx ? entries_36_valid : _GEN_7269; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7271 = 6'h25 == idx ? entries_37_valid : _GEN_7270; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7272 = 6'h26 == idx ? entries_38_valid : _GEN_7271; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7273 = 6'h27 == idx ? entries_39_valid : _GEN_7272; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7274 = 6'h28 == idx ? entries_40_valid : _GEN_7273; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7275 = 6'h29 == idx ? entries_41_valid : _GEN_7274; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7276 = 6'h2a == idx ? entries_42_valid : _GEN_7275; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7277 = 6'h2b == idx ? entries_43_valid : _GEN_7276; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7278 = 6'h2c == idx ? entries_44_valid : _GEN_7277; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7279 = 6'h2d == idx ? entries_45_valid : _GEN_7278; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7280 = 6'h2e == idx ? entries_46_valid : _GEN_7279; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7281 = 6'h2f == idx ? entries_47_valid : _GEN_7280; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7282 = 6'h30 == idx ? entries_48_valid : _GEN_7281; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7283 = 6'h31 == idx ? entries_49_valid : _GEN_7282; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7284 = 6'h32 == idx ? entries_50_valid : _GEN_7283; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7285 = 6'h33 == idx ? entries_51_valid : _GEN_7284; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7286 = 6'h34 == idx ? entries_52_valid : _GEN_7285; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7287 = 6'h35 == idx ? entries_53_valid : _GEN_7286; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7288 = 6'h36 == idx ? entries_54_valid : _GEN_7287; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7289 = 6'h37 == idx ? entries_55_valid : _GEN_7288; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7290 = 6'h38 == idx ? entries_56_valid : _GEN_7289; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7291 = 6'h39 == idx ? entries_57_valid : _GEN_7290; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7292 = 6'h3a == idx ? entries_58_valid : _GEN_7291; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7293 = 6'h3b == idx ? entries_59_valid : _GEN_7292; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7294 = 6'h3c == idx ? entries_60_valid : _GEN_7293; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7295 = 6'h3d == idx ? entries_61_valid : _GEN_7294; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7296 = 6'h3e == idx ? entries_62_valid : _GEN_7295; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7297 = 6'h3f == idx ? entries_63_valid : _GEN_7296; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7299 = 6'h1 == idx ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7300 = 6'h2 == idx ? entries_2_writtenBack : _GEN_7299; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7301 = 6'h3 == idx ? entries_3_writtenBack : _GEN_7300; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7302 = 6'h4 == idx ? entries_4_writtenBack : _GEN_7301; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7303 = 6'h5 == idx ? entries_5_writtenBack : _GEN_7302; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7304 = 6'h6 == idx ? entries_6_writtenBack : _GEN_7303; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7305 = 6'h7 == idx ? entries_7_writtenBack : _GEN_7304; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7306 = 6'h8 == idx ? entries_8_writtenBack : _GEN_7305; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7307 = 6'h9 == idx ? entries_9_writtenBack : _GEN_7306; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7308 = 6'ha == idx ? entries_10_writtenBack : _GEN_7307; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7309 = 6'hb == idx ? entries_11_writtenBack : _GEN_7308; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7310 = 6'hc == idx ? entries_12_writtenBack : _GEN_7309; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7311 = 6'hd == idx ? entries_13_writtenBack : _GEN_7310; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7312 = 6'he == idx ? entries_14_writtenBack : _GEN_7311; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7313 = 6'hf == idx ? entries_15_writtenBack : _GEN_7312; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7314 = 6'h10 == idx ? entries_16_writtenBack : _GEN_7313; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7315 = 6'h11 == idx ? entries_17_writtenBack : _GEN_7314; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7316 = 6'h12 == idx ? entries_18_writtenBack : _GEN_7315; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7317 = 6'h13 == idx ? entries_19_writtenBack : _GEN_7316; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7318 = 6'h14 == idx ? entries_20_writtenBack : _GEN_7317; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7319 = 6'h15 == idx ? entries_21_writtenBack : _GEN_7318; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7320 = 6'h16 == idx ? entries_22_writtenBack : _GEN_7319; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7321 = 6'h17 == idx ? entries_23_writtenBack : _GEN_7320; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7322 = 6'h18 == idx ? entries_24_writtenBack : _GEN_7321; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7323 = 6'h19 == idx ? entries_25_writtenBack : _GEN_7322; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7324 = 6'h1a == idx ? entries_26_writtenBack : _GEN_7323; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7325 = 6'h1b == idx ? entries_27_writtenBack : _GEN_7324; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7326 = 6'h1c == idx ? entries_28_writtenBack : _GEN_7325; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7327 = 6'h1d == idx ? entries_29_writtenBack : _GEN_7326; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7328 = 6'h1e == idx ? entries_30_writtenBack : _GEN_7327; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7329 = 6'h1f == idx ? entries_31_writtenBack : _GEN_7328; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7330 = 6'h20 == idx ? entries_32_writtenBack : _GEN_7329; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7331 = 6'h21 == idx ? entries_33_writtenBack : _GEN_7330; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7332 = 6'h22 == idx ? entries_34_writtenBack : _GEN_7331; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7333 = 6'h23 == idx ? entries_35_writtenBack : _GEN_7332; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7334 = 6'h24 == idx ? entries_36_writtenBack : _GEN_7333; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7335 = 6'h25 == idx ? entries_37_writtenBack : _GEN_7334; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7336 = 6'h26 == idx ? entries_38_writtenBack : _GEN_7335; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7337 = 6'h27 == idx ? entries_39_writtenBack : _GEN_7336; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7338 = 6'h28 == idx ? entries_40_writtenBack : _GEN_7337; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7339 = 6'h29 == idx ? entries_41_writtenBack : _GEN_7338; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7340 = 6'h2a == idx ? entries_42_writtenBack : _GEN_7339; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7341 = 6'h2b == idx ? entries_43_writtenBack : _GEN_7340; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7342 = 6'h2c == idx ? entries_44_writtenBack : _GEN_7341; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7343 = 6'h2d == idx ? entries_45_writtenBack : _GEN_7342; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7344 = 6'h2e == idx ? entries_46_writtenBack : _GEN_7343; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7345 = 6'h2f == idx ? entries_47_writtenBack : _GEN_7344; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7346 = 6'h30 == idx ? entries_48_writtenBack : _GEN_7345; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7347 = 6'h31 == idx ? entries_49_writtenBack : _GEN_7346; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7348 = 6'h32 == idx ? entries_50_writtenBack : _GEN_7347; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7349 = 6'h33 == idx ? entries_51_writtenBack : _GEN_7348; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7350 = 6'h34 == idx ? entries_52_writtenBack : _GEN_7349; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7351 = 6'h35 == idx ? entries_53_writtenBack : _GEN_7350; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7352 = 6'h36 == idx ? entries_54_writtenBack : _GEN_7351; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7353 = 6'h37 == idx ? entries_55_writtenBack : _GEN_7352; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7354 = 6'h38 == idx ? entries_56_writtenBack : _GEN_7353; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7355 = 6'h39 == idx ? entries_57_writtenBack : _GEN_7354; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7356 = 6'h3a == idx ? entries_58_writtenBack : _GEN_7355; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7357 = 6'h3b == idx ? entries_59_writtenBack : _GEN_7356; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7358 = 6'h3c == idx ? entries_60_writtenBack : _GEN_7357; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7359 = 6'h3d == idx ? entries_61_writtenBack : _GEN_7358; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7360 = 6'h3e == idx ? entries_62_writtenBack : _GEN_7359; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7361 = 6'h3f == idx ? entries_63_writtenBack : _GEN_7360; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  thisReady = _GEN_7297 & _GEN_7361; // @[src/main/scala/backend/Rob.scala 157:33]
+  wire [9:0] _GEN_7363 = 6'h1 == idx ? entries_1_excpVec : entries_0_excpVec; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7364 = 6'h2 == idx ? entries_2_excpVec : _GEN_7363; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7365 = 6'h3 == idx ? entries_3_excpVec : _GEN_7364; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7366 = 6'h4 == idx ? entries_4_excpVec : _GEN_7365; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7367 = 6'h5 == idx ? entries_5_excpVec : _GEN_7366; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7368 = 6'h6 == idx ? entries_6_excpVec : _GEN_7367; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7369 = 6'h7 == idx ? entries_7_excpVec : _GEN_7368; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7370 = 6'h8 == idx ? entries_8_excpVec : _GEN_7369; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7371 = 6'h9 == idx ? entries_9_excpVec : _GEN_7370; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7372 = 6'ha == idx ? entries_10_excpVec : _GEN_7371; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7373 = 6'hb == idx ? entries_11_excpVec : _GEN_7372; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7374 = 6'hc == idx ? entries_12_excpVec : _GEN_7373; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7375 = 6'hd == idx ? entries_13_excpVec : _GEN_7374; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7376 = 6'he == idx ? entries_14_excpVec : _GEN_7375; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7377 = 6'hf == idx ? entries_15_excpVec : _GEN_7376; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7378 = 6'h10 == idx ? entries_16_excpVec : _GEN_7377; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7379 = 6'h11 == idx ? entries_17_excpVec : _GEN_7378; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7380 = 6'h12 == idx ? entries_18_excpVec : _GEN_7379; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7381 = 6'h13 == idx ? entries_19_excpVec : _GEN_7380; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7382 = 6'h14 == idx ? entries_20_excpVec : _GEN_7381; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7383 = 6'h15 == idx ? entries_21_excpVec : _GEN_7382; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7384 = 6'h16 == idx ? entries_22_excpVec : _GEN_7383; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7385 = 6'h17 == idx ? entries_23_excpVec : _GEN_7384; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7386 = 6'h18 == idx ? entries_24_excpVec : _GEN_7385; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7387 = 6'h19 == idx ? entries_25_excpVec : _GEN_7386; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7388 = 6'h1a == idx ? entries_26_excpVec : _GEN_7387; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7389 = 6'h1b == idx ? entries_27_excpVec : _GEN_7388; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7390 = 6'h1c == idx ? entries_28_excpVec : _GEN_7389; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7391 = 6'h1d == idx ? entries_29_excpVec : _GEN_7390; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7392 = 6'h1e == idx ? entries_30_excpVec : _GEN_7391; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7393 = 6'h1f == idx ? entries_31_excpVec : _GEN_7392; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7394 = 6'h20 == idx ? entries_32_excpVec : _GEN_7393; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7395 = 6'h21 == idx ? entries_33_excpVec : _GEN_7394; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7396 = 6'h22 == idx ? entries_34_excpVec : _GEN_7395; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7397 = 6'h23 == idx ? entries_35_excpVec : _GEN_7396; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7398 = 6'h24 == idx ? entries_36_excpVec : _GEN_7397; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7399 = 6'h25 == idx ? entries_37_excpVec : _GEN_7398; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7400 = 6'h26 == idx ? entries_38_excpVec : _GEN_7399; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7401 = 6'h27 == idx ? entries_39_excpVec : _GEN_7400; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7402 = 6'h28 == idx ? entries_40_excpVec : _GEN_7401; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7403 = 6'h29 == idx ? entries_41_excpVec : _GEN_7402; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7404 = 6'h2a == idx ? entries_42_excpVec : _GEN_7403; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7405 = 6'h2b == idx ? entries_43_excpVec : _GEN_7404; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7406 = 6'h2c == idx ? entries_44_excpVec : _GEN_7405; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7407 = 6'h2d == idx ? entries_45_excpVec : _GEN_7406; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7408 = 6'h2e == idx ? entries_46_excpVec : _GEN_7407; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7409 = 6'h2f == idx ? entries_47_excpVec : _GEN_7408; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7410 = 6'h30 == idx ? entries_48_excpVec : _GEN_7409; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7411 = 6'h31 == idx ? entries_49_excpVec : _GEN_7410; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7412 = 6'h32 == idx ? entries_50_excpVec : _GEN_7411; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7413 = 6'h33 == idx ? entries_51_excpVec : _GEN_7412; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7414 = 6'h34 == idx ? entries_52_excpVec : _GEN_7413; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7415 = 6'h35 == idx ? entries_53_excpVec : _GEN_7414; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7416 = 6'h36 == idx ? entries_54_excpVec : _GEN_7415; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7417 = 6'h37 == idx ? entries_55_excpVec : _GEN_7416; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7418 = 6'h38 == idx ? entries_56_excpVec : _GEN_7417; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7419 = 6'h39 == idx ? entries_57_excpVec : _GEN_7418; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7420 = 6'h3a == idx ? entries_58_excpVec : _GEN_7419; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7421 = 6'h3b == idx ? entries_59_excpVec : _GEN_7420; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7422 = 6'h3c == idx ? entries_60_excpVec : _GEN_7421; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7423 = 6'h3d == idx ? entries_61_excpVec : _GEN_7422; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7424 = 6'h3e == idx ? entries_62_excpVec : _GEN_7423; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7425 = 6'h3f == idx ? entries_63_excpVec : _GEN_7424; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire  hasExcp = |_GEN_7425; // @[src/main/scala/backend/Rob.scala 158:35]
   wire  commitValids_0 = thisReady & ~hasExcp; // @[src/main/scala/backend/Rob.scala 161:51]
-  wire [6:0] _GEN_6531 = 6'h1 == idx ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6532 = 6'h2 == idx ? entries_2_pdst : _GEN_6531; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6533 = 6'h3 == idx ? entries_3_pdst : _GEN_6532; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6534 = 6'h4 == idx ? entries_4_pdst : _GEN_6533; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6535 = 6'h5 == idx ? entries_5_pdst : _GEN_6534; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6536 = 6'h6 == idx ? entries_6_pdst : _GEN_6535; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6537 = 6'h7 == idx ? entries_7_pdst : _GEN_6536; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6538 = 6'h8 == idx ? entries_8_pdst : _GEN_6537; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6539 = 6'h9 == idx ? entries_9_pdst : _GEN_6538; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6540 = 6'ha == idx ? entries_10_pdst : _GEN_6539; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6541 = 6'hb == idx ? entries_11_pdst : _GEN_6540; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6542 = 6'hc == idx ? entries_12_pdst : _GEN_6541; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6543 = 6'hd == idx ? entries_13_pdst : _GEN_6542; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6544 = 6'he == idx ? entries_14_pdst : _GEN_6543; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6545 = 6'hf == idx ? entries_15_pdst : _GEN_6544; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6546 = 6'h10 == idx ? entries_16_pdst : _GEN_6545; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6547 = 6'h11 == idx ? entries_17_pdst : _GEN_6546; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6548 = 6'h12 == idx ? entries_18_pdst : _GEN_6547; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6549 = 6'h13 == idx ? entries_19_pdst : _GEN_6548; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6550 = 6'h14 == idx ? entries_20_pdst : _GEN_6549; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6551 = 6'h15 == idx ? entries_21_pdst : _GEN_6550; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6552 = 6'h16 == idx ? entries_22_pdst : _GEN_6551; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6553 = 6'h17 == idx ? entries_23_pdst : _GEN_6552; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6554 = 6'h18 == idx ? entries_24_pdst : _GEN_6553; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6555 = 6'h19 == idx ? entries_25_pdst : _GEN_6554; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6556 = 6'h1a == idx ? entries_26_pdst : _GEN_6555; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6557 = 6'h1b == idx ? entries_27_pdst : _GEN_6556; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6558 = 6'h1c == idx ? entries_28_pdst : _GEN_6557; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6559 = 6'h1d == idx ? entries_29_pdst : _GEN_6558; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6560 = 6'h1e == idx ? entries_30_pdst : _GEN_6559; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6561 = 6'h1f == idx ? entries_31_pdst : _GEN_6560; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6562 = 6'h20 == idx ? entries_32_pdst : _GEN_6561; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6563 = 6'h21 == idx ? entries_33_pdst : _GEN_6562; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6564 = 6'h22 == idx ? entries_34_pdst : _GEN_6563; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6565 = 6'h23 == idx ? entries_35_pdst : _GEN_6564; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6566 = 6'h24 == idx ? entries_36_pdst : _GEN_6565; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6567 = 6'h25 == idx ? entries_37_pdst : _GEN_6566; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6568 = 6'h26 == idx ? entries_38_pdst : _GEN_6567; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6569 = 6'h27 == idx ? entries_39_pdst : _GEN_6568; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6570 = 6'h28 == idx ? entries_40_pdst : _GEN_6569; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6571 = 6'h29 == idx ? entries_41_pdst : _GEN_6570; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6572 = 6'h2a == idx ? entries_42_pdst : _GEN_6571; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6573 = 6'h2b == idx ? entries_43_pdst : _GEN_6572; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6574 = 6'h2c == idx ? entries_44_pdst : _GEN_6573; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6575 = 6'h2d == idx ? entries_45_pdst : _GEN_6574; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6576 = 6'h2e == idx ? entries_46_pdst : _GEN_6575; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6577 = 6'h2f == idx ? entries_47_pdst : _GEN_6576; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6578 = 6'h30 == idx ? entries_48_pdst : _GEN_6577; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6579 = 6'h31 == idx ? entries_49_pdst : _GEN_6578; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6580 = 6'h32 == idx ? entries_50_pdst : _GEN_6579; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6581 = 6'h33 == idx ? entries_51_pdst : _GEN_6580; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6582 = 6'h34 == idx ? entries_52_pdst : _GEN_6581; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6583 = 6'h35 == idx ? entries_53_pdst : _GEN_6582; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6584 = 6'h36 == idx ? entries_54_pdst : _GEN_6583; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6585 = 6'h37 == idx ? entries_55_pdst : _GEN_6584; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6586 = 6'h38 == idx ? entries_56_pdst : _GEN_6585; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6587 = 6'h39 == idx ? entries_57_pdst : _GEN_6586; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6588 = 6'h3a == idx ? entries_58_pdst : _GEN_6587; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6589 = 6'h3b == idx ? entries_59_pdst : _GEN_6588; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6590 = 6'h3c == idx ? entries_60_pdst : _GEN_6589; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6591 = 6'h3d == idx ? entries_61_pdst : _GEN_6590; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6592 = 6'h3e == idx ? entries_62_pdst : _GEN_6591; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_6595 = 6'h1 == idx ? entries_1_oldPdst : entries_0_oldPdst; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6596 = 6'h2 == idx ? entries_2_oldPdst : _GEN_6595; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6597 = 6'h3 == idx ? entries_3_oldPdst : _GEN_6596; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6598 = 6'h4 == idx ? entries_4_oldPdst : _GEN_6597; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6599 = 6'h5 == idx ? entries_5_oldPdst : _GEN_6598; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6600 = 6'h6 == idx ? entries_6_oldPdst : _GEN_6599; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6601 = 6'h7 == idx ? entries_7_oldPdst : _GEN_6600; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6602 = 6'h8 == idx ? entries_8_oldPdst : _GEN_6601; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6603 = 6'h9 == idx ? entries_9_oldPdst : _GEN_6602; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6604 = 6'ha == idx ? entries_10_oldPdst : _GEN_6603; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6605 = 6'hb == idx ? entries_11_oldPdst : _GEN_6604; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6606 = 6'hc == idx ? entries_12_oldPdst : _GEN_6605; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6607 = 6'hd == idx ? entries_13_oldPdst : _GEN_6606; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6608 = 6'he == idx ? entries_14_oldPdst : _GEN_6607; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6609 = 6'hf == idx ? entries_15_oldPdst : _GEN_6608; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6610 = 6'h10 == idx ? entries_16_oldPdst : _GEN_6609; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6611 = 6'h11 == idx ? entries_17_oldPdst : _GEN_6610; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6612 = 6'h12 == idx ? entries_18_oldPdst : _GEN_6611; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6613 = 6'h13 == idx ? entries_19_oldPdst : _GEN_6612; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6614 = 6'h14 == idx ? entries_20_oldPdst : _GEN_6613; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6615 = 6'h15 == idx ? entries_21_oldPdst : _GEN_6614; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6616 = 6'h16 == idx ? entries_22_oldPdst : _GEN_6615; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6617 = 6'h17 == idx ? entries_23_oldPdst : _GEN_6616; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6618 = 6'h18 == idx ? entries_24_oldPdst : _GEN_6617; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6619 = 6'h19 == idx ? entries_25_oldPdst : _GEN_6618; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6620 = 6'h1a == idx ? entries_26_oldPdst : _GEN_6619; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6621 = 6'h1b == idx ? entries_27_oldPdst : _GEN_6620; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6622 = 6'h1c == idx ? entries_28_oldPdst : _GEN_6621; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6623 = 6'h1d == idx ? entries_29_oldPdst : _GEN_6622; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6624 = 6'h1e == idx ? entries_30_oldPdst : _GEN_6623; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6625 = 6'h1f == idx ? entries_31_oldPdst : _GEN_6624; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6626 = 6'h20 == idx ? entries_32_oldPdst : _GEN_6625; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6627 = 6'h21 == idx ? entries_33_oldPdst : _GEN_6626; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6628 = 6'h22 == idx ? entries_34_oldPdst : _GEN_6627; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6629 = 6'h23 == idx ? entries_35_oldPdst : _GEN_6628; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6630 = 6'h24 == idx ? entries_36_oldPdst : _GEN_6629; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6631 = 6'h25 == idx ? entries_37_oldPdst : _GEN_6630; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6632 = 6'h26 == idx ? entries_38_oldPdst : _GEN_6631; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6633 = 6'h27 == idx ? entries_39_oldPdst : _GEN_6632; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6634 = 6'h28 == idx ? entries_40_oldPdst : _GEN_6633; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6635 = 6'h29 == idx ? entries_41_oldPdst : _GEN_6634; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6636 = 6'h2a == idx ? entries_42_oldPdst : _GEN_6635; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6637 = 6'h2b == idx ? entries_43_oldPdst : _GEN_6636; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6638 = 6'h2c == idx ? entries_44_oldPdst : _GEN_6637; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6639 = 6'h2d == idx ? entries_45_oldPdst : _GEN_6638; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6640 = 6'h2e == idx ? entries_46_oldPdst : _GEN_6639; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6641 = 6'h2f == idx ? entries_47_oldPdst : _GEN_6640; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6642 = 6'h30 == idx ? entries_48_oldPdst : _GEN_6641; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6643 = 6'h31 == idx ? entries_49_oldPdst : _GEN_6642; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6644 = 6'h32 == idx ? entries_50_oldPdst : _GEN_6643; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6645 = 6'h33 == idx ? entries_51_oldPdst : _GEN_6644; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6646 = 6'h34 == idx ? entries_52_oldPdst : _GEN_6645; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6647 = 6'h35 == idx ? entries_53_oldPdst : _GEN_6646; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6648 = 6'h36 == idx ? entries_54_oldPdst : _GEN_6647; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6649 = 6'h37 == idx ? entries_55_oldPdst : _GEN_6648; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6650 = 6'h38 == idx ? entries_56_oldPdst : _GEN_6649; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6651 = 6'h39 == idx ? entries_57_oldPdst : _GEN_6650; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6652 = 6'h3a == idx ? entries_58_oldPdst : _GEN_6651; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6653 = 6'h3b == idx ? entries_59_oldPdst : _GEN_6652; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6654 = 6'h3c == idx ? entries_60_oldPdst : _GEN_6653; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6655 = 6'h3d == idx ? entries_61_oldPdst : _GEN_6654; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_6656 = 6'h3e == idx ? entries_62_oldPdst : _GEN_6655; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [4:0] _GEN_6659 = 6'h1 == idx ? entries_1_ldst : entries_0_ldst; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6660 = 6'h2 == idx ? entries_2_ldst : _GEN_6659; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6661 = 6'h3 == idx ? entries_3_ldst : _GEN_6660; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6662 = 6'h4 == idx ? entries_4_ldst : _GEN_6661; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6663 = 6'h5 == idx ? entries_5_ldst : _GEN_6662; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6664 = 6'h6 == idx ? entries_6_ldst : _GEN_6663; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6665 = 6'h7 == idx ? entries_7_ldst : _GEN_6664; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6666 = 6'h8 == idx ? entries_8_ldst : _GEN_6665; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6667 = 6'h9 == idx ? entries_9_ldst : _GEN_6666; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6668 = 6'ha == idx ? entries_10_ldst : _GEN_6667; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6669 = 6'hb == idx ? entries_11_ldst : _GEN_6668; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6670 = 6'hc == idx ? entries_12_ldst : _GEN_6669; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6671 = 6'hd == idx ? entries_13_ldst : _GEN_6670; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6672 = 6'he == idx ? entries_14_ldst : _GEN_6671; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6673 = 6'hf == idx ? entries_15_ldst : _GEN_6672; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6674 = 6'h10 == idx ? entries_16_ldst : _GEN_6673; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6675 = 6'h11 == idx ? entries_17_ldst : _GEN_6674; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6676 = 6'h12 == idx ? entries_18_ldst : _GEN_6675; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6677 = 6'h13 == idx ? entries_19_ldst : _GEN_6676; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6678 = 6'h14 == idx ? entries_20_ldst : _GEN_6677; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6679 = 6'h15 == idx ? entries_21_ldst : _GEN_6678; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6680 = 6'h16 == idx ? entries_22_ldst : _GEN_6679; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6681 = 6'h17 == idx ? entries_23_ldst : _GEN_6680; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6682 = 6'h18 == idx ? entries_24_ldst : _GEN_6681; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6683 = 6'h19 == idx ? entries_25_ldst : _GEN_6682; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6684 = 6'h1a == idx ? entries_26_ldst : _GEN_6683; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6685 = 6'h1b == idx ? entries_27_ldst : _GEN_6684; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6686 = 6'h1c == idx ? entries_28_ldst : _GEN_6685; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6687 = 6'h1d == idx ? entries_29_ldst : _GEN_6686; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6688 = 6'h1e == idx ? entries_30_ldst : _GEN_6687; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6689 = 6'h1f == idx ? entries_31_ldst : _GEN_6688; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6690 = 6'h20 == idx ? entries_32_ldst : _GEN_6689; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6691 = 6'h21 == idx ? entries_33_ldst : _GEN_6690; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6692 = 6'h22 == idx ? entries_34_ldst : _GEN_6691; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6693 = 6'h23 == idx ? entries_35_ldst : _GEN_6692; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6694 = 6'h24 == idx ? entries_36_ldst : _GEN_6693; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6695 = 6'h25 == idx ? entries_37_ldst : _GEN_6694; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6696 = 6'h26 == idx ? entries_38_ldst : _GEN_6695; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6697 = 6'h27 == idx ? entries_39_ldst : _GEN_6696; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6698 = 6'h28 == idx ? entries_40_ldst : _GEN_6697; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6699 = 6'h29 == idx ? entries_41_ldst : _GEN_6698; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6700 = 6'h2a == idx ? entries_42_ldst : _GEN_6699; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6701 = 6'h2b == idx ? entries_43_ldst : _GEN_6700; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6702 = 6'h2c == idx ? entries_44_ldst : _GEN_6701; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6703 = 6'h2d == idx ? entries_45_ldst : _GEN_6702; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6704 = 6'h2e == idx ? entries_46_ldst : _GEN_6703; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6705 = 6'h2f == idx ? entries_47_ldst : _GEN_6704; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6706 = 6'h30 == idx ? entries_48_ldst : _GEN_6705; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6707 = 6'h31 == idx ? entries_49_ldst : _GEN_6706; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6708 = 6'h32 == idx ? entries_50_ldst : _GEN_6707; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6709 = 6'h33 == idx ? entries_51_ldst : _GEN_6708; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6710 = 6'h34 == idx ? entries_52_ldst : _GEN_6709; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6711 = 6'h35 == idx ? entries_53_ldst : _GEN_6710; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6712 = 6'h36 == idx ? entries_54_ldst : _GEN_6711; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6713 = 6'h37 == idx ? entries_55_ldst : _GEN_6712; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6714 = 6'h38 == idx ? entries_56_ldst : _GEN_6713; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6715 = 6'h39 == idx ? entries_57_ldst : _GEN_6714; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6716 = 6'h3a == idx ? entries_58_ldst : _GEN_6715; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6717 = 6'h3b == idx ? entries_59_ldst : _GEN_6716; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6718 = 6'h3c == idx ? entries_60_ldst : _GEN_6717; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6719 = 6'h3d == idx ? entries_61_ldst : _GEN_6718; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_6720 = 6'h3e == idx ? entries_62_ldst : _GEN_6719; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire  _GEN_6723 = 6'h1 == idx ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6724 = 6'h2 == idx ? entries_2_rfWen : _GEN_6723; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6725 = 6'h3 == idx ? entries_3_rfWen : _GEN_6724; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6726 = 6'h4 == idx ? entries_4_rfWen : _GEN_6725; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6727 = 6'h5 == idx ? entries_5_rfWen : _GEN_6726; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6728 = 6'h6 == idx ? entries_6_rfWen : _GEN_6727; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6729 = 6'h7 == idx ? entries_7_rfWen : _GEN_6728; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6730 = 6'h8 == idx ? entries_8_rfWen : _GEN_6729; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6731 = 6'h9 == idx ? entries_9_rfWen : _GEN_6730; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6732 = 6'ha == idx ? entries_10_rfWen : _GEN_6731; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6733 = 6'hb == idx ? entries_11_rfWen : _GEN_6732; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6734 = 6'hc == idx ? entries_12_rfWen : _GEN_6733; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6735 = 6'hd == idx ? entries_13_rfWen : _GEN_6734; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6736 = 6'he == idx ? entries_14_rfWen : _GEN_6735; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6737 = 6'hf == idx ? entries_15_rfWen : _GEN_6736; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6738 = 6'h10 == idx ? entries_16_rfWen : _GEN_6737; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6739 = 6'h11 == idx ? entries_17_rfWen : _GEN_6738; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6740 = 6'h12 == idx ? entries_18_rfWen : _GEN_6739; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6741 = 6'h13 == idx ? entries_19_rfWen : _GEN_6740; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6742 = 6'h14 == idx ? entries_20_rfWen : _GEN_6741; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6743 = 6'h15 == idx ? entries_21_rfWen : _GEN_6742; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6744 = 6'h16 == idx ? entries_22_rfWen : _GEN_6743; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6745 = 6'h17 == idx ? entries_23_rfWen : _GEN_6744; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6746 = 6'h18 == idx ? entries_24_rfWen : _GEN_6745; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6747 = 6'h19 == idx ? entries_25_rfWen : _GEN_6746; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6748 = 6'h1a == idx ? entries_26_rfWen : _GEN_6747; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6749 = 6'h1b == idx ? entries_27_rfWen : _GEN_6748; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6750 = 6'h1c == idx ? entries_28_rfWen : _GEN_6749; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6751 = 6'h1d == idx ? entries_29_rfWen : _GEN_6750; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6752 = 6'h1e == idx ? entries_30_rfWen : _GEN_6751; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6753 = 6'h1f == idx ? entries_31_rfWen : _GEN_6752; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6754 = 6'h20 == idx ? entries_32_rfWen : _GEN_6753; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6755 = 6'h21 == idx ? entries_33_rfWen : _GEN_6754; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6756 = 6'h22 == idx ? entries_34_rfWen : _GEN_6755; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6757 = 6'h23 == idx ? entries_35_rfWen : _GEN_6756; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6758 = 6'h24 == idx ? entries_36_rfWen : _GEN_6757; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6759 = 6'h25 == idx ? entries_37_rfWen : _GEN_6758; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6760 = 6'h26 == idx ? entries_38_rfWen : _GEN_6759; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6761 = 6'h27 == idx ? entries_39_rfWen : _GEN_6760; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6762 = 6'h28 == idx ? entries_40_rfWen : _GEN_6761; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6763 = 6'h29 == idx ? entries_41_rfWen : _GEN_6762; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6764 = 6'h2a == idx ? entries_42_rfWen : _GEN_6763; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6765 = 6'h2b == idx ? entries_43_rfWen : _GEN_6764; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6766 = 6'h2c == idx ? entries_44_rfWen : _GEN_6765; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6767 = 6'h2d == idx ? entries_45_rfWen : _GEN_6766; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6768 = 6'h2e == idx ? entries_46_rfWen : _GEN_6767; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6769 = 6'h2f == idx ? entries_47_rfWen : _GEN_6768; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6770 = 6'h30 == idx ? entries_48_rfWen : _GEN_6769; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6771 = 6'h31 == idx ? entries_49_rfWen : _GEN_6770; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6772 = 6'h32 == idx ? entries_50_rfWen : _GEN_6771; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6773 = 6'h33 == idx ? entries_51_rfWen : _GEN_6772; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6774 = 6'h34 == idx ? entries_52_rfWen : _GEN_6773; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6775 = 6'h35 == idx ? entries_53_rfWen : _GEN_6774; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6776 = 6'h36 == idx ? entries_54_rfWen : _GEN_6775; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6777 = 6'h37 == idx ? entries_55_rfWen : _GEN_6776; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6778 = 6'h38 == idx ? entries_56_rfWen : _GEN_6777; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6779 = 6'h39 == idx ? entries_57_rfWen : _GEN_6778; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6780 = 6'h3a == idx ? entries_58_rfWen : _GEN_6779; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6781 = 6'h3b == idx ? entries_59_rfWen : _GEN_6780; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6782 = 6'h3c == idx ? entries_60_rfWen : _GEN_6781; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6783 = 6'h3d == idx ? entries_61_rfWen : _GEN_6782; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_6784 = 6'h3e == idx ? entries_62_rfWen : _GEN_6783; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire [31:0] _GEN_6787 = 6'h1 == idx ? entries_1_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6788 = 6'h2 == idx ? entries_2_pc : _GEN_6787; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6789 = 6'h3 == idx ? entries_3_pc : _GEN_6788; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6790 = 6'h4 == idx ? entries_4_pc : _GEN_6789; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6791 = 6'h5 == idx ? entries_5_pc : _GEN_6790; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6792 = 6'h6 == idx ? entries_6_pc : _GEN_6791; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6793 = 6'h7 == idx ? entries_7_pc : _GEN_6792; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6794 = 6'h8 == idx ? entries_8_pc : _GEN_6793; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6795 = 6'h9 == idx ? entries_9_pc : _GEN_6794; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6796 = 6'ha == idx ? entries_10_pc : _GEN_6795; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6797 = 6'hb == idx ? entries_11_pc : _GEN_6796; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6798 = 6'hc == idx ? entries_12_pc : _GEN_6797; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6799 = 6'hd == idx ? entries_13_pc : _GEN_6798; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6800 = 6'he == idx ? entries_14_pc : _GEN_6799; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6801 = 6'hf == idx ? entries_15_pc : _GEN_6800; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6802 = 6'h10 == idx ? entries_16_pc : _GEN_6801; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6803 = 6'h11 == idx ? entries_17_pc : _GEN_6802; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6804 = 6'h12 == idx ? entries_18_pc : _GEN_6803; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6805 = 6'h13 == idx ? entries_19_pc : _GEN_6804; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6806 = 6'h14 == idx ? entries_20_pc : _GEN_6805; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6807 = 6'h15 == idx ? entries_21_pc : _GEN_6806; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6808 = 6'h16 == idx ? entries_22_pc : _GEN_6807; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6809 = 6'h17 == idx ? entries_23_pc : _GEN_6808; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6810 = 6'h18 == idx ? entries_24_pc : _GEN_6809; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6811 = 6'h19 == idx ? entries_25_pc : _GEN_6810; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6812 = 6'h1a == idx ? entries_26_pc : _GEN_6811; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6813 = 6'h1b == idx ? entries_27_pc : _GEN_6812; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6814 = 6'h1c == idx ? entries_28_pc : _GEN_6813; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6815 = 6'h1d == idx ? entries_29_pc : _GEN_6814; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6816 = 6'h1e == idx ? entries_30_pc : _GEN_6815; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6817 = 6'h1f == idx ? entries_31_pc : _GEN_6816; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6818 = 6'h20 == idx ? entries_32_pc : _GEN_6817; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6819 = 6'h21 == idx ? entries_33_pc : _GEN_6818; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6820 = 6'h22 == idx ? entries_34_pc : _GEN_6819; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6821 = 6'h23 == idx ? entries_35_pc : _GEN_6820; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6822 = 6'h24 == idx ? entries_36_pc : _GEN_6821; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6823 = 6'h25 == idx ? entries_37_pc : _GEN_6822; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6824 = 6'h26 == idx ? entries_38_pc : _GEN_6823; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6825 = 6'h27 == idx ? entries_39_pc : _GEN_6824; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6826 = 6'h28 == idx ? entries_40_pc : _GEN_6825; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6827 = 6'h29 == idx ? entries_41_pc : _GEN_6826; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6828 = 6'h2a == idx ? entries_42_pc : _GEN_6827; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6829 = 6'h2b == idx ? entries_43_pc : _GEN_6828; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6830 = 6'h2c == idx ? entries_44_pc : _GEN_6829; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6831 = 6'h2d == idx ? entries_45_pc : _GEN_6830; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6832 = 6'h2e == idx ? entries_46_pc : _GEN_6831; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6833 = 6'h2f == idx ? entries_47_pc : _GEN_6832; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6834 = 6'h30 == idx ? entries_48_pc : _GEN_6833; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6835 = 6'h31 == idx ? entries_49_pc : _GEN_6834; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6836 = 6'h32 == idx ? entries_50_pc : _GEN_6835; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6837 = 6'h33 == idx ? entries_51_pc : _GEN_6836; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6838 = 6'h34 == idx ? entries_52_pc : _GEN_6837; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6839 = 6'h35 == idx ? entries_53_pc : _GEN_6838; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6840 = 6'h36 == idx ? entries_54_pc : _GEN_6839; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6841 = 6'h37 == idx ? entries_55_pc : _GEN_6840; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6842 = 6'h38 == idx ? entries_56_pc : _GEN_6841; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6843 = 6'h39 == idx ? entries_57_pc : _GEN_6842; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6844 = 6'h3a == idx ? entries_58_pc : _GEN_6843; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6845 = 6'h3b == idx ? entries_59_pc : _GEN_6844; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6846 = 6'h3c == idx ? entries_60_pc : _GEN_6845; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6847 = 6'h3d == idx ? entries_61_pc : _GEN_6846; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6848 = 6'h3e == idx ? entries_62_pc : _GEN_6847; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_6851 = 6'h1 == idx ? entries_1_rfdata : entries_0_rfdata; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6852 = 6'h2 == idx ? entries_2_rfdata : _GEN_6851; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6853 = 6'h3 == idx ? entries_3_rfdata : _GEN_6852; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6854 = 6'h4 == idx ? entries_4_rfdata : _GEN_6853; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6855 = 6'h5 == idx ? entries_5_rfdata : _GEN_6854; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6856 = 6'h6 == idx ? entries_6_rfdata : _GEN_6855; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6857 = 6'h7 == idx ? entries_7_rfdata : _GEN_6856; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6858 = 6'h8 == idx ? entries_8_rfdata : _GEN_6857; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6859 = 6'h9 == idx ? entries_9_rfdata : _GEN_6858; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6860 = 6'ha == idx ? entries_10_rfdata : _GEN_6859; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6861 = 6'hb == idx ? entries_11_rfdata : _GEN_6860; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6862 = 6'hc == idx ? entries_12_rfdata : _GEN_6861; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6863 = 6'hd == idx ? entries_13_rfdata : _GEN_6862; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6864 = 6'he == idx ? entries_14_rfdata : _GEN_6863; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6865 = 6'hf == idx ? entries_15_rfdata : _GEN_6864; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6866 = 6'h10 == idx ? entries_16_rfdata : _GEN_6865; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6867 = 6'h11 == idx ? entries_17_rfdata : _GEN_6866; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6868 = 6'h12 == idx ? entries_18_rfdata : _GEN_6867; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6869 = 6'h13 == idx ? entries_19_rfdata : _GEN_6868; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6870 = 6'h14 == idx ? entries_20_rfdata : _GEN_6869; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6871 = 6'h15 == idx ? entries_21_rfdata : _GEN_6870; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6872 = 6'h16 == idx ? entries_22_rfdata : _GEN_6871; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6873 = 6'h17 == idx ? entries_23_rfdata : _GEN_6872; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6874 = 6'h18 == idx ? entries_24_rfdata : _GEN_6873; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6875 = 6'h19 == idx ? entries_25_rfdata : _GEN_6874; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6876 = 6'h1a == idx ? entries_26_rfdata : _GEN_6875; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6877 = 6'h1b == idx ? entries_27_rfdata : _GEN_6876; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6878 = 6'h1c == idx ? entries_28_rfdata : _GEN_6877; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6879 = 6'h1d == idx ? entries_29_rfdata : _GEN_6878; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6880 = 6'h1e == idx ? entries_30_rfdata : _GEN_6879; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6881 = 6'h1f == idx ? entries_31_rfdata : _GEN_6880; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6882 = 6'h20 == idx ? entries_32_rfdata : _GEN_6881; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6883 = 6'h21 == idx ? entries_33_rfdata : _GEN_6882; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6884 = 6'h22 == idx ? entries_34_rfdata : _GEN_6883; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6885 = 6'h23 == idx ? entries_35_rfdata : _GEN_6884; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6886 = 6'h24 == idx ? entries_36_rfdata : _GEN_6885; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6887 = 6'h25 == idx ? entries_37_rfdata : _GEN_6886; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6888 = 6'h26 == idx ? entries_38_rfdata : _GEN_6887; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6889 = 6'h27 == idx ? entries_39_rfdata : _GEN_6888; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6890 = 6'h28 == idx ? entries_40_rfdata : _GEN_6889; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6891 = 6'h29 == idx ? entries_41_rfdata : _GEN_6890; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6892 = 6'h2a == idx ? entries_42_rfdata : _GEN_6891; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6893 = 6'h2b == idx ? entries_43_rfdata : _GEN_6892; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6894 = 6'h2c == idx ? entries_44_rfdata : _GEN_6893; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6895 = 6'h2d == idx ? entries_45_rfdata : _GEN_6894; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6896 = 6'h2e == idx ? entries_46_rfdata : _GEN_6895; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6897 = 6'h2f == idx ? entries_47_rfdata : _GEN_6896; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6898 = 6'h30 == idx ? entries_48_rfdata : _GEN_6897; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6899 = 6'h31 == idx ? entries_49_rfdata : _GEN_6898; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6900 = 6'h32 == idx ? entries_50_rfdata : _GEN_6899; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6901 = 6'h33 == idx ? entries_51_rfdata : _GEN_6900; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6902 = 6'h34 == idx ? entries_52_rfdata : _GEN_6901; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6903 = 6'h35 == idx ? entries_53_rfdata : _GEN_6902; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6904 = 6'h36 == idx ? entries_54_rfdata : _GEN_6903; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6905 = 6'h37 == idx ? entries_55_rfdata : _GEN_6904; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6906 = 6'h38 == idx ? entries_56_rfdata : _GEN_6905; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6907 = 6'h39 == idx ? entries_57_rfdata : _GEN_6906; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6908 = 6'h3a == idx ? entries_58_rfdata : _GEN_6907; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6909 = 6'h3b == idx ? entries_59_rfdata : _GEN_6908; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6910 = 6'h3c == idx ? entries_60_rfdata : _GEN_6909; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6911 = 6'h3d == idx ? entries_61_rfdata : _GEN_6910; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_6912 = 6'h3e == idx ? entries_62_rfdata : _GEN_6911; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [6:0] _GEN_7427 = 6'h1 == idx ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7428 = 6'h2 == idx ? entries_2_pdst : _GEN_7427; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7429 = 6'h3 == idx ? entries_3_pdst : _GEN_7428; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7430 = 6'h4 == idx ? entries_4_pdst : _GEN_7429; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7431 = 6'h5 == idx ? entries_5_pdst : _GEN_7430; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7432 = 6'h6 == idx ? entries_6_pdst : _GEN_7431; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7433 = 6'h7 == idx ? entries_7_pdst : _GEN_7432; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7434 = 6'h8 == idx ? entries_8_pdst : _GEN_7433; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7435 = 6'h9 == idx ? entries_9_pdst : _GEN_7434; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7436 = 6'ha == idx ? entries_10_pdst : _GEN_7435; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7437 = 6'hb == idx ? entries_11_pdst : _GEN_7436; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7438 = 6'hc == idx ? entries_12_pdst : _GEN_7437; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7439 = 6'hd == idx ? entries_13_pdst : _GEN_7438; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7440 = 6'he == idx ? entries_14_pdst : _GEN_7439; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7441 = 6'hf == idx ? entries_15_pdst : _GEN_7440; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7442 = 6'h10 == idx ? entries_16_pdst : _GEN_7441; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7443 = 6'h11 == idx ? entries_17_pdst : _GEN_7442; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7444 = 6'h12 == idx ? entries_18_pdst : _GEN_7443; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7445 = 6'h13 == idx ? entries_19_pdst : _GEN_7444; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7446 = 6'h14 == idx ? entries_20_pdst : _GEN_7445; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7447 = 6'h15 == idx ? entries_21_pdst : _GEN_7446; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7448 = 6'h16 == idx ? entries_22_pdst : _GEN_7447; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7449 = 6'h17 == idx ? entries_23_pdst : _GEN_7448; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7450 = 6'h18 == idx ? entries_24_pdst : _GEN_7449; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7451 = 6'h19 == idx ? entries_25_pdst : _GEN_7450; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7452 = 6'h1a == idx ? entries_26_pdst : _GEN_7451; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7453 = 6'h1b == idx ? entries_27_pdst : _GEN_7452; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7454 = 6'h1c == idx ? entries_28_pdst : _GEN_7453; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7455 = 6'h1d == idx ? entries_29_pdst : _GEN_7454; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7456 = 6'h1e == idx ? entries_30_pdst : _GEN_7455; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7457 = 6'h1f == idx ? entries_31_pdst : _GEN_7456; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7458 = 6'h20 == idx ? entries_32_pdst : _GEN_7457; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7459 = 6'h21 == idx ? entries_33_pdst : _GEN_7458; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7460 = 6'h22 == idx ? entries_34_pdst : _GEN_7459; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7461 = 6'h23 == idx ? entries_35_pdst : _GEN_7460; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7462 = 6'h24 == idx ? entries_36_pdst : _GEN_7461; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7463 = 6'h25 == idx ? entries_37_pdst : _GEN_7462; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7464 = 6'h26 == idx ? entries_38_pdst : _GEN_7463; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7465 = 6'h27 == idx ? entries_39_pdst : _GEN_7464; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7466 = 6'h28 == idx ? entries_40_pdst : _GEN_7465; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7467 = 6'h29 == idx ? entries_41_pdst : _GEN_7466; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7468 = 6'h2a == idx ? entries_42_pdst : _GEN_7467; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7469 = 6'h2b == idx ? entries_43_pdst : _GEN_7468; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7470 = 6'h2c == idx ? entries_44_pdst : _GEN_7469; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7471 = 6'h2d == idx ? entries_45_pdst : _GEN_7470; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7472 = 6'h2e == idx ? entries_46_pdst : _GEN_7471; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7473 = 6'h2f == idx ? entries_47_pdst : _GEN_7472; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7474 = 6'h30 == idx ? entries_48_pdst : _GEN_7473; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7475 = 6'h31 == idx ? entries_49_pdst : _GEN_7474; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7476 = 6'h32 == idx ? entries_50_pdst : _GEN_7475; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7477 = 6'h33 == idx ? entries_51_pdst : _GEN_7476; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7478 = 6'h34 == idx ? entries_52_pdst : _GEN_7477; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7479 = 6'h35 == idx ? entries_53_pdst : _GEN_7478; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7480 = 6'h36 == idx ? entries_54_pdst : _GEN_7479; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7481 = 6'h37 == idx ? entries_55_pdst : _GEN_7480; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7482 = 6'h38 == idx ? entries_56_pdst : _GEN_7481; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7483 = 6'h39 == idx ? entries_57_pdst : _GEN_7482; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7484 = 6'h3a == idx ? entries_58_pdst : _GEN_7483; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7485 = 6'h3b == idx ? entries_59_pdst : _GEN_7484; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7486 = 6'h3c == idx ? entries_60_pdst : _GEN_7485; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7487 = 6'h3d == idx ? entries_61_pdst : _GEN_7486; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7488 = 6'h3e == idx ? entries_62_pdst : _GEN_7487; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_7491 = 6'h1 == idx ? entries_1_oldPdst : entries_0_oldPdst; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7492 = 6'h2 == idx ? entries_2_oldPdst : _GEN_7491; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7493 = 6'h3 == idx ? entries_3_oldPdst : _GEN_7492; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7494 = 6'h4 == idx ? entries_4_oldPdst : _GEN_7493; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7495 = 6'h5 == idx ? entries_5_oldPdst : _GEN_7494; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7496 = 6'h6 == idx ? entries_6_oldPdst : _GEN_7495; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7497 = 6'h7 == idx ? entries_7_oldPdst : _GEN_7496; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7498 = 6'h8 == idx ? entries_8_oldPdst : _GEN_7497; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7499 = 6'h9 == idx ? entries_9_oldPdst : _GEN_7498; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7500 = 6'ha == idx ? entries_10_oldPdst : _GEN_7499; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7501 = 6'hb == idx ? entries_11_oldPdst : _GEN_7500; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7502 = 6'hc == idx ? entries_12_oldPdst : _GEN_7501; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7503 = 6'hd == idx ? entries_13_oldPdst : _GEN_7502; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7504 = 6'he == idx ? entries_14_oldPdst : _GEN_7503; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7505 = 6'hf == idx ? entries_15_oldPdst : _GEN_7504; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7506 = 6'h10 == idx ? entries_16_oldPdst : _GEN_7505; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7507 = 6'h11 == idx ? entries_17_oldPdst : _GEN_7506; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7508 = 6'h12 == idx ? entries_18_oldPdst : _GEN_7507; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7509 = 6'h13 == idx ? entries_19_oldPdst : _GEN_7508; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7510 = 6'h14 == idx ? entries_20_oldPdst : _GEN_7509; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7511 = 6'h15 == idx ? entries_21_oldPdst : _GEN_7510; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7512 = 6'h16 == idx ? entries_22_oldPdst : _GEN_7511; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7513 = 6'h17 == idx ? entries_23_oldPdst : _GEN_7512; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7514 = 6'h18 == idx ? entries_24_oldPdst : _GEN_7513; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7515 = 6'h19 == idx ? entries_25_oldPdst : _GEN_7514; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7516 = 6'h1a == idx ? entries_26_oldPdst : _GEN_7515; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7517 = 6'h1b == idx ? entries_27_oldPdst : _GEN_7516; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7518 = 6'h1c == idx ? entries_28_oldPdst : _GEN_7517; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7519 = 6'h1d == idx ? entries_29_oldPdst : _GEN_7518; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7520 = 6'h1e == idx ? entries_30_oldPdst : _GEN_7519; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7521 = 6'h1f == idx ? entries_31_oldPdst : _GEN_7520; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7522 = 6'h20 == idx ? entries_32_oldPdst : _GEN_7521; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7523 = 6'h21 == idx ? entries_33_oldPdst : _GEN_7522; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7524 = 6'h22 == idx ? entries_34_oldPdst : _GEN_7523; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7525 = 6'h23 == idx ? entries_35_oldPdst : _GEN_7524; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7526 = 6'h24 == idx ? entries_36_oldPdst : _GEN_7525; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7527 = 6'h25 == idx ? entries_37_oldPdst : _GEN_7526; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7528 = 6'h26 == idx ? entries_38_oldPdst : _GEN_7527; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7529 = 6'h27 == idx ? entries_39_oldPdst : _GEN_7528; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7530 = 6'h28 == idx ? entries_40_oldPdst : _GEN_7529; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7531 = 6'h29 == idx ? entries_41_oldPdst : _GEN_7530; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7532 = 6'h2a == idx ? entries_42_oldPdst : _GEN_7531; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7533 = 6'h2b == idx ? entries_43_oldPdst : _GEN_7532; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7534 = 6'h2c == idx ? entries_44_oldPdst : _GEN_7533; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7535 = 6'h2d == idx ? entries_45_oldPdst : _GEN_7534; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7536 = 6'h2e == idx ? entries_46_oldPdst : _GEN_7535; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7537 = 6'h2f == idx ? entries_47_oldPdst : _GEN_7536; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7538 = 6'h30 == idx ? entries_48_oldPdst : _GEN_7537; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7539 = 6'h31 == idx ? entries_49_oldPdst : _GEN_7538; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7540 = 6'h32 == idx ? entries_50_oldPdst : _GEN_7539; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7541 = 6'h33 == idx ? entries_51_oldPdst : _GEN_7540; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7542 = 6'h34 == idx ? entries_52_oldPdst : _GEN_7541; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7543 = 6'h35 == idx ? entries_53_oldPdst : _GEN_7542; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7544 = 6'h36 == idx ? entries_54_oldPdst : _GEN_7543; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7545 = 6'h37 == idx ? entries_55_oldPdst : _GEN_7544; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7546 = 6'h38 == idx ? entries_56_oldPdst : _GEN_7545; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7547 = 6'h39 == idx ? entries_57_oldPdst : _GEN_7546; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7548 = 6'h3a == idx ? entries_58_oldPdst : _GEN_7547; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7549 = 6'h3b == idx ? entries_59_oldPdst : _GEN_7548; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7550 = 6'h3c == idx ? entries_60_oldPdst : _GEN_7549; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7551 = 6'h3d == idx ? entries_61_oldPdst : _GEN_7550; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_7552 = 6'h3e == idx ? entries_62_oldPdst : _GEN_7551; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [4:0] _GEN_7555 = 6'h1 == idx ? entries_1_ldst : entries_0_ldst; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7556 = 6'h2 == idx ? entries_2_ldst : _GEN_7555; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7557 = 6'h3 == idx ? entries_3_ldst : _GEN_7556; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7558 = 6'h4 == idx ? entries_4_ldst : _GEN_7557; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7559 = 6'h5 == idx ? entries_5_ldst : _GEN_7558; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7560 = 6'h6 == idx ? entries_6_ldst : _GEN_7559; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7561 = 6'h7 == idx ? entries_7_ldst : _GEN_7560; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7562 = 6'h8 == idx ? entries_8_ldst : _GEN_7561; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7563 = 6'h9 == idx ? entries_9_ldst : _GEN_7562; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7564 = 6'ha == idx ? entries_10_ldst : _GEN_7563; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7565 = 6'hb == idx ? entries_11_ldst : _GEN_7564; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7566 = 6'hc == idx ? entries_12_ldst : _GEN_7565; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7567 = 6'hd == idx ? entries_13_ldst : _GEN_7566; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7568 = 6'he == idx ? entries_14_ldst : _GEN_7567; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7569 = 6'hf == idx ? entries_15_ldst : _GEN_7568; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7570 = 6'h10 == idx ? entries_16_ldst : _GEN_7569; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7571 = 6'h11 == idx ? entries_17_ldst : _GEN_7570; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7572 = 6'h12 == idx ? entries_18_ldst : _GEN_7571; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7573 = 6'h13 == idx ? entries_19_ldst : _GEN_7572; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7574 = 6'h14 == idx ? entries_20_ldst : _GEN_7573; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7575 = 6'h15 == idx ? entries_21_ldst : _GEN_7574; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7576 = 6'h16 == idx ? entries_22_ldst : _GEN_7575; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7577 = 6'h17 == idx ? entries_23_ldst : _GEN_7576; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7578 = 6'h18 == idx ? entries_24_ldst : _GEN_7577; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7579 = 6'h19 == idx ? entries_25_ldst : _GEN_7578; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7580 = 6'h1a == idx ? entries_26_ldst : _GEN_7579; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7581 = 6'h1b == idx ? entries_27_ldst : _GEN_7580; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7582 = 6'h1c == idx ? entries_28_ldst : _GEN_7581; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7583 = 6'h1d == idx ? entries_29_ldst : _GEN_7582; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7584 = 6'h1e == idx ? entries_30_ldst : _GEN_7583; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7585 = 6'h1f == idx ? entries_31_ldst : _GEN_7584; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7586 = 6'h20 == idx ? entries_32_ldst : _GEN_7585; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7587 = 6'h21 == idx ? entries_33_ldst : _GEN_7586; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7588 = 6'h22 == idx ? entries_34_ldst : _GEN_7587; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7589 = 6'h23 == idx ? entries_35_ldst : _GEN_7588; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7590 = 6'h24 == idx ? entries_36_ldst : _GEN_7589; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7591 = 6'h25 == idx ? entries_37_ldst : _GEN_7590; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7592 = 6'h26 == idx ? entries_38_ldst : _GEN_7591; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7593 = 6'h27 == idx ? entries_39_ldst : _GEN_7592; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7594 = 6'h28 == idx ? entries_40_ldst : _GEN_7593; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7595 = 6'h29 == idx ? entries_41_ldst : _GEN_7594; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7596 = 6'h2a == idx ? entries_42_ldst : _GEN_7595; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7597 = 6'h2b == idx ? entries_43_ldst : _GEN_7596; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7598 = 6'h2c == idx ? entries_44_ldst : _GEN_7597; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7599 = 6'h2d == idx ? entries_45_ldst : _GEN_7598; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7600 = 6'h2e == idx ? entries_46_ldst : _GEN_7599; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7601 = 6'h2f == idx ? entries_47_ldst : _GEN_7600; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7602 = 6'h30 == idx ? entries_48_ldst : _GEN_7601; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7603 = 6'h31 == idx ? entries_49_ldst : _GEN_7602; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7604 = 6'h32 == idx ? entries_50_ldst : _GEN_7603; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7605 = 6'h33 == idx ? entries_51_ldst : _GEN_7604; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7606 = 6'h34 == idx ? entries_52_ldst : _GEN_7605; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7607 = 6'h35 == idx ? entries_53_ldst : _GEN_7606; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7608 = 6'h36 == idx ? entries_54_ldst : _GEN_7607; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7609 = 6'h37 == idx ? entries_55_ldst : _GEN_7608; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7610 = 6'h38 == idx ? entries_56_ldst : _GEN_7609; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7611 = 6'h39 == idx ? entries_57_ldst : _GEN_7610; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7612 = 6'h3a == idx ? entries_58_ldst : _GEN_7611; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7613 = 6'h3b == idx ? entries_59_ldst : _GEN_7612; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7614 = 6'h3c == idx ? entries_60_ldst : _GEN_7613; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7615 = 6'h3d == idx ? entries_61_ldst : _GEN_7614; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_7616 = 6'h3e == idx ? entries_62_ldst : _GEN_7615; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire  _GEN_7619 = 6'h1 == idx ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7620 = 6'h2 == idx ? entries_2_rfWen : _GEN_7619; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7621 = 6'h3 == idx ? entries_3_rfWen : _GEN_7620; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7622 = 6'h4 == idx ? entries_4_rfWen : _GEN_7621; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7623 = 6'h5 == idx ? entries_5_rfWen : _GEN_7622; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7624 = 6'h6 == idx ? entries_6_rfWen : _GEN_7623; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7625 = 6'h7 == idx ? entries_7_rfWen : _GEN_7624; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7626 = 6'h8 == idx ? entries_8_rfWen : _GEN_7625; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7627 = 6'h9 == idx ? entries_9_rfWen : _GEN_7626; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7628 = 6'ha == idx ? entries_10_rfWen : _GEN_7627; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7629 = 6'hb == idx ? entries_11_rfWen : _GEN_7628; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7630 = 6'hc == idx ? entries_12_rfWen : _GEN_7629; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7631 = 6'hd == idx ? entries_13_rfWen : _GEN_7630; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7632 = 6'he == idx ? entries_14_rfWen : _GEN_7631; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7633 = 6'hf == idx ? entries_15_rfWen : _GEN_7632; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7634 = 6'h10 == idx ? entries_16_rfWen : _GEN_7633; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7635 = 6'h11 == idx ? entries_17_rfWen : _GEN_7634; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7636 = 6'h12 == idx ? entries_18_rfWen : _GEN_7635; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7637 = 6'h13 == idx ? entries_19_rfWen : _GEN_7636; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7638 = 6'h14 == idx ? entries_20_rfWen : _GEN_7637; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7639 = 6'h15 == idx ? entries_21_rfWen : _GEN_7638; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7640 = 6'h16 == idx ? entries_22_rfWen : _GEN_7639; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7641 = 6'h17 == idx ? entries_23_rfWen : _GEN_7640; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7642 = 6'h18 == idx ? entries_24_rfWen : _GEN_7641; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7643 = 6'h19 == idx ? entries_25_rfWen : _GEN_7642; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7644 = 6'h1a == idx ? entries_26_rfWen : _GEN_7643; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7645 = 6'h1b == idx ? entries_27_rfWen : _GEN_7644; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7646 = 6'h1c == idx ? entries_28_rfWen : _GEN_7645; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7647 = 6'h1d == idx ? entries_29_rfWen : _GEN_7646; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7648 = 6'h1e == idx ? entries_30_rfWen : _GEN_7647; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7649 = 6'h1f == idx ? entries_31_rfWen : _GEN_7648; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7650 = 6'h20 == idx ? entries_32_rfWen : _GEN_7649; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7651 = 6'h21 == idx ? entries_33_rfWen : _GEN_7650; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7652 = 6'h22 == idx ? entries_34_rfWen : _GEN_7651; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7653 = 6'h23 == idx ? entries_35_rfWen : _GEN_7652; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7654 = 6'h24 == idx ? entries_36_rfWen : _GEN_7653; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7655 = 6'h25 == idx ? entries_37_rfWen : _GEN_7654; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7656 = 6'h26 == idx ? entries_38_rfWen : _GEN_7655; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7657 = 6'h27 == idx ? entries_39_rfWen : _GEN_7656; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7658 = 6'h28 == idx ? entries_40_rfWen : _GEN_7657; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7659 = 6'h29 == idx ? entries_41_rfWen : _GEN_7658; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7660 = 6'h2a == idx ? entries_42_rfWen : _GEN_7659; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7661 = 6'h2b == idx ? entries_43_rfWen : _GEN_7660; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7662 = 6'h2c == idx ? entries_44_rfWen : _GEN_7661; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7663 = 6'h2d == idx ? entries_45_rfWen : _GEN_7662; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7664 = 6'h2e == idx ? entries_46_rfWen : _GEN_7663; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7665 = 6'h2f == idx ? entries_47_rfWen : _GEN_7664; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7666 = 6'h30 == idx ? entries_48_rfWen : _GEN_7665; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7667 = 6'h31 == idx ? entries_49_rfWen : _GEN_7666; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7668 = 6'h32 == idx ? entries_50_rfWen : _GEN_7667; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7669 = 6'h33 == idx ? entries_51_rfWen : _GEN_7668; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7670 = 6'h34 == idx ? entries_52_rfWen : _GEN_7669; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7671 = 6'h35 == idx ? entries_53_rfWen : _GEN_7670; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7672 = 6'h36 == idx ? entries_54_rfWen : _GEN_7671; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7673 = 6'h37 == idx ? entries_55_rfWen : _GEN_7672; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7674 = 6'h38 == idx ? entries_56_rfWen : _GEN_7673; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7675 = 6'h39 == idx ? entries_57_rfWen : _GEN_7674; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7676 = 6'h3a == idx ? entries_58_rfWen : _GEN_7675; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7677 = 6'h3b == idx ? entries_59_rfWen : _GEN_7676; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7678 = 6'h3c == idx ? entries_60_rfWen : _GEN_7677; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7679 = 6'h3d == idx ? entries_61_rfWen : _GEN_7678; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_7680 = 6'h3e == idx ? entries_62_rfWen : _GEN_7679; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire [31:0] _GEN_7683 = 6'h1 == idx ? entries_1_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7684 = 6'h2 == idx ? entries_2_pc : _GEN_7683; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7685 = 6'h3 == idx ? entries_3_pc : _GEN_7684; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7686 = 6'h4 == idx ? entries_4_pc : _GEN_7685; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7687 = 6'h5 == idx ? entries_5_pc : _GEN_7686; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7688 = 6'h6 == idx ? entries_6_pc : _GEN_7687; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7689 = 6'h7 == idx ? entries_7_pc : _GEN_7688; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7690 = 6'h8 == idx ? entries_8_pc : _GEN_7689; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7691 = 6'h9 == idx ? entries_9_pc : _GEN_7690; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7692 = 6'ha == idx ? entries_10_pc : _GEN_7691; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7693 = 6'hb == idx ? entries_11_pc : _GEN_7692; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7694 = 6'hc == idx ? entries_12_pc : _GEN_7693; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7695 = 6'hd == idx ? entries_13_pc : _GEN_7694; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7696 = 6'he == idx ? entries_14_pc : _GEN_7695; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7697 = 6'hf == idx ? entries_15_pc : _GEN_7696; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7698 = 6'h10 == idx ? entries_16_pc : _GEN_7697; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7699 = 6'h11 == idx ? entries_17_pc : _GEN_7698; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7700 = 6'h12 == idx ? entries_18_pc : _GEN_7699; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7701 = 6'h13 == idx ? entries_19_pc : _GEN_7700; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7702 = 6'h14 == idx ? entries_20_pc : _GEN_7701; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7703 = 6'h15 == idx ? entries_21_pc : _GEN_7702; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7704 = 6'h16 == idx ? entries_22_pc : _GEN_7703; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7705 = 6'h17 == idx ? entries_23_pc : _GEN_7704; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7706 = 6'h18 == idx ? entries_24_pc : _GEN_7705; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7707 = 6'h19 == idx ? entries_25_pc : _GEN_7706; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7708 = 6'h1a == idx ? entries_26_pc : _GEN_7707; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7709 = 6'h1b == idx ? entries_27_pc : _GEN_7708; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7710 = 6'h1c == idx ? entries_28_pc : _GEN_7709; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7711 = 6'h1d == idx ? entries_29_pc : _GEN_7710; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7712 = 6'h1e == idx ? entries_30_pc : _GEN_7711; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7713 = 6'h1f == idx ? entries_31_pc : _GEN_7712; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7714 = 6'h20 == idx ? entries_32_pc : _GEN_7713; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7715 = 6'h21 == idx ? entries_33_pc : _GEN_7714; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7716 = 6'h22 == idx ? entries_34_pc : _GEN_7715; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7717 = 6'h23 == idx ? entries_35_pc : _GEN_7716; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7718 = 6'h24 == idx ? entries_36_pc : _GEN_7717; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7719 = 6'h25 == idx ? entries_37_pc : _GEN_7718; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7720 = 6'h26 == idx ? entries_38_pc : _GEN_7719; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7721 = 6'h27 == idx ? entries_39_pc : _GEN_7720; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7722 = 6'h28 == idx ? entries_40_pc : _GEN_7721; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7723 = 6'h29 == idx ? entries_41_pc : _GEN_7722; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7724 = 6'h2a == idx ? entries_42_pc : _GEN_7723; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7725 = 6'h2b == idx ? entries_43_pc : _GEN_7724; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7726 = 6'h2c == idx ? entries_44_pc : _GEN_7725; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7727 = 6'h2d == idx ? entries_45_pc : _GEN_7726; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7728 = 6'h2e == idx ? entries_46_pc : _GEN_7727; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7729 = 6'h2f == idx ? entries_47_pc : _GEN_7728; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7730 = 6'h30 == idx ? entries_48_pc : _GEN_7729; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7731 = 6'h31 == idx ? entries_49_pc : _GEN_7730; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7732 = 6'h32 == idx ? entries_50_pc : _GEN_7731; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7733 = 6'h33 == idx ? entries_51_pc : _GEN_7732; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7734 = 6'h34 == idx ? entries_52_pc : _GEN_7733; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7735 = 6'h35 == idx ? entries_53_pc : _GEN_7734; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7736 = 6'h36 == idx ? entries_54_pc : _GEN_7735; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7737 = 6'h37 == idx ? entries_55_pc : _GEN_7736; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7738 = 6'h38 == idx ? entries_56_pc : _GEN_7737; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7739 = 6'h39 == idx ? entries_57_pc : _GEN_7738; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7740 = 6'h3a == idx ? entries_58_pc : _GEN_7739; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7741 = 6'h3b == idx ? entries_59_pc : _GEN_7740; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7742 = 6'h3c == idx ? entries_60_pc : _GEN_7741; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7743 = 6'h3d == idx ? entries_61_pc : _GEN_7742; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7744 = 6'h3e == idx ? entries_62_pc : _GEN_7743; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_7747 = 6'h1 == idx ? entries_1_rfdata : entries_0_rfdata; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7748 = 6'h2 == idx ? entries_2_rfdata : _GEN_7747; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7749 = 6'h3 == idx ? entries_3_rfdata : _GEN_7748; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7750 = 6'h4 == idx ? entries_4_rfdata : _GEN_7749; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7751 = 6'h5 == idx ? entries_5_rfdata : _GEN_7750; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7752 = 6'h6 == idx ? entries_6_rfdata : _GEN_7751; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7753 = 6'h7 == idx ? entries_7_rfdata : _GEN_7752; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7754 = 6'h8 == idx ? entries_8_rfdata : _GEN_7753; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7755 = 6'h9 == idx ? entries_9_rfdata : _GEN_7754; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7756 = 6'ha == idx ? entries_10_rfdata : _GEN_7755; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7757 = 6'hb == idx ? entries_11_rfdata : _GEN_7756; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7758 = 6'hc == idx ? entries_12_rfdata : _GEN_7757; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7759 = 6'hd == idx ? entries_13_rfdata : _GEN_7758; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7760 = 6'he == idx ? entries_14_rfdata : _GEN_7759; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7761 = 6'hf == idx ? entries_15_rfdata : _GEN_7760; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7762 = 6'h10 == idx ? entries_16_rfdata : _GEN_7761; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7763 = 6'h11 == idx ? entries_17_rfdata : _GEN_7762; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7764 = 6'h12 == idx ? entries_18_rfdata : _GEN_7763; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7765 = 6'h13 == idx ? entries_19_rfdata : _GEN_7764; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7766 = 6'h14 == idx ? entries_20_rfdata : _GEN_7765; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7767 = 6'h15 == idx ? entries_21_rfdata : _GEN_7766; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7768 = 6'h16 == idx ? entries_22_rfdata : _GEN_7767; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7769 = 6'h17 == idx ? entries_23_rfdata : _GEN_7768; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7770 = 6'h18 == idx ? entries_24_rfdata : _GEN_7769; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7771 = 6'h19 == idx ? entries_25_rfdata : _GEN_7770; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7772 = 6'h1a == idx ? entries_26_rfdata : _GEN_7771; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7773 = 6'h1b == idx ? entries_27_rfdata : _GEN_7772; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7774 = 6'h1c == idx ? entries_28_rfdata : _GEN_7773; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7775 = 6'h1d == idx ? entries_29_rfdata : _GEN_7774; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7776 = 6'h1e == idx ? entries_30_rfdata : _GEN_7775; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7777 = 6'h1f == idx ? entries_31_rfdata : _GEN_7776; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7778 = 6'h20 == idx ? entries_32_rfdata : _GEN_7777; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7779 = 6'h21 == idx ? entries_33_rfdata : _GEN_7778; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7780 = 6'h22 == idx ? entries_34_rfdata : _GEN_7779; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7781 = 6'h23 == idx ? entries_35_rfdata : _GEN_7780; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7782 = 6'h24 == idx ? entries_36_rfdata : _GEN_7781; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7783 = 6'h25 == idx ? entries_37_rfdata : _GEN_7782; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7784 = 6'h26 == idx ? entries_38_rfdata : _GEN_7783; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7785 = 6'h27 == idx ? entries_39_rfdata : _GEN_7784; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7786 = 6'h28 == idx ? entries_40_rfdata : _GEN_7785; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7787 = 6'h29 == idx ? entries_41_rfdata : _GEN_7786; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7788 = 6'h2a == idx ? entries_42_rfdata : _GEN_7787; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7789 = 6'h2b == idx ? entries_43_rfdata : _GEN_7788; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7790 = 6'h2c == idx ? entries_44_rfdata : _GEN_7789; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7791 = 6'h2d == idx ? entries_45_rfdata : _GEN_7790; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7792 = 6'h2e == idx ? entries_46_rfdata : _GEN_7791; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7793 = 6'h2f == idx ? entries_47_rfdata : _GEN_7792; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7794 = 6'h30 == idx ? entries_48_rfdata : _GEN_7793; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7795 = 6'h31 == idx ? entries_49_rfdata : _GEN_7794; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7796 = 6'h32 == idx ? entries_50_rfdata : _GEN_7795; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7797 = 6'h33 == idx ? entries_51_rfdata : _GEN_7796; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7798 = 6'h34 == idx ? entries_52_rfdata : _GEN_7797; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7799 = 6'h35 == idx ? entries_53_rfdata : _GEN_7798; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7800 = 6'h36 == idx ? entries_54_rfdata : _GEN_7799; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7801 = 6'h37 == idx ? entries_55_rfdata : _GEN_7800; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7802 = 6'h38 == idx ? entries_56_rfdata : _GEN_7801; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7803 = 6'h39 == idx ? entries_57_rfdata : _GEN_7802; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7804 = 6'h3a == idx ? entries_58_rfdata : _GEN_7803; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7805 = 6'h3b == idx ? entries_59_rfdata : _GEN_7804; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7806 = 6'h3c == idx ? entries_60_rfdata : _GEN_7805; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7807 = 6'h3d == idx ? entries_61_rfdata : _GEN_7806; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_7808 = 6'h3e == idx ? entries_62_rfdata : _GEN_7807; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
   wire [5:0] idx_1 = deqPtr_value + 6'h1; // @[src/main/scala/backend/Rob.scala 154:31]
-  wire  _GEN_6915 = 6'h1 == idx_1 ? entries_1_valid : entries_0_valid; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6916 = 6'h2 == idx_1 ? entries_2_valid : _GEN_6915; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6917 = 6'h3 == idx_1 ? entries_3_valid : _GEN_6916; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6918 = 6'h4 == idx_1 ? entries_4_valid : _GEN_6917; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6919 = 6'h5 == idx_1 ? entries_5_valid : _GEN_6918; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6920 = 6'h6 == idx_1 ? entries_6_valid : _GEN_6919; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6921 = 6'h7 == idx_1 ? entries_7_valid : _GEN_6920; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6922 = 6'h8 == idx_1 ? entries_8_valid : _GEN_6921; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6923 = 6'h9 == idx_1 ? entries_9_valid : _GEN_6922; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6924 = 6'ha == idx_1 ? entries_10_valid : _GEN_6923; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6925 = 6'hb == idx_1 ? entries_11_valid : _GEN_6924; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6926 = 6'hc == idx_1 ? entries_12_valid : _GEN_6925; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6927 = 6'hd == idx_1 ? entries_13_valid : _GEN_6926; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6928 = 6'he == idx_1 ? entries_14_valid : _GEN_6927; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6929 = 6'hf == idx_1 ? entries_15_valid : _GEN_6928; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6930 = 6'h10 == idx_1 ? entries_16_valid : _GEN_6929; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6931 = 6'h11 == idx_1 ? entries_17_valid : _GEN_6930; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6932 = 6'h12 == idx_1 ? entries_18_valid : _GEN_6931; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6933 = 6'h13 == idx_1 ? entries_19_valid : _GEN_6932; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6934 = 6'h14 == idx_1 ? entries_20_valid : _GEN_6933; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6935 = 6'h15 == idx_1 ? entries_21_valid : _GEN_6934; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6936 = 6'h16 == idx_1 ? entries_22_valid : _GEN_6935; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6937 = 6'h17 == idx_1 ? entries_23_valid : _GEN_6936; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6938 = 6'h18 == idx_1 ? entries_24_valid : _GEN_6937; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6939 = 6'h19 == idx_1 ? entries_25_valid : _GEN_6938; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6940 = 6'h1a == idx_1 ? entries_26_valid : _GEN_6939; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6941 = 6'h1b == idx_1 ? entries_27_valid : _GEN_6940; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6942 = 6'h1c == idx_1 ? entries_28_valid : _GEN_6941; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6943 = 6'h1d == idx_1 ? entries_29_valid : _GEN_6942; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6944 = 6'h1e == idx_1 ? entries_30_valid : _GEN_6943; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6945 = 6'h1f == idx_1 ? entries_31_valid : _GEN_6944; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6946 = 6'h20 == idx_1 ? entries_32_valid : _GEN_6945; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6947 = 6'h21 == idx_1 ? entries_33_valid : _GEN_6946; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6948 = 6'h22 == idx_1 ? entries_34_valid : _GEN_6947; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6949 = 6'h23 == idx_1 ? entries_35_valid : _GEN_6948; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6950 = 6'h24 == idx_1 ? entries_36_valid : _GEN_6949; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6951 = 6'h25 == idx_1 ? entries_37_valid : _GEN_6950; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6952 = 6'h26 == idx_1 ? entries_38_valid : _GEN_6951; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6953 = 6'h27 == idx_1 ? entries_39_valid : _GEN_6952; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6954 = 6'h28 == idx_1 ? entries_40_valid : _GEN_6953; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6955 = 6'h29 == idx_1 ? entries_41_valid : _GEN_6954; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6956 = 6'h2a == idx_1 ? entries_42_valid : _GEN_6955; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6957 = 6'h2b == idx_1 ? entries_43_valid : _GEN_6956; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6958 = 6'h2c == idx_1 ? entries_44_valid : _GEN_6957; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6959 = 6'h2d == idx_1 ? entries_45_valid : _GEN_6958; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6960 = 6'h2e == idx_1 ? entries_46_valid : _GEN_6959; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6961 = 6'h2f == idx_1 ? entries_47_valid : _GEN_6960; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6962 = 6'h30 == idx_1 ? entries_48_valid : _GEN_6961; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6963 = 6'h31 == idx_1 ? entries_49_valid : _GEN_6962; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6964 = 6'h32 == idx_1 ? entries_50_valid : _GEN_6963; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6965 = 6'h33 == idx_1 ? entries_51_valid : _GEN_6964; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6966 = 6'h34 == idx_1 ? entries_52_valid : _GEN_6965; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6967 = 6'h35 == idx_1 ? entries_53_valid : _GEN_6966; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6968 = 6'h36 == idx_1 ? entries_54_valid : _GEN_6967; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6969 = 6'h37 == idx_1 ? entries_55_valid : _GEN_6968; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6970 = 6'h38 == idx_1 ? entries_56_valid : _GEN_6969; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6971 = 6'h39 == idx_1 ? entries_57_valid : _GEN_6970; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6972 = 6'h3a == idx_1 ? entries_58_valid : _GEN_6971; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6973 = 6'h3b == idx_1 ? entries_59_valid : _GEN_6972; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6974 = 6'h3c == idx_1 ? entries_60_valid : _GEN_6973; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6975 = 6'h3d == idx_1 ? entries_61_valid : _GEN_6974; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6976 = 6'h3e == idx_1 ? entries_62_valid : _GEN_6975; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6977 = 6'h3f == idx_1 ? entries_63_valid : _GEN_6976; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6979 = 6'h1 == idx_1 ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6980 = 6'h2 == idx_1 ? entries_2_writtenBack : _GEN_6979; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6981 = 6'h3 == idx_1 ? entries_3_writtenBack : _GEN_6980; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6982 = 6'h4 == idx_1 ? entries_4_writtenBack : _GEN_6981; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6983 = 6'h5 == idx_1 ? entries_5_writtenBack : _GEN_6982; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6984 = 6'h6 == idx_1 ? entries_6_writtenBack : _GEN_6983; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6985 = 6'h7 == idx_1 ? entries_7_writtenBack : _GEN_6984; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6986 = 6'h8 == idx_1 ? entries_8_writtenBack : _GEN_6985; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6987 = 6'h9 == idx_1 ? entries_9_writtenBack : _GEN_6986; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6988 = 6'ha == idx_1 ? entries_10_writtenBack : _GEN_6987; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6989 = 6'hb == idx_1 ? entries_11_writtenBack : _GEN_6988; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6990 = 6'hc == idx_1 ? entries_12_writtenBack : _GEN_6989; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6991 = 6'hd == idx_1 ? entries_13_writtenBack : _GEN_6990; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6992 = 6'he == idx_1 ? entries_14_writtenBack : _GEN_6991; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6993 = 6'hf == idx_1 ? entries_15_writtenBack : _GEN_6992; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6994 = 6'h10 == idx_1 ? entries_16_writtenBack : _GEN_6993; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6995 = 6'h11 == idx_1 ? entries_17_writtenBack : _GEN_6994; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6996 = 6'h12 == idx_1 ? entries_18_writtenBack : _GEN_6995; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6997 = 6'h13 == idx_1 ? entries_19_writtenBack : _GEN_6996; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6998 = 6'h14 == idx_1 ? entries_20_writtenBack : _GEN_6997; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_6999 = 6'h15 == idx_1 ? entries_21_writtenBack : _GEN_6998; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7000 = 6'h16 == idx_1 ? entries_22_writtenBack : _GEN_6999; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7001 = 6'h17 == idx_1 ? entries_23_writtenBack : _GEN_7000; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7002 = 6'h18 == idx_1 ? entries_24_writtenBack : _GEN_7001; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7003 = 6'h19 == idx_1 ? entries_25_writtenBack : _GEN_7002; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7004 = 6'h1a == idx_1 ? entries_26_writtenBack : _GEN_7003; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7005 = 6'h1b == idx_1 ? entries_27_writtenBack : _GEN_7004; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7006 = 6'h1c == idx_1 ? entries_28_writtenBack : _GEN_7005; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7007 = 6'h1d == idx_1 ? entries_29_writtenBack : _GEN_7006; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7008 = 6'h1e == idx_1 ? entries_30_writtenBack : _GEN_7007; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7009 = 6'h1f == idx_1 ? entries_31_writtenBack : _GEN_7008; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7010 = 6'h20 == idx_1 ? entries_32_writtenBack : _GEN_7009; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7011 = 6'h21 == idx_1 ? entries_33_writtenBack : _GEN_7010; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7012 = 6'h22 == idx_1 ? entries_34_writtenBack : _GEN_7011; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7013 = 6'h23 == idx_1 ? entries_35_writtenBack : _GEN_7012; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7014 = 6'h24 == idx_1 ? entries_36_writtenBack : _GEN_7013; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7015 = 6'h25 == idx_1 ? entries_37_writtenBack : _GEN_7014; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7016 = 6'h26 == idx_1 ? entries_38_writtenBack : _GEN_7015; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7017 = 6'h27 == idx_1 ? entries_39_writtenBack : _GEN_7016; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7018 = 6'h28 == idx_1 ? entries_40_writtenBack : _GEN_7017; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7019 = 6'h29 == idx_1 ? entries_41_writtenBack : _GEN_7018; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7020 = 6'h2a == idx_1 ? entries_42_writtenBack : _GEN_7019; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7021 = 6'h2b == idx_1 ? entries_43_writtenBack : _GEN_7020; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7022 = 6'h2c == idx_1 ? entries_44_writtenBack : _GEN_7021; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7023 = 6'h2d == idx_1 ? entries_45_writtenBack : _GEN_7022; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7024 = 6'h2e == idx_1 ? entries_46_writtenBack : _GEN_7023; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7025 = 6'h2f == idx_1 ? entries_47_writtenBack : _GEN_7024; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7026 = 6'h30 == idx_1 ? entries_48_writtenBack : _GEN_7025; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7027 = 6'h31 == idx_1 ? entries_49_writtenBack : _GEN_7026; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7028 = 6'h32 == idx_1 ? entries_50_writtenBack : _GEN_7027; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7029 = 6'h33 == idx_1 ? entries_51_writtenBack : _GEN_7028; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7030 = 6'h34 == idx_1 ? entries_52_writtenBack : _GEN_7029; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7031 = 6'h35 == idx_1 ? entries_53_writtenBack : _GEN_7030; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7032 = 6'h36 == idx_1 ? entries_54_writtenBack : _GEN_7031; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7033 = 6'h37 == idx_1 ? entries_55_writtenBack : _GEN_7032; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7034 = 6'h38 == idx_1 ? entries_56_writtenBack : _GEN_7033; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7035 = 6'h39 == idx_1 ? entries_57_writtenBack : _GEN_7034; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7036 = 6'h3a == idx_1 ? entries_58_writtenBack : _GEN_7035; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7037 = 6'h3b == idx_1 ? entries_59_writtenBack : _GEN_7036; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7038 = 6'h3c == idx_1 ? entries_60_writtenBack : _GEN_7037; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7039 = 6'h3d == idx_1 ? entries_61_writtenBack : _GEN_7038; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7040 = 6'h3e == idx_1 ? entries_62_writtenBack : _GEN_7039; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7041 = 6'h3f == idx_1 ? entries_63_writtenBack : _GEN_7040; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  thisReady_1 = _GEN_6977 & _GEN_7041; // @[src/main/scala/backend/Rob.scala 157:33]
-  wire [9:0] _GEN_7043 = 6'h1 == idx_1 ? entries_1_excpVec : entries_0_excpVec; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7044 = 6'h2 == idx_1 ? entries_2_excpVec : _GEN_7043; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7045 = 6'h3 == idx_1 ? entries_3_excpVec : _GEN_7044; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7046 = 6'h4 == idx_1 ? entries_4_excpVec : _GEN_7045; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7047 = 6'h5 == idx_1 ? entries_5_excpVec : _GEN_7046; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7048 = 6'h6 == idx_1 ? entries_6_excpVec : _GEN_7047; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7049 = 6'h7 == idx_1 ? entries_7_excpVec : _GEN_7048; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7050 = 6'h8 == idx_1 ? entries_8_excpVec : _GEN_7049; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7051 = 6'h9 == idx_1 ? entries_9_excpVec : _GEN_7050; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7052 = 6'ha == idx_1 ? entries_10_excpVec : _GEN_7051; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7053 = 6'hb == idx_1 ? entries_11_excpVec : _GEN_7052; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7054 = 6'hc == idx_1 ? entries_12_excpVec : _GEN_7053; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7055 = 6'hd == idx_1 ? entries_13_excpVec : _GEN_7054; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7056 = 6'he == idx_1 ? entries_14_excpVec : _GEN_7055; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7057 = 6'hf == idx_1 ? entries_15_excpVec : _GEN_7056; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7058 = 6'h10 == idx_1 ? entries_16_excpVec : _GEN_7057; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7059 = 6'h11 == idx_1 ? entries_17_excpVec : _GEN_7058; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7060 = 6'h12 == idx_1 ? entries_18_excpVec : _GEN_7059; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7061 = 6'h13 == idx_1 ? entries_19_excpVec : _GEN_7060; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7062 = 6'h14 == idx_1 ? entries_20_excpVec : _GEN_7061; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7063 = 6'h15 == idx_1 ? entries_21_excpVec : _GEN_7062; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7064 = 6'h16 == idx_1 ? entries_22_excpVec : _GEN_7063; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7065 = 6'h17 == idx_1 ? entries_23_excpVec : _GEN_7064; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7066 = 6'h18 == idx_1 ? entries_24_excpVec : _GEN_7065; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7067 = 6'h19 == idx_1 ? entries_25_excpVec : _GEN_7066; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7068 = 6'h1a == idx_1 ? entries_26_excpVec : _GEN_7067; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7069 = 6'h1b == idx_1 ? entries_27_excpVec : _GEN_7068; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7070 = 6'h1c == idx_1 ? entries_28_excpVec : _GEN_7069; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7071 = 6'h1d == idx_1 ? entries_29_excpVec : _GEN_7070; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7072 = 6'h1e == idx_1 ? entries_30_excpVec : _GEN_7071; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7073 = 6'h1f == idx_1 ? entries_31_excpVec : _GEN_7072; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7074 = 6'h20 == idx_1 ? entries_32_excpVec : _GEN_7073; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7075 = 6'h21 == idx_1 ? entries_33_excpVec : _GEN_7074; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7076 = 6'h22 == idx_1 ? entries_34_excpVec : _GEN_7075; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7077 = 6'h23 == idx_1 ? entries_35_excpVec : _GEN_7076; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7078 = 6'h24 == idx_1 ? entries_36_excpVec : _GEN_7077; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7079 = 6'h25 == idx_1 ? entries_37_excpVec : _GEN_7078; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7080 = 6'h26 == idx_1 ? entries_38_excpVec : _GEN_7079; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7081 = 6'h27 == idx_1 ? entries_39_excpVec : _GEN_7080; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7082 = 6'h28 == idx_1 ? entries_40_excpVec : _GEN_7081; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7083 = 6'h29 == idx_1 ? entries_41_excpVec : _GEN_7082; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7084 = 6'h2a == idx_1 ? entries_42_excpVec : _GEN_7083; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7085 = 6'h2b == idx_1 ? entries_43_excpVec : _GEN_7084; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7086 = 6'h2c == idx_1 ? entries_44_excpVec : _GEN_7085; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7087 = 6'h2d == idx_1 ? entries_45_excpVec : _GEN_7086; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7088 = 6'h2e == idx_1 ? entries_46_excpVec : _GEN_7087; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7089 = 6'h2f == idx_1 ? entries_47_excpVec : _GEN_7088; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7090 = 6'h30 == idx_1 ? entries_48_excpVec : _GEN_7089; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7091 = 6'h31 == idx_1 ? entries_49_excpVec : _GEN_7090; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7092 = 6'h32 == idx_1 ? entries_50_excpVec : _GEN_7091; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7093 = 6'h33 == idx_1 ? entries_51_excpVec : _GEN_7092; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7094 = 6'h34 == idx_1 ? entries_52_excpVec : _GEN_7093; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7095 = 6'h35 == idx_1 ? entries_53_excpVec : _GEN_7094; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7096 = 6'h36 == idx_1 ? entries_54_excpVec : _GEN_7095; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7097 = 6'h37 == idx_1 ? entries_55_excpVec : _GEN_7096; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7098 = 6'h38 == idx_1 ? entries_56_excpVec : _GEN_7097; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7099 = 6'h39 == idx_1 ? entries_57_excpVec : _GEN_7098; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7100 = 6'h3a == idx_1 ? entries_58_excpVec : _GEN_7099; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7101 = 6'h3b == idx_1 ? entries_59_excpVec : _GEN_7100; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7102 = 6'h3c == idx_1 ? entries_60_excpVec : _GEN_7101; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7103 = 6'h3d == idx_1 ? entries_61_excpVec : _GEN_7102; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7104 = 6'h3e == idx_1 ? entries_62_excpVec : _GEN_7103; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7105 = 6'h3f == idx_1 ? entries_63_excpVec : _GEN_7104; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire  hasExcp_1 = |_GEN_7105; // @[src/main/scala/backend/Rob.scala 158:35]
+  wire  _GEN_7811 = 6'h1 == idx_1 ? entries_1_valid : entries_0_valid; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7812 = 6'h2 == idx_1 ? entries_2_valid : _GEN_7811; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7813 = 6'h3 == idx_1 ? entries_3_valid : _GEN_7812; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7814 = 6'h4 == idx_1 ? entries_4_valid : _GEN_7813; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7815 = 6'h5 == idx_1 ? entries_5_valid : _GEN_7814; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7816 = 6'h6 == idx_1 ? entries_6_valid : _GEN_7815; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7817 = 6'h7 == idx_1 ? entries_7_valid : _GEN_7816; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7818 = 6'h8 == idx_1 ? entries_8_valid : _GEN_7817; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7819 = 6'h9 == idx_1 ? entries_9_valid : _GEN_7818; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7820 = 6'ha == idx_1 ? entries_10_valid : _GEN_7819; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7821 = 6'hb == idx_1 ? entries_11_valid : _GEN_7820; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7822 = 6'hc == idx_1 ? entries_12_valid : _GEN_7821; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7823 = 6'hd == idx_1 ? entries_13_valid : _GEN_7822; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7824 = 6'he == idx_1 ? entries_14_valid : _GEN_7823; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7825 = 6'hf == idx_1 ? entries_15_valid : _GEN_7824; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7826 = 6'h10 == idx_1 ? entries_16_valid : _GEN_7825; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7827 = 6'h11 == idx_1 ? entries_17_valid : _GEN_7826; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7828 = 6'h12 == idx_1 ? entries_18_valid : _GEN_7827; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7829 = 6'h13 == idx_1 ? entries_19_valid : _GEN_7828; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7830 = 6'h14 == idx_1 ? entries_20_valid : _GEN_7829; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7831 = 6'h15 == idx_1 ? entries_21_valid : _GEN_7830; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7832 = 6'h16 == idx_1 ? entries_22_valid : _GEN_7831; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7833 = 6'h17 == idx_1 ? entries_23_valid : _GEN_7832; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7834 = 6'h18 == idx_1 ? entries_24_valid : _GEN_7833; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7835 = 6'h19 == idx_1 ? entries_25_valid : _GEN_7834; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7836 = 6'h1a == idx_1 ? entries_26_valid : _GEN_7835; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7837 = 6'h1b == idx_1 ? entries_27_valid : _GEN_7836; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7838 = 6'h1c == idx_1 ? entries_28_valid : _GEN_7837; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7839 = 6'h1d == idx_1 ? entries_29_valid : _GEN_7838; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7840 = 6'h1e == idx_1 ? entries_30_valid : _GEN_7839; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7841 = 6'h1f == idx_1 ? entries_31_valid : _GEN_7840; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7842 = 6'h20 == idx_1 ? entries_32_valid : _GEN_7841; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7843 = 6'h21 == idx_1 ? entries_33_valid : _GEN_7842; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7844 = 6'h22 == idx_1 ? entries_34_valid : _GEN_7843; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7845 = 6'h23 == idx_1 ? entries_35_valid : _GEN_7844; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7846 = 6'h24 == idx_1 ? entries_36_valid : _GEN_7845; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7847 = 6'h25 == idx_1 ? entries_37_valid : _GEN_7846; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7848 = 6'h26 == idx_1 ? entries_38_valid : _GEN_7847; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7849 = 6'h27 == idx_1 ? entries_39_valid : _GEN_7848; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7850 = 6'h28 == idx_1 ? entries_40_valid : _GEN_7849; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7851 = 6'h29 == idx_1 ? entries_41_valid : _GEN_7850; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7852 = 6'h2a == idx_1 ? entries_42_valid : _GEN_7851; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7853 = 6'h2b == idx_1 ? entries_43_valid : _GEN_7852; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7854 = 6'h2c == idx_1 ? entries_44_valid : _GEN_7853; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7855 = 6'h2d == idx_1 ? entries_45_valid : _GEN_7854; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7856 = 6'h2e == idx_1 ? entries_46_valid : _GEN_7855; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7857 = 6'h2f == idx_1 ? entries_47_valid : _GEN_7856; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7858 = 6'h30 == idx_1 ? entries_48_valid : _GEN_7857; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7859 = 6'h31 == idx_1 ? entries_49_valid : _GEN_7858; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7860 = 6'h32 == idx_1 ? entries_50_valid : _GEN_7859; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7861 = 6'h33 == idx_1 ? entries_51_valid : _GEN_7860; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7862 = 6'h34 == idx_1 ? entries_52_valid : _GEN_7861; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7863 = 6'h35 == idx_1 ? entries_53_valid : _GEN_7862; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7864 = 6'h36 == idx_1 ? entries_54_valid : _GEN_7863; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7865 = 6'h37 == idx_1 ? entries_55_valid : _GEN_7864; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7866 = 6'h38 == idx_1 ? entries_56_valid : _GEN_7865; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7867 = 6'h39 == idx_1 ? entries_57_valid : _GEN_7866; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7868 = 6'h3a == idx_1 ? entries_58_valid : _GEN_7867; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7869 = 6'h3b == idx_1 ? entries_59_valid : _GEN_7868; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7870 = 6'h3c == idx_1 ? entries_60_valid : _GEN_7869; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7871 = 6'h3d == idx_1 ? entries_61_valid : _GEN_7870; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7872 = 6'h3e == idx_1 ? entries_62_valid : _GEN_7871; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7873 = 6'h3f == idx_1 ? entries_63_valid : _GEN_7872; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7875 = 6'h1 == idx_1 ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7876 = 6'h2 == idx_1 ? entries_2_writtenBack : _GEN_7875; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7877 = 6'h3 == idx_1 ? entries_3_writtenBack : _GEN_7876; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7878 = 6'h4 == idx_1 ? entries_4_writtenBack : _GEN_7877; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7879 = 6'h5 == idx_1 ? entries_5_writtenBack : _GEN_7878; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7880 = 6'h6 == idx_1 ? entries_6_writtenBack : _GEN_7879; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7881 = 6'h7 == idx_1 ? entries_7_writtenBack : _GEN_7880; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7882 = 6'h8 == idx_1 ? entries_8_writtenBack : _GEN_7881; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7883 = 6'h9 == idx_1 ? entries_9_writtenBack : _GEN_7882; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7884 = 6'ha == idx_1 ? entries_10_writtenBack : _GEN_7883; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7885 = 6'hb == idx_1 ? entries_11_writtenBack : _GEN_7884; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7886 = 6'hc == idx_1 ? entries_12_writtenBack : _GEN_7885; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7887 = 6'hd == idx_1 ? entries_13_writtenBack : _GEN_7886; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7888 = 6'he == idx_1 ? entries_14_writtenBack : _GEN_7887; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7889 = 6'hf == idx_1 ? entries_15_writtenBack : _GEN_7888; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7890 = 6'h10 == idx_1 ? entries_16_writtenBack : _GEN_7889; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7891 = 6'h11 == idx_1 ? entries_17_writtenBack : _GEN_7890; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7892 = 6'h12 == idx_1 ? entries_18_writtenBack : _GEN_7891; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7893 = 6'h13 == idx_1 ? entries_19_writtenBack : _GEN_7892; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7894 = 6'h14 == idx_1 ? entries_20_writtenBack : _GEN_7893; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7895 = 6'h15 == idx_1 ? entries_21_writtenBack : _GEN_7894; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7896 = 6'h16 == idx_1 ? entries_22_writtenBack : _GEN_7895; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7897 = 6'h17 == idx_1 ? entries_23_writtenBack : _GEN_7896; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7898 = 6'h18 == idx_1 ? entries_24_writtenBack : _GEN_7897; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7899 = 6'h19 == idx_1 ? entries_25_writtenBack : _GEN_7898; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7900 = 6'h1a == idx_1 ? entries_26_writtenBack : _GEN_7899; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7901 = 6'h1b == idx_1 ? entries_27_writtenBack : _GEN_7900; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7902 = 6'h1c == idx_1 ? entries_28_writtenBack : _GEN_7901; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7903 = 6'h1d == idx_1 ? entries_29_writtenBack : _GEN_7902; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7904 = 6'h1e == idx_1 ? entries_30_writtenBack : _GEN_7903; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7905 = 6'h1f == idx_1 ? entries_31_writtenBack : _GEN_7904; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7906 = 6'h20 == idx_1 ? entries_32_writtenBack : _GEN_7905; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7907 = 6'h21 == idx_1 ? entries_33_writtenBack : _GEN_7906; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7908 = 6'h22 == idx_1 ? entries_34_writtenBack : _GEN_7907; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7909 = 6'h23 == idx_1 ? entries_35_writtenBack : _GEN_7908; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7910 = 6'h24 == idx_1 ? entries_36_writtenBack : _GEN_7909; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7911 = 6'h25 == idx_1 ? entries_37_writtenBack : _GEN_7910; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7912 = 6'h26 == idx_1 ? entries_38_writtenBack : _GEN_7911; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7913 = 6'h27 == idx_1 ? entries_39_writtenBack : _GEN_7912; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7914 = 6'h28 == idx_1 ? entries_40_writtenBack : _GEN_7913; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7915 = 6'h29 == idx_1 ? entries_41_writtenBack : _GEN_7914; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7916 = 6'h2a == idx_1 ? entries_42_writtenBack : _GEN_7915; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7917 = 6'h2b == idx_1 ? entries_43_writtenBack : _GEN_7916; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7918 = 6'h2c == idx_1 ? entries_44_writtenBack : _GEN_7917; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7919 = 6'h2d == idx_1 ? entries_45_writtenBack : _GEN_7918; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7920 = 6'h2e == idx_1 ? entries_46_writtenBack : _GEN_7919; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7921 = 6'h2f == idx_1 ? entries_47_writtenBack : _GEN_7920; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7922 = 6'h30 == idx_1 ? entries_48_writtenBack : _GEN_7921; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7923 = 6'h31 == idx_1 ? entries_49_writtenBack : _GEN_7922; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7924 = 6'h32 == idx_1 ? entries_50_writtenBack : _GEN_7923; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7925 = 6'h33 == idx_1 ? entries_51_writtenBack : _GEN_7924; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7926 = 6'h34 == idx_1 ? entries_52_writtenBack : _GEN_7925; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7927 = 6'h35 == idx_1 ? entries_53_writtenBack : _GEN_7926; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7928 = 6'h36 == idx_1 ? entries_54_writtenBack : _GEN_7927; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7929 = 6'h37 == idx_1 ? entries_55_writtenBack : _GEN_7928; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7930 = 6'h38 == idx_1 ? entries_56_writtenBack : _GEN_7929; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7931 = 6'h39 == idx_1 ? entries_57_writtenBack : _GEN_7930; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7932 = 6'h3a == idx_1 ? entries_58_writtenBack : _GEN_7931; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7933 = 6'h3b == idx_1 ? entries_59_writtenBack : _GEN_7932; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7934 = 6'h3c == idx_1 ? entries_60_writtenBack : _GEN_7933; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7935 = 6'h3d == idx_1 ? entries_61_writtenBack : _GEN_7934; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7936 = 6'h3e == idx_1 ? entries_62_writtenBack : _GEN_7935; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_7937 = 6'h3f == idx_1 ? entries_63_writtenBack : _GEN_7936; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  thisReady_1 = _GEN_7873 & _GEN_7937; // @[src/main/scala/backend/Rob.scala 157:33]
+  wire [9:0] _GEN_7939 = 6'h1 == idx_1 ? entries_1_excpVec : entries_0_excpVec; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7940 = 6'h2 == idx_1 ? entries_2_excpVec : _GEN_7939; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7941 = 6'h3 == idx_1 ? entries_3_excpVec : _GEN_7940; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7942 = 6'h4 == idx_1 ? entries_4_excpVec : _GEN_7941; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7943 = 6'h5 == idx_1 ? entries_5_excpVec : _GEN_7942; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7944 = 6'h6 == idx_1 ? entries_6_excpVec : _GEN_7943; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7945 = 6'h7 == idx_1 ? entries_7_excpVec : _GEN_7944; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7946 = 6'h8 == idx_1 ? entries_8_excpVec : _GEN_7945; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7947 = 6'h9 == idx_1 ? entries_9_excpVec : _GEN_7946; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7948 = 6'ha == idx_1 ? entries_10_excpVec : _GEN_7947; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7949 = 6'hb == idx_1 ? entries_11_excpVec : _GEN_7948; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7950 = 6'hc == idx_1 ? entries_12_excpVec : _GEN_7949; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7951 = 6'hd == idx_1 ? entries_13_excpVec : _GEN_7950; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7952 = 6'he == idx_1 ? entries_14_excpVec : _GEN_7951; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7953 = 6'hf == idx_1 ? entries_15_excpVec : _GEN_7952; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7954 = 6'h10 == idx_1 ? entries_16_excpVec : _GEN_7953; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7955 = 6'h11 == idx_1 ? entries_17_excpVec : _GEN_7954; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7956 = 6'h12 == idx_1 ? entries_18_excpVec : _GEN_7955; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7957 = 6'h13 == idx_1 ? entries_19_excpVec : _GEN_7956; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7958 = 6'h14 == idx_1 ? entries_20_excpVec : _GEN_7957; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7959 = 6'h15 == idx_1 ? entries_21_excpVec : _GEN_7958; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7960 = 6'h16 == idx_1 ? entries_22_excpVec : _GEN_7959; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7961 = 6'h17 == idx_1 ? entries_23_excpVec : _GEN_7960; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7962 = 6'h18 == idx_1 ? entries_24_excpVec : _GEN_7961; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7963 = 6'h19 == idx_1 ? entries_25_excpVec : _GEN_7962; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7964 = 6'h1a == idx_1 ? entries_26_excpVec : _GEN_7963; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7965 = 6'h1b == idx_1 ? entries_27_excpVec : _GEN_7964; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7966 = 6'h1c == idx_1 ? entries_28_excpVec : _GEN_7965; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7967 = 6'h1d == idx_1 ? entries_29_excpVec : _GEN_7966; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7968 = 6'h1e == idx_1 ? entries_30_excpVec : _GEN_7967; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7969 = 6'h1f == idx_1 ? entries_31_excpVec : _GEN_7968; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7970 = 6'h20 == idx_1 ? entries_32_excpVec : _GEN_7969; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7971 = 6'h21 == idx_1 ? entries_33_excpVec : _GEN_7970; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7972 = 6'h22 == idx_1 ? entries_34_excpVec : _GEN_7971; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7973 = 6'h23 == idx_1 ? entries_35_excpVec : _GEN_7972; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7974 = 6'h24 == idx_1 ? entries_36_excpVec : _GEN_7973; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7975 = 6'h25 == idx_1 ? entries_37_excpVec : _GEN_7974; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7976 = 6'h26 == idx_1 ? entries_38_excpVec : _GEN_7975; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7977 = 6'h27 == idx_1 ? entries_39_excpVec : _GEN_7976; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7978 = 6'h28 == idx_1 ? entries_40_excpVec : _GEN_7977; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7979 = 6'h29 == idx_1 ? entries_41_excpVec : _GEN_7978; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7980 = 6'h2a == idx_1 ? entries_42_excpVec : _GEN_7979; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7981 = 6'h2b == idx_1 ? entries_43_excpVec : _GEN_7980; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7982 = 6'h2c == idx_1 ? entries_44_excpVec : _GEN_7981; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7983 = 6'h2d == idx_1 ? entries_45_excpVec : _GEN_7982; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7984 = 6'h2e == idx_1 ? entries_46_excpVec : _GEN_7983; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7985 = 6'h2f == idx_1 ? entries_47_excpVec : _GEN_7984; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7986 = 6'h30 == idx_1 ? entries_48_excpVec : _GEN_7985; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7987 = 6'h31 == idx_1 ? entries_49_excpVec : _GEN_7986; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7988 = 6'h32 == idx_1 ? entries_50_excpVec : _GEN_7987; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7989 = 6'h33 == idx_1 ? entries_51_excpVec : _GEN_7988; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7990 = 6'h34 == idx_1 ? entries_52_excpVec : _GEN_7989; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7991 = 6'h35 == idx_1 ? entries_53_excpVec : _GEN_7990; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7992 = 6'h36 == idx_1 ? entries_54_excpVec : _GEN_7991; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7993 = 6'h37 == idx_1 ? entries_55_excpVec : _GEN_7992; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7994 = 6'h38 == idx_1 ? entries_56_excpVec : _GEN_7993; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7995 = 6'h39 == idx_1 ? entries_57_excpVec : _GEN_7994; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7996 = 6'h3a == idx_1 ? entries_58_excpVec : _GEN_7995; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7997 = 6'h3b == idx_1 ? entries_59_excpVec : _GEN_7996; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7998 = 6'h3c == idx_1 ? entries_60_excpVec : _GEN_7997; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_7999 = 6'h3d == idx_1 ? entries_61_excpVec : _GEN_7998; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8000 = 6'h3e == idx_1 ? entries_62_excpVec : _GEN_7999; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8001 = 6'h3f == idx_1 ? entries_63_excpVec : _GEN_8000; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire  hasExcp_1 = |_GEN_8001; // @[src/main/scala/backend/Rob.scala 158:35]
   wire  commitValids_1 = thisReady & thisReady_1 & ~hasExcp_1; // @[src/main/scala/backend/Rob.scala 161:51]
-  wire [6:0] _GEN_7107 = 6'h1 == idx_1 ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7108 = 6'h2 == idx_1 ? entries_2_pdst : _GEN_7107; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7109 = 6'h3 == idx_1 ? entries_3_pdst : _GEN_7108; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7110 = 6'h4 == idx_1 ? entries_4_pdst : _GEN_7109; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7111 = 6'h5 == idx_1 ? entries_5_pdst : _GEN_7110; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7112 = 6'h6 == idx_1 ? entries_6_pdst : _GEN_7111; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7113 = 6'h7 == idx_1 ? entries_7_pdst : _GEN_7112; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7114 = 6'h8 == idx_1 ? entries_8_pdst : _GEN_7113; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7115 = 6'h9 == idx_1 ? entries_9_pdst : _GEN_7114; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7116 = 6'ha == idx_1 ? entries_10_pdst : _GEN_7115; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7117 = 6'hb == idx_1 ? entries_11_pdst : _GEN_7116; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7118 = 6'hc == idx_1 ? entries_12_pdst : _GEN_7117; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7119 = 6'hd == idx_1 ? entries_13_pdst : _GEN_7118; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7120 = 6'he == idx_1 ? entries_14_pdst : _GEN_7119; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7121 = 6'hf == idx_1 ? entries_15_pdst : _GEN_7120; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7122 = 6'h10 == idx_1 ? entries_16_pdst : _GEN_7121; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7123 = 6'h11 == idx_1 ? entries_17_pdst : _GEN_7122; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7124 = 6'h12 == idx_1 ? entries_18_pdst : _GEN_7123; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7125 = 6'h13 == idx_1 ? entries_19_pdst : _GEN_7124; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7126 = 6'h14 == idx_1 ? entries_20_pdst : _GEN_7125; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7127 = 6'h15 == idx_1 ? entries_21_pdst : _GEN_7126; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7128 = 6'h16 == idx_1 ? entries_22_pdst : _GEN_7127; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7129 = 6'h17 == idx_1 ? entries_23_pdst : _GEN_7128; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7130 = 6'h18 == idx_1 ? entries_24_pdst : _GEN_7129; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7131 = 6'h19 == idx_1 ? entries_25_pdst : _GEN_7130; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7132 = 6'h1a == idx_1 ? entries_26_pdst : _GEN_7131; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7133 = 6'h1b == idx_1 ? entries_27_pdst : _GEN_7132; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7134 = 6'h1c == idx_1 ? entries_28_pdst : _GEN_7133; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7135 = 6'h1d == idx_1 ? entries_29_pdst : _GEN_7134; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7136 = 6'h1e == idx_1 ? entries_30_pdst : _GEN_7135; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7137 = 6'h1f == idx_1 ? entries_31_pdst : _GEN_7136; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7138 = 6'h20 == idx_1 ? entries_32_pdst : _GEN_7137; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7139 = 6'h21 == idx_1 ? entries_33_pdst : _GEN_7138; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7140 = 6'h22 == idx_1 ? entries_34_pdst : _GEN_7139; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7141 = 6'h23 == idx_1 ? entries_35_pdst : _GEN_7140; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7142 = 6'h24 == idx_1 ? entries_36_pdst : _GEN_7141; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7143 = 6'h25 == idx_1 ? entries_37_pdst : _GEN_7142; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7144 = 6'h26 == idx_1 ? entries_38_pdst : _GEN_7143; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7145 = 6'h27 == idx_1 ? entries_39_pdst : _GEN_7144; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7146 = 6'h28 == idx_1 ? entries_40_pdst : _GEN_7145; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7147 = 6'h29 == idx_1 ? entries_41_pdst : _GEN_7146; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7148 = 6'h2a == idx_1 ? entries_42_pdst : _GEN_7147; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7149 = 6'h2b == idx_1 ? entries_43_pdst : _GEN_7148; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7150 = 6'h2c == idx_1 ? entries_44_pdst : _GEN_7149; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7151 = 6'h2d == idx_1 ? entries_45_pdst : _GEN_7150; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7152 = 6'h2e == idx_1 ? entries_46_pdst : _GEN_7151; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7153 = 6'h2f == idx_1 ? entries_47_pdst : _GEN_7152; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7154 = 6'h30 == idx_1 ? entries_48_pdst : _GEN_7153; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7155 = 6'h31 == idx_1 ? entries_49_pdst : _GEN_7154; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7156 = 6'h32 == idx_1 ? entries_50_pdst : _GEN_7155; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7157 = 6'h33 == idx_1 ? entries_51_pdst : _GEN_7156; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7158 = 6'h34 == idx_1 ? entries_52_pdst : _GEN_7157; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7159 = 6'h35 == idx_1 ? entries_53_pdst : _GEN_7158; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7160 = 6'h36 == idx_1 ? entries_54_pdst : _GEN_7159; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7161 = 6'h37 == idx_1 ? entries_55_pdst : _GEN_7160; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7162 = 6'h38 == idx_1 ? entries_56_pdst : _GEN_7161; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7163 = 6'h39 == idx_1 ? entries_57_pdst : _GEN_7162; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7164 = 6'h3a == idx_1 ? entries_58_pdst : _GEN_7163; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7165 = 6'h3b == idx_1 ? entries_59_pdst : _GEN_7164; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7166 = 6'h3c == idx_1 ? entries_60_pdst : _GEN_7165; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7167 = 6'h3d == idx_1 ? entries_61_pdst : _GEN_7166; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7168 = 6'h3e == idx_1 ? entries_62_pdst : _GEN_7167; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7171 = 6'h1 == idx_1 ? entries_1_oldPdst : entries_0_oldPdst; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7172 = 6'h2 == idx_1 ? entries_2_oldPdst : _GEN_7171; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7173 = 6'h3 == idx_1 ? entries_3_oldPdst : _GEN_7172; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7174 = 6'h4 == idx_1 ? entries_4_oldPdst : _GEN_7173; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7175 = 6'h5 == idx_1 ? entries_5_oldPdst : _GEN_7174; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7176 = 6'h6 == idx_1 ? entries_6_oldPdst : _GEN_7175; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7177 = 6'h7 == idx_1 ? entries_7_oldPdst : _GEN_7176; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7178 = 6'h8 == idx_1 ? entries_8_oldPdst : _GEN_7177; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7179 = 6'h9 == idx_1 ? entries_9_oldPdst : _GEN_7178; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7180 = 6'ha == idx_1 ? entries_10_oldPdst : _GEN_7179; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7181 = 6'hb == idx_1 ? entries_11_oldPdst : _GEN_7180; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7182 = 6'hc == idx_1 ? entries_12_oldPdst : _GEN_7181; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7183 = 6'hd == idx_1 ? entries_13_oldPdst : _GEN_7182; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7184 = 6'he == idx_1 ? entries_14_oldPdst : _GEN_7183; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7185 = 6'hf == idx_1 ? entries_15_oldPdst : _GEN_7184; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7186 = 6'h10 == idx_1 ? entries_16_oldPdst : _GEN_7185; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7187 = 6'h11 == idx_1 ? entries_17_oldPdst : _GEN_7186; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7188 = 6'h12 == idx_1 ? entries_18_oldPdst : _GEN_7187; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7189 = 6'h13 == idx_1 ? entries_19_oldPdst : _GEN_7188; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7190 = 6'h14 == idx_1 ? entries_20_oldPdst : _GEN_7189; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7191 = 6'h15 == idx_1 ? entries_21_oldPdst : _GEN_7190; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7192 = 6'h16 == idx_1 ? entries_22_oldPdst : _GEN_7191; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7193 = 6'h17 == idx_1 ? entries_23_oldPdst : _GEN_7192; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7194 = 6'h18 == idx_1 ? entries_24_oldPdst : _GEN_7193; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7195 = 6'h19 == idx_1 ? entries_25_oldPdst : _GEN_7194; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7196 = 6'h1a == idx_1 ? entries_26_oldPdst : _GEN_7195; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7197 = 6'h1b == idx_1 ? entries_27_oldPdst : _GEN_7196; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7198 = 6'h1c == idx_1 ? entries_28_oldPdst : _GEN_7197; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7199 = 6'h1d == idx_1 ? entries_29_oldPdst : _GEN_7198; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7200 = 6'h1e == idx_1 ? entries_30_oldPdst : _GEN_7199; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7201 = 6'h1f == idx_1 ? entries_31_oldPdst : _GEN_7200; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7202 = 6'h20 == idx_1 ? entries_32_oldPdst : _GEN_7201; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7203 = 6'h21 == idx_1 ? entries_33_oldPdst : _GEN_7202; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7204 = 6'h22 == idx_1 ? entries_34_oldPdst : _GEN_7203; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7205 = 6'h23 == idx_1 ? entries_35_oldPdst : _GEN_7204; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7206 = 6'h24 == idx_1 ? entries_36_oldPdst : _GEN_7205; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7207 = 6'h25 == idx_1 ? entries_37_oldPdst : _GEN_7206; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7208 = 6'h26 == idx_1 ? entries_38_oldPdst : _GEN_7207; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7209 = 6'h27 == idx_1 ? entries_39_oldPdst : _GEN_7208; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7210 = 6'h28 == idx_1 ? entries_40_oldPdst : _GEN_7209; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7211 = 6'h29 == idx_1 ? entries_41_oldPdst : _GEN_7210; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7212 = 6'h2a == idx_1 ? entries_42_oldPdst : _GEN_7211; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7213 = 6'h2b == idx_1 ? entries_43_oldPdst : _GEN_7212; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7214 = 6'h2c == idx_1 ? entries_44_oldPdst : _GEN_7213; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7215 = 6'h2d == idx_1 ? entries_45_oldPdst : _GEN_7214; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7216 = 6'h2e == idx_1 ? entries_46_oldPdst : _GEN_7215; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7217 = 6'h2f == idx_1 ? entries_47_oldPdst : _GEN_7216; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7218 = 6'h30 == idx_1 ? entries_48_oldPdst : _GEN_7217; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7219 = 6'h31 == idx_1 ? entries_49_oldPdst : _GEN_7218; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7220 = 6'h32 == idx_1 ? entries_50_oldPdst : _GEN_7219; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7221 = 6'h33 == idx_1 ? entries_51_oldPdst : _GEN_7220; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7222 = 6'h34 == idx_1 ? entries_52_oldPdst : _GEN_7221; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7223 = 6'h35 == idx_1 ? entries_53_oldPdst : _GEN_7222; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7224 = 6'h36 == idx_1 ? entries_54_oldPdst : _GEN_7223; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7225 = 6'h37 == idx_1 ? entries_55_oldPdst : _GEN_7224; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7226 = 6'h38 == idx_1 ? entries_56_oldPdst : _GEN_7225; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7227 = 6'h39 == idx_1 ? entries_57_oldPdst : _GEN_7226; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7228 = 6'h3a == idx_1 ? entries_58_oldPdst : _GEN_7227; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7229 = 6'h3b == idx_1 ? entries_59_oldPdst : _GEN_7228; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7230 = 6'h3c == idx_1 ? entries_60_oldPdst : _GEN_7229; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7231 = 6'h3d == idx_1 ? entries_61_oldPdst : _GEN_7230; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7232 = 6'h3e == idx_1 ? entries_62_oldPdst : _GEN_7231; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [4:0] _GEN_7235 = 6'h1 == idx_1 ? entries_1_ldst : entries_0_ldst; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7236 = 6'h2 == idx_1 ? entries_2_ldst : _GEN_7235; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7237 = 6'h3 == idx_1 ? entries_3_ldst : _GEN_7236; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7238 = 6'h4 == idx_1 ? entries_4_ldst : _GEN_7237; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7239 = 6'h5 == idx_1 ? entries_5_ldst : _GEN_7238; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7240 = 6'h6 == idx_1 ? entries_6_ldst : _GEN_7239; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7241 = 6'h7 == idx_1 ? entries_7_ldst : _GEN_7240; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7242 = 6'h8 == idx_1 ? entries_8_ldst : _GEN_7241; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7243 = 6'h9 == idx_1 ? entries_9_ldst : _GEN_7242; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7244 = 6'ha == idx_1 ? entries_10_ldst : _GEN_7243; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7245 = 6'hb == idx_1 ? entries_11_ldst : _GEN_7244; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7246 = 6'hc == idx_1 ? entries_12_ldst : _GEN_7245; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7247 = 6'hd == idx_1 ? entries_13_ldst : _GEN_7246; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7248 = 6'he == idx_1 ? entries_14_ldst : _GEN_7247; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7249 = 6'hf == idx_1 ? entries_15_ldst : _GEN_7248; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7250 = 6'h10 == idx_1 ? entries_16_ldst : _GEN_7249; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7251 = 6'h11 == idx_1 ? entries_17_ldst : _GEN_7250; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7252 = 6'h12 == idx_1 ? entries_18_ldst : _GEN_7251; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7253 = 6'h13 == idx_1 ? entries_19_ldst : _GEN_7252; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7254 = 6'h14 == idx_1 ? entries_20_ldst : _GEN_7253; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7255 = 6'h15 == idx_1 ? entries_21_ldst : _GEN_7254; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7256 = 6'h16 == idx_1 ? entries_22_ldst : _GEN_7255; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7257 = 6'h17 == idx_1 ? entries_23_ldst : _GEN_7256; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7258 = 6'h18 == idx_1 ? entries_24_ldst : _GEN_7257; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7259 = 6'h19 == idx_1 ? entries_25_ldst : _GEN_7258; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7260 = 6'h1a == idx_1 ? entries_26_ldst : _GEN_7259; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7261 = 6'h1b == idx_1 ? entries_27_ldst : _GEN_7260; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7262 = 6'h1c == idx_1 ? entries_28_ldst : _GEN_7261; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7263 = 6'h1d == idx_1 ? entries_29_ldst : _GEN_7262; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7264 = 6'h1e == idx_1 ? entries_30_ldst : _GEN_7263; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7265 = 6'h1f == idx_1 ? entries_31_ldst : _GEN_7264; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7266 = 6'h20 == idx_1 ? entries_32_ldst : _GEN_7265; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7267 = 6'h21 == idx_1 ? entries_33_ldst : _GEN_7266; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7268 = 6'h22 == idx_1 ? entries_34_ldst : _GEN_7267; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7269 = 6'h23 == idx_1 ? entries_35_ldst : _GEN_7268; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7270 = 6'h24 == idx_1 ? entries_36_ldst : _GEN_7269; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7271 = 6'h25 == idx_1 ? entries_37_ldst : _GEN_7270; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7272 = 6'h26 == idx_1 ? entries_38_ldst : _GEN_7271; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7273 = 6'h27 == idx_1 ? entries_39_ldst : _GEN_7272; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7274 = 6'h28 == idx_1 ? entries_40_ldst : _GEN_7273; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7275 = 6'h29 == idx_1 ? entries_41_ldst : _GEN_7274; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7276 = 6'h2a == idx_1 ? entries_42_ldst : _GEN_7275; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7277 = 6'h2b == idx_1 ? entries_43_ldst : _GEN_7276; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7278 = 6'h2c == idx_1 ? entries_44_ldst : _GEN_7277; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7279 = 6'h2d == idx_1 ? entries_45_ldst : _GEN_7278; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7280 = 6'h2e == idx_1 ? entries_46_ldst : _GEN_7279; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7281 = 6'h2f == idx_1 ? entries_47_ldst : _GEN_7280; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7282 = 6'h30 == idx_1 ? entries_48_ldst : _GEN_7281; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7283 = 6'h31 == idx_1 ? entries_49_ldst : _GEN_7282; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7284 = 6'h32 == idx_1 ? entries_50_ldst : _GEN_7283; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7285 = 6'h33 == idx_1 ? entries_51_ldst : _GEN_7284; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7286 = 6'h34 == idx_1 ? entries_52_ldst : _GEN_7285; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7287 = 6'h35 == idx_1 ? entries_53_ldst : _GEN_7286; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7288 = 6'h36 == idx_1 ? entries_54_ldst : _GEN_7287; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7289 = 6'h37 == idx_1 ? entries_55_ldst : _GEN_7288; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7290 = 6'h38 == idx_1 ? entries_56_ldst : _GEN_7289; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7291 = 6'h39 == idx_1 ? entries_57_ldst : _GEN_7290; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7292 = 6'h3a == idx_1 ? entries_58_ldst : _GEN_7291; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7293 = 6'h3b == idx_1 ? entries_59_ldst : _GEN_7292; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7294 = 6'h3c == idx_1 ? entries_60_ldst : _GEN_7293; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7295 = 6'h3d == idx_1 ? entries_61_ldst : _GEN_7294; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7296 = 6'h3e == idx_1 ? entries_62_ldst : _GEN_7295; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire  _GEN_7299 = 6'h1 == idx_1 ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7300 = 6'h2 == idx_1 ? entries_2_rfWen : _GEN_7299; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7301 = 6'h3 == idx_1 ? entries_3_rfWen : _GEN_7300; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7302 = 6'h4 == idx_1 ? entries_4_rfWen : _GEN_7301; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7303 = 6'h5 == idx_1 ? entries_5_rfWen : _GEN_7302; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7304 = 6'h6 == idx_1 ? entries_6_rfWen : _GEN_7303; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7305 = 6'h7 == idx_1 ? entries_7_rfWen : _GEN_7304; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7306 = 6'h8 == idx_1 ? entries_8_rfWen : _GEN_7305; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7307 = 6'h9 == idx_1 ? entries_9_rfWen : _GEN_7306; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7308 = 6'ha == idx_1 ? entries_10_rfWen : _GEN_7307; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7309 = 6'hb == idx_1 ? entries_11_rfWen : _GEN_7308; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7310 = 6'hc == idx_1 ? entries_12_rfWen : _GEN_7309; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7311 = 6'hd == idx_1 ? entries_13_rfWen : _GEN_7310; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7312 = 6'he == idx_1 ? entries_14_rfWen : _GEN_7311; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7313 = 6'hf == idx_1 ? entries_15_rfWen : _GEN_7312; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7314 = 6'h10 == idx_1 ? entries_16_rfWen : _GEN_7313; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7315 = 6'h11 == idx_1 ? entries_17_rfWen : _GEN_7314; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7316 = 6'h12 == idx_1 ? entries_18_rfWen : _GEN_7315; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7317 = 6'h13 == idx_1 ? entries_19_rfWen : _GEN_7316; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7318 = 6'h14 == idx_1 ? entries_20_rfWen : _GEN_7317; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7319 = 6'h15 == idx_1 ? entries_21_rfWen : _GEN_7318; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7320 = 6'h16 == idx_1 ? entries_22_rfWen : _GEN_7319; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7321 = 6'h17 == idx_1 ? entries_23_rfWen : _GEN_7320; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7322 = 6'h18 == idx_1 ? entries_24_rfWen : _GEN_7321; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7323 = 6'h19 == idx_1 ? entries_25_rfWen : _GEN_7322; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7324 = 6'h1a == idx_1 ? entries_26_rfWen : _GEN_7323; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7325 = 6'h1b == idx_1 ? entries_27_rfWen : _GEN_7324; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7326 = 6'h1c == idx_1 ? entries_28_rfWen : _GEN_7325; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7327 = 6'h1d == idx_1 ? entries_29_rfWen : _GEN_7326; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7328 = 6'h1e == idx_1 ? entries_30_rfWen : _GEN_7327; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7329 = 6'h1f == idx_1 ? entries_31_rfWen : _GEN_7328; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7330 = 6'h20 == idx_1 ? entries_32_rfWen : _GEN_7329; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7331 = 6'h21 == idx_1 ? entries_33_rfWen : _GEN_7330; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7332 = 6'h22 == idx_1 ? entries_34_rfWen : _GEN_7331; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7333 = 6'h23 == idx_1 ? entries_35_rfWen : _GEN_7332; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7334 = 6'h24 == idx_1 ? entries_36_rfWen : _GEN_7333; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7335 = 6'h25 == idx_1 ? entries_37_rfWen : _GEN_7334; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7336 = 6'h26 == idx_1 ? entries_38_rfWen : _GEN_7335; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7337 = 6'h27 == idx_1 ? entries_39_rfWen : _GEN_7336; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7338 = 6'h28 == idx_1 ? entries_40_rfWen : _GEN_7337; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7339 = 6'h29 == idx_1 ? entries_41_rfWen : _GEN_7338; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7340 = 6'h2a == idx_1 ? entries_42_rfWen : _GEN_7339; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7341 = 6'h2b == idx_1 ? entries_43_rfWen : _GEN_7340; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7342 = 6'h2c == idx_1 ? entries_44_rfWen : _GEN_7341; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7343 = 6'h2d == idx_1 ? entries_45_rfWen : _GEN_7342; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7344 = 6'h2e == idx_1 ? entries_46_rfWen : _GEN_7343; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7345 = 6'h2f == idx_1 ? entries_47_rfWen : _GEN_7344; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7346 = 6'h30 == idx_1 ? entries_48_rfWen : _GEN_7345; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7347 = 6'h31 == idx_1 ? entries_49_rfWen : _GEN_7346; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7348 = 6'h32 == idx_1 ? entries_50_rfWen : _GEN_7347; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7349 = 6'h33 == idx_1 ? entries_51_rfWen : _GEN_7348; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7350 = 6'h34 == idx_1 ? entries_52_rfWen : _GEN_7349; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7351 = 6'h35 == idx_1 ? entries_53_rfWen : _GEN_7350; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7352 = 6'h36 == idx_1 ? entries_54_rfWen : _GEN_7351; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7353 = 6'h37 == idx_1 ? entries_55_rfWen : _GEN_7352; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7354 = 6'h38 == idx_1 ? entries_56_rfWen : _GEN_7353; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7355 = 6'h39 == idx_1 ? entries_57_rfWen : _GEN_7354; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7356 = 6'h3a == idx_1 ? entries_58_rfWen : _GEN_7355; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7357 = 6'h3b == idx_1 ? entries_59_rfWen : _GEN_7356; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7358 = 6'h3c == idx_1 ? entries_60_rfWen : _GEN_7357; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7359 = 6'h3d == idx_1 ? entries_61_rfWen : _GEN_7358; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7360 = 6'h3e == idx_1 ? entries_62_rfWen : _GEN_7359; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire [31:0] _GEN_7363 = 6'h1 == idx_1 ? entries_1_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7364 = 6'h2 == idx_1 ? entries_2_pc : _GEN_7363; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7365 = 6'h3 == idx_1 ? entries_3_pc : _GEN_7364; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7366 = 6'h4 == idx_1 ? entries_4_pc : _GEN_7365; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7367 = 6'h5 == idx_1 ? entries_5_pc : _GEN_7366; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7368 = 6'h6 == idx_1 ? entries_6_pc : _GEN_7367; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7369 = 6'h7 == idx_1 ? entries_7_pc : _GEN_7368; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7370 = 6'h8 == idx_1 ? entries_8_pc : _GEN_7369; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7371 = 6'h9 == idx_1 ? entries_9_pc : _GEN_7370; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7372 = 6'ha == idx_1 ? entries_10_pc : _GEN_7371; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7373 = 6'hb == idx_1 ? entries_11_pc : _GEN_7372; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7374 = 6'hc == idx_1 ? entries_12_pc : _GEN_7373; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7375 = 6'hd == idx_1 ? entries_13_pc : _GEN_7374; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7376 = 6'he == idx_1 ? entries_14_pc : _GEN_7375; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7377 = 6'hf == idx_1 ? entries_15_pc : _GEN_7376; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7378 = 6'h10 == idx_1 ? entries_16_pc : _GEN_7377; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7379 = 6'h11 == idx_1 ? entries_17_pc : _GEN_7378; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7380 = 6'h12 == idx_1 ? entries_18_pc : _GEN_7379; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7381 = 6'h13 == idx_1 ? entries_19_pc : _GEN_7380; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7382 = 6'h14 == idx_1 ? entries_20_pc : _GEN_7381; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7383 = 6'h15 == idx_1 ? entries_21_pc : _GEN_7382; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7384 = 6'h16 == idx_1 ? entries_22_pc : _GEN_7383; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7385 = 6'h17 == idx_1 ? entries_23_pc : _GEN_7384; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7386 = 6'h18 == idx_1 ? entries_24_pc : _GEN_7385; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7387 = 6'h19 == idx_1 ? entries_25_pc : _GEN_7386; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7388 = 6'h1a == idx_1 ? entries_26_pc : _GEN_7387; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7389 = 6'h1b == idx_1 ? entries_27_pc : _GEN_7388; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7390 = 6'h1c == idx_1 ? entries_28_pc : _GEN_7389; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7391 = 6'h1d == idx_1 ? entries_29_pc : _GEN_7390; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7392 = 6'h1e == idx_1 ? entries_30_pc : _GEN_7391; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7393 = 6'h1f == idx_1 ? entries_31_pc : _GEN_7392; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7394 = 6'h20 == idx_1 ? entries_32_pc : _GEN_7393; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7395 = 6'h21 == idx_1 ? entries_33_pc : _GEN_7394; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7396 = 6'h22 == idx_1 ? entries_34_pc : _GEN_7395; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7397 = 6'h23 == idx_1 ? entries_35_pc : _GEN_7396; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7398 = 6'h24 == idx_1 ? entries_36_pc : _GEN_7397; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7399 = 6'h25 == idx_1 ? entries_37_pc : _GEN_7398; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7400 = 6'h26 == idx_1 ? entries_38_pc : _GEN_7399; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7401 = 6'h27 == idx_1 ? entries_39_pc : _GEN_7400; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7402 = 6'h28 == idx_1 ? entries_40_pc : _GEN_7401; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7403 = 6'h29 == idx_1 ? entries_41_pc : _GEN_7402; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7404 = 6'h2a == idx_1 ? entries_42_pc : _GEN_7403; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7405 = 6'h2b == idx_1 ? entries_43_pc : _GEN_7404; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7406 = 6'h2c == idx_1 ? entries_44_pc : _GEN_7405; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7407 = 6'h2d == idx_1 ? entries_45_pc : _GEN_7406; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7408 = 6'h2e == idx_1 ? entries_46_pc : _GEN_7407; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7409 = 6'h2f == idx_1 ? entries_47_pc : _GEN_7408; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7410 = 6'h30 == idx_1 ? entries_48_pc : _GEN_7409; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7411 = 6'h31 == idx_1 ? entries_49_pc : _GEN_7410; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7412 = 6'h32 == idx_1 ? entries_50_pc : _GEN_7411; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7413 = 6'h33 == idx_1 ? entries_51_pc : _GEN_7412; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7414 = 6'h34 == idx_1 ? entries_52_pc : _GEN_7413; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7415 = 6'h35 == idx_1 ? entries_53_pc : _GEN_7414; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7416 = 6'h36 == idx_1 ? entries_54_pc : _GEN_7415; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7417 = 6'h37 == idx_1 ? entries_55_pc : _GEN_7416; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7418 = 6'h38 == idx_1 ? entries_56_pc : _GEN_7417; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7419 = 6'h39 == idx_1 ? entries_57_pc : _GEN_7418; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7420 = 6'h3a == idx_1 ? entries_58_pc : _GEN_7419; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7421 = 6'h3b == idx_1 ? entries_59_pc : _GEN_7420; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7422 = 6'h3c == idx_1 ? entries_60_pc : _GEN_7421; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7423 = 6'h3d == idx_1 ? entries_61_pc : _GEN_7422; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7424 = 6'h3e == idx_1 ? entries_62_pc : _GEN_7423; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7427 = 6'h1 == idx_1 ? entries_1_rfdata : entries_0_rfdata; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7428 = 6'h2 == idx_1 ? entries_2_rfdata : _GEN_7427; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7429 = 6'h3 == idx_1 ? entries_3_rfdata : _GEN_7428; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7430 = 6'h4 == idx_1 ? entries_4_rfdata : _GEN_7429; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7431 = 6'h5 == idx_1 ? entries_5_rfdata : _GEN_7430; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7432 = 6'h6 == idx_1 ? entries_6_rfdata : _GEN_7431; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7433 = 6'h7 == idx_1 ? entries_7_rfdata : _GEN_7432; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7434 = 6'h8 == idx_1 ? entries_8_rfdata : _GEN_7433; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7435 = 6'h9 == idx_1 ? entries_9_rfdata : _GEN_7434; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7436 = 6'ha == idx_1 ? entries_10_rfdata : _GEN_7435; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7437 = 6'hb == idx_1 ? entries_11_rfdata : _GEN_7436; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7438 = 6'hc == idx_1 ? entries_12_rfdata : _GEN_7437; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7439 = 6'hd == idx_1 ? entries_13_rfdata : _GEN_7438; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7440 = 6'he == idx_1 ? entries_14_rfdata : _GEN_7439; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7441 = 6'hf == idx_1 ? entries_15_rfdata : _GEN_7440; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7442 = 6'h10 == idx_1 ? entries_16_rfdata : _GEN_7441; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7443 = 6'h11 == idx_1 ? entries_17_rfdata : _GEN_7442; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7444 = 6'h12 == idx_1 ? entries_18_rfdata : _GEN_7443; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7445 = 6'h13 == idx_1 ? entries_19_rfdata : _GEN_7444; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7446 = 6'h14 == idx_1 ? entries_20_rfdata : _GEN_7445; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7447 = 6'h15 == idx_1 ? entries_21_rfdata : _GEN_7446; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7448 = 6'h16 == idx_1 ? entries_22_rfdata : _GEN_7447; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7449 = 6'h17 == idx_1 ? entries_23_rfdata : _GEN_7448; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7450 = 6'h18 == idx_1 ? entries_24_rfdata : _GEN_7449; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7451 = 6'h19 == idx_1 ? entries_25_rfdata : _GEN_7450; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7452 = 6'h1a == idx_1 ? entries_26_rfdata : _GEN_7451; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7453 = 6'h1b == idx_1 ? entries_27_rfdata : _GEN_7452; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7454 = 6'h1c == idx_1 ? entries_28_rfdata : _GEN_7453; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7455 = 6'h1d == idx_1 ? entries_29_rfdata : _GEN_7454; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7456 = 6'h1e == idx_1 ? entries_30_rfdata : _GEN_7455; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7457 = 6'h1f == idx_1 ? entries_31_rfdata : _GEN_7456; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7458 = 6'h20 == idx_1 ? entries_32_rfdata : _GEN_7457; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7459 = 6'h21 == idx_1 ? entries_33_rfdata : _GEN_7458; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7460 = 6'h22 == idx_1 ? entries_34_rfdata : _GEN_7459; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7461 = 6'h23 == idx_1 ? entries_35_rfdata : _GEN_7460; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7462 = 6'h24 == idx_1 ? entries_36_rfdata : _GEN_7461; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7463 = 6'h25 == idx_1 ? entries_37_rfdata : _GEN_7462; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7464 = 6'h26 == idx_1 ? entries_38_rfdata : _GEN_7463; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7465 = 6'h27 == idx_1 ? entries_39_rfdata : _GEN_7464; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7466 = 6'h28 == idx_1 ? entries_40_rfdata : _GEN_7465; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7467 = 6'h29 == idx_1 ? entries_41_rfdata : _GEN_7466; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7468 = 6'h2a == idx_1 ? entries_42_rfdata : _GEN_7467; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7469 = 6'h2b == idx_1 ? entries_43_rfdata : _GEN_7468; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7470 = 6'h2c == idx_1 ? entries_44_rfdata : _GEN_7469; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7471 = 6'h2d == idx_1 ? entries_45_rfdata : _GEN_7470; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7472 = 6'h2e == idx_1 ? entries_46_rfdata : _GEN_7471; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7473 = 6'h2f == idx_1 ? entries_47_rfdata : _GEN_7472; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7474 = 6'h30 == idx_1 ? entries_48_rfdata : _GEN_7473; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7475 = 6'h31 == idx_1 ? entries_49_rfdata : _GEN_7474; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7476 = 6'h32 == idx_1 ? entries_50_rfdata : _GEN_7475; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7477 = 6'h33 == idx_1 ? entries_51_rfdata : _GEN_7476; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7478 = 6'h34 == idx_1 ? entries_52_rfdata : _GEN_7477; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7479 = 6'h35 == idx_1 ? entries_53_rfdata : _GEN_7478; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7480 = 6'h36 == idx_1 ? entries_54_rfdata : _GEN_7479; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7481 = 6'h37 == idx_1 ? entries_55_rfdata : _GEN_7480; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7482 = 6'h38 == idx_1 ? entries_56_rfdata : _GEN_7481; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7483 = 6'h39 == idx_1 ? entries_57_rfdata : _GEN_7482; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7484 = 6'h3a == idx_1 ? entries_58_rfdata : _GEN_7483; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7485 = 6'h3b == idx_1 ? entries_59_rfdata : _GEN_7484; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7486 = 6'h3c == idx_1 ? entries_60_rfdata : _GEN_7485; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7487 = 6'h3d == idx_1 ? entries_61_rfdata : _GEN_7486; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_7488 = 6'h3e == idx_1 ? entries_62_rfdata : _GEN_7487; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [6:0] _GEN_8003 = 6'h1 == idx_1 ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8004 = 6'h2 == idx_1 ? entries_2_pdst : _GEN_8003; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8005 = 6'h3 == idx_1 ? entries_3_pdst : _GEN_8004; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8006 = 6'h4 == idx_1 ? entries_4_pdst : _GEN_8005; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8007 = 6'h5 == idx_1 ? entries_5_pdst : _GEN_8006; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8008 = 6'h6 == idx_1 ? entries_6_pdst : _GEN_8007; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8009 = 6'h7 == idx_1 ? entries_7_pdst : _GEN_8008; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8010 = 6'h8 == idx_1 ? entries_8_pdst : _GEN_8009; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8011 = 6'h9 == idx_1 ? entries_9_pdst : _GEN_8010; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8012 = 6'ha == idx_1 ? entries_10_pdst : _GEN_8011; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8013 = 6'hb == idx_1 ? entries_11_pdst : _GEN_8012; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8014 = 6'hc == idx_1 ? entries_12_pdst : _GEN_8013; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8015 = 6'hd == idx_1 ? entries_13_pdst : _GEN_8014; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8016 = 6'he == idx_1 ? entries_14_pdst : _GEN_8015; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8017 = 6'hf == idx_1 ? entries_15_pdst : _GEN_8016; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8018 = 6'h10 == idx_1 ? entries_16_pdst : _GEN_8017; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8019 = 6'h11 == idx_1 ? entries_17_pdst : _GEN_8018; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8020 = 6'h12 == idx_1 ? entries_18_pdst : _GEN_8019; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8021 = 6'h13 == idx_1 ? entries_19_pdst : _GEN_8020; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8022 = 6'h14 == idx_1 ? entries_20_pdst : _GEN_8021; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8023 = 6'h15 == idx_1 ? entries_21_pdst : _GEN_8022; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8024 = 6'h16 == idx_1 ? entries_22_pdst : _GEN_8023; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8025 = 6'h17 == idx_1 ? entries_23_pdst : _GEN_8024; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8026 = 6'h18 == idx_1 ? entries_24_pdst : _GEN_8025; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8027 = 6'h19 == idx_1 ? entries_25_pdst : _GEN_8026; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8028 = 6'h1a == idx_1 ? entries_26_pdst : _GEN_8027; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8029 = 6'h1b == idx_1 ? entries_27_pdst : _GEN_8028; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8030 = 6'h1c == idx_1 ? entries_28_pdst : _GEN_8029; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8031 = 6'h1d == idx_1 ? entries_29_pdst : _GEN_8030; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8032 = 6'h1e == idx_1 ? entries_30_pdst : _GEN_8031; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8033 = 6'h1f == idx_1 ? entries_31_pdst : _GEN_8032; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8034 = 6'h20 == idx_1 ? entries_32_pdst : _GEN_8033; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8035 = 6'h21 == idx_1 ? entries_33_pdst : _GEN_8034; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8036 = 6'h22 == idx_1 ? entries_34_pdst : _GEN_8035; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8037 = 6'h23 == idx_1 ? entries_35_pdst : _GEN_8036; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8038 = 6'h24 == idx_1 ? entries_36_pdst : _GEN_8037; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8039 = 6'h25 == idx_1 ? entries_37_pdst : _GEN_8038; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8040 = 6'h26 == idx_1 ? entries_38_pdst : _GEN_8039; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8041 = 6'h27 == idx_1 ? entries_39_pdst : _GEN_8040; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8042 = 6'h28 == idx_1 ? entries_40_pdst : _GEN_8041; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8043 = 6'h29 == idx_1 ? entries_41_pdst : _GEN_8042; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8044 = 6'h2a == idx_1 ? entries_42_pdst : _GEN_8043; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8045 = 6'h2b == idx_1 ? entries_43_pdst : _GEN_8044; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8046 = 6'h2c == idx_1 ? entries_44_pdst : _GEN_8045; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8047 = 6'h2d == idx_1 ? entries_45_pdst : _GEN_8046; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8048 = 6'h2e == idx_1 ? entries_46_pdst : _GEN_8047; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8049 = 6'h2f == idx_1 ? entries_47_pdst : _GEN_8048; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8050 = 6'h30 == idx_1 ? entries_48_pdst : _GEN_8049; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8051 = 6'h31 == idx_1 ? entries_49_pdst : _GEN_8050; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8052 = 6'h32 == idx_1 ? entries_50_pdst : _GEN_8051; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8053 = 6'h33 == idx_1 ? entries_51_pdst : _GEN_8052; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8054 = 6'h34 == idx_1 ? entries_52_pdst : _GEN_8053; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8055 = 6'h35 == idx_1 ? entries_53_pdst : _GEN_8054; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8056 = 6'h36 == idx_1 ? entries_54_pdst : _GEN_8055; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8057 = 6'h37 == idx_1 ? entries_55_pdst : _GEN_8056; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8058 = 6'h38 == idx_1 ? entries_56_pdst : _GEN_8057; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8059 = 6'h39 == idx_1 ? entries_57_pdst : _GEN_8058; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8060 = 6'h3a == idx_1 ? entries_58_pdst : _GEN_8059; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8061 = 6'h3b == idx_1 ? entries_59_pdst : _GEN_8060; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8062 = 6'h3c == idx_1 ? entries_60_pdst : _GEN_8061; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8063 = 6'h3d == idx_1 ? entries_61_pdst : _GEN_8062; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8064 = 6'h3e == idx_1 ? entries_62_pdst : _GEN_8063; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8067 = 6'h1 == idx_1 ? entries_1_oldPdst : entries_0_oldPdst; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8068 = 6'h2 == idx_1 ? entries_2_oldPdst : _GEN_8067; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8069 = 6'h3 == idx_1 ? entries_3_oldPdst : _GEN_8068; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8070 = 6'h4 == idx_1 ? entries_4_oldPdst : _GEN_8069; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8071 = 6'h5 == idx_1 ? entries_5_oldPdst : _GEN_8070; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8072 = 6'h6 == idx_1 ? entries_6_oldPdst : _GEN_8071; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8073 = 6'h7 == idx_1 ? entries_7_oldPdst : _GEN_8072; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8074 = 6'h8 == idx_1 ? entries_8_oldPdst : _GEN_8073; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8075 = 6'h9 == idx_1 ? entries_9_oldPdst : _GEN_8074; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8076 = 6'ha == idx_1 ? entries_10_oldPdst : _GEN_8075; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8077 = 6'hb == idx_1 ? entries_11_oldPdst : _GEN_8076; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8078 = 6'hc == idx_1 ? entries_12_oldPdst : _GEN_8077; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8079 = 6'hd == idx_1 ? entries_13_oldPdst : _GEN_8078; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8080 = 6'he == idx_1 ? entries_14_oldPdst : _GEN_8079; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8081 = 6'hf == idx_1 ? entries_15_oldPdst : _GEN_8080; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8082 = 6'h10 == idx_1 ? entries_16_oldPdst : _GEN_8081; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8083 = 6'h11 == idx_1 ? entries_17_oldPdst : _GEN_8082; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8084 = 6'h12 == idx_1 ? entries_18_oldPdst : _GEN_8083; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8085 = 6'h13 == idx_1 ? entries_19_oldPdst : _GEN_8084; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8086 = 6'h14 == idx_1 ? entries_20_oldPdst : _GEN_8085; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8087 = 6'h15 == idx_1 ? entries_21_oldPdst : _GEN_8086; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8088 = 6'h16 == idx_1 ? entries_22_oldPdst : _GEN_8087; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8089 = 6'h17 == idx_1 ? entries_23_oldPdst : _GEN_8088; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8090 = 6'h18 == idx_1 ? entries_24_oldPdst : _GEN_8089; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8091 = 6'h19 == idx_1 ? entries_25_oldPdst : _GEN_8090; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8092 = 6'h1a == idx_1 ? entries_26_oldPdst : _GEN_8091; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8093 = 6'h1b == idx_1 ? entries_27_oldPdst : _GEN_8092; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8094 = 6'h1c == idx_1 ? entries_28_oldPdst : _GEN_8093; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8095 = 6'h1d == idx_1 ? entries_29_oldPdst : _GEN_8094; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8096 = 6'h1e == idx_1 ? entries_30_oldPdst : _GEN_8095; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8097 = 6'h1f == idx_1 ? entries_31_oldPdst : _GEN_8096; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8098 = 6'h20 == idx_1 ? entries_32_oldPdst : _GEN_8097; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8099 = 6'h21 == idx_1 ? entries_33_oldPdst : _GEN_8098; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8100 = 6'h22 == idx_1 ? entries_34_oldPdst : _GEN_8099; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8101 = 6'h23 == idx_1 ? entries_35_oldPdst : _GEN_8100; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8102 = 6'h24 == idx_1 ? entries_36_oldPdst : _GEN_8101; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8103 = 6'h25 == idx_1 ? entries_37_oldPdst : _GEN_8102; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8104 = 6'h26 == idx_1 ? entries_38_oldPdst : _GEN_8103; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8105 = 6'h27 == idx_1 ? entries_39_oldPdst : _GEN_8104; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8106 = 6'h28 == idx_1 ? entries_40_oldPdst : _GEN_8105; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8107 = 6'h29 == idx_1 ? entries_41_oldPdst : _GEN_8106; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8108 = 6'h2a == idx_1 ? entries_42_oldPdst : _GEN_8107; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8109 = 6'h2b == idx_1 ? entries_43_oldPdst : _GEN_8108; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8110 = 6'h2c == idx_1 ? entries_44_oldPdst : _GEN_8109; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8111 = 6'h2d == idx_1 ? entries_45_oldPdst : _GEN_8110; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8112 = 6'h2e == idx_1 ? entries_46_oldPdst : _GEN_8111; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8113 = 6'h2f == idx_1 ? entries_47_oldPdst : _GEN_8112; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8114 = 6'h30 == idx_1 ? entries_48_oldPdst : _GEN_8113; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8115 = 6'h31 == idx_1 ? entries_49_oldPdst : _GEN_8114; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8116 = 6'h32 == idx_1 ? entries_50_oldPdst : _GEN_8115; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8117 = 6'h33 == idx_1 ? entries_51_oldPdst : _GEN_8116; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8118 = 6'h34 == idx_1 ? entries_52_oldPdst : _GEN_8117; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8119 = 6'h35 == idx_1 ? entries_53_oldPdst : _GEN_8118; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8120 = 6'h36 == idx_1 ? entries_54_oldPdst : _GEN_8119; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8121 = 6'h37 == idx_1 ? entries_55_oldPdst : _GEN_8120; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8122 = 6'h38 == idx_1 ? entries_56_oldPdst : _GEN_8121; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8123 = 6'h39 == idx_1 ? entries_57_oldPdst : _GEN_8122; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8124 = 6'h3a == idx_1 ? entries_58_oldPdst : _GEN_8123; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8125 = 6'h3b == idx_1 ? entries_59_oldPdst : _GEN_8124; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8126 = 6'h3c == idx_1 ? entries_60_oldPdst : _GEN_8125; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8127 = 6'h3d == idx_1 ? entries_61_oldPdst : _GEN_8126; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8128 = 6'h3e == idx_1 ? entries_62_oldPdst : _GEN_8127; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [4:0] _GEN_8131 = 6'h1 == idx_1 ? entries_1_ldst : entries_0_ldst; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8132 = 6'h2 == idx_1 ? entries_2_ldst : _GEN_8131; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8133 = 6'h3 == idx_1 ? entries_3_ldst : _GEN_8132; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8134 = 6'h4 == idx_1 ? entries_4_ldst : _GEN_8133; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8135 = 6'h5 == idx_1 ? entries_5_ldst : _GEN_8134; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8136 = 6'h6 == idx_1 ? entries_6_ldst : _GEN_8135; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8137 = 6'h7 == idx_1 ? entries_7_ldst : _GEN_8136; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8138 = 6'h8 == idx_1 ? entries_8_ldst : _GEN_8137; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8139 = 6'h9 == idx_1 ? entries_9_ldst : _GEN_8138; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8140 = 6'ha == idx_1 ? entries_10_ldst : _GEN_8139; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8141 = 6'hb == idx_1 ? entries_11_ldst : _GEN_8140; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8142 = 6'hc == idx_1 ? entries_12_ldst : _GEN_8141; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8143 = 6'hd == idx_1 ? entries_13_ldst : _GEN_8142; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8144 = 6'he == idx_1 ? entries_14_ldst : _GEN_8143; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8145 = 6'hf == idx_1 ? entries_15_ldst : _GEN_8144; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8146 = 6'h10 == idx_1 ? entries_16_ldst : _GEN_8145; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8147 = 6'h11 == idx_1 ? entries_17_ldst : _GEN_8146; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8148 = 6'h12 == idx_1 ? entries_18_ldst : _GEN_8147; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8149 = 6'h13 == idx_1 ? entries_19_ldst : _GEN_8148; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8150 = 6'h14 == idx_1 ? entries_20_ldst : _GEN_8149; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8151 = 6'h15 == idx_1 ? entries_21_ldst : _GEN_8150; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8152 = 6'h16 == idx_1 ? entries_22_ldst : _GEN_8151; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8153 = 6'h17 == idx_1 ? entries_23_ldst : _GEN_8152; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8154 = 6'h18 == idx_1 ? entries_24_ldst : _GEN_8153; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8155 = 6'h19 == idx_1 ? entries_25_ldst : _GEN_8154; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8156 = 6'h1a == idx_1 ? entries_26_ldst : _GEN_8155; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8157 = 6'h1b == idx_1 ? entries_27_ldst : _GEN_8156; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8158 = 6'h1c == idx_1 ? entries_28_ldst : _GEN_8157; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8159 = 6'h1d == idx_1 ? entries_29_ldst : _GEN_8158; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8160 = 6'h1e == idx_1 ? entries_30_ldst : _GEN_8159; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8161 = 6'h1f == idx_1 ? entries_31_ldst : _GEN_8160; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8162 = 6'h20 == idx_1 ? entries_32_ldst : _GEN_8161; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8163 = 6'h21 == idx_1 ? entries_33_ldst : _GEN_8162; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8164 = 6'h22 == idx_1 ? entries_34_ldst : _GEN_8163; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8165 = 6'h23 == idx_1 ? entries_35_ldst : _GEN_8164; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8166 = 6'h24 == idx_1 ? entries_36_ldst : _GEN_8165; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8167 = 6'h25 == idx_1 ? entries_37_ldst : _GEN_8166; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8168 = 6'h26 == idx_1 ? entries_38_ldst : _GEN_8167; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8169 = 6'h27 == idx_1 ? entries_39_ldst : _GEN_8168; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8170 = 6'h28 == idx_1 ? entries_40_ldst : _GEN_8169; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8171 = 6'h29 == idx_1 ? entries_41_ldst : _GEN_8170; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8172 = 6'h2a == idx_1 ? entries_42_ldst : _GEN_8171; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8173 = 6'h2b == idx_1 ? entries_43_ldst : _GEN_8172; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8174 = 6'h2c == idx_1 ? entries_44_ldst : _GEN_8173; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8175 = 6'h2d == idx_1 ? entries_45_ldst : _GEN_8174; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8176 = 6'h2e == idx_1 ? entries_46_ldst : _GEN_8175; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8177 = 6'h2f == idx_1 ? entries_47_ldst : _GEN_8176; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8178 = 6'h30 == idx_1 ? entries_48_ldst : _GEN_8177; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8179 = 6'h31 == idx_1 ? entries_49_ldst : _GEN_8178; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8180 = 6'h32 == idx_1 ? entries_50_ldst : _GEN_8179; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8181 = 6'h33 == idx_1 ? entries_51_ldst : _GEN_8180; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8182 = 6'h34 == idx_1 ? entries_52_ldst : _GEN_8181; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8183 = 6'h35 == idx_1 ? entries_53_ldst : _GEN_8182; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8184 = 6'h36 == idx_1 ? entries_54_ldst : _GEN_8183; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8185 = 6'h37 == idx_1 ? entries_55_ldst : _GEN_8184; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8186 = 6'h38 == idx_1 ? entries_56_ldst : _GEN_8185; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8187 = 6'h39 == idx_1 ? entries_57_ldst : _GEN_8186; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8188 = 6'h3a == idx_1 ? entries_58_ldst : _GEN_8187; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8189 = 6'h3b == idx_1 ? entries_59_ldst : _GEN_8188; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8190 = 6'h3c == idx_1 ? entries_60_ldst : _GEN_8189; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8191 = 6'h3d == idx_1 ? entries_61_ldst : _GEN_8190; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8192 = 6'h3e == idx_1 ? entries_62_ldst : _GEN_8191; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire  _GEN_8195 = 6'h1 == idx_1 ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8196 = 6'h2 == idx_1 ? entries_2_rfWen : _GEN_8195; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8197 = 6'h3 == idx_1 ? entries_3_rfWen : _GEN_8196; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8198 = 6'h4 == idx_1 ? entries_4_rfWen : _GEN_8197; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8199 = 6'h5 == idx_1 ? entries_5_rfWen : _GEN_8198; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8200 = 6'h6 == idx_1 ? entries_6_rfWen : _GEN_8199; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8201 = 6'h7 == idx_1 ? entries_7_rfWen : _GEN_8200; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8202 = 6'h8 == idx_1 ? entries_8_rfWen : _GEN_8201; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8203 = 6'h9 == idx_1 ? entries_9_rfWen : _GEN_8202; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8204 = 6'ha == idx_1 ? entries_10_rfWen : _GEN_8203; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8205 = 6'hb == idx_1 ? entries_11_rfWen : _GEN_8204; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8206 = 6'hc == idx_1 ? entries_12_rfWen : _GEN_8205; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8207 = 6'hd == idx_1 ? entries_13_rfWen : _GEN_8206; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8208 = 6'he == idx_1 ? entries_14_rfWen : _GEN_8207; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8209 = 6'hf == idx_1 ? entries_15_rfWen : _GEN_8208; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8210 = 6'h10 == idx_1 ? entries_16_rfWen : _GEN_8209; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8211 = 6'h11 == idx_1 ? entries_17_rfWen : _GEN_8210; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8212 = 6'h12 == idx_1 ? entries_18_rfWen : _GEN_8211; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8213 = 6'h13 == idx_1 ? entries_19_rfWen : _GEN_8212; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8214 = 6'h14 == idx_1 ? entries_20_rfWen : _GEN_8213; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8215 = 6'h15 == idx_1 ? entries_21_rfWen : _GEN_8214; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8216 = 6'h16 == idx_1 ? entries_22_rfWen : _GEN_8215; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8217 = 6'h17 == idx_1 ? entries_23_rfWen : _GEN_8216; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8218 = 6'h18 == idx_1 ? entries_24_rfWen : _GEN_8217; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8219 = 6'h19 == idx_1 ? entries_25_rfWen : _GEN_8218; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8220 = 6'h1a == idx_1 ? entries_26_rfWen : _GEN_8219; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8221 = 6'h1b == idx_1 ? entries_27_rfWen : _GEN_8220; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8222 = 6'h1c == idx_1 ? entries_28_rfWen : _GEN_8221; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8223 = 6'h1d == idx_1 ? entries_29_rfWen : _GEN_8222; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8224 = 6'h1e == idx_1 ? entries_30_rfWen : _GEN_8223; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8225 = 6'h1f == idx_1 ? entries_31_rfWen : _GEN_8224; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8226 = 6'h20 == idx_1 ? entries_32_rfWen : _GEN_8225; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8227 = 6'h21 == idx_1 ? entries_33_rfWen : _GEN_8226; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8228 = 6'h22 == idx_1 ? entries_34_rfWen : _GEN_8227; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8229 = 6'h23 == idx_1 ? entries_35_rfWen : _GEN_8228; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8230 = 6'h24 == idx_1 ? entries_36_rfWen : _GEN_8229; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8231 = 6'h25 == idx_1 ? entries_37_rfWen : _GEN_8230; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8232 = 6'h26 == idx_1 ? entries_38_rfWen : _GEN_8231; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8233 = 6'h27 == idx_1 ? entries_39_rfWen : _GEN_8232; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8234 = 6'h28 == idx_1 ? entries_40_rfWen : _GEN_8233; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8235 = 6'h29 == idx_1 ? entries_41_rfWen : _GEN_8234; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8236 = 6'h2a == idx_1 ? entries_42_rfWen : _GEN_8235; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8237 = 6'h2b == idx_1 ? entries_43_rfWen : _GEN_8236; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8238 = 6'h2c == idx_1 ? entries_44_rfWen : _GEN_8237; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8239 = 6'h2d == idx_1 ? entries_45_rfWen : _GEN_8238; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8240 = 6'h2e == idx_1 ? entries_46_rfWen : _GEN_8239; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8241 = 6'h2f == idx_1 ? entries_47_rfWen : _GEN_8240; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8242 = 6'h30 == idx_1 ? entries_48_rfWen : _GEN_8241; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8243 = 6'h31 == idx_1 ? entries_49_rfWen : _GEN_8242; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8244 = 6'h32 == idx_1 ? entries_50_rfWen : _GEN_8243; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8245 = 6'h33 == idx_1 ? entries_51_rfWen : _GEN_8244; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8246 = 6'h34 == idx_1 ? entries_52_rfWen : _GEN_8245; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8247 = 6'h35 == idx_1 ? entries_53_rfWen : _GEN_8246; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8248 = 6'h36 == idx_1 ? entries_54_rfWen : _GEN_8247; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8249 = 6'h37 == idx_1 ? entries_55_rfWen : _GEN_8248; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8250 = 6'h38 == idx_1 ? entries_56_rfWen : _GEN_8249; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8251 = 6'h39 == idx_1 ? entries_57_rfWen : _GEN_8250; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8252 = 6'h3a == idx_1 ? entries_58_rfWen : _GEN_8251; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8253 = 6'h3b == idx_1 ? entries_59_rfWen : _GEN_8252; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8254 = 6'h3c == idx_1 ? entries_60_rfWen : _GEN_8253; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8255 = 6'h3d == idx_1 ? entries_61_rfWen : _GEN_8254; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8256 = 6'h3e == idx_1 ? entries_62_rfWen : _GEN_8255; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire [31:0] _GEN_8259 = 6'h1 == idx_1 ? entries_1_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8260 = 6'h2 == idx_1 ? entries_2_pc : _GEN_8259; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8261 = 6'h3 == idx_1 ? entries_3_pc : _GEN_8260; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8262 = 6'h4 == idx_1 ? entries_4_pc : _GEN_8261; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8263 = 6'h5 == idx_1 ? entries_5_pc : _GEN_8262; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8264 = 6'h6 == idx_1 ? entries_6_pc : _GEN_8263; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8265 = 6'h7 == idx_1 ? entries_7_pc : _GEN_8264; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8266 = 6'h8 == idx_1 ? entries_8_pc : _GEN_8265; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8267 = 6'h9 == idx_1 ? entries_9_pc : _GEN_8266; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8268 = 6'ha == idx_1 ? entries_10_pc : _GEN_8267; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8269 = 6'hb == idx_1 ? entries_11_pc : _GEN_8268; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8270 = 6'hc == idx_1 ? entries_12_pc : _GEN_8269; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8271 = 6'hd == idx_1 ? entries_13_pc : _GEN_8270; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8272 = 6'he == idx_1 ? entries_14_pc : _GEN_8271; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8273 = 6'hf == idx_1 ? entries_15_pc : _GEN_8272; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8274 = 6'h10 == idx_1 ? entries_16_pc : _GEN_8273; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8275 = 6'h11 == idx_1 ? entries_17_pc : _GEN_8274; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8276 = 6'h12 == idx_1 ? entries_18_pc : _GEN_8275; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8277 = 6'h13 == idx_1 ? entries_19_pc : _GEN_8276; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8278 = 6'h14 == idx_1 ? entries_20_pc : _GEN_8277; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8279 = 6'h15 == idx_1 ? entries_21_pc : _GEN_8278; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8280 = 6'h16 == idx_1 ? entries_22_pc : _GEN_8279; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8281 = 6'h17 == idx_1 ? entries_23_pc : _GEN_8280; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8282 = 6'h18 == idx_1 ? entries_24_pc : _GEN_8281; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8283 = 6'h19 == idx_1 ? entries_25_pc : _GEN_8282; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8284 = 6'h1a == idx_1 ? entries_26_pc : _GEN_8283; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8285 = 6'h1b == idx_1 ? entries_27_pc : _GEN_8284; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8286 = 6'h1c == idx_1 ? entries_28_pc : _GEN_8285; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8287 = 6'h1d == idx_1 ? entries_29_pc : _GEN_8286; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8288 = 6'h1e == idx_1 ? entries_30_pc : _GEN_8287; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8289 = 6'h1f == idx_1 ? entries_31_pc : _GEN_8288; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8290 = 6'h20 == idx_1 ? entries_32_pc : _GEN_8289; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8291 = 6'h21 == idx_1 ? entries_33_pc : _GEN_8290; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8292 = 6'h22 == idx_1 ? entries_34_pc : _GEN_8291; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8293 = 6'h23 == idx_1 ? entries_35_pc : _GEN_8292; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8294 = 6'h24 == idx_1 ? entries_36_pc : _GEN_8293; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8295 = 6'h25 == idx_1 ? entries_37_pc : _GEN_8294; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8296 = 6'h26 == idx_1 ? entries_38_pc : _GEN_8295; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8297 = 6'h27 == idx_1 ? entries_39_pc : _GEN_8296; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8298 = 6'h28 == idx_1 ? entries_40_pc : _GEN_8297; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8299 = 6'h29 == idx_1 ? entries_41_pc : _GEN_8298; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8300 = 6'h2a == idx_1 ? entries_42_pc : _GEN_8299; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8301 = 6'h2b == idx_1 ? entries_43_pc : _GEN_8300; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8302 = 6'h2c == idx_1 ? entries_44_pc : _GEN_8301; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8303 = 6'h2d == idx_1 ? entries_45_pc : _GEN_8302; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8304 = 6'h2e == idx_1 ? entries_46_pc : _GEN_8303; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8305 = 6'h2f == idx_1 ? entries_47_pc : _GEN_8304; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8306 = 6'h30 == idx_1 ? entries_48_pc : _GEN_8305; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8307 = 6'h31 == idx_1 ? entries_49_pc : _GEN_8306; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8308 = 6'h32 == idx_1 ? entries_50_pc : _GEN_8307; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8309 = 6'h33 == idx_1 ? entries_51_pc : _GEN_8308; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8310 = 6'h34 == idx_1 ? entries_52_pc : _GEN_8309; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8311 = 6'h35 == idx_1 ? entries_53_pc : _GEN_8310; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8312 = 6'h36 == idx_1 ? entries_54_pc : _GEN_8311; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8313 = 6'h37 == idx_1 ? entries_55_pc : _GEN_8312; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8314 = 6'h38 == idx_1 ? entries_56_pc : _GEN_8313; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8315 = 6'h39 == idx_1 ? entries_57_pc : _GEN_8314; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8316 = 6'h3a == idx_1 ? entries_58_pc : _GEN_8315; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8317 = 6'h3b == idx_1 ? entries_59_pc : _GEN_8316; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8318 = 6'h3c == idx_1 ? entries_60_pc : _GEN_8317; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8319 = 6'h3d == idx_1 ? entries_61_pc : _GEN_8318; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8320 = 6'h3e == idx_1 ? entries_62_pc : _GEN_8319; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8323 = 6'h1 == idx_1 ? entries_1_rfdata : entries_0_rfdata; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8324 = 6'h2 == idx_1 ? entries_2_rfdata : _GEN_8323; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8325 = 6'h3 == idx_1 ? entries_3_rfdata : _GEN_8324; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8326 = 6'h4 == idx_1 ? entries_4_rfdata : _GEN_8325; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8327 = 6'h5 == idx_1 ? entries_5_rfdata : _GEN_8326; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8328 = 6'h6 == idx_1 ? entries_6_rfdata : _GEN_8327; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8329 = 6'h7 == idx_1 ? entries_7_rfdata : _GEN_8328; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8330 = 6'h8 == idx_1 ? entries_8_rfdata : _GEN_8329; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8331 = 6'h9 == idx_1 ? entries_9_rfdata : _GEN_8330; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8332 = 6'ha == idx_1 ? entries_10_rfdata : _GEN_8331; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8333 = 6'hb == idx_1 ? entries_11_rfdata : _GEN_8332; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8334 = 6'hc == idx_1 ? entries_12_rfdata : _GEN_8333; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8335 = 6'hd == idx_1 ? entries_13_rfdata : _GEN_8334; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8336 = 6'he == idx_1 ? entries_14_rfdata : _GEN_8335; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8337 = 6'hf == idx_1 ? entries_15_rfdata : _GEN_8336; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8338 = 6'h10 == idx_1 ? entries_16_rfdata : _GEN_8337; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8339 = 6'h11 == idx_1 ? entries_17_rfdata : _GEN_8338; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8340 = 6'h12 == idx_1 ? entries_18_rfdata : _GEN_8339; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8341 = 6'h13 == idx_1 ? entries_19_rfdata : _GEN_8340; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8342 = 6'h14 == idx_1 ? entries_20_rfdata : _GEN_8341; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8343 = 6'h15 == idx_1 ? entries_21_rfdata : _GEN_8342; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8344 = 6'h16 == idx_1 ? entries_22_rfdata : _GEN_8343; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8345 = 6'h17 == idx_1 ? entries_23_rfdata : _GEN_8344; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8346 = 6'h18 == idx_1 ? entries_24_rfdata : _GEN_8345; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8347 = 6'h19 == idx_1 ? entries_25_rfdata : _GEN_8346; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8348 = 6'h1a == idx_1 ? entries_26_rfdata : _GEN_8347; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8349 = 6'h1b == idx_1 ? entries_27_rfdata : _GEN_8348; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8350 = 6'h1c == idx_1 ? entries_28_rfdata : _GEN_8349; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8351 = 6'h1d == idx_1 ? entries_29_rfdata : _GEN_8350; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8352 = 6'h1e == idx_1 ? entries_30_rfdata : _GEN_8351; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8353 = 6'h1f == idx_1 ? entries_31_rfdata : _GEN_8352; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8354 = 6'h20 == idx_1 ? entries_32_rfdata : _GEN_8353; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8355 = 6'h21 == idx_1 ? entries_33_rfdata : _GEN_8354; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8356 = 6'h22 == idx_1 ? entries_34_rfdata : _GEN_8355; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8357 = 6'h23 == idx_1 ? entries_35_rfdata : _GEN_8356; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8358 = 6'h24 == idx_1 ? entries_36_rfdata : _GEN_8357; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8359 = 6'h25 == idx_1 ? entries_37_rfdata : _GEN_8358; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8360 = 6'h26 == idx_1 ? entries_38_rfdata : _GEN_8359; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8361 = 6'h27 == idx_1 ? entries_39_rfdata : _GEN_8360; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8362 = 6'h28 == idx_1 ? entries_40_rfdata : _GEN_8361; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8363 = 6'h29 == idx_1 ? entries_41_rfdata : _GEN_8362; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8364 = 6'h2a == idx_1 ? entries_42_rfdata : _GEN_8363; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8365 = 6'h2b == idx_1 ? entries_43_rfdata : _GEN_8364; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8366 = 6'h2c == idx_1 ? entries_44_rfdata : _GEN_8365; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8367 = 6'h2d == idx_1 ? entries_45_rfdata : _GEN_8366; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8368 = 6'h2e == idx_1 ? entries_46_rfdata : _GEN_8367; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8369 = 6'h2f == idx_1 ? entries_47_rfdata : _GEN_8368; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8370 = 6'h30 == idx_1 ? entries_48_rfdata : _GEN_8369; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8371 = 6'h31 == idx_1 ? entries_49_rfdata : _GEN_8370; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8372 = 6'h32 == idx_1 ? entries_50_rfdata : _GEN_8371; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8373 = 6'h33 == idx_1 ? entries_51_rfdata : _GEN_8372; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8374 = 6'h34 == idx_1 ? entries_52_rfdata : _GEN_8373; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8375 = 6'h35 == idx_1 ? entries_53_rfdata : _GEN_8374; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8376 = 6'h36 == idx_1 ? entries_54_rfdata : _GEN_8375; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8377 = 6'h37 == idx_1 ? entries_55_rfdata : _GEN_8376; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8378 = 6'h38 == idx_1 ? entries_56_rfdata : _GEN_8377; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8379 = 6'h39 == idx_1 ? entries_57_rfdata : _GEN_8378; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8380 = 6'h3a == idx_1 ? entries_58_rfdata : _GEN_8379; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8381 = 6'h3b == idx_1 ? entries_59_rfdata : _GEN_8380; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8382 = 6'h3c == idx_1 ? entries_60_rfdata : _GEN_8381; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8383 = 6'h3d == idx_1 ? entries_61_rfdata : _GEN_8382; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8384 = 6'h3e == idx_1 ? entries_62_rfdata : _GEN_8383; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
   wire [5:0] idx_2 = deqPtr_value + 6'h2; // @[src/main/scala/backend/Rob.scala 154:31]
-  wire  _GEN_7491 = 6'h1 == idx_2 ? entries_1_valid : entries_0_valid; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7492 = 6'h2 == idx_2 ? entries_2_valid : _GEN_7491; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7493 = 6'h3 == idx_2 ? entries_3_valid : _GEN_7492; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7494 = 6'h4 == idx_2 ? entries_4_valid : _GEN_7493; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7495 = 6'h5 == idx_2 ? entries_5_valid : _GEN_7494; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7496 = 6'h6 == idx_2 ? entries_6_valid : _GEN_7495; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7497 = 6'h7 == idx_2 ? entries_7_valid : _GEN_7496; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7498 = 6'h8 == idx_2 ? entries_8_valid : _GEN_7497; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7499 = 6'h9 == idx_2 ? entries_9_valid : _GEN_7498; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7500 = 6'ha == idx_2 ? entries_10_valid : _GEN_7499; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7501 = 6'hb == idx_2 ? entries_11_valid : _GEN_7500; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7502 = 6'hc == idx_2 ? entries_12_valid : _GEN_7501; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7503 = 6'hd == idx_2 ? entries_13_valid : _GEN_7502; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7504 = 6'he == idx_2 ? entries_14_valid : _GEN_7503; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7505 = 6'hf == idx_2 ? entries_15_valid : _GEN_7504; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7506 = 6'h10 == idx_2 ? entries_16_valid : _GEN_7505; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7507 = 6'h11 == idx_2 ? entries_17_valid : _GEN_7506; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7508 = 6'h12 == idx_2 ? entries_18_valid : _GEN_7507; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7509 = 6'h13 == idx_2 ? entries_19_valid : _GEN_7508; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7510 = 6'h14 == idx_2 ? entries_20_valid : _GEN_7509; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7511 = 6'h15 == idx_2 ? entries_21_valid : _GEN_7510; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7512 = 6'h16 == idx_2 ? entries_22_valid : _GEN_7511; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7513 = 6'h17 == idx_2 ? entries_23_valid : _GEN_7512; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7514 = 6'h18 == idx_2 ? entries_24_valid : _GEN_7513; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7515 = 6'h19 == idx_2 ? entries_25_valid : _GEN_7514; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7516 = 6'h1a == idx_2 ? entries_26_valid : _GEN_7515; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7517 = 6'h1b == idx_2 ? entries_27_valid : _GEN_7516; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7518 = 6'h1c == idx_2 ? entries_28_valid : _GEN_7517; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7519 = 6'h1d == idx_2 ? entries_29_valid : _GEN_7518; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7520 = 6'h1e == idx_2 ? entries_30_valid : _GEN_7519; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7521 = 6'h1f == idx_2 ? entries_31_valid : _GEN_7520; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7522 = 6'h20 == idx_2 ? entries_32_valid : _GEN_7521; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7523 = 6'h21 == idx_2 ? entries_33_valid : _GEN_7522; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7524 = 6'h22 == idx_2 ? entries_34_valid : _GEN_7523; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7525 = 6'h23 == idx_2 ? entries_35_valid : _GEN_7524; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7526 = 6'h24 == idx_2 ? entries_36_valid : _GEN_7525; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7527 = 6'h25 == idx_2 ? entries_37_valid : _GEN_7526; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7528 = 6'h26 == idx_2 ? entries_38_valid : _GEN_7527; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7529 = 6'h27 == idx_2 ? entries_39_valid : _GEN_7528; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7530 = 6'h28 == idx_2 ? entries_40_valid : _GEN_7529; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7531 = 6'h29 == idx_2 ? entries_41_valid : _GEN_7530; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7532 = 6'h2a == idx_2 ? entries_42_valid : _GEN_7531; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7533 = 6'h2b == idx_2 ? entries_43_valid : _GEN_7532; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7534 = 6'h2c == idx_2 ? entries_44_valid : _GEN_7533; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7535 = 6'h2d == idx_2 ? entries_45_valid : _GEN_7534; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7536 = 6'h2e == idx_2 ? entries_46_valid : _GEN_7535; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7537 = 6'h2f == idx_2 ? entries_47_valid : _GEN_7536; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7538 = 6'h30 == idx_2 ? entries_48_valid : _GEN_7537; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7539 = 6'h31 == idx_2 ? entries_49_valid : _GEN_7538; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7540 = 6'h32 == idx_2 ? entries_50_valid : _GEN_7539; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7541 = 6'h33 == idx_2 ? entries_51_valid : _GEN_7540; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7542 = 6'h34 == idx_2 ? entries_52_valid : _GEN_7541; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7543 = 6'h35 == idx_2 ? entries_53_valid : _GEN_7542; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7544 = 6'h36 == idx_2 ? entries_54_valid : _GEN_7543; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7545 = 6'h37 == idx_2 ? entries_55_valid : _GEN_7544; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7546 = 6'h38 == idx_2 ? entries_56_valid : _GEN_7545; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7547 = 6'h39 == idx_2 ? entries_57_valid : _GEN_7546; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7548 = 6'h3a == idx_2 ? entries_58_valid : _GEN_7547; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7549 = 6'h3b == idx_2 ? entries_59_valid : _GEN_7548; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7550 = 6'h3c == idx_2 ? entries_60_valid : _GEN_7549; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7551 = 6'h3d == idx_2 ? entries_61_valid : _GEN_7550; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7552 = 6'h3e == idx_2 ? entries_62_valid : _GEN_7551; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7553 = 6'h3f == idx_2 ? entries_63_valid : _GEN_7552; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7555 = 6'h1 == idx_2 ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7556 = 6'h2 == idx_2 ? entries_2_writtenBack : _GEN_7555; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7557 = 6'h3 == idx_2 ? entries_3_writtenBack : _GEN_7556; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7558 = 6'h4 == idx_2 ? entries_4_writtenBack : _GEN_7557; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7559 = 6'h5 == idx_2 ? entries_5_writtenBack : _GEN_7558; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7560 = 6'h6 == idx_2 ? entries_6_writtenBack : _GEN_7559; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7561 = 6'h7 == idx_2 ? entries_7_writtenBack : _GEN_7560; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7562 = 6'h8 == idx_2 ? entries_8_writtenBack : _GEN_7561; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7563 = 6'h9 == idx_2 ? entries_9_writtenBack : _GEN_7562; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7564 = 6'ha == idx_2 ? entries_10_writtenBack : _GEN_7563; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7565 = 6'hb == idx_2 ? entries_11_writtenBack : _GEN_7564; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7566 = 6'hc == idx_2 ? entries_12_writtenBack : _GEN_7565; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7567 = 6'hd == idx_2 ? entries_13_writtenBack : _GEN_7566; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7568 = 6'he == idx_2 ? entries_14_writtenBack : _GEN_7567; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7569 = 6'hf == idx_2 ? entries_15_writtenBack : _GEN_7568; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7570 = 6'h10 == idx_2 ? entries_16_writtenBack : _GEN_7569; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7571 = 6'h11 == idx_2 ? entries_17_writtenBack : _GEN_7570; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7572 = 6'h12 == idx_2 ? entries_18_writtenBack : _GEN_7571; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7573 = 6'h13 == idx_2 ? entries_19_writtenBack : _GEN_7572; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7574 = 6'h14 == idx_2 ? entries_20_writtenBack : _GEN_7573; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7575 = 6'h15 == idx_2 ? entries_21_writtenBack : _GEN_7574; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7576 = 6'h16 == idx_2 ? entries_22_writtenBack : _GEN_7575; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7577 = 6'h17 == idx_2 ? entries_23_writtenBack : _GEN_7576; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7578 = 6'h18 == idx_2 ? entries_24_writtenBack : _GEN_7577; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7579 = 6'h19 == idx_2 ? entries_25_writtenBack : _GEN_7578; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7580 = 6'h1a == idx_2 ? entries_26_writtenBack : _GEN_7579; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7581 = 6'h1b == idx_2 ? entries_27_writtenBack : _GEN_7580; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7582 = 6'h1c == idx_2 ? entries_28_writtenBack : _GEN_7581; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7583 = 6'h1d == idx_2 ? entries_29_writtenBack : _GEN_7582; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7584 = 6'h1e == idx_2 ? entries_30_writtenBack : _GEN_7583; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7585 = 6'h1f == idx_2 ? entries_31_writtenBack : _GEN_7584; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7586 = 6'h20 == idx_2 ? entries_32_writtenBack : _GEN_7585; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7587 = 6'h21 == idx_2 ? entries_33_writtenBack : _GEN_7586; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7588 = 6'h22 == idx_2 ? entries_34_writtenBack : _GEN_7587; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7589 = 6'h23 == idx_2 ? entries_35_writtenBack : _GEN_7588; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7590 = 6'h24 == idx_2 ? entries_36_writtenBack : _GEN_7589; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7591 = 6'h25 == idx_2 ? entries_37_writtenBack : _GEN_7590; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7592 = 6'h26 == idx_2 ? entries_38_writtenBack : _GEN_7591; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7593 = 6'h27 == idx_2 ? entries_39_writtenBack : _GEN_7592; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7594 = 6'h28 == idx_2 ? entries_40_writtenBack : _GEN_7593; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7595 = 6'h29 == idx_2 ? entries_41_writtenBack : _GEN_7594; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7596 = 6'h2a == idx_2 ? entries_42_writtenBack : _GEN_7595; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7597 = 6'h2b == idx_2 ? entries_43_writtenBack : _GEN_7596; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7598 = 6'h2c == idx_2 ? entries_44_writtenBack : _GEN_7597; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7599 = 6'h2d == idx_2 ? entries_45_writtenBack : _GEN_7598; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7600 = 6'h2e == idx_2 ? entries_46_writtenBack : _GEN_7599; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7601 = 6'h2f == idx_2 ? entries_47_writtenBack : _GEN_7600; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7602 = 6'h30 == idx_2 ? entries_48_writtenBack : _GEN_7601; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7603 = 6'h31 == idx_2 ? entries_49_writtenBack : _GEN_7602; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7604 = 6'h32 == idx_2 ? entries_50_writtenBack : _GEN_7603; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7605 = 6'h33 == idx_2 ? entries_51_writtenBack : _GEN_7604; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7606 = 6'h34 == idx_2 ? entries_52_writtenBack : _GEN_7605; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7607 = 6'h35 == idx_2 ? entries_53_writtenBack : _GEN_7606; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7608 = 6'h36 == idx_2 ? entries_54_writtenBack : _GEN_7607; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7609 = 6'h37 == idx_2 ? entries_55_writtenBack : _GEN_7608; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7610 = 6'h38 == idx_2 ? entries_56_writtenBack : _GEN_7609; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7611 = 6'h39 == idx_2 ? entries_57_writtenBack : _GEN_7610; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7612 = 6'h3a == idx_2 ? entries_58_writtenBack : _GEN_7611; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7613 = 6'h3b == idx_2 ? entries_59_writtenBack : _GEN_7612; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7614 = 6'h3c == idx_2 ? entries_60_writtenBack : _GEN_7613; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7615 = 6'h3d == idx_2 ? entries_61_writtenBack : _GEN_7614; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7616 = 6'h3e == idx_2 ? entries_62_writtenBack : _GEN_7615; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  _GEN_7617 = 6'h3f == idx_2 ? entries_63_writtenBack : _GEN_7616; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
-  wire  thisReady_2 = _GEN_7553 & _GEN_7617; // @[src/main/scala/backend/Rob.scala 157:33]
-  wire [9:0] _GEN_7619 = 6'h1 == idx_2 ? entries_1_excpVec : entries_0_excpVec; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7620 = 6'h2 == idx_2 ? entries_2_excpVec : _GEN_7619; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7621 = 6'h3 == idx_2 ? entries_3_excpVec : _GEN_7620; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7622 = 6'h4 == idx_2 ? entries_4_excpVec : _GEN_7621; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7623 = 6'h5 == idx_2 ? entries_5_excpVec : _GEN_7622; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7624 = 6'h6 == idx_2 ? entries_6_excpVec : _GEN_7623; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7625 = 6'h7 == idx_2 ? entries_7_excpVec : _GEN_7624; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7626 = 6'h8 == idx_2 ? entries_8_excpVec : _GEN_7625; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7627 = 6'h9 == idx_2 ? entries_9_excpVec : _GEN_7626; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7628 = 6'ha == idx_2 ? entries_10_excpVec : _GEN_7627; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7629 = 6'hb == idx_2 ? entries_11_excpVec : _GEN_7628; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7630 = 6'hc == idx_2 ? entries_12_excpVec : _GEN_7629; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7631 = 6'hd == idx_2 ? entries_13_excpVec : _GEN_7630; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7632 = 6'he == idx_2 ? entries_14_excpVec : _GEN_7631; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7633 = 6'hf == idx_2 ? entries_15_excpVec : _GEN_7632; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7634 = 6'h10 == idx_2 ? entries_16_excpVec : _GEN_7633; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7635 = 6'h11 == idx_2 ? entries_17_excpVec : _GEN_7634; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7636 = 6'h12 == idx_2 ? entries_18_excpVec : _GEN_7635; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7637 = 6'h13 == idx_2 ? entries_19_excpVec : _GEN_7636; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7638 = 6'h14 == idx_2 ? entries_20_excpVec : _GEN_7637; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7639 = 6'h15 == idx_2 ? entries_21_excpVec : _GEN_7638; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7640 = 6'h16 == idx_2 ? entries_22_excpVec : _GEN_7639; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7641 = 6'h17 == idx_2 ? entries_23_excpVec : _GEN_7640; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7642 = 6'h18 == idx_2 ? entries_24_excpVec : _GEN_7641; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7643 = 6'h19 == idx_2 ? entries_25_excpVec : _GEN_7642; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7644 = 6'h1a == idx_2 ? entries_26_excpVec : _GEN_7643; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7645 = 6'h1b == idx_2 ? entries_27_excpVec : _GEN_7644; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7646 = 6'h1c == idx_2 ? entries_28_excpVec : _GEN_7645; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7647 = 6'h1d == idx_2 ? entries_29_excpVec : _GEN_7646; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7648 = 6'h1e == idx_2 ? entries_30_excpVec : _GEN_7647; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7649 = 6'h1f == idx_2 ? entries_31_excpVec : _GEN_7648; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7650 = 6'h20 == idx_2 ? entries_32_excpVec : _GEN_7649; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7651 = 6'h21 == idx_2 ? entries_33_excpVec : _GEN_7650; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7652 = 6'h22 == idx_2 ? entries_34_excpVec : _GEN_7651; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7653 = 6'h23 == idx_2 ? entries_35_excpVec : _GEN_7652; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7654 = 6'h24 == idx_2 ? entries_36_excpVec : _GEN_7653; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7655 = 6'h25 == idx_2 ? entries_37_excpVec : _GEN_7654; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7656 = 6'h26 == idx_2 ? entries_38_excpVec : _GEN_7655; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7657 = 6'h27 == idx_2 ? entries_39_excpVec : _GEN_7656; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7658 = 6'h28 == idx_2 ? entries_40_excpVec : _GEN_7657; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7659 = 6'h29 == idx_2 ? entries_41_excpVec : _GEN_7658; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7660 = 6'h2a == idx_2 ? entries_42_excpVec : _GEN_7659; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7661 = 6'h2b == idx_2 ? entries_43_excpVec : _GEN_7660; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7662 = 6'h2c == idx_2 ? entries_44_excpVec : _GEN_7661; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7663 = 6'h2d == idx_2 ? entries_45_excpVec : _GEN_7662; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7664 = 6'h2e == idx_2 ? entries_46_excpVec : _GEN_7663; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7665 = 6'h2f == idx_2 ? entries_47_excpVec : _GEN_7664; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7666 = 6'h30 == idx_2 ? entries_48_excpVec : _GEN_7665; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7667 = 6'h31 == idx_2 ? entries_49_excpVec : _GEN_7666; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7668 = 6'h32 == idx_2 ? entries_50_excpVec : _GEN_7667; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7669 = 6'h33 == idx_2 ? entries_51_excpVec : _GEN_7668; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7670 = 6'h34 == idx_2 ? entries_52_excpVec : _GEN_7669; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7671 = 6'h35 == idx_2 ? entries_53_excpVec : _GEN_7670; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7672 = 6'h36 == idx_2 ? entries_54_excpVec : _GEN_7671; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7673 = 6'h37 == idx_2 ? entries_55_excpVec : _GEN_7672; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7674 = 6'h38 == idx_2 ? entries_56_excpVec : _GEN_7673; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7675 = 6'h39 == idx_2 ? entries_57_excpVec : _GEN_7674; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7676 = 6'h3a == idx_2 ? entries_58_excpVec : _GEN_7675; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7677 = 6'h3b == idx_2 ? entries_59_excpVec : _GEN_7676; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7678 = 6'h3c == idx_2 ? entries_60_excpVec : _GEN_7677; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7679 = 6'h3d == idx_2 ? entries_61_excpVec : _GEN_7678; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7680 = 6'h3e == idx_2 ? entries_62_excpVec : _GEN_7679; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire [9:0] _GEN_7681 = 6'h3f == idx_2 ? entries_63_excpVec : _GEN_7680; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
-  wire  hasExcp_2 = |_GEN_7681; // @[src/main/scala/backend/Rob.scala 158:35]
+  wire  _GEN_8387 = 6'h1 == idx_2 ? entries_1_valid : entries_0_valid; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8388 = 6'h2 == idx_2 ? entries_2_valid : _GEN_8387; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8389 = 6'h3 == idx_2 ? entries_3_valid : _GEN_8388; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8390 = 6'h4 == idx_2 ? entries_4_valid : _GEN_8389; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8391 = 6'h5 == idx_2 ? entries_5_valid : _GEN_8390; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8392 = 6'h6 == idx_2 ? entries_6_valid : _GEN_8391; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8393 = 6'h7 == idx_2 ? entries_7_valid : _GEN_8392; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8394 = 6'h8 == idx_2 ? entries_8_valid : _GEN_8393; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8395 = 6'h9 == idx_2 ? entries_9_valid : _GEN_8394; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8396 = 6'ha == idx_2 ? entries_10_valid : _GEN_8395; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8397 = 6'hb == idx_2 ? entries_11_valid : _GEN_8396; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8398 = 6'hc == idx_2 ? entries_12_valid : _GEN_8397; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8399 = 6'hd == idx_2 ? entries_13_valid : _GEN_8398; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8400 = 6'he == idx_2 ? entries_14_valid : _GEN_8399; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8401 = 6'hf == idx_2 ? entries_15_valid : _GEN_8400; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8402 = 6'h10 == idx_2 ? entries_16_valid : _GEN_8401; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8403 = 6'h11 == idx_2 ? entries_17_valid : _GEN_8402; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8404 = 6'h12 == idx_2 ? entries_18_valid : _GEN_8403; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8405 = 6'h13 == idx_2 ? entries_19_valid : _GEN_8404; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8406 = 6'h14 == idx_2 ? entries_20_valid : _GEN_8405; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8407 = 6'h15 == idx_2 ? entries_21_valid : _GEN_8406; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8408 = 6'h16 == idx_2 ? entries_22_valid : _GEN_8407; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8409 = 6'h17 == idx_2 ? entries_23_valid : _GEN_8408; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8410 = 6'h18 == idx_2 ? entries_24_valid : _GEN_8409; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8411 = 6'h19 == idx_2 ? entries_25_valid : _GEN_8410; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8412 = 6'h1a == idx_2 ? entries_26_valid : _GEN_8411; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8413 = 6'h1b == idx_2 ? entries_27_valid : _GEN_8412; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8414 = 6'h1c == idx_2 ? entries_28_valid : _GEN_8413; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8415 = 6'h1d == idx_2 ? entries_29_valid : _GEN_8414; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8416 = 6'h1e == idx_2 ? entries_30_valid : _GEN_8415; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8417 = 6'h1f == idx_2 ? entries_31_valid : _GEN_8416; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8418 = 6'h20 == idx_2 ? entries_32_valid : _GEN_8417; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8419 = 6'h21 == idx_2 ? entries_33_valid : _GEN_8418; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8420 = 6'h22 == idx_2 ? entries_34_valid : _GEN_8419; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8421 = 6'h23 == idx_2 ? entries_35_valid : _GEN_8420; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8422 = 6'h24 == idx_2 ? entries_36_valid : _GEN_8421; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8423 = 6'h25 == idx_2 ? entries_37_valid : _GEN_8422; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8424 = 6'h26 == idx_2 ? entries_38_valid : _GEN_8423; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8425 = 6'h27 == idx_2 ? entries_39_valid : _GEN_8424; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8426 = 6'h28 == idx_2 ? entries_40_valid : _GEN_8425; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8427 = 6'h29 == idx_2 ? entries_41_valid : _GEN_8426; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8428 = 6'h2a == idx_2 ? entries_42_valid : _GEN_8427; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8429 = 6'h2b == idx_2 ? entries_43_valid : _GEN_8428; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8430 = 6'h2c == idx_2 ? entries_44_valid : _GEN_8429; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8431 = 6'h2d == idx_2 ? entries_45_valid : _GEN_8430; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8432 = 6'h2e == idx_2 ? entries_46_valid : _GEN_8431; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8433 = 6'h2f == idx_2 ? entries_47_valid : _GEN_8432; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8434 = 6'h30 == idx_2 ? entries_48_valid : _GEN_8433; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8435 = 6'h31 == idx_2 ? entries_49_valid : _GEN_8434; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8436 = 6'h32 == idx_2 ? entries_50_valid : _GEN_8435; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8437 = 6'h33 == idx_2 ? entries_51_valid : _GEN_8436; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8438 = 6'h34 == idx_2 ? entries_52_valid : _GEN_8437; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8439 = 6'h35 == idx_2 ? entries_53_valid : _GEN_8438; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8440 = 6'h36 == idx_2 ? entries_54_valid : _GEN_8439; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8441 = 6'h37 == idx_2 ? entries_55_valid : _GEN_8440; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8442 = 6'h38 == idx_2 ? entries_56_valid : _GEN_8441; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8443 = 6'h39 == idx_2 ? entries_57_valid : _GEN_8442; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8444 = 6'h3a == idx_2 ? entries_58_valid : _GEN_8443; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8445 = 6'h3b == idx_2 ? entries_59_valid : _GEN_8444; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8446 = 6'h3c == idx_2 ? entries_60_valid : _GEN_8445; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8447 = 6'h3d == idx_2 ? entries_61_valid : _GEN_8446; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8448 = 6'h3e == idx_2 ? entries_62_valid : _GEN_8447; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8449 = 6'h3f == idx_2 ? entries_63_valid : _GEN_8448; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8451 = 6'h1 == idx_2 ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8452 = 6'h2 == idx_2 ? entries_2_writtenBack : _GEN_8451; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8453 = 6'h3 == idx_2 ? entries_3_writtenBack : _GEN_8452; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8454 = 6'h4 == idx_2 ? entries_4_writtenBack : _GEN_8453; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8455 = 6'h5 == idx_2 ? entries_5_writtenBack : _GEN_8454; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8456 = 6'h6 == idx_2 ? entries_6_writtenBack : _GEN_8455; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8457 = 6'h7 == idx_2 ? entries_7_writtenBack : _GEN_8456; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8458 = 6'h8 == idx_2 ? entries_8_writtenBack : _GEN_8457; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8459 = 6'h9 == idx_2 ? entries_9_writtenBack : _GEN_8458; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8460 = 6'ha == idx_2 ? entries_10_writtenBack : _GEN_8459; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8461 = 6'hb == idx_2 ? entries_11_writtenBack : _GEN_8460; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8462 = 6'hc == idx_2 ? entries_12_writtenBack : _GEN_8461; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8463 = 6'hd == idx_2 ? entries_13_writtenBack : _GEN_8462; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8464 = 6'he == idx_2 ? entries_14_writtenBack : _GEN_8463; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8465 = 6'hf == idx_2 ? entries_15_writtenBack : _GEN_8464; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8466 = 6'h10 == idx_2 ? entries_16_writtenBack : _GEN_8465; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8467 = 6'h11 == idx_2 ? entries_17_writtenBack : _GEN_8466; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8468 = 6'h12 == idx_2 ? entries_18_writtenBack : _GEN_8467; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8469 = 6'h13 == idx_2 ? entries_19_writtenBack : _GEN_8468; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8470 = 6'h14 == idx_2 ? entries_20_writtenBack : _GEN_8469; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8471 = 6'h15 == idx_2 ? entries_21_writtenBack : _GEN_8470; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8472 = 6'h16 == idx_2 ? entries_22_writtenBack : _GEN_8471; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8473 = 6'h17 == idx_2 ? entries_23_writtenBack : _GEN_8472; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8474 = 6'h18 == idx_2 ? entries_24_writtenBack : _GEN_8473; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8475 = 6'h19 == idx_2 ? entries_25_writtenBack : _GEN_8474; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8476 = 6'h1a == idx_2 ? entries_26_writtenBack : _GEN_8475; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8477 = 6'h1b == idx_2 ? entries_27_writtenBack : _GEN_8476; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8478 = 6'h1c == idx_2 ? entries_28_writtenBack : _GEN_8477; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8479 = 6'h1d == idx_2 ? entries_29_writtenBack : _GEN_8478; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8480 = 6'h1e == idx_2 ? entries_30_writtenBack : _GEN_8479; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8481 = 6'h1f == idx_2 ? entries_31_writtenBack : _GEN_8480; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8482 = 6'h20 == idx_2 ? entries_32_writtenBack : _GEN_8481; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8483 = 6'h21 == idx_2 ? entries_33_writtenBack : _GEN_8482; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8484 = 6'h22 == idx_2 ? entries_34_writtenBack : _GEN_8483; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8485 = 6'h23 == idx_2 ? entries_35_writtenBack : _GEN_8484; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8486 = 6'h24 == idx_2 ? entries_36_writtenBack : _GEN_8485; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8487 = 6'h25 == idx_2 ? entries_37_writtenBack : _GEN_8486; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8488 = 6'h26 == idx_2 ? entries_38_writtenBack : _GEN_8487; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8489 = 6'h27 == idx_2 ? entries_39_writtenBack : _GEN_8488; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8490 = 6'h28 == idx_2 ? entries_40_writtenBack : _GEN_8489; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8491 = 6'h29 == idx_2 ? entries_41_writtenBack : _GEN_8490; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8492 = 6'h2a == idx_2 ? entries_42_writtenBack : _GEN_8491; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8493 = 6'h2b == idx_2 ? entries_43_writtenBack : _GEN_8492; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8494 = 6'h2c == idx_2 ? entries_44_writtenBack : _GEN_8493; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8495 = 6'h2d == idx_2 ? entries_45_writtenBack : _GEN_8494; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8496 = 6'h2e == idx_2 ? entries_46_writtenBack : _GEN_8495; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8497 = 6'h2f == idx_2 ? entries_47_writtenBack : _GEN_8496; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8498 = 6'h30 == idx_2 ? entries_48_writtenBack : _GEN_8497; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8499 = 6'h31 == idx_2 ? entries_49_writtenBack : _GEN_8498; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8500 = 6'h32 == idx_2 ? entries_50_writtenBack : _GEN_8499; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8501 = 6'h33 == idx_2 ? entries_51_writtenBack : _GEN_8500; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8502 = 6'h34 == idx_2 ? entries_52_writtenBack : _GEN_8501; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8503 = 6'h35 == idx_2 ? entries_53_writtenBack : _GEN_8502; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8504 = 6'h36 == idx_2 ? entries_54_writtenBack : _GEN_8503; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8505 = 6'h37 == idx_2 ? entries_55_writtenBack : _GEN_8504; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8506 = 6'h38 == idx_2 ? entries_56_writtenBack : _GEN_8505; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8507 = 6'h39 == idx_2 ? entries_57_writtenBack : _GEN_8506; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8508 = 6'h3a == idx_2 ? entries_58_writtenBack : _GEN_8507; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8509 = 6'h3b == idx_2 ? entries_59_writtenBack : _GEN_8508; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8510 = 6'h3c == idx_2 ? entries_60_writtenBack : _GEN_8509; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8511 = 6'h3d == idx_2 ? entries_61_writtenBack : _GEN_8510; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8512 = 6'h3e == idx_2 ? entries_62_writtenBack : _GEN_8511; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  _GEN_8513 = 6'h3f == idx_2 ? entries_63_writtenBack : _GEN_8512; // @[src/main/scala/backend/Rob.scala 157:{33,33}]
+  wire  thisReady_2 = _GEN_8449 & _GEN_8513; // @[src/main/scala/backend/Rob.scala 157:33]
+  wire [9:0] _GEN_8515 = 6'h1 == idx_2 ? entries_1_excpVec : entries_0_excpVec; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8516 = 6'h2 == idx_2 ? entries_2_excpVec : _GEN_8515; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8517 = 6'h3 == idx_2 ? entries_3_excpVec : _GEN_8516; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8518 = 6'h4 == idx_2 ? entries_4_excpVec : _GEN_8517; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8519 = 6'h5 == idx_2 ? entries_5_excpVec : _GEN_8518; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8520 = 6'h6 == idx_2 ? entries_6_excpVec : _GEN_8519; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8521 = 6'h7 == idx_2 ? entries_7_excpVec : _GEN_8520; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8522 = 6'h8 == idx_2 ? entries_8_excpVec : _GEN_8521; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8523 = 6'h9 == idx_2 ? entries_9_excpVec : _GEN_8522; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8524 = 6'ha == idx_2 ? entries_10_excpVec : _GEN_8523; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8525 = 6'hb == idx_2 ? entries_11_excpVec : _GEN_8524; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8526 = 6'hc == idx_2 ? entries_12_excpVec : _GEN_8525; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8527 = 6'hd == idx_2 ? entries_13_excpVec : _GEN_8526; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8528 = 6'he == idx_2 ? entries_14_excpVec : _GEN_8527; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8529 = 6'hf == idx_2 ? entries_15_excpVec : _GEN_8528; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8530 = 6'h10 == idx_2 ? entries_16_excpVec : _GEN_8529; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8531 = 6'h11 == idx_2 ? entries_17_excpVec : _GEN_8530; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8532 = 6'h12 == idx_2 ? entries_18_excpVec : _GEN_8531; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8533 = 6'h13 == idx_2 ? entries_19_excpVec : _GEN_8532; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8534 = 6'h14 == idx_2 ? entries_20_excpVec : _GEN_8533; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8535 = 6'h15 == idx_2 ? entries_21_excpVec : _GEN_8534; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8536 = 6'h16 == idx_2 ? entries_22_excpVec : _GEN_8535; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8537 = 6'h17 == idx_2 ? entries_23_excpVec : _GEN_8536; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8538 = 6'h18 == idx_2 ? entries_24_excpVec : _GEN_8537; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8539 = 6'h19 == idx_2 ? entries_25_excpVec : _GEN_8538; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8540 = 6'h1a == idx_2 ? entries_26_excpVec : _GEN_8539; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8541 = 6'h1b == idx_2 ? entries_27_excpVec : _GEN_8540; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8542 = 6'h1c == idx_2 ? entries_28_excpVec : _GEN_8541; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8543 = 6'h1d == idx_2 ? entries_29_excpVec : _GEN_8542; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8544 = 6'h1e == idx_2 ? entries_30_excpVec : _GEN_8543; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8545 = 6'h1f == idx_2 ? entries_31_excpVec : _GEN_8544; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8546 = 6'h20 == idx_2 ? entries_32_excpVec : _GEN_8545; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8547 = 6'h21 == idx_2 ? entries_33_excpVec : _GEN_8546; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8548 = 6'h22 == idx_2 ? entries_34_excpVec : _GEN_8547; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8549 = 6'h23 == idx_2 ? entries_35_excpVec : _GEN_8548; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8550 = 6'h24 == idx_2 ? entries_36_excpVec : _GEN_8549; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8551 = 6'h25 == idx_2 ? entries_37_excpVec : _GEN_8550; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8552 = 6'h26 == idx_2 ? entries_38_excpVec : _GEN_8551; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8553 = 6'h27 == idx_2 ? entries_39_excpVec : _GEN_8552; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8554 = 6'h28 == idx_2 ? entries_40_excpVec : _GEN_8553; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8555 = 6'h29 == idx_2 ? entries_41_excpVec : _GEN_8554; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8556 = 6'h2a == idx_2 ? entries_42_excpVec : _GEN_8555; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8557 = 6'h2b == idx_2 ? entries_43_excpVec : _GEN_8556; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8558 = 6'h2c == idx_2 ? entries_44_excpVec : _GEN_8557; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8559 = 6'h2d == idx_2 ? entries_45_excpVec : _GEN_8558; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8560 = 6'h2e == idx_2 ? entries_46_excpVec : _GEN_8559; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8561 = 6'h2f == idx_2 ? entries_47_excpVec : _GEN_8560; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8562 = 6'h30 == idx_2 ? entries_48_excpVec : _GEN_8561; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8563 = 6'h31 == idx_2 ? entries_49_excpVec : _GEN_8562; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8564 = 6'h32 == idx_2 ? entries_50_excpVec : _GEN_8563; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8565 = 6'h33 == idx_2 ? entries_51_excpVec : _GEN_8564; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8566 = 6'h34 == idx_2 ? entries_52_excpVec : _GEN_8565; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8567 = 6'h35 == idx_2 ? entries_53_excpVec : _GEN_8566; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8568 = 6'h36 == idx_2 ? entries_54_excpVec : _GEN_8567; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8569 = 6'h37 == idx_2 ? entries_55_excpVec : _GEN_8568; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8570 = 6'h38 == idx_2 ? entries_56_excpVec : _GEN_8569; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8571 = 6'h39 == idx_2 ? entries_57_excpVec : _GEN_8570; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8572 = 6'h3a == idx_2 ? entries_58_excpVec : _GEN_8571; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8573 = 6'h3b == idx_2 ? entries_59_excpVec : _GEN_8572; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8574 = 6'h3c == idx_2 ? entries_60_excpVec : _GEN_8573; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8575 = 6'h3d == idx_2 ? entries_61_excpVec : _GEN_8574; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8576 = 6'h3e == idx_2 ? entries_62_excpVec : _GEN_8575; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire [9:0] _GEN_8577 = 6'h3f == idx_2 ? entries_63_excpVec : _GEN_8576; // @[src/main/scala/backend/Rob.scala 158:{35,35}]
+  wire  hasExcp_2 = |_GEN_8577; // @[src/main/scala/backend/Rob.scala 158:35]
   wire  commitValids_2 = thisReady & thisReady_1 & thisReady_2 & ~hasExcp_2; // @[src/main/scala/backend/Rob.scala 161:51]
-  wire [6:0] _GEN_7683 = 6'h1 == idx_2 ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7684 = 6'h2 == idx_2 ? entries_2_pdst : _GEN_7683; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7685 = 6'h3 == idx_2 ? entries_3_pdst : _GEN_7684; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7686 = 6'h4 == idx_2 ? entries_4_pdst : _GEN_7685; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7687 = 6'h5 == idx_2 ? entries_5_pdst : _GEN_7686; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7688 = 6'h6 == idx_2 ? entries_6_pdst : _GEN_7687; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7689 = 6'h7 == idx_2 ? entries_7_pdst : _GEN_7688; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7690 = 6'h8 == idx_2 ? entries_8_pdst : _GEN_7689; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7691 = 6'h9 == idx_2 ? entries_9_pdst : _GEN_7690; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7692 = 6'ha == idx_2 ? entries_10_pdst : _GEN_7691; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7693 = 6'hb == idx_2 ? entries_11_pdst : _GEN_7692; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7694 = 6'hc == idx_2 ? entries_12_pdst : _GEN_7693; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7695 = 6'hd == idx_2 ? entries_13_pdst : _GEN_7694; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7696 = 6'he == idx_2 ? entries_14_pdst : _GEN_7695; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7697 = 6'hf == idx_2 ? entries_15_pdst : _GEN_7696; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7698 = 6'h10 == idx_2 ? entries_16_pdst : _GEN_7697; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7699 = 6'h11 == idx_2 ? entries_17_pdst : _GEN_7698; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7700 = 6'h12 == idx_2 ? entries_18_pdst : _GEN_7699; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7701 = 6'h13 == idx_2 ? entries_19_pdst : _GEN_7700; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7702 = 6'h14 == idx_2 ? entries_20_pdst : _GEN_7701; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7703 = 6'h15 == idx_2 ? entries_21_pdst : _GEN_7702; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7704 = 6'h16 == idx_2 ? entries_22_pdst : _GEN_7703; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7705 = 6'h17 == idx_2 ? entries_23_pdst : _GEN_7704; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7706 = 6'h18 == idx_2 ? entries_24_pdst : _GEN_7705; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7707 = 6'h19 == idx_2 ? entries_25_pdst : _GEN_7706; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7708 = 6'h1a == idx_2 ? entries_26_pdst : _GEN_7707; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7709 = 6'h1b == idx_2 ? entries_27_pdst : _GEN_7708; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7710 = 6'h1c == idx_2 ? entries_28_pdst : _GEN_7709; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7711 = 6'h1d == idx_2 ? entries_29_pdst : _GEN_7710; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7712 = 6'h1e == idx_2 ? entries_30_pdst : _GEN_7711; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7713 = 6'h1f == idx_2 ? entries_31_pdst : _GEN_7712; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7714 = 6'h20 == idx_2 ? entries_32_pdst : _GEN_7713; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7715 = 6'h21 == idx_2 ? entries_33_pdst : _GEN_7714; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7716 = 6'h22 == idx_2 ? entries_34_pdst : _GEN_7715; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7717 = 6'h23 == idx_2 ? entries_35_pdst : _GEN_7716; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7718 = 6'h24 == idx_2 ? entries_36_pdst : _GEN_7717; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7719 = 6'h25 == idx_2 ? entries_37_pdst : _GEN_7718; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7720 = 6'h26 == idx_2 ? entries_38_pdst : _GEN_7719; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7721 = 6'h27 == idx_2 ? entries_39_pdst : _GEN_7720; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7722 = 6'h28 == idx_2 ? entries_40_pdst : _GEN_7721; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7723 = 6'h29 == idx_2 ? entries_41_pdst : _GEN_7722; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7724 = 6'h2a == idx_2 ? entries_42_pdst : _GEN_7723; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7725 = 6'h2b == idx_2 ? entries_43_pdst : _GEN_7724; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7726 = 6'h2c == idx_2 ? entries_44_pdst : _GEN_7725; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7727 = 6'h2d == idx_2 ? entries_45_pdst : _GEN_7726; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7728 = 6'h2e == idx_2 ? entries_46_pdst : _GEN_7727; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7729 = 6'h2f == idx_2 ? entries_47_pdst : _GEN_7728; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7730 = 6'h30 == idx_2 ? entries_48_pdst : _GEN_7729; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7731 = 6'h31 == idx_2 ? entries_49_pdst : _GEN_7730; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7732 = 6'h32 == idx_2 ? entries_50_pdst : _GEN_7731; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7733 = 6'h33 == idx_2 ? entries_51_pdst : _GEN_7732; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7734 = 6'h34 == idx_2 ? entries_52_pdst : _GEN_7733; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7735 = 6'h35 == idx_2 ? entries_53_pdst : _GEN_7734; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7736 = 6'h36 == idx_2 ? entries_54_pdst : _GEN_7735; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7737 = 6'h37 == idx_2 ? entries_55_pdst : _GEN_7736; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7738 = 6'h38 == idx_2 ? entries_56_pdst : _GEN_7737; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7739 = 6'h39 == idx_2 ? entries_57_pdst : _GEN_7738; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7740 = 6'h3a == idx_2 ? entries_58_pdst : _GEN_7739; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7741 = 6'h3b == idx_2 ? entries_59_pdst : _GEN_7740; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7742 = 6'h3c == idx_2 ? entries_60_pdst : _GEN_7741; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7743 = 6'h3d == idx_2 ? entries_61_pdst : _GEN_7742; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7744 = 6'h3e == idx_2 ? entries_62_pdst : _GEN_7743; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  wire [6:0] _GEN_7747 = 6'h1 == idx_2 ? entries_1_oldPdst : entries_0_oldPdst; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7748 = 6'h2 == idx_2 ? entries_2_oldPdst : _GEN_7747; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7749 = 6'h3 == idx_2 ? entries_3_oldPdst : _GEN_7748; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7750 = 6'h4 == idx_2 ? entries_4_oldPdst : _GEN_7749; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7751 = 6'h5 == idx_2 ? entries_5_oldPdst : _GEN_7750; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7752 = 6'h6 == idx_2 ? entries_6_oldPdst : _GEN_7751; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7753 = 6'h7 == idx_2 ? entries_7_oldPdst : _GEN_7752; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7754 = 6'h8 == idx_2 ? entries_8_oldPdst : _GEN_7753; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7755 = 6'h9 == idx_2 ? entries_9_oldPdst : _GEN_7754; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7756 = 6'ha == idx_2 ? entries_10_oldPdst : _GEN_7755; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7757 = 6'hb == idx_2 ? entries_11_oldPdst : _GEN_7756; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7758 = 6'hc == idx_2 ? entries_12_oldPdst : _GEN_7757; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7759 = 6'hd == idx_2 ? entries_13_oldPdst : _GEN_7758; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7760 = 6'he == idx_2 ? entries_14_oldPdst : _GEN_7759; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7761 = 6'hf == idx_2 ? entries_15_oldPdst : _GEN_7760; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7762 = 6'h10 == idx_2 ? entries_16_oldPdst : _GEN_7761; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7763 = 6'h11 == idx_2 ? entries_17_oldPdst : _GEN_7762; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7764 = 6'h12 == idx_2 ? entries_18_oldPdst : _GEN_7763; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7765 = 6'h13 == idx_2 ? entries_19_oldPdst : _GEN_7764; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7766 = 6'h14 == idx_2 ? entries_20_oldPdst : _GEN_7765; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7767 = 6'h15 == idx_2 ? entries_21_oldPdst : _GEN_7766; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7768 = 6'h16 == idx_2 ? entries_22_oldPdst : _GEN_7767; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7769 = 6'h17 == idx_2 ? entries_23_oldPdst : _GEN_7768; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7770 = 6'h18 == idx_2 ? entries_24_oldPdst : _GEN_7769; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7771 = 6'h19 == idx_2 ? entries_25_oldPdst : _GEN_7770; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7772 = 6'h1a == idx_2 ? entries_26_oldPdst : _GEN_7771; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7773 = 6'h1b == idx_2 ? entries_27_oldPdst : _GEN_7772; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7774 = 6'h1c == idx_2 ? entries_28_oldPdst : _GEN_7773; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7775 = 6'h1d == idx_2 ? entries_29_oldPdst : _GEN_7774; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7776 = 6'h1e == idx_2 ? entries_30_oldPdst : _GEN_7775; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7777 = 6'h1f == idx_2 ? entries_31_oldPdst : _GEN_7776; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7778 = 6'h20 == idx_2 ? entries_32_oldPdst : _GEN_7777; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7779 = 6'h21 == idx_2 ? entries_33_oldPdst : _GEN_7778; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7780 = 6'h22 == idx_2 ? entries_34_oldPdst : _GEN_7779; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7781 = 6'h23 == idx_2 ? entries_35_oldPdst : _GEN_7780; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7782 = 6'h24 == idx_2 ? entries_36_oldPdst : _GEN_7781; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7783 = 6'h25 == idx_2 ? entries_37_oldPdst : _GEN_7782; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7784 = 6'h26 == idx_2 ? entries_38_oldPdst : _GEN_7783; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7785 = 6'h27 == idx_2 ? entries_39_oldPdst : _GEN_7784; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7786 = 6'h28 == idx_2 ? entries_40_oldPdst : _GEN_7785; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7787 = 6'h29 == idx_2 ? entries_41_oldPdst : _GEN_7786; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7788 = 6'h2a == idx_2 ? entries_42_oldPdst : _GEN_7787; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7789 = 6'h2b == idx_2 ? entries_43_oldPdst : _GEN_7788; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7790 = 6'h2c == idx_2 ? entries_44_oldPdst : _GEN_7789; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7791 = 6'h2d == idx_2 ? entries_45_oldPdst : _GEN_7790; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7792 = 6'h2e == idx_2 ? entries_46_oldPdst : _GEN_7791; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7793 = 6'h2f == idx_2 ? entries_47_oldPdst : _GEN_7792; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7794 = 6'h30 == idx_2 ? entries_48_oldPdst : _GEN_7793; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7795 = 6'h31 == idx_2 ? entries_49_oldPdst : _GEN_7794; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7796 = 6'h32 == idx_2 ? entries_50_oldPdst : _GEN_7795; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7797 = 6'h33 == idx_2 ? entries_51_oldPdst : _GEN_7796; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7798 = 6'h34 == idx_2 ? entries_52_oldPdst : _GEN_7797; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7799 = 6'h35 == idx_2 ? entries_53_oldPdst : _GEN_7798; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7800 = 6'h36 == idx_2 ? entries_54_oldPdst : _GEN_7799; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7801 = 6'h37 == idx_2 ? entries_55_oldPdst : _GEN_7800; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7802 = 6'h38 == idx_2 ? entries_56_oldPdst : _GEN_7801; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7803 = 6'h39 == idx_2 ? entries_57_oldPdst : _GEN_7802; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7804 = 6'h3a == idx_2 ? entries_58_oldPdst : _GEN_7803; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7805 = 6'h3b == idx_2 ? entries_59_oldPdst : _GEN_7804; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7806 = 6'h3c == idx_2 ? entries_60_oldPdst : _GEN_7805; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7807 = 6'h3d == idx_2 ? entries_61_oldPdst : _GEN_7806; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [6:0] _GEN_7808 = 6'h3e == idx_2 ? entries_62_oldPdst : _GEN_7807; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  wire [4:0] _GEN_7811 = 6'h1 == idx_2 ? entries_1_ldst : entries_0_ldst; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7812 = 6'h2 == idx_2 ? entries_2_ldst : _GEN_7811; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7813 = 6'h3 == idx_2 ? entries_3_ldst : _GEN_7812; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7814 = 6'h4 == idx_2 ? entries_4_ldst : _GEN_7813; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7815 = 6'h5 == idx_2 ? entries_5_ldst : _GEN_7814; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7816 = 6'h6 == idx_2 ? entries_6_ldst : _GEN_7815; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7817 = 6'h7 == idx_2 ? entries_7_ldst : _GEN_7816; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7818 = 6'h8 == idx_2 ? entries_8_ldst : _GEN_7817; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7819 = 6'h9 == idx_2 ? entries_9_ldst : _GEN_7818; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7820 = 6'ha == idx_2 ? entries_10_ldst : _GEN_7819; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7821 = 6'hb == idx_2 ? entries_11_ldst : _GEN_7820; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7822 = 6'hc == idx_2 ? entries_12_ldst : _GEN_7821; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7823 = 6'hd == idx_2 ? entries_13_ldst : _GEN_7822; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7824 = 6'he == idx_2 ? entries_14_ldst : _GEN_7823; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7825 = 6'hf == idx_2 ? entries_15_ldst : _GEN_7824; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7826 = 6'h10 == idx_2 ? entries_16_ldst : _GEN_7825; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7827 = 6'h11 == idx_2 ? entries_17_ldst : _GEN_7826; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7828 = 6'h12 == idx_2 ? entries_18_ldst : _GEN_7827; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7829 = 6'h13 == idx_2 ? entries_19_ldst : _GEN_7828; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7830 = 6'h14 == idx_2 ? entries_20_ldst : _GEN_7829; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7831 = 6'h15 == idx_2 ? entries_21_ldst : _GEN_7830; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7832 = 6'h16 == idx_2 ? entries_22_ldst : _GEN_7831; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7833 = 6'h17 == idx_2 ? entries_23_ldst : _GEN_7832; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7834 = 6'h18 == idx_2 ? entries_24_ldst : _GEN_7833; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7835 = 6'h19 == idx_2 ? entries_25_ldst : _GEN_7834; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7836 = 6'h1a == idx_2 ? entries_26_ldst : _GEN_7835; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7837 = 6'h1b == idx_2 ? entries_27_ldst : _GEN_7836; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7838 = 6'h1c == idx_2 ? entries_28_ldst : _GEN_7837; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7839 = 6'h1d == idx_2 ? entries_29_ldst : _GEN_7838; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7840 = 6'h1e == idx_2 ? entries_30_ldst : _GEN_7839; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7841 = 6'h1f == idx_2 ? entries_31_ldst : _GEN_7840; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7842 = 6'h20 == idx_2 ? entries_32_ldst : _GEN_7841; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7843 = 6'h21 == idx_2 ? entries_33_ldst : _GEN_7842; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7844 = 6'h22 == idx_2 ? entries_34_ldst : _GEN_7843; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7845 = 6'h23 == idx_2 ? entries_35_ldst : _GEN_7844; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7846 = 6'h24 == idx_2 ? entries_36_ldst : _GEN_7845; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7847 = 6'h25 == idx_2 ? entries_37_ldst : _GEN_7846; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7848 = 6'h26 == idx_2 ? entries_38_ldst : _GEN_7847; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7849 = 6'h27 == idx_2 ? entries_39_ldst : _GEN_7848; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7850 = 6'h28 == idx_2 ? entries_40_ldst : _GEN_7849; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7851 = 6'h29 == idx_2 ? entries_41_ldst : _GEN_7850; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7852 = 6'h2a == idx_2 ? entries_42_ldst : _GEN_7851; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7853 = 6'h2b == idx_2 ? entries_43_ldst : _GEN_7852; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7854 = 6'h2c == idx_2 ? entries_44_ldst : _GEN_7853; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7855 = 6'h2d == idx_2 ? entries_45_ldst : _GEN_7854; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7856 = 6'h2e == idx_2 ? entries_46_ldst : _GEN_7855; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7857 = 6'h2f == idx_2 ? entries_47_ldst : _GEN_7856; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7858 = 6'h30 == idx_2 ? entries_48_ldst : _GEN_7857; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7859 = 6'h31 == idx_2 ? entries_49_ldst : _GEN_7858; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7860 = 6'h32 == idx_2 ? entries_50_ldst : _GEN_7859; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7861 = 6'h33 == idx_2 ? entries_51_ldst : _GEN_7860; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7862 = 6'h34 == idx_2 ? entries_52_ldst : _GEN_7861; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7863 = 6'h35 == idx_2 ? entries_53_ldst : _GEN_7862; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7864 = 6'h36 == idx_2 ? entries_54_ldst : _GEN_7863; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7865 = 6'h37 == idx_2 ? entries_55_ldst : _GEN_7864; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7866 = 6'h38 == idx_2 ? entries_56_ldst : _GEN_7865; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7867 = 6'h39 == idx_2 ? entries_57_ldst : _GEN_7866; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7868 = 6'h3a == idx_2 ? entries_58_ldst : _GEN_7867; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7869 = 6'h3b == idx_2 ? entries_59_ldst : _GEN_7868; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7870 = 6'h3c == idx_2 ? entries_60_ldst : _GEN_7869; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7871 = 6'h3d == idx_2 ? entries_61_ldst : _GEN_7870; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire [4:0] _GEN_7872 = 6'h3e == idx_2 ? entries_62_ldst : _GEN_7871; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  wire  _GEN_7875 = 6'h1 == idx_2 ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7876 = 6'h2 == idx_2 ? entries_2_rfWen : _GEN_7875; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7877 = 6'h3 == idx_2 ? entries_3_rfWen : _GEN_7876; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7878 = 6'h4 == idx_2 ? entries_4_rfWen : _GEN_7877; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7879 = 6'h5 == idx_2 ? entries_5_rfWen : _GEN_7878; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7880 = 6'h6 == idx_2 ? entries_6_rfWen : _GEN_7879; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7881 = 6'h7 == idx_2 ? entries_7_rfWen : _GEN_7880; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7882 = 6'h8 == idx_2 ? entries_8_rfWen : _GEN_7881; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7883 = 6'h9 == idx_2 ? entries_9_rfWen : _GEN_7882; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7884 = 6'ha == idx_2 ? entries_10_rfWen : _GEN_7883; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7885 = 6'hb == idx_2 ? entries_11_rfWen : _GEN_7884; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7886 = 6'hc == idx_2 ? entries_12_rfWen : _GEN_7885; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7887 = 6'hd == idx_2 ? entries_13_rfWen : _GEN_7886; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7888 = 6'he == idx_2 ? entries_14_rfWen : _GEN_7887; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7889 = 6'hf == idx_2 ? entries_15_rfWen : _GEN_7888; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7890 = 6'h10 == idx_2 ? entries_16_rfWen : _GEN_7889; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7891 = 6'h11 == idx_2 ? entries_17_rfWen : _GEN_7890; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7892 = 6'h12 == idx_2 ? entries_18_rfWen : _GEN_7891; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7893 = 6'h13 == idx_2 ? entries_19_rfWen : _GEN_7892; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7894 = 6'h14 == idx_2 ? entries_20_rfWen : _GEN_7893; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7895 = 6'h15 == idx_2 ? entries_21_rfWen : _GEN_7894; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7896 = 6'h16 == idx_2 ? entries_22_rfWen : _GEN_7895; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7897 = 6'h17 == idx_2 ? entries_23_rfWen : _GEN_7896; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7898 = 6'h18 == idx_2 ? entries_24_rfWen : _GEN_7897; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7899 = 6'h19 == idx_2 ? entries_25_rfWen : _GEN_7898; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7900 = 6'h1a == idx_2 ? entries_26_rfWen : _GEN_7899; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7901 = 6'h1b == idx_2 ? entries_27_rfWen : _GEN_7900; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7902 = 6'h1c == idx_2 ? entries_28_rfWen : _GEN_7901; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7903 = 6'h1d == idx_2 ? entries_29_rfWen : _GEN_7902; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7904 = 6'h1e == idx_2 ? entries_30_rfWen : _GEN_7903; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7905 = 6'h1f == idx_2 ? entries_31_rfWen : _GEN_7904; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7906 = 6'h20 == idx_2 ? entries_32_rfWen : _GEN_7905; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7907 = 6'h21 == idx_2 ? entries_33_rfWen : _GEN_7906; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7908 = 6'h22 == idx_2 ? entries_34_rfWen : _GEN_7907; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7909 = 6'h23 == idx_2 ? entries_35_rfWen : _GEN_7908; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7910 = 6'h24 == idx_2 ? entries_36_rfWen : _GEN_7909; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7911 = 6'h25 == idx_2 ? entries_37_rfWen : _GEN_7910; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7912 = 6'h26 == idx_2 ? entries_38_rfWen : _GEN_7911; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7913 = 6'h27 == idx_2 ? entries_39_rfWen : _GEN_7912; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7914 = 6'h28 == idx_2 ? entries_40_rfWen : _GEN_7913; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7915 = 6'h29 == idx_2 ? entries_41_rfWen : _GEN_7914; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7916 = 6'h2a == idx_2 ? entries_42_rfWen : _GEN_7915; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7917 = 6'h2b == idx_2 ? entries_43_rfWen : _GEN_7916; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7918 = 6'h2c == idx_2 ? entries_44_rfWen : _GEN_7917; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7919 = 6'h2d == idx_2 ? entries_45_rfWen : _GEN_7918; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7920 = 6'h2e == idx_2 ? entries_46_rfWen : _GEN_7919; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7921 = 6'h2f == idx_2 ? entries_47_rfWen : _GEN_7920; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7922 = 6'h30 == idx_2 ? entries_48_rfWen : _GEN_7921; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7923 = 6'h31 == idx_2 ? entries_49_rfWen : _GEN_7922; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7924 = 6'h32 == idx_2 ? entries_50_rfWen : _GEN_7923; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7925 = 6'h33 == idx_2 ? entries_51_rfWen : _GEN_7924; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7926 = 6'h34 == idx_2 ? entries_52_rfWen : _GEN_7925; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7927 = 6'h35 == idx_2 ? entries_53_rfWen : _GEN_7926; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7928 = 6'h36 == idx_2 ? entries_54_rfWen : _GEN_7927; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7929 = 6'h37 == idx_2 ? entries_55_rfWen : _GEN_7928; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7930 = 6'h38 == idx_2 ? entries_56_rfWen : _GEN_7929; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7931 = 6'h39 == idx_2 ? entries_57_rfWen : _GEN_7930; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7932 = 6'h3a == idx_2 ? entries_58_rfWen : _GEN_7931; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7933 = 6'h3b == idx_2 ? entries_59_rfWen : _GEN_7932; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7934 = 6'h3c == idx_2 ? entries_60_rfWen : _GEN_7933; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7935 = 6'h3d == idx_2 ? entries_61_rfWen : _GEN_7934; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire  _GEN_7936 = 6'h3e == idx_2 ? entries_62_rfWen : _GEN_7935; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  wire [31:0] _GEN_7939 = 6'h1 == idx_2 ? entries_1_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7940 = 6'h2 == idx_2 ? entries_2_pc : _GEN_7939; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7941 = 6'h3 == idx_2 ? entries_3_pc : _GEN_7940; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7942 = 6'h4 == idx_2 ? entries_4_pc : _GEN_7941; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7943 = 6'h5 == idx_2 ? entries_5_pc : _GEN_7942; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7944 = 6'h6 == idx_2 ? entries_6_pc : _GEN_7943; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7945 = 6'h7 == idx_2 ? entries_7_pc : _GEN_7944; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7946 = 6'h8 == idx_2 ? entries_8_pc : _GEN_7945; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7947 = 6'h9 == idx_2 ? entries_9_pc : _GEN_7946; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7948 = 6'ha == idx_2 ? entries_10_pc : _GEN_7947; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7949 = 6'hb == idx_2 ? entries_11_pc : _GEN_7948; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7950 = 6'hc == idx_2 ? entries_12_pc : _GEN_7949; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7951 = 6'hd == idx_2 ? entries_13_pc : _GEN_7950; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7952 = 6'he == idx_2 ? entries_14_pc : _GEN_7951; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7953 = 6'hf == idx_2 ? entries_15_pc : _GEN_7952; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7954 = 6'h10 == idx_2 ? entries_16_pc : _GEN_7953; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7955 = 6'h11 == idx_2 ? entries_17_pc : _GEN_7954; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7956 = 6'h12 == idx_2 ? entries_18_pc : _GEN_7955; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7957 = 6'h13 == idx_2 ? entries_19_pc : _GEN_7956; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7958 = 6'h14 == idx_2 ? entries_20_pc : _GEN_7957; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7959 = 6'h15 == idx_2 ? entries_21_pc : _GEN_7958; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7960 = 6'h16 == idx_2 ? entries_22_pc : _GEN_7959; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7961 = 6'h17 == idx_2 ? entries_23_pc : _GEN_7960; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7962 = 6'h18 == idx_2 ? entries_24_pc : _GEN_7961; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7963 = 6'h19 == idx_2 ? entries_25_pc : _GEN_7962; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7964 = 6'h1a == idx_2 ? entries_26_pc : _GEN_7963; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7965 = 6'h1b == idx_2 ? entries_27_pc : _GEN_7964; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7966 = 6'h1c == idx_2 ? entries_28_pc : _GEN_7965; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7967 = 6'h1d == idx_2 ? entries_29_pc : _GEN_7966; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7968 = 6'h1e == idx_2 ? entries_30_pc : _GEN_7967; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7969 = 6'h1f == idx_2 ? entries_31_pc : _GEN_7968; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7970 = 6'h20 == idx_2 ? entries_32_pc : _GEN_7969; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7971 = 6'h21 == idx_2 ? entries_33_pc : _GEN_7970; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7972 = 6'h22 == idx_2 ? entries_34_pc : _GEN_7971; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7973 = 6'h23 == idx_2 ? entries_35_pc : _GEN_7972; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7974 = 6'h24 == idx_2 ? entries_36_pc : _GEN_7973; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7975 = 6'h25 == idx_2 ? entries_37_pc : _GEN_7974; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7976 = 6'h26 == idx_2 ? entries_38_pc : _GEN_7975; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7977 = 6'h27 == idx_2 ? entries_39_pc : _GEN_7976; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7978 = 6'h28 == idx_2 ? entries_40_pc : _GEN_7977; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7979 = 6'h29 == idx_2 ? entries_41_pc : _GEN_7978; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7980 = 6'h2a == idx_2 ? entries_42_pc : _GEN_7979; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7981 = 6'h2b == idx_2 ? entries_43_pc : _GEN_7980; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7982 = 6'h2c == idx_2 ? entries_44_pc : _GEN_7981; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7983 = 6'h2d == idx_2 ? entries_45_pc : _GEN_7982; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7984 = 6'h2e == idx_2 ? entries_46_pc : _GEN_7983; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7985 = 6'h2f == idx_2 ? entries_47_pc : _GEN_7984; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7986 = 6'h30 == idx_2 ? entries_48_pc : _GEN_7985; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7987 = 6'h31 == idx_2 ? entries_49_pc : _GEN_7986; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7988 = 6'h32 == idx_2 ? entries_50_pc : _GEN_7987; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7989 = 6'h33 == idx_2 ? entries_51_pc : _GEN_7988; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7990 = 6'h34 == idx_2 ? entries_52_pc : _GEN_7989; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7991 = 6'h35 == idx_2 ? entries_53_pc : _GEN_7990; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7992 = 6'h36 == idx_2 ? entries_54_pc : _GEN_7991; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7993 = 6'h37 == idx_2 ? entries_55_pc : _GEN_7992; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7994 = 6'h38 == idx_2 ? entries_56_pc : _GEN_7993; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7995 = 6'h39 == idx_2 ? entries_57_pc : _GEN_7994; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7996 = 6'h3a == idx_2 ? entries_58_pc : _GEN_7995; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7997 = 6'h3b == idx_2 ? entries_59_pc : _GEN_7996; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7998 = 6'h3c == idx_2 ? entries_60_pc : _GEN_7997; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_7999 = 6'h3d == idx_2 ? entries_61_pc : _GEN_7998; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_8000 = 6'h3e == idx_2 ? entries_62_pc : _GEN_7999; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  wire [31:0] _GEN_8003 = 6'h1 == idx_2 ? entries_1_rfdata : entries_0_rfdata; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8004 = 6'h2 == idx_2 ? entries_2_rfdata : _GEN_8003; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8005 = 6'h3 == idx_2 ? entries_3_rfdata : _GEN_8004; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8006 = 6'h4 == idx_2 ? entries_4_rfdata : _GEN_8005; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8007 = 6'h5 == idx_2 ? entries_5_rfdata : _GEN_8006; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8008 = 6'h6 == idx_2 ? entries_6_rfdata : _GEN_8007; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8009 = 6'h7 == idx_2 ? entries_7_rfdata : _GEN_8008; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8010 = 6'h8 == idx_2 ? entries_8_rfdata : _GEN_8009; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8011 = 6'h9 == idx_2 ? entries_9_rfdata : _GEN_8010; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8012 = 6'ha == idx_2 ? entries_10_rfdata : _GEN_8011; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8013 = 6'hb == idx_2 ? entries_11_rfdata : _GEN_8012; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8014 = 6'hc == idx_2 ? entries_12_rfdata : _GEN_8013; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8015 = 6'hd == idx_2 ? entries_13_rfdata : _GEN_8014; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8016 = 6'he == idx_2 ? entries_14_rfdata : _GEN_8015; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8017 = 6'hf == idx_2 ? entries_15_rfdata : _GEN_8016; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8018 = 6'h10 == idx_2 ? entries_16_rfdata : _GEN_8017; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8019 = 6'h11 == idx_2 ? entries_17_rfdata : _GEN_8018; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8020 = 6'h12 == idx_2 ? entries_18_rfdata : _GEN_8019; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8021 = 6'h13 == idx_2 ? entries_19_rfdata : _GEN_8020; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8022 = 6'h14 == idx_2 ? entries_20_rfdata : _GEN_8021; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8023 = 6'h15 == idx_2 ? entries_21_rfdata : _GEN_8022; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8024 = 6'h16 == idx_2 ? entries_22_rfdata : _GEN_8023; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8025 = 6'h17 == idx_2 ? entries_23_rfdata : _GEN_8024; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8026 = 6'h18 == idx_2 ? entries_24_rfdata : _GEN_8025; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8027 = 6'h19 == idx_2 ? entries_25_rfdata : _GEN_8026; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8028 = 6'h1a == idx_2 ? entries_26_rfdata : _GEN_8027; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8029 = 6'h1b == idx_2 ? entries_27_rfdata : _GEN_8028; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8030 = 6'h1c == idx_2 ? entries_28_rfdata : _GEN_8029; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8031 = 6'h1d == idx_2 ? entries_29_rfdata : _GEN_8030; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8032 = 6'h1e == idx_2 ? entries_30_rfdata : _GEN_8031; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8033 = 6'h1f == idx_2 ? entries_31_rfdata : _GEN_8032; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8034 = 6'h20 == idx_2 ? entries_32_rfdata : _GEN_8033; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8035 = 6'h21 == idx_2 ? entries_33_rfdata : _GEN_8034; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8036 = 6'h22 == idx_2 ? entries_34_rfdata : _GEN_8035; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8037 = 6'h23 == idx_2 ? entries_35_rfdata : _GEN_8036; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8038 = 6'h24 == idx_2 ? entries_36_rfdata : _GEN_8037; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8039 = 6'h25 == idx_2 ? entries_37_rfdata : _GEN_8038; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8040 = 6'h26 == idx_2 ? entries_38_rfdata : _GEN_8039; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8041 = 6'h27 == idx_2 ? entries_39_rfdata : _GEN_8040; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8042 = 6'h28 == idx_2 ? entries_40_rfdata : _GEN_8041; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8043 = 6'h29 == idx_2 ? entries_41_rfdata : _GEN_8042; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8044 = 6'h2a == idx_2 ? entries_42_rfdata : _GEN_8043; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8045 = 6'h2b == idx_2 ? entries_43_rfdata : _GEN_8044; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8046 = 6'h2c == idx_2 ? entries_44_rfdata : _GEN_8045; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8047 = 6'h2d == idx_2 ? entries_45_rfdata : _GEN_8046; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8048 = 6'h2e == idx_2 ? entries_46_rfdata : _GEN_8047; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8049 = 6'h2f == idx_2 ? entries_47_rfdata : _GEN_8048; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8050 = 6'h30 == idx_2 ? entries_48_rfdata : _GEN_8049; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8051 = 6'h31 == idx_2 ? entries_49_rfdata : _GEN_8050; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8052 = 6'h32 == idx_2 ? entries_50_rfdata : _GEN_8051; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8053 = 6'h33 == idx_2 ? entries_51_rfdata : _GEN_8052; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8054 = 6'h34 == idx_2 ? entries_52_rfdata : _GEN_8053; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8055 = 6'h35 == idx_2 ? entries_53_rfdata : _GEN_8054; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8056 = 6'h36 == idx_2 ? entries_54_rfdata : _GEN_8055; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8057 = 6'h37 == idx_2 ? entries_55_rfdata : _GEN_8056; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8058 = 6'h38 == idx_2 ? entries_56_rfdata : _GEN_8057; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8059 = 6'h39 == idx_2 ? entries_57_rfdata : _GEN_8058; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8060 = 6'h3a == idx_2 ? entries_58_rfdata : _GEN_8059; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8061 = 6'h3b == idx_2 ? entries_59_rfdata : _GEN_8060; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8062 = 6'h3c == idx_2 ? entries_60_rfdata : _GEN_8061; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8063 = 6'h3d == idx_2 ? entries_61_rfdata : _GEN_8062; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  wire [31:0] _GEN_8064 = 6'h3e == idx_2 ? entries_62_rfdata : _GEN_8063; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [6:0] _GEN_8579 = 6'h1 == idx_2 ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8580 = 6'h2 == idx_2 ? entries_2_pdst : _GEN_8579; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8581 = 6'h3 == idx_2 ? entries_3_pdst : _GEN_8580; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8582 = 6'h4 == idx_2 ? entries_4_pdst : _GEN_8581; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8583 = 6'h5 == idx_2 ? entries_5_pdst : _GEN_8582; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8584 = 6'h6 == idx_2 ? entries_6_pdst : _GEN_8583; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8585 = 6'h7 == idx_2 ? entries_7_pdst : _GEN_8584; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8586 = 6'h8 == idx_2 ? entries_8_pdst : _GEN_8585; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8587 = 6'h9 == idx_2 ? entries_9_pdst : _GEN_8586; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8588 = 6'ha == idx_2 ? entries_10_pdst : _GEN_8587; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8589 = 6'hb == idx_2 ? entries_11_pdst : _GEN_8588; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8590 = 6'hc == idx_2 ? entries_12_pdst : _GEN_8589; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8591 = 6'hd == idx_2 ? entries_13_pdst : _GEN_8590; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8592 = 6'he == idx_2 ? entries_14_pdst : _GEN_8591; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8593 = 6'hf == idx_2 ? entries_15_pdst : _GEN_8592; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8594 = 6'h10 == idx_2 ? entries_16_pdst : _GEN_8593; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8595 = 6'h11 == idx_2 ? entries_17_pdst : _GEN_8594; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8596 = 6'h12 == idx_2 ? entries_18_pdst : _GEN_8595; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8597 = 6'h13 == idx_2 ? entries_19_pdst : _GEN_8596; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8598 = 6'h14 == idx_2 ? entries_20_pdst : _GEN_8597; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8599 = 6'h15 == idx_2 ? entries_21_pdst : _GEN_8598; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8600 = 6'h16 == idx_2 ? entries_22_pdst : _GEN_8599; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8601 = 6'h17 == idx_2 ? entries_23_pdst : _GEN_8600; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8602 = 6'h18 == idx_2 ? entries_24_pdst : _GEN_8601; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8603 = 6'h19 == idx_2 ? entries_25_pdst : _GEN_8602; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8604 = 6'h1a == idx_2 ? entries_26_pdst : _GEN_8603; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8605 = 6'h1b == idx_2 ? entries_27_pdst : _GEN_8604; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8606 = 6'h1c == idx_2 ? entries_28_pdst : _GEN_8605; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8607 = 6'h1d == idx_2 ? entries_29_pdst : _GEN_8606; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8608 = 6'h1e == idx_2 ? entries_30_pdst : _GEN_8607; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8609 = 6'h1f == idx_2 ? entries_31_pdst : _GEN_8608; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8610 = 6'h20 == idx_2 ? entries_32_pdst : _GEN_8609; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8611 = 6'h21 == idx_2 ? entries_33_pdst : _GEN_8610; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8612 = 6'h22 == idx_2 ? entries_34_pdst : _GEN_8611; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8613 = 6'h23 == idx_2 ? entries_35_pdst : _GEN_8612; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8614 = 6'h24 == idx_2 ? entries_36_pdst : _GEN_8613; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8615 = 6'h25 == idx_2 ? entries_37_pdst : _GEN_8614; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8616 = 6'h26 == idx_2 ? entries_38_pdst : _GEN_8615; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8617 = 6'h27 == idx_2 ? entries_39_pdst : _GEN_8616; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8618 = 6'h28 == idx_2 ? entries_40_pdst : _GEN_8617; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8619 = 6'h29 == idx_2 ? entries_41_pdst : _GEN_8618; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8620 = 6'h2a == idx_2 ? entries_42_pdst : _GEN_8619; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8621 = 6'h2b == idx_2 ? entries_43_pdst : _GEN_8620; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8622 = 6'h2c == idx_2 ? entries_44_pdst : _GEN_8621; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8623 = 6'h2d == idx_2 ? entries_45_pdst : _GEN_8622; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8624 = 6'h2e == idx_2 ? entries_46_pdst : _GEN_8623; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8625 = 6'h2f == idx_2 ? entries_47_pdst : _GEN_8624; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8626 = 6'h30 == idx_2 ? entries_48_pdst : _GEN_8625; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8627 = 6'h31 == idx_2 ? entries_49_pdst : _GEN_8626; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8628 = 6'h32 == idx_2 ? entries_50_pdst : _GEN_8627; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8629 = 6'h33 == idx_2 ? entries_51_pdst : _GEN_8628; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8630 = 6'h34 == idx_2 ? entries_52_pdst : _GEN_8629; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8631 = 6'h35 == idx_2 ? entries_53_pdst : _GEN_8630; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8632 = 6'h36 == idx_2 ? entries_54_pdst : _GEN_8631; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8633 = 6'h37 == idx_2 ? entries_55_pdst : _GEN_8632; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8634 = 6'h38 == idx_2 ? entries_56_pdst : _GEN_8633; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8635 = 6'h39 == idx_2 ? entries_57_pdst : _GEN_8634; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8636 = 6'h3a == idx_2 ? entries_58_pdst : _GEN_8635; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8637 = 6'h3b == idx_2 ? entries_59_pdst : _GEN_8636; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8638 = 6'h3c == idx_2 ? entries_60_pdst : _GEN_8637; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8639 = 6'h3d == idx_2 ? entries_61_pdst : _GEN_8638; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8640 = 6'h3e == idx_2 ? entries_62_pdst : _GEN_8639; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  wire [6:0] _GEN_8643 = 6'h1 == idx_2 ? entries_1_oldPdst : entries_0_oldPdst; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8644 = 6'h2 == idx_2 ? entries_2_oldPdst : _GEN_8643; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8645 = 6'h3 == idx_2 ? entries_3_oldPdst : _GEN_8644; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8646 = 6'h4 == idx_2 ? entries_4_oldPdst : _GEN_8645; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8647 = 6'h5 == idx_2 ? entries_5_oldPdst : _GEN_8646; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8648 = 6'h6 == idx_2 ? entries_6_oldPdst : _GEN_8647; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8649 = 6'h7 == idx_2 ? entries_7_oldPdst : _GEN_8648; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8650 = 6'h8 == idx_2 ? entries_8_oldPdst : _GEN_8649; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8651 = 6'h9 == idx_2 ? entries_9_oldPdst : _GEN_8650; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8652 = 6'ha == idx_2 ? entries_10_oldPdst : _GEN_8651; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8653 = 6'hb == idx_2 ? entries_11_oldPdst : _GEN_8652; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8654 = 6'hc == idx_2 ? entries_12_oldPdst : _GEN_8653; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8655 = 6'hd == idx_2 ? entries_13_oldPdst : _GEN_8654; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8656 = 6'he == idx_2 ? entries_14_oldPdst : _GEN_8655; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8657 = 6'hf == idx_2 ? entries_15_oldPdst : _GEN_8656; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8658 = 6'h10 == idx_2 ? entries_16_oldPdst : _GEN_8657; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8659 = 6'h11 == idx_2 ? entries_17_oldPdst : _GEN_8658; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8660 = 6'h12 == idx_2 ? entries_18_oldPdst : _GEN_8659; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8661 = 6'h13 == idx_2 ? entries_19_oldPdst : _GEN_8660; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8662 = 6'h14 == idx_2 ? entries_20_oldPdst : _GEN_8661; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8663 = 6'h15 == idx_2 ? entries_21_oldPdst : _GEN_8662; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8664 = 6'h16 == idx_2 ? entries_22_oldPdst : _GEN_8663; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8665 = 6'h17 == idx_2 ? entries_23_oldPdst : _GEN_8664; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8666 = 6'h18 == idx_2 ? entries_24_oldPdst : _GEN_8665; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8667 = 6'h19 == idx_2 ? entries_25_oldPdst : _GEN_8666; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8668 = 6'h1a == idx_2 ? entries_26_oldPdst : _GEN_8667; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8669 = 6'h1b == idx_2 ? entries_27_oldPdst : _GEN_8668; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8670 = 6'h1c == idx_2 ? entries_28_oldPdst : _GEN_8669; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8671 = 6'h1d == idx_2 ? entries_29_oldPdst : _GEN_8670; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8672 = 6'h1e == idx_2 ? entries_30_oldPdst : _GEN_8671; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8673 = 6'h1f == idx_2 ? entries_31_oldPdst : _GEN_8672; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8674 = 6'h20 == idx_2 ? entries_32_oldPdst : _GEN_8673; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8675 = 6'h21 == idx_2 ? entries_33_oldPdst : _GEN_8674; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8676 = 6'h22 == idx_2 ? entries_34_oldPdst : _GEN_8675; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8677 = 6'h23 == idx_2 ? entries_35_oldPdst : _GEN_8676; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8678 = 6'h24 == idx_2 ? entries_36_oldPdst : _GEN_8677; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8679 = 6'h25 == idx_2 ? entries_37_oldPdst : _GEN_8678; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8680 = 6'h26 == idx_2 ? entries_38_oldPdst : _GEN_8679; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8681 = 6'h27 == idx_2 ? entries_39_oldPdst : _GEN_8680; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8682 = 6'h28 == idx_2 ? entries_40_oldPdst : _GEN_8681; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8683 = 6'h29 == idx_2 ? entries_41_oldPdst : _GEN_8682; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8684 = 6'h2a == idx_2 ? entries_42_oldPdst : _GEN_8683; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8685 = 6'h2b == idx_2 ? entries_43_oldPdst : _GEN_8684; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8686 = 6'h2c == idx_2 ? entries_44_oldPdst : _GEN_8685; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8687 = 6'h2d == idx_2 ? entries_45_oldPdst : _GEN_8686; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8688 = 6'h2e == idx_2 ? entries_46_oldPdst : _GEN_8687; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8689 = 6'h2f == idx_2 ? entries_47_oldPdst : _GEN_8688; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8690 = 6'h30 == idx_2 ? entries_48_oldPdst : _GEN_8689; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8691 = 6'h31 == idx_2 ? entries_49_oldPdst : _GEN_8690; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8692 = 6'h32 == idx_2 ? entries_50_oldPdst : _GEN_8691; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8693 = 6'h33 == idx_2 ? entries_51_oldPdst : _GEN_8692; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8694 = 6'h34 == idx_2 ? entries_52_oldPdst : _GEN_8693; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8695 = 6'h35 == idx_2 ? entries_53_oldPdst : _GEN_8694; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8696 = 6'h36 == idx_2 ? entries_54_oldPdst : _GEN_8695; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8697 = 6'h37 == idx_2 ? entries_55_oldPdst : _GEN_8696; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8698 = 6'h38 == idx_2 ? entries_56_oldPdst : _GEN_8697; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8699 = 6'h39 == idx_2 ? entries_57_oldPdst : _GEN_8698; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8700 = 6'h3a == idx_2 ? entries_58_oldPdst : _GEN_8699; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8701 = 6'h3b == idx_2 ? entries_59_oldPdst : _GEN_8700; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8702 = 6'h3c == idx_2 ? entries_60_oldPdst : _GEN_8701; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8703 = 6'h3d == idx_2 ? entries_61_oldPdst : _GEN_8702; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [6:0] _GEN_8704 = 6'h3e == idx_2 ? entries_62_oldPdst : _GEN_8703; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  wire [4:0] _GEN_8707 = 6'h1 == idx_2 ? entries_1_ldst : entries_0_ldst; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8708 = 6'h2 == idx_2 ? entries_2_ldst : _GEN_8707; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8709 = 6'h3 == idx_2 ? entries_3_ldst : _GEN_8708; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8710 = 6'h4 == idx_2 ? entries_4_ldst : _GEN_8709; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8711 = 6'h5 == idx_2 ? entries_5_ldst : _GEN_8710; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8712 = 6'h6 == idx_2 ? entries_6_ldst : _GEN_8711; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8713 = 6'h7 == idx_2 ? entries_7_ldst : _GEN_8712; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8714 = 6'h8 == idx_2 ? entries_8_ldst : _GEN_8713; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8715 = 6'h9 == idx_2 ? entries_9_ldst : _GEN_8714; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8716 = 6'ha == idx_2 ? entries_10_ldst : _GEN_8715; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8717 = 6'hb == idx_2 ? entries_11_ldst : _GEN_8716; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8718 = 6'hc == idx_2 ? entries_12_ldst : _GEN_8717; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8719 = 6'hd == idx_2 ? entries_13_ldst : _GEN_8718; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8720 = 6'he == idx_2 ? entries_14_ldst : _GEN_8719; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8721 = 6'hf == idx_2 ? entries_15_ldst : _GEN_8720; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8722 = 6'h10 == idx_2 ? entries_16_ldst : _GEN_8721; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8723 = 6'h11 == idx_2 ? entries_17_ldst : _GEN_8722; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8724 = 6'h12 == idx_2 ? entries_18_ldst : _GEN_8723; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8725 = 6'h13 == idx_2 ? entries_19_ldst : _GEN_8724; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8726 = 6'h14 == idx_2 ? entries_20_ldst : _GEN_8725; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8727 = 6'h15 == idx_2 ? entries_21_ldst : _GEN_8726; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8728 = 6'h16 == idx_2 ? entries_22_ldst : _GEN_8727; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8729 = 6'h17 == idx_2 ? entries_23_ldst : _GEN_8728; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8730 = 6'h18 == idx_2 ? entries_24_ldst : _GEN_8729; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8731 = 6'h19 == idx_2 ? entries_25_ldst : _GEN_8730; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8732 = 6'h1a == idx_2 ? entries_26_ldst : _GEN_8731; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8733 = 6'h1b == idx_2 ? entries_27_ldst : _GEN_8732; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8734 = 6'h1c == idx_2 ? entries_28_ldst : _GEN_8733; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8735 = 6'h1d == idx_2 ? entries_29_ldst : _GEN_8734; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8736 = 6'h1e == idx_2 ? entries_30_ldst : _GEN_8735; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8737 = 6'h1f == idx_2 ? entries_31_ldst : _GEN_8736; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8738 = 6'h20 == idx_2 ? entries_32_ldst : _GEN_8737; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8739 = 6'h21 == idx_2 ? entries_33_ldst : _GEN_8738; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8740 = 6'h22 == idx_2 ? entries_34_ldst : _GEN_8739; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8741 = 6'h23 == idx_2 ? entries_35_ldst : _GEN_8740; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8742 = 6'h24 == idx_2 ? entries_36_ldst : _GEN_8741; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8743 = 6'h25 == idx_2 ? entries_37_ldst : _GEN_8742; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8744 = 6'h26 == idx_2 ? entries_38_ldst : _GEN_8743; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8745 = 6'h27 == idx_2 ? entries_39_ldst : _GEN_8744; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8746 = 6'h28 == idx_2 ? entries_40_ldst : _GEN_8745; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8747 = 6'h29 == idx_2 ? entries_41_ldst : _GEN_8746; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8748 = 6'h2a == idx_2 ? entries_42_ldst : _GEN_8747; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8749 = 6'h2b == idx_2 ? entries_43_ldst : _GEN_8748; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8750 = 6'h2c == idx_2 ? entries_44_ldst : _GEN_8749; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8751 = 6'h2d == idx_2 ? entries_45_ldst : _GEN_8750; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8752 = 6'h2e == idx_2 ? entries_46_ldst : _GEN_8751; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8753 = 6'h2f == idx_2 ? entries_47_ldst : _GEN_8752; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8754 = 6'h30 == idx_2 ? entries_48_ldst : _GEN_8753; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8755 = 6'h31 == idx_2 ? entries_49_ldst : _GEN_8754; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8756 = 6'h32 == idx_2 ? entries_50_ldst : _GEN_8755; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8757 = 6'h33 == idx_2 ? entries_51_ldst : _GEN_8756; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8758 = 6'h34 == idx_2 ? entries_52_ldst : _GEN_8757; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8759 = 6'h35 == idx_2 ? entries_53_ldst : _GEN_8758; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8760 = 6'h36 == idx_2 ? entries_54_ldst : _GEN_8759; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8761 = 6'h37 == idx_2 ? entries_55_ldst : _GEN_8760; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8762 = 6'h38 == idx_2 ? entries_56_ldst : _GEN_8761; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8763 = 6'h39 == idx_2 ? entries_57_ldst : _GEN_8762; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8764 = 6'h3a == idx_2 ? entries_58_ldst : _GEN_8763; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8765 = 6'h3b == idx_2 ? entries_59_ldst : _GEN_8764; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8766 = 6'h3c == idx_2 ? entries_60_ldst : _GEN_8765; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8767 = 6'h3d == idx_2 ? entries_61_ldst : _GEN_8766; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire [4:0] _GEN_8768 = 6'h3e == idx_2 ? entries_62_ldst : _GEN_8767; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  wire  _GEN_8771 = 6'h1 == idx_2 ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8772 = 6'h2 == idx_2 ? entries_2_rfWen : _GEN_8771; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8773 = 6'h3 == idx_2 ? entries_3_rfWen : _GEN_8772; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8774 = 6'h4 == idx_2 ? entries_4_rfWen : _GEN_8773; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8775 = 6'h5 == idx_2 ? entries_5_rfWen : _GEN_8774; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8776 = 6'h6 == idx_2 ? entries_6_rfWen : _GEN_8775; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8777 = 6'h7 == idx_2 ? entries_7_rfWen : _GEN_8776; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8778 = 6'h8 == idx_2 ? entries_8_rfWen : _GEN_8777; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8779 = 6'h9 == idx_2 ? entries_9_rfWen : _GEN_8778; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8780 = 6'ha == idx_2 ? entries_10_rfWen : _GEN_8779; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8781 = 6'hb == idx_2 ? entries_11_rfWen : _GEN_8780; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8782 = 6'hc == idx_2 ? entries_12_rfWen : _GEN_8781; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8783 = 6'hd == idx_2 ? entries_13_rfWen : _GEN_8782; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8784 = 6'he == idx_2 ? entries_14_rfWen : _GEN_8783; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8785 = 6'hf == idx_2 ? entries_15_rfWen : _GEN_8784; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8786 = 6'h10 == idx_2 ? entries_16_rfWen : _GEN_8785; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8787 = 6'h11 == idx_2 ? entries_17_rfWen : _GEN_8786; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8788 = 6'h12 == idx_2 ? entries_18_rfWen : _GEN_8787; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8789 = 6'h13 == idx_2 ? entries_19_rfWen : _GEN_8788; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8790 = 6'h14 == idx_2 ? entries_20_rfWen : _GEN_8789; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8791 = 6'h15 == idx_2 ? entries_21_rfWen : _GEN_8790; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8792 = 6'h16 == idx_2 ? entries_22_rfWen : _GEN_8791; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8793 = 6'h17 == idx_2 ? entries_23_rfWen : _GEN_8792; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8794 = 6'h18 == idx_2 ? entries_24_rfWen : _GEN_8793; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8795 = 6'h19 == idx_2 ? entries_25_rfWen : _GEN_8794; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8796 = 6'h1a == idx_2 ? entries_26_rfWen : _GEN_8795; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8797 = 6'h1b == idx_2 ? entries_27_rfWen : _GEN_8796; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8798 = 6'h1c == idx_2 ? entries_28_rfWen : _GEN_8797; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8799 = 6'h1d == idx_2 ? entries_29_rfWen : _GEN_8798; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8800 = 6'h1e == idx_2 ? entries_30_rfWen : _GEN_8799; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8801 = 6'h1f == idx_2 ? entries_31_rfWen : _GEN_8800; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8802 = 6'h20 == idx_2 ? entries_32_rfWen : _GEN_8801; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8803 = 6'h21 == idx_2 ? entries_33_rfWen : _GEN_8802; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8804 = 6'h22 == idx_2 ? entries_34_rfWen : _GEN_8803; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8805 = 6'h23 == idx_2 ? entries_35_rfWen : _GEN_8804; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8806 = 6'h24 == idx_2 ? entries_36_rfWen : _GEN_8805; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8807 = 6'h25 == idx_2 ? entries_37_rfWen : _GEN_8806; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8808 = 6'h26 == idx_2 ? entries_38_rfWen : _GEN_8807; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8809 = 6'h27 == idx_2 ? entries_39_rfWen : _GEN_8808; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8810 = 6'h28 == idx_2 ? entries_40_rfWen : _GEN_8809; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8811 = 6'h29 == idx_2 ? entries_41_rfWen : _GEN_8810; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8812 = 6'h2a == idx_2 ? entries_42_rfWen : _GEN_8811; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8813 = 6'h2b == idx_2 ? entries_43_rfWen : _GEN_8812; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8814 = 6'h2c == idx_2 ? entries_44_rfWen : _GEN_8813; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8815 = 6'h2d == idx_2 ? entries_45_rfWen : _GEN_8814; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8816 = 6'h2e == idx_2 ? entries_46_rfWen : _GEN_8815; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8817 = 6'h2f == idx_2 ? entries_47_rfWen : _GEN_8816; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8818 = 6'h30 == idx_2 ? entries_48_rfWen : _GEN_8817; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8819 = 6'h31 == idx_2 ? entries_49_rfWen : _GEN_8818; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8820 = 6'h32 == idx_2 ? entries_50_rfWen : _GEN_8819; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8821 = 6'h33 == idx_2 ? entries_51_rfWen : _GEN_8820; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8822 = 6'h34 == idx_2 ? entries_52_rfWen : _GEN_8821; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8823 = 6'h35 == idx_2 ? entries_53_rfWen : _GEN_8822; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8824 = 6'h36 == idx_2 ? entries_54_rfWen : _GEN_8823; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8825 = 6'h37 == idx_2 ? entries_55_rfWen : _GEN_8824; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8826 = 6'h38 == idx_2 ? entries_56_rfWen : _GEN_8825; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8827 = 6'h39 == idx_2 ? entries_57_rfWen : _GEN_8826; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8828 = 6'h3a == idx_2 ? entries_58_rfWen : _GEN_8827; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8829 = 6'h3b == idx_2 ? entries_59_rfWen : _GEN_8828; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8830 = 6'h3c == idx_2 ? entries_60_rfWen : _GEN_8829; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8831 = 6'h3d == idx_2 ? entries_61_rfWen : _GEN_8830; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire  _GEN_8832 = 6'h3e == idx_2 ? entries_62_rfWen : _GEN_8831; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  wire [31:0] _GEN_8835 = 6'h1 == idx_2 ? entries_1_pc : entries_0_pc; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8836 = 6'h2 == idx_2 ? entries_2_pc : _GEN_8835; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8837 = 6'h3 == idx_2 ? entries_3_pc : _GEN_8836; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8838 = 6'h4 == idx_2 ? entries_4_pc : _GEN_8837; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8839 = 6'h5 == idx_2 ? entries_5_pc : _GEN_8838; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8840 = 6'h6 == idx_2 ? entries_6_pc : _GEN_8839; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8841 = 6'h7 == idx_2 ? entries_7_pc : _GEN_8840; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8842 = 6'h8 == idx_2 ? entries_8_pc : _GEN_8841; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8843 = 6'h9 == idx_2 ? entries_9_pc : _GEN_8842; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8844 = 6'ha == idx_2 ? entries_10_pc : _GEN_8843; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8845 = 6'hb == idx_2 ? entries_11_pc : _GEN_8844; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8846 = 6'hc == idx_2 ? entries_12_pc : _GEN_8845; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8847 = 6'hd == idx_2 ? entries_13_pc : _GEN_8846; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8848 = 6'he == idx_2 ? entries_14_pc : _GEN_8847; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8849 = 6'hf == idx_2 ? entries_15_pc : _GEN_8848; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8850 = 6'h10 == idx_2 ? entries_16_pc : _GEN_8849; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8851 = 6'h11 == idx_2 ? entries_17_pc : _GEN_8850; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8852 = 6'h12 == idx_2 ? entries_18_pc : _GEN_8851; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8853 = 6'h13 == idx_2 ? entries_19_pc : _GEN_8852; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8854 = 6'h14 == idx_2 ? entries_20_pc : _GEN_8853; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8855 = 6'h15 == idx_2 ? entries_21_pc : _GEN_8854; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8856 = 6'h16 == idx_2 ? entries_22_pc : _GEN_8855; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8857 = 6'h17 == idx_2 ? entries_23_pc : _GEN_8856; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8858 = 6'h18 == idx_2 ? entries_24_pc : _GEN_8857; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8859 = 6'h19 == idx_2 ? entries_25_pc : _GEN_8858; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8860 = 6'h1a == idx_2 ? entries_26_pc : _GEN_8859; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8861 = 6'h1b == idx_2 ? entries_27_pc : _GEN_8860; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8862 = 6'h1c == idx_2 ? entries_28_pc : _GEN_8861; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8863 = 6'h1d == idx_2 ? entries_29_pc : _GEN_8862; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8864 = 6'h1e == idx_2 ? entries_30_pc : _GEN_8863; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8865 = 6'h1f == idx_2 ? entries_31_pc : _GEN_8864; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8866 = 6'h20 == idx_2 ? entries_32_pc : _GEN_8865; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8867 = 6'h21 == idx_2 ? entries_33_pc : _GEN_8866; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8868 = 6'h22 == idx_2 ? entries_34_pc : _GEN_8867; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8869 = 6'h23 == idx_2 ? entries_35_pc : _GEN_8868; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8870 = 6'h24 == idx_2 ? entries_36_pc : _GEN_8869; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8871 = 6'h25 == idx_2 ? entries_37_pc : _GEN_8870; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8872 = 6'h26 == idx_2 ? entries_38_pc : _GEN_8871; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8873 = 6'h27 == idx_2 ? entries_39_pc : _GEN_8872; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8874 = 6'h28 == idx_2 ? entries_40_pc : _GEN_8873; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8875 = 6'h29 == idx_2 ? entries_41_pc : _GEN_8874; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8876 = 6'h2a == idx_2 ? entries_42_pc : _GEN_8875; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8877 = 6'h2b == idx_2 ? entries_43_pc : _GEN_8876; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8878 = 6'h2c == idx_2 ? entries_44_pc : _GEN_8877; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8879 = 6'h2d == idx_2 ? entries_45_pc : _GEN_8878; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8880 = 6'h2e == idx_2 ? entries_46_pc : _GEN_8879; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8881 = 6'h2f == idx_2 ? entries_47_pc : _GEN_8880; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8882 = 6'h30 == idx_2 ? entries_48_pc : _GEN_8881; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8883 = 6'h31 == idx_2 ? entries_49_pc : _GEN_8882; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8884 = 6'h32 == idx_2 ? entries_50_pc : _GEN_8883; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8885 = 6'h33 == idx_2 ? entries_51_pc : _GEN_8884; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8886 = 6'h34 == idx_2 ? entries_52_pc : _GEN_8885; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8887 = 6'h35 == idx_2 ? entries_53_pc : _GEN_8886; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8888 = 6'h36 == idx_2 ? entries_54_pc : _GEN_8887; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8889 = 6'h37 == idx_2 ? entries_55_pc : _GEN_8888; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8890 = 6'h38 == idx_2 ? entries_56_pc : _GEN_8889; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8891 = 6'h39 == idx_2 ? entries_57_pc : _GEN_8890; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8892 = 6'h3a == idx_2 ? entries_58_pc : _GEN_8891; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8893 = 6'h3b == idx_2 ? entries_59_pc : _GEN_8892; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8894 = 6'h3c == idx_2 ? entries_60_pc : _GEN_8893; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8895 = 6'h3d == idx_2 ? entries_61_pc : _GEN_8894; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8896 = 6'h3e == idx_2 ? entries_62_pc : _GEN_8895; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  wire [31:0] _GEN_8899 = 6'h1 == idx_2 ? entries_1_rfdata : entries_0_rfdata; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8900 = 6'h2 == idx_2 ? entries_2_rfdata : _GEN_8899; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8901 = 6'h3 == idx_2 ? entries_3_rfdata : _GEN_8900; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8902 = 6'h4 == idx_2 ? entries_4_rfdata : _GEN_8901; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8903 = 6'h5 == idx_2 ? entries_5_rfdata : _GEN_8902; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8904 = 6'h6 == idx_2 ? entries_6_rfdata : _GEN_8903; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8905 = 6'h7 == idx_2 ? entries_7_rfdata : _GEN_8904; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8906 = 6'h8 == idx_2 ? entries_8_rfdata : _GEN_8905; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8907 = 6'h9 == idx_2 ? entries_9_rfdata : _GEN_8906; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8908 = 6'ha == idx_2 ? entries_10_rfdata : _GEN_8907; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8909 = 6'hb == idx_2 ? entries_11_rfdata : _GEN_8908; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8910 = 6'hc == idx_2 ? entries_12_rfdata : _GEN_8909; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8911 = 6'hd == idx_2 ? entries_13_rfdata : _GEN_8910; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8912 = 6'he == idx_2 ? entries_14_rfdata : _GEN_8911; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8913 = 6'hf == idx_2 ? entries_15_rfdata : _GEN_8912; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8914 = 6'h10 == idx_2 ? entries_16_rfdata : _GEN_8913; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8915 = 6'h11 == idx_2 ? entries_17_rfdata : _GEN_8914; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8916 = 6'h12 == idx_2 ? entries_18_rfdata : _GEN_8915; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8917 = 6'h13 == idx_2 ? entries_19_rfdata : _GEN_8916; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8918 = 6'h14 == idx_2 ? entries_20_rfdata : _GEN_8917; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8919 = 6'h15 == idx_2 ? entries_21_rfdata : _GEN_8918; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8920 = 6'h16 == idx_2 ? entries_22_rfdata : _GEN_8919; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8921 = 6'h17 == idx_2 ? entries_23_rfdata : _GEN_8920; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8922 = 6'h18 == idx_2 ? entries_24_rfdata : _GEN_8921; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8923 = 6'h19 == idx_2 ? entries_25_rfdata : _GEN_8922; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8924 = 6'h1a == idx_2 ? entries_26_rfdata : _GEN_8923; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8925 = 6'h1b == idx_2 ? entries_27_rfdata : _GEN_8924; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8926 = 6'h1c == idx_2 ? entries_28_rfdata : _GEN_8925; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8927 = 6'h1d == idx_2 ? entries_29_rfdata : _GEN_8926; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8928 = 6'h1e == idx_2 ? entries_30_rfdata : _GEN_8927; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8929 = 6'h1f == idx_2 ? entries_31_rfdata : _GEN_8928; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8930 = 6'h20 == idx_2 ? entries_32_rfdata : _GEN_8929; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8931 = 6'h21 == idx_2 ? entries_33_rfdata : _GEN_8930; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8932 = 6'h22 == idx_2 ? entries_34_rfdata : _GEN_8931; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8933 = 6'h23 == idx_2 ? entries_35_rfdata : _GEN_8932; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8934 = 6'h24 == idx_2 ? entries_36_rfdata : _GEN_8933; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8935 = 6'h25 == idx_2 ? entries_37_rfdata : _GEN_8934; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8936 = 6'h26 == idx_2 ? entries_38_rfdata : _GEN_8935; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8937 = 6'h27 == idx_2 ? entries_39_rfdata : _GEN_8936; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8938 = 6'h28 == idx_2 ? entries_40_rfdata : _GEN_8937; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8939 = 6'h29 == idx_2 ? entries_41_rfdata : _GEN_8938; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8940 = 6'h2a == idx_2 ? entries_42_rfdata : _GEN_8939; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8941 = 6'h2b == idx_2 ? entries_43_rfdata : _GEN_8940; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8942 = 6'h2c == idx_2 ? entries_44_rfdata : _GEN_8941; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8943 = 6'h2d == idx_2 ? entries_45_rfdata : _GEN_8942; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8944 = 6'h2e == idx_2 ? entries_46_rfdata : _GEN_8943; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8945 = 6'h2f == idx_2 ? entries_47_rfdata : _GEN_8944; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8946 = 6'h30 == idx_2 ? entries_48_rfdata : _GEN_8945; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8947 = 6'h31 == idx_2 ? entries_49_rfdata : _GEN_8946; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8948 = 6'h32 == idx_2 ? entries_50_rfdata : _GEN_8947; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8949 = 6'h33 == idx_2 ? entries_51_rfdata : _GEN_8948; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8950 = 6'h34 == idx_2 ? entries_52_rfdata : _GEN_8949; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8951 = 6'h35 == idx_2 ? entries_53_rfdata : _GEN_8950; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8952 = 6'h36 == idx_2 ? entries_54_rfdata : _GEN_8951; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8953 = 6'h37 == idx_2 ? entries_55_rfdata : _GEN_8952; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8954 = 6'h38 == idx_2 ? entries_56_rfdata : _GEN_8953; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8955 = 6'h39 == idx_2 ? entries_57_rfdata : _GEN_8954; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8956 = 6'h3a == idx_2 ? entries_58_rfdata : _GEN_8955; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8957 = 6'h3b == idx_2 ? entries_59_rfdata : _GEN_8956; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8958 = 6'h3c == idx_2 ? entries_60_rfdata : _GEN_8957; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8959 = 6'h3d == idx_2 ? entries_61_rfdata : _GEN_8958; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  wire [31:0] _GEN_8960 = 6'h3e == idx_2 ? entries_62_rfdata : _GEN_8959; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
   wire [1:0] _commitCount_T = commitValids_1 + commitValids_2; // @[src/main/scala/backend/Rob.scala 183:29]
-  wire [1:0] _GEN_9314 = {{1'd0}, commitValids_0}; // @[src/main/scala/backend/Rob.scala 183:29]
-  wire [2:0] _commitCount_T_2 = _GEN_9314 + _commitCount_T; // @[src/main/scala/backend/Rob.scala 183:29]
+  wire [1:0] _GEN_10606 = {{1'd0}, commitValids_0}; // @[src/main/scala/backend/Rob.scala 183:29]
+  wire [2:0] _commitCount_T_2 = _GEN_10606 + _commitCount_T; // @[src/main/scala/backend/Rob.scala 183:29]
   wire [1:0] commitCount = _commitCount_T_2[1:0]; // @[src/main/scala/backend/Rob.scala 183:29]
-  wire  _GEN_8066 = 6'h0 == idx ? 1'h0 : _GEN_4928; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8067 = 6'h1 == idx ? 1'h0 : _GEN_4929; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8068 = 6'h2 == idx ? 1'h0 : _GEN_4930; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8069 = 6'h3 == idx ? 1'h0 : _GEN_4931; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8070 = 6'h4 == idx ? 1'h0 : _GEN_4932; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8071 = 6'h5 == idx ? 1'h0 : _GEN_4933; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8072 = 6'h6 == idx ? 1'h0 : _GEN_4934; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8073 = 6'h7 == idx ? 1'h0 : _GEN_4935; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8074 = 6'h8 == idx ? 1'h0 : _GEN_4936; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8075 = 6'h9 == idx ? 1'h0 : _GEN_4937; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8076 = 6'ha == idx ? 1'h0 : _GEN_4938; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8077 = 6'hb == idx ? 1'h0 : _GEN_4939; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8078 = 6'hc == idx ? 1'h0 : _GEN_4940; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8079 = 6'hd == idx ? 1'h0 : _GEN_4941; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8080 = 6'he == idx ? 1'h0 : _GEN_4942; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8081 = 6'hf == idx ? 1'h0 : _GEN_4943; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8082 = 6'h10 == idx ? 1'h0 : _GEN_4944; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8083 = 6'h11 == idx ? 1'h0 : _GEN_4945; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8084 = 6'h12 == idx ? 1'h0 : _GEN_4946; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8085 = 6'h13 == idx ? 1'h0 : _GEN_4947; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8086 = 6'h14 == idx ? 1'h0 : _GEN_4948; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8087 = 6'h15 == idx ? 1'h0 : _GEN_4949; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8088 = 6'h16 == idx ? 1'h0 : _GEN_4950; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8089 = 6'h17 == idx ? 1'h0 : _GEN_4951; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8090 = 6'h18 == idx ? 1'h0 : _GEN_4952; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8091 = 6'h19 == idx ? 1'h0 : _GEN_4953; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8092 = 6'h1a == idx ? 1'h0 : _GEN_4954; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8093 = 6'h1b == idx ? 1'h0 : _GEN_4955; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8094 = 6'h1c == idx ? 1'h0 : _GEN_4956; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8095 = 6'h1d == idx ? 1'h0 : _GEN_4957; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8096 = 6'h1e == idx ? 1'h0 : _GEN_4958; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8097 = 6'h1f == idx ? 1'h0 : _GEN_4959; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8098 = 6'h20 == idx ? 1'h0 : _GEN_4960; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8099 = 6'h21 == idx ? 1'h0 : _GEN_4961; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8100 = 6'h22 == idx ? 1'h0 : _GEN_4962; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8101 = 6'h23 == idx ? 1'h0 : _GEN_4963; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8102 = 6'h24 == idx ? 1'h0 : _GEN_4964; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8103 = 6'h25 == idx ? 1'h0 : _GEN_4965; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8104 = 6'h26 == idx ? 1'h0 : _GEN_4966; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8105 = 6'h27 == idx ? 1'h0 : _GEN_4967; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8106 = 6'h28 == idx ? 1'h0 : _GEN_4968; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8107 = 6'h29 == idx ? 1'h0 : _GEN_4969; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8108 = 6'h2a == idx ? 1'h0 : _GEN_4970; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8109 = 6'h2b == idx ? 1'h0 : _GEN_4971; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8110 = 6'h2c == idx ? 1'h0 : _GEN_4972; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8111 = 6'h2d == idx ? 1'h0 : _GEN_4973; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8112 = 6'h2e == idx ? 1'h0 : _GEN_4974; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8113 = 6'h2f == idx ? 1'h0 : _GEN_4975; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8114 = 6'h30 == idx ? 1'h0 : _GEN_4976; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8115 = 6'h31 == idx ? 1'h0 : _GEN_4977; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8116 = 6'h32 == idx ? 1'h0 : _GEN_4978; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8117 = 6'h33 == idx ? 1'h0 : _GEN_4979; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8118 = 6'h34 == idx ? 1'h0 : _GEN_4980; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8119 = 6'h35 == idx ? 1'h0 : _GEN_4981; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8120 = 6'h36 == idx ? 1'h0 : _GEN_4982; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8121 = 6'h37 == idx ? 1'h0 : _GEN_4983; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8122 = 6'h38 == idx ? 1'h0 : _GEN_4984; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8123 = 6'h39 == idx ? 1'h0 : _GEN_4985; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8124 = 6'h3a == idx ? 1'h0 : _GEN_4986; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8125 = 6'h3b == idx ? 1'h0 : _GEN_4987; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8126 = 6'h3c == idx ? 1'h0 : _GEN_4988; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8127 = 6'h3d == idx ? 1'h0 : _GEN_4989; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8128 = 6'h3e == idx ? 1'h0 : _GEN_4990; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8129 = 6'h3f == idx ? 1'h0 : _GEN_4991; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8130 = commitValids_0 ? _GEN_8066 : _GEN_4928; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8131 = commitValids_0 ? _GEN_8067 : _GEN_4929; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8132 = commitValids_0 ? _GEN_8068 : _GEN_4930; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8133 = commitValids_0 ? _GEN_8069 : _GEN_4931; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8134 = commitValids_0 ? _GEN_8070 : _GEN_4932; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8135 = commitValids_0 ? _GEN_8071 : _GEN_4933; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8136 = commitValids_0 ? _GEN_8072 : _GEN_4934; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8137 = commitValids_0 ? _GEN_8073 : _GEN_4935; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8138 = commitValids_0 ? _GEN_8074 : _GEN_4936; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8139 = commitValids_0 ? _GEN_8075 : _GEN_4937; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8140 = commitValids_0 ? _GEN_8076 : _GEN_4938; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8141 = commitValids_0 ? _GEN_8077 : _GEN_4939; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8142 = commitValids_0 ? _GEN_8078 : _GEN_4940; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8143 = commitValids_0 ? _GEN_8079 : _GEN_4941; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8144 = commitValids_0 ? _GEN_8080 : _GEN_4942; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8145 = commitValids_0 ? _GEN_8081 : _GEN_4943; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8146 = commitValids_0 ? _GEN_8082 : _GEN_4944; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8147 = commitValids_0 ? _GEN_8083 : _GEN_4945; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8148 = commitValids_0 ? _GEN_8084 : _GEN_4946; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8149 = commitValids_0 ? _GEN_8085 : _GEN_4947; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8150 = commitValids_0 ? _GEN_8086 : _GEN_4948; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8151 = commitValids_0 ? _GEN_8087 : _GEN_4949; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8152 = commitValids_0 ? _GEN_8088 : _GEN_4950; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8153 = commitValids_0 ? _GEN_8089 : _GEN_4951; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8154 = commitValids_0 ? _GEN_8090 : _GEN_4952; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8155 = commitValids_0 ? _GEN_8091 : _GEN_4953; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8156 = commitValids_0 ? _GEN_8092 : _GEN_4954; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8157 = commitValids_0 ? _GEN_8093 : _GEN_4955; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8158 = commitValids_0 ? _GEN_8094 : _GEN_4956; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8159 = commitValids_0 ? _GEN_8095 : _GEN_4957; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8160 = commitValids_0 ? _GEN_8096 : _GEN_4958; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8161 = commitValids_0 ? _GEN_8097 : _GEN_4959; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8162 = commitValids_0 ? _GEN_8098 : _GEN_4960; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8163 = commitValids_0 ? _GEN_8099 : _GEN_4961; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8164 = commitValids_0 ? _GEN_8100 : _GEN_4962; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8165 = commitValids_0 ? _GEN_8101 : _GEN_4963; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8166 = commitValids_0 ? _GEN_8102 : _GEN_4964; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8167 = commitValids_0 ? _GEN_8103 : _GEN_4965; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8168 = commitValids_0 ? _GEN_8104 : _GEN_4966; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8169 = commitValids_0 ? _GEN_8105 : _GEN_4967; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8170 = commitValids_0 ? _GEN_8106 : _GEN_4968; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8171 = commitValids_0 ? _GEN_8107 : _GEN_4969; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8172 = commitValids_0 ? _GEN_8108 : _GEN_4970; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8173 = commitValids_0 ? _GEN_8109 : _GEN_4971; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8174 = commitValids_0 ? _GEN_8110 : _GEN_4972; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8175 = commitValids_0 ? _GEN_8111 : _GEN_4973; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8176 = commitValids_0 ? _GEN_8112 : _GEN_4974; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8177 = commitValids_0 ? _GEN_8113 : _GEN_4975; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8178 = commitValids_0 ? _GEN_8114 : _GEN_4976; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8179 = commitValids_0 ? _GEN_8115 : _GEN_4977; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8180 = commitValids_0 ? _GEN_8116 : _GEN_4978; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8181 = commitValids_0 ? _GEN_8117 : _GEN_4979; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8182 = commitValids_0 ? _GEN_8118 : _GEN_4980; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8183 = commitValids_0 ? _GEN_8119 : _GEN_4981; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8184 = commitValids_0 ? _GEN_8120 : _GEN_4982; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8185 = commitValids_0 ? _GEN_8121 : _GEN_4983; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8186 = commitValids_0 ? _GEN_8122 : _GEN_4984; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8187 = commitValids_0 ? _GEN_8123 : _GEN_4985; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8188 = commitValids_0 ? _GEN_8124 : _GEN_4986; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8189 = commitValids_0 ? _GEN_8125 : _GEN_4987; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8190 = commitValids_0 ? _GEN_8126 : _GEN_4988; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8191 = commitValids_0 ? _GEN_8127 : _GEN_4989; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8192 = commitValids_0 ? _GEN_8128 : _GEN_4990; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8193 = commitValids_0 ? _GEN_8129 : _GEN_4991; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8194 = 6'h0 == idx_1 ? 1'h0 : _GEN_8130; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8195 = 6'h1 == idx_1 ? 1'h0 : _GEN_8131; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8196 = 6'h2 == idx_1 ? 1'h0 : _GEN_8132; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8197 = 6'h3 == idx_1 ? 1'h0 : _GEN_8133; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8198 = 6'h4 == idx_1 ? 1'h0 : _GEN_8134; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8199 = 6'h5 == idx_1 ? 1'h0 : _GEN_8135; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8200 = 6'h6 == idx_1 ? 1'h0 : _GEN_8136; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8201 = 6'h7 == idx_1 ? 1'h0 : _GEN_8137; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8202 = 6'h8 == idx_1 ? 1'h0 : _GEN_8138; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8203 = 6'h9 == idx_1 ? 1'h0 : _GEN_8139; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8204 = 6'ha == idx_1 ? 1'h0 : _GEN_8140; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8205 = 6'hb == idx_1 ? 1'h0 : _GEN_8141; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8206 = 6'hc == idx_1 ? 1'h0 : _GEN_8142; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8207 = 6'hd == idx_1 ? 1'h0 : _GEN_8143; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8208 = 6'he == idx_1 ? 1'h0 : _GEN_8144; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8209 = 6'hf == idx_1 ? 1'h0 : _GEN_8145; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8210 = 6'h10 == idx_1 ? 1'h0 : _GEN_8146; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8211 = 6'h11 == idx_1 ? 1'h0 : _GEN_8147; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8212 = 6'h12 == idx_1 ? 1'h0 : _GEN_8148; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8213 = 6'h13 == idx_1 ? 1'h0 : _GEN_8149; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8214 = 6'h14 == idx_1 ? 1'h0 : _GEN_8150; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8215 = 6'h15 == idx_1 ? 1'h0 : _GEN_8151; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8216 = 6'h16 == idx_1 ? 1'h0 : _GEN_8152; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8217 = 6'h17 == idx_1 ? 1'h0 : _GEN_8153; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8218 = 6'h18 == idx_1 ? 1'h0 : _GEN_8154; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8219 = 6'h19 == idx_1 ? 1'h0 : _GEN_8155; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8220 = 6'h1a == idx_1 ? 1'h0 : _GEN_8156; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8221 = 6'h1b == idx_1 ? 1'h0 : _GEN_8157; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8222 = 6'h1c == idx_1 ? 1'h0 : _GEN_8158; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8223 = 6'h1d == idx_1 ? 1'h0 : _GEN_8159; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8224 = 6'h1e == idx_1 ? 1'h0 : _GEN_8160; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8225 = 6'h1f == idx_1 ? 1'h0 : _GEN_8161; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8226 = 6'h20 == idx_1 ? 1'h0 : _GEN_8162; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8227 = 6'h21 == idx_1 ? 1'h0 : _GEN_8163; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8228 = 6'h22 == idx_1 ? 1'h0 : _GEN_8164; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8229 = 6'h23 == idx_1 ? 1'h0 : _GEN_8165; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8230 = 6'h24 == idx_1 ? 1'h0 : _GEN_8166; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8231 = 6'h25 == idx_1 ? 1'h0 : _GEN_8167; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8232 = 6'h26 == idx_1 ? 1'h0 : _GEN_8168; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8233 = 6'h27 == idx_1 ? 1'h0 : _GEN_8169; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8234 = 6'h28 == idx_1 ? 1'h0 : _GEN_8170; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8235 = 6'h29 == idx_1 ? 1'h0 : _GEN_8171; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8236 = 6'h2a == idx_1 ? 1'h0 : _GEN_8172; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8237 = 6'h2b == idx_1 ? 1'h0 : _GEN_8173; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8238 = 6'h2c == idx_1 ? 1'h0 : _GEN_8174; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8239 = 6'h2d == idx_1 ? 1'h0 : _GEN_8175; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8240 = 6'h2e == idx_1 ? 1'h0 : _GEN_8176; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8241 = 6'h2f == idx_1 ? 1'h0 : _GEN_8177; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8242 = 6'h30 == idx_1 ? 1'h0 : _GEN_8178; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8243 = 6'h31 == idx_1 ? 1'h0 : _GEN_8179; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8244 = 6'h32 == idx_1 ? 1'h0 : _GEN_8180; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8245 = 6'h33 == idx_1 ? 1'h0 : _GEN_8181; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8246 = 6'h34 == idx_1 ? 1'h0 : _GEN_8182; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8247 = 6'h35 == idx_1 ? 1'h0 : _GEN_8183; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8248 = 6'h36 == idx_1 ? 1'h0 : _GEN_8184; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8249 = 6'h37 == idx_1 ? 1'h0 : _GEN_8185; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8250 = 6'h38 == idx_1 ? 1'h0 : _GEN_8186; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8251 = 6'h39 == idx_1 ? 1'h0 : _GEN_8187; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8252 = 6'h3a == idx_1 ? 1'h0 : _GEN_8188; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8253 = 6'h3b == idx_1 ? 1'h0 : _GEN_8189; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8254 = 6'h3c == idx_1 ? 1'h0 : _GEN_8190; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8255 = 6'h3d == idx_1 ? 1'h0 : _GEN_8191; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8256 = 6'h3e == idx_1 ? 1'h0 : _GEN_8192; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8257 = 6'h3f == idx_1 ? 1'h0 : _GEN_8193; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
-  wire  _GEN_8258 = commitValids_1 ? _GEN_8194 : _GEN_8130; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8259 = commitValids_1 ? _GEN_8195 : _GEN_8131; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8260 = commitValids_1 ? _GEN_8196 : _GEN_8132; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8261 = commitValids_1 ? _GEN_8197 : _GEN_8133; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8262 = commitValids_1 ? _GEN_8198 : _GEN_8134; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8263 = commitValids_1 ? _GEN_8199 : _GEN_8135; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8264 = commitValids_1 ? _GEN_8200 : _GEN_8136; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8265 = commitValids_1 ? _GEN_8201 : _GEN_8137; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8266 = commitValids_1 ? _GEN_8202 : _GEN_8138; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8267 = commitValids_1 ? _GEN_8203 : _GEN_8139; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8268 = commitValids_1 ? _GEN_8204 : _GEN_8140; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8269 = commitValids_1 ? _GEN_8205 : _GEN_8141; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8270 = commitValids_1 ? _GEN_8206 : _GEN_8142; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8271 = commitValids_1 ? _GEN_8207 : _GEN_8143; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8272 = commitValids_1 ? _GEN_8208 : _GEN_8144; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8273 = commitValids_1 ? _GEN_8209 : _GEN_8145; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8274 = commitValids_1 ? _GEN_8210 : _GEN_8146; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8275 = commitValids_1 ? _GEN_8211 : _GEN_8147; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8276 = commitValids_1 ? _GEN_8212 : _GEN_8148; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8277 = commitValids_1 ? _GEN_8213 : _GEN_8149; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8278 = commitValids_1 ? _GEN_8214 : _GEN_8150; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8279 = commitValids_1 ? _GEN_8215 : _GEN_8151; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8280 = commitValids_1 ? _GEN_8216 : _GEN_8152; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8281 = commitValids_1 ? _GEN_8217 : _GEN_8153; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8282 = commitValids_1 ? _GEN_8218 : _GEN_8154; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8283 = commitValids_1 ? _GEN_8219 : _GEN_8155; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8284 = commitValids_1 ? _GEN_8220 : _GEN_8156; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8285 = commitValids_1 ? _GEN_8221 : _GEN_8157; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8286 = commitValids_1 ? _GEN_8222 : _GEN_8158; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8287 = commitValids_1 ? _GEN_8223 : _GEN_8159; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8288 = commitValids_1 ? _GEN_8224 : _GEN_8160; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8289 = commitValids_1 ? _GEN_8225 : _GEN_8161; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8290 = commitValids_1 ? _GEN_8226 : _GEN_8162; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8291 = commitValids_1 ? _GEN_8227 : _GEN_8163; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8292 = commitValids_1 ? _GEN_8228 : _GEN_8164; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8293 = commitValids_1 ? _GEN_8229 : _GEN_8165; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8294 = commitValids_1 ? _GEN_8230 : _GEN_8166; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8295 = commitValids_1 ? _GEN_8231 : _GEN_8167; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8296 = commitValids_1 ? _GEN_8232 : _GEN_8168; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8297 = commitValids_1 ? _GEN_8233 : _GEN_8169; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8298 = commitValids_1 ? _GEN_8234 : _GEN_8170; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8299 = commitValids_1 ? _GEN_8235 : _GEN_8171; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8300 = commitValids_1 ? _GEN_8236 : _GEN_8172; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8301 = commitValids_1 ? _GEN_8237 : _GEN_8173; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8302 = commitValids_1 ? _GEN_8238 : _GEN_8174; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8303 = commitValids_1 ? _GEN_8239 : _GEN_8175; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8304 = commitValids_1 ? _GEN_8240 : _GEN_8176; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8305 = commitValids_1 ? _GEN_8241 : _GEN_8177; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8306 = commitValids_1 ? _GEN_8242 : _GEN_8178; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8307 = commitValids_1 ? _GEN_8243 : _GEN_8179; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8308 = commitValids_1 ? _GEN_8244 : _GEN_8180; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8309 = commitValids_1 ? _GEN_8245 : _GEN_8181; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8310 = commitValids_1 ? _GEN_8246 : _GEN_8182; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8311 = commitValids_1 ? _GEN_8247 : _GEN_8183; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8312 = commitValids_1 ? _GEN_8248 : _GEN_8184; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8313 = commitValids_1 ? _GEN_8249 : _GEN_8185; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8314 = commitValids_1 ? _GEN_8250 : _GEN_8186; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8315 = commitValids_1 ? _GEN_8251 : _GEN_8187; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8316 = commitValids_1 ? _GEN_8252 : _GEN_8188; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8317 = commitValids_1 ? _GEN_8253 : _GEN_8189; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8318 = commitValids_1 ? _GEN_8254 : _GEN_8190; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8319 = commitValids_1 ? _GEN_8255 : _GEN_8191; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8320 = commitValids_1 ? _GEN_8256 : _GEN_8192; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire  _GEN_8321 = commitValids_1 ? _GEN_8257 : _GEN_8193; // @[src/main/scala/backend/Rob.scala 186:27]
-  wire [5:0] _GEN_9315 = {{4'd0}, commitCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
-  wire [6:0] deqPtr_newIncValue = deqPtr_value + _GEN_9315; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire  _GEN_8962 = 6'h0 == idx ? 1'h0 : _GEN_4928; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8963 = 6'h1 == idx ? 1'h0 : _GEN_4929; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8964 = 6'h2 == idx ? 1'h0 : _GEN_4930; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8965 = 6'h3 == idx ? 1'h0 : _GEN_4931; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8966 = 6'h4 == idx ? 1'h0 : _GEN_4932; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8967 = 6'h5 == idx ? 1'h0 : _GEN_4933; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8968 = 6'h6 == idx ? 1'h0 : _GEN_4934; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8969 = 6'h7 == idx ? 1'h0 : _GEN_4935; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8970 = 6'h8 == idx ? 1'h0 : _GEN_4936; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8971 = 6'h9 == idx ? 1'h0 : _GEN_4937; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8972 = 6'ha == idx ? 1'h0 : _GEN_4938; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8973 = 6'hb == idx ? 1'h0 : _GEN_4939; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8974 = 6'hc == idx ? 1'h0 : _GEN_4940; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8975 = 6'hd == idx ? 1'h0 : _GEN_4941; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8976 = 6'he == idx ? 1'h0 : _GEN_4942; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8977 = 6'hf == idx ? 1'h0 : _GEN_4943; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8978 = 6'h10 == idx ? 1'h0 : _GEN_4944; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8979 = 6'h11 == idx ? 1'h0 : _GEN_4945; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8980 = 6'h12 == idx ? 1'h0 : _GEN_4946; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8981 = 6'h13 == idx ? 1'h0 : _GEN_4947; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8982 = 6'h14 == idx ? 1'h0 : _GEN_4948; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8983 = 6'h15 == idx ? 1'h0 : _GEN_4949; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8984 = 6'h16 == idx ? 1'h0 : _GEN_4950; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8985 = 6'h17 == idx ? 1'h0 : _GEN_4951; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8986 = 6'h18 == idx ? 1'h0 : _GEN_4952; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8987 = 6'h19 == idx ? 1'h0 : _GEN_4953; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8988 = 6'h1a == idx ? 1'h0 : _GEN_4954; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8989 = 6'h1b == idx ? 1'h0 : _GEN_4955; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8990 = 6'h1c == idx ? 1'h0 : _GEN_4956; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8991 = 6'h1d == idx ? 1'h0 : _GEN_4957; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8992 = 6'h1e == idx ? 1'h0 : _GEN_4958; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8993 = 6'h1f == idx ? 1'h0 : _GEN_4959; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8994 = 6'h20 == idx ? 1'h0 : _GEN_4960; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8995 = 6'h21 == idx ? 1'h0 : _GEN_4961; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8996 = 6'h22 == idx ? 1'h0 : _GEN_4962; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8997 = 6'h23 == idx ? 1'h0 : _GEN_4963; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8998 = 6'h24 == idx ? 1'h0 : _GEN_4964; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_8999 = 6'h25 == idx ? 1'h0 : _GEN_4965; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9000 = 6'h26 == idx ? 1'h0 : _GEN_4966; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9001 = 6'h27 == idx ? 1'h0 : _GEN_4967; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9002 = 6'h28 == idx ? 1'h0 : _GEN_4968; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9003 = 6'h29 == idx ? 1'h0 : _GEN_4969; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9004 = 6'h2a == idx ? 1'h0 : _GEN_4970; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9005 = 6'h2b == idx ? 1'h0 : _GEN_4971; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9006 = 6'h2c == idx ? 1'h0 : _GEN_4972; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9007 = 6'h2d == idx ? 1'h0 : _GEN_4973; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9008 = 6'h2e == idx ? 1'h0 : _GEN_4974; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9009 = 6'h2f == idx ? 1'h0 : _GEN_4975; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9010 = 6'h30 == idx ? 1'h0 : _GEN_4976; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9011 = 6'h31 == idx ? 1'h0 : _GEN_4977; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9012 = 6'h32 == idx ? 1'h0 : _GEN_4978; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9013 = 6'h33 == idx ? 1'h0 : _GEN_4979; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9014 = 6'h34 == idx ? 1'h0 : _GEN_4980; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9015 = 6'h35 == idx ? 1'h0 : _GEN_4981; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9016 = 6'h36 == idx ? 1'h0 : _GEN_4982; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9017 = 6'h37 == idx ? 1'h0 : _GEN_4983; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9018 = 6'h38 == idx ? 1'h0 : _GEN_4984; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9019 = 6'h39 == idx ? 1'h0 : _GEN_4985; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9020 = 6'h3a == idx ? 1'h0 : _GEN_4986; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9021 = 6'h3b == idx ? 1'h0 : _GEN_4987; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9022 = 6'h3c == idx ? 1'h0 : _GEN_4988; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9023 = 6'h3d == idx ? 1'h0 : _GEN_4989; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9024 = 6'h3e == idx ? 1'h0 : _GEN_4990; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9025 = 6'h3f == idx ? 1'h0 : _GEN_4991; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9026 = commitValids_0 ? _GEN_8962 : _GEN_4928; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9027 = commitValids_0 ? _GEN_8963 : _GEN_4929; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9028 = commitValids_0 ? _GEN_8964 : _GEN_4930; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9029 = commitValids_0 ? _GEN_8965 : _GEN_4931; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9030 = commitValids_0 ? _GEN_8966 : _GEN_4932; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9031 = commitValids_0 ? _GEN_8967 : _GEN_4933; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9032 = commitValids_0 ? _GEN_8968 : _GEN_4934; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9033 = commitValids_0 ? _GEN_8969 : _GEN_4935; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9034 = commitValids_0 ? _GEN_8970 : _GEN_4936; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9035 = commitValids_0 ? _GEN_8971 : _GEN_4937; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9036 = commitValids_0 ? _GEN_8972 : _GEN_4938; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9037 = commitValids_0 ? _GEN_8973 : _GEN_4939; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9038 = commitValids_0 ? _GEN_8974 : _GEN_4940; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9039 = commitValids_0 ? _GEN_8975 : _GEN_4941; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9040 = commitValids_0 ? _GEN_8976 : _GEN_4942; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9041 = commitValids_0 ? _GEN_8977 : _GEN_4943; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9042 = commitValids_0 ? _GEN_8978 : _GEN_4944; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9043 = commitValids_0 ? _GEN_8979 : _GEN_4945; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9044 = commitValids_0 ? _GEN_8980 : _GEN_4946; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9045 = commitValids_0 ? _GEN_8981 : _GEN_4947; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9046 = commitValids_0 ? _GEN_8982 : _GEN_4948; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9047 = commitValids_0 ? _GEN_8983 : _GEN_4949; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9048 = commitValids_0 ? _GEN_8984 : _GEN_4950; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9049 = commitValids_0 ? _GEN_8985 : _GEN_4951; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9050 = commitValids_0 ? _GEN_8986 : _GEN_4952; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9051 = commitValids_0 ? _GEN_8987 : _GEN_4953; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9052 = commitValids_0 ? _GEN_8988 : _GEN_4954; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9053 = commitValids_0 ? _GEN_8989 : _GEN_4955; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9054 = commitValids_0 ? _GEN_8990 : _GEN_4956; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9055 = commitValids_0 ? _GEN_8991 : _GEN_4957; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9056 = commitValids_0 ? _GEN_8992 : _GEN_4958; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9057 = commitValids_0 ? _GEN_8993 : _GEN_4959; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9058 = commitValids_0 ? _GEN_8994 : _GEN_4960; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9059 = commitValids_0 ? _GEN_8995 : _GEN_4961; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9060 = commitValids_0 ? _GEN_8996 : _GEN_4962; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9061 = commitValids_0 ? _GEN_8997 : _GEN_4963; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9062 = commitValids_0 ? _GEN_8998 : _GEN_4964; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9063 = commitValids_0 ? _GEN_8999 : _GEN_4965; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9064 = commitValids_0 ? _GEN_9000 : _GEN_4966; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9065 = commitValids_0 ? _GEN_9001 : _GEN_4967; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9066 = commitValids_0 ? _GEN_9002 : _GEN_4968; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9067 = commitValids_0 ? _GEN_9003 : _GEN_4969; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9068 = commitValids_0 ? _GEN_9004 : _GEN_4970; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9069 = commitValids_0 ? _GEN_9005 : _GEN_4971; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9070 = commitValids_0 ? _GEN_9006 : _GEN_4972; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9071 = commitValids_0 ? _GEN_9007 : _GEN_4973; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9072 = commitValids_0 ? _GEN_9008 : _GEN_4974; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9073 = commitValids_0 ? _GEN_9009 : _GEN_4975; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9074 = commitValids_0 ? _GEN_9010 : _GEN_4976; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9075 = commitValids_0 ? _GEN_9011 : _GEN_4977; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9076 = commitValids_0 ? _GEN_9012 : _GEN_4978; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9077 = commitValids_0 ? _GEN_9013 : _GEN_4979; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9078 = commitValids_0 ? _GEN_9014 : _GEN_4980; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9079 = commitValids_0 ? _GEN_9015 : _GEN_4981; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9080 = commitValids_0 ? _GEN_9016 : _GEN_4982; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9081 = commitValids_0 ? _GEN_9017 : _GEN_4983; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9082 = commitValids_0 ? _GEN_9018 : _GEN_4984; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9083 = commitValids_0 ? _GEN_9019 : _GEN_4985; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9084 = commitValids_0 ? _GEN_9020 : _GEN_4986; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9085 = commitValids_0 ? _GEN_9021 : _GEN_4987; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9086 = commitValids_0 ? _GEN_9022 : _GEN_4988; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9087 = commitValids_0 ? _GEN_9023 : _GEN_4989; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9088 = commitValids_0 ? _GEN_9024 : _GEN_4990; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9089 = commitValids_0 ? _GEN_9025 : _GEN_4991; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9090 = 6'h0 == idx_1 ? 1'h0 : _GEN_9026; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9091 = 6'h1 == idx_1 ? 1'h0 : _GEN_9027; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9092 = 6'h2 == idx_1 ? 1'h0 : _GEN_9028; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9093 = 6'h3 == idx_1 ? 1'h0 : _GEN_9029; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9094 = 6'h4 == idx_1 ? 1'h0 : _GEN_9030; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9095 = 6'h5 == idx_1 ? 1'h0 : _GEN_9031; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9096 = 6'h6 == idx_1 ? 1'h0 : _GEN_9032; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9097 = 6'h7 == idx_1 ? 1'h0 : _GEN_9033; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9098 = 6'h8 == idx_1 ? 1'h0 : _GEN_9034; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9099 = 6'h9 == idx_1 ? 1'h0 : _GEN_9035; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9100 = 6'ha == idx_1 ? 1'h0 : _GEN_9036; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9101 = 6'hb == idx_1 ? 1'h0 : _GEN_9037; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9102 = 6'hc == idx_1 ? 1'h0 : _GEN_9038; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9103 = 6'hd == idx_1 ? 1'h0 : _GEN_9039; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9104 = 6'he == idx_1 ? 1'h0 : _GEN_9040; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9105 = 6'hf == idx_1 ? 1'h0 : _GEN_9041; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9106 = 6'h10 == idx_1 ? 1'h0 : _GEN_9042; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9107 = 6'h11 == idx_1 ? 1'h0 : _GEN_9043; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9108 = 6'h12 == idx_1 ? 1'h0 : _GEN_9044; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9109 = 6'h13 == idx_1 ? 1'h0 : _GEN_9045; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9110 = 6'h14 == idx_1 ? 1'h0 : _GEN_9046; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9111 = 6'h15 == idx_1 ? 1'h0 : _GEN_9047; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9112 = 6'h16 == idx_1 ? 1'h0 : _GEN_9048; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9113 = 6'h17 == idx_1 ? 1'h0 : _GEN_9049; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9114 = 6'h18 == idx_1 ? 1'h0 : _GEN_9050; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9115 = 6'h19 == idx_1 ? 1'h0 : _GEN_9051; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9116 = 6'h1a == idx_1 ? 1'h0 : _GEN_9052; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9117 = 6'h1b == idx_1 ? 1'h0 : _GEN_9053; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9118 = 6'h1c == idx_1 ? 1'h0 : _GEN_9054; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9119 = 6'h1d == idx_1 ? 1'h0 : _GEN_9055; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9120 = 6'h1e == idx_1 ? 1'h0 : _GEN_9056; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9121 = 6'h1f == idx_1 ? 1'h0 : _GEN_9057; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9122 = 6'h20 == idx_1 ? 1'h0 : _GEN_9058; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9123 = 6'h21 == idx_1 ? 1'h0 : _GEN_9059; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9124 = 6'h22 == idx_1 ? 1'h0 : _GEN_9060; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9125 = 6'h23 == idx_1 ? 1'h0 : _GEN_9061; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9126 = 6'h24 == idx_1 ? 1'h0 : _GEN_9062; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9127 = 6'h25 == idx_1 ? 1'h0 : _GEN_9063; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9128 = 6'h26 == idx_1 ? 1'h0 : _GEN_9064; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9129 = 6'h27 == idx_1 ? 1'h0 : _GEN_9065; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9130 = 6'h28 == idx_1 ? 1'h0 : _GEN_9066; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9131 = 6'h29 == idx_1 ? 1'h0 : _GEN_9067; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9132 = 6'h2a == idx_1 ? 1'h0 : _GEN_9068; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9133 = 6'h2b == idx_1 ? 1'h0 : _GEN_9069; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9134 = 6'h2c == idx_1 ? 1'h0 : _GEN_9070; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9135 = 6'h2d == idx_1 ? 1'h0 : _GEN_9071; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9136 = 6'h2e == idx_1 ? 1'h0 : _GEN_9072; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9137 = 6'h2f == idx_1 ? 1'h0 : _GEN_9073; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9138 = 6'h30 == idx_1 ? 1'h0 : _GEN_9074; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9139 = 6'h31 == idx_1 ? 1'h0 : _GEN_9075; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9140 = 6'h32 == idx_1 ? 1'h0 : _GEN_9076; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9141 = 6'h33 == idx_1 ? 1'h0 : _GEN_9077; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9142 = 6'h34 == idx_1 ? 1'h0 : _GEN_9078; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9143 = 6'h35 == idx_1 ? 1'h0 : _GEN_9079; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9144 = 6'h36 == idx_1 ? 1'h0 : _GEN_9080; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9145 = 6'h37 == idx_1 ? 1'h0 : _GEN_9081; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9146 = 6'h38 == idx_1 ? 1'h0 : _GEN_9082; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9147 = 6'h39 == idx_1 ? 1'h0 : _GEN_9083; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9148 = 6'h3a == idx_1 ? 1'h0 : _GEN_9084; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9149 = 6'h3b == idx_1 ? 1'h0 : _GEN_9085; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9150 = 6'h3c == idx_1 ? 1'h0 : _GEN_9086; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9151 = 6'h3d == idx_1 ? 1'h0 : _GEN_9087; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9152 = 6'h3e == idx_1 ? 1'h0 : _GEN_9088; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9153 = 6'h3f == idx_1 ? 1'h0 : _GEN_9089; // @[src/main/scala/backend/Rob.scala 187:{26,26}]
+  wire  _GEN_9154 = commitValids_1 ? _GEN_9090 : _GEN_9026; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9155 = commitValids_1 ? _GEN_9091 : _GEN_9027; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9156 = commitValids_1 ? _GEN_9092 : _GEN_9028; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9157 = commitValids_1 ? _GEN_9093 : _GEN_9029; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9158 = commitValids_1 ? _GEN_9094 : _GEN_9030; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9159 = commitValids_1 ? _GEN_9095 : _GEN_9031; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9160 = commitValids_1 ? _GEN_9096 : _GEN_9032; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9161 = commitValids_1 ? _GEN_9097 : _GEN_9033; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9162 = commitValids_1 ? _GEN_9098 : _GEN_9034; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9163 = commitValids_1 ? _GEN_9099 : _GEN_9035; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9164 = commitValids_1 ? _GEN_9100 : _GEN_9036; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9165 = commitValids_1 ? _GEN_9101 : _GEN_9037; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9166 = commitValids_1 ? _GEN_9102 : _GEN_9038; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9167 = commitValids_1 ? _GEN_9103 : _GEN_9039; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9168 = commitValids_1 ? _GEN_9104 : _GEN_9040; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9169 = commitValids_1 ? _GEN_9105 : _GEN_9041; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9170 = commitValids_1 ? _GEN_9106 : _GEN_9042; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9171 = commitValids_1 ? _GEN_9107 : _GEN_9043; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9172 = commitValids_1 ? _GEN_9108 : _GEN_9044; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9173 = commitValids_1 ? _GEN_9109 : _GEN_9045; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9174 = commitValids_1 ? _GEN_9110 : _GEN_9046; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9175 = commitValids_1 ? _GEN_9111 : _GEN_9047; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9176 = commitValids_1 ? _GEN_9112 : _GEN_9048; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9177 = commitValids_1 ? _GEN_9113 : _GEN_9049; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9178 = commitValids_1 ? _GEN_9114 : _GEN_9050; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9179 = commitValids_1 ? _GEN_9115 : _GEN_9051; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9180 = commitValids_1 ? _GEN_9116 : _GEN_9052; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9181 = commitValids_1 ? _GEN_9117 : _GEN_9053; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9182 = commitValids_1 ? _GEN_9118 : _GEN_9054; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9183 = commitValids_1 ? _GEN_9119 : _GEN_9055; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9184 = commitValids_1 ? _GEN_9120 : _GEN_9056; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9185 = commitValids_1 ? _GEN_9121 : _GEN_9057; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9186 = commitValids_1 ? _GEN_9122 : _GEN_9058; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9187 = commitValids_1 ? _GEN_9123 : _GEN_9059; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9188 = commitValids_1 ? _GEN_9124 : _GEN_9060; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9189 = commitValids_1 ? _GEN_9125 : _GEN_9061; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9190 = commitValids_1 ? _GEN_9126 : _GEN_9062; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9191 = commitValids_1 ? _GEN_9127 : _GEN_9063; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9192 = commitValids_1 ? _GEN_9128 : _GEN_9064; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9193 = commitValids_1 ? _GEN_9129 : _GEN_9065; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9194 = commitValids_1 ? _GEN_9130 : _GEN_9066; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9195 = commitValids_1 ? _GEN_9131 : _GEN_9067; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9196 = commitValids_1 ? _GEN_9132 : _GEN_9068; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9197 = commitValids_1 ? _GEN_9133 : _GEN_9069; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9198 = commitValids_1 ? _GEN_9134 : _GEN_9070; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9199 = commitValids_1 ? _GEN_9135 : _GEN_9071; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9200 = commitValids_1 ? _GEN_9136 : _GEN_9072; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9201 = commitValids_1 ? _GEN_9137 : _GEN_9073; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9202 = commitValids_1 ? _GEN_9138 : _GEN_9074; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9203 = commitValids_1 ? _GEN_9139 : _GEN_9075; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9204 = commitValids_1 ? _GEN_9140 : _GEN_9076; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9205 = commitValids_1 ? _GEN_9141 : _GEN_9077; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9206 = commitValids_1 ? _GEN_9142 : _GEN_9078; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9207 = commitValids_1 ? _GEN_9143 : _GEN_9079; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9208 = commitValids_1 ? _GEN_9144 : _GEN_9080; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9209 = commitValids_1 ? _GEN_9145 : _GEN_9081; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9210 = commitValids_1 ? _GEN_9146 : _GEN_9082; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9211 = commitValids_1 ? _GEN_9147 : _GEN_9083; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9212 = commitValids_1 ? _GEN_9148 : _GEN_9084; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9213 = commitValids_1 ? _GEN_9149 : _GEN_9085; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9214 = commitValids_1 ? _GEN_9150 : _GEN_9086; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9215 = commitValids_1 ? _GEN_9151 : _GEN_9087; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9216 = commitValids_1 ? _GEN_9152 : _GEN_9088; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire  _GEN_9217 = commitValids_1 ? _GEN_9153 : _GEN_9089; // @[src/main/scala/backend/Rob.scala 186:27]
+  wire [5:0] _GEN_10607 = {{4'd0}, commitCount}; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
+  wire [6:0] deqPtr_newIncValue = deqPtr_value + _GEN_10607; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire  deqPtr_wrap = deqPtr_newIncValue >= 7'h40; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [5:0] deqPtr_newPtr_value = deqPtr_newIncValue[5:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
-  wire [5:0] _GEN_8581 = io_writeback_0_valid & _T_12 ? io_writeback_0_bits_robIdx_value : 6'h0; // @[src/main/scala/backend/Rob.scala 202:24 210:43 212:28]
-  wire [5:0] _GEN_8715 = io_writeback_1_valid & _T_13 ? io_writeback_1_bits_robIdx_value : _GEN_8581; // @[src/main/scala/backend/Rob.scala 210:43 212:28]
+  wire [5:0] _GEN_9477 = io_writeback_0_valid & _T_12 ? io_writeback_0_bits_robIdx_value : 6'h0; // @[src/main/scala/backend/Rob.scala 202:24 210:43 212:28]
+  wire [5:0] _GEN_9611 = io_writeback_1_valid & _T_13 ? io_writeback_1_bits_robIdx_value : _GEN_9477; // @[src/main/scala/backend/Rob.scala 210:43 212:28]
+  wire [5:0] _GEN_9745 = io_writeback_2_valid & _T_14 ? io_writeback_2_bits_robIdx_value : _GEN_9611; // @[src/main/scala/backend/Rob.scala 210:43 212:28]
+  wire [5:0] _GEN_9879 = io_writeback_3_valid & _T_15 ? io_writeback_3_bits_robIdx_value : _GEN_9745; // @[src/main/scala/backend/Rob.scala 210:43 212:28]
   assign io_enq_canEnq = ~full & _io_enq_canEnq_T_1 <= 9'h40; // @[src/main/scala/backend/Rob.scala 97:26]
   assign io_commit_valid_0 = thisReady & ~hasExcp; // @[src/main/scala/backend/Rob.scala 161:51]
   assign io_commit_valid_1 = thisReady & thisReady_1 & ~hasExcp_1; // @[src/main/scala/backend/Rob.scala 161:51]
   assign io_commit_valid_2 = thisReady & thisReady_1 & thisReady_2 & ~hasExcp_2; // @[src/main/scala/backend/Rob.scala 161:51]
-  assign io_commit_bits_0_pdst = 6'h3f == idx ? entries_63_pdst : _GEN_6592; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  assign io_commit_bits_0_pc = 6'h3f == idx ? entries_63_pc : _GEN_6848; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  assign io_commit_bits_0_wrdata = 6'h3f == idx ? entries_63_rfdata : _GEN_6912; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  assign io_commit_bits_0_oldPdst = 6'h3f == idx ? entries_63_oldPdst : _GEN_6656; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  assign io_commit_bits_0_ldst = 6'h3f == idx ? entries_63_ldst : _GEN_6720; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  assign io_commit_bits_0_rfWen = 6'h3f == idx ? entries_63_rfWen : _GEN_6784; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  assign io_commit_bits_1_pdst = 6'h3f == idx_1 ? entries_63_pdst : _GEN_7168; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  assign io_commit_bits_1_pc = 6'h3f == idx_1 ? entries_63_pc : _GEN_7424; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  assign io_commit_bits_1_wrdata = 6'h3f == idx_1 ? entries_63_rfdata : _GEN_7488; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  assign io_commit_bits_1_oldPdst = 6'h3f == idx_1 ? entries_63_oldPdst : _GEN_7232; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  assign io_commit_bits_1_ldst = 6'h3f == idx_1 ? entries_63_ldst : _GEN_7296; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  assign io_commit_bits_1_rfWen = 6'h3f == idx_1 ? entries_63_rfWen : _GEN_7360; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  assign io_commit_bits_2_pdst = 6'h3f == idx_2 ? entries_63_pdst : _GEN_7744; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
-  assign io_commit_bits_2_pc = 6'h3f == idx_2 ? entries_63_pc : _GEN_8000; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
-  assign io_commit_bits_2_wrdata = 6'h3f == idx_2 ? entries_63_rfdata : _GEN_8064; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
-  assign io_commit_bits_2_oldPdst = 6'h3f == idx_2 ? entries_63_oldPdst : _GEN_7808; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
-  assign io_commit_bits_2_ldst = 6'h3f == idx_2 ? entries_63_ldst : _GEN_7872; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
-  assign io_commit_bits_2_rfWen = 6'h3f == idx_2 ? entries_63_rfWen : _GEN_7936; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
-  assign io_redirect_valid = io_writeback_2_valid & _T_14 | (io_writeback_1_valid & _T_13 | io_writeback_0_valid & _T_12
-    ); // @[src/main/scala/backend/Rob.scala 210:43 211:28]
-  assign io_redirect_robIdx_value = io_writeback_2_valid & _T_14 ? io_writeback_2_bits_robIdx_value : _GEN_8715; // @[src/main/scala/backend/Rob.scala 210:43 212:28]
+  assign io_commit_bits_0_pdst = 6'h3f == idx ? entries_63_pdst : _GEN_7488; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  assign io_commit_bits_0_pc = 6'h3f == idx ? entries_63_pc : _GEN_7744; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  assign io_commit_bits_0_wrdata = 6'h3f == idx ? entries_63_rfdata : _GEN_7808; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  assign io_commit_bits_0_oldPdst = 6'h3f == idx ? entries_63_oldPdst : _GEN_7552; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  assign io_commit_bits_0_ldst = 6'h3f == idx ? entries_63_ldst : _GEN_7616; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  assign io_commit_bits_0_rfWen = 6'h3f == idx ? entries_63_rfWen : _GEN_7680; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  assign io_commit_bits_1_pdst = 6'h3f == idx_1 ? entries_63_pdst : _GEN_8064; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  assign io_commit_bits_1_pc = 6'h3f == idx_1 ? entries_63_pc : _GEN_8320; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  assign io_commit_bits_1_wrdata = 6'h3f == idx_1 ? entries_63_rfdata : _GEN_8384; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  assign io_commit_bits_1_oldPdst = 6'h3f == idx_1 ? entries_63_oldPdst : _GEN_8128; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  assign io_commit_bits_1_ldst = 6'h3f == idx_1 ? entries_63_ldst : _GEN_8192; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  assign io_commit_bits_1_rfWen = 6'h3f == idx_1 ? entries_63_rfWen : _GEN_8256; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  assign io_commit_bits_2_pdst = 6'h3f == idx_2 ? entries_63_pdst : _GEN_8640; // @[src/main/scala/backend/Rob.scala 163:{33,33}]
+  assign io_commit_bits_2_pc = 6'h3f == idx_2 ? entries_63_pc : _GEN_8896; // @[src/main/scala/backend/Rob.scala 168:{34,34}]
+  assign io_commit_bits_2_wrdata = 6'h3f == idx_2 ? entries_63_rfdata : _GEN_8960; // @[src/main/scala/backend/Rob.scala 169:{34,34}]
+  assign io_commit_bits_2_oldPdst = 6'h3f == idx_2 ? entries_63_oldPdst : _GEN_8704; // @[src/main/scala/backend/Rob.scala 164:{33,33}]
+  assign io_commit_bits_2_ldst = 6'h3f == idx_2 ? entries_63_ldst : _GEN_8768; // @[src/main/scala/backend/Rob.scala 165:{33,33}]
+  assign io_commit_bits_2_rfWen = 6'h3f == idx_2 ? entries_63_rfWen : _GEN_8832; // @[src/main/scala/backend/Rob.scala 166:{33,33}]
+  assign io_redirect_valid = io_writeback_4_valid & _T_16 | (io_writeback_3_valid & _T_15 | (io_writeback_2_valid &
+    _T_14 | (io_writeback_1_valid & _T_13 | io_writeback_0_valid & _T_12))); // @[src/main/scala/backend/Rob.scala 210:43 211:28]
+  assign io_redirect_robIdx_value = io_writeback_4_valid & _T_16 ? io_writeback_4_bits_robIdx_value : _GEN_9879; // @[src/main/scala/backend/Rob.scala 210:43 212:28]
   always @(posedge clock) begin
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h0 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -8622,14 +9530,14 @@ module ROB(
     end else begin
       entries_0_rfWen <= _GEN_2816;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h0 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_0_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h0 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_0_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_0_rfdata <= _GEN_5762;
+        entries_0_rfdata <= _GEN_6658;
       end
     end else begin
-      entries_0_rfdata <= _GEN_5762;
+      entries_0_rfdata <= _GEN_6658;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h0 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -8667,29 +9575,29 @@ module ROB(
     end else begin
       entries_0_fuType <= _GEN_3072;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h0 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_0_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h0 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_0_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_0_excpVec <= _GEN_5826;
+          entries_0_excpVec <= _GEN_6722;
         end
       end else begin
-        entries_0_excpVec <= _GEN_5826;
+        entries_0_excpVec <= _GEN_6722;
       end
     end else begin
-      entries_0_excpVec <= _GEN_5826;
+      entries_0_excpVec <= _GEN_6722;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_0_writtenBack <= _GEN_6786;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_0_writtenBack <= _GEN_6338;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_0_writtenBack <= _GEN_5890;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_0_writtenBack <= _GEN_5442;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_0_writtenBack <= _GEN_4994;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_0_writtenBack <= _GEN_4032;
     end else begin
-      entries_0_writtenBack <= _GEN_3200;
+      entries_0_writtenBack <= _GEN_5250;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_0_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -8697,10 +9605,10 @@ module ROB(
       if (6'h0 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_0_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_0_valid <= _GEN_8258;
+        entries_0_valid <= _GEN_9154;
       end
     end else begin
-      entries_0_valid <= _GEN_8258;
+      entries_0_valid <= _GEN_9154;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -8756,14 +9664,14 @@ module ROB(
     end else begin
       entries_1_rfWen <= _GEN_2817;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_1_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_1_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_1_rfdata <= _GEN_5763;
+        entries_1_rfdata <= _GEN_6659;
       end
     end else begin
-      entries_1_rfdata <= _GEN_5763;
+      entries_1_rfdata <= _GEN_6659;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -8801,29 +9709,29 @@ module ROB(
     end else begin
       entries_1_fuType <= _GEN_3073;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_1_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_1_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_1_excpVec <= _GEN_5827;
+          entries_1_excpVec <= _GEN_6723;
         end
       end else begin
-        entries_1_excpVec <= _GEN_5827;
+        entries_1_excpVec <= _GEN_6723;
       end
     end else begin
-      entries_1_excpVec <= _GEN_5827;
+      entries_1_excpVec <= _GEN_6723;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_1_writtenBack <= _GEN_6787;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_1_writtenBack <= _GEN_6339;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_1_writtenBack <= _GEN_5891;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_1_writtenBack <= _GEN_5443;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_1_writtenBack <= _GEN_4995;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_1_writtenBack <= _GEN_4033;
     end else begin
-      entries_1_writtenBack <= _GEN_3201;
+      entries_1_writtenBack <= _GEN_5251;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_1_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -8831,10 +9739,10 @@ module ROB(
       if (6'h1 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_1_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_1_valid <= _GEN_8259;
+        entries_1_valid <= _GEN_9155;
       end
     end else begin
-      entries_1_valid <= _GEN_8259;
+      entries_1_valid <= _GEN_9155;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -8890,14 +9798,14 @@ module ROB(
     end else begin
       entries_2_rfWen <= _GEN_2818;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_2_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_2_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_2_rfdata <= _GEN_5764;
+        entries_2_rfdata <= _GEN_6660;
       end
     end else begin
-      entries_2_rfdata <= _GEN_5764;
+      entries_2_rfdata <= _GEN_6660;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -8935,29 +9843,29 @@ module ROB(
     end else begin
       entries_2_fuType <= _GEN_3074;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_2_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_2_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_2_excpVec <= _GEN_5828;
+          entries_2_excpVec <= _GEN_6724;
         end
       end else begin
-        entries_2_excpVec <= _GEN_5828;
+        entries_2_excpVec <= _GEN_6724;
       end
     end else begin
-      entries_2_excpVec <= _GEN_5828;
+      entries_2_excpVec <= _GEN_6724;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_2_writtenBack <= _GEN_6788;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_2_writtenBack <= _GEN_6340;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_2_writtenBack <= _GEN_5892;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_2_writtenBack <= _GEN_5444;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_2_writtenBack <= _GEN_4996;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_2_writtenBack <= _GEN_4034;
     end else begin
-      entries_2_writtenBack <= _GEN_3202;
+      entries_2_writtenBack <= _GEN_5252;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_2_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -8965,10 +9873,10 @@ module ROB(
       if (6'h2 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_2_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_2_valid <= _GEN_8260;
+        entries_2_valid <= _GEN_9156;
       end
     end else begin
-      entries_2_valid <= _GEN_8260;
+      entries_2_valid <= _GEN_9156;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9024,14 +9932,14 @@ module ROB(
     end else begin
       entries_3_rfWen <= _GEN_2819;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_3_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_3_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_3_rfdata <= _GEN_5765;
+        entries_3_rfdata <= _GEN_6661;
       end
     end else begin
-      entries_3_rfdata <= _GEN_5765;
+      entries_3_rfdata <= _GEN_6661;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9069,29 +9977,29 @@ module ROB(
     end else begin
       entries_3_fuType <= _GEN_3075;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_3_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_3_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_3_excpVec <= _GEN_5829;
+          entries_3_excpVec <= _GEN_6725;
         end
       end else begin
-        entries_3_excpVec <= _GEN_5829;
+        entries_3_excpVec <= _GEN_6725;
       end
     end else begin
-      entries_3_excpVec <= _GEN_5829;
+      entries_3_excpVec <= _GEN_6725;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_3_writtenBack <= _GEN_6789;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_3_writtenBack <= _GEN_6341;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_3_writtenBack <= _GEN_5893;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_3_writtenBack <= _GEN_5445;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_3_writtenBack <= _GEN_4997;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_3_writtenBack <= _GEN_4035;
     end else begin
-      entries_3_writtenBack <= _GEN_3203;
+      entries_3_writtenBack <= _GEN_5253;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_3_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9099,10 +10007,10 @@ module ROB(
       if (6'h3 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_3_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_3_valid <= _GEN_8261;
+        entries_3_valid <= _GEN_9157;
       end
     end else begin
-      entries_3_valid <= _GEN_8261;
+      entries_3_valid <= _GEN_9157;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h4 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9158,14 +10066,14 @@ module ROB(
     end else begin
       entries_4_rfWen <= _GEN_2820;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h4 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_4_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h4 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_4_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_4_rfdata <= _GEN_5766;
+        entries_4_rfdata <= _GEN_6662;
       end
     end else begin
-      entries_4_rfdata <= _GEN_5766;
+      entries_4_rfdata <= _GEN_6662;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h4 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9203,29 +10111,29 @@ module ROB(
     end else begin
       entries_4_fuType <= _GEN_3076;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h4 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_4_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h4 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_4_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_4_excpVec <= _GEN_5830;
+          entries_4_excpVec <= _GEN_6726;
         end
       end else begin
-        entries_4_excpVec <= _GEN_5830;
+        entries_4_excpVec <= _GEN_6726;
       end
     end else begin
-      entries_4_excpVec <= _GEN_5830;
+      entries_4_excpVec <= _GEN_6726;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_4_writtenBack <= _GEN_6790;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_4_writtenBack <= _GEN_6342;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_4_writtenBack <= _GEN_5894;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_4_writtenBack <= _GEN_5446;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_4_writtenBack <= _GEN_4998;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_4_writtenBack <= _GEN_4036;
     end else begin
-      entries_4_writtenBack <= _GEN_3204;
+      entries_4_writtenBack <= _GEN_5254;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_4_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9233,10 +10141,10 @@ module ROB(
       if (6'h4 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_4_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_4_valid <= _GEN_8262;
+        entries_4_valid <= _GEN_9158;
       end
     end else begin
-      entries_4_valid <= _GEN_8262;
+      entries_4_valid <= _GEN_9158;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h5 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9292,14 +10200,14 @@ module ROB(
     end else begin
       entries_5_rfWen <= _GEN_2821;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h5 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_5_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h5 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_5_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_5_rfdata <= _GEN_5767;
+        entries_5_rfdata <= _GEN_6663;
       end
     end else begin
-      entries_5_rfdata <= _GEN_5767;
+      entries_5_rfdata <= _GEN_6663;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h5 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9337,29 +10245,29 @@ module ROB(
     end else begin
       entries_5_fuType <= _GEN_3077;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h5 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_5_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h5 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_5_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_5_excpVec <= _GEN_5831;
+          entries_5_excpVec <= _GEN_6727;
         end
       end else begin
-        entries_5_excpVec <= _GEN_5831;
+        entries_5_excpVec <= _GEN_6727;
       end
     end else begin
-      entries_5_excpVec <= _GEN_5831;
+      entries_5_excpVec <= _GEN_6727;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_5_writtenBack <= _GEN_6791;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_5_writtenBack <= _GEN_6343;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_5_writtenBack <= _GEN_5895;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_5_writtenBack <= _GEN_5447;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_5_writtenBack <= _GEN_4999;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_5_writtenBack <= _GEN_4037;
     end else begin
-      entries_5_writtenBack <= _GEN_3205;
+      entries_5_writtenBack <= _GEN_5255;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_5_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9367,10 +10275,10 @@ module ROB(
       if (6'h5 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_5_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_5_valid <= _GEN_8263;
+        entries_5_valid <= _GEN_9159;
       end
     end else begin
-      entries_5_valid <= _GEN_8263;
+      entries_5_valid <= _GEN_9159;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h6 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9426,14 +10334,14 @@ module ROB(
     end else begin
       entries_6_rfWen <= _GEN_2822;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h6 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_6_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h6 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_6_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_6_rfdata <= _GEN_5768;
+        entries_6_rfdata <= _GEN_6664;
       end
     end else begin
-      entries_6_rfdata <= _GEN_5768;
+      entries_6_rfdata <= _GEN_6664;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h6 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9471,29 +10379,29 @@ module ROB(
     end else begin
       entries_6_fuType <= _GEN_3078;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h6 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_6_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h6 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_6_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_6_excpVec <= _GEN_5832;
+          entries_6_excpVec <= _GEN_6728;
         end
       end else begin
-        entries_6_excpVec <= _GEN_5832;
+        entries_6_excpVec <= _GEN_6728;
       end
     end else begin
-      entries_6_excpVec <= _GEN_5832;
+      entries_6_excpVec <= _GEN_6728;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_6_writtenBack <= _GEN_6792;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_6_writtenBack <= _GEN_6344;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_6_writtenBack <= _GEN_5896;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_6_writtenBack <= _GEN_5448;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_6_writtenBack <= _GEN_5000;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_6_writtenBack <= _GEN_4038;
     end else begin
-      entries_6_writtenBack <= _GEN_3206;
+      entries_6_writtenBack <= _GEN_5256;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_6_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9501,10 +10409,10 @@ module ROB(
       if (6'h6 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_6_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_6_valid <= _GEN_8264;
+        entries_6_valid <= _GEN_9160;
       end
     end else begin
-      entries_6_valid <= _GEN_8264;
+      entries_6_valid <= _GEN_9160;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h7 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9560,14 +10468,14 @@ module ROB(
     end else begin
       entries_7_rfWen <= _GEN_2823;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h7 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_7_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h7 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_7_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_7_rfdata <= _GEN_5769;
+        entries_7_rfdata <= _GEN_6665;
       end
     end else begin
-      entries_7_rfdata <= _GEN_5769;
+      entries_7_rfdata <= _GEN_6665;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h7 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9605,29 +10513,29 @@ module ROB(
     end else begin
       entries_7_fuType <= _GEN_3079;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h7 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_7_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h7 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_7_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_7_excpVec <= _GEN_5833;
+          entries_7_excpVec <= _GEN_6729;
         end
       end else begin
-        entries_7_excpVec <= _GEN_5833;
+        entries_7_excpVec <= _GEN_6729;
       end
     end else begin
-      entries_7_excpVec <= _GEN_5833;
+      entries_7_excpVec <= _GEN_6729;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_7_writtenBack <= _GEN_6793;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_7_writtenBack <= _GEN_6345;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_7_writtenBack <= _GEN_5897;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_7_writtenBack <= _GEN_5449;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_7_writtenBack <= _GEN_5001;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_7_writtenBack <= _GEN_4039;
     end else begin
-      entries_7_writtenBack <= _GEN_3207;
+      entries_7_writtenBack <= _GEN_5257;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_7_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9635,10 +10543,10 @@ module ROB(
       if (6'h7 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_7_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_7_valid <= _GEN_8265;
+        entries_7_valid <= _GEN_9161;
       end
     end else begin
-      entries_7_valid <= _GEN_8265;
+      entries_7_valid <= _GEN_9161;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h8 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9694,14 +10602,14 @@ module ROB(
     end else begin
       entries_8_rfWen <= _GEN_2824;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h8 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_8_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h8 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_8_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_8_rfdata <= _GEN_5770;
+        entries_8_rfdata <= _GEN_6666;
       end
     end else begin
-      entries_8_rfdata <= _GEN_5770;
+      entries_8_rfdata <= _GEN_6666;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h8 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9739,29 +10647,29 @@ module ROB(
     end else begin
       entries_8_fuType <= _GEN_3080;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h8 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_8_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h8 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_8_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_8_excpVec <= _GEN_5834;
+          entries_8_excpVec <= _GEN_6730;
         end
       end else begin
-        entries_8_excpVec <= _GEN_5834;
+        entries_8_excpVec <= _GEN_6730;
       end
     end else begin
-      entries_8_excpVec <= _GEN_5834;
+      entries_8_excpVec <= _GEN_6730;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_8_writtenBack <= _GEN_6794;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_8_writtenBack <= _GEN_6346;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_8_writtenBack <= _GEN_5898;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_8_writtenBack <= _GEN_5450;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_8_writtenBack <= _GEN_5002;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_8_writtenBack <= _GEN_4040;
     end else begin
-      entries_8_writtenBack <= _GEN_3208;
+      entries_8_writtenBack <= _GEN_5258;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_8_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9769,10 +10677,10 @@ module ROB(
       if (6'h8 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_8_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_8_valid <= _GEN_8266;
+        entries_8_valid <= _GEN_9162;
       end
     end else begin
-      entries_8_valid <= _GEN_8266;
+      entries_8_valid <= _GEN_9162;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h9 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9828,14 +10736,14 @@ module ROB(
     end else begin
       entries_9_rfWen <= _GEN_2825;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h9 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_9_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h9 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_9_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_9_rfdata <= _GEN_5771;
+        entries_9_rfdata <= _GEN_6667;
       end
     end else begin
-      entries_9_rfdata <= _GEN_5771;
+      entries_9_rfdata <= _GEN_6667;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h9 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -9873,29 +10781,29 @@ module ROB(
     end else begin
       entries_9_fuType <= _GEN_3081;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h9 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_9_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h9 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_9_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_9_excpVec <= _GEN_5835;
+          entries_9_excpVec <= _GEN_6731;
         end
       end else begin
-        entries_9_excpVec <= _GEN_5835;
+        entries_9_excpVec <= _GEN_6731;
       end
     end else begin
-      entries_9_excpVec <= _GEN_5835;
+      entries_9_excpVec <= _GEN_6731;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_9_writtenBack <= _GEN_6795;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_9_writtenBack <= _GEN_6347;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_9_writtenBack <= _GEN_5899;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_9_writtenBack <= _GEN_5451;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_9_writtenBack <= _GEN_5003;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_9_writtenBack <= _GEN_4041;
     end else begin
-      entries_9_writtenBack <= _GEN_3209;
+      entries_9_writtenBack <= _GEN_5259;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_9_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -9903,10 +10811,10 @@ module ROB(
       if (6'h9 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_9_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_9_valid <= _GEN_8267;
+        entries_9_valid <= _GEN_9163;
       end
     end else begin
-      entries_9_valid <= _GEN_8267;
+      entries_9_valid <= _GEN_9163;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'ha == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -9962,14 +10870,14 @@ module ROB(
     end else begin
       entries_10_rfWen <= _GEN_2826;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'ha == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_10_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'ha == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_10_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_10_rfdata <= _GEN_5772;
+        entries_10_rfdata <= _GEN_6668;
       end
     end else begin
-      entries_10_rfdata <= _GEN_5772;
+      entries_10_rfdata <= _GEN_6668;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'ha == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10007,29 +10915,29 @@ module ROB(
     end else begin
       entries_10_fuType <= _GEN_3082;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'ha == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_10_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'ha == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_10_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_10_excpVec <= _GEN_5836;
+          entries_10_excpVec <= _GEN_6732;
         end
       end else begin
-        entries_10_excpVec <= _GEN_5836;
+        entries_10_excpVec <= _GEN_6732;
       end
     end else begin
-      entries_10_excpVec <= _GEN_5836;
+      entries_10_excpVec <= _GEN_6732;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_10_writtenBack <= _GEN_6796;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_10_writtenBack <= _GEN_6348;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_10_writtenBack <= _GEN_5900;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_10_writtenBack <= _GEN_5452;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_10_writtenBack <= _GEN_5004;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_10_writtenBack <= _GEN_4042;
     end else begin
-      entries_10_writtenBack <= _GEN_3210;
+      entries_10_writtenBack <= _GEN_5260;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_10_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10037,10 +10945,10 @@ module ROB(
       if (6'ha == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_10_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_10_valid <= _GEN_8268;
+        entries_10_valid <= _GEN_9164;
       end
     end else begin
-      entries_10_valid <= _GEN_8268;
+      entries_10_valid <= _GEN_9164;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hb == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10096,14 +11004,14 @@ module ROB(
     end else begin
       entries_11_rfWen <= _GEN_2827;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'hb == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_11_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'hb == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_11_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_11_rfdata <= _GEN_5773;
+        entries_11_rfdata <= _GEN_6669;
       end
     end else begin
-      entries_11_rfdata <= _GEN_5773;
+      entries_11_rfdata <= _GEN_6669;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hb == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10141,29 +11049,29 @@ module ROB(
     end else begin
       entries_11_fuType <= _GEN_3083;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'hb == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_11_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'hb == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_11_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_11_excpVec <= _GEN_5837;
+          entries_11_excpVec <= _GEN_6733;
         end
       end else begin
-        entries_11_excpVec <= _GEN_5837;
+        entries_11_excpVec <= _GEN_6733;
       end
     end else begin
-      entries_11_excpVec <= _GEN_5837;
+      entries_11_excpVec <= _GEN_6733;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_11_writtenBack <= _GEN_6797;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_11_writtenBack <= _GEN_6349;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_11_writtenBack <= _GEN_5901;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_11_writtenBack <= _GEN_5453;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_11_writtenBack <= _GEN_5005;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_11_writtenBack <= _GEN_4043;
     end else begin
-      entries_11_writtenBack <= _GEN_3211;
+      entries_11_writtenBack <= _GEN_5261;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_11_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10171,10 +11079,10 @@ module ROB(
       if (6'hb == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_11_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_11_valid <= _GEN_8269;
+        entries_11_valid <= _GEN_9165;
       end
     end else begin
-      entries_11_valid <= _GEN_8269;
+      entries_11_valid <= _GEN_9165;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hc == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10230,14 +11138,14 @@ module ROB(
     end else begin
       entries_12_rfWen <= _GEN_2828;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'hc == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_12_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'hc == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_12_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_12_rfdata <= _GEN_5774;
+        entries_12_rfdata <= _GEN_6670;
       end
     end else begin
-      entries_12_rfdata <= _GEN_5774;
+      entries_12_rfdata <= _GEN_6670;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hc == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10275,29 +11183,29 @@ module ROB(
     end else begin
       entries_12_fuType <= _GEN_3084;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'hc == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_12_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'hc == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_12_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_12_excpVec <= _GEN_5838;
+          entries_12_excpVec <= _GEN_6734;
         end
       end else begin
-        entries_12_excpVec <= _GEN_5838;
+        entries_12_excpVec <= _GEN_6734;
       end
     end else begin
-      entries_12_excpVec <= _GEN_5838;
+      entries_12_excpVec <= _GEN_6734;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_12_writtenBack <= _GEN_6798;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_12_writtenBack <= _GEN_6350;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_12_writtenBack <= _GEN_5902;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_12_writtenBack <= _GEN_5454;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_12_writtenBack <= _GEN_5006;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_12_writtenBack <= _GEN_4044;
     end else begin
-      entries_12_writtenBack <= _GEN_3212;
+      entries_12_writtenBack <= _GEN_5262;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_12_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10305,10 +11213,10 @@ module ROB(
       if (6'hc == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_12_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_12_valid <= _GEN_8270;
+        entries_12_valid <= _GEN_9166;
       end
     end else begin
-      entries_12_valid <= _GEN_8270;
+      entries_12_valid <= _GEN_9166;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hd == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10364,14 +11272,14 @@ module ROB(
     end else begin
       entries_13_rfWen <= _GEN_2829;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'hd == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_13_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'hd == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_13_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_13_rfdata <= _GEN_5775;
+        entries_13_rfdata <= _GEN_6671;
       end
     end else begin
-      entries_13_rfdata <= _GEN_5775;
+      entries_13_rfdata <= _GEN_6671;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hd == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10409,29 +11317,29 @@ module ROB(
     end else begin
       entries_13_fuType <= _GEN_3085;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'hd == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_13_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'hd == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_13_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_13_excpVec <= _GEN_5839;
+          entries_13_excpVec <= _GEN_6735;
         end
       end else begin
-        entries_13_excpVec <= _GEN_5839;
+        entries_13_excpVec <= _GEN_6735;
       end
     end else begin
-      entries_13_excpVec <= _GEN_5839;
+      entries_13_excpVec <= _GEN_6735;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_13_writtenBack <= _GEN_6799;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_13_writtenBack <= _GEN_6351;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_13_writtenBack <= _GEN_5903;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_13_writtenBack <= _GEN_5455;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_13_writtenBack <= _GEN_5007;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_13_writtenBack <= _GEN_4045;
     end else begin
-      entries_13_writtenBack <= _GEN_3213;
+      entries_13_writtenBack <= _GEN_5263;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_13_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10439,10 +11347,10 @@ module ROB(
       if (6'hd == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_13_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_13_valid <= _GEN_8271;
+        entries_13_valid <= _GEN_9167;
       end
     end else begin
-      entries_13_valid <= _GEN_8271;
+      entries_13_valid <= _GEN_9167;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'he == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10498,14 +11406,14 @@ module ROB(
     end else begin
       entries_14_rfWen <= _GEN_2830;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'he == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_14_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'he == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_14_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_14_rfdata <= _GEN_5776;
+        entries_14_rfdata <= _GEN_6672;
       end
     end else begin
-      entries_14_rfdata <= _GEN_5776;
+      entries_14_rfdata <= _GEN_6672;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'he == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10543,29 +11451,29 @@ module ROB(
     end else begin
       entries_14_fuType <= _GEN_3086;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'he == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_14_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'he == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_14_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_14_excpVec <= _GEN_5840;
+          entries_14_excpVec <= _GEN_6736;
         end
       end else begin
-        entries_14_excpVec <= _GEN_5840;
+        entries_14_excpVec <= _GEN_6736;
       end
     end else begin
-      entries_14_excpVec <= _GEN_5840;
+      entries_14_excpVec <= _GEN_6736;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_14_writtenBack <= _GEN_6800;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_14_writtenBack <= _GEN_6352;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_14_writtenBack <= _GEN_5904;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_14_writtenBack <= _GEN_5456;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_14_writtenBack <= _GEN_5008;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_14_writtenBack <= _GEN_4046;
     end else begin
-      entries_14_writtenBack <= _GEN_3214;
+      entries_14_writtenBack <= _GEN_5264;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_14_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10573,10 +11481,10 @@ module ROB(
       if (6'he == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_14_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_14_valid <= _GEN_8272;
+        entries_14_valid <= _GEN_9168;
       end
     end else begin
-      entries_14_valid <= _GEN_8272;
+      entries_14_valid <= _GEN_9168;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hf == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10632,14 +11540,14 @@ module ROB(
     end else begin
       entries_15_rfWen <= _GEN_2831;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'hf == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_15_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'hf == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_15_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_15_rfdata <= _GEN_5777;
+        entries_15_rfdata <= _GEN_6673;
       end
     end else begin
-      entries_15_rfdata <= _GEN_5777;
+      entries_15_rfdata <= _GEN_6673;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'hf == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10677,29 +11585,29 @@ module ROB(
     end else begin
       entries_15_fuType <= _GEN_3087;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'hf == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_15_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'hf == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_15_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_15_excpVec <= _GEN_5841;
+          entries_15_excpVec <= _GEN_6737;
         end
       end else begin
-        entries_15_excpVec <= _GEN_5841;
+        entries_15_excpVec <= _GEN_6737;
       end
     end else begin
-      entries_15_excpVec <= _GEN_5841;
+      entries_15_excpVec <= _GEN_6737;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_15_writtenBack <= _GEN_6801;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_15_writtenBack <= _GEN_6353;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_15_writtenBack <= _GEN_5905;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_15_writtenBack <= _GEN_5457;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_15_writtenBack <= _GEN_5009;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_15_writtenBack <= _GEN_4047;
     end else begin
-      entries_15_writtenBack <= _GEN_3215;
+      entries_15_writtenBack <= _GEN_5265;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_15_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10707,10 +11615,10 @@ module ROB(
       if (6'hf == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_15_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_15_valid <= _GEN_8273;
+        entries_15_valid <= _GEN_9169;
       end
     end else begin
-      entries_15_valid <= _GEN_8273;
+      entries_15_valid <= _GEN_9169;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h10 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10766,14 +11674,14 @@ module ROB(
     end else begin
       entries_16_rfWen <= _GEN_2832;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h10 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_16_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h10 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_16_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_16_rfdata <= _GEN_5778;
+        entries_16_rfdata <= _GEN_6674;
       end
     end else begin
-      entries_16_rfdata <= _GEN_5778;
+      entries_16_rfdata <= _GEN_6674;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h10 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10811,29 +11719,29 @@ module ROB(
     end else begin
       entries_16_fuType <= _GEN_3088;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h10 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_16_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h10 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_16_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_16_excpVec <= _GEN_5842;
+          entries_16_excpVec <= _GEN_6738;
         end
       end else begin
-        entries_16_excpVec <= _GEN_5842;
+        entries_16_excpVec <= _GEN_6738;
       end
     end else begin
-      entries_16_excpVec <= _GEN_5842;
+      entries_16_excpVec <= _GEN_6738;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_16_writtenBack <= _GEN_6802;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_16_writtenBack <= _GEN_6354;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_16_writtenBack <= _GEN_5906;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_16_writtenBack <= _GEN_5458;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_16_writtenBack <= _GEN_5010;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_16_writtenBack <= _GEN_4048;
     end else begin
-      entries_16_writtenBack <= _GEN_3216;
+      entries_16_writtenBack <= _GEN_5266;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_16_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10841,10 +11749,10 @@ module ROB(
       if (6'h10 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_16_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_16_valid <= _GEN_8274;
+        entries_16_valid <= _GEN_9170;
       end
     end else begin
-      entries_16_valid <= _GEN_8274;
+      entries_16_valid <= _GEN_9170;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h11 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -10900,14 +11808,14 @@ module ROB(
     end else begin
       entries_17_rfWen <= _GEN_2833;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h11 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_17_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h11 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_17_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_17_rfdata <= _GEN_5779;
+        entries_17_rfdata <= _GEN_6675;
       end
     end else begin
-      entries_17_rfdata <= _GEN_5779;
+      entries_17_rfdata <= _GEN_6675;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h11 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -10945,29 +11853,29 @@ module ROB(
     end else begin
       entries_17_fuType <= _GEN_3089;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h11 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_17_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h11 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_17_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_17_excpVec <= _GEN_5843;
+          entries_17_excpVec <= _GEN_6739;
         end
       end else begin
-        entries_17_excpVec <= _GEN_5843;
+        entries_17_excpVec <= _GEN_6739;
       end
     end else begin
-      entries_17_excpVec <= _GEN_5843;
+      entries_17_excpVec <= _GEN_6739;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_17_writtenBack <= _GEN_6803;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_17_writtenBack <= _GEN_6355;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_17_writtenBack <= _GEN_5907;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_17_writtenBack <= _GEN_5459;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_17_writtenBack <= _GEN_5011;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_17_writtenBack <= _GEN_4049;
     end else begin
-      entries_17_writtenBack <= _GEN_3217;
+      entries_17_writtenBack <= _GEN_5267;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_17_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -10975,10 +11883,10 @@ module ROB(
       if (6'h11 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_17_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_17_valid <= _GEN_8275;
+        entries_17_valid <= _GEN_9171;
       end
     end else begin
-      entries_17_valid <= _GEN_8275;
+      entries_17_valid <= _GEN_9171;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h12 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11034,14 +11942,14 @@ module ROB(
     end else begin
       entries_18_rfWen <= _GEN_2834;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h12 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_18_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h12 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_18_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_18_rfdata <= _GEN_5780;
+        entries_18_rfdata <= _GEN_6676;
       end
     end else begin
-      entries_18_rfdata <= _GEN_5780;
+      entries_18_rfdata <= _GEN_6676;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h12 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11079,29 +11987,29 @@ module ROB(
     end else begin
       entries_18_fuType <= _GEN_3090;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h12 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_18_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h12 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_18_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_18_excpVec <= _GEN_5844;
+          entries_18_excpVec <= _GEN_6740;
         end
       end else begin
-        entries_18_excpVec <= _GEN_5844;
+        entries_18_excpVec <= _GEN_6740;
       end
     end else begin
-      entries_18_excpVec <= _GEN_5844;
+      entries_18_excpVec <= _GEN_6740;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_18_writtenBack <= _GEN_6804;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_18_writtenBack <= _GEN_6356;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_18_writtenBack <= _GEN_5908;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_18_writtenBack <= _GEN_5460;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_18_writtenBack <= _GEN_5012;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_18_writtenBack <= _GEN_4050;
     end else begin
-      entries_18_writtenBack <= _GEN_3218;
+      entries_18_writtenBack <= _GEN_5268;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_18_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11109,10 +12017,10 @@ module ROB(
       if (6'h12 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_18_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_18_valid <= _GEN_8276;
+        entries_18_valid <= _GEN_9172;
       end
     end else begin
-      entries_18_valid <= _GEN_8276;
+      entries_18_valid <= _GEN_9172;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h13 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11168,14 +12076,14 @@ module ROB(
     end else begin
       entries_19_rfWen <= _GEN_2835;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h13 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_19_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h13 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_19_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_19_rfdata <= _GEN_5781;
+        entries_19_rfdata <= _GEN_6677;
       end
     end else begin
-      entries_19_rfdata <= _GEN_5781;
+      entries_19_rfdata <= _GEN_6677;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h13 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11213,29 +12121,29 @@ module ROB(
     end else begin
       entries_19_fuType <= _GEN_3091;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h13 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_19_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h13 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_19_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_19_excpVec <= _GEN_5845;
+          entries_19_excpVec <= _GEN_6741;
         end
       end else begin
-        entries_19_excpVec <= _GEN_5845;
+        entries_19_excpVec <= _GEN_6741;
       end
     end else begin
-      entries_19_excpVec <= _GEN_5845;
+      entries_19_excpVec <= _GEN_6741;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_19_writtenBack <= _GEN_6805;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_19_writtenBack <= _GEN_6357;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_19_writtenBack <= _GEN_5909;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_19_writtenBack <= _GEN_5461;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_19_writtenBack <= _GEN_5013;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_19_writtenBack <= _GEN_4051;
     end else begin
-      entries_19_writtenBack <= _GEN_3219;
+      entries_19_writtenBack <= _GEN_5269;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_19_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11243,10 +12151,10 @@ module ROB(
       if (6'h13 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_19_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_19_valid <= _GEN_8277;
+        entries_19_valid <= _GEN_9173;
       end
     end else begin
-      entries_19_valid <= _GEN_8277;
+      entries_19_valid <= _GEN_9173;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h14 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11302,14 +12210,14 @@ module ROB(
     end else begin
       entries_20_rfWen <= _GEN_2836;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h14 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_20_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h14 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_20_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_20_rfdata <= _GEN_5782;
+        entries_20_rfdata <= _GEN_6678;
       end
     end else begin
-      entries_20_rfdata <= _GEN_5782;
+      entries_20_rfdata <= _GEN_6678;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h14 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11347,29 +12255,29 @@ module ROB(
     end else begin
       entries_20_fuType <= _GEN_3092;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h14 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_20_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h14 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_20_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_20_excpVec <= _GEN_5846;
+          entries_20_excpVec <= _GEN_6742;
         end
       end else begin
-        entries_20_excpVec <= _GEN_5846;
+        entries_20_excpVec <= _GEN_6742;
       end
     end else begin
-      entries_20_excpVec <= _GEN_5846;
+      entries_20_excpVec <= _GEN_6742;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_20_writtenBack <= _GEN_6806;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_20_writtenBack <= _GEN_6358;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_20_writtenBack <= _GEN_5910;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_20_writtenBack <= _GEN_5462;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_20_writtenBack <= _GEN_5014;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_20_writtenBack <= _GEN_4052;
     end else begin
-      entries_20_writtenBack <= _GEN_3220;
+      entries_20_writtenBack <= _GEN_5270;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_20_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11377,10 +12285,10 @@ module ROB(
       if (6'h14 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_20_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_20_valid <= _GEN_8278;
+        entries_20_valid <= _GEN_9174;
       end
     end else begin
-      entries_20_valid <= _GEN_8278;
+      entries_20_valid <= _GEN_9174;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h15 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11436,14 +12344,14 @@ module ROB(
     end else begin
       entries_21_rfWen <= _GEN_2837;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h15 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_21_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h15 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_21_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_21_rfdata <= _GEN_5783;
+        entries_21_rfdata <= _GEN_6679;
       end
     end else begin
-      entries_21_rfdata <= _GEN_5783;
+      entries_21_rfdata <= _GEN_6679;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h15 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11481,29 +12389,29 @@ module ROB(
     end else begin
       entries_21_fuType <= _GEN_3093;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h15 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_21_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h15 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_21_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_21_excpVec <= _GEN_5847;
+          entries_21_excpVec <= _GEN_6743;
         end
       end else begin
-        entries_21_excpVec <= _GEN_5847;
+        entries_21_excpVec <= _GEN_6743;
       end
     end else begin
-      entries_21_excpVec <= _GEN_5847;
+      entries_21_excpVec <= _GEN_6743;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_21_writtenBack <= _GEN_6807;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_21_writtenBack <= _GEN_6359;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_21_writtenBack <= _GEN_5911;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_21_writtenBack <= _GEN_5463;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_21_writtenBack <= _GEN_5015;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_21_writtenBack <= _GEN_4053;
     end else begin
-      entries_21_writtenBack <= _GEN_3221;
+      entries_21_writtenBack <= _GEN_5271;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_21_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11511,10 +12419,10 @@ module ROB(
       if (6'h15 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_21_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_21_valid <= _GEN_8279;
+        entries_21_valid <= _GEN_9175;
       end
     end else begin
-      entries_21_valid <= _GEN_8279;
+      entries_21_valid <= _GEN_9175;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h16 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11570,14 +12478,14 @@ module ROB(
     end else begin
       entries_22_rfWen <= _GEN_2838;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h16 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_22_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h16 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_22_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_22_rfdata <= _GEN_5784;
+        entries_22_rfdata <= _GEN_6680;
       end
     end else begin
-      entries_22_rfdata <= _GEN_5784;
+      entries_22_rfdata <= _GEN_6680;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h16 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11615,29 +12523,29 @@ module ROB(
     end else begin
       entries_22_fuType <= _GEN_3094;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h16 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_22_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h16 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_22_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_22_excpVec <= _GEN_5848;
+          entries_22_excpVec <= _GEN_6744;
         end
       end else begin
-        entries_22_excpVec <= _GEN_5848;
+        entries_22_excpVec <= _GEN_6744;
       end
     end else begin
-      entries_22_excpVec <= _GEN_5848;
+      entries_22_excpVec <= _GEN_6744;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_22_writtenBack <= _GEN_6808;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_22_writtenBack <= _GEN_6360;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_22_writtenBack <= _GEN_5912;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_22_writtenBack <= _GEN_5464;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_22_writtenBack <= _GEN_5016;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_22_writtenBack <= _GEN_4054;
     end else begin
-      entries_22_writtenBack <= _GEN_3222;
+      entries_22_writtenBack <= _GEN_5272;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_22_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11645,10 +12553,10 @@ module ROB(
       if (6'h16 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_22_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_22_valid <= _GEN_8280;
+        entries_22_valid <= _GEN_9176;
       end
     end else begin
-      entries_22_valid <= _GEN_8280;
+      entries_22_valid <= _GEN_9176;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h17 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11704,14 +12612,14 @@ module ROB(
     end else begin
       entries_23_rfWen <= _GEN_2839;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h17 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_23_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h17 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_23_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_23_rfdata <= _GEN_5785;
+        entries_23_rfdata <= _GEN_6681;
       end
     end else begin
-      entries_23_rfdata <= _GEN_5785;
+      entries_23_rfdata <= _GEN_6681;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h17 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11749,29 +12657,29 @@ module ROB(
     end else begin
       entries_23_fuType <= _GEN_3095;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h17 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_23_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h17 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_23_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_23_excpVec <= _GEN_5849;
+          entries_23_excpVec <= _GEN_6745;
         end
       end else begin
-        entries_23_excpVec <= _GEN_5849;
+        entries_23_excpVec <= _GEN_6745;
       end
     end else begin
-      entries_23_excpVec <= _GEN_5849;
+      entries_23_excpVec <= _GEN_6745;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_23_writtenBack <= _GEN_6809;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_23_writtenBack <= _GEN_6361;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_23_writtenBack <= _GEN_5913;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_23_writtenBack <= _GEN_5465;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_23_writtenBack <= _GEN_5017;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_23_writtenBack <= _GEN_4055;
     end else begin
-      entries_23_writtenBack <= _GEN_3223;
+      entries_23_writtenBack <= _GEN_5273;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_23_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11779,10 +12687,10 @@ module ROB(
       if (6'h17 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_23_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_23_valid <= _GEN_8281;
+        entries_23_valid <= _GEN_9177;
       end
     end else begin
-      entries_23_valid <= _GEN_8281;
+      entries_23_valid <= _GEN_9177;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h18 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11838,14 +12746,14 @@ module ROB(
     end else begin
       entries_24_rfWen <= _GEN_2840;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h18 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_24_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h18 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_24_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_24_rfdata <= _GEN_5786;
+        entries_24_rfdata <= _GEN_6682;
       end
     end else begin
-      entries_24_rfdata <= _GEN_5786;
+      entries_24_rfdata <= _GEN_6682;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h18 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -11883,29 +12791,29 @@ module ROB(
     end else begin
       entries_24_fuType <= _GEN_3096;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h18 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_24_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h18 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_24_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_24_excpVec <= _GEN_5850;
+          entries_24_excpVec <= _GEN_6746;
         end
       end else begin
-        entries_24_excpVec <= _GEN_5850;
+        entries_24_excpVec <= _GEN_6746;
       end
     end else begin
-      entries_24_excpVec <= _GEN_5850;
+      entries_24_excpVec <= _GEN_6746;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_24_writtenBack <= _GEN_6810;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_24_writtenBack <= _GEN_6362;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_24_writtenBack <= _GEN_5914;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_24_writtenBack <= _GEN_5466;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_24_writtenBack <= _GEN_5018;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_24_writtenBack <= _GEN_4056;
     end else begin
-      entries_24_writtenBack <= _GEN_3224;
+      entries_24_writtenBack <= _GEN_5274;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_24_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -11913,10 +12821,10 @@ module ROB(
       if (6'h18 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_24_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_24_valid <= _GEN_8282;
+        entries_24_valid <= _GEN_9178;
       end
     end else begin
-      entries_24_valid <= _GEN_8282;
+      entries_24_valid <= _GEN_9178;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h19 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -11972,14 +12880,14 @@ module ROB(
     end else begin
       entries_25_rfWen <= _GEN_2841;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h19 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_25_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h19 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_25_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_25_rfdata <= _GEN_5787;
+        entries_25_rfdata <= _GEN_6683;
       end
     end else begin
-      entries_25_rfdata <= _GEN_5787;
+      entries_25_rfdata <= _GEN_6683;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h19 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12017,29 +12925,29 @@ module ROB(
     end else begin
       entries_25_fuType <= _GEN_3097;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h19 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_25_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h19 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_25_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_25_excpVec <= _GEN_5851;
+          entries_25_excpVec <= _GEN_6747;
         end
       end else begin
-        entries_25_excpVec <= _GEN_5851;
+        entries_25_excpVec <= _GEN_6747;
       end
     end else begin
-      entries_25_excpVec <= _GEN_5851;
+      entries_25_excpVec <= _GEN_6747;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_25_writtenBack <= _GEN_6811;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_25_writtenBack <= _GEN_6363;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_25_writtenBack <= _GEN_5915;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_25_writtenBack <= _GEN_5467;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_25_writtenBack <= _GEN_5019;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_25_writtenBack <= _GEN_4057;
     end else begin
-      entries_25_writtenBack <= _GEN_3225;
+      entries_25_writtenBack <= _GEN_5275;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_25_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12047,10 +12955,10 @@ module ROB(
       if (6'h19 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_25_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_25_valid <= _GEN_8283;
+        entries_25_valid <= _GEN_9179;
       end
     end else begin
-      entries_25_valid <= _GEN_8283;
+      entries_25_valid <= _GEN_9179;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1a == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12106,14 +13014,14 @@ module ROB(
     end else begin
       entries_26_rfWen <= _GEN_2842;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1a == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_26_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1a == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_26_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_26_rfdata <= _GEN_5788;
+        entries_26_rfdata <= _GEN_6684;
       end
     end else begin
-      entries_26_rfdata <= _GEN_5788;
+      entries_26_rfdata <= _GEN_6684;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1a == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12151,29 +13059,29 @@ module ROB(
     end else begin
       entries_26_fuType <= _GEN_3098;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1a == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_26_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1a == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_26_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_26_excpVec <= _GEN_5852;
+          entries_26_excpVec <= _GEN_6748;
         end
       end else begin
-        entries_26_excpVec <= _GEN_5852;
+        entries_26_excpVec <= _GEN_6748;
       end
     end else begin
-      entries_26_excpVec <= _GEN_5852;
+      entries_26_excpVec <= _GEN_6748;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_26_writtenBack <= _GEN_6812;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_26_writtenBack <= _GEN_6364;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_26_writtenBack <= _GEN_5916;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_26_writtenBack <= _GEN_5468;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_26_writtenBack <= _GEN_5020;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_26_writtenBack <= _GEN_4058;
     end else begin
-      entries_26_writtenBack <= _GEN_3226;
+      entries_26_writtenBack <= _GEN_5276;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_26_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12181,10 +13089,10 @@ module ROB(
       if (6'h1a == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_26_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_26_valid <= _GEN_8284;
+        entries_26_valid <= _GEN_9180;
       end
     end else begin
-      entries_26_valid <= _GEN_8284;
+      entries_26_valid <= _GEN_9180;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1b == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12240,14 +13148,14 @@ module ROB(
     end else begin
       entries_27_rfWen <= _GEN_2843;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1b == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_27_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1b == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_27_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_27_rfdata <= _GEN_5789;
+        entries_27_rfdata <= _GEN_6685;
       end
     end else begin
-      entries_27_rfdata <= _GEN_5789;
+      entries_27_rfdata <= _GEN_6685;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1b == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12285,29 +13193,29 @@ module ROB(
     end else begin
       entries_27_fuType <= _GEN_3099;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1b == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_27_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1b == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_27_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_27_excpVec <= _GEN_5853;
+          entries_27_excpVec <= _GEN_6749;
         end
       end else begin
-        entries_27_excpVec <= _GEN_5853;
+        entries_27_excpVec <= _GEN_6749;
       end
     end else begin
-      entries_27_excpVec <= _GEN_5853;
+      entries_27_excpVec <= _GEN_6749;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_27_writtenBack <= _GEN_6813;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_27_writtenBack <= _GEN_6365;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_27_writtenBack <= _GEN_5917;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_27_writtenBack <= _GEN_5469;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_27_writtenBack <= _GEN_5021;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_27_writtenBack <= _GEN_4059;
     end else begin
-      entries_27_writtenBack <= _GEN_3227;
+      entries_27_writtenBack <= _GEN_5277;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_27_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12315,10 +13223,10 @@ module ROB(
       if (6'h1b == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_27_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_27_valid <= _GEN_8285;
+        entries_27_valid <= _GEN_9181;
       end
     end else begin
-      entries_27_valid <= _GEN_8285;
+      entries_27_valid <= _GEN_9181;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1c == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12374,14 +13282,14 @@ module ROB(
     end else begin
       entries_28_rfWen <= _GEN_2844;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1c == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_28_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1c == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_28_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_28_rfdata <= _GEN_5790;
+        entries_28_rfdata <= _GEN_6686;
       end
     end else begin
-      entries_28_rfdata <= _GEN_5790;
+      entries_28_rfdata <= _GEN_6686;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1c == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12419,29 +13327,29 @@ module ROB(
     end else begin
       entries_28_fuType <= _GEN_3100;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1c == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_28_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1c == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_28_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_28_excpVec <= _GEN_5854;
+          entries_28_excpVec <= _GEN_6750;
         end
       end else begin
-        entries_28_excpVec <= _GEN_5854;
+        entries_28_excpVec <= _GEN_6750;
       end
     end else begin
-      entries_28_excpVec <= _GEN_5854;
+      entries_28_excpVec <= _GEN_6750;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_28_writtenBack <= _GEN_6814;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_28_writtenBack <= _GEN_6366;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_28_writtenBack <= _GEN_5918;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_28_writtenBack <= _GEN_5470;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_28_writtenBack <= _GEN_5022;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_28_writtenBack <= _GEN_4060;
     end else begin
-      entries_28_writtenBack <= _GEN_3228;
+      entries_28_writtenBack <= _GEN_5278;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_28_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12449,10 +13357,10 @@ module ROB(
       if (6'h1c == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_28_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_28_valid <= _GEN_8286;
+        entries_28_valid <= _GEN_9182;
       end
     end else begin
-      entries_28_valid <= _GEN_8286;
+      entries_28_valid <= _GEN_9182;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1d == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12508,14 +13416,14 @@ module ROB(
     end else begin
       entries_29_rfWen <= _GEN_2845;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1d == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_29_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1d == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_29_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_29_rfdata <= _GEN_5791;
+        entries_29_rfdata <= _GEN_6687;
       end
     end else begin
-      entries_29_rfdata <= _GEN_5791;
+      entries_29_rfdata <= _GEN_6687;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1d == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12553,29 +13461,29 @@ module ROB(
     end else begin
       entries_29_fuType <= _GEN_3101;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1d == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_29_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1d == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_29_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_29_excpVec <= _GEN_5855;
+          entries_29_excpVec <= _GEN_6751;
         end
       end else begin
-        entries_29_excpVec <= _GEN_5855;
+        entries_29_excpVec <= _GEN_6751;
       end
     end else begin
-      entries_29_excpVec <= _GEN_5855;
+      entries_29_excpVec <= _GEN_6751;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_29_writtenBack <= _GEN_6815;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_29_writtenBack <= _GEN_6367;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_29_writtenBack <= _GEN_5919;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_29_writtenBack <= _GEN_5471;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_29_writtenBack <= _GEN_5023;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_29_writtenBack <= _GEN_4061;
     end else begin
-      entries_29_writtenBack <= _GEN_3229;
+      entries_29_writtenBack <= _GEN_5279;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_29_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12583,10 +13491,10 @@ module ROB(
       if (6'h1d == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_29_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_29_valid <= _GEN_8287;
+        entries_29_valid <= _GEN_9183;
       end
     end else begin
-      entries_29_valid <= _GEN_8287;
+      entries_29_valid <= _GEN_9183;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1e == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12642,14 +13550,14 @@ module ROB(
     end else begin
       entries_30_rfWen <= _GEN_2846;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1e == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_30_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1e == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_30_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_30_rfdata <= _GEN_5792;
+        entries_30_rfdata <= _GEN_6688;
       end
     end else begin
-      entries_30_rfdata <= _GEN_5792;
+      entries_30_rfdata <= _GEN_6688;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1e == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12687,29 +13595,29 @@ module ROB(
     end else begin
       entries_30_fuType <= _GEN_3102;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1e == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_30_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1e == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_30_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_30_excpVec <= _GEN_5856;
+          entries_30_excpVec <= _GEN_6752;
         end
       end else begin
-        entries_30_excpVec <= _GEN_5856;
+        entries_30_excpVec <= _GEN_6752;
       end
     end else begin
-      entries_30_excpVec <= _GEN_5856;
+      entries_30_excpVec <= _GEN_6752;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_30_writtenBack <= _GEN_6816;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_30_writtenBack <= _GEN_6368;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_30_writtenBack <= _GEN_5920;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_30_writtenBack <= _GEN_5472;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_30_writtenBack <= _GEN_5024;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_30_writtenBack <= _GEN_4062;
     end else begin
-      entries_30_writtenBack <= _GEN_3230;
+      entries_30_writtenBack <= _GEN_5280;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_30_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12717,10 +13625,10 @@ module ROB(
       if (6'h1e == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_30_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_30_valid <= _GEN_8288;
+        entries_30_valid <= _GEN_9184;
       end
     end else begin
-      entries_30_valid <= _GEN_8288;
+      entries_30_valid <= _GEN_9184;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1f == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12776,14 +13684,14 @@ module ROB(
     end else begin
       entries_31_rfWen <= _GEN_2847;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h1f == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_31_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h1f == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_31_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_31_rfdata <= _GEN_5793;
+        entries_31_rfdata <= _GEN_6689;
       end
     end else begin
-      entries_31_rfdata <= _GEN_5793;
+      entries_31_rfdata <= _GEN_6689;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h1f == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12821,29 +13729,29 @@ module ROB(
     end else begin
       entries_31_fuType <= _GEN_3103;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h1f == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_31_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h1f == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_31_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_31_excpVec <= _GEN_5857;
+          entries_31_excpVec <= _GEN_6753;
         end
       end else begin
-        entries_31_excpVec <= _GEN_5857;
+        entries_31_excpVec <= _GEN_6753;
       end
     end else begin
-      entries_31_excpVec <= _GEN_5857;
+      entries_31_excpVec <= _GEN_6753;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_31_writtenBack <= _GEN_6817;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_31_writtenBack <= _GEN_6369;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_31_writtenBack <= _GEN_5921;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_31_writtenBack <= _GEN_5473;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_31_writtenBack <= _GEN_5025;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_31_writtenBack <= _GEN_4063;
     end else begin
-      entries_31_writtenBack <= _GEN_3231;
+      entries_31_writtenBack <= _GEN_5281;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_31_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12851,10 +13759,10 @@ module ROB(
       if (6'h1f == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_31_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_31_valid <= _GEN_8289;
+        entries_31_valid <= _GEN_9185;
       end
     end else begin
-      entries_31_valid <= _GEN_8289;
+      entries_31_valid <= _GEN_9185;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h20 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -12910,14 +13818,14 @@ module ROB(
     end else begin
       entries_32_rfWen <= _GEN_2848;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h20 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_32_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h20 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_32_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_32_rfdata <= _GEN_5794;
+        entries_32_rfdata <= _GEN_6690;
       end
     end else begin
-      entries_32_rfdata <= _GEN_5794;
+      entries_32_rfdata <= _GEN_6690;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h20 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -12955,29 +13863,29 @@ module ROB(
     end else begin
       entries_32_fuType <= _GEN_3104;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h20 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_32_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h20 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_32_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_32_excpVec <= _GEN_5858;
+          entries_32_excpVec <= _GEN_6754;
         end
       end else begin
-        entries_32_excpVec <= _GEN_5858;
+        entries_32_excpVec <= _GEN_6754;
       end
     end else begin
-      entries_32_excpVec <= _GEN_5858;
+      entries_32_excpVec <= _GEN_6754;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_32_writtenBack <= _GEN_6818;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_32_writtenBack <= _GEN_6370;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_32_writtenBack <= _GEN_5922;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_32_writtenBack <= _GEN_5474;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_32_writtenBack <= _GEN_5026;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_32_writtenBack <= _GEN_4064;
     end else begin
-      entries_32_writtenBack <= _GEN_3232;
+      entries_32_writtenBack <= _GEN_5282;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_32_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -12985,10 +13893,10 @@ module ROB(
       if (6'h20 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_32_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_32_valid <= _GEN_8290;
+        entries_32_valid <= _GEN_9186;
       end
     end else begin
-      entries_32_valid <= _GEN_8290;
+      entries_32_valid <= _GEN_9186;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h21 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13044,14 +13952,14 @@ module ROB(
     end else begin
       entries_33_rfWen <= _GEN_2849;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h21 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_33_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h21 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_33_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_33_rfdata <= _GEN_5795;
+        entries_33_rfdata <= _GEN_6691;
       end
     end else begin
-      entries_33_rfdata <= _GEN_5795;
+      entries_33_rfdata <= _GEN_6691;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h21 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13089,29 +13997,29 @@ module ROB(
     end else begin
       entries_33_fuType <= _GEN_3105;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h21 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_33_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h21 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_33_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_33_excpVec <= _GEN_5859;
+          entries_33_excpVec <= _GEN_6755;
         end
       end else begin
-        entries_33_excpVec <= _GEN_5859;
+        entries_33_excpVec <= _GEN_6755;
       end
     end else begin
-      entries_33_excpVec <= _GEN_5859;
+      entries_33_excpVec <= _GEN_6755;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_33_writtenBack <= _GEN_6819;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_33_writtenBack <= _GEN_6371;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_33_writtenBack <= _GEN_5923;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_33_writtenBack <= _GEN_5475;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_33_writtenBack <= _GEN_5027;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_33_writtenBack <= _GEN_4065;
     end else begin
-      entries_33_writtenBack <= _GEN_3233;
+      entries_33_writtenBack <= _GEN_5283;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_33_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13119,10 +14027,10 @@ module ROB(
       if (6'h21 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_33_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_33_valid <= _GEN_8291;
+        entries_33_valid <= _GEN_9187;
       end
     end else begin
-      entries_33_valid <= _GEN_8291;
+      entries_33_valid <= _GEN_9187;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h22 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13178,14 +14086,14 @@ module ROB(
     end else begin
       entries_34_rfWen <= _GEN_2850;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h22 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_34_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h22 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_34_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_34_rfdata <= _GEN_5796;
+        entries_34_rfdata <= _GEN_6692;
       end
     end else begin
-      entries_34_rfdata <= _GEN_5796;
+      entries_34_rfdata <= _GEN_6692;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h22 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13223,29 +14131,29 @@ module ROB(
     end else begin
       entries_34_fuType <= _GEN_3106;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h22 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_34_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h22 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_34_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_34_excpVec <= _GEN_5860;
+          entries_34_excpVec <= _GEN_6756;
         end
       end else begin
-        entries_34_excpVec <= _GEN_5860;
+        entries_34_excpVec <= _GEN_6756;
       end
     end else begin
-      entries_34_excpVec <= _GEN_5860;
+      entries_34_excpVec <= _GEN_6756;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_34_writtenBack <= _GEN_6820;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_34_writtenBack <= _GEN_6372;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_34_writtenBack <= _GEN_5924;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_34_writtenBack <= _GEN_5476;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_34_writtenBack <= _GEN_5028;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_34_writtenBack <= _GEN_4066;
     end else begin
-      entries_34_writtenBack <= _GEN_3234;
+      entries_34_writtenBack <= _GEN_5284;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_34_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13253,10 +14161,10 @@ module ROB(
       if (6'h22 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_34_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_34_valid <= _GEN_8292;
+        entries_34_valid <= _GEN_9188;
       end
     end else begin
-      entries_34_valid <= _GEN_8292;
+      entries_34_valid <= _GEN_9188;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h23 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13312,14 +14220,14 @@ module ROB(
     end else begin
       entries_35_rfWen <= _GEN_2851;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h23 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_35_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h23 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_35_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_35_rfdata <= _GEN_5797;
+        entries_35_rfdata <= _GEN_6693;
       end
     end else begin
-      entries_35_rfdata <= _GEN_5797;
+      entries_35_rfdata <= _GEN_6693;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h23 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13357,29 +14265,29 @@ module ROB(
     end else begin
       entries_35_fuType <= _GEN_3107;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h23 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_35_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h23 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_35_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_35_excpVec <= _GEN_5861;
+          entries_35_excpVec <= _GEN_6757;
         end
       end else begin
-        entries_35_excpVec <= _GEN_5861;
+        entries_35_excpVec <= _GEN_6757;
       end
     end else begin
-      entries_35_excpVec <= _GEN_5861;
+      entries_35_excpVec <= _GEN_6757;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_35_writtenBack <= _GEN_6821;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_35_writtenBack <= _GEN_6373;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_35_writtenBack <= _GEN_5925;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_35_writtenBack <= _GEN_5477;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_35_writtenBack <= _GEN_5029;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_35_writtenBack <= _GEN_4067;
     end else begin
-      entries_35_writtenBack <= _GEN_3235;
+      entries_35_writtenBack <= _GEN_5285;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_35_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13387,10 +14295,10 @@ module ROB(
       if (6'h23 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_35_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_35_valid <= _GEN_8293;
+        entries_35_valid <= _GEN_9189;
       end
     end else begin
-      entries_35_valid <= _GEN_8293;
+      entries_35_valid <= _GEN_9189;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h24 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13446,14 +14354,14 @@ module ROB(
     end else begin
       entries_36_rfWen <= _GEN_2852;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h24 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_36_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h24 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_36_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_36_rfdata <= _GEN_5798;
+        entries_36_rfdata <= _GEN_6694;
       end
     end else begin
-      entries_36_rfdata <= _GEN_5798;
+      entries_36_rfdata <= _GEN_6694;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h24 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13491,29 +14399,29 @@ module ROB(
     end else begin
       entries_36_fuType <= _GEN_3108;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h24 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_36_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h24 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_36_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_36_excpVec <= _GEN_5862;
+          entries_36_excpVec <= _GEN_6758;
         end
       end else begin
-        entries_36_excpVec <= _GEN_5862;
+        entries_36_excpVec <= _GEN_6758;
       end
     end else begin
-      entries_36_excpVec <= _GEN_5862;
+      entries_36_excpVec <= _GEN_6758;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_36_writtenBack <= _GEN_6822;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_36_writtenBack <= _GEN_6374;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_36_writtenBack <= _GEN_5926;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_36_writtenBack <= _GEN_5478;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_36_writtenBack <= _GEN_5030;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_36_writtenBack <= _GEN_4068;
     end else begin
-      entries_36_writtenBack <= _GEN_3236;
+      entries_36_writtenBack <= _GEN_5286;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_36_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13521,10 +14429,10 @@ module ROB(
       if (6'h24 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_36_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_36_valid <= _GEN_8294;
+        entries_36_valid <= _GEN_9190;
       end
     end else begin
-      entries_36_valid <= _GEN_8294;
+      entries_36_valid <= _GEN_9190;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h25 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13580,14 +14488,14 @@ module ROB(
     end else begin
       entries_37_rfWen <= _GEN_2853;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h25 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_37_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h25 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_37_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_37_rfdata <= _GEN_5799;
+        entries_37_rfdata <= _GEN_6695;
       end
     end else begin
-      entries_37_rfdata <= _GEN_5799;
+      entries_37_rfdata <= _GEN_6695;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h25 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13625,29 +14533,29 @@ module ROB(
     end else begin
       entries_37_fuType <= _GEN_3109;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h25 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_37_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h25 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_37_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_37_excpVec <= _GEN_5863;
+          entries_37_excpVec <= _GEN_6759;
         end
       end else begin
-        entries_37_excpVec <= _GEN_5863;
+        entries_37_excpVec <= _GEN_6759;
       end
     end else begin
-      entries_37_excpVec <= _GEN_5863;
+      entries_37_excpVec <= _GEN_6759;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_37_writtenBack <= _GEN_6823;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_37_writtenBack <= _GEN_6375;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_37_writtenBack <= _GEN_5927;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_37_writtenBack <= _GEN_5479;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_37_writtenBack <= _GEN_5031;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_37_writtenBack <= _GEN_4069;
     end else begin
-      entries_37_writtenBack <= _GEN_3237;
+      entries_37_writtenBack <= _GEN_5287;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_37_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13655,10 +14563,10 @@ module ROB(
       if (6'h25 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_37_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_37_valid <= _GEN_8295;
+        entries_37_valid <= _GEN_9191;
       end
     end else begin
-      entries_37_valid <= _GEN_8295;
+      entries_37_valid <= _GEN_9191;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h26 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13714,14 +14622,14 @@ module ROB(
     end else begin
       entries_38_rfWen <= _GEN_2854;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h26 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_38_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h26 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_38_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_38_rfdata <= _GEN_5800;
+        entries_38_rfdata <= _GEN_6696;
       end
     end else begin
-      entries_38_rfdata <= _GEN_5800;
+      entries_38_rfdata <= _GEN_6696;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h26 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13759,29 +14667,29 @@ module ROB(
     end else begin
       entries_38_fuType <= _GEN_3110;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h26 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_38_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h26 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_38_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_38_excpVec <= _GEN_5864;
+          entries_38_excpVec <= _GEN_6760;
         end
       end else begin
-        entries_38_excpVec <= _GEN_5864;
+        entries_38_excpVec <= _GEN_6760;
       end
     end else begin
-      entries_38_excpVec <= _GEN_5864;
+      entries_38_excpVec <= _GEN_6760;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_38_writtenBack <= _GEN_6824;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_38_writtenBack <= _GEN_6376;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_38_writtenBack <= _GEN_5928;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_38_writtenBack <= _GEN_5480;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_38_writtenBack <= _GEN_5032;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_38_writtenBack <= _GEN_4070;
     end else begin
-      entries_38_writtenBack <= _GEN_3238;
+      entries_38_writtenBack <= _GEN_5288;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_38_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13789,10 +14697,10 @@ module ROB(
       if (6'h26 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_38_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_38_valid <= _GEN_8296;
+        entries_38_valid <= _GEN_9192;
       end
     end else begin
-      entries_38_valid <= _GEN_8296;
+      entries_38_valid <= _GEN_9192;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h27 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13848,14 +14756,14 @@ module ROB(
     end else begin
       entries_39_rfWen <= _GEN_2855;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h27 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_39_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h27 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_39_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_39_rfdata <= _GEN_5801;
+        entries_39_rfdata <= _GEN_6697;
       end
     end else begin
-      entries_39_rfdata <= _GEN_5801;
+      entries_39_rfdata <= _GEN_6697;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h27 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -13893,29 +14801,29 @@ module ROB(
     end else begin
       entries_39_fuType <= _GEN_3111;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h27 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_39_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h27 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_39_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_39_excpVec <= _GEN_5865;
+          entries_39_excpVec <= _GEN_6761;
         end
       end else begin
-        entries_39_excpVec <= _GEN_5865;
+        entries_39_excpVec <= _GEN_6761;
       end
     end else begin
-      entries_39_excpVec <= _GEN_5865;
+      entries_39_excpVec <= _GEN_6761;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_39_writtenBack <= _GEN_6825;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_39_writtenBack <= _GEN_6377;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_39_writtenBack <= _GEN_5929;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_39_writtenBack <= _GEN_5481;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_39_writtenBack <= _GEN_5033;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_39_writtenBack <= _GEN_4071;
     end else begin
-      entries_39_writtenBack <= _GEN_3239;
+      entries_39_writtenBack <= _GEN_5289;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_39_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -13923,10 +14831,10 @@ module ROB(
       if (6'h27 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_39_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_39_valid <= _GEN_8297;
+        entries_39_valid <= _GEN_9193;
       end
     end else begin
-      entries_39_valid <= _GEN_8297;
+      entries_39_valid <= _GEN_9193;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h28 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -13982,14 +14890,14 @@ module ROB(
     end else begin
       entries_40_rfWen <= _GEN_2856;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h28 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_40_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h28 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_40_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_40_rfdata <= _GEN_5802;
+        entries_40_rfdata <= _GEN_6698;
       end
     end else begin
-      entries_40_rfdata <= _GEN_5802;
+      entries_40_rfdata <= _GEN_6698;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h28 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14027,29 +14935,29 @@ module ROB(
     end else begin
       entries_40_fuType <= _GEN_3112;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h28 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_40_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h28 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_40_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_40_excpVec <= _GEN_5866;
+          entries_40_excpVec <= _GEN_6762;
         end
       end else begin
-        entries_40_excpVec <= _GEN_5866;
+        entries_40_excpVec <= _GEN_6762;
       end
     end else begin
-      entries_40_excpVec <= _GEN_5866;
+      entries_40_excpVec <= _GEN_6762;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_40_writtenBack <= _GEN_6826;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_40_writtenBack <= _GEN_6378;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_40_writtenBack <= _GEN_5930;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_40_writtenBack <= _GEN_5482;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_40_writtenBack <= _GEN_5034;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_40_writtenBack <= _GEN_4072;
     end else begin
-      entries_40_writtenBack <= _GEN_3240;
+      entries_40_writtenBack <= _GEN_5290;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_40_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14057,10 +14965,10 @@ module ROB(
       if (6'h28 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_40_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_40_valid <= _GEN_8298;
+        entries_40_valid <= _GEN_9194;
       end
     end else begin
-      entries_40_valid <= _GEN_8298;
+      entries_40_valid <= _GEN_9194;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h29 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14116,14 +15024,14 @@ module ROB(
     end else begin
       entries_41_rfWen <= _GEN_2857;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h29 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_41_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h29 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_41_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_41_rfdata <= _GEN_5803;
+        entries_41_rfdata <= _GEN_6699;
       end
     end else begin
-      entries_41_rfdata <= _GEN_5803;
+      entries_41_rfdata <= _GEN_6699;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h29 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14161,29 +15069,29 @@ module ROB(
     end else begin
       entries_41_fuType <= _GEN_3113;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h29 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_41_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h29 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_41_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_41_excpVec <= _GEN_5867;
+          entries_41_excpVec <= _GEN_6763;
         end
       end else begin
-        entries_41_excpVec <= _GEN_5867;
+        entries_41_excpVec <= _GEN_6763;
       end
     end else begin
-      entries_41_excpVec <= _GEN_5867;
+      entries_41_excpVec <= _GEN_6763;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_41_writtenBack <= _GEN_6827;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_41_writtenBack <= _GEN_6379;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_41_writtenBack <= _GEN_5931;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_41_writtenBack <= _GEN_5483;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_41_writtenBack <= _GEN_5035;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_41_writtenBack <= _GEN_4073;
     end else begin
-      entries_41_writtenBack <= _GEN_3241;
+      entries_41_writtenBack <= _GEN_5291;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_41_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14191,10 +15099,10 @@ module ROB(
       if (6'h29 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_41_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_41_valid <= _GEN_8299;
+        entries_41_valid <= _GEN_9195;
       end
     end else begin
-      entries_41_valid <= _GEN_8299;
+      entries_41_valid <= _GEN_9195;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2a == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14250,14 +15158,14 @@ module ROB(
     end else begin
       entries_42_rfWen <= _GEN_2858;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2a == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_42_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2a == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_42_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_42_rfdata <= _GEN_5804;
+        entries_42_rfdata <= _GEN_6700;
       end
     end else begin
-      entries_42_rfdata <= _GEN_5804;
+      entries_42_rfdata <= _GEN_6700;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2a == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14295,29 +15203,29 @@ module ROB(
     end else begin
       entries_42_fuType <= _GEN_3114;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2a == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_42_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2a == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_42_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_42_excpVec <= _GEN_5868;
+          entries_42_excpVec <= _GEN_6764;
         end
       end else begin
-        entries_42_excpVec <= _GEN_5868;
+        entries_42_excpVec <= _GEN_6764;
       end
     end else begin
-      entries_42_excpVec <= _GEN_5868;
+      entries_42_excpVec <= _GEN_6764;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_42_writtenBack <= _GEN_6828;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_42_writtenBack <= _GEN_6380;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_42_writtenBack <= _GEN_5932;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_42_writtenBack <= _GEN_5484;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_42_writtenBack <= _GEN_5036;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_42_writtenBack <= _GEN_4074;
     end else begin
-      entries_42_writtenBack <= _GEN_3242;
+      entries_42_writtenBack <= _GEN_5292;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_42_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14325,10 +15233,10 @@ module ROB(
       if (6'h2a == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_42_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_42_valid <= _GEN_8300;
+        entries_42_valid <= _GEN_9196;
       end
     end else begin
-      entries_42_valid <= _GEN_8300;
+      entries_42_valid <= _GEN_9196;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2b == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14384,14 +15292,14 @@ module ROB(
     end else begin
       entries_43_rfWen <= _GEN_2859;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2b == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_43_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2b == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_43_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_43_rfdata <= _GEN_5805;
+        entries_43_rfdata <= _GEN_6701;
       end
     end else begin
-      entries_43_rfdata <= _GEN_5805;
+      entries_43_rfdata <= _GEN_6701;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2b == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14429,29 +15337,29 @@ module ROB(
     end else begin
       entries_43_fuType <= _GEN_3115;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2b == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_43_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2b == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_43_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_43_excpVec <= _GEN_5869;
+          entries_43_excpVec <= _GEN_6765;
         end
       end else begin
-        entries_43_excpVec <= _GEN_5869;
+        entries_43_excpVec <= _GEN_6765;
       end
     end else begin
-      entries_43_excpVec <= _GEN_5869;
+      entries_43_excpVec <= _GEN_6765;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_43_writtenBack <= _GEN_6829;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_43_writtenBack <= _GEN_6381;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_43_writtenBack <= _GEN_5933;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_43_writtenBack <= _GEN_5485;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_43_writtenBack <= _GEN_5037;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_43_writtenBack <= _GEN_4075;
     end else begin
-      entries_43_writtenBack <= _GEN_3243;
+      entries_43_writtenBack <= _GEN_5293;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_43_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14459,10 +15367,10 @@ module ROB(
       if (6'h2b == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_43_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_43_valid <= _GEN_8301;
+        entries_43_valid <= _GEN_9197;
       end
     end else begin
-      entries_43_valid <= _GEN_8301;
+      entries_43_valid <= _GEN_9197;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2c == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14518,14 +15426,14 @@ module ROB(
     end else begin
       entries_44_rfWen <= _GEN_2860;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2c == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_44_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2c == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_44_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_44_rfdata <= _GEN_5806;
+        entries_44_rfdata <= _GEN_6702;
       end
     end else begin
-      entries_44_rfdata <= _GEN_5806;
+      entries_44_rfdata <= _GEN_6702;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2c == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14563,29 +15471,29 @@ module ROB(
     end else begin
       entries_44_fuType <= _GEN_3116;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2c == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_44_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2c == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_44_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_44_excpVec <= _GEN_5870;
+          entries_44_excpVec <= _GEN_6766;
         end
       end else begin
-        entries_44_excpVec <= _GEN_5870;
+        entries_44_excpVec <= _GEN_6766;
       end
     end else begin
-      entries_44_excpVec <= _GEN_5870;
+      entries_44_excpVec <= _GEN_6766;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_44_writtenBack <= _GEN_6830;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_44_writtenBack <= _GEN_6382;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_44_writtenBack <= _GEN_5934;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_44_writtenBack <= _GEN_5486;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_44_writtenBack <= _GEN_5038;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_44_writtenBack <= _GEN_4076;
     end else begin
-      entries_44_writtenBack <= _GEN_3244;
+      entries_44_writtenBack <= _GEN_5294;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_44_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14593,10 +15501,10 @@ module ROB(
       if (6'h2c == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_44_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_44_valid <= _GEN_8302;
+        entries_44_valid <= _GEN_9198;
       end
     end else begin
-      entries_44_valid <= _GEN_8302;
+      entries_44_valid <= _GEN_9198;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2d == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14652,14 +15560,14 @@ module ROB(
     end else begin
       entries_45_rfWen <= _GEN_2861;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2d == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_45_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2d == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_45_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_45_rfdata <= _GEN_5807;
+        entries_45_rfdata <= _GEN_6703;
       end
     end else begin
-      entries_45_rfdata <= _GEN_5807;
+      entries_45_rfdata <= _GEN_6703;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2d == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14697,29 +15605,29 @@ module ROB(
     end else begin
       entries_45_fuType <= _GEN_3117;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2d == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_45_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2d == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_45_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_45_excpVec <= _GEN_5871;
+          entries_45_excpVec <= _GEN_6767;
         end
       end else begin
-        entries_45_excpVec <= _GEN_5871;
+        entries_45_excpVec <= _GEN_6767;
       end
     end else begin
-      entries_45_excpVec <= _GEN_5871;
+      entries_45_excpVec <= _GEN_6767;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_45_writtenBack <= _GEN_6831;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_45_writtenBack <= _GEN_6383;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_45_writtenBack <= _GEN_5935;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_45_writtenBack <= _GEN_5487;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_45_writtenBack <= _GEN_5039;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_45_writtenBack <= _GEN_4077;
     end else begin
-      entries_45_writtenBack <= _GEN_3245;
+      entries_45_writtenBack <= _GEN_5295;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_45_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14727,10 +15635,10 @@ module ROB(
       if (6'h2d == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_45_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_45_valid <= _GEN_8303;
+        entries_45_valid <= _GEN_9199;
       end
     end else begin
-      entries_45_valid <= _GEN_8303;
+      entries_45_valid <= _GEN_9199;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2e == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14786,14 +15694,14 @@ module ROB(
     end else begin
       entries_46_rfWen <= _GEN_2862;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2e == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_46_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2e == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_46_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_46_rfdata <= _GEN_5808;
+        entries_46_rfdata <= _GEN_6704;
       end
     end else begin
-      entries_46_rfdata <= _GEN_5808;
+      entries_46_rfdata <= _GEN_6704;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2e == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14831,29 +15739,29 @@ module ROB(
     end else begin
       entries_46_fuType <= _GEN_3118;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2e == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_46_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2e == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_46_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_46_excpVec <= _GEN_5872;
+          entries_46_excpVec <= _GEN_6768;
         end
       end else begin
-        entries_46_excpVec <= _GEN_5872;
+        entries_46_excpVec <= _GEN_6768;
       end
     end else begin
-      entries_46_excpVec <= _GEN_5872;
+      entries_46_excpVec <= _GEN_6768;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_46_writtenBack <= _GEN_6832;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_46_writtenBack <= _GEN_6384;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_46_writtenBack <= _GEN_5936;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_46_writtenBack <= _GEN_5488;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_46_writtenBack <= _GEN_5040;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_46_writtenBack <= _GEN_4078;
     end else begin
-      entries_46_writtenBack <= _GEN_3246;
+      entries_46_writtenBack <= _GEN_5296;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_46_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14861,10 +15769,10 @@ module ROB(
       if (6'h2e == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_46_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_46_valid <= _GEN_8304;
+        entries_46_valid <= _GEN_9200;
       end
     end else begin
-      entries_46_valid <= _GEN_8304;
+      entries_46_valid <= _GEN_9200;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2f == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -14920,14 +15828,14 @@ module ROB(
     end else begin
       entries_47_rfWen <= _GEN_2863;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h2f == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_47_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h2f == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_47_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_47_rfdata <= _GEN_5809;
+        entries_47_rfdata <= _GEN_6705;
       end
     end else begin
-      entries_47_rfdata <= _GEN_5809;
+      entries_47_rfdata <= _GEN_6705;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h2f == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -14965,29 +15873,29 @@ module ROB(
     end else begin
       entries_47_fuType <= _GEN_3119;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h2f == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_47_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h2f == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_47_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_47_excpVec <= _GEN_5873;
+          entries_47_excpVec <= _GEN_6769;
         end
       end else begin
-        entries_47_excpVec <= _GEN_5873;
+        entries_47_excpVec <= _GEN_6769;
       end
     end else begin
-      entries_47_excpVec <= _GEN_5873;
+      entries_47_excpVec <= _GEN_6769;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_47_writtenBack <= _GEN_6833;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_47_writtenBack <= _GEN_6385;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_47_writtenBack <= _GEN_5937;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_47_writtenBack <= _GEN_5489;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_47_writtenBack <= _GEN_5041;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_47_writtenBack <= _GEN_4079;
     end else begin
-      entries_47_writtenBack <= _GEN_3247;
+      entries_47_writtenBack <= _GEN_5297;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_47_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -14995,10 +15903,10 @@ module ROB(
       if (6'h2f == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_47_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_47_valid <= _GEN_8305;
+        entries_47_valid <= _GEN_9201;
       end
     end else begin
-      entries_47_valid <= _GEN_8305;
+      entries_47_valid <= _GEN_9201;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h30 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15054,14 +15962,14 @@ module ROB(
     end else begin
       entries_48_rfWen <= _GEN_2864;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h30 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_48_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h30 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_48_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_48_rfdata <= _GEN_5810;
+        entries_48_rfdata <= _GEN_6706;
       end
     end else begin
-      entries_48_rfdata <= _GEN_5810;
+      entries_48_rfdata <= _GEN_6706;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h30 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15099,29 +16007,29 @@ module ROB(
     end else begin
       entries_48_fuType <= _GEN_3120;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h30 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_48_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h30 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_48_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_48_excpVec <= _GEN_5874;
+          entries_48_excpVec <= _GEN_6770;
         end
       end else begin
-        entries_48_excpVec <= _GEN_5874;
+        entries_48_excpVec <= _GEN_6770;
       end
     end else begin
-      entries_48_excpVec <= _GEN_5874;
+      entries_48_excpVec <= _GEN_6770;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_48_writtenBack <= _GEN_6834;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_48_writtenBack <= _GEN_6386;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_48_writtenBack <= _GEN_5938;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_48_writtenBack <= _GEN_5490;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_48_writtenBack <= _GEN_5042;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_48_writtenBack <= _GEN_4080;
     end else begin
-      entries_48_writtenBack <= _GEN_3248;
+      entries_48_writtenBack <= _GEN_5298;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_48_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15129,10 +16037,10 @@ module ROB(
       if (6'h30 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_48_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_48_valid <= _GEN_8306;
+        entries_48_valid <= _GEN_9202;
       end
     end else begin
-      entries_48_valid <= _GEN_8306;
+      entries_48_valid <= _GEN_9202;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h31 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15188,14 +16096,14 @@ module ROB(
     end else begin
       entries_49_rfWen <= _GEN_2865;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h31 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_49_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h31 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_49_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_49_rfdata <= _GEN_5811;
+        entries_49_rfdata <= _GEN_6707;
       end
     end else begin
-      entries_49_rfdata <= _GEN_5811;
+      entries_49_rfdata <= _GEN_6707;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h31 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15233,29 +16141,29 @@ module ROB(
     end else begin
       entries_49_fuType <= _GEN_3121;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h31 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_49_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h31 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_49_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_49_excpVec <= _GEN_5875;
+          entries_49_excpVec <= _GEN_6771;
         end
       end else begin
-        entries_49_excpVec <= _GEN_5875;
+        entries_49_excpVec <= _GEN_6771;
       end
     end else begin
-      entries_49_excpVec <= _GEN_5875;
+      entries_49_excpVec <= _GEN_6771;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_49_writtenBack <= _GEN_6835;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_49_writtenBack <= _GEN_6387;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_49_writtenBack <= _GEN_5939;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_49_writtenBack <= _GEN_5491;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_49_writtenBack <= _GEN_5043;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_49_writtenBack <= _GEN_4081;
     end else begin
-      entries_49_writtenBack <= _GEN_3249;
+      entries_49_writtenBack <= _GEN_5299;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_49_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15263,10 +16171,10 @@ module ROB(
       if (6'h31 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_49_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_49_valid <= _GEN_8307;
+        entries_49_valid <= _GEN_9203;
       end
     end else begin
-      entries_49_valid <= _GEN_8307;
+      entries_49_valid <= _GEN_9203;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h32 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15322,14 +16230,14 @@ module ROB(
     end else begin
       entries_50_rfWen <= _GEN_2866;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h32 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_50_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h32 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_50_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_50_rfdata <= _GEN_5812;
+        entries_50_rfdata <= _GEN_6708;
       end
     end else begin
-      entries_50_rfdata <= _GEN_5812;
+      entries_50_rfdata <= _GEN_6708;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h32 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15367,29 +16275,29 @@ module ROB(
     end else begin
       entries_50_fuType <= _GEN_3122;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h32 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_50_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h32 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_50_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_50_excpVec <= _GEN_5876;
+          entries_50_excpVec <= _GEN_6772;
         end
       end else begin
-        entries_50_excpVec <= _GEN_5876;
+        entries_50_excpVec <= _GEN_6772;
       end
     end else begin
-      entries_50_excpVec <= _GEN_5876;
+      entries_50_excpVec <= _GEN_6772;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_50_writtenBack <= _GEN_6836;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_50_writtenBack <= _GEN_6388;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_50_writtenBack <= _GEN_5940;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_50_writtenBack <= _GEN_5492;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_50_writtenBack <= _GEN_5044;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_50_writtenBack <= _GEN_4082;
     end else begin
-      entries_50_writtenBack <= _GEN_3250;
+      entries_50_writtenBack <= _GEN_5300;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_50_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15397,10 +16305,10 @@ module ROB(
       if (6'h32 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_50_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_50_valid <= _GEN_8308;
+        entries_50_valid <= _GEN_9204;
       end
     end else begin
-      entries_50_valid <= _GEN_8308;
+      entries_50_valid <= _GEN_9204;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h33 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15456,14 +16364,14 @@ module ROB(
     end else begin
       entries_51_rfWen <= _GEN_2867;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h33 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_51_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h33 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_51_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_51_rfdata <= _GEN_5813;
+        entries_51_rfdata <= _GEN_6709;
       end
     end else begin
-      entries_51_rfdata <= _GEN_5813;
+      entries_51_rfdata <= _GEN_6709;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h33 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15501,29 +16409,29 @@ module ROB(
     end else begin
       entries_51_fuType <= _GEN_3123;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h33 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_51_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h33 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_51_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_51_excpVec <= _GEN_5877;
+          entries_51_excpVec <= _GEN_6773;
         end
       end else begin
-        entries_51_excpVec <= _GEN_5877;
+        entries_51_excpVec <= _GEN_6773;
       end
     end else begin
-      entries_51_excpVec <= _GEN_5877;
+      entries_51_excpVec <= _GEN_6773;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_51_writtenBack <= _GEN_6837;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_51_writtenBack <= _GEN_6389;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_51_writtenBack <= _GEN_5941;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_51_writtenBack <= _GEN_5493;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_51_writtenBack <= _GEN_5045;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_51_writtenBack <= _GEN_4083;
     end else begin
-      entries_51_writtenBack <= _GEN_3251;
+      entries_51_writtenBack <= _GEN_5301;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_51_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15531,10 +16439,10 @@ module ROB(
       if (6'h33 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_51_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_51_valid <= _GEN_8309;
+        entries_51_valid <= _GEN_9205;
       end
     end else begin
-      entries_51_valid <= _GEN_8309;
+      entries_51_valid <= _GEN_9205;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h34 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15590,14 +16498,14 @@ module ROB(
     end else begin
       entries_52_rfWen <= _GEN_2868;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h34 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_52_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h34 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_52_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_52_rfdata <= _GEN_5814;
+        entries_52_rfdata <= _GEN_6710;
       end
     end else begin
-      entries_52_rfdata <= _GEN_5814;
+      entries_52_rfdata <= _GEN_6710;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h34 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15635,29 +16543,29 @@ module ROB(
     end else begin
       entries_52_fuType <= _GEN_3124;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h34 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_52_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h34 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_52_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_52_excpVec <= _GEN_5878;
+          entries_52_excpVec <= _GEN_6774;
         end
       end else begin
-        entries_52_excpVec <= _GEN_5878;
+        entries_52_excpVec <= _GEN_6774;
       end
     end else begin
-      entries_52_excpVec <= _GEN_5878;
+      entries_52_excpVec <= _GEN_6774;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_52_writtenBack <= _GEN_6838;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_52_writtenBack <= _GEN_6390;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_52_writtenBack <= _GEN_5942;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_52_writtenBack <= _GEN_5494;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_52_writtenBack <= _GEN_5046;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_52_writtenBack <= _GEN_4084;
     end else begin
-      entries_52_writtenBack <= _GEN_3252;
+      entries_52_writtenBack <= _GEN_5302;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_52_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15665,10 +16573,10 @@ module ROB(
       if (6'h34 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_52_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_52_valid <= _GEN_8310;
+        entries_52_valid <= _GEN_9206;
       end
     end else begin
-      entries_52_valid <= _GEN_8310;
+      entries_52_valid <= _GEN_9206;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h35 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15724,14 +16632,14 @@ module ROB(
     end else begin
       entries_53_rfWen <= _GEN_2869;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h35 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_53_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h35 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_53_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_53_rfdata <= _GEN_5815;
+        entries_53_rfdata <= _GEN_6711;
       end
     end else begin
-      entries_53_rfdata <= _GEN_5815;
+      entries_53_rfdata <= _GEN_6711;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h35 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15769,29 +16677,29 @@ module ROB(
     end else begin
       entries_53_fuType <= _GEN_3125;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h35 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_53_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h35 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_53_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_53_excpVec <= _GEN_5879;
+          entries_53_excpVec <= _GEN_6775;
         end
       end else begin
-        entries_53_excpVec <= _GEN_5879;
+        entries_53_excpVec <= _GEN_6775;
       end
     end else begin
-      entries_53_excpVec <= _GEN_5879;
+      entries_53_excpVec <= _GEN_6775;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_53_writtenBack <= _GEN_6839;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_53_writtenBack <= _GEN_6391;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_53_writtenBack <= _GEN_5943;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_53_writtenBack <= _GEN_5495;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_53_writtenBack <= _GEN_5047;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_53_writtenBack <= _GEN_4085;
     end else begin
-      entries_53_writtenBack <= _GEN_3253;
+      entries_53_writtenBack <= _GEN_5303;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_53_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15799,10 +16707,10 @@ module ROB(
       if (6'h35 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_53_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_53_valid <= _GEN_8311;
+        entries_53_valid <= _GEN_9207;
       end
     end else begin
-      entries_53_valid <= _GEN_8311;
+      entries_53_valid <= _GEN_9207;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h36 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15858,14 +16766,14 @@ module ROB(
     end else begin
       entries_54_rfWen <= _GEN_2870;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h36 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_54_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h36 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_54_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_54_rfdata <= _GEN_5816;
+        entries_54_rfdata <= _GEN_6712;
       end
     end else begin
-      entries_54_rfdata <= _GEN_5816;
+      entries_54_rfdata <= _GEN_6712;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h36 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -15903,29 +16811,29 @@ module ROB(
     end else begin
       entries_54_fuType <= _GEN_3126;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h36 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_54_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h36 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_54_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_54_excpVec <= _GEN_5880;
+          entries_54_excpVec <= _GEN_6776;
         end
       end else begin
-        entries_54_excpVec <= _GEN_5880;
+        entries_54_excpVec <= _GEN_6776;
       end
     end else begin
-      entries_54_excpVec <= _GEN_5880;
+      entries_54_excpVec <= _GEN_6776;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_54_writtenBack <= _GEN_6840;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_54_writtenBack <= _GEN_6392;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_54_writtenBack <= _GEN_5944;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_54_writtenBack <= _GEN_5496;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_54_writtenBack <= _GEN_5048;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_54_writtenBack <= _GEN_4086;
     end else begin
-      entries_54_writtenBack <= _GEN_3254;
+      entries_54_writtenBack <= _GEN_5304;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_54_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -15933,10 +16841,10 @@ module ROB(
       if (6'h36 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_54_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_54_valid <= _GEN_8312;
+        entries_54_valid <= _GEN_9208;
       end
     end else begin
-      entries_54_valid <= _GEN_8312;
+      entries_54_valid <= _GEN_9208;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h37 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -15992,14 +16900,14 @@ module ROB(
     end else begin
       entries_55_rfWen <= _GEN_2871;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h37 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_55_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h37 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_55_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_55_rfdata <= _GEN_5817;
+        entries_55_rfdata <= _GEN_6713;
       end
     end else begin
-      entries_55_rfdata <= _GEN_5817;
+      entries_55_rfdata <= _GEN_6713;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h37 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16037,29 +16945,29 @@ module ROB(
     end else begin
       entries_55_fuType <= _GEN_3127;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h37 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_55_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h37 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_55_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_55_excpVec <= _GEN_5881;
+          entries_55_excpVec <= _GEN_6777;
         end
       end else begin
-        entries_55_excpVec <= _GEN_5881;
+        entries_55_excpVec <= _GEN_6777;
       end
     end else begin
-      entries_55_excpVec <= _GEN_5881;
+      entries_55_excpVec <= _GEN_6777;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_55_writtenBack <= _GEN_6841;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_55_writtenBack <= _GEN_6393;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_55_writtenBack <= _GEN_5945;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_55_writtenBack <= _GEN_5497;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_55_writtenBack <= _GEN_5049;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_55_writtenBack <= _GEN_4087;
     end else begin
-      entries_55_writtenBack <= _GEN_3255;
+      entries_55_writtenBack <= _GEN_5305;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_55_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16067,10 +16975,10 @@ module ROB(
       if (6'h37 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_55_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_55_valid <= _GEN_8313;
+        entries_55_valid <= _GEN_9209;
       end
     end else begin
-      entries_55_valid <= _GEN_8313;
+      entries_55_valid <= _GEN_9209;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h38 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16126,14 +17034,14 @@ module ROB(
     end else begin
       entries_56_rfWen <= _GEN_2872;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h38 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_56_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h38 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_56_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_56_rfdata <= _GEN_5818;
+        entries_56_rfdata <= _GEN_6714;
       end
     end else begin
-      entries_56_rfdata <= _GEN_5818;
+      entries_56_rfdata <= _GEN_6714;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h38 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16171,29 +17079,29 @@ module ROB(
     end else begin
       entries_56_fuType <= _GEN_3128;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h38 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_56_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h38 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_56_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_56_excpVec <= _GEN_5882;
+          entries_56_excpVec <= _GEN_6778;
         end
       end else begin
-        entries_56_excpVec <= _GEN_5882;
+        entries_56_excpVec <= _GEN_6778;
       end
     end else begin
-      entries_56_excpVec <= _GEN_5882;
+      entries_56_excpVec <= _GEN_6778;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_56_writtenBack <= _GEN_6842;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_56_writtenBack <= _GEN_6394;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_56_writtenBack <= _GEN_5946;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_56_writtenBack <= _GEN_5498;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_56_writtenBack <= _GEN_5050;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_56_writtenBack <= _GEN_4088;
     end else begin
-      entries_56_writtenBack <= _GEN_3256;
+      entries_56_writtenBack <= _GEN_5306;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_56_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16201,10 +17109,10 @@ module ROB(
       if (6'h38 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_56_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_56_valid <= _GEN_8314;
+        entries_56_valid <= _GEN_9210;
       end
     end else begin
-      entries_56_valid <= _GEN_8314;
+      entries_56_valid <= _GEN_9210;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h39 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16260,14 +17168,14 @@ module ROB(
     end else begin
       entries_57_rfWen <= _GEN_2873;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h39 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_57_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h39 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_57_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_57_rfdata <= _GEN_5819;
+        entries_57_rfdata <= _GEN_6715;
       end
     end else begin
-      entries_57_rfdata <= _GEN_5819;
+      entries_57_rfdata <= _GEN_6715;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h39 == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16305,29 +17213,29 @@ module ROB(
     end else begin
       entries_57_fuType <= _GEN_3129;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h39 == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_57_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h39 == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_57_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_57_excpVec <= _GEN_5883;
+          entries_57_excpVec <= _GEN_6779;
         end
       end else begin
-        entries_57_excpVec <= _GEN_5883;
+        entries_57_excpVec <= _GEN_6779;
       end
     end else begin
-      entries_57_excpVec <= _GEN_5883;
+      entries_57_excpVec <= _GEN_6779;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_57_writtenBack <= _GEN_6843;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_57_writtenBack <= _GEN_6395;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_57_writtenBack <= _GEN_5947;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_57_writtenBack <= _GEN_5499;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_57_writtenBack <= _GEN_5051;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_57_writtenBack <= _GEN_4089;
     end else begin
-      entries_57_writtenBack <= _GEN_3257;
+      entries_57_writtenBack <= _GEN_5307;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_57_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16335,10 +17243,10 @@ module ROB(
       if (6'h39 == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_57_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_57_valid <= _GEN_8315;
+        entries_57_valid <= _GEN_9211;
       end
     end else begin
-      entries_57_valid <= _GEN_8315;
+      entries_57_valid <= _GEN_9211;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3a == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16394,14 +17302,14 @@ module ROB(
     end else begin
       entries_58_rfWen <= _GEN_2874;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3a == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_58_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3a == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_58_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_58_rfdata <= _GEN_5820;
+        entries_58_rfdata <= _GEN_6716;
       end
     end else begin
-      entries_58_rfdata <= _GEN_5820;
+      entries_58_rfdata <= _GEN_6716;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3a == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16439,29 +17347,29 @@ module ROB(
     end else begin
       entries_58_fuType <= _GEN_3130;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3a == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_58_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3a == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_58_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_58_excpVec <= _GEN_5884;
+          entries_58_excpVec <= _GEN_6780;
         end
       end else begin
-        entries_58_excpVec <= _GEN_5884;
+        entries_58_excpVec <= _GEN_6780;
       end
     end else begin
-      entries_58_excpVec <= _GEN_5884;
+      entries_58_excpVec <= _GEN_6780;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_58_writtenBack <= _GEN_6844;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_58_writtenBack <= _GEN_6396;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_58_writtenBack <= _GEN_5948;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_58_writtenBack <= _GEN_5500;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_58_writtenBack <= _GEN_5052;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_58_writtenBack <= _GEN_4090;
     end else begin
-      entries_58_writtenBack <= _GEN_3258;
+      entries_58_writtenBack <= _GEN_5308;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_58_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16469,10 +17377,10 @@ module ROB(
       if (6'h3a == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_58_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_58_valid <= _GEN_8316;
+        entries_58_valid <= _GEN_9212;
       end
     end else begin
-      entries_58_valid <= _GEN_8316;
+      entries_58_valid <= _GEN_9212;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3b == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16528,14 +17436,14 @@ module ROB(
     end else begin
       entries_59_rfWen <= _GEN_2875;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3b == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_59_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3b == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_59_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_59_rfdata <= _GEN_5821;
+        entries_59_rfdata <= _GEN_6717;
       end
     end else begin
-      entries_59_rfdata <= _GEN_5821;
+      entries_59_rfdata <= _GEN_6717;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3b == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16573,29 +17481,29 @@ module ROB(
     end else begin
       entries_59_fuType <= _GEN_3131;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3b == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_59_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3b == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_59_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_59_excpVec <= _GEN_5885;
+          entries_59_excpVec <= _GEN_6781;
         end
       end else begin
-        entries_59_excpVec <= _GEN_5885;
+        entries_59_excpVec <= _GEN_6781;
       end
     end else begin
-      entries_59_excpVec <= _GEN_5885;
+      entries_59_excpVec <= _GEN_6781;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_59_writtenBack <= _GEN_6845;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_59_writtenBack <= _GEN_6397;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_59_writtenBack <= _GEN_5949;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_59_writtenBack <= _GEN_5501;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_59_writtenBack <= _GEN_5053;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_59_writtenBack <= _GEN_4091;
     end else begin
-      entries_59_writtenBack <= _GEN_3259;
+      entries_59_writtenBack <= _GEN_5309;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_59_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16603,10 +17511,10 @@ module ROB(
       if (6'h3b == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_59_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_59_valid <= _GEN_8317;
+        entries_59_valid <= _GEN_9213;
       end
     end else begin
-      entries_59_valid <= _GEN_8317;
+      entries_59_valid <= _GEN_9213;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3c == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16662,14 +17570,14 @@ module ROB(
     end else begin
       entries_60_rfWen <= _GEN_2876;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3c == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_60_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3c == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_60_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_60_rfdata <= _GEN_5822;
+        entries_60_rfdata <= _GEN_6718;
       end
     end else begin
-      entries_60_rfdata <= _GEN_5822;
+      entries_60_rfdata <= _GEN_6718;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3c == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16707,29 +17615,29 @@ module ROB(
     end else begin
       entries_60_fuType <= _GEN_3132;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3c == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_60_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3c == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_60_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_60_excpVec <= _GEN_5886;
+          entries_60_excpVec <= _GEN_6782;
         end
       end else begin
-        entries_60_excpVec <= _GEN_5886;
+        entries_60_excpVec <= _GEN_6782;
       end
     end else begin
-      entries_60_excpVec <= _GEN_5886;
+      entries_60_excpVec <= _GEN_6782;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_60_writtenBack <= _GEN_6846;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_60_writtenBack <= _GEN_6398;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_60_writtenBack <= _GEN_5950;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_60_writtenBack <= _GEN_5502;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_60_writtenBack <= _GEN_5054;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_60_writtenBack <= _GEN_4092;
     end else begin
-      entries_60_writtenBack <= _GEN_3260;
+      entries_60_writtenBack <= _GEN_5310;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_60_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16737,10 +17645,10 @@ module ROB(
       if (6'h3c == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_60_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_60_valid <= _GEN_8318;
+        entries_60_valid <= _GEN_9214;
       end
     end else begin
-      entries_60_valid <= _GEN_8318;
+      entries_60_valid <= _GEN_9214;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3d == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16796,14 +17704,14 @@ module ROB(
     end else begin
       entries_61_rfWen <= _GEN_2877;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3d == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_61_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3d == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_61_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_61_rfdata <= _GEN_5823;
+        entries_61_rfdata <= _GEN_6719;
       end
     end else begin
-      entries_61_rfdata <= _GEN_5823;
+      entries_61_rfdata <= _GEN_6719;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3d == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16841,29 +17749,29 @@ module ROB(
     end else begin
       entries_61_fuType <= _GEN_3133;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3d == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_61_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3d == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_61_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_61_excpVec <= _GEN_5887;
+          entries_61_excpVec <= _GEN_6783;
         end
       end else begin
-        entries_61_excpVec <= _GEN_5887;
+        entries_61_excpVec <= _GEN_6783;
       end
     end else begin
-      entries_61_excpVec <= _GEN_5887;
+      entries_61_excpVec <= _GEN_6783;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_61_writtenBack <= _GEN_6847;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_61_writtenBack <= _GEN_6399;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_61_writtenBack <= _GEN_5951;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_61_writtenBack <= _GEN_5503;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_61_writtenBack <= _GEN_5055;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_61_writtenBack <= _GEN_4093;
     end else begin
-      entries_61_writtenBack <= _GEN_3261;
+      entries_61_writtenBack <= _GEN_5311;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_61_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -16871,10 +17779,10 @@ module ROB(
       if (6'h3d == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_61_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_61_valid <= _GEN_8319;
+        entries_61_valid <= _GEN_9215;
       end
     end else begin
-      entries_61_valid <= _GEN_8319;
+      entries_61_valid <= _GEN_9215;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3e == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -16930,14 +17838,14 @@ module ROB(
     end else begin
       entries_62_rfWen <= _GEN_2878;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3e == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_62_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3e == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_62_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_62_rfdata <= _GEN_5824;
+        entries_62_rfdata <= _GEN_6720;
       end
     end else begin
-      entries_62_rfdata <= _GEN_5824;
+      entries_62_rfdata <= _GEN_6720;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3e == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -16975,29 +17883,29 @@ module ROB(
     end else begin
       entries_62_fuType <= _GEN_3134;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3e == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_62_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3e == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_62_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_62_excpVec <= _GEN_5888;
+          entries_62_excpVec <= _GEN_6784;
         end
       end else begin
-        entries_62_excpVec <= _GEN_5888;
+        entries_62_excpVec <= _GEN_6784;
       end
     end else begin
-      entries_62_excpVec <= _GEN_5888;
+      entries_62_excpVec <= _GEN_6784;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_62_writtenBack <= _GEN_6848;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_62_writtenBack <= _GEN_6400;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_62_writtenBack <= _GEN_5952;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_62_writtenBack <= _GEN_5504;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_62_writtenBack <= _GEN_5056;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_62_writtenBack <= _GEN_4094;
     end else begin
-      entries_62_writtenBack <= _GEN_3262;
+      entries_62_writtenBack <= _GEN_5312;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_62_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -17005,10 +17913,10 @@ module ROB(
       if (6'h3e == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_62_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_62_valid <= _GEN_8320;
+        entries_62_valid <= _GEN_9216;
       end
     end else begin
-      entries_62_valid <= _GEN_8320;
+      entries_62_valid <= _GEN_9216;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3f == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 104:37]
@@ -17064,14 +17972,14 @@ module ROB(
     end else begin
       entries_63_rfWen <= _GEN_2879;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (6'h3f == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
-        entries_63_rfdata <= io_writeback_2_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (6'h3f == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 134:44]
+        entries_63_rfdata <= io_writeback_4_bits_rfdata; // @[src/main/scala/backend/Rob.scala 134:44]
       end else begin
-        entries_63_rfdata <= _GEN_5825;
+        entries_63_rfdata <= _GEN_6721;
       end
     end else begin
-      entries_63_rfdata <= _GEN_5825;
+      entries_63_rfdata <= _GEN_6721;
     end
     if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
       if (6'h3f == writeIdx_2) begin // @[src/main/scala/backend/Rob.scala 110:37]
@@ -17109,29 +18017,29 @@ module ROB(
     end else begin
       entries_63_fuType <= _GEN_3135;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      if (|io_writeback_2_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
-        if (6'h3f == io_writeback_2_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
-          entries_63_excpVec <= io_writeback_2_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      if (|io_writeback_4_bits_excpVec) begin // @[src/main/scala/backend/Rob.scala 136:33]
+        if (6'h3f == io_writeback_4_bits_robIdx_value) begin // @[src/main/scala/backend/Rob.scala 137:47]
+          entries_63_excpVec <= io_writeback_4_bits_excpVec; // @[src/main/scala/backend/Rob.scala 137:47]
         end else begin
-          entries_63_excpVec <= _GEN_5889;
+          entries_63_excpVec <= _GEN_6785;
         end
       end else begin
-        entries_63_excpVec <= _GEN_5889;
+        entries_63_excpVec <= _GEN_6785;
       end
     end else begin
-      entries_63_excpVec <= _GEN_5889;
+      entries_63_excpVec <= _GEN_6785;
     end
-    if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+    if (io_writeback_4_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_63_writtenBack <= _GEN_6849;
+    end else if (io_writeback_3_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
+      entries_63_writtenBack <= _GEN_6401;
+    end else if (io_writeback_2_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_63_writtenBack <= _GEN_5953;
     end else if (io_writeback_1_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
       entries_63_writtenBack <= _GEN_5505;
-    end else if (io_writeback_0_valid) begin // @[src/main/scala/backend/Rob.scala 132:20]
-      entries_63_writtenBack <= _GEN_5057;
-    end else if (io_enq_valid_2 & io_enq_canEnq) begin // @[src/main/scala/backend/Rob.scala 103:44]
-      entries_63_writtenBack <= _GEN_4095;
     end else begin
-      entries_63_writtenBack <= _GEN_3263;
+      entries_63_writtenBack <= _GEN_5313;
     end
     if (io_flush) begin // @[src/main/scala/backend/Rob.scala 224:18]
       entries_63_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 226:24]
@@ -17139,10 +18047,10 @@ module ROB(
       if (6'h3f == idx_2) begin // @[src/main/scala/backend/Rob.scala 187:26]
         entries_63_valid <= 1'h0; // @[src/main/scala/backend/Rob.scala 187:26]
       end else begin
-        entries_63_valid <= _GEN_8321;
+        entries_63_valid <= _GEN_9217;
       end
     end else begin
-      entries_63_valid <= _GEN_8321;
+      entries_63_valid <= _GEN_9217;
     end
     if (reset) begin // @[src/main/scala/backend/Rob.scala 75:23]
       deqPtr_value <= 6'h0; // @[src/main/scala/backend/Rob.scala 75:23]

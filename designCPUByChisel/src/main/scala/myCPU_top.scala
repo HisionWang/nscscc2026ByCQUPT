@@ -15,6 +15,7 @@ import nscscc.mmu._
 import nscscc.csr._
 import nscscc.difftest._
 import nscscc.backend.Backend
+import nscscc.mem.MemoryBlock
  
 class core_top(implicit p: Parameters) extends NSRawModule {
   // ========== 时钟与复位 ==========
@@ -104,12 +105,32 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
+  val memory = Module(new MemoryBlock)
+  frontend.io.out <> backend.io.in
+
+
+  dontTouch(backend.io.lsEnq)
+  backend.io.lsEnq <> memory.io.lsEnq
+
+  dontTouch(backend.io.toMemResult(0)) //load+store的地址
+  dontTouch(backend.io.toMemResult(1)) //store的数据
+  backend.io.toMemResult <> memory.io.fromMemResult
+
+  memory.io.rob.lcommit := false.B
+  memory.io.rob.scommit := false.B
+  memory.io.rob.robIdx := 0.U
+  memory.io.redirect.valid := false.B
+  memory.io.redirect.bits.robIdx := 0.U
+  
+
+
   dontTouch(backend.io.debugLogicRegs)
 
-  frontend.io.out <> backend.io.in
+  
   backend.io.flush := false.B
   backend.io.extInt := intrpt =/= 0.U
-  //dontTouch(backend.io.out)
+
+
 
 
   //for (i <- 0 until 4) {
