@@ -106,19 +106,28 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
+  
   frontend.io.out <> backend.io.in
 
 
   dontTouch(backend.io.lsEnq)
   backend.io.lsEnq <> memory.io.lsEnq
+  val simMMU = Module(new SimpleMMU)
+  simMMU.io.mmuReq <> memory.io.mmu.toMmu
+  simMMU.io.mmuResp <> memory.io.mmu.fromMmu
 
   dontTouch(backend.io.toMemResult(0)) //load+store的地址
   dontTouch(backend.io.toMemResult(1)) //store的数据
-  backend.io.toMemResult <> memory.io.fromMemResult
+  backend.io.toMemResult <> memory.io.fromExeResult
+  memory.io.toWbResult <> backend.io.fromMemResult
 
-  memory.io.rob.lcommit := false.B
-  memory.io.rob.scommit := false.B
-  memory.io.rob.robIdx := 0.U
+  
+  for (i <- 0 until CommitWidth) {
+    memory.io.robCommit(i).valid := backend.io.commitToSq.valid(i)
+    memory.io.robCommit(i).sqIdx := backend.io.commitToSq.bits(i).sqIdx.value
+  }
+
+
   memory.io.redirect.valid := false.B
   memory.io.redirect.bits.robIdx := 0.U
   
@@ -150,7 +159,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // ---------- MMU / TLB ----------
   val mmu = Module(new Mmu)
-  //val simMMU = Module(new SimpleMMU)
+ 
 
   frontend.io.mmu.toMmu <> mmu.io.fromIcache
   frontend.io.mmu.fromMmu <> mmu.io.toIcache

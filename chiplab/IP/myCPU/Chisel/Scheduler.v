@@ -517,6 +517,10 @@ module Scheduler(
   input  [6:0]  io_wakeupPorts_1_bits_pdst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input         io_wakeupPorts_2_valid, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [6:0]  io_wakeupPorts_2_bits_pdst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_wakeupPorts_3_valid, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [6:0]  io_wakeupPorts_3_bits_pdst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_wakeupPorts_4_valid, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [6:0]  io_wakeupPorts_4_bits_pdst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_feedback_q1FreeEntries, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [3:0]  io_feedback_q2FreeEntries, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_feedback_q3FreeEntries, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -638,6 +642,10 @@ module Scheduler(
   wire [6:0] q1_io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire  q1_io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [6:0] q1_io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [6:0] q1_io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [6:0] q1_io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_freeEntries; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire  q2_clock; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire  q2_reset; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
@@ -742,6 +750,10 @@ module Scheduler(
   wire [6:0] q2_io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire  q2_io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [6:0] q2_io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [6:0] q2_io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [6:0] q2_io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [3:0] q2_io_freeEntries; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire  q3_clock; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire  q3_reset; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
@@ -858,6 +870,10 @@ module Scheduler(
   wire [6:0] q3_io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire  q3_io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [6:0] q3_io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [6:0] q3_io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [6:0] q3_io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_freeEntries; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire  q4_clock; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire  q4_reset; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
@@ -974,6 +990,10 @@ module Scheduler(
   wire [6:0] q4_io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire  q4_io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [6:0] q4_io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [6:0] q4_io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [6:0] q4_io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_freeEntries; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire  q5_clock; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire  q5_reset; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
@@ -1090,6 +1110,10 @@ module Scheduler(
   wire [6:0] q5_io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire  q5_io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [6:0] q5_io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [6:0] q5_io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [6:0] q5_io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [3:0] q5_io_freeEntries; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   IssueQueue q1 ( // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
     .clock(q1_clock),
@@ -1207,6 +1231,10 @@ module Scheduler(
     .io_wakeupPorts_1_bits_pdst(q1_io_wakeupPorts_1_bits_pdst),
     .io_wakeupPorts_2_valid(q1_io_wakeupPorts_2_valid),
     .io_wakeupPorts_2_bits_pdst(q1_io_wakeupPorts_2_bits_pdst),
+    .io_wakeupPorts_3_valid(q1_io_wakeupPorts_3_valid),
+    .io_wakeupPorts_3_bits_pdst(q1_io_wakeupPorts_3_bits_pdst),
+    .io_wakeupPorts_4_valid(q1_io_wakeupPorts_4_valid),
+    .io_wakeupPorts_4_bits_pdst(q1_io_wakeupPorts_4_bits_pdst),
     .io_freeEntries(q1_io_freeEntries)
   );
   IssueQueue_1 q2 ( // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
@@ -1313,6 +1341,10 @@ module Scheduler(
     .io_wakeupPorts_1_bits_pdst(q2_io_wakeupPorts_1_bits_pdst),
     .io_wakeupPorts_2_valid(q2_io_wakeupPorts_2_valid),
     .io_wakeupPorts_2_bits_pdst(q2_io_wakeupPorts_2_bits_pdst),
+    .io_wakeupPorts_3_valid(q2_io_wakeupPorts_3_valid),
+    .io_wakeupPorts_3_bits_pdst(q2_io_wakeupPorts_3_bits_pdst),
+    .io_wakeupPorts_4_valid(q2_io_wakeupPorts_4_valid),
+    .io_wakeupPorts_4_bits_pdst(q2_io_wakeupPorts_4_bits_pdst),
     .io_freeEntries(q2_io_freeEntries)
   );
   IssueQueue q3 ( // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
@@ -1431,6 +1463,10 @@ module Scheduler(
     .io_wakeupPorts_1_bits_pdst(q3_io_wakeupPorts_1_bits_pdst),
     .io_wakeupPorts_2_valid(q3_io_wakeupPorts_2_valid),
     .io_wakeupPorts_2_bits_pdst(q3_io_wakeupPorts_2_bits_pdst),
+    .io_wakeupPorts_3_valid(q3_io_wakeupPorts_3_valid),
+    .io_wakeupPorts_3_bits_pdst(q3_io_wakeupPorts_3_bits_pdst),
+    .io_wakeupPorts_4_valid(q3_io_wakeupPorts_4_valid),
+    .io_wakeupPorts_4_bits_pdst(q3_io_wakeupPorts_4_bits_pdst),
     .io_freeEntries(q3_io_freeEntries)
   );
   IssueQueue q4 ( // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
@@ -1549,6 +1585,10 @@ module Scheduler(
     .io_wakeupPorts_1_bits_pdst(q4_io_wakeupPorts_1_bits_pdst),
     .io_wakeupPorts_2_valid(q4_io_wakeupPorts_2_valid),
     .io_wakeupPorts_2_bits_pdst(q4_io_wakeupPorts_2_bits_pdst),
+    .io_wakeupPorts_3_valid(q4_io_wakeupPorts_3_valid),
+    .io_wakeupPorts_3_bits_pdst(q4_io_wakeupPorts_3_bits_pdst),
+    .io_wakeupPorts_4_valid(q4_io_wakeupPorts_4_valid),
+    .io_wakeupPorts_4_bits_pdst(q4_io_wakeupPorts_4_bits_pdst),
     .io_freeEntries(q4_io_freeEntries)
   );
   IssueQueue_4 q5 ( // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
@@ -1667,6 +1707,10 @@ module Scheduler(
     .io_wakeupPorts_1_bits_pdst(q5_io_wakeupPorts_1_bits_pdst),
     .io_wakeupPorts_2_valid(q5_io_wakeupPorts_2_valid),
     .io_wakeupPorts_2_bits_pdst(q5_io_wakeupPorts_2_bits_pdst),
+    .io_wakeupPorts_3_valid(q5_io_wakeupPorts_3_valid),
+    .io_wakeupPorts_3_bits_pdst(q5_io_wakeupPorts_3_bits_pdst),
+    .io_wakeupPorts_4_valid(q5_io_wakeupPorts_4_valid),
+    .io_wakeupPorts_4_bits_pdst(q5_io_wakeupPorts_4_bits_pdst),
     .io_freeEntries(q5_io_freeEntries)
   );
   assign io_q1Issue_valid = q1_io_issue_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
@@ -1995,6 +2039,10 @@ module Scheduler(
   assign q1_io_wakeupPorts_1_bits_pdst = io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q1_io_wakeupPorts_2_valid = io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q1_io_wakeupPorts_2_bits_pdst = io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q1_io_wakeupPorts_3_valid = io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q1_io_wakeupPorts_3_bits_pdst = io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q1_io_wakeupPorts_4_valid = io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q1_io_wakeupPorts_4_bits_pdst = io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q2_clock = clock;
   assign q2_reset = reset;
   assign q2_io_enq_valid = io_q2IQEnq_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
@@ -2051,6 +2099,10 @@ module Scheduler(
   assign q2_io_wakeupPorts_1_bits_pdst = io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q2_io_wakeupPorts_2_valid = io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q2_io_wakeupPorts_2_bits_pdst = io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q2_io_wakeupPorts_3_valid = io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q2_io_wakeupPorts_3_bits_pdst = io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q2_io_wakeupPorts_4_valid = io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q2_io_wakeupPorts_4_bits_pdst = io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q3_clock = clock;
   assign q3_reset = reset;
   assign q3_io_enq_valid = io_q3IQEnq_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
@@ -2113,6 +2165,10 @@ module Scheduler(
   assign q3_io_wakeupPorts_1_bits_pdst = io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q3_io_wakeupPorts_2_valid = io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q3_io_wakeupPorts_2_bits_pdst = io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q3_io_wakeupPorts_3_valid = io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q3_io_wakeupPorts_3_bits_pdst = io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q3_io_wakeupPorts_4_valid = io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q3_io_wakeupPorts_4_bits_pdst = io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q4_clock = clock;
   assign q4_reset = reset;
   assign q4_io_enq_valid = io_q4IQEnq_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
@@ -2175,6 +2231,10 @@ module Scheduler(
   assign q4_io_wakeupPorts_1_bits_pdst = io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q4_io_wakeupPorts_2_valid = io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q4_io_wakeupPorts_2_bits_pdst = io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q4_io_wakeupPorts_3_valid = io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q4_io_wakeupPorts_3_bits_pdst = io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q4_io_wakeupPorts_4_valid = io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q4_io_wakeupPorts_4_bits_pdst = io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q5_clock = clock;
   assign q5_reset = reset;
   assign q5_io_enq_valid = io_q5IQEnq_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
@@ -2237,4 +2297,8 @@ module Scheduler(
   assign q5_io_wakeupPorts_1_bits_pdst = io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q5_io_wakeupPorts_2_valid = io_wakeupPorts_2_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
   assign q5_io_wakeupPorts_2_bits_pdst = io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q5_io_wakeupPorts_3_valid = io_wakeupPorts_3_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q5_io_wakeupPorts_3_bits_pdst = io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q5_io_wakeupPorts_4_valid = io_wakeupPorts_4_valid; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
+  assign q5_io_wakeupPorts_4_bits_pdst = io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/Scheduler.scala 80:23]
 endmodule

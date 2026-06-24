@@ -109,6 +109,19 @@ class MmuToIcache(implicit p: Parameters) extends NSBundle {
   val error     = new MmuTransError
 }
 
+class SqToMmuReq(implicit p: Parameters) extends NSBundle {
+  val vaddr = UInt(XLEN.W)
+  val sqIdx = UInt(log2Ceil(SqSize).W)
+}
+
+class MmuToSqResp(implicit p: Parameters) extends NSBundle {
+  val paddr     = UInt(XLEN.W)
+  val cacheable = Bool()
+  val hasError  = Bool()
+  val error     = new MmuTransError
+  val sqIdx     = UInt(log2Ceil(SqSize).W)
+}
+
 class CsrToMmu(implicit p: Parameters) extends NSBundle {
   val plv  = UInt(plvLen.W)
   val pgda = UInt(2.W)

@@ -44,6 +44,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val rfdata       = UInt(XLEN.W)
   val memRead     = Bool()
   val memWrite    = Bool()
+  val sqIdx       = new SqPtr(SqSize)
   val csrWen      = Bool()
   val fuType      = UInt(FuType.width.W)
   val excpVec     = UInt(ExceptionCode.width.W)
@@ -56,6 +57,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     val flush   = Input(Bool())
     val enq     = new RobEnqIO
     val commit  = new RobCommitIO
+    val commitToSq = new RobCommitToSq
     val redirect = new RobRedirectIO
     val writeback = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
   })
@@ -132,6 +134,8 @@ class ROB(implicit p: Parameters) extends NSModule {
     when(wb.valid) {
       entries(wb.bits.robIdx.value).writtenBack := true.B
       entries(wb.bits.robIdx.value).rfdata := wb.bits.rfdata
+      entries(wb.bits.robIdx.value).memWrite := wb.bits.isMemWrite
+      entries(wb.bits.robIdx.value).sqIdx := wb.bits.sqIdx
       // 如果有异常，更新异常向量
       when(wb.bits.excpVec.orR) {
         entries(wb.bits.robIdx.value).excpVec := wb.bits.excpVec
@@ -158,7 +162,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     val hasExcp   = entry.excpVec.orR
    
     // 本槽能正常提交：前序都能提交 + 本身就绪 + 无异常
-    commitValids(i) := prevCanCommit && thisReady && !hasExcp
+    commitValids(i) := prevCanCommit && thisReady //&& !hasExcp
    
     commitCandidates(i).pdst    := entry.pdst
     commitCandidates(i).oldPdst := entry.oldPdst
@@ -167,6 +171,10 @@ class ROB(implicit p: Parameters) extends NSModule {
 
     commitCandidates(i).pc       := entry.pc
     commitCandidates(i).wrdata   := entry.rfdata
+
+    //SQ的
+    commitCandidates(i).sqIdx   := entry.sqIdx
+    commitCandidates(i).memWrite   := entry.memWrite
    
     // 累积条件：前序都能提交 && 本身就绪（异常也算就绪，但会停止后续）
     prevCanCommit = prevCanCommit && thisReady
@@ -176,6 +184,9 @@ class ROB(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CommitWidth) {
     io.commit.valid(i) := commitValids(i)
     io.commit.bits(i)  := commitCandidates(i)
+
+    io.commitToSq.valid(i) := commitCandidates(i).memWrite && commitValids(i)
+    io.commitToSq.bits(i) := commitCandidates(i)
   }
   io.commit.isWalk := false.B
  

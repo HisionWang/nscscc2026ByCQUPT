@@ -147,6 +147,11 @@ class RobCommitIO(implicit p: Parameters) extends NSBundle {
   val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
   val isWalk    = Output(Bool())
 }
+
+class RobCommitToSq(implicit p: Parameters) extends NSBundle {
+  val valid     = Vec(CommitWidth, Output(Bool()))
+  val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
+}
  
 class RobCommitEntry(implicit p: Parameters) extends NSBundle {
   val pdst     = UInt(PhyRegIdxWidth.W)
@@ -155,6 +160,9 @@ class RobCommitEntry(implicit p: Parameters) extends NSBundle {
   val oldPdst  = UInt(PhyRegIdxWidth.W)
   val ldst     = UInt(5.W)
   val rfWen    = Bool()
+
+  val sqIdx    = new SqPtr(SqSize)
+  val memWrite    = Bool()
 }
  
 // ================================================================
@@ -182,6 +190,8 @@ class RobRedirectIO(implicit p: Parameters) extends NSBundle {
 
 class RobWriteback(implicit p: Parameters) extends NSBundle {
   val robIdx  = new RobPtr(RobSize)
+  val sqIdx  = new SqPtr(SqSize)
+  val isMemWrite  = Bool()
   val rfdata  = UInt(XLEN.W)
 
   val excpVec = UInt(ExceptionCode.width.W)

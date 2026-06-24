@@ -21,9 +21,12 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val extInt   = Input(Bool())
   val lsEnq    = new LsEnqIO
   val toMemResult  = Vec(2, Decoupled(new ExeResult) )
+  val fromMemResult  = Flipped (Vec(2, Decoupled(new ExeResult) ))
+  val commitToSq  = new RobCommitToSq
+
   val debugLogicRegs = Output(Vec(IntLogicRegs, UInt(XLEN.W)))
 }
- 
+
 class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val io = IO(new BackendIO)
  
@@ -31,6 +34,9 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
+
+  io.commitToSq <> ctrlBlock.io.commitToSq
+  
   io.lsEnq <> ctrlBlock.io.lsEnq
   dontTouch(ctrlBlock.io.commit)
   val scheduler   = Module(new Scheduler)
@@ -131,16 +137,17 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   exeUnits(4).io.outResult <> io.toMemResult(1)
   dontTouch( exeUnits(3).io.outResult )
   dontTouch( exeUnits(4).io.outResult )
-  writeback.io.InExeResults(3).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
-  writeback.io.InExeResults(3).bits.data <> 0.U
-  writeback.io.InExeResults(3).valid <> false.B
-  writeback.io.InExeResults(3).bits.redirect <> 0.U.asTypeOf(Valid(new RedirectInfo))
-
-  writeback.io.InExeResults(4).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
-  writeback.io.InExeResults(4).bits.data <> 0.U
-  writeback.io.InExeResults(4).valid <> false.B
-  writeback.io.InExeResults(4).bits.redirect <> 0.U.asTypeOf(Valid(new RedirectInfo))
-
+//  writeback.io.InExeResults(3).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
+//  writeback.io.InExeResults(3).bits.data <> 0.U
+//  writeback.io.InExeResults(3).valid <> false.B
+//  writeback.io.InExeResults(3).bits.redirect <> 0.U.asTypeOf(Valid(new RedirectInfo))
+//
+//  writeback.io.InExeResults(4).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
+//  writeback.io.InExeResults(4).bits.data <> 0.U
+//  writeback.io.InExeResults(4).valid <> false.B
+//  writeback.io.InExeResults(4).bits.redirect <> 0.U.asTypeOf(Valid(new RedirectInfo))
+  io.fromMemResult(0) <> writeback.io.InExeResults(3)
+  io.fromMemResult(1) <> writeback.io.InExeResults(4)
 
   
   /*

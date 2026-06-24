@@ -1,0 +1,84 @@
+module SimpleMMU(
+  input         clock,
+  input         reset,
+  input         io_mmuReq_valid, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  input  [31:0] io_mmuReq_bits_vaddr, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  input  [3:0]  io_mmuReq_bits_sqIdx, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  output        io_mmuResp_valid, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  output [31:0] io_mmuResp_bits_paddr, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  output [3:0]  io_mmuResp_bits_sqIdx // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+);
+`ifdef RANDOMIZE_REG_INIT
+  reg [31:0] _RAND_0;
+  reg [31:0] _RAND_1;
+  reg [31:0] _RAND_2;
+`endif // RANDOMIZE_REG_INIT
+  reg  stage1_valid; // @[src/main/scala/icache/SimpleMMU.scala 18:29]
+  reg [31:0] stage1_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 19:25]
+  reg [3:0] stage1_sq; // @[src/main/scala/icache/SimpleMMU.scala 20:22]
+  assign io_mmuResp_valid = stage1_valid; // @[src/main/scala/icache/SimpleMMU.scala 41:20]
+  assign io_mmuResp_bits_paddr = stage1_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 42:25]
+  assign io_mmuResp_bits_sqIdx = stage1_sq; // @[src/main/scala/icache/SimpleMMU.scala 43:25]
+  always @(posedge clock) begin
+    if (reset) begin // @[src/main/scala/icache/SimpleMMU.scala 18:29]
+      stage1_valid <= 1'h0; // @[src/main/scala/icache/SimpleMMU.scala 18:29]
+    end else begin
+      stage1_valid <= io_mmuReq_valid;
+    end
+    if (io_mmuReq_valid) begin // @[src/main/scala/icache/SimpleMMU.scala 28:25]
+      stage1_vaddr <= io_mmuReq_bits_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 30:18]
+    end
+    if (io_mmuReq_valid) begin // @[src/main/scala/icache/SimpleMMU.scala 28:25]
+      stage1_sq <= io_mmuReq_bits_sqIdx; // @[src/main/scala/icache/SimpleMMU.scala 31:15]
+    end
+  end
+// Register and memory initialization
+`ifdef RANDOMIZE_GARBAGE_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_INVALID_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_REG_INIT
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+`define RANDOMIZE
+`endif
+`ifndef RANDOM
+`define RANDOM $random
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+  integer initvar;
+`endif
+`ifndef SYNTHESIS
+`ifdef FIRRTL_BEFORE_INITIAL
+`FIRRTL_BEFORE_INITIAL
+`endif
+initial begin
+  `ifdef RANDOMIZE
+    `ifdef INIT_RANDOM
+      `INIT_RANDOM
+    `endif
+    `ifndef VERILATOR
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
+    `endif
+`ifdef RANDOMIZE_REG_INIT
+  _RAND_0 = {1{`RANDOM}};
+  stage1_valid = _RAND_0[0:0];
+  _RAND_1 = {1{`RANDOM}};
+  stage1_vaddr = _RAND_1[31:0];
+  _RAND_2 = {1{`RANDOM}};
+  stage1_sq = _RAND_2[3:0];
+`endif // RANDOMIZE_REG_INIT
+  `endif // RANDOMIZE
+end // initial
+`ifdef FIRRTL_AFTER_INITIAL
+`FIRRTL_AFTER_INITIAL
+`endif
+`endif // SYNTHESIS
+endmodule

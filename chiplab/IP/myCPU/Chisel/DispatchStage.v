@@ -479,7 +479,11 @@ module DispatchStage(
   input         io_wakeupPorts_1_valid, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [6:0]  io_wakeupPorts_1_bits_pdst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input         io_wakeupPorts_2_valid, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
-  input  [6:0]  io_wakeupPorts_2_bits_pdst // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [6:0]  io_wakeupPorts_2_bits_pdst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_wakeupPorts_3_valid, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [6:0]  io_wakeupPorts_3_bits_pdst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_wakeupPorts_4_valid, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [6:0]  io_wakeupPorts_4_bits_pdst // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -645,6 +649,10 @@ module DispatchStage(
   wire [6:0] busyTable_io_wbReq_1_bits; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
   wire  busyTable_io_wbReq_2_valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
   wire [6:0] busyTable_io_wbReq_2_bits; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
+  wire  busyTable_io_wbReq_3_valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
+  wire [6:0] busyTable_io_wbReq_3_bits; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
+  wire  busyTable_io_wbReq_4_valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
+  wire [6:0] busyTable_io_wbReq_4_bits; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
   reg  laneValid_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 55:28]
   reg  laneValid_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 55:28]
   reg  laneValid_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 55:28]
@@ -1104,12 +1112,16 @@ module DispatchStage(
   wire  prs1WakeupHits_0 = io_wakeupPorts_0_valid & io_wakeupPorts_0_bits_pdst == stgData_0_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
   wire  prs1WakeupHits_1 = io_wakeupPorts_1_valid & io_wakeupPorts_1_bits_pdst == stgData_0_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
   wire  prs1WakeupHits_2 = io_wakeupPorts_2_valid & io_wakeupPorts_2_bits_pdst == stgData_0_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
-  wire [4:0] _prs1WokenUp_T = {2'h0,prs1WakeupHits_2,prs1WakeupHits_1,prs1WakeupHits_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:50]
+  wire  prs1WakeupHits_3 = io_wakeupPorts_3_valid & io_wakeupPorts_3_bits_pdst == stgData_0_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
+  wire  prs1WakeupHits_4 = io_wakeupPorts_4_valid & io_wakeupPorts_4_bits_pdst == stgData_0_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
+  wire [4:0] _prs1WokenUp_T = {prs1WakeupHits_4,prs1WakeupHits_3,prs1WakeupHits_2,prs1WakeupHits_1,prs1WakeupHits_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:50]
   wire  prs1WokenUp = |_prs1WokenUp_T; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:57]
   wire  prs2WakeupHits_0 = io_wakeupPorts_0_valid & io_wakeupPorts_0_bits_pdst == stgData_0_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
   wire  prs2WakeupHits_1 = io_wakeupPorts_1_valid & io_wakeupPorts_1_bits_pdst == stgData_0_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
   wire  prs2WakeupHits_2 = io_wakeupPorts_2_valid & io_wakeupPorts_2_bits_pdst == stgData_0_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
-  wire [4:0] _prs2WokenUp_T = {2'h0,prs2WakeupHits_2,prs2WakeupHits_1,prs2WakeupHits_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:50]
+  wire  prs2WakeupHits_3 = io_wakeupPorts_3_valid & io_wakeupPorts_3_bits_pdst == stgData_0_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
+  wire  prs2WakeupHits_4 = io_wakeupPorts_4_valid & io_wakeupPorts_4_bits_pdst == stgData_0_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
+  wire [4:0] _prs2WokenUp_T = {prs2WakeupHits_4,prs2WakeupHits_3,prs2WakeupHits_2,prs2WakeupHits_1,prs2WakeupHits_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:50]
   wire  prs2WokenUp = |_prs2WokenUp_T; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:57]
   wire  prs1BusyRaw_0 = busyTable_io_readResp_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 304:{28,28}]
   wire  prs1Busy_0 = prs1BusyRaw_0 & ~prs1WokenUp; // @[src/main/scala/backend/dispatch/DispatchStage.scala 324:56]
@@ -1118,12 +1130,18 @@ module DispatchStage(
   wire  prs1WakeupHits_0_1 = io_wakeupPorts_0_valid & io_wakeupPorts_0_bits_pdst == stgData_1_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
   wire  prs1WakeupHits_1_1 = io_wakeupPorts_1_valid & io_wakeupPorts_1_bits_pdst == stgData_1_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
   wire  prs1WakeupHits_2_1 = io_wakeupPorts_2_valid & io_wakeupPorts_2_bits_pdst == stgData_1_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
-  wire [4:0] _prs1WokenUp_T_1 = {2'h0,prs1WakeupHits_2_1,prs1WakeupHits_1_1,prs1WakeupHits_0_1}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:50]
+  wire  prs1WakeupHits_3_1 = io_wakeupPorts_3_valid & io_wakeupPorts_3_bits_pdst == stgData_1_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
+  wire  prs1WakeupHits_4_1 = io_wakeupPorts_4_valid & io_wakeupPorts_4_bits_pdst == stgData_1_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
+  wire [4:0] _prs1WokenUp_T_1 = {prs1WakeupHits_4_1,prs1WakeupHits_3_1,prs1WakeupHits_2_1,prs1WakeupHits_1_1,
+    prs1WakeupHits_0_1}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:50]
   wire  prs1WokenUp_1 = |_prs1WokenUp_T_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:57]
   wire  prs2WakeupHits_0_1 = io_wakeupPorts_0_valid & io_wakeupPorts_0_bits_pdst == stgData_1_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
   wire  prs2WakeupHits_1_1 = io_wakeupPorts_1_valid & io_wakeupPorts_1_bits_pdst == stgData_1_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
   wire  prs2WakeupHits_2_1 = io_wakeupPorts_2_valid & io_wakeupPorts_2_bits_pdst == stgData_1_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
-  wire [4:0] _prs2WokenUp_T_1 = {2'h0,prs2WakeupHits_2_1,prs2WakeupHits_1_1,prs2WakeupHits_0_1}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:50]
+  wire  prs2WakeupHits_3_1 = io_wakeupPorts_3_valid & io_wakeupPorts_3_bits_pdst == stgData_1_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
+  wire  prs2WakeupHits_4_1 = io_wakeupPorts_4_valid & io_wakeupPorts_4_bits_pdst == stgData_1_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
+  wire [4:0] _prs2WokenUp_T_1 = {prs2WakeupHits_4_1,prs2WakeupHits_3_1,prs2WakeupHits_2_1,prs2WakeupHits_1_1,
+    prs2WakeupHits_0_1}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:50]
   wire  prs2WokenUp_1 = |_prs2WokenUp_T_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:57]
   wire  prs1AllocByOlder = |(allocValids_0 & stgData_0_pdst == stgData_1_prs1); // @[src/main/scala/backend/dispatch/DispatchStage.scala 318:101]
   wire  prs2AllocByOlder = |(allocValids_0 & stgData_0_pdst == stgData_1_prs2); // @[src/main/scala/backend/dispatch/DispatchStage.scala 321:101]
@@ -1134,12 +1152,18 @@ module DispatchStage(
   wire  prs1WakeupHits_0_2 = io_wakeupPorts_0_valid & io_wakeupPorts_0_bits_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
   wire  prs1WakeupHits_1_2 = io_wakeupPorts_1_valid & io_wakeupPorts_1_bits_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
   wire  prs1WakeupHits_2_2 = io_wakeupPorts_2_valid & io_wakeupPorts_2_bits_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
-  wire [4:0] _prs1WokenUp_T_2 = {2'h0,prs1WakeupHits_2_2,prs1WakeupHits_1_2,prs1WakeupHits_0_2}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:50]
+  wire  prs1WakeupHits_3_2 = io_wakeupPorts_3_valid & io_wakeupPorts_3_bits_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
+  wire  prs1WakeupHits_4_2 = io_wakeupPorts_4_valid & io_wakeupPorts_4_bits_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 311:55]
+  wire [4:0] _prs1WokenUp_T_2 = {prs1WakeupHits_4_2,prs1WakeupHits_3_2,prs1WakeupHits_2_2,prs1WakeupHits_1_2,
+    prs1WakeupHits_0_2}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:50]
   wire  prs1WokenUp_2 = |_prs1WokenUp_T_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 312:57]
   wire  prs2WakeupHits_0_2 = io_wakeupPorts_0_valid & io_wakeupPorts_0_bits_pdst == stgData_2_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
   wire  prs2WakeupHits_1_2 = io_wakeupPorts_1_valid & io_wakeupPorts_1_bits_pdst == stgData_2_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
   wire  prs2WakeupHits_2_2 = io_wakeupPorts_2_valid & io_wakeupPorts_2_bits_pdst == stgData_2_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
-  wire [4:0] _prs2WokenUp_T_2 = {2'h0,prs2WakeupHits_2_2,prs2WakeupHits_1_2,prs2WakeupHits_0_2}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:50]
+  wire  prs2WakeupHits_3_2 = io_wakeupPorts_3_valid & io_wakeupPorts_3_bits_pdst == stgData_2_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
+  wire  prs2WakeupHits_4_2 = io_wakeupPorts_4_valid & io_wakeupPorts_4_bits_pdst == stgData_2_prs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 314:55]
+  wire [4:0] _prs2WokenUp_T_2 = {prs2WakeupHits_4_2,prs2WakeupHits_3_2,prs2WakeupHits_2_2,prs2WakeupHits_1_2,
+    prs2WakeupHits_0_2}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:50]
   wire  prs2WokenUp_2 = |_prs2WokenUp_T_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 315:57]
   wire  _prs1AllocByOlder_T_3 = allocValids_0 & stgData_0_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 318:51]
   wire  _prs1AllocByOlder_T_5 = allocValids_1 & stgData_1_pdst == stgData_2_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 318:51]
@@ -1621,7 +1645,11 @@ module DispatchStage(
     .io_wbReq_1_valid(busyTable_io_wbReq_1_valid),
     .io_wbReq_1_bits(busyTable_io_wbReq_1_bits),
     .io_wbReq_2_valid(busyTable_io_wbReq_2_valid),
-    .io_wbReq_2_bits(busyTable_io_wbReq_2_bits)
+    .io_wbReq_2_bits(busyTable_io_wbReq_2_bits),
+    .io_wbReq_3_valid(busyTable_io_wbReq_3_valid),
+    .io_wbReq_3_bits(busyTable_io_wbReq_3_bits),
+    .io_wbReq_4_valid(busyTable_io_wbReq_4_valid),
+    .io_wbReq_4_bits(busyTable_io_wbReq_4_bits)
   );
   assign io_in_0_ready = ~stgValid | dispatchFire & AllWillFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 216:32]
   assign io_in_1_ready = ~stgValid | dispatchFire & AllWillFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 216:32]
@@ -2101,6 +2129,10 @@ module DispatchStage(
   assign busyTable_io_wbReq_1_bits = io_wakeupPorts_1_bits_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 301:33]
   assign busyTable_io_wbReq_2_valid = io_wakeupPorts_2_valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 300:33]
   assign busyTable_io_wbReq_2_bits = io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 301:33]
+  assign busyTable_io_wbReq_3_valid = io_wakeupPorts_3_valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 300:33]
+  assign busyTable_io_wbReq_3_bits = io_wakeupPorts_3_bits_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 301:33]
+  assign busyTable_io_wbReq_4_valid = io_wakeupPorts_4_valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 300:33]
+  assign busyTable_io_wbReq_4_bits = io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 301:33]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 55:28]
       laneValid_0 <= 1'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 55:28]

@@ -33,6 +33,7 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── ROB 提交 ──
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
   val commit  = new RobCommitIO
+  val commitToSq  = new RobCommitToSq
  
   // ── 重定向 ──
   val redirect = Output(new RedirectInfo)
@@ -106,6 +107,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
 
   io.commit   := rob.io.commit
+  io.commitToSq := rob.io.commitToSq
  
   // ROB 重定向
   rob.io.flush := io.flush || io.redirect.valid

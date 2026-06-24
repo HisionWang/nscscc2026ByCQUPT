@@ -114,6 +114,10 @@ module IssueQueue_4(
   input  [6:0]  io_wakeupPorts_1_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input         io_wakeupPorts_2_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input  [6:0]  io_wakeupPorts_2_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_wakeupPorts_3_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [6:0]  io_wakeupPorts_3_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_wakeupPorts_4_valid, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [6:0]  io_wakeupPorts_4_bits_pdst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output [3:0]  io_freeEntries // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -1113,75 +1117,107 @@ module IssueQueue_4(
   wire  wValid = io_wakeupPorts_0_valid & entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_1 = io_wakeupPorts_1_valid & entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_2 = io_wakeupPorts_2_valid & entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_3 = io_wakeupPorts_3_valid & entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_4 = io_wakeupPorts_4_valid & entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_0 = wValid & entryUops_0_rs1Valid & entryUops_0_prs1 == io_wakeupPorts_0_bits_pdst | wValid_1 &
     entryUops_0_rs1Valid & entryUops_0_prs1 == io_wakeupPorts_1_bits_pdst | wValid_2 & entryUops_0_rs1Valid &
-    entryUops_0_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_0_prs1 == io_wakeupPorts_2_bits_pdst | wValid_3 & entryUops_0_rs1Valid & entryUops_0_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_4 & entryUops_0_rs1Valid & entryUops_0_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_0 = wValid & entryUops_0_rs2Valid & entryUops_0_prs2 == io_wakeupPorts_0_bits_pdst | wValid_1 &
     entryUops_0_rs2Valid & entryUops_0_prs2 == io_wakeupPorts_1_bits_pdst | wValid_2 & entryUops_0_rs2Valid &
-    entryUops_0_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_0_prs2 == io_wakeupPorts_2_bits_pdst | wValid_3 & entryUops_0_rs2Valid & entryUops_0_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_4 & entryUops_0_rs2Valid & entryUops_0_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_5 = io_wakeupPorts_0_valid & entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_6 = io_wakeupPorts_1_valid & entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_7 = io_wakeupPorts_2_valid & entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_8 = io_wakeupPorts_3_valid & entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_9 = io_wakeupPorts_4_valid & entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_1 = wValid_5 & entryUops_1_rs1Valid & entryUops_1_prs1 == io_wakeupPorts_0_bits_pdst | wValid_6 &
     entryUops_1_rs1Valid & entryUops_1_prs1 == io_wakeupPorts_1_bits_pdst | wValid_7 & entryUops_1_rs1Valid &
-    entryUops_1_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_1_prs1 == io_wakeupPorts_2_bits_pdst | wValid_8 & entryUops_1_rs1Valid & entryUops_1_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_9 & entryUops_1_rs1Valid & entryUops_1_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_1 = wValid_5 & entryUops_1_rs2Valid & entryUops_1_prs2 == io_wakeupPorts_0_bits_pdst | wValid_6 &
     entryUops_1_rs2Valid & entryUops_1_prs2 == io_wakeupPorts_1_bits_pdst | wValid_7 & entryUops_1_rs2Valid &
-    entryUops_1_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_1_prs2 == io_wakeupPorts_2_bits_pdst | wValid_8 & entryUops_1_rs2Valid & entryUops_1_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_9 & entryUops_1_rs2Valid & entryUops_1_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_10 = io_wakeupPorts_0_valid & entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_11 = io_wakeupPorts_1_valid & entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_12 = io_wakeupPorts_2_valid & entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_13 = io_wakeupPorts_3_valid & entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_14 = io_wakeupPorts_4_valid & entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_2 = wValid_10 & entryUops_2_rs1Valid & entryUops_2_prs1 == io_wakeupPorts_0_bits_pdst | wValid_11 &
     entryUops_2_rs1Valid & entryUops_2_prs1 == io_wakeupPorts_1_bits_pdst | wValid_12 & entryUops_2_rs1Valid &
-    entryUops_2_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_2_prs1 == io_wakeupPorts_2_bits_pdst | wValid_13 & entryUops_2_rs1Valid & entryUops_2_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_14 & entryUops_2_rs1Valid & entryUops_2_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_2 = wValid_10 & entryUops_2_rs2Valid & entryUops_2_prs2 == io_wakeupPorts_0_bits_pdst | wValid_11 &
     entryUops_2_rs2Valid & entryUops_2_prs2 == io_wakeupPorts_1_bits_pdst | wValid_12 & entryUops_2_rs2Valid &
-    entryUops_2_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_2_prs2 == io_wakeupPorts_2_bits_pdst | wValid_13 & entryUops_2_rs2Valid & entryUops_2_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_14 & entryUops_2_rs2Valid & entryUops_2_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_15 = io_wakeupPorts_0_valid & entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_16 = io_wakeupPorts_1_valid & entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_17 = io_wakeupPorts_2_valid & entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_18 = io_wakeupPorts_3_valid & entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_19 = io_wakeupPorts_4_valid & entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_3 = wValid_15 & entryUops_3_rs1Valid & entryUops_3_prs1 == io_wakeupPorts_0_bits_pdst | wValid_16 &
     entryUops_3_rs1Valid & entryUops_3_prs1 == io_wakeupPorts_1_bits_pdst | wValid_17 & entryUops_3_rs1Valid &
-    entryUops_3_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_3_prs1 == io_wakeupPorts_2_bits_pdst | wValid_18 & entryUops_3_rs1Valid & entryUops_3_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_19 & entryUops_3_rs1Valid & entryUops_3_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_3 = wValid_15 & entryUops_3_rs2Valid & entryUops_3_prs2 == io_wakeupPorts_0_bits_pdst | wValid_16 &
     entryUops_3_rs2Valid & entryUops_3_prs2 == io_wakeupPorts_1_bits_pdst | wValid_17 & entryUops_3_rs2Valid &
-    entryUops_3_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_3_prs2 == io_wakeupPorts_2_bits_pdst | wValid_18 & entryUops_3_rs2Valid & entryUops_3_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_19 & entryUops_3_rs2Valid & entryUops_3_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_20 = io_wakeupPorts_0_valid & entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_21 = io_wakeupPorts_1_valid & entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_22 = io_wakeupPorts_2_valid & entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_23 = io_wakeupPorts_3_valid & entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_24 = io_wakeupPorts_4_valid & entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_4 = wValid_20 & entryUops_4_rs1Valid & entryUops_4_prs1 == io_wakeupPorts_0_bits_pdst | wValid_21 &
     entryUops_4_rs1Valid & entryUops_4_prs1 == io_wakeupPorts_1_bits_pdst | wValid_22 & entryUops_4_rs1Valid &
-    entryUops_4_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_4_prs1 == io_wakeupPorts_2_bits_pdst | wValid_23 & entryUops_4_rs1Valid & entryUops_4_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_24 & entryUops_4_rs1Valid & entryUops_4_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_4 = wValid_20 & entryUops_4_rs2Valid & entryUops_4_prs2 == io_wakeupPorts_0_bits_pdst | wValid_21 &
     entryUops_4_rs2Valid & entryUops_4_prs2 == io_wakeupPorts_1_bits_pdst | wValid_22 & entryUops_4_rs2Valid &
-    entryUops_4_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_4_prs2 == io_wakeupPorts_2_bits_pdst | wValid_23 & entryUops_4_rs2Valid & entryUops_4_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_24 & entryUops_4_rs2Valid & entryUops_4_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_25 = io_wakeupPorts_0_valid & entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_26 = io_wakeupPorts_1_valid & entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_27 = io_wakeupPorts_2_valid & entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_28 = io_wakeupPorts_3_valid & entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_29 = io_wakeupPorts_4_valid & entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_5 = wValid_25 & entryUops_5_rs1Valid & entryUops_5_prs1 == io_wakeupPorts_0_bits_pdst | wValid_26 &
     entryUops_5_rs1Valid & entryUops_5_prs1 == io_wakeupPorts_1_bits_pdst | wValid_27 & entryUops_5_rs1Valid &
-    entryUops_5_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_5_prs1 == io_wakeupPorts_2_bits_pdst | wValid_28 & entryUops_5_rs1Valid & entryUops_5_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_29 & entryUops_5_rs1Valid & entryUops_5_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_5 = wValid_25 & entryUops_5_rs2Valid & entryUops_5_prs2 == io_wakeupPorts_0_bits_pdst | wValid_26 &
     entryUops_5_rs2Valid & entryUops_5_prs2 == io_wakeupPorts_1_bits_pdst | wValid_27 & entryUops_5_rs2Valid &
-    entryUops_5_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_5_prs2 == io_wakeupPorts_2_bits_pdst | wValid_28 & entryUops_5_rs2Valid & entryUops_5_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_29 & entryUops_5_rs2Valid & entryUops_5_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_30 = io_wakeupPorts_0_valid & entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_31 = io_wakeupPorts_1_valid & entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_32 = io_wakeupPorts_2_valid & entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_33 = io_wakeupPorts_3_valid & entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_34 = io_wakeupPorts_4_valid & entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_6 = wValid_30 & entryUops_6_rs1Valid & entryUops_6_prs1 == io_wakeupPorts_0_bits_pdst | wValid_31 &
     entryUops_6_rs1Valid & entryUops_6_prs1 == io_wakeupPorts_1_bits_pdst | wValid_32 & entryUops_6_rs1Valid &
-    entryUops_6_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_6_prs1 == io_wakeupPorts_2_bits_pdst | wValid_33 & entryUops_6_rs1Valid & entryUops_6_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_34 & entryUops_6_rs1Valid & entryUops_6_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_6 = wValid_30 & entryUops_6_rs2Valid & entryUops_6_prs2 == io_wakeupPorts_0_bits_pdst | wValid_31 &
     entryUops_6_rs2Valid & entryUops_6_prs2 == io_wakeupPorts_1_bits_pdst | wValid_32 & entryUops_6_rs2Valid &
-    entryUops_6_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_6_prs2 == io_wakeupPorts_2_bits_pdst | wValid_33 & entryUops_6_rs2Valid & entryUops_6_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_34 & entryUops_6_rs2Valid & entryUops_6_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  wValid_35 = io_wakeupPorts_0_valid & entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_36 = io_wakeupPorts_1_valid & entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  wValid_37 = io_wakeupPorts_2_valid & entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_38 = io_wakeupPorts_3_valid & entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
+  wire  wValid_39 = io_wakeupPorts_4_valid & entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 65:44]
   wire  p1Wakeup_7 = wValid_35 & entryUops_7_rs1Valid & entryUops_7_prs1 == io_wakeupPorts_0_bits_pdst | wValid_36 &
     entryUops_7_rs1Valid & entryUops_7_prs1 == io_wakeupPorts_1_bits_pdst | wValid_37 & entryUops_7_rs1Valid &
-    entryUops_7_prs1 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
+    entryUops_7_prs1 == io_wakeupPorts_2_bits_pdst | wValid_38 & entryUops_7_rs1Valid & entryUops_7_prs1 ==
+    io_wakeupPorts_3_bits_pdst | wValid_39 & entryUops_7_rs1Valid & entryUops_7_prs1 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 66:25]
   wire  p2Wakeup_7 = wValid_35 & entryUops_7_rs2Valid & entryUops_7_prs2 == io_wakeupPorts_0_bits_pdst | wValid_36 &
     entryUops_7_rs2Valid & entryUops_7_prs2 == io_wakeupPorts_1_bits_pdst | wValid_37 & entryUops_7_rs2Valid &
-    entryUops_7_prs2 == io_wakeupPorts_2_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
+    entryUops_7_prs2 == io_wakeupPorts_2_bits_pdst | wValid_38 & entryUops_7_rs2Valid & entryUops_7_prs2 ==
+    io_wakeupPorts_3_bits_pdst | wValid_39 & entryUops_7_rs2Valid & entryUops_7_prs2 == io_wakeupPorts_4_bits_pdst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 67:25]
   wire  p1Eff_0 = entryP1Ready_0 | p1Wakeup_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:33]
   wire  p2Eff_0 = entryP2Ready_0 | p2Wakeup_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 78:33]
   wire  p1Eff_1 = entryP1Ready_1 | p1Wakeup_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 77:33]
