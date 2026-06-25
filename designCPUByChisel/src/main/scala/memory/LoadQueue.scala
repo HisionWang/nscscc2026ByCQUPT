@@ -25,6 +25,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val writtenBack = Bool()   // 已向后端写回
     val vaddr       = UInt(XLEN.W)
     val paddr       = UInt(XLEN.W)
+    val cacheable       = Bool()
     val data        = UInt(XLEN.W)
     val excpVec     = UInt(ExceptionCode.width.W)
     val lsuOp       = UInt(LsuOp.width.W)
@@ -52,6 +53,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       val valid = Input(Bool())
       val idx   = Input(UInt(log2Ceil(LqSize).W))
       val vaddr = Input(UInt(XLEN.W))
+      val paddr = Input( UInt(XLEN.W))
+      val cacheable       = Input( Bool())
+      val excpVec     = Input( UInt(ExceptionCode.width.W))
     }
  
     // ── SQ 排序信息 ──
@@ -61,15 +65,16 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     // ── DCache Load 请求 ──
     val dcacheReq = Decoupled(new Bundle {
       val lqIdx = UInt(log2Ceil(LqSize).W)
-      val vaddr = UInt(XLEN.W)
+      //val vaddr = UInt(XLEN.W)
+      val paddr       = UInt(XLEN.W)
+      val cacheable       = Bool()
     })
  
     // ── DCache Load 响应（乱序返回，携带 lqIdx） ──
     val dcacheResp = Flipped(Decoupled(new Bundle {
       val lqIdx   = UInt(log2Ceil(LqSize).W)
       val data    = UInt(XLEN.W)
-      val paddr   = UInt(XLEN.W)
-      val excpVec = UInt(ExceptionCode.width.W)
+
     }))
  
     // ── 后端写回 ──
@@ -117,6 +122,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).writtenBack := false.B
     entries(idx).vaddr       := 0.U
     entries(idx).paddr       := 0.U
+    entries(idx).cacheable    := false.B
     entries(idx).data        := 0.U
     entries(idx).excpVec     := 0.U
     entries(idx).lsuOp       := io.enq.lsuOp
@@ -134,6 +140,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val idx = io.addrWrite.idx
     entries(idx).addrValid := true.B
     entries(idx).vaddr     := io.addrWrite.vaddr
+    entries(idx).paddr     := io.addrWrite.paddr
+    entries(idx).excpVec   := io.addrWrite.excpVec
+    entries(idx).cacheable   := io.addrWrite.cacheable
   }
  
   // ================================================================
@@ -145,7 +154,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    issueCandidates(i) := e.valid && e.addrValid && !e.issued
+    issueCandidates(i) := e.valid && e.addrValid && (!e.issued && !e.excpVec.orR)
   }
  
   val hasIssueCandidate = issueCandidates.reduce(_ || _)
@@ -158,7 +167,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
  
   io.dcacheReq.valid       := hasIssueCandidate && orderingOk
   io.dcacheReq.bits.lqIdx  := issueIdx
-  io.dcacheReq.bits.vaddr  := issueEntry.vaddr
+  io.dcacheReq.bits.paddr  := issueEntry.paddr
+  io.dcacheReq.bits.cacheable  := issueEntry.cacheable
  
   when(io.dcacheReq.fire) {
     entries(issueIdx).issued := true.B
@@ -172,8 +182,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val idx = io.dcacheResp.bits.lqIdx
     entries(idx).dataValid := true.B
     entries(idx).data      := io.dcacheResp.bits.data
-    entries(idx).paddr     := io.dcacheResp.bits.paddr
-    entries(idx).excpVec   := io.dcacheResp.bits.excpVec
+    // entries(idx).paddr     := io.dcacheResp.bits.paddr
+    // entries(idx).excpVec   := io.dcacheResp.bits.excpVec
   }
  
   // ================================================================
@@ -184,7 +194,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    wbCandidates(i) := e.valid && e.dataValid && !e.writtenBack
+    wbCandidates(i) := e.valid && ( e.dataValid || e.excpVec.orR )&& !e.writtenBack
   }
  
   val hasWbCandidate = wbCandidates.reduce(_ || _)

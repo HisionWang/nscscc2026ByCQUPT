@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 
 import nscscc.config._
+import nscscc.backend.decode._
 
 class TlbEntry(implicit p: Parameters) extends NSBundle {
   val e     = Bool()
@@ -119,6 +120,7 @@ class MmuToSqResp(implicit p: Parameters) extends NSBundle {
   val cacheable = Bool()
   val hasError  = Bool()
   val error     = new MmuTransError
+  val excpVec     = UInt(ExceptionCode.width.W)
   val sqIdx     = UInt(log2Ceil(SqSize).W)
 }
 

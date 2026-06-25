@@ -15,7 +15,7 @@ import nscscc.mmu._
 import nscscc.csr._
 import nscscc.difftest._
 import nscscc.backend.Backend
-import nscscc.mem.MemoryBlock
+import nscscc.mem._
  
 class core_top(implicit p: Parameters) extends NSRawModule {
   // ========== 时钟与复位 ==========
@@ -112,13 +112,26 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   dontTouch(backend.io.lsEnq)
   backend.io.lsEnq <> memory.io.lsEnq
-  val simMMU = Module(new SimpleMMU)
-  simMMU.io.mmuReq <> memory.io.mmu.toMmu
-  simMMU.io.mmuResp <> memory.io.mmu.fromMmu
+  //val simMMU = Module(new SimpleMMU)
+  // simMMU.io.mmuReq <> memory.io.mmu.toMmu
+  // simMMU.io.mmuResp <> memory.io.mmu.fromMmu
 
   dontTouch(backend.io.toMemResult(0)) //load+store的地址
   dontTouch(backend.io.toMemResult(1)) //store的数据
-  backend.io.toMemResult <> memory.io.fromExeResult
+
+  val fromExeMmuResult = Wire( Decoupled(new ExeMmuResult) )
+
+  backend.io.toMemResult(0).bits <> fromExeMmuResult.bits.exeRes
+  backend.io.toMemResult(0).valid <> fromExeMmuResult.valid
+  backend.io.toMemResult(0).ready <> fromExeMmuResult.ready
+
+   fromExeMmuResult.bits.mmuRes <> 0.U.asTypeOf(new MmuToSqResp ) 
+  
+
+  backend.io.toMemResult(1) <> memory.io.fromExeResult
+
+  memory.io.fromExeMmuResult <> fromExeMmuResult
+
   memory.io.toWbResult <> backend.io.fromMemResult
 
   

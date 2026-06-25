@@ -8,7 +8,13 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.backend.execute._
 import nscscc.mmu._
+
+class ExeMmuResult(implicit p: Parameters) extends NSBundle {
+  val exeRes      = new ExeResult
+  val mmuRes     =Flipped( new MmuToSqResp )
+}
  
+
 class MemoryBlock(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
@@ -25,7 +31,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     // ══════════════════════════════════════════
     //  执行单元写回
     // ══════════════════════════════════════════
-    val fromExeResult = Vec(2, Flipped(Decoupled(new ExeResult)))
+    val fromExeMmuResult = Flipped(Decoupled(new ExeMmuResult))
+    val fromExeResult = Flipped(Decoupled(new ExeResult))
  
     // ══════════════════════════════════════════
     //  后端写回输出
@@ -37,34 +44,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     // ══════════════════════════════════════════
     val lqEnqPtr = Output(UInt(log2Ceil(LqSize).W))
     val sqEnqPtr = Output(UInt(log2Ceil(SqSize).W))
- 
-    // ══════════════════════════════════════════
-    //  DCache 接口
-    // ══════════════════════════════════════════
-    //val dcacheLqReq  = Decoupled(new Bundle {
-    //  val lqIdx = UInt(log2Ceil(LqSize).W)
-    //  val vaddr = UInt(XLEN.W)
-    //})
-    //val dcacheLqResp = Flipped(Decoupled(new Bundle {
-    //  val lqIdx   = UInt(log2Ceil(LqSize).W)
-    //  val data    = UInt(XLEN.W)
-    //  val paddr   = UInt(XLEN.W)
-    //  val excpVec = UInt(ExceptionCode.width.W)
-    //}))
-    //val dcacheSqReq  = Decoupled(new Bundle {
-    //  val paddr = UInt(XLEN.W)
-    //  val data  = UInt(XLEN.W)
-    //  val mask  = UInt((XLEN / 8).W)
-    //})
- 
-    // ══════════════════════════════════════════
-    //  MMU 接口（使用与 IcacheToMmu/MmuToIcache
-    //  同构但带 sqIdx 的 SqToMmuReq/MmuToSqResp）
-    // ══════════════════════════════════════════
-    val mmu = new Bundle {
-      val toMmu   = Decoupled(new SqToMmuReq)
-      val fromMmu = Flipped(Decoupled(new MmuToSqResp))
-    }
+
  
     // ══════════════════════════════════════════
     //  ROB 提交接口
@@ -123,51 +103,54 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  执行单元地址/数据通道路由
   // ================================================================
-  val addrChannel = io.fromExeResult(0)
+  val addrChannel = io.fromExeMmuResult
   val addrFire    = addrChannel.fire
-  val addrUop     = addrChannel.bits.uop
+  val addrUop     = addrChannel.bits.exeRes.uop
  
-  val dataChannel = io.fromExeResult(1)
+  val dataChannel = io.fromExeResult
   val dataFire    = dataChannel.fire
   val dataUop     = dataChannel.bits.uop
  
   // LQ 地址写入
   loadQueue.io.addrWrite.valid := addrFire && addrUop.ctrl.memRead
   loadQueue.io.addrWrite.idx   := addrUop.lqIdx.value
-  loadQueue.io.addrWrite.vaddr := addrChannel.bits.data
+  loadQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
+  loadQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
+  loadQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
+  loadQueue.io.addrWrite.excpVec := addrChannel.bits.mmuRes.excpVec
  
   // SQ 地址写入（STA）
   storeQueue.io.addrWrite.valid := addrFire && addrUop.isSta
   storeQueue.io.addrWrite.idx   := addrUop.sqIdx.value
-  storeQueue.io.addrWrite.vaddr := addrChannel.bits.data
+  storeQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
+  storeQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
+  storeQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
+  storeQueue.io.addrWrite.excpVec := addrChannel.bits.mmuRes.excpVec
  
   // SQ 数据写入（STD）
   storeQueue.io.dataWrite.valid := dataFire && dataUop.isStd
   storeQueue.io.dataWrite.idx   := dataUop.sqIdx.value
   storeQueue.io.dataWrite.data  := dataChannel.bits.data
  
-  io.fromExeResult(0).ready := true.B
-  io.fromExeResult(1).ready := true.B
+  io.fromExeResult.ready := true.B
+  io.fromExeMmuResult.ready := true.B
  
   // ================================================================
   //  DCache 接口直连
   // ================================================================
   loadQueue.io.dcacheReq.ready := 0.U
+  storeQueue.io.dcacheReq.ready := true.B
+
   loadQueue.io.dcacheResp.valid := false.B
   loadQueue.io.dcacheResp.bits.data := 0.U
-  loadQueue.io.dcacheResp.bits.excpVec := 0.U
+  //loadQueue.io.dcacheResp.bits.excpVec := 0.U
   loadQueue.io.dcacheResp.bits.lqIdx := 0.U
-  loadQueue.io.dcacheResp.bits.paddr := 0.U
-  storeQueue.io.dcacheReq.ready := true.B
+  //loadQueue.io.dcacheResp.bits.paddr := 0.U
+  
 
   dontTouch(loadQueue.io.dcacheReq)
   dontTouch(storeQueue.io.dcacheReq)
- 
-  // ================================================================
-  //  MMU 接口直连（SqToMmuReq / MmuToSqResp）
-  // ================================================================
-  storeQueue.io.mmuReq  <> io.mmu.toMmu
-  io.mmu.fromMmu        <> storeQueue.io.mmuResp
+
  
   // ================================================================
   //  ROB 提交直连

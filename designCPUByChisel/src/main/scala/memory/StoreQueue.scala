@@ -22,8 +22,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val valid        = Bool()
     val addrValid    = Bool()    // STA 已写入地址
     val dataValid    = Bool()    // STD 已写入数据
-    val paddrValid   = Bool()    // MMU 已返回物理地址/异常
-    val mmuIssued    = Bool()    // 已向 MMU 发出请求
+    //val paddrValid   = Bool()    // MMU 已返回物理地址/异常
+    //val mmuIssued    = Bool()    // 已向 MMU 发出请求
     val committed    = Bool()    // ROB 已提交
     val writtenBack  = Bool()    // 已向后端写回
     val dcacheIssued = Bool()    // 已向 DCache 发出写请求
@@ -57,6 +57,10 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val valid = Input(Bool())
       val idx   = Input(UInt(log2Ceil(SqSize).W))
       val vaddr = Input(UInt(XLEN.W))
+      val paddr = Input(UInt(XLEN.W))
+      val excpVec      = Input(UInt(ExceptionCode.width.W))
+      val cacheable    = Input(Bool() )   // MMU 返回的可缓存标志
+      
     }
  
     // ── 数据写入（来自 STD 执行单元） ──
@@ -66,9 +70,6 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val data  = Input(UInt(XLEN.W))
     }
  
-    // ── MMU 地址检测（严格使用 SqToMmuReq / MmuToSqResp） ──
-    val mmuReq  = Decoupled(new SqToMmuReq)
-    val mmuResp = Flipped(Decoupled(new MmuToSqResp))
  
     val robCommit = Vec(CommitWidth ,new Bundle {
       val valid = Input(Bool())
@@ -135,8 +136,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).valid        := true.B
     entries(idx).addrValid    := false.B
     entries(idx).dataValid    := false.B
-    entries(idx).paddrValid   := false.B
-    entries(idx).mmuIssued    := false.B
+    //entries(idx).paddrValid   := false.B
+    //entries(idx).mmuIssued    := false.B
     entries(idx).committed    := false.B
     entries(idx).writtenBack  := false.B
     entries(idx).dcacheIssued := false.B
@@ -160,6 +161,9 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val idx = io.addrWrite.idx
     entries(idx).addrValid := true.B
     entries(idx).vaddr     := io.addrWrite.vaddr
+    entries(idx).paddr     := io.addrWrite.paddr
+    entries(idx).excpVec     := io.addrWrite.excpVec
+    entries(idx).cacheable     := io.addrWrite.cacheable
   }
  
   // ================================================================
@@ -171,71 +175,17 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).data      := io.dataWrite.data
   }
  
-  // ================================================================
-  //  4. 向 MMU 发出地址检测请求
-  //     扫描最老的 addrValid && !mmuIssued 表项
-  //     使用 SqToMmuReq 格式（vaddr + sqIdx）
-  // ================================================================
-  val mmuCandidates = Wire(Vec(SqSize, Bool()))
-  for (i <- 0 until SqSize) {
-    val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
-    val e = entries(idx)
-    mmuCandidates(i) := e.valid && e.addrValid && !e.mmuIssued
-  }
- 
-  val hasMmuCandidate = mmuCandidates.reduce(_ || _)
-  val mmuOffset       = PriorityEncoder(mmuCandidates)
-  val mmuIdx          = (deqPtr.value + mmuOffset)(log2Ceil(SqSize) - 1, 0)
-  val mmuEntry        = entries(mmuIdx)
- 
-  // 构造 SqToMmuReq
-  io.mmuReq.valid      := hasMmuCandidate
-  io.mmuReq.bits.vaddr := mmuEntry.vaddr
-  io.mmuReq.bits.sqIdx := mmuIdx
- 
-  when(io.mmuReq.fire) {
-    entries(mmuIdx).mmuIssued := true.B
-  }
- 
-  // ================================================================
-  //  5. 接收 MMU 响应（MmuToSqResp 格式）
-  //     将 MmuTransError 转换为 excpVec，同时记录 paddr 和 cacheable
-  //
-  //     MmuTransError → ExceptionCode 映射（LoongArch 数据访存异常）:
-  //       excpTlbRefill → PIL (bit 1): 数据 TLB 重填异常
-  //       excpTlbPif    → PIS (bit 2): 数据 TLB 无效异常
-  //       excpPpi       → PPI (bit 5): 特权级违例
-  //       excpAdef      → PME (bit 4): 页修改异常（Store 专用）
-  // ================================================================
-  io.mmuResp.ready := true.B
-  when(io.mmuResp.fire) {
-    val idx       = io.mmuResp.bits.sqIdx
-    val mmuError  = io.mmuResp.bits.error
- 
-    // 转换 MmuTransError → excpVec
-    val newExcpVec =  Wire(UInt(ExceptionCode.width.W))
-    newExcpVec := 0.U
-    when(mmuError.excpTlbRefill) { newExcpVec := BitPat.bitPatToUInt(BitPat("b0000000010")) }  // PIL = bit1
-    when(mmuError.excpTlbPif)    { newExcpVec := BitPat.bitPatToUInt(BitPat("b0000000100")) }  // PIS = bit2
-    when(mmuError.excpAdef)      { newExcpVec := BitPat.bitPatToUInt(BitPat("b0000010000")) }  // PME = bit4
-    when(mmuError.excpTlbPpi)       { newExcpVec := BitPat.bitPatToUInt(BitPat("b0000100000")) }  // PPI = bit5
- 
-    entries(idx).paddrValid := true.B
-    entries(idx).paddr      := io.mmuResp.bits.paddr
-    entries(idx).cacheable  := io.mmuResp.bits.cacheable
-    entries(idx).excpVec    := Mux(io.mmuResp.bits.hasError, newExcpVec, 0.U)
-  }
+
  
   // ================================================================
   //  6. 向后端写回
-  //     条件：addrValid + dataValid + paddrValid + !writtenBack
+  //     条件：addrValid + dataValid + !writtenBack
   // ================================================================
   val wbCandidates = Wire(Vec(SqSize, Bool()))
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    wbCandidates(i) := e.valid && e.addrValid && e.dataValid &&
-                        e.paddrValid && !e.writtenBack
+    wbCandidates(i) := e.valid && e.addrValid && e.dataValid && !e.writtenBack
   }
  
   val hasWbCandidate = wbCandidates.reduce(_ || _)
@@ -355,7 +305,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  9. 出队
   // ================================================================
-  val canDeqNormal = entries(deqPtr.value).valid && entries(deqPtr.value).dcacheIssued
+  val canDeqNormal = entries(deqPtr.value).valid && ( entries(deqPtr.value).dcacheIssued || entries(deqPtr.value).excpVec.orR )
   val canDeqExcp   = entries(deqPtr.value).valid && entries(deqPtr.value).writtenBack &&
                      entries(deqPtr.value).excpVec.orR
   val canDeq = canDeqNormal || canDeqExcp
