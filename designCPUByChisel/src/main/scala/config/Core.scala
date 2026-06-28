@@ -86,6 +86,9 @@ trait HasCoreParameters {
   val intRegFileReadPorts  : Int = 8
   val intRegFileWritePorts : Int = 5 
 
+
+  val nMshrEntries: Int = 4
+
   /*---- TLB相关 ----*/
   val nrTlb: Int = p(MmuconfigKeys.TlbNum)
   val nrSearchPort: Int = p(MmuconfigKeys.TlbSearchPortNum)

@@ -80,7 +80,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val dcacheReq = Decoupled(new Bundle {
       val paddr = UInt(XLEN.W)
       val data  = UInt(XLEN.W)
-      val mask  = UInt((XLEN / 8).W)
+      val lsuOp        = UInt(LsuOp.width.W)
     })
  
     // ── 后端写回 ──
@@ -287,16 +287,16 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   val dcacheIdx          = (deqPtr.value + dcacheOffset)(log2Ceil(SqSize) - 1, 0)
   val dcacheEntry        = entries(dcacheIdx)
  
-  val storeMask = MuxLookup(dcacheEntry.lsuOp, 0.U((XLEN / 8).W), Seq(
-    LsuOp.stb -> (1.U((XLEN / 8).W) << dcacheEntry.paddr(log2Ceil(XLEN / 8) - 1, 0)),
-    LsuOp.sth -> (3.U((XLEN / 8).W) << Cat(dcacheEntry.paddr(log2Ceil(XLEN / 8) - 1), 0.U(1.W))),
-    LsuOp.stw -> ((1.U << (XLEN / 8)) - 1.U)
-  ))
+//  val storeMask = MuxLookup(dcacheEntry.lsuOp, 0.U((XLEN / 8).W), Seq(
+//    LsuOp.stb -> (1.U((XLEN / 8).W) << dcacheEntry.paddr(log2Ceil(XLEN / 8) - 1, 0)),
+//    LsuOp.sth -> (3.U((XLEN / 8).W) << Cat(dcacheEntry.paddr(log2Ceil(XLEN / 8) - 1), 0.U(1.W))),
+//    LsuOp.stw -> ((1.U << (XLEN / 8)) - 1.U)
+//  ))
  
   io.dcacheReq.valid      := hasDcacheCandidate
   io.dcacheReq.bits.paddr := dcacheEntry.paddr
   io.dcacheReq.bits.data  := dcacheEntry.data
-  io.dcacheReq.bits.mask  := storeMask
+  io.dcacheReq.bits.lsuOp  := dcacheEntry.lsuOp
  
   when(io.dcacheReq.fire) {
     entries(dcacheIdx).dcacheIssued := true.B

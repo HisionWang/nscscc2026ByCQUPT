@@ -28,7 +28,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   when(io.mmuReq.valid) {
     stage1_valid := true.B
     stage1_vaddr := io.mmuReq.bits.vaddr
-    stage1_sq := io.mmuReq.bits.sqIdx
+    //stage1_sq := io.mmuReq.bits.sqIdx
   }.otherwise {
     stage1_valid := false.B
   }
@@ -40,7 +40,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   // 响应输出
   io.mmuResp.valid := stage1_valid
   io.mmuResp.bits.paddr := stage1_vaddr  // 恒等映射
-  io.mmuResp.bits.sqIdx := stage1_sq  // 恒等映射
+  //io.mmuResp.bits.sqIdx := stage1_sq  // 恒等映射
   io.mmuResp.bits.cacheable := true.B   // 默认cached
   io.mmuResp.bits.hasError := false.B   // 默认cached
   io.mmuResp.bits.error := 0.U.asTypeOf(new MmuTransError)      // 默认无错误

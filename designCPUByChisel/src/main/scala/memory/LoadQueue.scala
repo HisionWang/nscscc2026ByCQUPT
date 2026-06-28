@@ -65,9 +65,12 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     // ── DCache Load 请求 ──
     val dcacheReq = Decoupled(new Bundle {
       val lqIdx = UInt(log2Ceil(LqSize).W)
+      val robIdx = new RobPtr(RobSize)
       //val vaddr = UInt(XLEN.W)
       val paddr       = UInt(XLEN.W)
       val cacheable       = Bool()
+      val lsuOp        = UInt(LsuOp.width.W)
+
     })
  
     // ── DCache Load 响应（乱序返回，携带 lqIdx） ──
@@ -169,6 +172,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.dcacheReq.bits.lqIdx  := issueIdx
   io.dcacheReq.bits.paddr  := issueEntry.paddr
   io.dcacheReq.bits.cacheable  := issueEntry.cacheable
+  io.dcacheReq.bits.lsuOp  := issueEntry.lsuOp
+  io.dcacheReq.bits.robIdx  := issueEntry.robIdxFull
  
   when(io.dcacheReq.fire) {
     entries(issueIdx).issued := true.B

@@ -118,19 +118,17 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   dontTouch(backend.io.toMemResult(0)) //load+store的地址
   dontTouch(backend.io.toMemResult(1)) //store的数据
-
-  val fromExeMmuResult = Wire( Decoupled(new ExeMmuResult) )
-
-  backend.io.toMemResult(0).bits <> fromExeMmuResult.bits.exeRes
-  backend.io.toMemResult(0).valid <> fromExeMmuResult.valid
-  backend.io.toMemResult(0).ready <> fromExeMmuResult.ready
-
-   fromExeMmuResult.bits.mmuRes <> 0.U.asTypeOf(new MmuToSqResp ) 
-  
-
+  // 1.后端传给Memory的数据信息OK
   backend.io.toMemResult(1) <> memory.io.fromExeResult
+  // 2.后端传给memory的地址信息处理
+  val memaddrtrans = Module(new MemAddrTrans) 
+  memaddrtrans.io.flush := false.B
+  memaddrtrans.io.in <> backend.io.toMemResult(0)
+  memory.io.fromExeMmuResult <> memaddrtrans.io.out
+  val simMMU = Module(new SimpleMMU)
+  memaddrtrans.io.mmuReq <> simMMU.io.mmuReq
+  memaddrtrans.io.mmuResp <> simMMU.io.mmuResp
 
-  memory.io.fromExeMmuResult <> fromExeMmuResult
 
   memory.io.toWbResult <> backend.io.fromMemResult
 

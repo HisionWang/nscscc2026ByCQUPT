@@ -13,6 +13,7 @@ module StoreQueue(
   input         io_addrWrite_valid, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   input  [3:0]  io_addrWrite_idx, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   input  [31:0] io_addrWrite_vaddr, // @[src/main/scala/memory/StoreQueue.scala 42:14]
+  input  [31:0] io_addrWrite_paddr, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   input         io_dataWrite_valid, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   input  [3:0]  io_dataWrite_idx, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   input  [31:0] io_dataWrite_data, // @[src/main/scala/memory/StoreQueue.scala 42:14]
@@ -26,7 +27,7 @@ module StoreQueue(
   output        io_dcacheReq_valid, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   output [31:0] io_dcacheReq_bits_paddr, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   output [31:0] io_dcacheReq_bits_data, // @[src/main/scala/memory/StoreQueue.scala 42:14]
-  output [3:0]  io_dcacheReq_bits_mask, // @[src/main/scala/memory/StoreQueue.scala 42:14]
+  output [3:0]  io_dcacheReq_bits_lsuOp, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   input         io_outResult_ready, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   output        io_outResult_valid, // @[src/main/scala/memory/StoreQueue.scala 42:14]
   output [31:0] io_outResult_bits_uop_pc, // @[src/main/scala/memory/StoreQueue.scala 42:14]
@@ -1070,22 +1071,54 @@ module StoreQueue(
   wire  _GEN_573 = enqFire ? _GEN_269 : entries_13_cacheable; // @[src/main/scala/memory/StoreQueue.scala 132:17 102:20]
   wire  _GEN_574 = enqFire ? _GEN_270 : entries_14_cacheable; // @[src/main/scala/memory/StoreQueue.scala 132:17 102:20]
   wire  _GEN_575 = enqFire ? _GEN_271 : entries_15_cacheable; // @[src/main/scala/memory/StoreQueue.scala 132:17 102:20]
+  wire  _GEN_3364 = 4'h0 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_658 = 4'h0 == io_addrWrite_idx | _GEN_416; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3365 = 4'h1 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_659 = 4'h1 == io_addrWrite_idx | _GEN_417; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3366 = 4'h2 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_660 = 4'h2 == io_addrWrite_idx | _GEN_418; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3367 = 4'h3 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_661 = 4'h3 == io_addrWrite_idx | _GEN_419; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3368 = 4'h4 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_662 = 4'h4 == io_addrWrite_idx | _GEN_420; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3369 = 4'h5 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_663 = 4'h5 == io_addrWrite_idx | _GEN_421; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3370 = 4'h6 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_664 = 4'h6 == io_addrWrite_idx | _GEN_422; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3371 = 4'h7 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_665 = 4'h7 == io_addrWrite_idx | _GEN_423; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3372 = 4'h8 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_666 = 4'h8 == io_addrWrite_idx | _GEN_424; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3373 = 4'h9 == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_667 = 4'h9 == io_addrWrite_idx | _GEN_425; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3374 = 4'ha == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_668 = 4'ha == io_addrWrite_idx | _GEN_426; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3375 = 4'hb == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_669 = 4'hb == io_addrWrite_idx | _GEN_427; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3376 = 4'hc == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_670 = 4'hc == io_addrWrite_idx | _GEN_428; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3377 = 4'hd == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_671 = 4'hd == io_addrWrite_idx | _GEN_429; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3378 = 4'he == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_672 = 4'he == io_addrWrite_idx | _GEN_430; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_3379 = 4'hf == io_addrWrite_idx; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
   wire  _GEN_673 = 4'hf == io_addrWrite_idx | _GEN_431; // @[src/main/scala/memory/StoreQueue.scala 162:{28,28}]
+  wire  _GEN_722 = _GEN_3364 | _GEN_560; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_723 = _GEN_3365 | _GEN_561; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_724 = _GEN_3366 | _GEN_562; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_725 = _GEN_3367 | _GEN_563; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_726 = _GEN_3368 | _GEN_564; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_727 = _GEN_3369 | _GEN_565; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_728 = _GEN_3370 | _GEN_566; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_729 = _GEN_3371 | _GEN_567; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_730 = _GEN_3372 | _GEN_568; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_731 = _GEN_3373 | _GEN_569; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_732 = _GEN_3374 | _GEN_570; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_733 = _GEN_3375 | _GEN_571; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_734 = _GEN_3376 | _GEN_572; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_735 = _GEN_3377 | _GEN_573; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_736 = _GEN_3378 | _GEN_574; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
+  wire  _GEN_737 = _GEN_3379 | _GEN_575; // @[src/main/scala/memory/StoreQueue.scala 166:{32,32}]
   wire  _GEN_818 = 4'h0 == io_dataWrite_idx | _GEN_432; // @[src/main/scala/memory/StoreQueue.scala 174:{28,28}]
   wire  _GEN_819 = 4'h1 == io_dataWrite_idx | _GEN_433; // @[src/main/scala/memory/StoreQueue.scala 174:{28,28}]
   wire  _GEN_820 = 4'h2 == io_dataWrite_idx | _GEN_434; // @[src/main/scala/memory/StoreQueue.scala 174:{28,28}]
@@ -3074,57 +3107,48 @@ module StoreQueue(
   wire [3:0] _dcacheOffset_T_13 = dcacheCandidates_1 ? 4'h1 : _dcacheOffset_T_12; // @[src/main/scala/chisel3/util/Mux.scala 50:70]
   wire [3:0] dcacheOffset = dcacheCandidates_0 ? 4'h0 : _dcacheOffset_T_13; // @[src/main/scala/chisel3/util/Mux.scala 50:70]
   wire [3:0] dcacheIdx = deqPtr_value + dcacheOffset; // @[src/main/scala/memory/StoreQueue.scala 287:42]
-  wire [31:0] _GEN_3187 = 4'h1 == dcacheIdx ? entries_1_paddr : entries_0_paddr; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3188 = 4'h2 == dcacheIdx ? entries_2_paddr : _GEN_3187; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3189 = 4'h3 == dcacheIdx ? entries_3_paddr : _GEN_3188; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3190 = 4'h4 == dcacheIdx ? entries_4_paddr : _GEN_3189; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3191 = 4'h5 == dcacheIdx ? entries_5_paddr : _GEN_3190; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3192 = 4'h6 == dcacheIdx ? entries_6_paddr : _GEN_3191; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3193 = 4'h7 == dcacheIdx ? entries_7_paddr : _GEN_3192; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3194 = 4'h8 == dcacheIdx ? entries_8_paddr : _GEN_3193; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3195 = 4'h9 == dcacheIdx ? entries_9_paddr : _GEN_3194; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3196 = 4'ha == dcacheIdx ? entries_10_paddr : _GEN_3195; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3197 = 4'hb == dcacheIdx ? entries_11_paddr : _GEN_3196; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3198 = 4'hc == dcacheIdx ? entries_12_paddr : _GEN_3197; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3199 = 4'hd == dcacheIdx ? entries_13_paddr : _GEN_3198; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3200 = 4'he == dcacheIdx ? entries_14_paddr : _GEN_3199; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [31:0] _GEN_3201 = 4'hf == dcacheIdx ? entries_15_paddr : _GEN_3200; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  wire [6:0] _storeMask_T_1 = 7'h1 << _GEN_3201[1:0]; // @[src/main/scala/memory/StoreQueue.scala 291:37]
-  wire [1:0] _storeMask_T_3 = {_GEN_3201[1],1'h0}; // @[src/main/scala/memory/StoreQueue.scala 292:43]
-  wire [6:0] _storeMask_T_4 = 7'h3 << _storeMask_T_3; // @[src/main/scala/memory/StoreQueue.scala 292:37]
-  wire [4:0] _storeMask_T_7 = 5'h10 - 5'h1; // @[src/main/scala/memory/StoreQueue.scala 293:39]
-  wire [3:0] _GEN_3203 = 4'h1 == dcacheIdx ? entries_1_lsuOp : entries_0_lsuOp; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3204 = 4'h2 == dcacheIdx ? entries_2_lsuOp : _GEN_3203; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3205 = 4'h3 == dcacheIdx ? entries_3_lsuOp : _GEN_3204; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3206 = 4'h4 == dcacheIdx ? entries_4_lsuOp : _GEN_3205; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3207 = 4'h5 == dcacheIdx ? entries_5_lsuOp : _GEN_3206; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3208 = 4'h6 == dcacheIdx ? entries_6_lsuOp : _GEN_3207; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3209 = 4'h7 == dcacheIdx ? entries_7_lsuOp : _GEN_3208; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3210 = 4'h8 == dcacheIdx ? entries_8_lsuOp : _GEN_3209; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3211 = 4'h9 == dcacheIdx ? entries_9_lsuOp : _GEN_3210; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3212 = 4'ha == dcacheIdx ? entries_10_lsuOp : _GEN_3211; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3213 = 4'hb == dcacheIdx ? entries_11_lsuOp : _GEN_3212; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3214 = 4'hc == dcacheIdx ? entries_12_lsuOp : _GEN_3213; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3215 = 4'hd == dcacheIdx ? entries_13_lsuOp : _GEN_3214; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3216 = 4'he == dcacheIdx ? entries_14_lsuOp : _GEN_3215; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [3:0] _GEN_3217 = 4'hf == dcacheIdx ? entries_15_lsuOp : _GEN_3216; // @[src/main/scala/chisel3/util/Mux.scala 77:{13,13}]
-  wire [6:0] _storeMask_T_9 = 4'h4 == _GEN_3217 ? _storeMask_T_1 : 7'h0; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
-  wire [6:0] _storeMask_T_11 = 4'h5 == _GEN_3217 ? _storeMask_T_4 : _storeMask_T_9; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
-  wire [6:0] storeMask = 4'h6 == _GEN_3217 ? {{2'd0}, _storeMask_T_7} : _storeMask_T_11; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
-  wire [31:0] _GEN_3219 = 4'h1 == dcacheIdx ? entries_1_data : entries_0_data; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3220 = 4'h2 == dcacheIdx ? entries_2_data : _GEN_3219; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3221 = 4'h3 == dcacheIdx ? entries_3_data : _GEN_3220; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3222 = 4'h4 == dcacheIdx ? entries_4_data : _GEN_3221; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3223 = 4'h5 == dcacheIdx ? entries_5_data : _GEN_3222; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3224 = 4'h6 == dcacheIdx ? entries_6_data : _GEN_3223; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3225 = 4'h7 == dcacheIdx ? entries_7_data : _GEN_3224; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3226 = 4'h8 == dcacheIdx ? entries_8_data : _GEN_3225; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3227 = 4'h9 == dcacheIdx ? entries_9_data : _GEN_3226; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3228 = 4'ha == dcacheIdx ? entries_10_data : _GEN_3227; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3229 = 4'hb == dcacheIdx ? entries_11_data : _GEN_3228; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3230 = 4'hc == dcacheIdx ? entries_12_data : _GEN_3229; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3231 = 4'hd == dcacheIdx ? entries_13_data : _GEN_3230; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  wire [31:0] _GEN_3232 = 4'he == dcacheIdx ? entries_14_data : _GEN_3231; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3187 = 4'h1 == dcacheIdx ? entries_1_paddr : entries_0_paddr; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3188 = 4'h2 == dcacheIdx ? entries_2_paddr : _GEN_3187; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3189 = 4'h3 == dcacheIdx ? entries_3_paddr : _GEN_3188; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3190 = 4'h4 == dcacheIdx ? entries_4_paddr : _GEN_3189; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3191 = 4'h5 == dcacheIdx ? entries_5_paddr : _GEN_3190; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3192 = 4'h6 == dcacheIdx ? entries_6_paddr : _GEN_3191; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3193 = 4'h7 == dcacheIdx ? entries_7_paddr : _GEN_3192; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3194 = 4'h8 == dcacheIdx ? entries_8_paddr : _GEN_3193; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3195 = 4'h9 == dcacheIdx ? entries_9_paddr : _GEN_3194; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3196 = 4'ha == dcacheIdx ? entries_10_paddr : _GEN_3195; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3197 = 4'hb == dcacheIdx ? entries_11_paddr : _GEN_3196; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3198 = 4'hc == dcacheIdx ? entries_12_paddr : _GEN_3197; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3199 = 4'hd == dcacheIdx ? entries_13_paddr : _GEN_3198; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3200 = 4'he == dcacheIdx ? entries_14_paddr : _GEN_3199; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  wire [31:0] _GEN_3203 = 4'h1 == dcacheIdx ? entries_1_data : entries_0_data; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3204 = 4'h2 == dcacheIdx ? entries_2_data : _GEN_3203; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3205 = 4'h3 == dcacheIdx ? entries_3_data : _GEN_3204; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3206 = 4'h4 == dcacheIdx ? entries_4_data : _GEN_3205; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3207 = 4'h5 == dcacheIdx ? entries_5_data : _GEN_3206; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3208 = 4'h6 == dcacheIdx ? entries_6_data : _GEN_3207; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3209 = 4'h7 == dcacheIdx ? entries_7_data : _GEN_3208; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3210 = 4'h8 == dcacheIdx ? entries_8_data : _GEN_3209; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3211 = 4'h9 == dcacheIdx ? entries_9_data : _GEN_3210; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3212 = 4'ha == dcacheIdx ? entries_10_data : _GEN_3211; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3213 = 4'hb == dcacheIdx ? entries_11_data : _GEN_3212; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3214 = 4'hc == dcacheIdx ? entries_12_data : _GEN_3213; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3215 = 4'hd == dcacheIdx ? entries_13_data : _GEN_3214; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [31:0] _GEN_3216 = 4'he == dcacheIdx ? entries_14_data : _GEN_3215; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  wire [3:0] _GEN_3219 = 4'h1 == dcacheIdx ? entries_1_lsuOp : entries_0_lsuOp; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3220 = 4'h2 == dcacheIdx ? entries_2_lsuOp : _GEN_3219; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3221 = 4'h3 == dcacheIdx ? entries_3_lsuOp : _GEN_3220; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3222 = 4'h4 == dcacheIdx ? entries_4_lsuOp : _GEN_3221; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3223 = 4'h5 == dcacheIdx ? entries_5_lsuOp : _GEN_3222; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3224 = 4'h6 == dcacheIdx ? entries_6_lsuOp : _GEN_3223; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3225 = 4'h7 == dcacheIdx ? entries_7_lsuOp : _GEN_3224; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3226 = 4'h8 == dcacheIdx ? entries_8_lsuOp : _GEN_3225; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3227 = 4'h9 == dcacheIdx ? entries_9_lsuOp : _GEN_3226; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3228 = 4'ha == dcacheIdx ? entries_10_lsuOp : _GEN_3227; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3229 = 4'hb == dcacheIdx ? entries_11_lsuOp : _GEN_3228; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3230 = 4'hc == dcacheIdx ? entries_12_lsuOp : _GEN_3229; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3231 = 4'hd == dcacheIdx ? entries_13_lsuOp : _GEN_3230; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
+  wire [3:0] _GEN_3232 = 4'he == dcacheIdx ? entries_14_lsuOp : _GEN_3231; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
   wire  _T_1 = io_dcacheReq_ready & io_dcacheReq_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _GEN_3234 = 4'h0 == dcacheIdx | _GEN_480; // @[src/main/scala/memory/StoreQueue.scala 302:{37,37}]
   wire  _GEN_3235 = 4'h1 == dcacheIdx | _GEN_481; // @[src/main/scala/memory/StoreQueue.scala 302:{37,37}]
@@ -3197,9 +3221,9 @@ module StoreQueue(
     dcacheCandidates_4 | dcacheCandidates_5 | dcacheCandidates_6 | dcacheCandidates_7 | dcacheCandidates_8 |
     dcacheCandidates_9 | dcacheCandidates_10 | dcacheCandidates_11 | dcacheCandidates_12 | dcacheCandidates_13 |
     dcacheCandidates_14 | dcacheCandidates_15; // @[src/main/scala/memory/StoreQueue.scala 285:54]
-  assign io_dcacheReq_bits_paddr = 4'hf == dcacheIdx ? entries_15_paddr : _GEN_3200; // @[src/main/scala/memory/StoreQueue.scala 291:{57,57}]
-  assign io_dcacheReq_bits_data = 4'hf == dcacheIdx ? entries_15_data : _GEN_3232; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
-  assign io_dcacheReq_bits_mask = storeMask[3:0]; // @[src/main/scala/memory/StoreQueue.scala 299:27]
+  assign io_dcacheReq_bits_paddr = 4'hf == dcacheIdx ? entries_15_paddr : _GEN_3200; // @[src/main/scala/memory/StoreQueue.scala 297:{27,27}]
+  assign io_dcacheReq_bits_data = 4'hf == dcacheIdx ? entries_15_data : _GEN_3216; // @[src/main/scala/memory/StoreQueue.scala 298:{27,27}]
+  assign io_dcacheReq_bits_lsuOp = 4'hf == dcacheIdx ? entries_15_lsuOp : _GEN_3232; // @[src/main/scala/memory/StoreQueue.scala 299:{28,28}]
   assign io_outResult_valid = wbCandidates_0 | wbCandidates_1 | wbCandidates_2 | wbCandidates_3 | wbCandidates_4 |
     wbCandidates_5 | wbCandidates_6 | wbCandidates_7 | wbCandidates_8 | wbCandidates_9 | wbCandidates_10 |
     wbCandidates_11 | wbCandidates_12 | wbCandidates_13 | wbCandidates_14 | wbCandidates_15; // @[src/main/scala/memory/StoreQueue.scala 191:46]
@@ -3295,7 +3319,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h0 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_0_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_0_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_0_paddr <= _GEN_512;
       end
@@ -3321,13 +3345,11 @@ module StoreQueue(
       entries_0_excpVec <= _GEN_544;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h0 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_0_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_0_cacheable <= _GEN_560;
+      entries_0_cacheable <= _GEN_722;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h0 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_0_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_0_cacheable <= _GEN_560;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h0 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -3426,7 +3448,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h1 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_1_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_1_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_1_paddr <= _GEN_513;
       end
@@ -3452,13 +3474,11 @@ module StoreQueue(
       entries_1_excpVec <= _GEN_545;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h1 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_1_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_1_cacheable <= _GEN_561;
+      entries_1_cacheable <= _GEN_723;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h1 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_1_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_1_cacheable <= _GEN_561;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h1 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -3557,7 +3577,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h2 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_2_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_2_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_2_paddr <= _GEN_514;
       end
@@ -3583,13 +3603,11 @@ module StoreQueue(
       entries_2_excpVec <= _GEN_546;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h2 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_2_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_2_cacheable <= _GEN_562;
+      entries_2_cacheable <= _GEN_724;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h2 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_2_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_2_cacheable <= _GEN_562;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h2 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -3688,7 +3706,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h3 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_3_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_3_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_3_paddr <= _GEN_515;
       end
@@ -3714,13 +3732,11 @@ module StoreQueue(
       entries_3_excpVec <= _GEN_547;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h3 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_3_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_3_cacheable <= _GEN_563;
+      entries_3_cacheable <= _GEN_725;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h3 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_3_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_3_cacheable <= _GEN_563;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h3 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -3819,7 +3835,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h4 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_4_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_4_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_4_paddr <= _GEN_516;
       end
@@ -3845,13 +3861,11 @@ module StoreQueue(
       entries_4_excpVec <= _GEN_548;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h4 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_4_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_4_cacheable <= _GEN_564;
+      entries_4_cacheable <= _GEN_726;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h4 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_4_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_4_cacheable <= _GEN_564;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h4 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -3950,7 +3964,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h5 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_5_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_5_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_5_paddr <= _GEN_517;
       end
@@ -3976,13 +3990,11 @@ module StoreQueue(
       entries_5_excpVec <= _GEN_549;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h5 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_5_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_5_cacheable <= _GEN_565;
+      entries_5_cacheable <= _GEN_727;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h5 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_5_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_5_cacheable <= _GEN_565;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h5 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4081,7 +4093,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h6 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_6_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_6_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_6_paddr <= _GEN_518;
       end
@@ -4107,13 +4119,11 @@ module StoreQueue(
       entries_6_excpVec <= _GEN_550;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h6 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_6_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_6_cacheable <= _GEN_566;
+      entries_6_cacheable <= _GEN_728;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h6 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_6_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_6_cacheable <= _GEN_566;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h6 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4212,7 +4222,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h7 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_7_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_7_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_7_paddr <= _GEN_519;
       end
@@ -4238,13 +4248,11 @@ module StoreQueue(
       entries_7_excpVec <= _GEN_551;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h7 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_7_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_7_cacheable <= _GEN_567;
+      entries_7_cacheable <= _GEN_729;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h7 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_7_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_7_cacheable <= _GEN_567;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h7 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4343,7 +4351,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h8 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_8_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_8_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_8_paddr <= _GEN_520;
       end
@@ -4369,13 +4377,11 @@ module StoreQueue(
       entries_8_excpVec <= _GEN_552;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h8 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_8_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_8_cacheable <= _GEN_568;
+      entries_8_cacheable <= _GEN_730;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h8 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_8_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_8_cacheable <= _GEN_568;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h8 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4474,7 +4480,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'h9 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_9_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_9_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_9_paddr <= _GEN_521;
       end
@@ -4500,13 +4506,11 @@ module StoreQueue(
       entries_9_excpVec <= _GEN_553;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'h9 == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_9_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_9_cacheable <= _GEN_569;
+      entries_9_cacheable <= _GEN_731;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'h9 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_9_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_9_cacheable <= _GEN_569;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'h9 == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4605,7 +4609,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'ha == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_10_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_10_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_10_paddr <= _GEN_522;
       end
@@ -4631,13 +4635,11 @@ module StoreQueue(
       entries_10_excpVec <= _GEN_554;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'ha == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_10_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_10_cacheable <= _GEN_570;
+      entries_10_cacheable <= _GEN_732;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'ha == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_10_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_10_cacheable <= _GEN_570;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'ha == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4736,7 +4738,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'hb == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_11_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_11_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_11_paddr <= _GEN_523;
       end
@@ -4762,13 +4764,11 @@ module StoreQueue(
       entries_11_excpVec <= _GEN_555;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'hb == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_11_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_11_cacheable <= _GEN_571;
+      entries_11_cacheable <= _GEN_733;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'hb == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_11_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_11_cacheable <= _GEN_571;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'hb == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4867,7 +4867,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'hc == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_12_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_12_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_12_paddr <= _GEN_524;
       end
@@ -4893,13 +4893,11 @@ module StoreQueue(
       entries_12_excpVec <= _GEN_556;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'hc == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_12_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_12_cacheable <= _GEN_572;
+      entries_12_cacheable <= _GEN_734;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'hc == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_12_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_12_cacheable <= _GEN_572;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'hc == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -4998,7 +4996,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'hd == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_13_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_13_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_13_paddr <= _GEN_525;
       end
@@ -5024,13 +5022,11 @@ module StoreQueue(
       entries_13_excpVec <= _GEN_557;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'hd == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_13_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_13_cacheable <= _GEN_573;
+      entries_13_cacheable <= _GEN_735;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'hd == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_13_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_13_cacheable <= _GEN_573;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'hd == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -5129,7 +5125,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'he == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_14_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_14_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_14_paddr <= _GEN_526;
       end
@@ -5155,13 +5151,11 @@ module StoreQueue(
       entries_14_excpVec <= _GEN_558;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'he == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_14_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_14_cacheable <= _GEN_574;
+      entries_14_cacheable <= _GEN_736;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'he == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_14_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_14_cacheable <= _GEN_574;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'he == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]
@@ -5260,7 +5254,7 @@ module StoreQueue(
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
       if (4'hf == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 164:28]
-        entries_15_paddr <= 32'h0; // @[src/main/scala/memory/StoreQueue.scala 164:28]
+        entries_15_paddr <= io_addrWrite_paddr; // @[src/main/scala/memory/StoreQueue.scala 164:28]
       end else begin
         entries_15_paddr <= _GEN_527;
       end
@@ -5286,13 +5280,11 @@ module StoreQueue(
       entries_15_excpVec <= _GEN_559;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/StoreQueue.scala 160:28]
-      if (4'hf == io_addrWrite_idx) begin // @[src/main/scala/memory/StoreQueue.scala 166:32]
-        entries_15_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 166:32]
-      end else begin
-        entries_15_cacheable <= _GEN_575;
+      entries_15_cacheable <= _GEN_737;
+    end else if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
+      if (4'hf == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 148:31]
+        entries_15_cacheable <= 1'h0; // @[src/main/scala/memory/StoreQueue.scala 148:31]
       end
-    end else begin
-      entries_15_cacheable <= _GEN_575;
     end
     if (enqFire) begin // @[src/main/scala/memory/StoreQueue.scala 132:17]
       if (4'hf == enqPtr_value) begin // @[src/main/scala/memory/StoreQueue.scala 149:31]

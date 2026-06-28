@@ -117,7 +117,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   loadQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
   loadQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   loadQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
-  loadQueue.io.addrWrite.excpVec := addrChannel.bits.mmuRes.excpVec
+  loadQueue.io.addrWrite.excpVec := 0.U //addrChannel.bits.mmuRes.excpVec
  
   // SQ 地址写入（STA）
   storeQueue.io.addrWrite.valid := addrFire && addrUop.isSta
@@ -125,7 +125,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
   storeQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   storeQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
-  storeQueue.io.addrWrite.excpVec := addrChannel.bits.mmuRes.excpVec
+  storeQueue.io.addrWrite.excpVec := 0.U //addrChannel.bits.mmuRes.excpVec
  
   // SQ 数据写入（STD）
   storeQueue.io.dataWrite.valid := dataFire && dataUop.isStd
