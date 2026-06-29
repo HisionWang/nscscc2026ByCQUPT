@@ -26,6 +26,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     //val mmuIssued    = Bool()    // 已向 MMU 发出请求
     val committed    = Bool()    // ROB 已提交
     val writtenBack  = Bool()    // 已向后端写回
+    val Memwritten  = Bool()    // 已向后端写回
     val dcacheIssued = Bool()    // 已向 DCache 发出写请求
     val vaddr        = UInt(XLEN.W)
     val paddr        = UInt(XLEN.W)
@@ -78,10 +79,16 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
 
     // ── DCache Store 写请求 ──
     val dcacheReq = Decoupled(new Bundle {
+      val sqIdx = UInt(log2Ceil(SqSize).W)
       val paddr = UInt(XLEN.W)
+      //val cacheable = Bool()
       val data  = UInt(XLEN.W)
       val lsuOp        = UInt(LsuOp.width.W)
     })
+
+    val storeAck = Flipped(Decoupled(new Bundle {
+      val sqIdx = UInt(log2Ceil(SqSize).W)
+    }))
  
     // ── 后端写回 ──
     val outResult = Decoupled(new ExeResult)
@@ -95,6 +102,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val empty  = Output(Bool())
     val enqPtr = Output(UInt(log2Ceil(SqSize).W))
   })
+  
  
   // ================================================================
   //  存储体 + 指针
@@ -140,6 +148,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     //entries(idx).mmuIssued    := false.B
     entries(idx).committed    := false.B
     entries(idx).writtenBack  := false.B
+    entries(idx).Memwritten  := false.B
     entries(idx).dcacheIssued := false.B
     entries(idx).vaddr        := 0.U
     entries(idx).paddr        := 0.U
@@ -297,15 +306,21 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.dcacheReq.bits.paddr := dcacheEntry.paddr
   io.dcacheReq.bits.data  := dcacheEntry.data
   io.dcacheReq.bits.lsuOp  := dcacheEntry.lsuOp
+  io.dcacheReq.bits.sqIdx  := dcacheIdx
  
   when(io.dcacheReq.fire) {
     entries(dcacheIdx).dcacheIssued := true.B
+  }
+  io.storeAck.ready := true.B
+  when(io.storeAck.valid) {
+      val idx = io.storeAck.bits.sqIdx
+      entries(idx).Memwritten := true.B
   }
  
   // ================================================================
   //  9. 出队
   // ================================================================
-  val canDeqNormal = entries(deqPtr.value).valid && ( entries(deqPtr.value).dcacheIssued || entries(deqPtr.value).excpVec.orR )
+  val canDeqNormal = entries(deqPtr.value).valid && ( entries(deqPtr.value).Memwritten ) //|| entries(deqPtr.value).excpVec.orR )
   val canDeqExcp   = entries(deqPtr.value).valid && entries(deqPtr.value).writtenBack &&
                      entries(deqPtr.value).excpVec.orR
   val canDeq = canDeqNormal || canDeqExcp

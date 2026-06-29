@@ -267,11 +267,11 @@ module ICacheMainPipe(
   wire [3:0] _GEN_145 = _s1_can_bypass_T_10 ? 4'h8 : _GEN_144; // @[src/main/scala/icache/ICacheMainPipe.scala 330:40 331:22]
   wire [3:0] _GEN_147 = io_axi_ar_arready ? 4'h3 : 4'h2; // @[src/main/scala/icache/ICacheMainPipe.scala 354:31 355:20 357:20]
   wire  _T_21 = io_axi_r_data_rvalid & io_axi_r_data_rlast; // @[src/main/scala/icache/ICacheMainPipe.scala 363:33]
-  wire  _T_22 = io_axi_r_data_rid == 4'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 363:77]
-  wire [3:0] _GEN_148 = io_axi_r_data_rvalid & io_axi_r_data_rlast & io_axi_r_data_rid == 4'h0 ? 4'h4 : 4'h3; // @[src/main/scala/icache/ICacheMainPipe.scala 363:100 364:20 366:20]
+  wire  _T_22 = io_axi_r_data_rid == 4'hc; // @[src/main/scala/icache/ICacheMainPipe.scala 363:77]
+  wire [3:0] _GEN_148 = io_axi_r_data_rvalid & io_axi_r_data_rlast & io_axi_r_data_rid == 4'hc ? 4'h4 : 4'h3; // @[src/main/scala/icache/ICacheMainPipe.scala 363:100 364:20 366:20]
   wire [3:0] _GEN_149 = io_axi_ar_arready ? 4'h6 : 4'h5; // @[src/main/scala/icache/ICacheMainPipe.scala 377:31 378:20 380:20]
-  wire  _T_28 = io_axi_r_data_rid == 4'h1; // @[src/main/scala/icache/ICacheMainPipe.scala 386:77]
-  wire [3:0] _GEN_150 = _T_21 & io_axi_r_data_rid == 4'h1 ? 4'h7 : 4'h6; // @[src/main/scala/icache/ICacheMainPipe.scala 386:103 387:20 389:20]
+  wire  _T_28 = io_axi_r_data_rid == 4'hd; // @[src/main/scala/icache/ICacheMainPipe.scala 386:77]
+  wire [3:0] _GEN_150 = _T_21 & io_axi_r_data_rid == 4'hd ? 4'h7 : 4'h6; // @[src/main/scala/icache/ICacheMainPipe.scala 386:103 387:20 389:20]
   wire  _T_30 = 4'h8 == state; // @[src/main/scala/icache/ICacheMainPipe.scala 326:17]
   wire  _T_31 = 4'h7 == state; // @[src/main/scala/icache/ICacheMainPipe.scala 326:17]
   wire [3:0] _GEN_151 = io_icache_resp_ready ? 4'h0 : 4'h7; // @[src/main/scala/icache/ICacheMainPipe.scala 400:23 401:20 403:20]
@@ -366,26 +366,26 @@ module ICacheMainPipe(
   wire  _GEN_240 = _T_31 ? _GEN_215 : _GEN_225; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   wire [31:0] _io_axi_ar_data_araddr_T = {s3_ptag,s3_pidx,6'h0}; // @[src/main/scala/icache/ICacheMainPipe.scala 584:34]
   wire  _T_40 = state == 4'h5; // @[src/main/scala/icache/ICacheMainPipe.scala 589:20]
+  wire [3:0] _GEN_259 = state == 4'h5 ? 4'hd : 4'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 589:39 591:28 599:28]
   wire [31:0] _GEN_260 = state == 4'h5 ? s3_paddr : 32'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 589:39 592:28 601:28]
   wire [1:0] _GEN_262 = state == 4'h5 ? 2'h2 : 2'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 589:39 594:28 603:28]
-  wire  _GEN_263 = state == 4'h2 ? 1'h0 : _T_40; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 583:28]
-  wire [3:0] _GEN_265 = state == 4'h2 ? 4'hf : 4'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 585:28]
-  wire [1:0] _GEN_266 = state == 4'h2 ? 2'h2 : _GEN_262; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 586:28]
-  wire  _GEN_267 = state == 4'h2 | _T_40; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 587:28]
+  wire [3:0] _GEN_266 = state == 4'h2 ? 4'hf : 4'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 585:28]
+  wire [1:0] _GEN_267 = state == 4'h2 ? 2'h2 : _GEN_262; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 586:28]
+  wire  _GEN_268 = state == 4'h2 | _T_40; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 587:28]
   wire  _io_axi_r_rready_T = state == 4'h3; // @[src/main/scala/icache/ICacheMainPipe.scala 610:31]
   wire  _io_axi_r_rready_T_1 = state == 4'h6; // @[src/main/scala/icache/ICacheMainPipe.scala 610:58]
   reg [3:0] beat_counter; // @[src/main/scala/icache/ICacheMainPipe.scala 616:31]
   wire [9:0] data_offset = beat_counter * 6'h20; // @[src/main/scala/icache/ICacheMainPipe.scala 621:30]
   wire [1054:0] _GEN_4 = {{1023'd0}, io_axi_r_data_rdata}; // @[src/main/scala/icache/ICacheMainPipe.scala 622:67]
   wire [1054:0] _miss_data_buffer_T = _GEN_4 << data_offset; // @[src/main/scala/icache/ICacheMainPipe.scala 622:67]
-  wire [1054:0] _GEN_291 = {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
-  wire [1054:0] _miss_data_buffer_T_1 = _GEN_291 | _miss_data_buffer_T; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
+  wire [1054:0] _GEN_292 = {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
+  wire [1054:0] _miss_data_buffer_T_1 = _GEN_292 | _miss_data_buffer_T; // @[src/main/scala/icache/ICacheMainPipe.scala 622:44]
   wire [3:0] _beat_counter_T_1 = beat_counter + 4'h1; // @[src/main/scala/icache/ICacheMainPipe.scala 623:36]
-  wire  _GEN_268 = io_axi_r_data_rlast | miss_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 625:33 626:25 177:32]
-  wire [1054:0] _GEN_270 = io_axi_r_data_rvalid ? _miss_data_buffer_T_1 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 618:32 622:24 188:29]
-  wire [1054:0] _GEN_273 = _io_axi_r_rready_T & io_axi_r_data_rvalid & _T_22 ? _GEN_270 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 188:29 614:98]
-  wire [1054:0] _GEN_275 = s3_fire ? 1055'h0 : _GEN_273; // @[src/main/scala/icache/ICacheMainPipe.scala 632:17 633:22]
-  wire  _GEN_284 = _io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_28 | uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 671:104 673:24 445:35]
+  wire  _GEN_269 = io_axi_r_data_rlast | miss_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 625:33 626:25 177:32]
+  wire [1054:0] _GEN_271 = io_axi_r_data_rvalid ? _miss_data_buffer_T_1 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 618:32 622:24 188:29]
+  wire [1054:0] _GEN_274 = _io_axi_r_rready_T & io_axi_r_data_rvalid & _T_22 ? _GEN_271 : {{543'd0}, miss_data_buffer}; // @[src/main/scala/icache/ICacheMainPipe.scala 188:29 614:98]
+  wire [1054:0] _GEN_276 = s3_fire ? 1055'h0 : _GEN_274; // @[src/main/scala/icache/ICacheMainPipe.scala 632:17 633:22]
+  wire  _GEN_285 = _io_axi_r_rready_T_1 & io_axi_r_data_rvalid & _T_28 | uncache_data_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 671:104 673:24 445:35]
   assign io_cpu_req_ready = s0_fire | ~s0_valid; // @[src/main/scala/icache/ICacheMainPipe.scala 60:26]
   assign io_icache_resp_valid = _T_10 ? _T_33 : _GEN_234; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_icache_resp_bits_instrs_0 = _T_10 ? _GEN_162 : _GEN_226; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
@@ -402,11 +402,11 @@ module ICacheMainPipe(
   assign io_icache_resp_bits_mmu_error_excpTlbPif = _T_10 ? 1'h0 : _GEN_238; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_icache_resp_bits_mmu_error_excpTlbPpi = _T_10 ? 1'h0 : _GEN_239; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
   assign io_icache_resp_bits_mmu_error_excpAdef = _T_10 ? 1'h0 : _GEN_240; // @[src/main/scala/icache/ICacheMainPipe.scala 481:17]
-  assign io_axi_ar_data_arid = {{3'd0}, _GEN_263};
+  assign io_axi_ar_data_arid = state == 4'h2 ? 4'hc : _GEN_259; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 583:28]
   assign io_axi_ar_data_araddr = state == 4'h2 ? _io_axi_ar_data_araddr_T : _GEN_260; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 584:28]
-  assign io_axi_ar_data_arlen = {{4'd0}, _GEN_265};
-  assign io_axi_ar_data_arsize = {{1'd0}, _GEN_266};
-  assign io_axi_ar_data_arburst = {{1'd0}, _GEN_267};
+  assign io_axi_ar_data_arlen = {{4'd0}, _GEN_266};
+  assign io_axi_ar_data_arsize = {{1'd0}, _GEN_267};
+  assign io_axi_ar_data_arburst = {{1'd0}, _GEN_268};
   assign io_axi_ar_data_arvalid = state == 4'h2 | _T_40; // @[src/main/scala/icache/ICacheMainPipe.scala 581:30 587:28]
   assign io_axi_r_rready = state == 4'h3 | state == 4'h6; // @[src/main/scala/icache/ICacheMainPipe.scala 610:48]
   assign io_arrays_read_req_valid = s0_fire & _T; // @[src/main/scala/icache/ICacheMainPipe.scala 89:40]
@@ -785,7 +785,7 @@ module ICacheMainPipe(
       miss_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 685:21]
     end else if (_io_axi_r_rready_T & io_axi_r_data_rvalid & _T_22) begin // @[src/main/scala/icache/ICacheMainPipe.scala 614:98]
       if (io_axi_r_data_rvalid) begin // @[src/main/scala/icache/ICacheMainPipe.scala 618:32]
-        miss_data_valid <= _GEN_268;
+        miss_data_valid <= _GEN_269;
       end
     end
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 257:18]
@@ -828,7 +828,7 @@ module ICacheMainPipe(
         s3_miss <= s2_cache_miss & (~s2_can_bypass_from_s1 & ~s2_can_bypass); // @[src/main/scala/icache/ICacheMainPipe.scala 274:13]
       end
     end
-    miss_data_buffer <= _GEN_275[511:0];
+    miss_data_buffer <= _GEN_276[511:0];
     if (!(io_redirect)) begin // @[src/main/scala/icache/ICacheMainPipe.scala 200:18]
       if (s1_fire & _T) begin // @[src/main/scala/icache/ICacheMainPipe.scala 202:36]
         s2_bypass_data_from_s1 <= miss_data_buffer; // @[src/main/scala/icache/ICacheMainPipe.scala 216:28]
@@ -860,7 +860,7 @@ module ICacheMainPipe(
     end else if (_s3_ready_T_8) begin // @[src/main/scala/icache/ICacheMainPipe.scala 683:38]
       uncache_data_valid <= 1'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 687:24]
     end else begin
-      uncache_data_valid <= _GEN_284;
+      uncache_data_valid <= _GEN_285;
     end
     if (reset) begin // @[src/main/scala/icache/ICacheMainPipe.scala 616:31]
       beat_counter <= 4'h0; // @[src/main/scala/icache/ICacheMainPipe.scala 616:31]

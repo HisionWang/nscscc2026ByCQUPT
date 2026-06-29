@@ -1,4 +1,4 @@
-package nscscc.dcache
+package nscscc.mem.dcache
  
 import chisel3._
 import chisel3.util._
@@ -73,7 +73,12 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
   for (way <- 0 until nWays) {
     val waySel = writeWayOneHot(way)
     val metaWriteData = Cat(true.B, io.write.dirty, io.write.tag)
- 
+    metaBRAMs(way).wr_en   := false.B
+    metaBRAMs(way).wr_addr := 0.U
+    metaBRAMs(way).wr_data := 0.U
+    dataBRAMs(way).wr_en   := false.B
+    dataBRAMs(way).wr_addr := 0.U
+    dataBRAMs(way).wr_data := 0.U
     when(io.write.valid && waySel) {
       metaBRAMs(way).wr_en   := true.B
       metaBRAMs(way).wr_addr := io.write.idx
@@ -87,18 +92,15 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
       metaBRAMs(way).wr_en   := false.B
       dataBRAMs(way).wr_en   := false.B
     }
-  }
- 
-  // === 仅写 Meta ===
-  val metaWriteOneHot = UIntToOH(io.metaWrite.way)
-  for (way <- 0 until nWays) {
-    val waySel = metaWriteOneHot(way)
-    val mwData = Cat(io.metaWrite.metaValid, io.metaWrite.dirty, io.metaWrite.tag)
- 
-    when(io.metaWrite.valid && waySel && !(io.write.valid && writeWayOneHot(way))) {
+
+    val mwSel = UIntToOH(io.metaWrite.way)(way)
+    when(io.metaWrite.valid && mwSel && !(io.write.valid && waySel)) {
+      val mwData = Cat(io.metaWrite.metaValid, io.metaWrite.dirty, io.metaWrite.tag)
       metaBRAMs(way).wr_en   := true.B
       metaBRAMs(way).wr_addr := io.metaWrite.idx
       metaBRAMs(way).wr_data := mwData
     }
+
   }
+ 
 }

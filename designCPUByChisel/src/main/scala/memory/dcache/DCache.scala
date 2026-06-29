@@ -1,4 +1,4 @@
-package nscscc.dcache
+package nscscc.mem.dcache
  
 import chisel3._
 import chisel3.util._
@@ -165,7 +165,7 @@ class DCache(implicit p: Parameters) extends NSModule {
     s1_sqIdx     := Mux(s0_storeFire, io.storeReq.bits.sqIdx, 0.U)
     s1_robIdx    := Mux(s0_loadFire, io.loadReq.bits.robIdx, 0.U.asTypeOf(new RobPtr(RobSize)))
     s1_lsuOp     := Mux(s0_loadFire, io.loadReq.bits.lsuOp, io.storeReq.bits.lsuOp)
-    s1_cacheable := Mux(s0_loadFire, io.loadReq.bits.cacheable, true.B)
+    s1_cacheable := Mux(s0_loadFire, io.loadReq.bits.cacheable, false.B)
     s1_storeData := Mux(s0_storeFire, io.storeReq.bits.data, 0.U)
   }.elsewhen(s1_ready) {
     s1_valid := false.B
@@ -258,14 +258,16 @@ class DCache(implicit p: Parameters) extends NSModule {
  
   // ---- Store Hit: 合并数据写入 ----
   val pipeStoreHitValid = s2_valid && !s2_isLoad && s2_hit && !s2_isUncache
-  val s2_mergedLine = Wire(UInt((blockBytes * 8).W))
-  s2_mergedLine := s2_cacheLineData
+  val s2_mergedWords = Wire(Vec(blockBytes / 4, UInt(XLEN.W)))
+  for (w <- 0 until blockBytes / 4) {
+    s2_mergedWords(w) := s2_cacheLineData(w * XLEN + XLEN - 1, w * XLEN)
+  }
   for (w <- 0 until blockBytes / 4) {
     when(s2_wordOff === w.U) {
-      val lo = w * XLEN
-      s2_mergedLine(lo + XLEN - 1, lo) := s2_storeData
+      s2_mergedWords(w) := s2_storeData
     }
   }
+  val s2_mergedLine = Cat(s2_mergedWords.reverse)
  
   // Pipeline store ack
   val pipeStoreAck = Wire(Decoupled(new Bundle {
@@ -342,12 +344,26 @@ class DCache(implicit p: Parameters) extends NSModule {
   //  响应仲裁：Pipeline hit vs MSHR refill
   // ================================================================
   // Load Response
-  val arbLoadResp = Arbiter(pipeLoadResp, mshr.io.loadResp)
-  io.loadResp <> arbLoadResp
- 
-  // Store Ack
-  val arbStoreAck = Arbiter(pipeStoreAck, mshr.io.storeAck)
-  io.storeAck <> arbStoreAck
+//  val arbLoadResp = Arbiter(pipeLoadResp, mshr.io.loadResp)
+//  io.loadResp <> arbLoadResp
+// 
+//  // Store Ack
+//  val arbStoreAck = Arbiter(pipeStoreAck, mshr.io.storeAck)
+//  io.storeAck <> arbStoreAck
+
+  // ── Load Response 仲裁：Pipeline hit 优先，MSHR 其次 ──
+  // ── Load Response 仲裁 ──
+  io.loadResp.valid           := pipeLoadResp.valid || mshr.io.loadResp.valid
+  io.loadResp.bits.lqIdx      := Mux(pipeLoadResp.valid, pipeLoadResp.bits.lqIdx, mshr.io.loadResp.bits.lqIdx)
+  io.loadResp.bits.data       := Mux(pipeLoadResp.valid, pipeLoadResp.bits.data, mshr.io.loadResp.bits.data)
+  pipeLoadResp.ready          := io.loadResp.ready
+  mshr.io.loadResp.ready      := io.loadResp.ready && !pipeLoadResp.valid
+   
+  // ── Store Ack 仲裁 ──
+  io.storeAck.valid           := pipeStoreAck.valid || mshr.io.storeAck.valid
+  io.storeAck.bits.sqIdx      := Mux(pipeStoreAck.valid, pipeStoreAck.bits.sqIdx, mshr.io.storeAck.bits.sqIdx)
+  pipeStoreAck.ready          := io.storeAck.ready
+  mshr.io.storeAck.ready      := io.storeAck.ready && !pipeStoreAck.valid
  
   // ================================================================
   //  MSHR → Array 写入

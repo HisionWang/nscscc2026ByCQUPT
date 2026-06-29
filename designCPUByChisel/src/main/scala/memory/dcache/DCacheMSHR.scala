@@ -1,4 +1,4 @@
-package nscscc.dcache
+package nscscc.mem.dcache
  
 import chisel3._
 import chisel3.util._
@@ -8,22 +8,19 @@ import nscscc.backend.rename._
 import nscscc.axi._
  
 class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
-  val burstBeats = blockBytes / (XLEN / 8) // 64/4 = 16
+  val burstBeats = blockBytes / (XLEN / 8)
  
   val io = IO(new Bundle {
     val id = Input(UInt(log2Ceil(nMshrEntries).W))
  
-    // 从流水线接收请求
     val req = Flipped(Decoupled(new MshrRequest))
  
-    // AXI 通道
     val ar = Decoupled(new AXI3ARData)
     val r  = Flipped(Decoupled(new AXI3RData))
     val aw = Decoupled(new AXI3AWData)
     val w  = Decoupled(new AXI3WData)
     val b  = Flipped(Decoupled(new AXI3BData))
  
-    // 向 DCache 输出
     val loadResp  = Decoupled(new Bundle {
       val lqIdx = UInt(log2Ceil(LqSize).W)
       val data  = UInt(XLEN.W)
@@ -46,14 +43,12 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
       val way   = UInt(wayBits.W)
     })
  
-    // 状态输出
-    val busy           = Output(Bool())
-    val isWriteback    = Output(Bool())
-    val setIdx         = Output(UInt(idxBits.W))
-    val blockOthers    = Output(Bool()) // 正在写回，阻塞其他 MSHR
-    val canAcceptReq   = Output(Bool())
+    val busy         = Output(Bool())
+    val isWriteback  = Output(Bool())
+    val setIdx       = Output(UInt(idxBits.W))
+    val blockOthers  = Output(Bool())
+    val canAcceptReq = Output(Bool())
  
-    // Flush
     val redirect = Input(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
     }))
@@ -77,8 +72,8 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
   io.blockOthers := io.isWriteback
   io.canAcceptReq := state === s_idle
  
-  // === Flush 检测 ===
-  when(io.redirect.valid && reqReg.cacheable && 
+  // === Flush ===
+  when(io.redirect.valid && reqReg.cacheable &&
        (reqReg.reqType === MshrReqType.refillLoad || reqReg.reqType === MshrReqType.uncacheRead)) {
     when(reqReg.robIdx.isAfter(io.redirect.bits.robIdx)) {
       flushed := true.B
@@ -91,7 +86,7 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
     reqReg  := io.req.bits
     flushed := false.B
     beatCnt := 0.U
-    state   := MuxLookup(io.req.bits.reqType, s_idle, Seq(
+    state   := MuxLookup(io.req.bits.reqType, s_idle)( Seq(
       MshrReqType.refillLoad  -> Mux(io.req.bits.victimDirty, s_wb_aw, s_refill_ar),
       MshrReqType.refillStore -> Mux(io.req.bits.victimDirty, s_wb_aw, s_refill_ar),
       MshrReqType.writeback   -> s_wb_aw,
@@ -100,22 +95,24 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
     ))
   }
  
-  // === AXI AR 通道 ===
+  // === AXI AR ===
   val refillAddr = Cat(reqReg.paddr(31, blockOffBits), 0.U(blockOffBits.W))
   io.ar.valid := state === s_refill_ar || state === s_uc_ar
   io.ar.bits.arid    := io.id
   io.ar.bits.araddr  := Mux(state === s_uc_ar, reqReg.paddr, refillAddr)
   io.ar.bits.arlen   := Mux(state === s_uc_ar, 0.U, (burstBeats - 1).U)
-  io.ar.bits.arsize  := 2.U  // 4 bytes
-  io.ar.bits.arburst := Mux(state === s_uc_ar, 0.U, 1.U) // FIXED / INCR
+  io.ar.bits.arsize  := 2.U
+  io.ar.bits.arburst := Mux(state === s_uc_ar, 0.U, 1.U)
   io.ar.bits.arlock  := 0.U
   io.ar.bits.arcache := 0.U
   io.ar.bits.arprot  := 0.U
+
+  io.ar.bits.arvalid := io.ar.valid
  
   when(state === s_refill_ar && io.ar.fire) { state := s_refill_r }
   when(state === s_uc_ar && io.ar.fire)     { state := s_uc_r }
  
-  // === AXI R 通道 ===
+  // === AXI R ===
   io.r.ready := state === s_refill_r || state === s_uc_r
  
   when(state === s_refill_r && io.r.fire) {
@@ -132,7 +129,7 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
     state := s_send_resp
   }
  
-  // === AXI AW 通道（写回 / Uncache 写） ===
+  // === AXI AW ===
   val wbAddr = Cat(reqReg.victimTag, reqReg.paddr(blockOffBits + idxBits - 1, blockOffBits), 0.U(blockOffBits.W))
   io.aw.valid := state === s_wb_aw || state === s_uc_aw
   io.aw.bits.awid    := io.id
@@ -143,25 +140,25 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
   io.aw.bits.awlock  := 0.U
   io.aw.bits.awcache := 0.U
   io.aw.bits.awprot  := 0.U
- 
+  io.aw.bits.awvalid := io.aw.valid
   when(state === s_wb_aw && io.aw.fire) { state := s_wb_w; beatCnt := 0.U }
   when(state === s_uc_aw && io.aw.fire) { state := s_uc_w; beatCnt := 0.U }
  
-  // === AXI W 通道 ===
-  io.w.valid := state === s_wb_w || state === s_uc_w
- 
+  // === AXI W ===
   val wbDataVec = VecInit((0 until burstBeats).map(i => reqReg.victimData(i * XLEN + XLEN - 1, i * XLEN)))
   val ucWdata = reqReg.storeData
-  val ucWstrb = MuxLookup(reqReg.lsuOp, 0xF.U(4.W), Seq(
+  val ucWstrb = MuxLookup(reqReg.lsuOp, 0xF.U(4.W))( Seq(
     LsuOp.stb -> 1.U(4.W),
     LsuOp.sth -> 3.U(4.W),
     LsuOp.stw -> 0xF.U(4.W)
   ))
  
+  io.w.valid := state === s_wb_w || state === s_uc_w
   io.w.bits.wid   := io.id
   io.w.bits.wdata := Mux(state === s_uc_w, ucWdata, wbDataVec(beatCnt))
   io.w.bits.wstrb := Mux(state === s_uc_w, ucWstrb, 0xF.U(4.W))
   io.w.bits.wlast := Mux(state === s_uc_w, true.B, beatCnt === (burstBeats - 1).U)
+  io.w.bits.wvalid := io.w.valid
  
   when((state === s_wb_w || state === s_uc_w) && io.w.fire) {
     beatCnt := beatCnt + 1.U
@@ -171,11 +168,10 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
     }
   }
  
-  // === AXI B 通道 ===
+  // === AXI B ===
   io.b.ready := state === s_wb_b || state === s_uc_b
  
   when(state === s_wb_b && io.b.fire) {
-    // 写回完成，接下来执行 refill
     state := Mux(reqReg.reqType === MshrReqType.writeback, s_idle, s_refill_ar)
   }
  
@@ -185,30 +181,26 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
  
   // === 写入 Cache Array ===
   val setIdx = reqReg.paddr(blockOffBits + idxBits - 1, blockOffBits)
-  val ptag   = reqReg.paddr(31, blockOffBits + idxBits)
  
-  // 合并 store 数据到 refill 数据
-  val refillLine = Cat(refillBuf.reverse)
-  val storeByteOff = reqReg.paddr(blockOffBits - 1, 0)
+  // 合并 store 到 refill 数据
   val storeWordOff = reqReg.paddr(blockOffBits - 1, 2)
-  val mergedLine = Wire(UInt((blockBytes * 8).W))
-  mergedLine := refillLine
+  val refillWords = Wire(Vec(blockBytes / 4, UInt(XLEN.W)))
+  for (w <- 0 until blockBytes / 4) {
+    refillWords(w) := refillBuf(w)
+  }
   when(reqReg.reqType === MshrReqType.refillStore) {
-    val bitOff = Cat(storeWordOff, 0.U(5.W))
-    val mask = ((1.U(XLEN.W)) << XLEN) - 1.U
-    // 按字写入
     for (w <- 0 until blockBytes / 4) {
       when(storeWordOff === w.U) {
-        val lo = w * XLEN
-        mergedLine(lo + XLEN - 1, lo) := reqReg.storeData
+        refillWords(w) := reqReg.storeData
       }
     }
   }
+  val mergedLine = Cat(refillWords.reverse)
  
   io.arrayWrite.valid := state === s_write_array && !flushed
   io.arrayWrite.idx   := setIdx
   io.arrayWrite.way   := reqReg.victimWay
-  io.arrayWrite.tag   := ptag
+  io.arrayWrite.tag   := reqReg.paddr(31, blockOffBits + idxBits)
   io.arrayWrite.dirty := reqReg.reqType === MshrReqType.refillStore
   io.arrayWrite.data  := mergedLine
   io.arrayWrite.wen   := true.B
@@ -222,7 +214,6 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
   }
  
   // === 发送响应 ===
-  // 提取 load 数据
   val loadWordOff = reqReg.paddr(blockOffBits - 1, 2)
   val loadRawWord = Wire(UInt(XLEN.W))
   loadRawWord := 0.U
@@ -233,59 +224,55 @@ class DCacheMshrEntry(implicit p: Parameters) extends NSModule {
   }
  
   val loadByteOff = reqReg.paddr(1, 0)
-  val loadShifted = MuxLookup(loadByteOff, loadRawWord, Seq(
+  val loadShifted = MuxLookup(loadByteOff, loadRawWord)( Seq(
     0.U -> loadRawWord,
     1.U -> Cat(0.U(8.W), loadRawWord(31, 8)),
     2.U -> Cat(0.U(16.W), loadRawWord(31, 16)),
     3.U -> Cat(0.U(24.W), loadRawWord(31, 24))
   ))
  
-  val isLoad = reqReg.reqType === MshrReqType.refillLoad || reqReg.reqType === MshrReqType.uncacheRead
+  val isLoad  = reqReg.reqType === MshrReqType.refillLoad || reqReg.reqType === MshrReqType.uncacheRead
   val isStore = reqReg.reqType === MshrReqType.refillStore || reqReg.reqType === MshrReqType.uncacheWrite
  
-  io.loadResp.valid  := state === s_send_resp && isLoad && !flushed
-  io.loadResp.bits.lqIdx := reqReg.lqIdx
-  io.loadResp.bits.data  := Mux(reqReg.reqType === MshrReqType.uncacheRead, refillBuf(0), loadShifted)
+  io.loadResp.valid       := state === s_send_resp && isLoad && !flushed
+  io.loadResp.bits.lqIdx  := reqReg.lqIdx
+  io.loadResp.bits.data   := Mux(reqReg.reqType === MshrReqType.uncacheRead, refillBuf(0), loadShifted)
  
-  io.storeAck.valid  := state === s_send_resp && isStore && !flushed
-  io.storeAck.bits.sqIdx := reqReg.sqIdx
+  io.storeAck.valid       := state === s_send_resp && isStore && !flushed
+  io.storeAck.bits.sqIdx  := reqReg.sqIdx
  
   when(state === s_send_resp) {
     when(flushed || io.loadResp.fire || io.storeAck.fire) {
-      state := s_idle
+      state   := s_idle
       flushed := false.B
     }
   }
  
-  // idle 时清零输出
   when(state === s_idle) {
-    io.arrayWrite.valid := false.B
+    io.arrayWrite.valid    := false.B
     io.replacerTouch.valid := false.B
-    io.loadResp.valid  := false.B
-    io.storeAck.valid  := false.B
+    io.loadResp.valid      := false.B
+    io.storeAck.valid      := false.B
   }
 }
  
 // ================================================================
-// MSHR 顶层模块
+// MSHR 顶层
 // ================================================================
 class DCacheMSHR(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    // 从流水线接收请求
     val req = Flipped(Decoupled(new MshrRequest))
  
-    // AXI
     val axi = new AXI3MasterIO
  
-    // 向 DCache 输出
-    val loadResp    = Decoupled(new Bundle {
+    val loadResp = Decoupled(new Bundle {
       val lqIdx = UInt(log2Ceil(LqSize).W)
       val data  = UInt(XLEN.W)
     })
-    val storeAck    = Decoupled(new Bundle {
+    val storeAck = Decoupled(new Bundle {
       val sqIdx = UInt(log2Ceil(SqSize).W)
     })
-    val arrayWrite  = Output(new Bundle {
+    val arrayWrite = Output(new Bundle {
       val valid = Bool()
       val idx   = UInt(idxBits.W)
       val way   = UInt(wayBits.W)
@@ -300,12 +287,10 @@ class DCacheMSHR(implicit p: Parameters) extends NSModule {
       val way   = UInt(wayBits.W)
     })
  
-    // 状态
     val hasWriteback = Output(Bool())
-    val mshrWriting  = Output(Bool()) // MSHR 正在写 array
+    val mshrWriting  = Output(Bool())
     val full         = Output(Bool())
  
-    // Flush
     val redirect = Input(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
     }))
@@ -318,17 +303,13 @@ class DCacheMSHR(implicit p: Parameters) extends NSModule {
   val hasFree  = freeMask.orR
   val allocIdx = PriorityEncoder(freeMask)
  
-  // 检查是否有写回正在进行
   val anyWriteback = VecInit(entries.map(_.io.blockOthers)).asUInt.orR
   io.hasWriteback := anyWriteback
  
-  // 如果有写回正在进行，不分配新请求（阻塞其他 MSHR 操作）
-  val canAlloc = hasFree && !anyWriteback
- 
-  // 同时检查同一 set 是否已有 MSHR 在处理
   val reqSetIdx = io.req.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
   val setConflict = VecInit(entries.map(e => e.io.busy && e.io.setIdx === reqSetIdx)).asUInt.orR
  
+  val canAlloc = hasFree && !anyWriteback
   io.req.ready := canAlloc && !setConflict
   io.full      := !hasFree
  
@@ -336,104 +317,128 @@ class DCacheMSHR(implicit p: Parameters) extends NSModule {
     entry.io.id       := i.U
     entry.io.redirect := io.redirect
  
-    // 请求分配
     entry.io.req.valid := io.req.valid && canAlloc && !setConflict && allocIdx === i.U
     entry.io.req.bits  := io.req.bits
   }
  
-  // === AXI AR 仲裁 ===
-  // 写回优先，然后 refill，然后 uncache read
-  val arCandidates = VecInit(entries.map(e => e.io.ar.valid))
-  val arSelect     = PriorityEncoder(arCandidates)
-  val arValid      = arCandidates.asUInt.orR
+  // === AXI AR 仲裁 (OneHot) ===
+  val arValids = VecInit(entries.map(_.io.ar.valid))
+  val arSelectOH = PriorityMux(arValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
+  val arHasValid = arValids.asUInt.orR
  
-  io.axi.ar.data <> entries(arSelect).io.ar.bits
-  io.axi.ar.arvalid := arValid
+  io.axi.ar.data.arid    := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arid))
+  io.axi.ar.data.araddr  := Mux1H(arSelectOH, entries.map(_.io.ar.bits.araddr))
+  io.axi.ar.data.arlen   := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arlen))
+  io.axi.ar.data.arsize  := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arsize))
+  io.axi.ar.data.arburst := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arburst))
+  io.axi.ar.data.arlock  := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arlock))
+  io.axi.ar.data.arcache := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arcache))
+  io.axi.ar.data.arprot  := Mux1H(arSelectOH, entries.map(_.io.ar.bits.arprot))
+  io.axi.ar.data.arvalid := arHasValid
+ 
+  val arReadyIn = io.axi.ar.arready
   for ((entry, i) <- entries.zipWithIndex) {
-    entry.io.r.ready := false.B
-    when(i.U === arSelect) {
-      entry.io.r.ready := io.axi.r.rready
-    }
+    entry.io.ar.ready := arReadyIn && arSelectOH(i)
   }
  
   // === AXI R 路由 ===
   val rId = io.axi.r.data.rid(log2Ceil(nMshrEntries) - 1, 0)
+  val rIdOH = UIntToOH(rId, nMshrEntries)
   for ((entry, i) <- entries.zipWithIndex) {
-    when(i.U === rId) {
-      entry.io.r.valid := io.axi.r.data.rvalid
-    }
+    entry.io.r.valid := io.axi.r.data.rvalid && rIdOH(i)
+    entry.io.r.bits  := io.axi.r.data
   }
-  io.axi.r.rready := entries(rId).io.r.ready
+  io.axi.r.rready := Mux1H(rIdOH, entries.map(_.io.r.ready))
  
   // === AXI AW 仲裁 ===
-  val awCandidates = VecInit(entries.map(e => e.io.aw.valid))
-  val awSelect     = PriorityEncoder(awCandidates)
-  val awValid      = awCandidates.asUInt.orR
+  val awValids = VecInit(entries.map(_.io.aw.valid))
+  val awSelectOH = PriorityMux(awValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
+  val awHasValid = awValids.asUInt.orR
  
-  io.axi.aw.data <> entries(awSelect).io.aw.bits
-  io.axi.aw.awready := false.B
+  io.axi.aw.data.awid    := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awid))
+  io.axi.aw.data.awaddr  := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awaddr))
+  io.axi.aw.data.awlen   := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awlen))
+  io.axi.aw.data.awsize  := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awsize))
+  io.axi.aw.data.awburst := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awburst))
+  io.axi.aw.data.awlock  := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awlock))
+  io.axi.aw.data.awcache := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awcache))
+  io.axi.aw.data.awprot  := Mux1H(awSelectOH, entries.map(_.io.aw.bits.awprot))
+  io.axi.aw.data.awvalid := awHasValid
+ 
+  val awReadyIn = io.axi.aw.awready
   for ((entry, i) <- entries.zipWithIndex) {
-    when(i.U === awSelect) {
-      io.axi.aw.awready := entry.io.aw.ready
-    }
+    entry.io.aw.ready := awReadyIn && awSelectOH(i)
   }
  
-  // === AXI W 路由 ===
-  val wCandidates = VecInit(entries.map(e => e.io.w.valid))
-  val wSelect     = PriorityEncoder(wCandidates)
+  // === AXI W 仲裁 ===
+  val wValids = VecInit(entries.map(_.io.w.valid))
+  val wSelectOH = PriorityMux(wValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
+  val wHasValid = wValids.asUInt.orR
  
-  io.axi.w.data <> entries(wSelect).io.w.bits
-  io.axi.w.wready := false.B
+  io.axi.w.data.wid   := Mux1H(wSelectOH, entries.map(_.io.w.bits.wid))
+  io.axi.w.data.wdata := Mux1H(wSelectOH, entries.map(_.io.w.bits.wdata))
+  io.axi.w.data.wstrb := Mux1H(wSelectOH, entries.map(_.io.w.bits.wstrb))
+  io.axi.w.data.wlast := Mux1H(wSelectOH, entries.map(_.io.w.bits.wlast))
+  io.axi.w.data.wvalid := wHasValid
+ 
+  val wReadyIn = io.axi.w.wready
   for ((entry, i) <- entries.zipWithIndex) {
-    when(i.U === wSelect) {
-      io.axi.w.wready := entry.io.w.ready
-    }
+    entry.io.w.ready := wReadyIn && wSelectOH(i)
   }
  
   // === AXI B 路由 ===
   val bId = io.axi.b.data.bid(log2Ceil(nMshrEntries) - 1, 0)
+  val bIdOH = UIntToOH(bId, nMshrEntries)
   for ((entry, i) <- entries.zipWithIndex) {
-    entry.io.b.valid := false.B
+    entry.io.b.valid := io.axi.b.data.bvalid && bIdOH(i)
     entry.io.b.bits  := io.axi.b.data
-    when(i.U === bId) {
-      entry.io.b.valid := io.axi.b.data.bvalid
-    }
   }
-  io.axi.b.bready := entries(bId).io.b.ready
+  io.axi.b.bready := Mux1H(bIdOH, entries.map(_.io.b.ready))
  
-  // === 响应仲裁 ===
-  // Load Resp: 流水线 hit 优先在 DCache 顶层处理，这里只处理 MSHR 的
-  val loadRespCandidates = VecInit(entries.map(_.io.loadResp.valid))
-  val loadRespSelect     = PriorityEncoder(loadRespCandidates)
-  io.loadResp.valid := loadRespCandidates.asUInt.orR
-  io.loadResp.bits  := entries(loadRespSelect).io.loadResp.bits
+  // === Load Resp 仲裁 ===
+  val lrValids = VecInit(entries.map(_.io.loadResp.valid))
+  val lrSelectOH = PriorityMux(lrValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
+  val lrHasValid = lrValids.asUInt.orR
+ 
+  io.loadResp.valid      := lrHasValid
+  io.loadResp.bits.lqIdx := Mux1H(lrSelectOH, entries.map(_.io.loadResp.bits.lqIdx))
+  io.loadResp.bits.data  := Mux1H(lrSelectOH, entries.map(_.io.loadResp.bits.data))
+ 
   for ((entry, i) <- entries.zipWithIndex) {
-    entry.io.loadResp.ready := i.U === loadRespSelect && io.loadResp.ready
+    entry.io.loadResp.ready := io.loadResp.ready && lrSelectOH(i)
   }
  
-  // Store Ack
-  val storeAckCandidates = VecInit(entries.map(_.io.storeAck.valid))
-  val storeAckSelect     = PriorityEncoder(storeAckCandidates)
-  io.storeAck.valid := storeAckCandidates.asUInt.orR
-  io.storeAck.bits  := entries(storeAckSelect).io.storeAck.bits
+  // === Store Ack 仲裁 ===
+  val saValids = VecInit(entries.map(_.io.storeAck.valid))
+  val saSelectOH = PriorityMux(saValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
+  val saHasValid = saValids.asUInt.orR
+ 
+  io.storeAck.valid      := saHasValid
+  io.storeAck.bits.sqIdx := Mux1H(saSelectOH, entries.map(_.io.storeAck.bits.sqIdx))
+ 
   for ((entry, i) <- entries.zipWithIndex) {
-    entry.io.storeAck.ready := i.U === storeAckSelect && io.storeAck.ready
+    entry.io.storeAck.ready := io.storeAck.ready && saSelectOH(i)
   }
  
   // === Array Write 仲裁 ===
-  val awCandidates2 = VecInit(entries.map(_.io.arrayWrite.valid))
-  val awSelect2     = PriorityEncoder(awCandidates2)
-  io.arrayWrite := entries(awSelect2).io.arrayWrite
-  io.mshrWriting := awCandidates2.asUInt.orR
+  val awValids2 = VecInit(entries.map(_.io.arrayWrite.valid))
+  val awSelectOH2 = PriorityMux(awValids2.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
+  val awHasValid2 = awValids2.asUInt.orR
+  io.mshrWriting := awHasValid2
+ 
+  io.arrayWrite.valid := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.valid.asUInt)).orR
+  io.arrayWrite.idx   := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.idx))
+  io.arrayWrite.way   := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.way))
+  io.arrayWrite.tag   := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.tag))
+  io.arrayWrite.dirty := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.dirty))
+  io.arrayWrite.data  := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.data))
+  io.arrayWrite.wen   := Mux1H(awSelectOH2, entries.map(_.io.arrayWrite.wen))
  
   // === Replacer Touch 仲裁 ===
-  val rtCandidates = VecInit(entries.map(_.io.replacerTouch.valid))
-  val rtSelect     = PriorityEncoder(rtCandidates)
-  io.replacerTouch := entries(rtSelect).io.replacerTouch
+  val rtValids = VecInit(entries.map(_.io.replacerTouch.valid))
+  val rtSelectOH = PriorityMux(rtValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nMshrEntries) })
  
-  // AXI 默认信号
-  io.axi.ar.arready := entries(arSelect).io.ar.ready
-  io.axi.aw.awready := Mux(awValid, entries(awSelect).io.aw.ready, false.B)
-  io.axi.w.wready   := Mux(wCandidates.asUInt.orR, entries(wSelect).io.w.ready, false.B)
-  io.axi.b.bready   := Mux(io.axi.b.data.bvalid, entries(bId).io.b.ready, false.B)
+  io.replacerTouch.valid := Mux1H(rtSelectOH, entries.map(_.io.replacerTouch.valid.asUInt)).orR
+  io.replacerTouch.idx   := Mux1H(rtSelectOH, entries.map(_.io.replacerTouch.idx))
+  io.replacerTouch.way   := Mux1H(rtSelectOH, entries.map(_.io.replacerTouch.way))
 }

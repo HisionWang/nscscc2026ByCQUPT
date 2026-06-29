@@ -140,7 +140,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
 
   memory.io.redirect.valid := false.B
-  memory.io.redirect.bits.robIdx := 0.U
+  memory.io.redirect.bits.robIdx.value := 0.U
+  memory.io.redirect.bits.robIdx.flag := true.B
   
 
 
@@ -209,12 +210,12 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   
  
   // ---------- DCache / Uncache (黑盒占位) ----------
-  val dcache   = Module(new cache_BlackBox)
+  //val dcache   = Module(new cache_BlackBox)
   val uncache1 = Module(new cache_BlackBox)
   val uncache2 = Module(new cache_BlackBox)
  
-  dcache.io.cpu_if.req_addr  := 0.U
-  dcache.io.cpu_if.req_valid := false.B
+  //dcache.io.cpu_if.req_addr  := 0.U
+  //dcache.io.cpu_if.req_valid := false.B
   uncache1.io.cpu_if.req_addr  := 0.U
   uncache1.io.cpu_if.req_valid := false.B
   uncache2.io.cpu_if.req_addr  := 0.U
@@ -223,65 +224,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // ---------- AXI3 Crossbar ----------
   val axi_crossbar = Module(new AXI3Crossbar4to1)
  
-
-
- 
-  // ================================================================
-  // MMU / TLB 连接
-  // ================================================================
-  // ICache内部已有SimpleMMU, 此处Mmu模块作为独立的TLB查表单元
-  // 后续需要将ICache内部的SimpleMMU替换为此外部TLB连接
- 
-  // MMU请求: 来自前端ICache的虚拟地址转换
-  // 注意: 当前ICache内部使用SimpleMMU, 此处MMU作为独立模块预留
-  // 待ICache改造为外部MMU接口后, 连接如下:
-  //   frontend.icache内部MMU请求 → mmu.io.tlb_req
-  //   mmu.io.tlb_resp → frontend.icache内部MMU响应
- 
-  // MMU默认输入(暂不连接ICache, 等ICache接口改造)
-  // mmu.io.fromIcache.valid := false.B
-  // mmu.io.fromIcache.bits.vaddr := 0.U
- 
-  // MMU与CSR的交互
-  // CSR提供: 页表基址(PGD), ASID, 直接映射窗口(DMW), DA模式等
-//  mmu.io.csr_pgdl     := csr.io.csr_pgdl
-//  mmu.io.csr_pgdh     := csr.io.csr_pgdh
-//  mmu.io.csr_asid     := csr.io.csr_asid
-//  mmu.io.csr_crmd_da  := csr.io.csr_crmd_da
-//  mmu.io.csr_crmd_pg  := csr.io.csr_crmd_pg
-//  mmu.io.csr_dmw0     := csr.io.csr_dmw0
-//  mmu.io.csr_dmw1     := csr.io.csr_dmw1
- 
-  // TLB重填异常 → CSR
-  // 当MMU发生TLB缺失时, 需要触发异常进入OS处理TLB重填
-  // 后续连接到异常处理逻辑
- 
-  // ================================================================
-  // CSR 连接
-  // ================================================================
-  // CSR时钟复位
-//  csr.io.clk    := aclk
-//  csr.io.reset  := ~aresetn
-// 
-//  // CSR中断输入
-//  csr.io.intrpt := intrpt
-// 
-//  // CSR读写接口: 暂无后端执行级, 置为无效
-//  csr.io.csr_raddr := 0.U
-//  csr.io.csr_rdata <> DontCare
-//  csr.io.csr_wen   := false.B
-//  csr.io.csr_waddr := 0.U
-//  csr.io.csr_wdata := 0.U
-// 
-//  // CSR异常相关输入: 暂无后端
-//  csr.io.excp_flush  := false.B
-//  csr.io.ertn_flush  := false.B
-//  csr.io.excp_ecode  := 0.U
-//  csr.io.excp_vaddr  := 0.U
-//  csr.io.excp_paddr  := 0.U
-//  csr.io.tlbfill_en  := false.B
-//  csr.io.rand_index  := 0.U
- 
   // ================================================================
   // AXI3 Crossbar 连接
   // ================================================================
@@ -289,7 +231,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   axi_crossbar.io.in_icache   <> frontend.io.axi_master
  
   // DCache → Crossbar端口1 (黑盒占位)
-  axi_crossbar.io.in_dcache   <> dcache.io.axi_master
+  axi_crossbar.io.in_dcache   <> memory.io.axi
  
   // Uncache1 → Crossbar端口2 (黑盒占位)
   axi_crossbar.io.in_uncache1 <> uncache1.io.axi_master

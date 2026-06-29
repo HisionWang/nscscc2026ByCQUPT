@@ -44,8 +44,8 @@ trait HasCoreParameters {
   val wayBits     = log2Ceil(nWays)
   val blockOffBits = log2Ceil(blockBytes)
   val tagBits     = 32 - idxBits - blockOffBits
-  val icacheAxiMissId : Int = 0
-  val icacheAxiNucacheId : Int = 1
+  val icacheAxiMissId : Int = 12
+  val icacheAxiNucacheId : Int = 13
   val burstNum: Int = 16
 
   val  ibufDepth:  Int = 16  // 必须为2的次方倍

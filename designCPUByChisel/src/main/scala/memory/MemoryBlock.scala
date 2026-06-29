@@ -8,7 +8,8 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.backend.execute._
 import nscscc.mmu._
-
+import nscscc.mem.dcache.DCache
+import nscscc.axi._
 class ExeMmuResult(implicit p: Parameters) extends NSBundle {
   val exeRes      = new ExeResult
   val mmuRes     =Flipped( new MmuToSqResp )
@@ -53,12 +54,14 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
       val valid = Input(Bool())
       val sqIdx = Input(UInt(log2Ceil(SqSize).W))
     })
+
+    val axi = new AXI3MasterIO
  
     // ══════════════════════════════════════════
     //  重定向接口（预留）
     // ══════════════════════════════════════════
     val redirect = Flipped(Valid(new Bundle {
-      val robIdx = UInt(log2Ceil(RobSize).W)
+      val robIdx = new RobPtr(RobSize)
     }))
   })
  
@@ -138,14 +141,16 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  DCache 接口直连
   // ================================================================
-  loadQueue.io.dcacheReq.ready := 0.U
-  storeQueue.io.dcacheReq.ready := true.B
+  val dcache = Module(new DCache)
 
-  loadQueue.io.dcacheResp.valid := false.B
-  loadQueue.io.dcacheResp.bits.data := 0.U
-  //loadQueue.io.dcacheResp.bits.excpVec := 0.U
-  loadQueue.io.dcacheResp.bits.lqIdx := 0.U
-  //loadQueue.io.dcacheResp.bits.paddr := 0.U
+  dcache.io.loadReq <> loadQueue.io.dcacheReq
+  dcache.io.loadResp <> loadQueue.io.dcacheResp
+
+  dcache.io.storeReq <> storeQueue.io.dcacheReq
+  dcache.io.storeAck <> storeQueue.io.storeAck
+  dcache.io.axi <> io.axi
+  dcache.io.redirect <> io.redirect
+
   
 
   dontTouch(loadQueue.io.dcacheReq)

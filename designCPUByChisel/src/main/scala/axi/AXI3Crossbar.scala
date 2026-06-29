@@ -62,7 +62,7 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   // === R通道路由 (基于ID) ===
   
   // 提取ID用于路由
-  val r_id_route = io.out.r.data.rid(3, 2)  // 使用ID的高2位路由
+  val r_id_route = io.out.r.data.rid //(3, 2)  // 使用ID的高2位路由
   
   // === 修复2：R通道完全初始化 ===
   // 为所有R通道信号提供默认值
@@ -95,30 +95,42 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   io.in_uncache2.r.data.rlast := false.B
   
   // 3. 路由R通道数据
+
+
   when(io.out.r.data.rvalid) {
     switch(r_id_route) {
       is(0.U) { 
-        io.in_icache.r.data := io.out.r.data
+        io.in_dcache.r.data := io.out.r.data
       }
       is(1.U) { 
         io.in_dcache.r.data := io.out.r.data
       }
       is(2.U) { 
-        io.in_uncache1.r.data := io.out.r.data
+        io.in_dcache.r.data := io.out.r.data
       }
       is(3.U) { 
-        io.in_uncache2.r.data := io.out.r.data
+        io.in_dcache.r.data := io.out.r.data
       }
+
+      is(icacheAxiMissId.U) { 
+        io.in_icache.r.data := io.out.r.data
+      }
+      is(icacheAxiNucacheId.U) { 
+        io.in_icache.r.data := io.out.r.data
+      }
+
+
+
     }
   }
   
   // 4. R通道rready汇聚
   io.out.r.rready := Mux1H(
     Seq(
-      (r_id_route === 0.U) -> io.in_icache.r.rready,
-      (r_id_route === 1.U) -> io.in_dcache.r.rready,
-      (r_id_route === 2.U) -> io.in_uncache1.r.rready,
-      (r_id_route === 3.U) -> io.in_uncache2.r.rready
+      (r_id_route === icacheAxiMissId.U || r_id_route === icacheAxiNucacheId.U) -> io.in_icache.r.rready,
+      (r_id_route < icacheAxiNucacheId.U) -> io.in_dcache.r.rready,
+      (r_id_route === 14.U) -> io.in_uncache1.r.rready,
+      (r_id_route === 15.U) -> io.in_uncache2.r.rready
     )
   )
   
@@ -181,22 +193,34 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   // 3. 路由W通道数据
   when(aw_master_valid) {
     switch(aw_master_idx) {
+
       is(0.U) {
-        io.out.w.data := io.in_icache.w.data
-        io.in_icache.w.wready := io.out.w.wready
+        io.out.w.data := io.in_dcache.w.data
+        io.in_dcache.w.wready := io.out.w.wready
       }
       is(1.U) {
         io.out.w.data := io.in_dcache.w.data
         io.in_dcache.w.wready := io.out.w.wready
       }
       is(2.U) {
-        io.out.w.data := io.in_uncache1.w.data
-        io.in_uncache1.w.wready := io.out.w.wready
+        io.out.w.data := io.in_dcache.w.data
+        io.in_dcache.w.wready := io.out.w.wready
       }
       is(3.U) {
-        io.out.w.data := io.in_uncache2.w.data
-        io.in_uncache2.w.wready := io.out.w.wready
+        io.out.w.data := io.in_dcache.w.data
+        io.in_dcache.w.wready := io.out.w.wready
       }
+
+      is(icacheAxiMissId.U) { 
+        io.out.w.data := io.in_icache.w.data
+        io.in_icache.w.wready := io.out.w.wready
+      }
+      is(icacheAxiNucacheId.U) { 
+        io.out.w.data := io.in_icache.w.data
+        io.in_icache.w.wready := io.out.w.wready
+      }
+
+
     }
   }
   
@@ -228,27 +252,35 @@ class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
   when(io.out.b.data.bvalid) {
     switch(b_id_route) {
       is(0.U) { 
-        io.in_icache.b.data := io.out.b.data
+        io.in_dcache.b.data := io.out.b.data
       }
       is(1.U) { 
         io.in_dcache.b.data := io.out.b.data
       }
       is(2.U) { 
-        io.in_uncache1.b.data := io.out.b.data
+        io.in_dcache.b.data := io.out.b.data
       }
       is(3.U) { 
-        io.in_uncache2.b.data := io.out.b.data
+        io.in_dcache.b.data := io.out.b.data
+      }
+
+      is(icacheAxiMissId.U) { 
+        io.in_icache.b.data := io.out.b.data
+      }
+      is(icacheAxiNucacheId.U) { 
+        io.in_icache.b.data := io.out.b.data
       }
     }
   }
   
-  // 4. B通道bready汇聚
+  // 4. B通道bready汇聚 b_id_route
   io.out.b.bready := Mux1H(
     Seq(
-      (b_id_route === 0.U) -> io.in_icache.b.bready,
-      (b_id_route === 1.U) -> io.in_dcache.b.bready,
-      (b_id_route === 2.U) -> io.in_uncache1.b.bready,
-      (b_id_route === 3.U) -> io.in_uncache2.b.bready
+      (b_id_route === icacheAxiMissId.U || b_id_route === icacheAxiNucacheId.U) -> io.in_icache.b.bready,
+      (b_id_route < icacheAxiNucacheId.U) -> io.in_dcache.b.bready,
+      (b_id_route === 14.U) -> io.in_uncache1.b.bready,
+      (b_id_route === 15.U) -> io.in_uncache2.b.bready
     )
   )
+
 }
