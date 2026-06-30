@@ -45,7 +45,6 @@ module DCacheMSHR(
   output         io_loadResp_valid, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
   output [3:0]   io_loadResp_bits_lqIdx, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
   output [31:0]  io_loadResp_bits_data, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
-  input          io_storeAck_ready, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
   output         io_storeAck_valid, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
   output [3:0]   io_storeAck_bits_sqIdx, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
   output         io_arrayWrite_valid, // @[src/main/scala/memory/dcache/DCacheMSHR.scala 263:14]
@@ -831,7 +830,7 @@ module DCacheMSHR(
   assign entries_0_io_w_ready = io_axi_w_wready & wSelectOH[0]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 386:34]
   assign entries_0_io_b_valid = io_axi_b_data_bvalid & bIdOH[0]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 393:46]
   assign entries_0_io_loadResp_ready = io_loadResp_ready & lrSelectOH[0]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 408:50]
-  assign entries_0_io_storeAck_ready = io_storeAck_ready & saSelectOH[0]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:50]
+  assign entries_0_io_storeAck_ready = saSelectOH[0]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:63]
   assign entries_1_clock = clock;
   assign entries_1_reset = reset;
   assign entries_1_io_id = 2'h1; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 317:23]
@@ -854,7 +853,7 @@ module DCacheMSHR(
   assign entries_1_io_w_ready = io_axi_w_wready & wSelectOH[1]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 386:34]
   assign entries_1_io_b_valid = io_axi_b_data_bvalid & bIdOH[1]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 393:46]
   assign entries_1_io_loadResp_ready = io_loadResp_ready & lrSelectOH[1]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 408:50]
-  assign entries_1_io_storeAck_ready = io_storeAck_ready & saSelectOH[1]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:50]
+  assign entries_1_io_storeAck_ready = saSelectOH[1]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:63]
   assign entries_2_clock = clock;
   assign entries_2_reset = reset;
   assign entries_2_io_id = 2'h2; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 317:23]
@@ -877,7 +876,7 @@ module DCacheMSHR(
   assign entries_2_io_w_ready = io_axi_w_wready & wSelectOH[2]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 386:34]
   assign entries_2_io_b_valid = io_axi_b_data_bvalid & bIdOH[2]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 393:46]
   assign entries_2_io_loadResp_ready = io_loadResp_ready & lrSelectOH[2]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 408:50]
-  assign entries_2_io_storeAck_ready = io_storeAck_ready & saSelectOH[2]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:50]
+  assign entries_2_io_storeAck_ready = saSelectOH[2]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:63]
   assign entries_3_clock = clock;
   assign entries_3_reset = reset;
   assign entries_3_io_id = 2'h3; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 317:23]
@@ -900,5 +899,5 @@ module DCacheMSHR(
   assign entries_3_io_w_ready = io_axi_w_wready & wSelectOH[3]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 386:34]
   assign entries_3_io_b_valid = io_axi_b_data_bvalid & bIdOH[3]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 393:46]
   assign entries_3_io_loadResp_ready = io_loadResp_ready & lrSelectOH[3]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 408:50]
-  assign entries_3_io_storeAck_ready = io_storeAck_ready & saSelectOH[3]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:50]
+  assign entries_3_io_storeAck_ready = saSelectOH[3]; // @[src/main/scala/memory/dcache/DCacheMSHR.scala 420:63]
 endmodule

@@ -165,7 +165,7 @@ class DCache(implicit p: Parameters) extends NSModule {
     s1_sqIdx     := Mux(s0_storeFire, io.storeReq.bits.sqIdx, 0.U)
     s1_robIdx    := Mux(s0_loadFire, io.loadReq.bits.robIdx, 0.U.asTypeOf(new RobPtr(RobSize)))
     s1_lsuOp     := Mux(s0_loadFire, io.loadReq.bits.lsuOp, io.storeReq.bits.lsuOp)
-    s1_cacheable := Mux(s0_loadFire, io.loadReq.bits.cacheable, false.B)
+    s1_cacheable := false.B //Mux(s0_loadFire, io.loadReq.bits.cacheable, false.B)
     s1_storeData := Mux(s0_storeFire, io.storeReq.bits.data, 0.U)
   }.elsewhen(s1_ready) {
     s1_valid := false.B
@@ -192,7 +192,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   val s1_hitWay = OHToUInt(s1_tagHits)
   val s1_victimWay = replacer.io.victim.resp
  
-  val s1_canGo = s2_ready && array.io.read.validOut
+  val s1_canGo = s2_ready //&& array.io.read.validOut
   s1_ready := !s1_valid || s1_canGo
  
   // s1 → s2

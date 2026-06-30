@@ -26,10 +26,7 @@ module DCacheArray(
   input  [17:0]  io_write_tag, // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
   input          io_write_dirty, // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
   input  [511:0] io_write_data, // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
-  input          io_write_wen, // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
-  input          io_metaWrite_valid, // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
-  input  [7:0]   io_metaWrite_idx, // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
-  input  [1:0]   io_metaWrite_way // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
+  input          io_write_wen // @[src/main/scala/memory/dcache/DCacheArray.scala 12:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -106,28 +103,15 @@ module DCacheArray(
   wire [3:0] writeWayOneHot = 4'h1 << io_write_way; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
   wire  waySel = writeWayOneHot[0]; // @[src/main/scala/memory/dcache/DCacheArray.scala 74:32]
   wire [19:0] metaWriteData = {1'h1,io_write_dirty,io_write_tag}; // @[src/main/scala/memory/dcache/DCacheArray.scala 75:28]
-  wire  _T = io_write_valid & waySel; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
+  wire  metaBRAMs_0_wr_en = io_write_valid & waySel; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
   wire [7:0] _GEN_1 = io_write_wen ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 86:26 80:28 88:32]
   wire [511:0] _GEN_2 = io_write_wen ? io_write_data : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 86:26 81:28 89:32]
-  wire [7:0] _GEN_4 = io_write_valid & waySel ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
-  wire [19:0] _GEN_5 = io_write_valid & waySel ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
-  wire [3:0] _mwSel_T = 4'h1 << io_metaWrite_way; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
-  wire  mwSel = _mwSel_T[0]; // @[src/main/scala/memory/dcache/DCacheArray.scala 96:43]
   wire  waySel_1 = writeWayOneHot[1]; // @[src/main/scala/memory/dcache/DCacheArray.scala 74:32]
-  wire  _T_5 = io_write_valid & waySel_1; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
-  wire [7:0] _GEN_13 = io_write_valid & waySel_1 ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
-  wire [19:0] _GEN_14 = io_write_valid & waySel_1 ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
-  wire  mwSel_1 = _mwSel_T[1]; // @[src/main/scala/memory/dcache/DCacheArray.scala 96:43]
+  wire  metaBRAMs_1_wr_en = io_write_valid & waySel_1; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
   wire  waySel_2 = writeWayOneHot[2]; // @[src/main/scala/memory/dcache/DCacheArray.scala 74:32]
-  wire  _T_10 = io_write_valid & waySel_2; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
-  wire [7:0] _GEN_22 = io_write_valid & waySel_2 ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
-  wire [19:0] _GEN_23 = io_write_valid & waySel_2 ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
-  wire  mwSel_2 = _mwSel_T[2]; // @[src/main/scala/memory/dcache/DCacheArray.scala 96:43]
+  wire  metaBRAMs_2_wr_en = io_write_valid & waySel_2; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
   wire  waySel_3 = writeWayOneHot[3]; // @[src/main/scala/memory/dcache/DCacheArray.scala 74:32]
-  wire  _T_15 = io_write_valid & waySel_3; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
-  wire [7:0] _GEN_31 = io_write_valid & waySel_3 ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
-  wire [19:0] _GEN_32 = io_write_valid & waySel_3 ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
-  wire  mwSel_3 = _mwSel_T[3]; // @[src/main/scala/memory/dcache/DCacheArray.scala 96:43]
+  wire  metaBRAMs_3_wr_en = io_write_valid & waySel_3; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
   SimpleBlockRAM_12 SimpleBlockRAM ( // @[src/main/scala/memory/dcache/DCacheArray.scala 43:11]
     .clock(SimpleBlockRAM_clock),
     .reset(SimpleBlockRAM_reset),
@@ -227,58 +211,58 @@ module DCacheArray(
   assign io_read_validOut = io_read_validOut_REG; // @[src/main/scala/memory/dcache/DCacheArray.scala 69:20]
   assign SimpleBlockRAM_clock = clock;
   assign SimpleBlockRAM_reset = reset;
-  assign SimpleBlockRAM_io_wr_en = io_metaWrite_valid & mwSel & ~_T | _T; // @[src/main/scala/memory/dcache/DCacheArray.scala 97:70 99:30]
-  assign SimpleBlockRAM_io_wr_addr = io_metaWrite_valid & mwSel & ~_T ? io_metaWrite_idx : _GEN_4; // @[src/main/scala/memory/dcache/DCacheArray.scala 100:30 97:70]
-  assign SimpleBlockRAM_io_wr_data = io_metaWrite_valid & mwSel & ~_T ? 20'h0 : _GEN_5; // @[src/main/scala/memory/dcache/DCacheArray.scala 101:30 97:70]
+  assign SimpleBlockRAM_io_wr_en = io_write_valid & waySel; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
+  assign SimpleBlockRAM_io_wr_addr = metaBRAMs_0_wr_en ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
+  assign SimpleBlockRAM_io_wr_data = metaBRAMs_0_wr_en ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
   assign SimpleBlockRAM_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 52:28]
   assign SimpleBlockRAM_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 53:28]
   assign SimpleBlockRAM_1_clock = clock;
   assign SimpleBlockRAM_1_reset = reset;
-  assign SimpleBlockRAM_1_io_wr_en = io_metaWrite_valid & mwSel_1 & ~_T_5 | _T_5; // @[src/main/scala/memory/dcache/DCacheArray.scala 97:70 99:30]
-  assign SimpleBlockRAM_1_io_wr_addr = io_metaWrite_valid & mwSel_1 & ~_T_5 ? io_metaWrite_idx : _GEN_13; // @[src/main/scala/memory/dcache/DCacheArray.scala 100:30 97:70]
-  assign SimpleBlockRAM_1_io_wr_data = io_metaWrite_valid & mwSel_1 & ~_T_5 ? 20'h0 : _GEN_14; // @[src/main/scala/memory/dcache/DCacheArray.scala 101:30 97:70]
+  assign SimpleBlockRAM_1_io_wr_en = io_write_valid & waySel_1; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
+  assign SimpleBlockRAM_1_io_wr_addr = metaBRAMs_1_wr_en ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
+  assign SimpleBlockRAM_1_io_wr_data = metaBRAMs_1_wr_en ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
   assign SimpleBlockRAM_1_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 52:28]
   assign SimpleBlockRAM_1_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 53:28]
   assign SimpleBlockRAM_2_clock = clock;
   assign SimpleBlockRAM_2_reset = reset;
-  assign SimpleBlockRAM_2_io_wr_en = io_metaWrite_valid & mwSel_2 & ~_T_10 | _T_10; // @[src/main/scala/memory/dcache/DCacheArray.scala 97:70 99:30]
-  assign SimpleBlockRAM_2_io_wr_addr = io_metaWrite_valid & mwSel_2 & ~_T_10 ? io_metaWrite_idx : _GEN_22; // @[src/main/scala/memory/dcache/DCacheArray.scala 100:30 97:70]
-  assign SimpleBlockRAM_2_io_wr_data = io_metaWrite_valid & mwSel_2 & ~_T_10 ? 20'h0 : _GEN_23; // @[src/main/scala/memory/dcache/DCacheArray.scala 101:30 97:70]
+  assign SimpleBlockRAM_2_io_wr_en = io_write_valid & waySel_2; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
+  assign SimpleBlockRAM_2_io_wr_addr = metaBRAMs_2_wr_en ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
+  assign SimpleBlockRAM_2_io_wr_data = metaBRAMs_2_wr_en ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
   assign SimpleBlockRAM_2_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 52:28]
   assign SimpleBlockRAM_2_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 53:28]
   assign SimpleBlockRAM_3_clock = clock;
   assign SimpleBlockRAM_3_reset = reset;
-  assign SimpleBlockRAM_3_io_wr_en = io_metaWrite_valid & mwSel_3 & ~_T_15 | _T_15; // @[src/main/scala/memory/dcache/DCacheArray.scala 97:70 99:30]
-  assign SimpleBlockRAM_3_io_wr_addr = io_metaWrite_valid & mwSel_3 & ~_T_15 ? io_metaWrite_idx : _GEN_31; // @[src/main/scala/memory/dcache/DCacheArray.scala 100:30 97:70]
-  assign SimpleBlockRAM_3_io_wr_data = io_metaWrite_valid & mwSel_3 & ~_T_15 ? 20'h0 : _GEN_32; // @[src/main/scala/memory/dcache/DCacheArray.scala 101:30 97:70]
+  assign SimpleBlockRAM_3_io_wr_en = io_write_valid & waySel_3; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:25]
+  assign SimpleBlockRAM_3_io_wr_addr = metaBRAMs_3_wr_en ? io_write_idx : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 77:28 82:36 84:30]
+  assign SimpleBlockRAM_3_io_wr_data = metaBRAMs_3_wr_en ? metaWriteData : 20'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 78:28 82:36 85:30]
   assign SimpleBlockRAM_3_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 52:28]
   assign SimpleBlockRAM_3_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 42:26 53:28]
   assign SimpleBlockRAM_4_clock = clock;
   assign SimpleBlockRAM_4_reset = reset;
-  assign SimpleBlockRAM_4_io_wr_en = io_write_valid & waySel & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
-  assign SimpleBlockRAM_4_io_wr_addr = io_write_valid & waySel ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
-  assign SimpleBlockRAM_4_io_wr_data = io_write_valid & waySel ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
+  assign SimpleBlockRAM_4_io_wr_en = metaBRAMs_0_wr_en & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
+  assign SimpleBlockRAM_4_io_wr_addr = metaBRAMs_0_wr_en ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
+  assign SimpleBlockRAM_4_io_wr_data = metaBRAMs_0_wr_en ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
   assign SimpleBlockRAM_4_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 54:28]
   assign SimpleBlockRAM_4_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 55:28]
   assign SimpleBlockRAM_5_clock = clock;
   assign SimpleBlockRAM_5_reset = reset;
-  assign SimpleBlockRAM_5_io_wr_en = io_write_valid & waySel_1 & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
-  assign SimpleBlockRAM_5_io_wr_addr = io_write_valid & waySel_1 ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
-  assign SimpleBlockRAM_5_io_wr_data = io_write_valid & waySel_1 ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
+  assign SimpleBlockRAM_5_io_wr_en = metaBRAMs_1_wr_en & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
+  assign SimpleBlockRAM_5_io_wr_addr = metaBRAMs_1_wr_en ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
+  assign SimpleBlockRAM_5_io_wr_data = metaBRAMs_1_wr_en ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
   assign SimpleBlockRAM_5_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 54:28]
   assign SimpleBlockRAM_5_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 55:28]
   assign SimpleBlockRAM_6_clock = clock;
   assign SimpleBlockRAM_6_reset = reset;
-  assign SimpleBlockRAM_6_io_wr_en = io_write_valid & waySel_2 & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
-  assign SimpleBlockRAM_6_io_wr_addr = io_write_valid & waySel_2 ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
-  assign SimpleBlockRAM_6_io_wr_data = io_write_valid & waySel_2 ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
+  assign SimpleBlockRAM_6_io_wr_en = metaBRAMs_2_wr_en & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
+  assign SimpleBlockRAM_6_io_wr_addr = metaBRAMs_2_wr_en ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
+  assign SimpleBlockRAM_6_io_wr_data = metaBRAMs_2_wr_en ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
   assign SimpleBlockRAM_6_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 54:28]
   assign SimpleBlockRAM_6_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 55:28]
   assign SimpleBlockRAM_7_clock = clock;
   assign SimpleBlockRAM_7_reset = reset;
-  assign SimpleBlockRAM_7_io_wr_en = io_write_valid & waySel_3 & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
-  assign SimpleBlockRAM_7_io_wr_addr = io_write_valid & waySel_3 ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
-  assign SimpleBlockRAM_7_io_wr_data = io_write_valid & waySel_3 ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
+  assign SimpleBlockRAM_7_io_wr_en = metaBRAMs_3_wr_en & io_write_wen; // @[src/main/scala/memory/dcache/DCacheArray.scala 82:36 93:30]
+  assign SimpleBlockRAM_7_io_wr_addr = metaBRAMs_3_wr_en ? _GEN_1 : 8'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 80:28 82:36]
+  assign SimpleBlockRAM_7_io_wr_data = metaBRAMs_3_wr_en ? _GEN_2 : 512'h0; // @[src/main/scala/memory/dcache/DCacheArray.scala 81:28 82:36]
   assign SimpleBlockRAM_7_io_rd_en = io_read_valid; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 54:28]
   assign SimpleBlockRAM_7_io_rd_addr = io_read_idx; // @[src/main/scala/memory/dcache/DCacheArray.scala 46:26 55:28]
   always @(posedge clock) begin

@@ -59,20 +59,20 @@ module DCache(
   reg [31:0] _RAND_8;
   reg [31:0] _RAND_9;
   reg [31:0] _RAND_10;
-  reg [31:0] _RAND_11;
-  reg [511:0] _RAND_12;
+  reg [511:0] _RAND_11;
+  reg [31:0] _RAND_12;
   reg [31:0] _RAND_13;
   reg [31:0] _RAND_14;
-  reg [31:0] _RAND_15;
-  reg [511:0] _RAND_16;
+  reg [511:0] _RAND_15;
+  reg [31:0] _RAND_16;
   reg [31:0] _RAND_17;
   reg [31:0] _RAND_18;
-  reg [31:0] _RAND_19;
-  reg [511:0] _RAND_20;
+  reg [511:0] _RAND_19;
+  reg [31:0] _RAND_20;
   reg [31:0] _RAND_21;
   reg [31:0] _RAND_22;
-  reg [31:0] _RAND_23;
-  reg [511:0] _RAND_24;
+  reg [511:0] _RAND_23;
+  reg [31:0] _RAND_24;
   reg [31:0] _RAND_25;
   reg [31:0] _RAND_26;
   reg [31:0] _RAND_27;
@@ -84,14 +84,11 @@ module DCache(
   reg [31:0] _RAND_33;
   reg [31:0] _RAND_34;
   reg [31:0] _RAND_35;
-  reg [31:0] _RAND_36;
-  reg [31:0] _RAND_37;
+  reg [511:0] _RAND_36;
+  reg [511:0] _RAND_37;
   reg [511:0] _RAND_38;
   reg [511:0] _RAND_39;
   reg [511:0] _RAND_40;
-  reg [511:0] _RAND_41;
-  reg [511:0] _RAND_42;
-  reg [31:0] _RAND_43;
 `endif // RANDOMIZE_REG_INIT
   wire  array_clock; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
   wire  array_reset; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
@@ -121,9 +118,6 @@ module DCache(
   wire  array_io_write_dirty; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
   wire [511:0] array_io_write_data; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
   wire  array_io_write_wen; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
-  wire  array_io_metaWrite_valid; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
-  wire [7:0] array_io_metaWrite_idx; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
-  wire [1:0] array_io_metaWrite_way; // @[src/main/scala/memory/dcache/DCache.scala 59:24]
   wire  replacer_clock; // @[src/main/scala/memory/dcache/DCache.scala 60:24]
   wire  replacer_reset; // @[src/main/scala/memory/dcache/DCache.scala 60:24]
   wire  replacer_io_touch_valid; // @[src/main/scala/memory/dcache/DCache.scala 60:24]
@@ -178,7 +172,6 @@ module DCache(
   wire  mshr_io_loadResp_valid; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
   wire [3:0] mshr_io_loadResp_bits_lqIdx; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
   wire [31:0] mshr_io_loadResp_bits_data; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
-  wire  mshr_io_storeAck_ready; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
   wire  mshr_io_storeAck_valid; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
   wire [3:0] mshr_io_storeAck_bits_sqIdx; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
   wire  mshr_io_arrayWrite_valid; // @[src/main/scala/memory/dcache/DCache.scala 61:24]
@@ -205,7 +198,6 @@ module DCache(
   reg [3:0] s1_lqIdx; // @[src/main/scala/memory/dcache/DCache.scala 89:26]
   reg [3:0] s1_sqIdx; // @[src/main/scala/memory/dcache/DCache.scala 90:26]
   reg [3:0] s1_lsuOp; // @[src/main/scala/memory/dcache/DCache.scala 92:26]
-  reg  s1_cacheable; // @[src/main/scala/memory/dcache/DCache.scala 93:26]
   reg [31:0] s1_storeData; // @[src/main/scala/memory/dcache/DCache.scala 94:26]
   reg  s1_arrayData_ways_0_valid; // @[src/main/scala/memory/dcache/DCache.scala 95:26]
   reg  s1_arrayData_ways_0_dirty; // @[src/main/scala/memory/dcache/DCache.scala 95:26]
@@ -229,7 +221,6 @@ module DCache(
   reg [3:0] s2_lqIdx; // @[src/main/scala/memory/dcache/DCache.scala 101:26]
   reg [3:0] s2_sqIdx; // @[src/main/scala/memory/dcache/DCache.scala 102:26]
   reg [3:0] s2_lsuOp; // @[src/main/scala/memory/dcache/DCache.scala 104:26]
-  reg  s2_cacheable; // @[src/main/scala/memory/dcache/DCache.scala 105:26]
   reg [31:0] s2_storeData; // @[src/main/scala/memory/dcache/DCache.scala 106:26]
   reg  s2_hit; // @[src/main/scala/memory/dcache/DCache.scala 107:26]
   reg [1:0] s2_hitWay; // @[src/main/scala/memory/dcache/DCache.scala 108:26]
@@ -241,20 +232,15 @@ module DCache(
   reg [511:0] s2_arrayData_ways_1_data; // @[src/main/scala/memory/dcache/DCache.scala 113:26]
   reg [511:0] s2_arrayData_ways_2_data; // @[src/main/scala/memory/dcache/DCache.scala 113:26]
   reg [511:0] s2_arrayData_ways_3_data; // @[src/main/scala/memory/dcache/DCache.scala 113:26]
-  reg  s2_isUncache; // @[src/main/scala/memory/dcache/DCache.scala 114:26]
+  wire  _s1_flush_T_3 = 1'h0; // @[src/main/scala/util/CircularQueuePtr.scala 129:18]
   wire  _s2_flush_T = s2_valid & s2_isLoad; // @[src/main/scala/memory/dcache/DCache.scala 124:27]
   wire  _s0_ready_T = ~s1_valid; // @[src/main/scala/memory/dcache/DCache.scala 134:15]
   wire  pipeLoadHitValid = _s2_flush_T & s2_hit; // @[src/main/scala/memory/dcache/DCache.scala 250:48]
-  wire  _pipeStoreHitValid_T_3 = ~s2_isUncache; // @[src/main/scala/memory/dcache/DCache.scala 260:63]
-  wire  pipeStoreHitValid = s2_valid & ~s2_isLoad & s2_hit & ~s2_isUncache; // @[src/main/scala/memory/dcache/DCache.scala 260:60]
-  wire  _s2_ready_T = pipeLoadHitValid | pipeStoreHitValid; // @[src/main/scala/memory/dcache/DCache.scala 337:30]
-  wire  s2_miss = s2_valid & s2_cacheable & ~s2_hit & _pipeStoreHitValid_T_3; // @[src/main/scala/memory/dcache/DCache.scala 228:55]
-  wire  s2_needMshr = s2_valid & (s2_miss | s2_isUncache); // @[src/main/scala/memory/dcache/DCache.scala 280:30]
+  wire  s2_miss = 1'h0; // @[src/main/scala/memory/dcache/DCache.scala 228:55]
   wire  _s2_mshrAccepted_T = mshr_io_req_ready & mshr_io_req_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire  s2_mshrAccepted = s2_needMshr & _s2_mshrAccepted_T; // @[src/main/scala/memory/dcache/DCache.scala 334:37]
-  wire  s2_ready = pipeLoadHitValid | pipeStoreHitValid | s2_mshrAccepted | ~s2_valid; // @[src/main/scala/memory/dcache/DCache.scala 337:82]
-  wire  s1_canGo = s2_ready & array_io_read_validOut; // @[src/main/scala/memory/dcache/DCache.scala 195:27]
-  wire  s1_ready = _s0_ready_T | s1_canGo; // @[src/main/scala/memory/dcache/DCache.scala 196:25]
+  wire  s2_mshrAccepted = s2_valid & _s2_mshrAccepted_T; // @[src/main/scala/memory/dcache/DCache.scala 334:37]
+  wire  s2_ready = pipeLoadHitValid | s2_mshrAccepted | ~s2_valid; // @[src/main/scala/memory/dcache/DCache.scala 337:82]
+  wire  s1_ready = _s0_ready_T | s2_ready; // @[src/main/scala/memory/dcache/DCache.scala 196:25]
   wire  s0_ready = ~s1_valid | s1_ready; // @[src/main/scala/memory/dcache/DCache.scala 134:25]
   wire  _s0_loadFire_T_1 = ~mshr_io_mshrWriting; // @[src/main/scala/memory/dcache/DCache.scala 139:50]
   wire  s0_loadFire = loadSelected & s0_ready & ~mshr_io_mshrWriting; // @[src/main/scala/memory/dcache/DCache.scala 139:47]
@@ -266,19 +252,17 @@ module DCache(
   wire  _GEN_2 = s1_ready ? 1'h0 : s1_valid; // @[src/main/scala/memory/dcache/DCache.scala 170:24 171:14 86:30]
   wire  _GEN_3 = s0_fire | _GEN_2; // @[src/main/scala/memory/dcache/DCache.scala 160:23 161:18]
   wire [17:0] s1_ptag = s1_paddr[31:14]; // @[src/main/scala/memory/dcache/DCache.scala 178:27]
-  wire  s1_isUncache = ~s1_cacheable; // @[src/main/scala/memory/dcache/DCache.scala 179:22]
   wire  s1_tagHits_0 = s1_arrayData_ways_0_valid & s1_arrayData_ways_0_tag == s1_ptag; // @[src/main/scala/memory/dcache/DCache.scala 189:49]
   wire  s1_tagHits_1 = s1_arrayData_ways_1_valid & s1_arrayData_ways_1_tag == s1_ptag; // @[src/main/scala/memory/dcache/DCache.scala 189:49]
   wire  s1_tagHits_2 = s1_arrayData_ways_2_valid & s1_arrayData_ways_2_tag == s1_ptag; // @[src/main/scala/memory/dcache/DCache.scala 189:49]
   wire  s1_tagHits_3 = s1_arrayData_ways_3_valid & s1_arrayData_ways_3_tag == s1_ptag; // @[src/main/scala/memory/dcache/DCache.scala 189:49]
   wire [3:0] _s1_hit_T = {s1_tagHits_3,s1_tagHits_2,s1_tagHits_1,s1_tagHits_0}; // @[src/main/scala/memory/dcache/DCache.scala 191:30]
-  wire  s1_hit = |_s1_hit_T & s1_cacheable; // @[src/main/scala/memory/dcache/DCache.scala 191:41]
   wire [1:0] s1_hitWay_hi_1 = _s1_hit_T[3:2]; // @[src/main/scala/chisel3/util/OneHot.scala 30:18]
   wire [1:0] s1_hitWay_lo_1 = _s1_hit_T[1:0]; // @[src/main/scala/chisel3/util/OneHot.scala 31:18]
   wire [1:0] _s1_hitWay_T_2 = s1_hitWay_hi_1 | s1_hitWay_lo_1; // @[src/main/scala/chisel3/util/OneHot.scala 32:28]
   wire [1:0] s1_hitWay = {|s1_hitWay_hi_1,_s1_hitWay_T_2[1]}; // @[src/main/scala/chisel3/util/OneHot.scala 32:10]
   wire  _GEN_51 = s2_ready ? 1'h0 : s2_valid; // @[src/main/scala/memory/dcache/DCache.scala 219:24 220:14 98:30]
-  wire  _GEN_52 = s1_valid & s1_canGo | _GEN_51; // @[src/main/scala/memory/dcache/DCache.scala 201:49 202:20]
+  wire  _GEN_52 = s1_valid & s2_ready | _GEN_51; // @[src/main/scala/memory/dcache/DCache.scala 201:49 202:20]
   wire [7:0] s2_setIdx = s2_paddr[13:6]; // @[src/main/scala/memory/dcache/DCache.scala 226:27]
   wire [17:0] s2_ptag = s2_paddr[31:14]; // @[src/main/scala/memory/dcache/DCache.scala 227:27]
   wire [3:0] s2_wordOff = s2_paddr[5:2]; // @[src/main/scala/memory/dcache/DCache.scala 232:28]
@@ -344,7 +328,7 @@ module DCache(
     s2_mergedWords_2,s2_mergedWords_1,s2_mergedWords_0}; // @[src/main/scala/memory/dcache/DCache.scala 270:26]
   wire [511:0] s2_mergedLine = {s2_mergedWords_15,s2_mergedWords_14,s2_mergedWords_13,s2_mergedWords_12,
     s2_mergedWords_11,s2_mergedWords_10,s2_mergedWords_9,s2_mergedWords_8,s2_mergedLine_lo}; // @[src/main/scala/memory/dcache/DCache.scala 270:26]
-  wire [1:0] _mshrReq_reqType_T = {s2_isUncache,s2_isLoad}; // @[src/main/scala/memory/dcache/DCache.scala 294:35]
+  wire [1:0] _mshrReq_reqType_T = {1'h1,s2_isLoad}; // @[src/main/scala/memory/dcache/DCache.scala 294:35]
   wire [2:0] _mshrReq_reqType_T_6 = 2'h3 == _mshrReq_reqType_T ? 3'h3 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
   wire [2:0] _mshrReq_reqType_T_8 = 2'h2 == _mshrReq_reqType_T ? 3'h4 : _mshrReq_reqType_T_6; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
   wire [2:0] _mshrReq_reqType_T_10 = 2'h1 == _mshrReq_reqType_T ? 3'h0 : _mshrReq_reqType_T_8; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
@@ -376,10 +360,7 @@ module DCache(
     .io_write_tag(array_io_write_tag),
     .io_write_dirty(array_io_write_dirty),
     .io_write_data(array_io_write_data),
-    .io_write_wen(array_io_write_wen),
-    .io_metaWrite_valid(array_io_metaWrite_valid),
-    .io_metaWrite_idx(array_io_metaWrite_idx),
-    .io_metaWrite_way(array_io_metaWrite_way)
+    .io_write_wen(array_io_write_wen)
   );
   ICacheReplacer_1 replacer ( // @[src/main/scala/memory/dcache/DCache.scala 60:24]
     .clock(replacer_clock),
@@ -438,7 +419,6 @@ module DCache(
     .io_loadResp_valid(mshr_io_loadResp_valid),
     .io_loadResp_bits_lqIdx(mshr_io_loadResp_bits_lqIdx),
     .io_loadResp_bits_data(mshr_io_loadResp_bits_data),
-    .io_storeAck_ready(mshr_io_storeAck_ready),
     .io_storeAck_valid(mshr_io_storeAck_valid),
     .io_storeAck_bits_sqIdx(mshr_io_storeAck_bits_sqIdx),
     .io_arrayWrite_valid(mshr_io_arrayWrite_valid),
@@ -458,8 +438,8 @@ module DCache(
   assign io_loadResp_bits_lqIdx = pipeLoadHitValid ? s2_lqIdx : mshr_io_loadResp_bits_lqIdx; // @[src/main/scala/memory/dcache/DCache.scala 357:37]
   assign io_loadResp_bits_data = pipeLoadHitValid ? s2_shiftedData : mshr_io_loadResp_bits_data; // @[src/main/scala/memory/dcache/DCache.scala 358:37]
   assign io_storeReq_ready = _io_loadReq_ready_T_1 & storeSelected; // @[src/main/scala/memory/dcache/DCache.scala 144:48]
-  assign io_storeAck_valid = pipeStoreHitValid | mshr_io_storeAck_valid; // @[src/main/scala/memory/dcache/DCache.scala 363:53]
-  assign io_storeAck_bits_sqIdx = pipeStoreHitValid ? s2_sqIdx : mshr_io_storeAck_bits_sqIdx; // @[src/main/scala/memory/dcache/DCache.scala 364:37]
+  assign io_storeAck_valid = mshr_io_storeAck_valid; // @[src/main/scala/memory/dcache/DCache.scala 363:53]
+  assign io_storeAck_bits_sqIdx = mshr_io_storeAck_bits_sqIdx; // @[src/main/scala/memory/dcache/DCache.scala 364:37]
   assign io_axi_ar_data_arid = mshr_io_axi_ar_data_arid; // @[src/main/scala/memory/dcache/DCache.scala 394:10]
   assign io_axi_ar_data_araddr = mshr_io_axi_ar_data_araddr; // @[src/main/scala/memory/dcache/DCache.scala 394:10]
   assign io_axi_ar_data_arlen = mshr_io_axi_ar_data_arlen; // @[src/main/scala/memory/dcache/DCache.scala 394:10]
@@ -483,26 +463,23 @@ module DCache(
   assign array_reset = reset;
   assign array_io_read_valid = s0_fire & _array_io_read_valid_T; // @[src/main/scala/memory/dcache/DCache.scala 150:34]
   assign array_io_read_idx = s0_paddr[13:6]; // @[src/main/scala/memory/dcache/DCache.scala 148:27]
-  assign array_io_write_valid = mshr_io_arrayWrite_valid | pipeStoreHitValid; // @[src/main/scala/memory/dcache/DCache.scala 314:24 374:30 375:26]
+  assign array_io_write_valid = mshr_io_arrayWrite_valid; // @[src/main/scala/memory/dcache/DCache.scala 314:24 374:30 375:26]
   assign array_io_write_idx = mshr_io_arrayWrite_valid ? mshr_io_arrayWrite_idx : s2_setIdx; // @[src/main/scala/memory/dcache/DCache.scala 315:24 374:30 376:26]
   assign array_io_write_way = mshr_io_arrayWrite_valid ? mshr_io_arrayWrite_way : s2_hitWay; // @[src/main/scala/memory/dcache/DCache.scala 316:24 374:30 377:26]
   assign array_io_write_tag = mshr_io_arrayWrite_valid ? mshr_io_arrayWrite_tag : s2_ptag; // @[src/main/scala/memory/dcache/DCache.scala 317:24 374:30 378:26]
   assign array_io_write_dirty = mshr_io_arrayWrite_valid ? mshr_io_arrayWrite_dirty : 1'h1; // @[src/main/scala/memory/dcache/DCache.scala 318:24 374:30 379:26]
   assign array_io_write_data = mshr_io_arrayWrite_valid ? mshr_io_arrayWrite_data : s2_mergedLine; // @[src/main/scala/memory/dcache/DCache.scala 319:24 374:30 380:26]
   assign array_io_write_wen = mshr_io_arrayWrite_valid ? mshr_io_arrayWrite_wen : 1'h1; // @[src/main/scala/memory/dcache/DCache.scala 320:24 374:30 381:26]
-  assign array_io_metaWrite_valid = s2_miss & _pipeStoreHitValid_T_3 & mshr_io_req_ready; // @[src/main/scala/memory/dcache/DCache.scala 306:60]
-  assign array_io_metaWrite_idx = s2_paddr[13:6]; // @[src/main/scala/memory/dcache/DCache.scala 226:27]
-  assign array_io_metaWrite_way = s2_victimWay; // @[src/main/scala/memory/dcache/DCache.scala 308:32]
   assign replacer_clock = clock;
   assign replacer_reset = reset;
-  assign replacer_io_touch_valid = mshr_io_replacerTouch_valid | _s2_ready_T; // @[src/main/scala/memory/dcache/DCache.scala 323:27 385:37 386:29]
+  assign replacer_io_touch_valid = mshr_io_replacerTouch_valid | pipeLoadHitValid; // @[src/main/scala/memory/dcache/DCache.scala 323:27 385:37 386:29]
   assign replacer_io_touch_idx = mshr_io_replacerTouch_valid ? mshr_io_replacerTouch_idx : s2_setIdx; // @[src/main/scala/memory/dcache/DCache.scala 325:27 385:37 387:29]
   assign replacer_io_touch_way = mshr_io_replacerTouch_valid ? mshr_io_replacerTouch_way : s2_hitWay; // @[src/main/scala/memory/dcache/DCache.scala 326:27 385:37 388:29]
   assign replacer_io_victim_req = s0_loadFire | s0_storeFire; // @[src/main/scala/memory/dcache/DCache.scala 141:29]
   assign replacer_io_victim_idx = s0_paddr[13:6]; // @[src/main/scala/memory/dcache/DCache.scala 148:27]
   assign mshr_clock = clock;
   assign mshr_reset = reset;
-  assign mshr_io_req_valid = s2_valid & (s2_miss | s2_isUncache); // @[src/main/scala/memory/dcache/DCache.scala 280:30]
+  assign mshr_io_req_valid = s2_valid; // @[src/main/scala/memory/dcache/DCache.scala 301:36]
   assign mshr_io_req_bits_reqType = 2'h0 == _mshrReq_reqType_T ? 3'h1 : _mshrReq_reqType_T_10; // @[src/main/scala/chisel3/util/Mux.scala 77:13]
   assign mshr_io_req_bits_paddr = s2_paddr; // @[src/main/scala/memory/dcache/DCache.scala 281:21 282:23]
   assign mshr_io_req_bits_lqIdx = s2_lqIdx; // @[src/main/scala/memory/dcache/DCache.scala 281:21 283:23]
@@ -510,7 +487,7 @@ module DCache(
   assign mshr_io_req_bits_lsuOp = s2_lsuOp; // @[src/main/scala/memory/dcache/DCache.scala 281:21 286:23]
   assign mshr_io_req_bits_storeData = s2_storeData; // @[src/main/scala/memory/dcache/DCache.scala 281:21 287:23]
   assign mshr_io_req_bits_victimWay = s2_victimWay; // @[src/main/scala/memory/dcache/DCache.scala 281:21 288:23]
-  assign mshr_io_req_bits_victimDirty = s2_victimDirty & s2_miss; // @[src/main/scala/memory/dcache/DCache.scala 289:41]
+  assign mshr_io_req_bits_victimDirty = s2_victimDirty & _s1_flush_T_3; // @[src/main/scala/memory/dcache/DCache.scala 289:41]
   assign mshr_io_req_bits_victimTag = s2_victimTag; // @[src/main/scala/memory/dcache/DCache.scala 281:21 290:23]
   assign mshr_io_req_bits_victimData = s2_victimData; // @[src/main/scala/memory/dcache/DCache.scala 281:21 291:23]
   assign mshr_io_axi_ar_arready = io_axi_ar_arready; // @[src/main/scala/memory/dcache/DCache.scala 394:10]
@@ -523,7 +500,6 @@ module DCache(
   assign mshr_io_axi_b_data_bid = io_axi_b_data_bid; // @[src/main/scala/memory/dcache/DCache.scala 394:10]
   assign mshr_io_axi_b_data_bvalid = io_axi_b_data_bvalid; // @[src/main/scala/memory/dcache/DCache.scala 394:10]
   assign mshr_io_loadResp_ready = ~pipeLoadHitValid; // @[src/main/scala/memory/dcache/DCache.scala 360:55]
-  assign mshr_io_storeAck_ready = ~pipeStoreHitValid; // @[src/main/scala/memory/dcache/DCache.scala 366:55]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/memory/dcache/DCache.scala 66:29]
       storeWaitCnt <= 8'h0; // @[src/main/scala/memory/dcache/DCache.scala 66:29]
@@ -569,9 +545,6 @@ module DCache(
       end else begin
         s1_lsuOp <= io_storeReq_bits_lsuOp;
       end
-    end
-    if (s0_fire) begin // @[src/main/scala/memory/dcache/DCache.scala 160:23]
-      s1_cacheable <= s0_loadFire & io_loadReq_bits_cacheable; // @[src/main/scala/memory/dcache/DCache.scala 168:18]
     end
     if (s0_fire) begin // @[src/main/scala/memory/dcache/DCache.scala 160:23]
       if (s0_storeFire) begin // @[src/main/scala/memory/dcache/DCache.scala 169:24]
@@ -633,37 +606,34 @@ module DCache(
     end else begin
       s2_valid <= _GEN_52;
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_paddr <= s1_paddr; // @[src/main/scala/memory/dcache/DCache.scala 203:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_isLoad <= s1_isLoad; // @[src/main/scala/memory/dcache/DCache.scala 204:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_lqIdx <= s1_lqIdx; // @[src/main/scala/memory/dcache/DCache.scala 205:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_sqIdx <= s1_sqIdx; // @[src/main/scala/memory/dcache/DCache.scala 206:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_lsuOp <= s1_lsuOp; // @[src/main/scala/memory/dcache/DCache.scala 208:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
-      s2_cacheable <= s1_cacheable; // @[src/main/scala/memory/dcache/DCache.scala 209:20]
-    end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_storeData <= s1_storeData; // @[src/main/scala/memory/dcache/DCache.scala 210:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
-      s2_hit <= s1_hit; // @[src/main/scala/memory/dcache/DCache.scala 211:20]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+      s2_hit <= 1'h0; // @[src/main/scala/memory/dcache/DCache.scala 211:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_hitWay <= s1_hitWay; // @[src/main/scala/memory/dcache/DCache.scala 212:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_victimWay <= replacer_io_victim_resp; // @[src/main/scala/memory/dcache/DCache.scala 213:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       if (2'h3 == replacer_io_victim_resp) begin // @[src/main/scala/memory/dcache/DCache.scala 214:20]
         s2_victimDirty <= s1_arrayData_ways_3_dirty; // @[src/main/scala/memory/dcache/DCache.scala 214:20]
       end else if (2'h2 == replacer_io_victim_resp) begin // @[src/main/scala/memory/dcache/DCache.scala 214:20]
@@ -674,7 +644,7 @@ module DCache(
         s2_victimDirty <= s1_arrayData_ways_0_dirty;
       end
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       if (2'h3 == replacer_io_victim_resp) begin // @[src/main/scala/memory/dcache/DCache.scala 215:20]
         s2_victimTag <= s1_arrayData_ways_3_tag; // @[src/main/scala/memory/dcache/DCache.scala 215:20]
       end else if (2'h2 == replacer_io_victim_resp) begin // @[src/main/scala/memory/dcache/DCache.scala 215:20]
@@ -685,7 +655,7 @@ module DCache(
         s2_victimTag <= s1_arrayData_ways_0_tag;
       end
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       if (2'h3 == replacer_io_victim_resp) begin // @[src/main/scala/memory/dcache/DCache.scala 216:20]
         s2_victimData <= s1_arrayData_ways_3_data; // @[src/main/scala/memory/dcache/DCache.scala 216:20]
       end else if (2'h2 == replacer_io_victim_resp) begin // @[src/main/scala/memory/dcache/DCache.scala 216:20]
@@ -696,20 +666,17 @@ module DCache(
         s2_victimData <= s1_arrayData_ways_0_data;
       end
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_arrayData_ways_0_data <= s1_arrayData_ways_0_data; // @[src/main/scala/memory/dcache/DCache.scala 217:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_arrayData_ways_1_data <= s1_arrayData_ways_1_data; // @[src/main/scala/memory/dcache/DCache.scala 217:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_arrayData_ways_2_data <= s1_arrayData_ways_2_data; // @[src/main/scala/memory/dcache/DCache.scala 217:20]
     end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
+    if (s1_valid & s2_ready) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
       s2_arrayData_ways_3_data <= s1_arrayData_ways_3_data; // @[src/main/scala/memory/dcache/DCache.scala 217:20]
-    end
-    if (s1_valid & s1_canGo) begin // @[src/main/scala/memory/dcache/DCache.scala 201:49]
-      s2_isUncache <= s1_isUncache; // @[src/main/scala/memory/dcache/DCache.scala 218:20]
     end
   end
 // Register and memory initialization
@@ -763,79 +730,73 @@ initial begin
   _RAND_6 = {1{`RANDOM}};
   s1_lsuOp = _RAND_6[3:0];
   _RAND_7 = {1{`RANDOM}};
-  s1_cacheable = _RAND_7[0:0];
+  s1_storeData = _RAND_7[31:0];
   _RAND_8 = {1{`RANDOM}};
-  s1_storeData = _RAND_8[31:0];
+  s1_arrayData_ways_0_valid = _RAND_8[0:0];
   _RAND_9 = {1{`RANDOM}};
-  s1_arrayData_ways_0_valid = _RAND_9[0:0];
+  s1_arrayData_ways_0_dirty = _RAND_9[0:0];
   _RAND_10 = {1{`RANDOM}};
-  s1_arrayData_ways_0_dirty = _RAND_10[0:0];
-  _RAND_11 = {1{`RANDOM}};
-  s1_arrayData_ways_0_tag = _RAND_11[17:0];
-  _RAND_12 = {16{`RANDOM}};
-  s1_arrayData_ways_0_data = _RAND_12[511:0];
+  s1_arrayData_ways_0_tag = _RAND_10[17:0];
+  _RAND_11 = {16{`RANDOM}};
+  s1_arrayData_ways_0_data = _RAND_11[511:0];
+  _RAND_12 = {1{`RANDOM}};
+  s1_arrayData_ways_1_valid = _RAND_12[0:0];
   _RAND_13 = {1{`RANDOM}};
-  s1_arrayData_ways_1_valid = _RAND_13[0:0];
+  s1_arrayData_ways_1_dirty = _RAND_13[0:0];
   _RAND_14 = {1{`RANDOM}};
-  s1_arrayData_ways_1_dirty = _RAND_14[0:0];
-  _RAND_15 = {1{`RANDOM}};
-  s1_arrayData_ways_1_tag = _RAND_15[17:0];
-  _RAND_16 = {16{`RANDOM}};
-  s1_arrayData_ways_1_data = _RAND_16[511:0];
+  s1_arrayData_ways_1_tag = _RAND_14[17:0];
+  _RAND_15 = {16{`RANDOM}};
+  s1_arrayData_ways_1_data = _RAND_15[511:0];
+  _RAND_16 = {1{`RANDOM}};
+  s1_arrayData_ways_2_valid = _RAND_16[0:0];
   _RAND_17 = {1{`RANDOM}};
-  s1_arrayData_ways_2_valid = _RAND_17[0:0];
+  s1_arrayData_ways_2_dirty = _RAND_17[0:0];
   _RAND_18 = {1{`RANDOM}};
-  s1_arrayData_ways_2_dirty = _RAND_18[0:0];
-  _RAND_19 = {1{`RANDOM}};
-  s1_arrayData_ways_2_tag = _RAND_19[17:0];
-  _RAND_20 = {16{`RANDOM}};
-  s1_arrayData_ways_2_data = _RAND_20[511:0];
+  s1_arrayData_ways_2_tag = _RAND_18[17:0];
+  _RAND_19 = {16{`RANDOM}};
+  s1_arrayData_ways_2_data = _RAND_19[511:0];
+  _RAND_20 = {1{`RANDOM}};
+  s1_arrayData_ways_3_valid = _RAND_20[0:0];
   _RAND_21 = {1{`RANDOM}};
-  s1_arrayData_ways_3_valid = _RAND_21[0:0];
+  s1_arrayData_ways_3_dirty = _RAND_21[0:0];
   _RAND_22 = {1{`RANDOM}};
-  s1_arrayData_ways_3_dirty = _RAND_22[0:0];
-  _RAND_23 = {1{`RANDOM}};
-  s1_arrayData_ways_3_tag = _RAND_23[17:0];
-  _RAND_24 = {16{`RANDOM}};
-  s1_arrayData_ways_3_data = _RAND_24[511:0];
+  s1_arrayData_ways_3_tag = _RAND_22[17:0];
+  _RAND_23 = {16{`RANDOM}};
+  s1_arrayData_ways_3_data = _RAND_23[511:0];
+  _RAND_24 = {1{`RANDOM}};
+  s2_valid = _RAND_24[0:0];
   _RAND_25 = {1{`RANDOM}};
-  s2_valid = _RAND_25[0:0];
+  s2_paddr = _RAND_25[31:0];
   _RAND_26 = {1{`RANDOM}};
-  s2_paddr = _RAND_26[31:0];
+  s2_isLoad = _RAND_26[0:0];
   _RAND_27 = {1{`RANDOM}};
-  s2_isLoad = _RAND_27[0:0];
+  s2_lqIdx = _RAND_27[3:0];
   _RAND_28 = {1{`RANDOM}};
-  s2_lqIdx = _RAND_28[3:0];
+  s2_sqIdx = _RAND_28[3:0];
   _RAND_29 = {1{`RANDOM}};
-  s2_sqIdx = _RAND_29[3:0];
+  s2_lsuOp = _RAND_29[3:0];
   _RAND_30 = {1{`RANDOM}};
-  s2_lsuOp = _RAND_30[3:0];
+  s2_storeData = _RAND_30[31:0];
   _RAND_31 = {1{`RANDOM}};
-  s2_cacheable = _RAND_31[0:0];
+  s2_hit = _RAND_31[0:0];
   _RAND_32 = {1{`RANDOM}};
-  s2_storeData = _RAND_32[31:0];
+  s2_hitWay = _RAND_32[1:0];
   _RAND_33 = {1{`RANDOM}};
-  s2_hit = _RAND_33[0:0];
+  s2_victimWay = _RAND_33[1:0];
   _RAND_34 = {1{`RANDOM}};
-  s2_hitWay = _RAND_34[1:0];
+  s2_victimDirty = _RAND_34[0:0];
   _RAND_35 = {1{`RANDOM}};
-  s2_victimWay = _RAND_35[1:0];
-  _RAND_36 = {1{`RANDOM}};
-  s2_victimDirty = _RAND_36[0:0];
-  _RAND_37 = {1{`RANDOM}};
-  s2_victimTag = _RAND_37[17:0];
+  s2_victimTag = _RAND_35[17:0];
+  _RAND_36 = {16{`RANDOM}};
+  s2_victimData = _RAND_36[511:0];
+  _RAND_37 = {16{`RANDOM}};
+  s2_arrayData_ways_0_data = _RAND_37[511:0];
   _RAND_38 = {16{`RANDOM}};
-  s2_victimData = _RAND_38[511:0];
+  s2_arrayData_ways_1_data = _RAND_38[511:0];
   _RAND_39 = {16{`RANDOM}};
-  s2_arrayData_ways_0_data = _RAND_39[511:0];
+  s2_arrayData_ways_2_data = _RAND_39[511:0];
   _RAND_40 = {16{`RANDOM}};
-  s2_arrayData_ways_1_data = _RAND_40[511:0];
-  _RAND_41 = {16{`RANDOM}};
-  s2_arrayData_ways_2_data = _RAND_41[511:0];
-  _RAND_42 = {16{`RANDOM}};
-  s2_arrayData_ways_3_data = _RAND_42[511:0];
-  _RAND_43 = {1{`RANDOM}};
-  s2_isUncache = _RAND_43[0:0];
+  s2_arrayData_ways_3_data = _RAND_40[511:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
