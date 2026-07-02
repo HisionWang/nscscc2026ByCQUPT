@@ -170,6 +170,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     commitCandidates(i).rfWen   := entry.rfWen
 
     commitCandidates(i).pc       := entry.pc
+    commitCandidates(i).inst       := entry.inst
     commitCandidates(i).wrdata   := entry.rfdata
 
     //SQ的

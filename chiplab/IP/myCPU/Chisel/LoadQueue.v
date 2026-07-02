@@ -14,6 +14,7 @@ module LoadQueue(
   input  [3:0]  io_addrWrite_idx, // @[src/main/scala/memory/LoadQueue.scala 38:14]
   input  [31:0] io_addrWrite_vaddr, // @[src/main/scala/memory/LoadQueue.scala 38:14]
   input  [31:0] io_addrWrite_paddr, // @[src/main/scala/memory/LoadQueue.scala 38:14]
+  input         io_addrWrite_cacheable, // @[src/main/scala/memory/LoadQueue.scala 38:14]
   input  [5:0]  io_sqOldestRobIdx_value, // @[src/main/scala/memory/LoadQueue.scala 38:14]
   input         io_sqOldestRobIdx_flag, // @[src/main/scala/memory/LoadQueue.scala 38:14]
   input         io_sqEmpty, // @[src/main/scala/memory/LoadQueue.scala 38:14]
@@ -963,54 +964,22 @@ module LoadQueue(
   wire [9:0] _GEN_493 = enqFire ? _GEN_205 : entries_13_excpVec; // @[src/main/scala/memory/LoadQueue.scala 117:17 95:20]
   wire [9:0] _GEN_494 = enqFire ? _GEN_206 : entries_14_excpVec; // @[src/main/scala/memory/LoadQueue.scala 117:17 95:20]
   wire [9:0] _GEN_495 = enqFire ? _GEN_207 : entries_15_excpVec; // @[src/main/scala/memory/LoadQueue.scala 117:17 95:20]
-  wire  _GEN_3236 = 4'h0 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_578 = 4'h0 == io_addrWrite_idx | _GEN_352; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3237 = 4'h1 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_579 = 4'h1 == io_addrWrite_idx | _GEN_353; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3238 = 4'h2 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_580 = 4'h2 == io_addrWrite_idx | _GEN_354; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3239 = 4'h3 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_581 = 4'h3 == io_addrWrite_idx | _GEN_355; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3240 = 4'h4 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_582 = 4'h4 == io_addrWrite_idx | _GEN_356; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3241 = 4'h5 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_583 = 4'h5 == io_addrWrite_idx | _GEN_357; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3242 = 4'h6 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_584 = 4'h6 == io_addrWrite_idx | _GEN_358; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3243 = 4'h7 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_585 = 4'h7 == io_addrWrite_idx | _GEN_359; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3244 = 4'h8 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_586 = 4'h8 == io_addrWrite_idx | _GEN_360; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3245 = 4'h9 == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_587 = 4'h9 == io_addrWrite_idx | _GEN_361; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3246 = 4'ha == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_588 = 4'ha == io_addrWrite_idx | _GEN_362; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3247 = 4'hb == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_589 = 4'hb == io_addrWrite_idx | _GEN_363; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3248 = 4'hc == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_590 = 4'hc == io_addrWrite_idx | _GEN_364; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3249 = 4'hd == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_591 = 4'hd == io_addrWrite_idx | _GEN_365; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3250 = 4'he == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_592 = 4'he == io_addrWrite_idx | _GEN_366; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_3251 = 4'hf == io_addrWrite_idx; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
   wire  _GEN_593 = 4'hf == io_addrWrite_idx | _GEN_367; // @[src/main/scala/memory/LoadQueue.scala 144:{28,28}]
-  wire  _GEN_642 = _GEN_3236 | _GEN_448; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_643 = _GEN_3237 | _GEN_449; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_644 = _GEN_3238 | _GEN_450; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_645 = _GEN_3239 | _GEN_451; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_646 = _GEN_3240 | _GEN_452; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_647 = _GEN_3241 | _GEN_453; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_648 = _GEN_3242 | _GEN_454; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_649 = _GEN_3243 | _GEN_455; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_650 = _GEN_3244 | _GEN_456; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_651 = _GEN_3245 | _GEN_457; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_652 = _GEN_3246 | _GEN_458; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_653 = _GEN_3247 | _GEN_459; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_654 = _GEN_3248 | _GEN_460; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_655 = _GEN_3249 | _GEN_461; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_656 = _GEN_3250 | _GEN_462; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
-  wire  _GEN_657 = _GEN_3251 | _GEN_463; // @[src/main/scala/memory/LoadQueue.scala 148:{30,30}]
   wire [4:0] _idx_T = {{1'd0}, deqPtr_value}; // @[src/main/scala/memory/LoadQueue.scala 158:29]
   wire [3:0] idx = _idx_T[3:0]; // @[src/main/scala/memory/LoadQueue.scala 158:29]
   wire  _GEN_739 = 4'h1 == idx ? entries_1_valid : entries_0_valid; // @[src/main/scala/memory/LoadQueue.scala 160:{35,35}]
@@ -2956,11 +2925,13 @@ module LoadQueue(
       entries_0_paddr <= _GEN_432;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_0_cacheable <= _GEN_642;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h0 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_0_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h0 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_0_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_0_cacheable <= _GEN_448;
       end
+    end else begin
+      entries_0_cacheable <= _GEN_448;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h0 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3076,11 +3047,13 @@ module LoadQueue(
       entries_1_paddr <= _GEN_433;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_1_cacheable <= _GEN_643;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h1 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_1_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h1 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_1_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_1_cacheable <= _GEN_449;
       end
+    end else begin
+      entries_1_cacheable <= _GEN_449;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h1 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3196,11 +3169,13 @@ module LoadQueue(
       entries_2_paddr <= _GEN_434;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_2_cacheable <= _GEN_644;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h2 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_2_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h2 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_2_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_2_cacheable <= _GEN_450;
       end
+    end else begin
+      entries_2_cacheable <= _GEN_450;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h2 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3316,11 +3291,13 @@ module LoadQueue(
       entries_3_paddr <= _GEN_435;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_3_cacheable <= _GEN_645;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h3 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_3_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h3 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_3_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_3_cacheable <= _GEN_451;
       end
+    end else begin
+      entries_3_cacheable <= _GEN_451;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h3 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3436,11 +3413,13 @@ module LoadQueue(
       entries_4_paddr <= _GEN_436;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_4_cacheable <= _GEN_646;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h4 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_4_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h4 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_4_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_4_cacheable <= _GEN_452;
       end
+    end else begin
+      entries_4_cacheable <= _GEN_452;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h4 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3556,11 +3535,13 @@ module LoadQueue(
       entries_5_paddr <= _GEN_437;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_5_cacheable <= _GEN_647;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h5 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_5_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h5 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_5_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_5_cacheable <= _GEN_453;
       end
+    end else begin
+      entries_5_cacheable <= _GEN_453;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h5 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3676,11 +3657,13 @@ module LoadQueue(
       entries_6_paddr <= _GEN_438;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_6_cacheable <= _GEN_648;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h6 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_6_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h6 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_6_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_6_cacheable <= _GEN_454;
       end
+    end else begin
+      entries_6_cacheable <= _GEN_454;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h6 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3796,11 +3779,13 @@ module LoadQueue(
       entries_7_paddr <= _GEN_439;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_7_cacheable <= _GEN_649;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h7 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_7_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h7 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_7_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_7_cacheable <= _GEN_455;
       end
+    end else begin
+      entries_7_cacheable <= _GEN_455;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h7 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -3916,11 +3901,13 @@ module LoadQueue(
       entries_8_paddr <= _GEN_440;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_8_cacheable <= _GEN_650;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h8 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_8_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h8 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_8_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_8_cacheable <= _GEN_456;
       end
+    end else begin
+      entries_8_cacheable <= _GEN_456;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h8 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4036,11 +4023,13 @@ module LoadQueue(
       entries_9_paddr <= _GEN_441;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_9_cacheable <= _GEN_651;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'h9 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_9_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'h9 == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_9_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_9_cacheable <= _GEN_457;
       end
+    end else begin
+      entries_9_cacheable <= _GEN_457;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'h9 == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4156,11 +4145,13 @@ module LoadQueue(
       entries_10_paddr <= _GEN_442;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_10_cacheable <= _GEN_652;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'ha == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_10_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'ha == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_10_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_10_cacheable <= _GEN_458;
       end
+    end else begin
+      entries_10_cacheable <= _GEN_458;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'ha == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4276,11 +4267,13 @@ module LoadQueue(
       entries_11_paddr <= _GEN_443;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_11_cacheable <= _GEN_653;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'hb == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_11_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'hb == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_11_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_11_cacheable <= _GEN_459;
       end
+    end else begin
+      entries_11_cacheable <= _GEN_459;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'hb == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4396,11 +4389,13 @@ module LoadQueue(
       entries_12_paddr <= _GEN_444;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_12_cacheable <= _GEN_654;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'hc == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_12_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'hc == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_12_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_12_cacheable <= _GEN_460;
       end
+    end else begin
+      entries_12_cacheable <= _GEN_460;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'hc == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4516,11 +4511,13 @@ module LoadQueue(
       entries_13_paddr <= _GEN_445;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_13_cacheable <= _GEN_655;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'hd == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_13_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'hd == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_13_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_13_cacheable <= _GEN_461;
       end
+    end else begin
+      entries_13_cacheable <= _GEN_461;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'hd == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4636,11 +4633,13 @@ module LoadQueue(
       entries_14_paddr <= _GEN_446;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_14_cacheable <= _GEN_656;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'he == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_14_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'he == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_14_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_14_cacheable <= _GEN_462;
       end
+    end else begin
+      entries_14_cacheable <= _GEN_462;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'he == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]
@@ -4756,11 +4755,13 @@ module LoadQueue(
       entries_15_paddr <= _GEN_447;
     end
     if (io_addrWrite_valid) begin // @[src/main/scala/memory/LoadQueue.scala 142:28]
-      entries_15_cacheable <= _GEN_657;
-    end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
-      if (4'hf == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 128:31]
-        entries_15_cacheable <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 128:31]
+      if (4'hf == io_addrWrite_idx) begin // @[src/main/scala/memory/LoadQueue.scala 148:30]
+        entries_15_cacheable <= io_addrWrite_cacheable; // @[src/main/scala/memory/LoadQueue.scala 148:30]
+      end else begin
+        entries_15_cacheable <= _GEN_463;
       end
+    end else begin
+      entries_15_cacheable <= _GEN_463;
     end
     if (_T_1) begin // @[src/main/scala/memory/LoadQueue.scala 186:28]
       if (4'hf == io_dcacheResp_bits_lqIdx) begin // @[src/main/scala/memory/LoadQueue.scala 189:28]

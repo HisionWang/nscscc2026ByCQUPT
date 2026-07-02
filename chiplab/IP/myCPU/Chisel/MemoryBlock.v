@@ -23,6 +23,7 @@ module MemoryBlock(
   input         io_fromExeMmuResult_bits_exeRes_uop_isSta, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   input  [31:0] io_fromExeMmuResult_bits_exeRes_data, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   input  [31:0] io_fromExeMmuResult_bits_mmuRes_paddr, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
+  input         io_fromExeMmuResult_bits_mmuRes_cacheable, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   output        io_fromExeResult_ready, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   input         io_fromExeResult_valid, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   input  [3:0]  io_fromExeResult_bits_uop_sqIdx_value, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
@@ -67,10 +68,6 @@ module MemoryBlock(
   output        io_toWbResult_1_bits_redirect_bits_robIdx_flag, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   input         io_robCommit_0_valid, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   input  [3:0]  io_robCommit_0_sqIdx, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
-  input         io_robCommit_1_valid, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
-  input  [3:0]  io_robCommit_1_sqIdx, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
-  input         io_robCommit_2_valid, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
-  input  [3:0]  io_robCommit_2_sqIdx, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   output [3:0]  io_axi_ar_data_arid, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   output [31:0] io_axi_ar_data_araddr, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
   output [7:0]  io_axi_ar_data_arlen, // @[src/main/scala/memory/MemoryBlock.scala 21:14]
@@ -115,6 +112,7 @@ module MemoryBlock(
   wire [3:0] loadQueue_io_addrWrite_idx; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
   wire [31:0] loadQueue_io_addrWrite_vaddr; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
   wire [31:0] loadQueue_io_addrWrite_paddr; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
+  wire  loadQueue_io_addrWrite_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
   wire [5:0] loadQueue_io_sqOldestRobIdx_value; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
   wire  loadQueue_io_sqOldestRobIdx_flag; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
   wire  loadQueue_io_sqEmpty; // @[src/main/scala/memory/MemoryBlock.scala 71:26]
@@ -166,19 +164,17 @@ module MemoryBlock(
   wire [3:0] storeQueue_io_addrWrite_idx; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [31:0] storeQueue_io_addrWrite_vaddr; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [31:0] storeQueue_io_addrWrite_paddr; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
+  wire  storeQueue_io_addrWrite_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire  storeQueue_io_dataWrite_valid; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [3:0] storeQueue_io_dataWrite_idx; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [31:0] storeQueue_io_dataWrite_data; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire  storeQueue_io_robCommit_0_valid; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [3:0] storeQueue_io_robCommit_0_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
-  wire  storeQueue_io_robCommit_1_valid; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
-  wire [3:0] storeQueue_io_robCommit_1_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
-  wire  storeQueue_io_robCommit_2_valid; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
-  wire [3:0] storeQueue_io_robCommit_2_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire  storeQueue_io_dcacheReq_ready; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire  storeQueue_io_dcacheReq_valid; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [3:0] storeQueue_io_dcacheReq_bits_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [31:0] storeQueue_io_dcacheReq_bits_paddr; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
+  wire  storeQueue_io_dcacheReq_bits_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [31:0] storeQueue_io_dcacheReq_bits_data; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire [3:0] storeQueue_io_dcacheReq_bits_lsuOp; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
   wire  storeQueue_io_storeAck_valid; // @[src/main/scala/memory/MemoryBlock.scala 72:26]
@@ -220,6 +216,7 @@ module MemoryBlock(
   wire [31:0] dcache_io_storeReq_bits_paddr; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
   wire [31:0] dcache_io_storeReq_bits_data; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
   wire [3:0] dcache_io_storeReq_bits_lsuOp; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
+  wire  dcache_io_storeReq_bits_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
   wire [3:0] dcache_io_storeReq_bits_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
   wire  dcache_io_storeAck_valid; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
   wire [3:0] dcache_io_storeAck_bits_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 144:22]
@@ -269,6 +266,7 @@ module MemoryBlock(
     .io_addrWrite_idx(loadQueue_io_addrWrite_idx),
     .io_addrWrite_vaddr(loadQueue_io_addrWrite_vaddr),
     .io_addrWrite_paddr(loadQueue_io_addrWrite_paddr),
+    .io_addrWrite_cacheable(loadQueue_io_addrWrite_cacheable),
     .io_sqOldestRobIdx_value(loadQueue_io_sqOldestRobIdx_value),
     .io_sqOldestRobIdx_flag(loadQueue_io_sqOldestRobIdx_flag),
     .io_sqEmpty(loadQueue_io_sqEmpty),
@@ -322,19 +320,17 @@ module MemoryBlock(
     .io_addrWrite_idx(storeQueue_io_addrWrite_idx),
     .io_addrWrite_vaddr(storeQueue_io_addrWrite_vaddr),
     .io_addrWrite_paddr(storeQueue_io_addrWrite_paddr),
+    .io_addrWrite_cacheable(storeQueue_io_addrWrite_cacheable),
     .io_dataWrite_valid(storeQueue_io_dataWrite_valid),
     .io_dataWrite_idx(storeQueue_io_dataWrite_idx),
     .io_dataWrite_data(storeQueue_io_dataWrite_data),
     .io_robCommit_0_valid(storeQueue_io_robCommit_0_valid),
     .io_robCommit_0_sqIdx(storeQueue_io_robCommit_0_sqIdx),
-    .io_robCommit_1_valid(storeQueue_io_robCommit_1_valid),
-    .io_robCommit_1_sqIdx(storeQueue_io_robCommit_1_sqIdx),
-    .io_robCommit_2_valid(storeQueue_io_robCommit_2_valid),
-    .io_robCommit_2_sqIdx(storeQueue_io_robCommit_2_sqIdx),
     .io_dcacheReq_ready(storeQueue_io_dcacheReq_ready),
     .io_dcacheReq_valid(storeQueue_io_dcacheReq_valid),
     .io_dcacheReq_bits_sqIdx(storeQueue_io_dcacheReq_bits_sqIdx),
     .io_dcacheReq_bits_paddr(storeQueue_io_dcacheReq_bits_paddr),
+    .io_dcacheReq_bits_cacheable(storeQueue_io_dcacheReq_bits_cacheable),
     .io_dcacheReq_bits_data(storeQueue_io_dcacheReq_bits_data),
     .io_dcacheReq_bits_lsuOp(storeQueue_io_dcacheReq_bits_lsuOp),
     .io_storeAck_valid(storeQueue_io_storeAck_valid),
@@ -378,6 +374,7 @@ module MemoryBlock(
     .io_storeReq_bits_paddr(dcache_io_storeReq_bits_paddr),
     .io_storeReq_bits_data(dcache_io_storeReq_bits_data),
     .io_storeReq_bits_lsuOp(dcache_io_storeReq_bits_lsuOp),
+    .io_storeReq_bits_cacheable(dcache_io_storeReq_bits_cacheable),
     .io_storeReq_bits_sqIdx(dcache_io_storeReq_bits_sqIdx),
     .io_storeAck_valid(dcache_io_storeAck_valid),
     .io_storeAck_bits_sqIdx(dcache_io_storeAck_bits_sqIdx),
@@ -483,6 +480,7 @@ module MemoryBlock(
   assign loadQueue_io_addrWrite_idx = io_fromExeMmuResult_bits_exeRes_uop_lqIdx_value; // @[src/main/scala/memory/MemoryBlock.scala 119:32]
   assign loadQueue_io_addrWrite_vaddr = io_fromExeMmuResult_bits_exeRes_data; // @[src/main/scala/memory/MemoryBlock.scala 120:32]
   assign loadQueue_io_addrWrite_paddr = io_fromExeMmuResult_bits_mmuRes_paddr; // @[src/main/scala/memory/MemoryBlock.scala 121:32]
+  assign loadQueue_io_addrWrite_cacheable = io_fromExeMmuResult_bits_mmuRes_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 122:36]
   assign loadQueue_io_sqOldestRobIdx_value = storeQueue_io_oldestRobIdx_value; // @[src/main/scala/memory/MemoryBlock.scala 103:31]
   assign loadQueue_io_sqOldestRobIdx_flag = storeQueue_io_oldestRobIdx_flag; // @[src/main/scala/memory/MemoryBlock.scala 103:31]
   assign loadQueue_io_sqEmpty = storeQueue_io_sqEmpty; // @[src/main/scala/memory/MemoryBlock.scala 104:31]
@@ -506,15 +504,12 @@ module MemoryBlock(
   assign storeQueue_io_addrWrite_idx = io_fromExeMmuResult_bits_exeRes_uop_sqIdx_value; // @[src/main/scala/memory/MemoryBlock.scala 127:33]
   assign storeQueue_io_addrWrite_vaddr = io_fromExeMmuResult_bits_exeRes_data; // @[src/main/scala/memory/MemoryBlock.scala 128:33]
   assign storeQueue_io_addrWrite_paddr = io_fromExeMmuResult_bits_mmuRes_paddr; // @[src/main/scala/memory/MemoryBlock.scala 129:33]
+  assign storeQueue_io_addrWrite_cacheable = io_fromExeMmuResult_bits_mmuRes_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 130:37]
   assign storeQueue_io_dataWrite_valid = dataFire & io_fromExeResult_bits_uop_isStd; // @[src/main/scala/memory/MemoryBlock.scala 134:45]
   assign storeQueue_io_dataWrite_idx = io_fromExeResult_bits_uop_sqIdx_value; // @[src/main/scala/memory/MemoryBlock.scala 135:33]
   assign storeQueue_io_dataWrite_data = io_fromExeResult_bits_data; // @[src/main/scala/memory/MemoryBlock.scala 136:33]
   assign storeQueue_io_robCommit_0_valid = io_robCommit_0_valid; // @[src/main/scala/memory/MemoryBlock.scala 163:27]
   assign storeQueue_io_robCommit_0_sqIdx = io_robCommit_0_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 163:27]
-  assign storeQueue_io_robCommit_1_valid = io_robCommit_1_valid; // @[src/main/scala/memory/MemoryBlock.scala 163:27]
-  assign storeQueue_io_robCommit_1_sqIdx = io_robCommit_1_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 163:27]
-  assign storeQueue_io_robCommit_2_valid = io_robCommit_2_valid; // @[src/main/scala/memory/MemoryBlock.scala 163:27]
-  assign storeQueue_io_robCommit_2_sqIdx = io_robCommit_2_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 163:27]
   assign storeQueue_io_dcacheReq_ready = dcache_io_storeReq_ready; // @[src/main/scala/memory/MemoryBlock.scala 149:22]
   assign storeQueue_io_storeAck_valid = dcache_io_storeAck_valid; // @[src/main/scala/memory/MemoryBlock.scala 150:22]
   assign storeQueue_io_storeAck_bits_sqIdx = dcache_io_storeAck_bits_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 150:22]
@@ -530,6 +525,7 @@ module MemoryBlock(
   assign dcache_io_storeReq_bits_paddr = storeQueue_io_dcacheReq_bits_paddr; // @[src/main/scala/memory/MemoryBlock.scala 149:22]
   assign dcache_io_storeReq_bits_data = storeQueue_io_dcacheReq_bits_data; // @[src/main/scala/memory/MemoryBlock.scala 149:22]
   assign dcache_io_storeReq_bits_lsuOp = storeQueue_io_dcacheReq_bits_lsuOp; // @[src/main/scala/memory/MemoryBlock.scala 149:22]
+  assign dcache_io_storeReq_bits_cacheable = storeQueue_io_dcacheReq_bits_cacheable; // @[src/main/scala/memory/MemoryBlock.scala 149:22]
   assign dcache_io_storeReq_bits_sqIdx = storeQueue_io_dcacheReq_bits_sqIdx; // @[src/main/scala/memory/MemoryBlock.scala 149:22]
   assign dcache_io_axi_ar_arready = io_axi_ar_arready; // @[src/main/scala/memory/MemoryBlock.scala 151:17]
   assign dcache_io_axi_aw_awready = io_axi_aw_awready; // @[src/main/scala/memory/MemoryBlock.scala 151:17]

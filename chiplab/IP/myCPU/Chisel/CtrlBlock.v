@@ -384,43 +384,20 @@ module CtrlBlock(
   input         io_writeback_4_bits_isMemWrite, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input  [31:0] io_writeback_4_bits_rfdata, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input  [9:0]  io_writeback_4_bits_excpVec, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_valid_0, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_valid_1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_valid_2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [6:0]  io_commit_bits_0_pdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [31:0] io_commit_bits_0_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [31:0] io_commit_bits_0_wrdata, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [6:0]  io_commit_bits_0_oldPdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [4:0]  io_commit_bits_0_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_0_rfWen, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [3:0]  io_commit_bits_0_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_0_sqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_0_memWrite, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [6:0]  io_commit_bits_1_pdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [31:0] io_commit_bits_1_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [31:0] io_commit_bits_1_wrdata, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [6:0]  io_commit_bits_1_oldPdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [4:0]  io_commit_bits_1_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_1_rfWen, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [3:0]  io_commit_bits_1_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_1_sqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_1_memWrite, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [6:0]  io_commit_bits_2_pdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [31:0] io_commit_bits_2_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [31:0] io_commit_bits_2_wrdata, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [6:0]  io_commit_bits_2_oldPdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [4:0]  io_commit_bits_2_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_2_rfWen, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [3:0]  io_commit_bits_2_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_2_sqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_bits_2_memWrite, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commit_isWalk, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_debugCommit_valid_0, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [6:0]  io_debugCommit_bits_0_pdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_debugCommit_bits_0_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_debugCommit_bits_0_inst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_debugCommit_bits_0_wrdata, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [6:0]  io_debugCommit_bits_0_oldPdst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [4:0]  io_debugCommit_bits_0_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_debugCommit_bits_0_rfWen, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [3:0]  io_debugCommit_bits_0_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_debugCommit_bits_0_sqIdx_flag, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_debugCommit_bits_0_memWrite, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_debugCommit_isWalk, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_commitToSq_valid_0, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commitToSq_valid_1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output        io_commitToSq_valid_2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [3:0]  io_commitToSq_bits_0_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [3:0]  io_commitToSq_bits_1_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
-  output [3:0]  io_commitToSq_bits_2_sqIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_redirect_valid, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [5:0]  io_redirect_robIdx_value, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_extInt, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -909,14 +886,6 @@ module CtrlBlock(
   wire [4:0] renameStage_io_commit_0_ldst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [6:0] renameStage_io_commit_0_pdst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_commit_0_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire  renameStage_io_commit_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_commit_1_ldst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [6:0] renameStage_io_commit_1_pdst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire  renameStage_io_commit_1_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire  renameStage_io_commit_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_commit_2_ldst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [6:0] renameStage_io_commit_2_pdst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire  renameStage_io_commit_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [5:0] renameStage_io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [6:0] renameStage_io_debugArchState_0; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -1480,10 +1449,9 @@ module CtrlBlock(
   wire [3:0] rob_io_enq_bits_2_fuType; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_enq_canEnq; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_commit_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [6:0] rob_io_commit_bits_0_pdst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [31:0] rob_io_commit_bits_0_pc; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
+  wire [31:0] rob_io_commit_bits_0_inst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [31:0] rob_io_commit_bits_0_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [6:0] rob_io_commit_bits_0_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [4:0] rob_io_commit_bits_0_ldst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
@@ -1491,30 +1459,8 @@ module CtrlBlock(
   wire [3:0] rob_io_commit_bits_0_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_commit_bits_0_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_commit_bits_0_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [6:0] rob_io_commit_bits_1_pdst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [31:0] rob_io_commit_bits_1_pc; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [31:0] rob_io_commit_bits_1_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [6:0] rob_io_commit_bits_1_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [4:0] rob_io_commit_bits_1_ldst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_bits_1_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [3:0] rob_io_commit_bits_1_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_bits_1_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_bits_1_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [6:0] rob_io_commit_bits_2_pdst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [31:0] rob_io_commit_bits_2_pc; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [31:0] rob_io_commit_bits_2_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [6:0] rob_io_commit_bits_2_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [4:0] rob_io_commit_bits_2_ldst; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_bits_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [3:0] rob_io_commit_bits_2_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_bits_2_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commit_bits_2_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_commitToSq_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commitToSq_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire  rob_io_commitToSq_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [3:0] rob_io_commitToSq_bits_0_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [3:0] rob_io_commitToSq_bits_1_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
-  wire [3:0] rob_io_commitToSq_bits_2_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire [5:0] rob_io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
   wire  rob_io_writeback_0_valid; // @[src/main/scala/backend/CtrlBlock.scala 96:19]
@@ -1997,14 +1943,6 @@ module CtrlBlock(
     .io_commit_0_ldst(renameStage_io_commit_0_ldst),
     .io_commit_0_pdst(renameStage_io_commit_0_pdst),
     .io_commit_0_rfWen(renameStage_io_commit_0_rfWen),
-    .io_commit_1_valid(renameStage_io_commit_1_valid),
-    .io_commit_1_ldst(renameStage_io_commit_1_ldst),
-    .io_commit_1_pdst(renameStage_io_commit_1_pdst),
-    .io_commit_1_rfWen(renameStage_io_commit_1_rfWen),
-    .io_commit_2_valid(renameStage_io_commit_2_valid),
-    .io_commit_2_ldst(renameStage_io_commit_2_ldst),
-    .io_commit_2_pdst(renameStage_io_commit_2_pdst),
-    .io_commit_2_rfWen(renameStage_io_commit_2_rfWen),
     .io_redirect_valid(renameStage_io_redirect_valid),
     .io_redirect_robIdx_value(renameStage_io_redirect_robIdx_value),
     .io_debugArchState_0(renameStage_io_debugArchState_0),
@@ -2572,10 +2510,9 @@ module CtrlBlock(
     .io_enq_bits_2_fuType(rob_io_enq_bits_2_fuType),
     .io_enq_canEnq(rob_io_enq_canEnq),
     .io_commit_valid_0(rob_io_commit_valid_0),
-    .io_commit_valid_1(rob_io_commit_valid_1),
-    .io_commit_valid_2(rob_io_commit_valid_2),
     .io_commit_bits_0_pdst(rob_io_commit_bits_0_pdst),
     .io_commit_bits_0_pc(rob_io_commit_bits_0_pc),
+    .io_commit_bits_0_inst(rob_io_commit_bits_0_inst),
     .io_commit_bits_0_wrdata(rob_io_commit_bits_0_wrdata),
     .io_commit_bits_0_oldPdst(rob_io_commit_bits_0_oldPdst),
     .io_commit_bits_0_ldst(rob_io_commit_bits_0_ldst),
@@ -2583,30 +2520,8 @@ module CtrlBlock(
     .io_commit_bits_0_sqIdx_value(rob_io_commit_bits_0_sqIdx_value),
     .io_commit_bits_0_sqIdx_flag(rob_io_commit_bits_0_sqIdx_flag),
     .io_commit_bits_0_memWrite(rob_io_commit_bits_0_memWrite),
-    .io_commit_bits_1_pdst(rob_io_commit_bits_1_pdst),
-    .io_commit_bits_1_pc(rob_io_commit_bits_1_pc),
-    .io_commit_bits_1_wrdata(rob_io_commit_bits_1_wrdata),
-    .io_commit_bits_1_oldPdst(rob_io_commit_bits_1_oldPdst),
-    .io_commit_bits_1_ldst(rob_io_commit_bits_1_ldst),
-    .io_commit_bits_1_rfWen(rob_io_commit_bits_1_rfWen),
-    .io_commit_bits_1_sqIdx_value(rob_io_commit_bits_1_sqIdx_value),
-    .io_commit_bits_1_sqIdx_flag(rob_io_commit_bits_1_sqIdx_flag),
-    .io_commit_bits_1_memWrite(rob_io_commit_bits_1_memWrite),
-    .io_commit_bits_2_pdst(rob_io_commit_bits_2_pdst),
-    .io_commit_bits_2_pc(rob_io_commit_bits_2_pc),
-    .io_commit_bits_2_wrdata(rob_io_commit_bits_2_wrdata),
-    .io_commit_bits_2_oldPdst(rob_io_commit_bits_2_oldPdst),
-    .io_commit_bits_2_ldst(rob_io_commit_bits_2_ldst),
-    .io_commit_bits_2_rfWen(rob_io_commit_bits_2_rfWen),
-    .io_commit_bits_2_sqIdx_value(rob_io_commit_bits_2_sqIdx_value),
-    .io_commit_bits_2_sqIdx_flag(rob_io_commit_bits_2_sqIdx_flag),
-    .io_commit_bits_2_memWrite(rob_io_commit_bits_2_memWrite),
     .io_commitToSq_valid_0(rob_io_commitToSq_valid_0),
-    .io_commitToSq_valid_1(rob_io_commitToSq_valid_1),
-    .io_commitToSq_valid_2(rob_io_commitToSq_valid_2),
     .io_commitToSq_bits_0_sqIdx_value(rob_io_commitToSq_bits_0_sqIdx_value),
-    .io_commitToSq_bits_1_sqIdx_value(rob_io_commitToSq_bits_1_sqIdx_value),
-    .io_commitToSq_bits_2_sqIdx_value(rob_io_commitToSq_bits_2_sqIdx_value),
     .io_redirect_valid(rob_io_redirect_valid),
     .io_redirect_robIdx_value(rob_io_redirect_robIdx_value),
     .io_writeback_0_valid(rob_io_writeback_0_valid),
@@ -2944,43 +2859,20 @@ module CtrlBlock(
   assign io_lsEnq_toLsqData_rdValid = dispatchStage_io_lsEnq_toLsqData_rdValid; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_robIdx_value = dispatchStage_io_lsEnq_toLsqData_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_robIdx_flag = dispatchStage_io_lsEnq_toLsqData_robIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
-  assign io_commit_valid_0 = rob_io_commit_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_valid_1 = rob_io_commit_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_valid_2 = rob_io_commit_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_pdst = rob_io_commit_bits_0_pdst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_pc = rob_io_commit_bits_0_pc; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_wrdata = rob_io_commit_bits_0_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_oldPdst = rob_io_commit_bits_0_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_ldst = rob_io_commit_bits_0_ldst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_rfWen = rob_io_commit_bits_0_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_sqIdx_value = rob_io_commit_bits_0_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_sqIdx_flag = rob_io_commit_bits_0_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_0_memWrite = rob_io_commit_bits_0_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_pdst = rob_io_commit_bits_1_pdst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_pc = rob_io_commit_bits_1_pc; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_wrdata = rob_io_commit_bits_1_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_oldPdst = rob_io_commit_bits_1_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_ldst = rob_io_commit_bits_1_ldst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_rfWen = rob_io_commit_bits_1_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_sqIdx_value = rob_io_commit_bits_1_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_sqIdx_flag = rob_io_commit_bits_1_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_1_memWrite = rob_io_commit_bits_1_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_pdst = rob_io_commit_bits_2_pdst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_pc = rob_io_commit_bits_2_pc; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_wrdata = rob_io_commit_bits_2_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_oldPdst = rob_io_commit_bits_2_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_ldst = rob_io_commit_bits_2_ldst; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_rfWen = rob_io_commit_bits_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_sqIdx_value = rob_io_commit_bits_2_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_sqIdx_flag = rob_io_commit_bits_2_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_bits_2_memWrite = rob_io_commit_bits_2_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
-  assign io_commit_isWalk = 1'h0; // @[src/main/scala/backend/CtrlBlock.scala 109:15]
+  assign io_debugCommit_valid_0 = rob_io_commit_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_pdst = rob_io_commit_bits_0_pdst; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_pc = rob_io_commit_bits_0_pc; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_inst = rob_io_commit_bits_0_inst; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_wrdata = rob_io_commit_bits_0_wrdata; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_oldPdst = rob_io_commit_bits_0_oldPdst; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_ldst = rob_io_commit_bits_0_ldst; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_rfWen = rob_io_commit_bits_0_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_sqIdx_value = rob_io_commit_bits_0_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_sqIdx_flag = rob_io_commit_bits_0_sqIdx_flag; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_bits_0_memWrite = rob_io_commit_bits_0_memWrite; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
+  assign io_debugCommit_isWalk = 1'h0; // @[src/main/scala/backend/CtrlBlock.scala 109:20]
   assign io_commitToSq_valid_0 = rob_io_commitToSq_valid_0; // @[src/main/scala/backend/CtrlBlock.scala 110:17]
-  assign io_commitToSq_valid_1 = rob_io_commitToSq_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 110:17]
-  assign io_commitToSq_valid_2 = rob_io_commitToSq_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 110:17]
   assign io_commitToSq_bits_0_sqIdx_value = rob_io_commitToSq_bits_0_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 110:17]
-  assign io_commitToSq_bits_1_sqIdx_value = rob_io_commitToSq_bits_1_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 110:17]
-  assign io_commitToSq_bits_2_sqIdx_value = rob_io_commitToSq_bits_2_sqIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 110:17]
   assign io_redirect_valid = rob_io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 125:15]
   assign io_redirect_robIdx_value = rob_io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 125:15]
   assign io_debugArchState_0 = renameStage_io_debugArchState_0; // @[src/main/scala/backend/CtrlBlock.scala 70:21]
@@ -3199,14 +3091,6 @@ module CtrlBlock(
   assign renameStage_io_commit_0_ldst = rob_io_commit_bits_0_ldst; // @[src/main/scala/backend/CtrlBlock.scala 103:38]
   assign renameStage_io_commit_0_pdst = rob_io_commit_bits_0_pdst; // @[src/main/scala/backend/CtrlBlock.scala 101:38]
   assign renameStage_io_commit_0_rfWen = rob_io_commit_bits_0_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 104:38]
-  assign renameStage_io_commit_1_valid = rob_io_commit_valid_1; // @[src/main/scala/backend/CtrlBlock.scala 100:38]
-  assign renameStage_io_commit_1_ldst = rob_io_commit_bits_1_ldst; // @[src/main/scala/backend/CtrlBlock.scala 103:38]
-  assign renameStage_io_commit_1_pdst = rob_io_commit_bits_1_pdst; // @[src/main/scala/backend/CtrlBlock.scala 101:38]
-  assign renameStage_io_commit_1_rfWen = rob_io_commit_bits_1_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 104:38]
-  assign renameStage_io_commit_2_valid = rob_io_commit_valid_2; // @[src/main/scala/backend/CtrlBlock.scala 100:38]
-  assign renameStage_io_commit_2_ldst = rob_io_commit_bits_2_ldst; // @[src/main/scala/backend/CtrlBlock.scala 103:38]
-  assign renameStage_io_commit_2_pdst = rob_io_commit_bits_2_pdst; // @[src/main/scala/backend/CtrlBlock.scala 101:38]
-  assign renameStage_io_commit_2_rfWen = rob_io_commit_bits_2_rfWen; // @[src/main/scala/backend/CtrlBlock.scala 104:38]
   assign renameStage_io_redirect_valid = io_redirect_valid; // @[src/main/scala/backend/CtrlBlock.scala 67:27]
   assign renameStage_io_redirect_robIdx_value = io_redirect_robIdx_value; // @[src/main/scala/backend/CtrlBlock.scala 67:27]
   assign dispatchStage_clock = clock;

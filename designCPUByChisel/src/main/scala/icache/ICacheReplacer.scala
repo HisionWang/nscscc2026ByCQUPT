@@ -100,6 +100,6 @@ class ICacheReplacer(implicit p: Parameters) extends NSModule {
   }
   
   //println("ICacheReplacer instantiated:")
-  println(s"  Sets: $nSets, Ways: $nWays, IdxBits: $idxBits, WayBits: $wayBits")
-  println(s"  Replacer: PLRU (4-way)")
+//  println(s"  Sets: $nSets, Ways: $nWays, IdxBits: $idxBits, WayBits: $wayBits")
+//  println(s"  Replacer: PLRU (4-way)")
 }

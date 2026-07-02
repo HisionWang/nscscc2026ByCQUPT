@@ -147,15 +147,10 @@ class RobCommitIO(implicit p: Parameters) extends NSBundle {
   val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
   val isWalk    = Output(Bool())
 }
-
-class RobCommitToSq(implicit p: Parameters) extends NSBundle {
-  val valid     = Vec(CommitWidth, Output(Bool()))
-  val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
-}
- 
 class RobCommitEntry(implicit p: Parameters) extends NSBundle {
   val pdst     = UInt(PhyRegIdxWidth.W)
   val pc     = UInt(XLEN.W)
+  val inst        = UInt(XLEN.W)
   val wrdata     = UInt(XLEN.W)
   val oldPdst  = UInt(PhyRegIdxWidth.W)
   val ldst     = UInt(5.W)
@@ -164,6 +159,14 @@ class RobCommitEntry(implicit p: Parameters) extends NSBundle {
   val sqIdx    = new SqPtr(SqSize)
   val memWrite    = Bool()
 }
+
+
+class RobCommitToSq(implicit p: Parameters) extends NSBundle {
+  val valid     = Vec(CommitWidth, Output(Bool()))
+  val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
+}
+ 
+
  
 // ================================================================
 //  ROB 重定向 IO

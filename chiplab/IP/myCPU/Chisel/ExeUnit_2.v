@@ -184,6 +184,7 @@ module ExeUnit_2(
   wire  bru_io_valid; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
   wire [31:0] bru_io_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
   wire [3:0] bru_io_uop_ctrl_bruOp; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
+  wire [31:0] bru_io_uop_imm; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
   wire [5:0] bru_io_uop_robIdxFull_value; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
   wire  bru_io_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
   wire [31:0] bru_io_rs1; // @[src/main/scala/backend/execute/ExeUnit.scala 111:38]
@@ -273,6 +274,7 @@ module ExeUnit_2(
     .io_valid(bru_io_valid),
     .io_uop_pc(bru_io_uop_pc),
     .io_uop_ctrl_bruOp(bru_io_uop_ctrl_bruOp),
+    .io_uop_imm(bru_io_uop_imm),
     .io_uop_robIdxFull_value(bru_io_uop_robIdxFull_value),
     .io_uop_robIdxFull_flag(bru_io_uop_robIdxFull_flag),
     .io_rs1(bru_io_rs1),
@@ -351,6 +353,7 @@ module ExeUnit_2(
   assign bru_io_valid = stgValid & stgData_uop_ctrl_fuType == 4'h2; // @[src/main/scala/backend/execute/ExeUnit.scala 110:46]
   assign bru_io_uop_pc = stgData_uop_pc; // @[src/main/scala/backend/execute/ExeUnit.scala 114:18]
   assign bru_io_uop_ctrl_bruOp = stgData_uop_ctrl_bruOp; // @[src/main/scala/backend/execute/ExeUnit.scala 114:18]
+  assign bru_io_uop_imm = stgData_uop_imm; // @[src/main/scala/backend/execute/ExeUnit.scala 114:18]
   assign bru_io_uop_robIdxFull_value = stgData_uop_robIdxFull_value; // @[src/main/scala/backend/execute/ExeUnit.scala 114:18]
   assign bru_io_uop_robIdxFull_flag = stgData_uop_robIdxFull_flag; // @[src/main/scala/backend/execute/ExeUnit.scala 114:18]
   assign bru_io_rs1 = stgData_rs1Data; // @[src/main/scala/backend/execute/ExeUnit.scala 115:18]

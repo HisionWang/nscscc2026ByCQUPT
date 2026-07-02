@@ -51,6 +51,7 @@ module core_top(
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [63:0] _RAND_0;
+  reg [63:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
   wire  frontend_clock; // @[src/main/scala/myCPU_top.scala 106:24]
   wire  frontend_reset; // @[src/main/scala/myCPU_top.scala 106:24]
@@ -378,11 +379,13 @@ module core_top(
   wire [5:0] backend_io_fromMemResult_1_bits_redirect_bits_robIdx_value; // @[src/main/scala/myCPU_top.scala 107:23]
   wire  backend_io_fromMemResult_1_bits_redirect_bits_robIdx_flag; // @[src/main/scala/myCPU_top.scala 107:23]
   wire  backend_io_commitToSq_valid_0; // @[src/main/scala/myCPU_top.scala 107:23]
-  wire  backend_io_commitToSq_valid_1; // @[src/main/scala/myCPU_top.scala 107:23]
-  wire  backend_io_commitToSq_valid_2; // @[src/main/scala/myCPU_top.scala 107:23]
   wire [3:0] backend_io_commitToSq_bits_0_sqIdx_value; // @[src/main/scala/myCPU_top.scala 107:23]
-  wire [3:0] backend_io_commitToSq_bits_1_sqIdx_value; // @[src/main/scala/myCPU_top.scala 107:23]
-  wire [3:0] backend_io_commitToSq_bits_2_sqIdx_value; // @[src/main/scala/myCPU_top.scala 107:23]
+  wire  backend_io_debugCommit_valid_0; // @[src/main/scala/myCPU_top.scala 107:23]
+  wire [6:0] backend_io_debugCommit_bits_0_pdst; // @[src/main/scala/myCPU_top.scala 107:23]
+  wire [31:0] backend_io_debugCommit_bits_0_pc; // @[src/main/scala/myCPU_top.scala 107:23]
+  wire [31:0] backend_io_debugCommit_bits_0_inst; // @[src/main/scala/myCPU_top.scala 107:23]
+  wire [31:0] backend_io_debugCommit_bits_0_wrdata; // @[src/main/scala/myCPU_top.scala 107:23]
+  wire  backend_io_debugCommit_bits_0_rfWen; // @[src/main/scala/myCPU_top.scala 107:23]
   wire [31:0] backend_io_debugLogicRegs_0; // @[src/main/scala/myCPU_top.scala 107:23]
   wire [31:0] backend_io_debugLogicRegs_1; // @[src/main/scala/myCPU_top.scala 107:23]
   wire [31:0] backend_io_debugLogicRegs_2; // @[src/main/scala/myCPU_top.scala 107:23]
@@ -439,6 +442,7 @@ module core_top(
   wire  memory_io_fromExeMmuResult_bits_exeRes_uop_isSta; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [31:0] memory_io_fromExeMmuResult_bits_exeRes_data; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [31:0] memory_io_fromExeMmuResult_bits_mmuRes_paddr; // @[src/main/scala/myCPU_top.scala 108:22]
+  wire  memory_io_fromExeMmuResult_bits_mmuRes_cacheable; // @[src/main/scala/myCPU_top.scala 108:22]
   wire  memory_io_fromExeResult_ready; // @[src/main/scala/myCPU_top.scala 108:22]
   wire  memory_io_fromExeResult_valid; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [3:0] memory_io_fromExeResult_bits_uop_sqIdx_value; // @[src/main/scala/myCPU_top.scala 108:22]
@@ -483,10 +487,6 @@ module core_top(
   wire  memory_io_toWbResult_1_bits_redirect_bits_robIdx_flag; // @[src/main/scala/myCPU_top.scala 108:22]
   wire  memory_io_robCommit_0_valid; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [3:0] memory_io_robCommit_0_sqIdx; // @[src/main/scala/myCPU_top.scala 108:22]
-  wire  memory_io_robCommit_1_valid; // @[src/main/scala/myCPU_top.scala 108:22]
-  wire [3:0] memory_io_robCommit_1_sqIdx; // @[src/main/scala/myCPU_top.scala 108:22]
-  wire  memory_io_robCommit_2_valid; // @[src/main/scala/myCPU_top.scala 108:22]
-  wire [3:0] memory_io_robCommit_2_sqIdx; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [3:0] memory_io_axi_ar_data_arid; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [31:0] memory_io_axi_ar_data_araddr; // @[src/main/scala/myCPU_top.scala 108:22]
   wire [7:0] memory_io_axi_ar_data_arlen; // @[src/main/scala/myCPU_top.scala 108:22]
@@ -531,16 +531,19 @@ module core_top(
   wire  memaddrtrans_io_out_bits_exeRes_uop_isSta; // @[src/main/scala/myCPU_top.scala 124:28]
   wire [31:0] memaddrtrans_io_out_bits_exeRes_data; // @[src/main/scala/myCPU_top.scala 124:28]
   wire [31:0] memaddrtrans_io_out_bits_mmuRes_paddr; // @[src/main/scala/myCPU_top.scala 124:28]
+  wire  memaddrtrans_io_out_bits_mmuRes_cacheable; // @[src/main/scala/myCPU_top.scala 124:28]
   wire  memaddrtrans_io_mmuReq_valid; // @[src/main/scala/myCPU_top.scala 124:28]
   wire [31:0] memaddrtrans_io_mmuReq_bits_vaddr; // @[src/main/scala/myCPU_top.scala 124:28]
   wire  memaddrtrans_io_mmuResp_valid; // @[src/main/scala/myCPU_top.scala 124:28]
   wire [31:0] memaddrtrans_io_mmuResp_bits_paddr; // @[src/main/scala/myCPU_top.scala 124:28]
+  wire  memaddrtrans_io_mmuResp_bits_cacheable; // @[src/main/scala/myCPU_top.scala 124:28]
   wire  simMMU_clock; // @[src/main/scala/myCPU_top.scala 128:22]
   wire  simMMU_reset; // @[src/main/scala/myCPU_top.scala 128:22]
   wire  simMMU_io_mmuReq_valid; // @[src/main/scala/myCPU_top.scala 128:22]
   wire [31:0] simMMU_io_mmuReq_bits_vaddr; // @[src/main/scala/myCPU_top.scala 128:22]
   wire  simMMU_io_mmuResp_valid; // @[src/main/scala/myCPU_top.scala 128:22]
   wire [31:0] simMMU_io_mmuResp_bits_paddr; // @[src/main/scala/myCPU_top.scala 128:22]
+  wire  simMMU_io_mmuResp_bits_cacheable; // @[src/main/scala/myCPU_top.scala 128:22]
   wire  mmu_clock; // @[src/main/scala/myCPU_top.scala 173:19]
   wire  mmu_reset; // @[src/main/scala/myCPU_top.scala 173:19]
   wire  mmu_io_fromIcache_ready; // @[src/main/scala/myCPU_top.scala 173:19]
@@ -760,11 +763,48 @@ module core_top(
   wire  difftest_io_inst_valid_diff; // @[src/main/scala/myCPU_top.scala 318:24]
   wire  difftest_io_cnt_inst_diff; // @[src/main/scala/myCPU_top.scala 318:24]
   wire [63:0] difftest_io_timer_64_diff; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire  difftest_io_debug0_wb_rf_wen; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [4:0] difftest_io_debug0_wb_rf_wnum; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_debug0_wb_rf_wdata; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_debug0_wb_pc; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [31:0] difftest_io_debug0_wb_inst; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_1; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_2; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_3; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_4; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_5; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_6; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_7; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_8; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_9; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_10; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_11; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_12; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_13; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_14; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_15; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_16; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_17; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_18; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_19; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_20; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_21; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_22; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_23; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_24; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_25; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_26; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_27; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_28; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_29; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_30; // @[src/main/scala/myCPU_top.scala 318:24]
+  wire [63:0] difftest_io_regs_31; // @[src/main/scala/myCPU_top.scala 318:24]
   wire  _T = ~aresetn; // @[src/main/scala/myCPU_top.scala 95:27]
-  wire  dbgFirstValid = frontend_io_out_0_ready & frontend_io_out_0_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire [31:0] _debug0_wb_inst_T = frontend_io_out_0_bits_instr; // @[src/main/scala/myCPU_top.scala 300:56]
   reg [63:0] cycleCount; // @[src/main/scala/myCPU_top.scala 315:27]
   wire [63:0] _cycleCount_T_1 = cycleCount + 64'h1; // @[src/main/scala/myCPU_top.scala 316:28]
+  reg [63:0] committedInstCnt; // @[src/main/scala/myCPU_top.scala 323:33]
+  wire [63:0] _GEN_1 = {{63'd0}, backend_io_debugCommit_valid_0}; // @[src/main/scala/myCPU_top.scala 336:42]
+  wire [63:0] _committedInstCnt_T_1 = committedInstCnt + _GEN_1; // @[src/main/scala/myCPU_top.scala 336:42]
   Frontend frontend ( // @[src/main/scala/myCPU_top.scala 106:24]
     .clock(frontend_clock),
     .reset(frontend_reset),
@@ -1094,11 +1134,13 @@ module core_top(
     .io_fromMemResult_1_bits_redirect_bits_robIdx_value(backend_io_fromMemResult_1_bits_redirect_bits_robIdx_value),
     .io_fromMemResult_1_bits_redirect_bits_robIdx_flag(backend_io_fromMemResult_1_bits_redirect_bits_robIdx_flag),
     .io_commitToSq_valid_0(backend_io_commitToSq_valid_0),
-    .io_commitToSq_valid_1(backend_io_commitToSq_valid_1),
-    .io_commitToSq_valid_2(backend_io_commitToSq_valid_2),
     .io_commitToSq_bits_0_sqIdx_value(backend_io_commitToSq_bits_0_sqIdx_value),
-    .io_commitToSq_bits_1_sqIdx_value(backend_io_commitToSq_bits_1_sqIdx_value),
-    .io_commitToSq_bits_2_sqIdx_value(backend_io_commitToSq_bits_2_sqIdx_value),
+    .io_debugCommit_valid_0(backend_io_debugCommit_valid_0),
+    .io_debugCommit_bits_0_pdst(backend_io_debugCommit_bits_0_pdst),
+    .io_debugCommit_bits_0_pc(backend_io_debugCommit_bits_0_pc),
+    .io_debugCommit_bits_0_inst(backend_io_debugCommit_bits_0_inst),
+    .io_debugCommit_bits_0_wrdata(backend_io_debugCommit_bits_0_wrdata),
+    .io_debugCommit_bits_0_rfWen(backend_io_debugCommit_bits_0_rfWen),
     .io_debugLogicRegs_0(backend_io_debugLogicRegs_0),
     .io_debugLogicRegs_1(backend_io_debugLogicRegs_1),
     .io_debugLogicRegs_2(backend_io_debugLogicRegs_2),
@@ -1157,6 +1199,7 @@ module core_top(
     .io_fromExeMmuResult_bits_exeRes_uop_isSta(memory_io_fromExeMmuResult_bits_exeRes_uop_isSta),
     .io_fromExeMmuResult_bits_exeRes_data(memory_io_fromExeMmuResult_bits_exeRes_data),
     .io_fromExeMmuResult_bits_mmuRes_paddr(memory_io_fromExeMmuResult_bits_mmuRes_paddr),
+    .io_fromExeMmuResult_bits_mmuRes_cacheable(memory_io_fromExeMmuResult_bits_mmuRes_cacheable),
     .io_fromExeResult_ready(memory_io_fromExeResult_ready),
     .io_fromExeResult_valid(memory_io_fromExeResult_valid),
     .io_fromExeResult_bits_uop_sqIdx_value(memory_io_fromExeResult_bits_uop_sqIdx_value),
@@ -1201,10 +1244,6 @@ module core_top(
     .io_toWbResult_1_bits_redirect_bits_robIdx_flag(memory_io_toWbResult_1_bits_redirect_bits_robIdx_flag),
     .io_robCommit_0_valid(memory_io_robCommit_0_valid),
     .io_robCommit_0_sqIdx(memory_io_robCommit_0_sqIdx),
-    .io_robCommit_1_valid(memory_io_robCommit_1_valid),
-    .io_robCommit_1_sqIdx(memory_io_robCommit_1_sqIdx),
-    .io_robCommit_2_valid(memory_io_robCommit_2_valid),
-    .io_robCommit_2_sqIdx(memory_io_robCommit_2_sqIdx),
     .io_axi_ar_data_arid(memory_io_axi_ar_data_arid),
     .io_axi_ar_data_araddr(memory_io_axi_ar_data_araddr),
     .io_axi_ar_data_arlen(memory_io_axi_ar_data_arlen),
@@ -1251,10 +1290,12 @@ module core_top(
     .io_out_bits_exeRes_uop_isSta(memaddrtrans_io_out_bits_exeRes_uop_isSta),
     .io_out_bits_exeRes_data(memaddrtrans_io_out_bits_exeRes_data),
     .io_out_bits_mmuRes_paddr(memaddrtrans_io_out_bits_mmuRes_paddr),
+    .io_out_bits_mmuRes_cacheable(memaddrtrans_io_out_bits_mmuRes_cacheable),
     .io_mmuReq_valid(memaddrtrans_io_mmuReq_valid),
     .io_mmuReq_bits_vaddr(memaddrtrans_io_mmuReq_bits_vaddr),
     .io_mmuResp_valid(memaddrtrans_io_mmuResp_valid),
-    .io_mmuResp_bits_paddr(memaddrtrans_io_mmuResp_bits_paddr)
+    .io_mmuResp_bits_paddr(memaddrtrans_io_mmuResp_bits_paddr),
+    .io_mmuResp_bits_cacheable(memaddrtrans_io_mmuResp_bits_cacheable)
   );
   SimpleMMU simMMU ( // @[src/main/scala/myCPU_top.scala 128:22]
     .clock(simMMU_clock),
@@ -1262,7 +1303,8 @@ module core_top(
     .io_mmuReq_valid(simMMU_io_mmuReq_valid),
     .io_mmuReq_bits_vaddr(simMMU_io_mmuReq_bits_vaddr),
     .io_mmuResp_valid(simMMU_io_mmuResp_valid),
-    .io_mmuResp_bits_paddr(simMMU_io_mmuResp_bits_paddr)
+    .io_mmuResp_bits_paddr(simMMU_io_mmuResp_bits_paddr),
+    .io_mmuResp_bits_cacheable(simMMU_io_mmuResp_bits_cacheable)
   );
   Mmu mmu ( // @[src/main/scala/myCPU_top.scala 173:19]
     .clock(mmu_clock),
@@ -1491,7 +1533,43 @@ module core_top(
     .reset(difftest_reset),
     .io_inst_valid_diff(difftest_io_inst_valid_diff),
     .io_cnt_inst_diff(difftest_io_cnt_inst_diff),
-    .io_timer_64_diff(difftest_io_timer_64_diff)
+    .io_timer_64_diff(difftest_io_timer_64_diff),
+    .io_debug0_wb_rf_wen(difftest_io_debug0_wb_rf_wen),
+    .io_debug0_wb_rf_wnum(difftest_io_debug0_wb_rf_wnum),
+    .io_debug0_wb_rf_wdata(difftest_io_debug0_wb_rf_wdata),
+    .io_debug0_wb_pc(difftest_io_debug0_wb_pc),
+    .io_debug0_wb_inst(difftest_io_debug0_wb_inst),
+    .io_regs_1(difftest_io_regs_1),
+    .io_regs_2(difftest_io_regs_2),
+    .io_regs_3(difftest_io_regs_3),
+    .io_regs_4(difftest_io_regs_4),
+    .io_regs_5(difftest_io_regs_5),
+    .io_regs_6(difftest_io_regs_6),
+    .io_regs_7(difftest_io_regs_7),
+    .io_regs_8(difftest_io_regs_8),
+    .io_regs_9(difftest_io_regs_9),
+    .io_regs_10(difftest_io_regs_10),
+    .io_regs_11(difftest_io_regs_11),
+    .io_regs_12(difftest_io_regs_12),
+    .io_regs_13(difftest_io_regs_13),
+    .io_regs_14(difftest_io_regs_14),
+    .io_regs_15(difftest_io_regs_15),
+    .io_regs_16(difftest_io_regs_16),
+    .io_regs_17(difftest_io_regs_17),
+    .io_regs_18(difftest_io_regs_18),
+    .io_regs_19(difftest_io_regs_19),
+    .io_regs_20(difftest_io_regs_20),
+    .io_regs_21(difftest_io_regs_21),
+    .io_regs_22(difftest_io_regs_22),
+    .io_regs_23(difftest_io_regs_23),
+    .io_regs_24(difftest_io_regs_24),
+    .io_regs_25(difftest_io_regs_25),
+    .io_regs_26(difftest_io_regs_26),
+    .io_regs_27(difftest_io_regs_27),
+    .io_regs_28(difftest_io_regs_28),
+    .io_regs_29(difftest_io_regs_29),
+    .io_regs_30(difftest_io_regs_30),
+    .io_regs_31(difftest_io_regs_31)
   );
   assign arid = axi_crossbar_io_out_ar_data_arid; // @[src/main/scala/myCPU_top.scala 244:11]
   assign araddr = axi_crossbar_io_out_ar_data_araddr; // @[src/main/scala/myCPU_top.scala 245:11]
@@ -1518,13 +1596,13 @@ module core_top(
   assign wlast = axi_crossbar_io_out_w_data_wlast; // @[src/main/scala/myCPU_top.scala 281:11]
   assign wvalid = axi_crossbar_io_out_w_data_wvalid; // @[src/main/scala/myCPU_top.scala 282:11]
   assign bready = axi_crossbar_io_out_b_bready; // @[src/main/scala/myCPU_top.scala 291:10]
-  assign ws_valid = frontend_io_out_0_ready & frontend_io_out_0_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  assign rf_rdata = 32'h0; // @[src/main/scala/myCPU_top.scala 310:12]
-  assign debug0_wb_pc = dbgFirstValid ? frontend_io_out_0_bits_pc : 32'h0; // @[src/main/scala/myCPU_top.scala 298:23 299:24 87:22]
-  assign debug0_wb_rf_wen = 1'h0; // @[src/main/scala/myCPU_top.scala 298:23 301:24 88:22]
-  assign debug0_wb_rf_wnum = 5'h0;
-  assign debug0_wb_rf_wdata = 32'h0;
-  assign debug0_wb_inst = dbgFirstValid ? _debug0_wb_inst_T : 32'h0; // @[src/main/scala/myCPU_top.scala 298:23 300:24 91:22]
+  assign ws_valid = 1'h0; // @[src/main/scala/myCPU_top.scala 92:22]
+  assign rf_rdata = 32'h0; // @[src/main/scala/myCPU_top.scala 93:22]
+  assign debug0_wb_pc = 32'h0; // @[src/main/scala/myCPU_top.scala 87:22]
+  assign debug0_wb_rf_wen = 1'h0; // @[src/main/scala/myCPU_top.scala 88:22]
+  assign debug0_wb_rf_wnum = 5'h0; // @[src/main/scala/myCPU_top.scala 89:22]
+  assign debug0_wb_rf_wdata = 32'h0; // @[src/main/scala/myCPU_top.scala 90:22]
+  assign debug0_wb_inst = 32'h0; // @[src/main/scala/myCPU_top.scala 91:22]
   assign frontend_clock = aclk;
   assign frontend_reset = ~aresetn; // @[src/main/scala/myCPU_top.scala 95:27]
   assign frontend_io_out_0_ready = backend_io_in_0_ready; // @[src/main/scala/myCPU_top.scala 110:19]
@@ -1653,6 +1731,7 @@ module core_top(
   assign memory_io_fromExeMmuResult_bits_exeRes_uop_isSta = memaddrtrans_io_out_bits_exeRes_uop_isSta; // @[src/main/scala/myCPU_top.scala 127:30]
   assign memory_io_fromExeMmuResult_bits_exeRes_data = memaddrtrans_io_out_bits_exeRes_data; // @[src/main/scala/myCPU_top.scala 127:30]
   assign memory_io_fromExeMmuResult_bits_mmuRes_paddr = memaddrtrans_io_out_bits_mmuRes_paddr; // @[src/main/scala/myCPU_top.scala 127:30]
+  assign memory_io_fromExeMmuResult_bits_mmuRes_cacheable = memaddrtrans_io_out_bits_mmuRes_cacheable; // @[src/main/scala/myCPU_top.scala 127:30]
   assign memory_io_fromExeResult_valid = backend_io_toMemResult_1_valid; // @[src/main/scala/myCPU_top.scala 122:29]
   assign memory_io_fromExeResult_bits_uop_sqIdx_value = backend_io_toMemResult_1_bits_uop_sqIdx_value; // @[src/main/scala/myCPU_top.scala 122:29]
   assign memory_io_fromExeResult_bits_uop_isStd = backend_io_toMemResult_1_bits_uop_isStd; // @[src/main/scala/myCPU_top.scala 122:29]
@@ -1661,10 +1740,6 @@ module core_top(
   assign memory_io_toWbResult_1_ready = backend_io_fromMemResult_1_ready; // @[src/main/scala/myCPU_top.scala 133:24]
   assign memory_io_robCommit_0_valid = backend_io_commitToSq_valid_0; // @[src/main/scala/myCPU_top.scala 137:34]
   assign memory_io_robCommit_0_sqIdx = backend_io_commitToSq_bits_0_sqIdx_value; // @[src/main/scala/myCPU_top.scala 138:34]
-  assign memory_io_robCommit_1_valid = backend_io_commitToSq_valid_1; // @[src/main/scala/myCPU_top.scala 137:34]
-  assign memory_io_robCommit_1_sqIdx = backend_io_commitToSq_bits_1_sqIdx_value; // @[src/main/scala/myCPU_top.scala 138:34]
-  assign memory_io_robCommit_2_valid = backend_io_commitToSq_valid_2; // @[src/main/scala/myCPU_top.scala 137:34]
-  assign memory_io_robCommit_2_sqIdx = backend_io_commitToSq_bits_2_sqIdx_value; // @[src/main/scala/myCPU_top.scala 138:34]
   assign memory_io_axi_ar_arready = axi_crossbar_io_in_dcache_ar_arready; // @[src/main/scala/myCPU_top.scala 234:31]
   assign memory_io_axi_aw_awready = axi_crossbar_io_in_dcache_aw_awready; // @[src/main/scala/myCPU_top.scala 234:31]
   assign memory_io_axi_w_wready = axi_crossbar_io_in_dcache_w_wready; // @[src/main/scala/myCPU_top.scala 234:31]
@@ -1684,6 +1759,7 @@ module core_top(
   assign memaddrtrans_io_in_bits_data = backend_io_toMemResult_0_bits_data; // @[src/main/scala/myCPU_top.scala 126:22]
   assign memaddrtrans_io_mmuResp_valid = simMMU_io_mmuResp_valid; // @[src/main/scala/myCPU_top.scala 130:27]
   assign memaddrtrans_io_mmuResp_bits_paddr = simMMU_io_mmuResp_bits_paddr; // @[src/main/scala/myCPU_top.scala 130:27]
+  assign memaddrtrans_io_mmuResp_bits_cacheable = simMMU_io_mmuResp_bits_cacheable; // @[src/main/scala/myCPU_top.scala 130:27]
   assign simMMU_clock = aclk;
   assign simMMU_reset = ~aresetn; // @[src/main/scala/myCPU_top.scala 95:27]
   assign simMMU_io_mmuReq_valid = memaddrtrans_io_mmuReq_valid; // @[src/main/scala/myCPU_top.scala 129:26]
@@ -1798,14 +1874,55 @@ module core_top(
   assign axi_crossbar_io_out_b_data_bvalid = bvalid; // @[src/main/scala/myCPU_top.scala 286:20 289:17]
   assign difftest_clock = aclk;
   assign difftest_reset = ~aresetn; // @[src/main/scala/myCPU_top.scala 95:27]
-  assign difftest_io_inst_valid_diff = cycleCount == 64'h22b8; // @[src/main/scala/myCPU_top.scala 321:47]
-  assign difftest_io_cnt_inst_diff = cycleCount == 64'hbc; // @[src/main/scala/myCPU_top.scala 322:47]
-  assign difftest_io_timer_64_diff = cycleCount; // @[src/main/scala/myCPU_top.scala 323:33]
+  assign difftest_io_inst_valid_diff = backend_io_debugCommit_valid_0; // @[src/main/scala/myCPU_top.scala 342:33]
+  assign difftest_io_cnt_inst_diff = backend_io_debugCommit_bits_0_inst[0]; // @[src/main/scala/myCPU_top.scala 343:33]
+  assign difftest_io_timer_64_diff = cycleCount; // @[src/main/scala/myCPU_top.scala 344:33]
+  assign difftest_io_debug0_wb_rf_wen = backend_io_debugCommit_bits_0_rfWen; // @[src/main/scala/myCPU_top.scala 346:33]
+  assign difftest_io_debug0_wb_rf_wnum = backend_io_debugCommit_bits_0_pdst[4:0]; // @[src/main/scala/myCPU_top.scala 347:33]
+  assign difftest_io_debug0_wb_rf_wdata = {{32'd0}, backend_io_debugCommit_bits_0_wrdata}; // @[src/main/scala/myCPU_top.scala 348:33]
+  assign difftest_io_debug0_wb_pc = {{32'd0}, backend_io_debugCommit_bits_0_pc}; // @[src/main/scala/myCPU_top.scala 349:33]
+  assign difftest_io_debug0_wb_inst = backend_io_debugCommit_bits_0_inst; // @[src/main/scala/myCPU_top.scala 350:33]
+  assign difftest_io_regs_1 = {{32'd0}, backend_io_debugLogicRegs_1}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_2 = {{32'd0}, backend_io_debugLogicRegs_2}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_3 = {{32'd0}, backend_io_debugLogicRegs_3}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_4 = {{32'd0}, backend_io_debugLogicRegs_4}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_5 = {{32'd0}, backend_io_debugLogicRegs_5}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_6 = {{32'd0}, backend_io_debugLogicRegs_6}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_7 = {{32'd0}, backend_io_debugLogicRegs_7}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_8 = {{32'd0}, backend_io_debugLogicRegs_8}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_9 = {{32'd0}, backend_io_debugLogicRegs_9}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_10 = {{32'd0}, backend_io_debugLogicRegs_10}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_11 = {{32'd0}, backend_io_debugLogicRegs_11}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_12 = {{32'd0}, backend_io_debugLogicRegs_12}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_13 = {{32'd0}, backend_io_debugLogicRegs_13}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_14 = {{32'd0}, backend_io_debugLogicRegs_14}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_15 = {{32'd0}, backend_io_debugLogicRegs_15}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_16 = {{32'd0}, backend_io_debugLogicRegs_16}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_17 = {{32'd0}, backend_io_debugLogicRegs_17}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_18 = {{32'd0}, backend_io_debugLogicRegs_18}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_19 = {{32'd0}, backend_io_debugLogicRegs_19}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_20 = {{32'd0}, backend_io_debugLogicRegs_20}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_21 = {{32'd0}, backend_io_debugLogicRegs_21}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_22 = {{32'd0}, backend_io_debugLogicRegs_22}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_23 = {{32'd0}, backend_io_debugLogicRegs_23}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_24 = {{32'd0}, backend_io_debugLogicRegs_24}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_25 = {{32'd0}, backend_io_debugLogicRegs_25}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_26 = {{32'd0}, backend_io_debugLogicRegs_26}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_27 = {{32'd0}, backend_io_debugLogicRegs_27}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_28 = {{32'd0}, backend_io_debugLogicRegs_28}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_29 = {{32'd0}, backend_io_debugLogicRegs_29}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_30 = {{32'd0}, backend_io_debugLogicRegs_30}; // @[src/main/scala/myCPU_top.scala 404:25]
+  assign difftest_io_regs_31 = {{32'd0}, backend_io_debugLogicRegs_31}; // @[src/main/scala/myCPU_top.scala 404:25]
   always @(posedge aclk) begin
     if (_T) begin // @[src/main/scala/myCPU_top.scala 315:27]
       cycleCount <= 64'h0; // @[src/main/scala/myCPU_top.scala 315:27]
     end else begin
       cycleCount <= _cycleCount_T_1; // @[src/main/scala/myCPU_top.scala 316:14]
+    end
+    if (_T) begin // @[src/main/scala/myCPU_top.scala 323:33]
+      committedInstCnt <= 64'h0; // @[src/main/scala/myCPU_top.scala 323:33]
+    end else if (|backend_io_debugCommit_valid_0) begin // @[src/main/scala/myCPU_top.scala 335:30]
+      committedInstCnt <= _committedInstCnt_T_1; // @[src/main/scala/myCPU_top.scala 336:22]
     end
   end
 // Register and memory initialization
@@ -1846,6 +1963,8 @@ initial begin
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {2{`RANDOM}};
   cycleCount = _RAND_0[63:0];
+  _RAND_1 = {2{`RANDOM}};
+  committedInstCnt = _RAND_1[63:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

@@ -106,9 +106,6 @@ module CircularQueue(
   output        io_deq_2_bits_exception_excpTlbPif, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_2_bits_exception_excpTlbPpi, // @[src/main/scala/util/CircularQueue.scala 83:14]
   output        io_deq_2_bits_exception_excpAdef, // @[src/main/scala/util/CircularQueue.scala 83:14]
-  output        io_empty, // @[src/main/scala/util/CircularQueue.scala 83:14]
-  output        io_full, // @[src/main/scala/util/CircularQueue.scala 83:14]
-  output [4:0]  io_count, // @[src/main/scala/util/CircularQueue.scala 83:14]
   input         io_flush // @[src/main/scala/util/CircularQueue.scala 83:14]
 );
 `ifdef RANDOMIZE_REG_INIT
@@ -2432,9 +2429,6 @@ module CircularQueue(
   assign io_deq_2_bits_exception_excpTlbPif = 4'hf == readIdx_2 ? data_15_exception_excpTlbPif : _GEN_2254; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_2_bits_exception_excpTlbPpi = 4'hf == readIdx_2 ? data_15_exception_excpTlbPpi : _GEN_2270; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
   assign io_deq_2_bits_exception_excpAdef = 4'hf == readIdx_2 ? data_15_exception_excpAdef : _GEN_2286; // @[src/main/scala/util/CircularQueue.scala 217:{20,20}]
-  assign io_empty = empty; // @[src/main/scala/util/CircularQueue.scala 132:12]
-  assign io_full = full; // @[src/main/scala/util/CircularQueue.scala 133:12]
-  assign io_count = _count_T_6[4:0]; // @[src/main/scala/util/CircularQueue.scala 143:23 146:9]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/util/CircularQueue.scala 101:23]
       deqPtr_value <= 4'h0; // @[src/main/scala/util/CircularQueue.scala 101:23]

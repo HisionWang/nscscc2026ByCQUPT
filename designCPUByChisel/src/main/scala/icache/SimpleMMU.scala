@@ -41,9 +41,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   io.mmuResp.valid := stage1_valid
   io.mmuResp.bits.paddr := stage1_vaddr  // 恒等映射
   //io.mmuResp.bits.sqIdx := stage1_sq  // 恒等映射
-  io.mmuResp.bits.cacheable := true.B   // 默认cached
+  io.mmuResp.bits.cacheable := stage1_vaddr(31,16) =/= 0xbfaf.U    //true.B   // 默认cached
   io.mmuResp.bits.hasError := false.B   // 默认cached
   io.mmuResp.bits.error := 0.U.asTypeOf(new MmuTransError)      // 默认无错误
-  
-  println("SimpleMMU instantiated with 2-cycle latency")
 }

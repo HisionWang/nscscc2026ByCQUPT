@@ -9,7 +9,7 @@ class DifftestInstrCommit extends BlackBox with HasBlackBoxResource {
   val io = IO(new Bundle {
     val clock = Input(Clock())
     val coreid = Input(UInt(8.W))
-    val index = Input(UInt(8.W))
+    val index = Input(UInt(64.W))
     val valid = Input(Bool())
     val pc = Input(UInt(64.W))
     val instr = Input(UInt(32.W))
@@ -160,6 +160,7 @@ class DifftestInCore extends Module {
     // 来自CPU的信号
     val inst_valid_diff = Input(Bool())
     val cnt_inst_diff = Input(Bool())
+    val cnt_index_diff = Input(UInt(64.W))
     val timer_64_diff = Input(UInt(64.W))
     val inst_ld_en_diff = Input(Bool())
     val ld_paddr_diff = Input(UInt(64.W))
@@ -215,6 +216,7 @@ class DifftestInCore extends Module {
   
   // 寄存器定义
   val cmt_valid = RegInit(false.B)
+  val cmt_index = RegInit(0.U(64.W))
   val cmt_cnt_inst = RegInit(false.B)
   val cmt_timer_64 = RegInit(0.U(64.W))
   val cmt_inst_ld_en = RegInit(false.B)
@@ -246,6 +248,7 @@ class DifftestInCore extends Module {
   
     when(!trap) {
       cmt_valid := io.inst_valid_diff
+      cmt_index := io.cnt_index_diff
       cmt_cnt_inst := io.cnt_inst_diff
       cmt_timer_64 := io.timer_64_diff
       cmt_inst_ld_en := io.inst_ld_en_diff

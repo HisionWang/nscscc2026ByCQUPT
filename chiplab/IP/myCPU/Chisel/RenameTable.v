@@ -38,12 +38,6 @@ module RenameTable(
   input        io_archWritePorts_0_wen, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   input  [4:0] io_archWritePorts_0_addr, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   input  [6:0] io_archWritePorts_0_data, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input        io_archWritePorts_1_wen, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input  [4:0] io_archWritePorts_1_addr, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input  [6:0] io_archWritePorts_1_data, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input        io_archWritePorts_2_wen, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input  [4:0] io_archWritePorts_2_addr, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input  [6:0] io_archWritePorts_2_data, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   output [6:0] io_debugArchState_0, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   output [6:0] io_debugArchState_1, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   output [6:0] io_debugArchState_2, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
@@ -78,10 +72,6 @@ module RenameTable(
   output [6:0] io_debugArchState_31, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   input  [4:0] io_archReadPorts_0_laddr, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   output [6:0] io_archReadPorts_0_pdata, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input  [4:0] io_archReadPorts_1_laddr, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  output [6:0] io_archReadPorts_1_pdata, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  input  [4:0] io_archReadPorts_2_laddr, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
-  output [6:0] io_archReadPorts_2_pdata, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   input        io_snptEnq, // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
   input  [2:0] io_snptSelect // @[src/main/scala/backend/rename/RenameTable.scala 17:14]
 );
@@ -1509,170 +1499,70 @@ module RenameTable(
   wire [6:0] _GEN_1353 = 3'h6 == t2SnptSelect ? snapshots_6_31 : _GEN_1352; // @[src/main/scala/backend/rename/RenameTable.scala 120:{10,10}]
   wire [31:0] _archWriteAddrOH_T = 32'h1 << io_archWritePorts_0_addr; // @[src/main/scala/chisel3/util/OneHot.scala 65:12]
   wire [31:0] archWriteAddrOH_0 = io_archWritePorts_0_wen ? _archWriteAddrOH_T : 32'h0; // @[src/main/scala/backend/rename/RenameTable.scala 130:8]
-  wire [31:0] _archWriteAddrOH_T_2 = 32'h1 << io_archWritePorts_1_addr; // @[src/main/scala/chisel3/util/OneHot.scala 65:12]
-  wire [31:0] archWriteAddrOH_1 = io_archWritePorts_1_wen ? _archWriteAddrOH_T_2 : 32'h0; // @[src/main/scala/backend/rename/RenameTable.scala 130:8]
-  wire [31:0] _archWriteAddrOH_T_4 = 32'h1 << io_archWritePorts_2_addr; // @[src/main/scala/chisel3/util/OneHot.scala 65:12]
-  wire [31:0] archWriteAddrOH_2 = io_archWritePorts_2_wen ? _archWriteAddrOH_T_4 : 32'h0; // @[src/main/scala/backend/rename/RenameTable.scala 130:8]
   wire  matchVec_0_32 = archWriteAddrOH_0[0]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_32 = archWriteAddrOH_1[0]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_32 = archWriteAddrOH_2[0]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_32 = {matchVec_2_32,matchVec_1_32,matchVec_0_32}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_32 = |_anyMatch_T_32; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_32 = |matchVec_0_32; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_33 = archWriteAddrOH_0[1]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_33 = archWriteAddrOH_1[1]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_33 = archWriteAddrOH_2[1]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_33 = {matchVec_2_33,matchVec_1_33,matchVec_0_33}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_33 = |_anyMatch_T_33; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_33 = |matchVec_0_33; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_34 = archWriteAddrOH_0[2]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_34 = archWriteAddrOH_1[2]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_34 = archWriteAddrOH_2[2]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_34 = {matchVec_2_34,matchVec_1_34,matchVec_0_34}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_34 = |_anyMatch_T_34; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_34 = |matchVec_0_34; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_35 = archWriteAddrOH_0[3]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_35 = archWriteAddrOH_1[3]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_35 = archWriteAddrOH_2[3]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_35 = {matchVec_2_35,matchVec_1_35,matchVec_0_35}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_35 = |_anyMatch_T_35; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_35 = |matchVec_0_35; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_36 = archWriteAddrOH_0[4]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_36 = archWriteAddrOH_1[4]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_36 = archWriteAddrOH_2[4]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_36 = {matchVec_2_36,matchVec_1_36,matchVec_0_36}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_36 = |_anyMatch_T_36; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_36 = |matchVec_0_36; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_37 = archWriteAddrOH_0[5]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_37 = archWriteAddrOH_1[5]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_37 = archWriteAddrOH_2[5]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_37 = {matchVec_2_37,matchVec_1_37,matchVec_0_37}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_37 = |_anyMatch_T_37; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_37 = |matchVec_0_37; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_38 = archWriteAddrOH_0[6]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_38 = archWriteAddrOH_1[6]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_38 = archWriteAddrOH_2[6]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_38 = {matchVec_2_38,matchVec_1_38,matchVec_0_38}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_38 = |_anyMatch_T_38; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_38 = |matchVec_0_38; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_39 = archWriteAddrOH_0[7]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_39 = archWriteAddrOH_1[7]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_39 = archWriteAddrOH_2[7]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_39 = {matchVec_2_39,matchVec_1_39,matchVec_0_39}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_39 = |_anyMatch_T_39; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_39 = |matchVec_0_39; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_40 = archWriteAddrOH_0[8]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_40 = archWriteAddrOH_1[8]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_40 = archWriteAddrOH_2[8]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_40 = {matchVec_2_40,matchVec_1_40,matchVec_0_40}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_40 = |_anyMatch_T_40; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_40 = |matchVec_0_40; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_41 = archWriteAddrOH_0[9]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_41 = archWriteAddrOH_1[9]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_41 = archWriteAddrOH_2[9]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_41 = {matchVec_2_41,matchVec_1_41,matchVec_0_41}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_41 = |_anyMatch_T_41; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_41 = |matchVec_0_41; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_42 = archWriteAddrOH_0[10]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_42 = archWriteAddrOH_1[10]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_42 = archWriteAddrOH_2[10]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_42 = {matchVec_2_42,matchVec_1_42,matchVec_0_42}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_42 = |_anyMatch_T_42; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_42 = |matchVec_0_42; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_43 = archWriteAddrOH_0[11]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_43 = archWriteAddrOH_1[11]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_43 = archWriteAddrOH_2[11]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_43 = {matchVec_2_43,matchVec_1_43,matchVec_0_43}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_43 = |_anyMatch_T_43; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_43 = |matchVec_0_43; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_44 = archWriteAddrOH_0[12]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_44 = archWriteAddrOH_1[12]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_44 = archWriteAddrOH_2[12]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_44 = {matchVec_2_44,matchVec_1_44,matchVec_0_44}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_44 = |_anyMatch_T_44; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_44 = |matchVec_0_44; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_45 = archWriteAddrOH_0[13]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_45 = archWriteAddrOH_1[13]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_45 = archWriteAddrOH_2[13]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_45 = {matchVec_2_45,matchVec_1_45,matchVec_0_45}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_45 = |_anyMatch_T_45; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_45 = |matchVec_0_45; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_46 = archWriteAddrOH_0[14]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_46 = archWriteAddrOH_1[14]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_46 = archWriteAddrOH_2[14]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_46 = {matchVec_2_46,matchVec_1_46,matchVec_0_46}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_46 = |_anyMatch_T_46; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_46 = |matchVec_0_46; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_47 = archWriteAddrOH_0[15]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_47 = archWriteAddrOH_1[15]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_47 = archWriteAddrOH_2[15]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_47 = {matchVec_2_47,matchVec_1_47,matchVec_0_47}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_47 = |_anyMatch_T_47; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_47 = |matchVec_0_47; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_48 = archWriteAddrOH_0[16]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_48 = archWriteAddrOH_1[16]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_48 = archWriteAddrOH_2[16]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_48 = {matchVec_2_48,matchVec_1_48,matchVec_0_48}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_48 = |_anyMatch_T_48; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_48 = |matchVec_0_48; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_49 = archWriteAddrOH_0[17]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_49 = archWriteAddrOH_1[17]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_49 = archWriteAddrOH_2[17]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_49 = {matchVec_2_49,matchVec_1_49,matchVec_0_49}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_49 = |_anyMatch_T_49; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_49 = |matchVec_0_49; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_50 = archWriteAddrOH_0[18]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_50 = archWriteAddrOH_1[18]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_50 = archWriteAddrOH_2[18]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_50 = {matchVec_2_50,matchVec_1_50,matchVec_0_50}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_50 = |_anyMatch_T_50; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_50 = |matchVec_0_50; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_51 = archWriteAddrOH_0[19]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_51 = archWriteAddrOH_1[19]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_51 = archWriteAddrOH_2[19]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_51 = {matchVec_2_51,matchVec_1_51,matchVec_0_51}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_51 = |_anyMatch_T_51; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_51 = |matchVec_0_51; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_52 = archWriteAddrOH_0[20]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_52 = archWriteAddrOH_1[20]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_52 = archWriteAddrOH_2[20]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_52 = {matchVec_2_52,matchVec_1_52,matchVec_0_52}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_52 = |_anyMatch_T_52; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_52 = |matchVec_0_52; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_53 = archWriteAddrOH_0[21]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_53 = archWriteAddrOH_1[21]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_53 = archWriteAddrOH_2[21]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_53 = {matchVec_2_53,matchVec_1_53,matchVec_0_53}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_53 = |_anyMatch_T_53; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_53 = |matchVec_0_53; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_54 = archWriteAddrOH_0[22]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_54 = archWriteAddrOH_1[22]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_54 = archWriteAddrOH_2[22]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_54 = {matchVec_2_54,matchVec_1_54,matchVec_0_54}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_54 = |_anyMatch_T_54; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_54 = |matchVec_0_54; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_55 = archWriteAddrOH_0[23]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_55 = archWriteAddrOH_1[23]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_55 = archWriteAddrOH_2[23]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_55 = {matchVec_2_55,matchVec_1_55,matchVec_0_55}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_55 = |_anyMatch_T_55; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_55 = |matchVec_0_55; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_56 = archWriteAddrOH_0[24]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_56 = archWriteAddrOH_1[24]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_56 = archWriteAddrOH_2[24]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_56 = {matchVec_2_56,matchVec_1_56,matchVec_0_56}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_56 = |_anyMatch_T_56; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_56 = |matchVec_0_56; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_57 = archWriteAddrOH_0[25]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_57 = archWriteAddrOH_1[25]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_57 = archWriteAddrOH_2[25]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_57 = {matchVec_2_57,matchVec_1_57,matchVec_0_57}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_57 = |_anyMatch_T_57; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_57 = |matchVec_0_57; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_58 = archWriteAddrOH_0[26]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_58 = archWriteAddrOH_1[26]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_58 = archWriteAddrOH_2[26]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_58 = {matchVec_2_58,matchVec_1_58,matchVec_0_58}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_58 = |_anyMatch_T_58; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_58 = |matchVec_0_58; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_59 = archWriteAddrOH_0[27]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_59 = archWriteAddrOH_1[27]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_59 = archWriteAddrOH_2[27]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_59 = {matchVec_2_59,matchVec_1_59,matchVec_0_59}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_59 = |_anyMatch_T_59; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_59 = |matchVec_0_59; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_60 = archWriteAddrOH_0[28]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_60 = archWriteAddrOH_1[28]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_60 = archWriteAddrOH_2[28]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_60 = {matchVec_2_60,matchVec_1_60,matchVec_0_60}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_60 = |_anyMatch_T_60; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_60 = |matchVec_0_60; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_61 = archWriteAddrOH_0[29]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_61 = archWriteAddrOH_1[29]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_61 = archWriteAddrOH_2[29]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_61 = {matchVec_2_61,matchVec_1_61,matchVec_0_61}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_61 = |_anyMatch_T_61; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_61 = |matchVec_0_61; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_62 = archWriteAddrOH_0[30]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_62 = archWriteAddrOH_1[30]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_62 = archWriteAddrOH_2[30]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_62 = {matchVec_2_62,matchVec_1_62,matchVec_0_62}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_62 = |_anyMatch_T_62; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_62 = |matchVec_0_62; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire  matchVec_0_63 = archWriteAddrOH_0[31]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_1_63 = archWriteAddrOH_1[31]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire  matchVec_2_63 = archWriteAddrOH_2[31]; // @[src/main/scala/backend/rename/RenameTable.scala 134:48]
-  wire [2:0] _anyMatch_T_63 = {matchVec_2_63,matchVec_1_63,matchVec_0_63}; // @[src/main/scala/backend/rename/RenameTable.scala 136:38]
-  wire  anyMatch_63 = |_anyMatch_T_63; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
+  wire  anyMatch_63 = |matchVec_0_63; // @[src/main/scala/backend/rename/RenameTable.scala 136:45]
   wire [6:0] _GEN_1356 = 5'h1 == io_archReadPorts_0_laddr ? archTable_1 : archTable_0; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
   wire [6:0] _GEN_1357 = 5'h2 == io_archReadPorts_0_laddr ? archTable_2 : _GEN_1356; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
   wire [6:0] _GEN_1358 = 5'h3 == io_archReadPorts_0_laddr ? archTable_3 : _GEN_1357; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
@@ -1703,75 +1593,6 @@ module RenameTable(
   wire [6:0] _GEN_1383 = 5'h1c == io_archReadPorts_0_laddr ? archTable_28 : _GEN_1382; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
   wire [6:0] _GEN_1384 = 5'h1d == io_archReadPorts_0_laddr ? archTable_29 : _GEN_1383; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
   wire [6:0] _GEN_1385 = 5'h1e == io_archReadPorts_0_laddr ? archTable_30 : _GEN_1384; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
-  wire  archBypassHits_0 = io_archWritePorts_0_wen & io_archWritePorts_0_addr == io_archReadPorts_1_laddr; // @[src/main/scala/backend/rename/RenameTable.scala 153:73]
-  wire  anyArchHit = |archBypassHits_0; // @[src/main/scala/backend/rename/RenameTable.scala 159:59]
-  wire [6:0] _GEN_1388 = 5'h1 == io_archReadPorts_1_laddr ? archTable_1 : archTable_0; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1389 = 5'h2 == io_archReadPorts_1_laddr ? archTable_2 : _GEN_1388; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1390 = 5'h3 == io_archReadPorts_1_laddr ? archTable_3 : _GEN_1389; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1391 = 5'h4 == io_archReadPorts_1_laddr ? archTable_4 : _GEN_1390; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1392 = 5'h5 == io_archReadPorts_1_laddr ? archTable_5 : _GEN_1391; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1393 = 5'h6 == io_archReadPorts_1_laddr ? archTable_6 : _GEN_1392; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1394 = 5'h7 == io_archReadPorts_1_laddr ? archTable_7 : _GEN_1393; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1395 = 5'h8 == io_archReadPorts_1_laddr ? archTable_8 : _GEN_1394; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1396 = 5'h9 == io_archReadPorts_1_laddr ? archTable_9 : _GEN_1395; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1397 = 5'ha == io_archReadPorts_1_laddr ? archTable_10 : _GEN_1396; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1398 = 5'hb == io_archReadPorts_1_laddr ? archTable_11 : _GEN_1397; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1399 = 5'hc == io_archReadPorts_1_laddr ? archTable_12 : _GEN_1398; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1400 = 5'hd == io_archReadPorts_1_laddr ? archTable_13 : _GEN_1399; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1401 = 5'he == io_archReadPorts_1_laddr ? archTable_14 : _GEN_1400; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1402 = 5'hf == io_archReadPorts_1_laddr ? archTable_15 : _GEN_1401; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1403 = 5'h10 == io_archReadPorts_1_laddr ? archTable_16 : _GEN_1402; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1404 = 5'h11 == io_archReadPorts_1_laddr ? archTable_17 : _GEN_1403; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1405 = 5'h12 == io_archReadPorts_1_laddr ? archTable_18 : _GEN_1404; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1406 = 5'h13 == io_archReadPorts_1_laddr ? archTable_19 : _GEN_1405; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1407 = 5'h14 == io_archReadPorts_1_laddr ? archTable_20 : _GEN_1406; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1408 = 5'h15 == io_archReadPorts_1_laddr ? archTable_21 : _GEN_1407; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1409 = 5'h16 == io_archReadPorts_1_laddr ? archTable_22 : _GEN_1408; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1410 = 5'h17 == io_archReadPorts_1_laddr ? archTable_23 : _GEN_1409; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1411 = 5'h18 == io_archReadPorts_1_laddr ? archTable_24 : _GEN_1410; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1412 = 5'h19 == io_archReadPorts_1_laddr ? archTable_25 : _GEN_1411; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1413 = 5'h1a == io_archReadPorts_1_laddr ? archTable_26 : _GEN_1412; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1414 = 5'h1b == io_archReadPorts_1_laddr ? archTable_27 : _GEN_1413; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1415 = 5'h1c == io_archReadPorts_1_laddr ? archTable_28 : _GEN_1414; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1416 = 5'h1d == io_archReadPorts_1_laddr ? archTable_29 : _GEN_1415; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1417 = 5'h1e == io_archReadPorts_1_laddr ? archTable_30 : _GEN_1416; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1418 = 5'h1f == io_archReadPorts_1_laddr ? archTable_31 : _GEN_1417; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire  archBypassHits_0_1 = io_archWritePorts_0_wen & io_archWritePorts_0_addr == io_archReadPorts_2_laddr; // @[src/main/scala/backend/rename/RenameTable.scala 153:73]
-  wire  archBypassHits_1 = io_archWritePorts_1_wen & io_archWritePorts_1_addr == io_archReadPorts_2_laddr; // @[src/main/scala/backend/rename/RenameTable.scala 153:73]
-  wire [6:0] archBypassData = archBypassHits_1 ? io_archWritePorts_1_data : io_archWritePorts_0_data; // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-  wire [1:0] _anyArchHit_T = {archBypassHits_1,archBypassHits_0_1}; // @[src/main/scala/backend/rename/RenameTable.scala 159:52]
-  wire  anyArchHit_1 = |_anyArchHit_T; // @[src/main/scala/backend/rename/RenameTable.scala 159:59]
-  wire [6:0] _GEN_1420 = 5'h1 == io_archReadPorts_2_laddr ? archTable_1 : archTable_0; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1421 = 5'h2 == io_archReadPorts_2_laddr ? archTable_2 : _GEN_1420; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1422 = 5'h3 == io_archReadPorts_2_laddr ? archTable_3 : _GEN_1421; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1423 = 5'h4 == io_archReadPorts_2_laddr ? archTable_4 : _GEN_1422; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1424 = 5'h5 == io_archReadPorts_2_laddr ? archTable_5 : _GEN_1423; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1425 = 5'h6 == io_archReadPorts_2_laddr ? archTable_6 : _GEN_1424; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1426 = 5'h7 == io_archReadPorts_2_laddr ? archTable_7 : _GEN_1425; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1427 = 5'h8 == io_archReadPorts_2_laddr ? archTable_8 : _GEN_1426; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1428 = 5'h9 == io_archReadPorts_2_laddr ? archTable_9 : _GEN_1427; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1429 = 5'ha == io_archReadPorts_2_laddr ? archTable_10 : _GEN_1428; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1430 = 5'hb == io_archReadPorts_2_laddr ? archTable_11 : _GEN_1429; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1431 = 5'hc == io_archReadPorts_2_laddr ? archTable_12 : _GEN_1430; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1432 = 5'hd == io_archReadPorts_2_laddr ? archTable_13 : _GEN_1431; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1433 = 5'he == io_archReadPorts_2_laddr ? archTable_14 : _GEN_1432; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1434 = 5'hf == io_archReadPorts_2_laddr ? archTable_15 : _GEN_1433; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1435 = 5'h10 == io_archReadPorts_2_laddr ? archTable_16 : _GEN_1434; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1436 = 5'h11 == io_archReadPorts_2_laddr ? archTable_17 : _GEN_1435; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1437 = 5'h12 == io_archReadPorts_2_laddr ? archTable_18 : _GEN_1436; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1438 = 5'h13 == io_archReadPorts_2_laddr ? archTable_19 : _GEN_1437; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1439 = 5'h14 == io_archReadPorts_2_laddr ? archTable_20 : _GEN_1438; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1440 = 5'h15 == io_archReadPorts_2_laddr ? archTable_21 : _GEN_1439; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1441 = 5'h16 == io_archReadPorts_2_laddr ? archTable_22 : _GEN_1440; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1442 = 5'h17 == io_archReadPorts_2_laddr ? archTable_23 : _GEN_1441; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1443 = 5'h18 == io_archReadPorts_2_laddr ? archTable_24 : _GEN_1442; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1444 = 5'h19 == io_archReadPorts_2_laddr ? archTable_25 : _GEN_1443; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1445 = 5'h1a == io_archReadPorts_2_laddr ? archTable_26 : _GEN_1444; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1446 = 5'h1b == io_archReadPorts_2_laddr ? archTable_27 : _GEN_1445; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1447 = 5'h1c == io_archReadPorts_2_laddr ? archTable_28 : _GEN_1446; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1448 = 5'h1d == io_archReadPorts_2_laddr ? archTable_29 : _GEN_1447; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1449 = 5'h1e == io_archReadPorts_2_laddr ? archTable_30 : _GEN_1448; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
-  wire [6:0] _GEN_1450 = 5'h1f == io_archReadPorts_2_laddr ? archTable_31 : _GEN_1449; // @[src/main/scala/backend/rename/RenameTable.scala 162:{24,24}]
   wire  t0Bypass_0 = io_specWritePorts_0_wen & io_specWritePorts_0_addr == io_readPorts_0_addr; // @[src/main/scala/backend/rename/RenameTable.scala 173:53]
   wire  t0Bypass_1 = io_specWritePorts_1_wen & io_specWritePorts_1_addr == io_readPorts_0_addr; // @[src/main/scala/backend/rename/RenameTable.scala 173:53]
   wire  t0Bypass_2 = io_specWritePorts_2_wen & io_specWritePorts_2_addr == io_readPorts_0_addr; // @[src/main/scala/backend/rename/RenameTable.scala 173:53]
@@ -1895,8 +1716,6 @@ module RenameTable(
   assign io_debugArchState_30 = archTable_30; // @[src/main/scala/backend/rename/RenameTable.scala 57:21]
   assign io_debugArchState_31 = archTable_31; // @[src/main/scala/backend/rename/RenameTable.scala 57:21]
   assign io_archReadPorts_0_pdata = 5'h1f == io_archReadPorts_0_laddr ? archTable_31 : _GEN_1385; // @[src/main/scala/backend/rename/RenameTable.scala 165:{18,18}]
-  assign io_archReadPorts_1_pdata = anyArchHit ? io_archWritePorts_0_data : _GEN_1418; // @[src/main/scala/backend/rename/RenameTable.scala 162:24]
-  assign io_archReadPorts_2_pdata = anyArchHit_1 ? archBypassData : _GEN_1450; // @[src/main/scala/backend/rename/RenameTable.scala 162:24]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 52:30]
       specTable_0 <= 7'h0; // @[src/main/scala/backend/rename/RenameTable.scala 52:30]
@@ -2509,354 +2328,162 @@ module RenameTable(
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_0 <= 7'h0; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_32) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_32) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_0 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_32) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_0 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_0 <= io_archWritePorts_0_data;
-      end
+      archTable_0 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_1 <= 7'h1; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_33) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_33) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_1 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_33) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_1 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_1 <= io_archWritePorts_0_data;
-      end
+      archTable_1 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_2 <= 7'h2; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_34) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_34) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_2 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_34) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_2 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_2 <= io_archWritePorts_0_data;
-      end
+      archTable_2 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_3 <= 7'h3; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_35) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_35) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_3 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_35) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_3 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_3 <= io_archWritePorts_0_data;
-      end
+      archTable_3 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_4 <= 7'h4; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_36) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_36) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_4 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_36) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_4 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_4 <= io_archWritePorts_0_data;
-      end
+      archTable_4 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_5 <= 7'h5; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_37) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_37) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_5 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_37) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_5 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_5 <= io_archWritePorts_0_data;
-      end
+      archTable_5 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_6 <= 7'h6; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_38) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_38) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_6 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_38) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_6 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_6 <= io_archWritePorts_0_data;
-      end
+      archTable_6 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_7 <= 7'h7; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_39) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_39) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_7 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_39) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_7 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_7 <= io_archWritePorts_0_data;
-      end
+      archTable_7 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_8 <= 7'h8; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_40) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_40) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_8 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_40) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_8 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_8 <= io_archWritePorts_0_data;
-      end
+      archTable_8 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_9 <= 7'h9; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_41) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_41) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_9 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_41) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_9 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_9 <= io_archWritePorts_0_data;
-      end
+      archTable_9 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_10 <= 7'ha; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_42) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_42) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_10 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_42) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_10 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_10 <= io_archWritePorts_0_data;
-      end
+      archTable_10 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_11 <= 7'hb; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_43) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_43) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_11 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_43) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_11 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_11 <= io_archWritePorts_0_data;
-      end
+      archTable_11 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_12 <= 7'hc; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_44) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_44) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_12 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_44) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_12 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_12 <= io_archWritePorts_0_data;
-      end
+      archTable_12 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_13 <= 7'hd; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_45) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_45) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_13 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_45) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_13 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_13 <= io_archWritePorts_0_data;
-      end
+      archTable_13 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_14 <= 7'he; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_46) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_46) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_14 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_46) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_14 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_14 <= io_archWritePorts_0_data;
-      end
+      archTable_14 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_15 <= 7'hf; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_47) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_47) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_15 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_47) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_15 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_15 <= io_archWritePorts_0_data;
-      end
+      archTable_15 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_16 <= 7'h10; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_48) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_48) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_16 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_48) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_16 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_16 <= io_archWritePorts_0_data;
-      end
+      archTable_16 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_17 <= 7'h11; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_49) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_49) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_17 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_49) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_17 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_17 <= io_archWritePorts_0_data;
-      end
+      archTable_17 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_18 <= 7'h12; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_50) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_50) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_18 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_50) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_18 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_18 <= io_archWritePorts_0_data;
-      end
+      archTable_18 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_19 <= 7'h13; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_51) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_51) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_19 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_51) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_19 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_19 <= io_archWritePorts_0_data;
-      end
+      archTable_19 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_20 <= 7'h14; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_52) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_52) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_20 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_52) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_20 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_20 <= io_archWritePorts_0_data;
-      end
+      archTable_20 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_21 <= 7'h15; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_53) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_53) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_21 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_53) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_21 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_21 <= io_archWritePorts_0_data;
-      end
+      archTable_21 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_22 <= 7'h16; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_54) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_54) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_22 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_54) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_22 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_22 <= io_archWritePorts_0_data;
-      end
+      archTable_22 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_23 <= 7'h17; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_55) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_55) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_23 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_55) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_23 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_23 <= io_archWritePorts_0_data;
-      end
+      archTable_23 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_24 <= 7'h18; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_56) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_56) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_24 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_56) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_24 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_24 <= io_archWritePorts_0_data;
-      end
+      archTable_24 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_25 <= 7'h19; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_57) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_57) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_25 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_57) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_25 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_25 <= io_archWritePorts_0_data;
-      end
+      archTable_25 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_26 <= 7'h1a; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_58) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_58) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_26 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_58) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_26 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_26 <= io_archWritePorts_0_data;
-      end
+      archTable_26 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_27 <= 7'h1b; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_59) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_59) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_27 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_59) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_27 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_27 <= io_archWritePorts_0_data;
-      end
+      archTable_27 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_28 <= 7'h1c; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_60) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_60) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_28 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_60) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_28 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_28 <= io_archWritePorts_0_data;
-      end
+      archTable_28 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_29 <= 7'h1d; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_61) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_61) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_29 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_61) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_29 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_29 <= io_archWritePorts_0_data;
-      end
+      archTable_29 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_30 <= 7'h1e; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_62) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_62) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_30 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_62) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_30 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_30 <= io_archWritePorts_0_data;
-      end
+      archTable_30 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
       archTable_31 <= 7'h1f; // @[src/main/scala/backend/rename/RenameTable.scala 55:30]
     end else if (anyMatch_63) begin // @[src/main/scala/backend/rename/RenameTable.scala 138:16]
-      if (matchVec_2_63) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_31 <= io_archWritePorts_2_data;
-      end else if (matchVec_1_63) begin // @[src/main/scala/chisel3/util/Mux.scala 50:70]
-        archTable_31 <= io_archWritePorts_1_data;
-      end else begin
-        archTable_31 <= io_archWritePorts_0_data;
-      end
+      archTable_31 <= io_archWritePorts_0_data;
     end
     if (reset) begin // @[src/main/scala/backend/rename/RenameTable.scala 64:27]
       t1Redirect <= 1'h0; // @[src/main/scala/backend/rename/RenameTable.scala 64:27]

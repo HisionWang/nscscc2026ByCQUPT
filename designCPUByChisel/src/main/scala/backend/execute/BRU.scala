@@ -58,7 +58,7 @@ class BRU(implicit p: Parameters) extends NSModule {
   val branchTarget = (pc + imm)(XLEN - 1, 0)
  
   val target = Mux(op === BruOp.jirl, jirlTarget, branchTarget)
- 
+  dontTouch(target)
   // ── 写回值 ──
   // BL 和 JIRL 需要把 PC+4 写入目标寄存器
   val linkResult = pc + 4.U

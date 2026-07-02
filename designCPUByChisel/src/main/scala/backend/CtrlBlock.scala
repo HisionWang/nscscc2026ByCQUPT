@@ -32,7 +32,7 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
  
   // ── ROB 提交 ──
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
-  val commit  = new RobCommitIO
+  val debugCommit  = new RobCommitIO
   val commitToSq  = new RobCommitToSq
  
   // ── 重定向 ──
@@ -106,7 +106,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   }
  
 
-  io.commit   := rob.io.commit
+  io.debugCommit   := rob.io.commit
   io.commitToSq := rob.io.commitToSq
  
   // ROB 重定向

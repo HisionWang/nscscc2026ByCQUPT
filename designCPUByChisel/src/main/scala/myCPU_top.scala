@@ -294,20 +294,20 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // 调试信号
   // ================================================================
   // 从前端IBuffer取第一条有效指令作为调试输出
-  val dbgFirstValid = frontend.io.out(0).fire
-  when(dbgFirstValid) {
-    debug0_wb_pc       := frontend.io.out(0).bits.pc
-    debug0_wb_inst     := frontend.io.out(0).bits.instr(31, 0)
-    debug0_wb_rf_wen   := false.B    // 后端实现后连接写回使能
-    debug0_wb_rf_wnum  := 0.U
-    debug0_wb_rf_wdata := 0.U
-    ws_valid           := true.B
-  }.otherwise {
-    ws_valid := false.B
-  }
+//  val dbgFirstValid = frontend.io.out(0).fire
+//  when(dbgFirstValid) {
+//    debug0_wb_pc       := frontend.io.out(0).bits.pc
+//    debug0_wb_inst     := frontend.io.out(0).bits.instr(31, 0)
+//    debug0_wb_rf_wen   := false.B    // 后端实现后连接写回使能
+//    debug0_wb_rf_wnum  := 0.U
+//    debug0_wb_rf_wdata := 0.U
+//    ws_valid           := true.B
+//  }.otherwise {
+//    ws_valid := false.B
+//  }
  
   // 调试: 寄存器读数据 (暂无寄存器堆)
-  rf_rdata := 0.U
+//  rf_rdata := 0.U
  
   // ================================================================
   // Difftest 协同仿真
@@ -316,12 +316,39 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   cycleCount := cycleCount + 1.U
  
   val difftest = Module(new DifftestInCore)
- 
+
+  // ================================================================
+  // 提交全局索引计数器
+  // ================================================================
+  val committedInstCnt = RegInit(0.U(64.W))
+  dontTouch(committedInstCnt)
+   
+  val debugCommit = backend.io.debugCommit  // RobCommitIO, CommitWidth 路
+   
+  // 本次提交的有效指令数
+  val commitValidCount = PopCount(debugCommit.valid)
+   
+  // 传给 difftest：第 0 个提交的全局序号
+  
+   
+  // 有提交时更新计数器
+  when(commitValidCount.orR) {
+    committedInstCnt := committedInstCnt + commitValidCount
+  }
+  difftest.io.cnt_index_diff := committedInstCnt
+
   // 指令有效: 前端输出第一条指令握手成功
-  difftest.io.inst_valid_diff   := cycleCount === 8888.U
-  difftest.io.cnt_inst_diff     := cycleCount === 188.U
+
+  difftest.io.inst_valid_diff   := debugCommit.valid(0)
+  difftest.io.cnt_inst_diff     := debugCommit.bits(0).inst
   difftest.io.timer_64_diff     := cycleCount
- 
+   // 写回调试
+  difftest.io.debug0_wb_rf_wen  := debugCommit.bits(0).rfWen
+  difftest.io.debug0_wb_rf_wnum := debugCommit.bits(0).pdst
+  difftest.io.debug0_wb_rf_wdata:= debugCommit.bits(0).wrdata
+  difftest.io.debug0_wb_pc      := debugCommit.bits(0).pc
+  difftest.io.debug0_wb_inst    := debugCommit.bits(0).inst
+
   // Load/Store (暂无后端)
   difftest.io.inst_ld_en_diff   := false.B
   difftest.io.ld_paddr_diff     := 0.U
@@ -335,12 +362,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   difftest.io.csr_rstat_en_diff := false.B
   difftest.io.csr_data_diff     := 0.U
  
-  // 写回调试
-  difftest.io.debug0_wb_rf_wen  := false.B
-  difftest.io.debug0_wb_rf_wnum := 0.U
-  difftest.io.debug0_wb_rf_wdata:= 0.U
-  difftest.io.debug0_wb_pc      := 0.U //frontend.io.out(0).bits.pc
-  difftest.io.debug0_wb_inst    := 0.U //frontend.io.out(0).bits.instr(31, 0)
+
  
   // 异常相关
   difftest.io.excp_flush   := false.B
@@ -379,8 +401,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // 寄存器堆 (暂无, 置0)
   for (i <- 0 until 32) {
-    difftest.io.regs(i) := 0.U
+    difftest.io.regs(i) := backend.io.debugLogicRegs(i)
   }
+
+  
  
   // ========== 信号防优化 ==========
   dontTouch(break_point)

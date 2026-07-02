@@ -4,7 +4,8 @@ module SimpleMMU(
   input         io_mmuReq_valid, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
   input  [31:0] io_mmuReq_bits_vaddr, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
   output        io_mmuResp_valid, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
-  output [31:0] io_mmuResp_bits_paddr // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  output [31:0] io_mmuResp_bits_paddr, // @[src/main/scala/icache/SimpleMMU.scala 11:14]
+  output        io_mmuResp_bits_cacheable // @[src/main/scala/icache/SimpleMMU.scala 11:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -14,6 +15,7 @@ module SimpleMMU(
   reg [31:0] stage1_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 19:25]
   assign io_mmuResp_valid = stage1_valid; // @[src/main/scala/icache/SimpleMMU.scala 41:20]
   assign io_mmuResp_bits_paddr = stage1_vaddr; // @[src/main/scala/icache/SimpleMMU.scala 42:25]
+  assign io_mmuResp_bits_cacheable = stage1_vaddr[31:16] != 16'hbfaf; // @[src/main/scala/icache/SimpleMMU.scala 44:52]
   always @(posedge clock) begin
     if (reset) begin // @[src/main/scala/icache/SimpleMMU.scala 18:29]
       stage1_valid <= 1'h0; // @[src/main/scala/icache/SimpleMMU.scala 18:29]

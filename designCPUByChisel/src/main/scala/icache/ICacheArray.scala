@@ -114,11 +114,11 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
     dataBRAMs(way).wr_data := io.write.data
     
     // 调试输出
-    when(io.write.valid && waySel) {
-      printf(p"[ICache Write] idx=${io.write.idx}, way=$way, " +
-             p"tag=0x${Hexadecimal(io.write.tag)}, " +
-             p"data=0x${Hexadecimal(io.write.data)}\n")
-    }
+  //  when(io.write.valid && waySel) {
+  //    printf(p"[ICache Write] idx=${io.write.idx}, way=$way, " +
+  //           p"tag=0x${Hexadecimal(io.write.tag)}, " +
+  //           p"data=0x${Hexadecimal(io.write.data)}\n")
+  //  }
   }
   
   // === Flush逻辑 ===
@@ -138,10 +138,10 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
 
   }
   
-  when(io.flush.valid) {
-    printf(p"[ICache Flush] idx=${io.flush.idx}\n")
-  }
-  
+//  when(io.flush.valid) {
+//    printf(p"[ICache Flush] idx=${io.flush.idx}\n")
+//  }
+//  
   // === 冲突处理（可选）===
   // 如果读写同时访问同一地址，需要处理冲突
   // 这里使用简单的优先级：写优先
@@ -153,14 +153,14 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   }
   
   // 如果有冲突，可以暂停读取（这里只打印警告）
-  when(readWriteConflict.reduce(_ || _)) {
-    printf(p"[ICache Conflict] Read-Write conflict at idx=${io.read.req.idx}\n")
-  }
-  
-  println("ICacheIntegratedArray instantiated with SimpleBlockRAM:")
-  println(s"  Sets: $nSets, Ways: $nWays")
-  println(s"  Tag Bits: $tagBits, Data Bits: $dataBits")
-  println(s"  Meta BRAM Width: $metaWidth bits, Data BRAM Width: $dataBits bits")
-  println(s"  Read Latency: 2 cycles (BlockRAM default)")
-  println(s"  Write Latency: 1 cycle")
+//  when(readWriteConflict.reduce(_ || _)) {
+//    printf(p"[ICache Conflict] Read-Write conflict at idx=${io.read.req.idx}\n")
+//  }
+//  
+//  println("ICacheIntegratedArray instantiated with SimpleBlockRAM:")
+//  println(s"  Sets: $nSets, Ways: $nWays")
+//  println(s"  Tag Bits: $tagBits, Data Bits: $dataBits")
+//  println(s"  Meta BRAM Width: $metaWidth bits, Data BRAM Width: $dataBits bits")
+//  println(s"  Read Latency: 2 cycles (BlockRAM default)")
+//  println(s"  Write Latency: 1 cycle")
 }

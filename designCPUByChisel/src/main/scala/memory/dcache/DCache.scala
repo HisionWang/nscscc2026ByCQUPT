@@ -36,6 +36,7 @@ class DCache(implicit p: Parameters) extends NSModule {
       val paddr = UInt(XLEN.W)
       val data  = UInt(XLEN.W)
       val lsuOp = UInt(LsuOp.width.W)
+      val cacheable = Bool()
       val sqIdx = UInt(log2Ceil(SqSize).W)
     }))
  
@@ -147,7 +148,10 @@ class DCache(implicit p: Parameters) extends NSModule {
   val s0_paddr = Mux(loadSelected, io.loadReq.bits.paddr, io.storeReq.bits.paddr)
   val s0_setIdx = s0_paddr(blockOffBits + idxBits - 1, blockOffBits)
  
-  array.io.read.valid := s0_fire && Mux(loadSelected, io.loadReq.bits.cacheable, true.B)
+
+  //读的时候只有在fire的时候才读
+  // 所以是不存在丢失的情况
+  array.io.read.valid := s0_fire && Mux(loadSelected, io.loadReq.bits.cacheable, io.storeReq.bits.cacheable)
   array.io.read.idx   := s0_setIdx
  
   // 读 Replacer
@@ -165,7 +169,7 @@ class DCache(implicit p: Parameters) extends NSModule {
     s1_sqIdx     := Mux(s0_storeFire, io.storeReq.bits.sqIdx, 0.U)
     s1_robIdx    := Mux(s0_loadFire, io.loadReq.bits.robIdx, 0.U.asTypeOf(new RobPtr(RobSize)))
     s1_lsuOp     := Mux(s0_loadFire, io.loadReq.bits.lsuOp, io.storeReq.bits.lsuOp)
-    s1_cacheable := false.B //Mux(s0_loadFire, io.loadReq.bits.cacheable, false.B)
+    s1_cacheable := Mux(s0_loadFire, io.loadReq.bits.cacheable, io.storeReq.bits.cacheable)
     s1_storeData := Mux(s0_storeFire, io.storeReq.bits.data, 0.U)
   }.elsewhen(s1_ready) {
     s1_valid := false.B
@@ -310,23 +314,9 @@ class DCache(implicit p: Parameters) extends NSModule {
   array.io.metaWrite.dirty     := false.B
   array.io.metaWrite.tag       := 0.U
  
-  // ---- Store Hit 写 Array ----
-  array.io.write.valid := pipeStoreHitValid && pipeStoreAck.fire
-  array.io.write.idx   := s2_setIdx
-  array.io.write.way   := s2_hitWay
-  array.io.write.tag   := s2_ptag
-  array.io.write.dirty := true.B
-  array.io.write.data  := s2_mergedLine
-  array.io.write.wen   := true.B
+
  
-  // ---- Replacer Touch（hit 时更新） ----
-  replacer.io.touch.valid := (pipeLoadHitValid && pipeLoadResp.fire) || 
-                              (pipeStoreHitValid && pipeStoreAck.fire)
-  replacer.io.touch.idx   := s2_setIdx
-  replacer.io.touch.way   := Mux(pipeLoadHitValid, s2_hitWay, s2_hitWay)
- 
-  replacer.io.flush.valid := false.B
-  replacer.io.flush.idx   := 0.U
+
  
   // ---- s2 ready 判断 ----
   val s2_loadHitDone  = pipeLoadHitValid && pipeLoadResp.fire
@@ -343,14 +333,6 @@ class DCache(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  响应仲裁：Pipeline hit vs MSHR refill
   // ================================================================
-  // Load Response
-//  val arbLoadResp = Arbiter(pipeLoadResp, mshr.io.loadResp)
-//  io.loadResp <> arbLoadResp
-// 
-//  // Store Ack
-//  val arbStoreAck = Arbiter(pipeStoreAck, mshr.io.storeAck)
-//  io.storeAck <> arbStoreAck
-
   // ── Load Response 仲裁：Pipeline hit 优先，MSHR 其次 ──
   // ── Load Response 仲裁 ──
   io.loadResp.valid           := pipeLoadResp.valid || mshr.io.loadResp.valid
@@ -369,9 +351,27 @@ class DCache(implicit p: Parameters) extends NSModule {
   //  MSHR → Array 写入
   // ================================================================
   // MSHR 写 array 时，需要与 pipeline store hit 仲裁
-  // MSHR 优先
+  // pipeline store hit 优先
   val mshrArrayWrite = mshr.io.arrayWrite
-  when(mshrArrayWrite.valid) {
+
+  array.io.write.valid := false.B
+  array.io.write.idx   := 0.U
+  array.io.write.way   := 0.U
+  array.io.write.tag   := 0.U
+  array.io.write.dirty := 0.U
+  array.io.write.data  := 0.U
+  array.io.write.wen   := false.B
+
+  when( pipeStoreHitValid && pipeStoreAck.fire ) {
+    // ---- Store Hit 写 Array ----
+    array.io.write.valid := pipeStoreHitValid && pipeStoreAck.fire
+    array.io.write.idx   := s2_setIdx
+    array.io.write.way   := s2_hitWay
+    array.io.write.tag   := s2_ptag
+    array.io.write.dirty := true.B
+    array.io.write.data  := s2_mergedLine
+    array.io.write.wen   := true.B
+  }.elsewhen(mshrArrayWrite.valid) {
     array.io.write.valid := true.B
     array.io.write.idx   := mshrArrayWrite.idx
     array.io.write.way   := mshrArrayWrite.way
@@ -379,13 +379,30 @@ class DCache(implicit p: Parameters) extends NSModule {
     array.io.write.dirty := mshrArrayWrite.dirty
     array.io.write.data  := mshrArrayWrite.data
     array.io.write.wen   := mshrArrayWrite.wen
+  }.otherwise{
+    array.io.write.valid := false.B
+    array.io.write.wen   := false.B
   }
- 
-  // MSHR Replacer Touch
-  when(mshr.io.replacerTouch.valid) {
+
+  replacer.io.flush.valid := false.B
+  replacer.io.flush.idx   := 0.U
+  when((pipeLoadHitValid && pipeLoadResp.fire) || 
+                              (pipeStoreHitValid && pipeStoreAck.fire)){
+    // ---- Replacer Touch（hit 时更新） ----
+    replacer.io.touch.valid := true.B
+    replacer.io.touch.idx   := s2_setIdx
+    replacer.io.touch.way   := Mux(pipeLoadHitValid, s2_hitWay, s2_hitWay)
+   
+
+
+  }.elsewhen(mshr.io.replacerTouch.valid) {// MSHR Replacer Touch
     replacer.io.touch.valid := true.B
     replacer.io.touch.idx   := mshr.io.replacerTouch.idx
     replacer.io.touch.way   := mshr.io.replacerTouch.way
+  }.otherwise{
+    replacer.io.touch.valid := false.B
+    replacer.io.touch.idx   := 0.U
+    replacer.io.touch.way   := 0.U
   }
  
   // ================================================================

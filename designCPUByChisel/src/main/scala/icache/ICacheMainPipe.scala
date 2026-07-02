@@ -707,8 +707,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     perf_mmu_error := perf_mmu_error + 1.U
   }
   
-  println("ICache Stage 3 State Machine instantiated:")
-  println(s"  States: Idle, Hit, Miss_Req, Miss_Wait, Miss_Write, Uncache_Req, Uncache_Wait, Done, MMU_Error")
-  println(s"  Fetch Width: $fetchWidth, Block Size: $blockBytes bytes")
+//  println("ICache Stage 3 State Machine instantiated:")
+//  println(s"  States: Idle, Hit, Miss_Req, Miss_Wait, Miss_Write, Uncache_Req, Uncache_Wait, Done, MMU_Error")
+//  println(s"  Fetch Width: $fetchWidth, Block Size: $blockBytes bytes")
   
 }

@@ -15,10 +15,12 @@ module MemAddrTrans(
   output        io_out_bits_exeRes_uop_isSta, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
   output [31:0] io_out_bits_exeRes_data, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
   output [31:0] io_out_bits_mmuRes_paddr, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
+  output        io_out_bits_mmuRes_cacheable, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
   output        io_mmuReq_valid, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
   output [31:0] io_mmuReq_bits_vaddr, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
   input         io_mmuResp_valid, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
-  input  [31:0] io_mmuResp_bits_paddr // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
+  input  [31:0] io_mmuResp_bits_paddr, // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
+  input         io_mmuResp_bits_cacheable // @[src/main/scala/memory/MemAddrTrans.scala 11:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -35,6 +37,7 @@ module MemAddrTrans(
   reg [31:0] _RAND_11;
   reg [31:0] _RAND_12;
   reg [31:0] _RAND_13;
+  reg [31:0] _RAND_14;
 `endif // RANDOMIZE_REG_INIT
   reg  s1_valid; // @[src/main/scala/memory/MemAddrTrans.scala 28:25]
   reg  s1_data_uop_ctrl_memRead; // @[src/main/scala/memory/MemAddrTrans.scala 29:21]
@@ -57,6 +60,7 @@ module MemAddrTrans(
   reg  s2_exe_data_uop_isSta; // @[src/main/scala/memory/MemAddrTrans.scala 61:24]
   reg [31:0] s2_exe_data_data; // @[src/main/scala/memory/MemAddrTrans.scala 61:24]
   reg [31:0] s2_mmu_resp_paddr; // @[src/main/scala/memory/MemAddrTrans.scala 66:24]
+  reg  s2_mmu_resp_cacheable; // @[src/main/scala/memory/MemAddrTrans.scala 66:24]
   wire  _GEN_176 = s1_fire | s2_valid; // @[src/main/scala/memory/MemAddrTrans.scala 90:19 91:19 60:28]
   wire  _GEN_177 = s1_fire ? 1'h0 : s2_mmu_done; // @[src/main/scala/memory/MemAddrTrans.scala 90:19 93:19 65:28]
   wire  _GEN_178 = s2_valid & ~s2_mmu_done & io_mmuResp_valid | _GEN_177; // @[src/main/scala/memory/MemAddrTrans.scala 98:56 99:19]
@@ -68,6 +72,7 @@ module MemAddrTrans(
   assign io_out_bits_exeRes_uop_isSta = s2_exe_data_uop_isSta; // @[src/main/scala/memory/MemAddrTrans.scala 111:22]
   assign io_out_bits_exeRes_data = s2_exe_data_data; // @[src/main/scala/memory/MemAddrTrans.scala 111:22]
   assign io_out_bits_mmuRes_paddr = s2_mmu_done ? s2_mmu_resp_paddr : io_mmuResp_bits_paddr; // @[src/main/scala/memory/MemAddrTrans.scala 115:28]
+  assign io_out_bits_mmuRes_cacheable = s2_mmu_done ? s2_mmu_resp_cacheable : io_mmuResp_bits_cacheable; // @[src/main/scala/memory/MemAddrTrans.scala 115:28]
   assign io_mmuReq_valid = s1_valid & s2_ready; // @[src/main/scala/memory/MemAddrTrans.scala 51:36]
   assign io_mmuReq_bits_vaddr = s1_data_data; // @[src/main/scala/memory/MemAddrTrans.scala 52:24]
   always @(posedge clock) begin
@@ -123,6 +128,11 @@ module MemAddrTrans(
     if (!(s2_fire)) begin // @[src/main/scala/memory/MemAddrTrans.scala 78:23]
       if (s2_valid & ~s2_mmu_done & io_mmuResp_valid) begin // @[src/main/scala/memory/MemAddrTrans.scala 98:56]
         s2_mmu_resp_paddr <= io_mmuResp_bits_paddr; // @[src/main/scala/memory/MemAddrTrans.scala 100:19]
+      end
+    end
+    if (!(s2_fire)) begin // @[src/main/scala/memory/MemAddrTrans.scala 78:23]
+      if (s2_valid & ~s2_mmu_done & io_mmuResp_valid) begin // @[src/main/scala/memory/MemAddrTrans.scala 98:56]
+        s2_mmu_resp_cacheable <= io_mmuResp_bits_cacheable; // @[src/main/scala/memory/MemAddrTrans.scala 100:19]
       end
     end
   end
@@ -190,6 +200,8 @@ initial begin
   s2_exe_data_data = _RAND_12[31:0];
   _RAND_13 = {1{`RANDOM}};
   s2_mmu_resp_paddr = _RAND_13[31:0];
+  _RAND_14 = {1{`RANDOM}};
+  s2_mmu_resp_cacheable = _RAND_14[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

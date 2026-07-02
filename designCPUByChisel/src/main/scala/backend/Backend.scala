@@ -24,6 +24,7 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val fromMemResult  = Flipped (Vec(2, Decoupled(new ExeResult) ))
   val commitToSq  = new RobCommitToSq
 
+  val debugCommit  = new RobCommitIO
   val debugLogicRegs = Output(Vec(IntLogicRegs, UInt(XLEN.W)))
 }
 
@@ -34,11 +35,12 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
+  io.debugCommit <> ctrlBlock.io.debugCommit
 
   io.commitToSq <> ctrlBlock.io.commitToSq
   
   io.lsEnq <> ctrlBlock.io.lsEnq
-  dontTouch(ctrlBlock.io.commit)
+  dontTouch(ctrlBlock.io.debugCommit)
   val scheduler   = Module(new Scheduler)
   val regRead     = Module(new RegisterRead)
   val regFile     = Module(new RegFile)

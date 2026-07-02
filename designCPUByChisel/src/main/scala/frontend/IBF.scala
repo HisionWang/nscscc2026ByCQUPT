@@ -108,13 +108,13 @@ class IBF(implicit p: Parameters) extends NSModule {
   // ==================== 调试信息 ====================
   when(io.in.fire) {
     val enqCount = PopCount(io.in.bits.enqMask)
-    printf(p"[IBF-CircularQueue] Enqueue: ${enqCount} instructions, queue count=${queueCount}\n")
+    //printf(p"[IBF-CircularQueue] Enqueue: ${enqCount} instructions, queue count=${queueCount}\n")
     
     // 输出每条入队的指令信息
     for (i <- 0 until fetchWidth) {
       when(io.in.bits.enqMask(i)) {
-        printf(p"  Instr[${i}]: pc=0x${Hexadecimal(io.in.bits.pcs(i))}, " +
-               p"instr=0x${Hexadecimal(io.in.bits.instrs(i))}\n")
+        //printf(p"  Instr[${i}]: pc=0x${Hexadecimal(io.in.bits.pcs(i))}, " +
+        //       p"instr=0x${Hexadecimal(io.in.bits.instrs(i))}\n")
       }
     }
   }
@@ -122,16 +122,16 @@ class IBF(implicit p: Parameters) extends NSModule {
   // 输出出队信息
   for (i <- 0 until CtrlBlockWidth) {
     when(io.out(i).fire) {
-      printf(p"[IBF-CircularQueue] Dequeue[${i}]: pc=0x${Hexadecimal(io.out(i).bits.pc)}, " +
-             p"instr=0x${Hexadecimal(io.out(i).bits.instr)}\n")
+      //printf(p"[IBF-CircularQueue] Dequeue[${i}]: pc=0x${Hexadecimal(io.out(i).bits.pc)}, " +
+       //      p"instr=0x${Hexadecimal(io.out(i).bits.instr)}\n")
     }
   }
   
   // 队列状态监控
-  printf(p"[IBF-CircularQueue Status] count=$queueCount, empty=$queueEmpty, full=$queueFull\n")
+  //printf(p"[IBF-CircularQueue Status] count=$queueCount, empty=$queueEmpty, full=$queueFull\n")
   
   when(io.flush) {
-    printf(p"[IBF-CircularQueue] Buffer flushed due to redirect\n")
+    //printf(p"[IBF-CircularQueue] Buffer flushed due to redirect\n")
   }
   
   // ==================== 断言检查 ====================

@@ -96,21 +96,9 @@ module ICacheArray(
   reg  anyRdValid; // @[src/main/scala/icache/ICacheArray.scala 90:28]
   wire [3:0] writeWayOneHot = 4'h1 << io_write_way; // @[src/main/scala/chisel3/util/OneHot.scala 58:35]
   wire  waySel = writeWayOneHot[0]; // @[src/main/scala/icache/ICacheArray.scala 101:32]
-  wire  metaBRAMs_0_wr_en = io_write_valid & waySel; // @[src/main/scala/icache/ICacheArray.scala 107:46]
-  wire  _T_2 = ~reset; // @[src/main/scala/icache/ICacheArray.scala 118:13]
   wire  waySel_1 = writeWayOneHot[1]; // @[src/main/scala/icache/ICacheArray.scala 101:32]
-  wire  metaBRAMs_1_wr_en = io_write_valid & waySel_1; // @[src/main/scala/icache/ICacheArray.scala 107:46]
   wire  waySel_2 = writeWayOneHot[2]; // @[src/main/scala/icache/ICacheArray.scala 101:32]
-  wire  metaBRAMs_2_wr_en = io_write_valid & waySel_2; // @[src/main/scala/icache/ICacheArray.scala 107:46]
   wire  waySel_3 = writeWayOneHot[3]; // @[src/main/scala/icache/ICacheArray.scala 101:32]
-  wire  metaBRAMs_3_wr_en = io_write_valid & waySel_3; // @[src/main/scala/icache/ICacheArray.scala 107:46]
-  wire  _readWriteConflict_0_T_1 = io_read_req_idx == io_write_idx; // @[src/main/scala/icache/ICacheArray.scala 152:48]
-  wire  _readWriteConflict_0_T_2 = io_read_req_valid & io_write_valid & _readWriteConflict_0_T_1; // @[src/main/scala/icache/ICacheArray.scala 151:67]
-  wire  readWriteConflict_0 = _readWriteConflict_0_T_2 & waySel; // @[src/main/scala/icache/ICacheArray.scala 152:66]
-  wire  readWriteConflict_1 = _readWriteConflict_0_T_2 & waySel_1; // @[src/main/scala/icache/ICacheArray.scala 152:66]
-  wire  readWriteConflict_2 = _readWriteConflict_0_T_2 & waySel_2; // @[src/main/scala/icache/ICacheArray.scala 152:66]
-  wire  readWriteConflict_3 = _readWriteConflict_0_T_2 & waySel_3; // @[src/main/scala/icache/ICacheArray.scala 152:66]
-  wire  _T_16 = readWriteConflict_0 | readWriteConflict_1 | readWriteConflict_2 | readWriteConflict_3; // @[src/main/scala/icache/ICacheArray.scala 156:35]
   SimpleBlockRAM_4 SimpleBlockRAM ( // @[src/main/scala/icache/ICacheArray.scala 48:11]
     .clock(SimpleBlockRAM_clock),
     .reset(SimpleBlockRAM_reset),
@@ -262,65 +250,6 @@ module ICacheArray(
   assign SimpleBlockRAM_7_io_rd_addr = io_read_req_idx; // @[src/main/scala/icache/ICacheArray.scala 55:26 69:28]
   always @(posedge clock) begin
     anyRdValid <= io_read_req_valid; // @[src/main/scala/icache/ICacheArray.scala 90:28]
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (metaBRAMs_0_wr_en & ~reset) begin
-          $fwrite(32'h80000002,"[ICache Write] idx=%d, way=0, tag=0x%x, data=0x%x\n",io_write_idx,io_write_tag,
-            io_write_data); // @[src/main/scala/icache/ICacheArray.scala 118:13]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (metaBRAMs_1_wr_en & ~reset) begin
-          $fwrite(32'h80000002,"[ICache Write] idx=%d, way=1, tag=0x%x, data=0x%x\n",io_write_idx,io_write_tag,
-            io_write_data); // @[src/main/scala/icache/ICacheArray.scala 118:13]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (metaBRAMs_2_wr_en & ~reset) begin
-          $fwrite(32'h80000002,"[ICache Write] idx=%d, way=2, tag=0x%x, data=0x%x\n",io_write_idx,io_write_tag,
-            io_write_data); // @[src/main/scala/icache/ICacheArray.scala 118:13]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (metaBRAMs_3_wr_en & ~reset) begin
-          $fwrite(32'h80000002,"[ICache Write] idx=%d, way=3, tag=0x%x, data=0x%x\n",io_write_idx,io_write_tag,
-            io_write_data); // @[src/main/scala/icache/ICacheArray.scala 118:13]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (_T_16 & _T_2) begin
-          $fwrite(32'h80000002,"[ICache Conflict] Read-Write conflict at idx=%d\n",io_read_req_idx); // @[src/main/scala/icache/ICacheArray.scala 157:11]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
   end
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN

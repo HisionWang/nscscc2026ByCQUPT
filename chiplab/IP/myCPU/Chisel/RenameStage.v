@@ -263,14 +263,6 @@ module RenameStage(
   input  [4:0]  io_commit_0_ldst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [6:0]  io_commit_0_pdst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_commit_0_rfWen, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input         io_commit_1_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [4:0]  io_commit_1_ldst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [6:0]  io_commit_1_pdst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input         io_commit_1_rfWen, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input         io_commit_2_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [4:0]  io_commit_2_ldst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input  [6:0]  io_commit_2_pdst, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
-  input         io_commit_2_rfWen, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input         io_redirect_valid, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   input  [5:0]  io_redirect_robIdx_value, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
   output [6:0]  io_debugArchState_0, // @[src/main/scala/backend/rename/RenameStage.scala 47:14]
@@ -464,12 +456,6 @@ module RenameStage(
   wire  rat_io_archWritePorts_0_wen; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [4:0] rat_io_archWritePorts_0_addr; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [6:0] rat_io_archWritePorts_0_data; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire  rat_io_archWritePorts_1_wen; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [4:0] rat_io_archWritePorts_1_addr; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [6:0] rat_io_archWritePorts_1_data; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire  rat_io_archWritePorts_2_wen; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [4:0] rat_io_archWritePorts_2_addr; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [6:0] rat_io_archWritePorts_2_data; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [6:0] rat_io_debugArchState_0; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [6:0] rat_io_debugArchState_1; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [6:0] rat_io_debugArchState_2; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
@@ -504,10 +490,6 @@ module RenameStage(
   wire [6:0] rat_io_debugArchState_31; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [4:0] rat_io_archReadPorts_0_laddr; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [6:0] rat_io_archReadPorts_0_pdata; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [4:0] rat_io_archReadPorts_1_laddr; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [6:0] rat_io_archReadPorts_1_pdata; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [4:0] rat_io_archReadPorts_2_laddr; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
-  wire [6:0] rat_io_archReadPorts_2_pdata; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire  rat_io_snptEnq; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire [2:0] rat_io_snptSelect; // @[src/main/scala/backend/rename/RenameStage.scala 72:24]
   wire  freeList_clock; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
@@ -522,10 +504,6 @@ module RenameStage(
   wire  freeList_io_doAlloc; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
   wire  freeList_io_deallocReqs_0_valid; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
   wire [6:0] freeList_io_deallocReqs_0_bits; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
-  wire  freeList_io_deallocReqs_1_valid; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
-  wire [6:0] freeList_io_deallocReqs_1_bits; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
-  wire  freeList_io_deallocReqs_2_valid; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
-  wire [6:0] freeList_io_deallocReqs_2_bits; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
   wire  freeList_io_renBrTags_0_valid; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
   wire [2:0] freeList_io_renBrTags_0_bits; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
   wire  freeList_io_renBrTags_1_valid; // @[src/main/scala/backend/rename/RenameStage.scala 73:24]
@@ -765,12 +743,6 @@ module RenameStage(
     .io_archWritePorts_0_wen(rat_io_archWritePorts_0_wen),
     .io_archWritePorts_0_addr(rat_io_archWritePorts_0_addr),
     .io_archWritePorts_0_data(rat_io_archWritePorts_0_data),
-    .io_archWritePorts_1_wen(rat_io_archWritePorts_1_wen),
-    .io_archWritePorts_1_addr(rat_io_archWritePorts_1_addr),
-    .io_archWritePorts_1_data(rat_io_archWritePorts_1_data),
-    .io_archWritePorts_2_wen(rat_io_archWritePorts_2_wen),
-    .io_archWritePorts_2_addr(rat_io_archWritePorts_2_addr),
-    .io_archWritePorts_2_data(rat_io_archWritePorts_2_data),
     .io_debugArchState_0(rat_io_debugArchState_0),
     .io_debugArchState_1(rat_io_debugArchState_1),
     .io_debugArchState_2(rat_io_debugArchState_2),
@@ -805,10 +777,6 @@ module RenameStage(
     .io_debugArchState_31(rat_io_debugArchState_31),
     .io_archReadPorts_0_laddr(rat_io_archReadPorts_0_laddr),
     .io_archReadPorts_0_pdata(rat_io_archReadPorts_0_pdata),
-    .io_archReadPorts_1_laddr(rat_io_archReadPorts_1_laddr),
-    .io_archReadPorts_1_pdata(rat_io_archReadPorts_1_pdata),
-    .io_archReadPorts_2_laddr(rat_io_archReadPorts_2_laddr),
-    .io_archReadPorts_2_pdata(rat_io_archReadPorts_2_pdata),
     .io_snptEnq(rat_io_snptEnq),
     .io_snptSelect(rat_io_snptSelect)
   );
@@ -825,10 +793,6 @@ module RenameStage(
     .io_doAlloc(freeList_io_doAlloc),
     .io_deallocReqs_0_valid(freeList_io_deallocReqs_0_valid),
     .io_deallocReqs_0_bits(freeList_io_deallocReqs_0_bits),
-    .io_deallocReqs_1_valid(freeList_io_deallocReqs_1_valid),
-    .io_deallocReqs_1_bits(freeList_io_deallocReqs_1_bits),
-    .io_deallocReqs_2_valid(freeList_io_deallocReqs_2_valid),
-    .io_deallocReqs_2_bits(freeList_io_deallocReqs_2_bits),
     .io_renBrTags_0_valid(freeList_io_renBrTags_0_valid),
     .io_renBrTags_0_bits(freeList_io_renBrTags_0_bits),
     .io_renBrTags_1_valid(freeList_io_renBrTags_1_valid),
@@ -1031,15 +995,7 @@ module RenameStage(
   assign rat_io_archWritePorts_0_wen = io_commit_0_valid & io_commit_0_rfWen; // @[src/main/scala/backend/rename/RenameStage.scala 240:57]
   assign rat_io_archWritePorts_0_addr = io_commit_0_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 241:35]
   assign rat_io_archWritePorts_0_data = io_commit_0_pdst; // @[src/main/scala/backend/rename/RenameStage.scala 242:35]
-  assign rat_io_archWritePorts_1_wen = io_commit_1_valid & io_commit_1_rfWen; // @[src/main/scala/backend/rename/RenameStage.scala 240:57]
-  assign rat_io_archWritePorts_1_addr = io_commit_1_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 241:35]
-  assign rat_io_archWritePorts_1_data = io_commit_1_pdst; // @[src/main/scala/backend/rename/RenameStage.scala 242:35]
-  assign rat_io_archWritePorts_2_wen = io_commit_2_valid & io_commit_2_rfWen; // @[src/main/scala/backend/rename/RenameStage.scala 240:57]
-  assign rat_io_archWritePorts_2_addr = io_commit_2_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 241:35]
-  assign rat_io_archWritePorts_2_data = io_commit_2_pdst; // @[src/main/scala/backend/rename/RenameStage.scala 242:35]
   assign rat_io_archReadPorts_0_laddr = io_commit_0_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 254:38]
-  assign rat_io_archReadPorts_1_laddr = io_commit_1_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 254:38]
-  assign rat_io_archReadPorts_2_laddr = io_commit_2_ldst; // @[src/main/scala/backend/rename/RenameStage.scala 254:38]
   assign rat_io_snptEnq = hasBranch & outFire; // @[src/main/scala/backend/rename/RenameStage.scala 399:36]
   assign rat_io_snptSelect = io_redirect_robIdx_value[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 403:50]
   assign freeList_clock = clock;
@@ -1050,10 +1006,6 @@ module RenameStage(
   assign freeList_io_doAlloc = stgValid & outReadyAll & freeList_io_canAlloc; // @[src/main/scala/backend/rename/RenameStage.scala 104:41]
   assign freeList_io_deallocReqs_0_valid = io_commit_0_valid & io_commit_0_rfWen; // @[src/main/scala/backend/rename/RenameStage.scala 255:60]
   assign freeList_io_deallocReqs_0_bits = rat_io_archReadPorts_0_pdata; // @[src/main/scala/backend/rename/RenameStage.scala 256:38]
-  assign freeList_io_deallocReqs_1_valid = io_commit_1_valid & io_commit_1_rfWen; // @[src/main/scala/backend/rename/RenameStage.scala 255:60]
-  assign freeList_io_deallocReqs_1_bits = rat_io_archReadPorts_1_pdata; // @[src/main/scala/backend/rename/RenameStage.scala 256:38]
-  assign freeList_io_deallocReqs_2_valid = io_commit_2_valid & io_commit_2_rfWen; // @[src/main/scala/backend/rename/RenameStage.scala 255:60]
-  assign freeList_io_deallocReqs_2_bits = rat_io_archReadPorts_2_pdata; // @[src/main/scala/backend/rename/RenameStage.scala 256:38]
   assign freeList_io_renBrTags_0_valid = outFire & laneValid_0 & stgData_0_ctrl_isBranch; // @[src/main/scala/backend/rename/RenameStage.scala 384:63]
   assign freeList_io_renBrTags_0_bits = thisPtr_value[2:0]; // @[src/main/scala/backend/rename/RenameStage.scala 386:31]
   assign freeList_io_renBrTags_1_valid = outFire & laneValid_1 & stgData_1_ctrl_isBranch; // @[src/main/scala/backend/rename/RenameStage.scala 384:63]
