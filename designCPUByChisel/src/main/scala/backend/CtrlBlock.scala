@@ -9,6 +9,7 @@ import nscscc.backend.rename._
 import nscscc.backend.dispatch._
 import nscscc.backend.rob._
 import nscscc.backend.issue._
+import nscscc.backend.execute._
  
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
@@ -36,10 +37,12 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   val commitToSq  = new RobCommitToSq
  
   // ── 重定向 ──
-  val redirect = Output(new RedirectInfo)
+  val excpEedirect = Output(new RedirectInfo)
+  val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+
  
   // ── 冲刷与外部中断 ──
-  val flush    = Input(Bool())
+  //val flush    = Input(Bool())
   val extInt   = Input(Bool())
 
 
@@ -49,14 +52,15 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
  
 class CtrlBlock(implicit p: Parameters) extends NSModule {
   val io = IO(new CtrlBlockIO)
- 
+
+  val brMsFlush = io.brMsRedirect.valid
   // ================================================================
   //  译码级
   // ================================================================
   val decodeStage = Module(new DecodeStage)
   decodeStage.io.in    <> io.in
   decodeStage.io.extInt := io.extInt
-  decodeStage.io.flush  := io.flush || io.redirect.valid
+  decodeStage.io.flush  := brMsFlush || io.excpEedirect.valid
  
   // ================================================================
   //  重命名级
@@ -64,8 +68,10 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val renameStage = Module(new RenameStage)
   renameStage.io.in      <> decodeStage.io.out
   renameStage.io.ratRead <> decodeStage.io.ratRead
-  renameStage.io.redirect := io.redirect
-  renameStage.io.flush    := io.flush
+  renameStage.io.flush    := brMsFlush
+  renameStage.io.redirect := io.excpEedirect
+  renameStage.io.brMsRedirect := io.brMsRedirect
+  
 
   io.debugArchState := renameStage.io.debugArchState
  
@@ -74,8 +80,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   val dispatchStage = Module(new DispatchStage)
   dispatchStage.io.in       <> renameStage.io.out
-  dispatchStage.io.flush    := io.flush
-  dispatchStage.io.redirect := io.redirect
+  dispatchStage.io.flush    := brMsFlush
  
   // ── IQ 入队端口 ──
   dispatchStage.io.q1IQEnq     <> io.q1IQEnq
@@ -110,7 +115,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   io.commitToSq := rob.io.commitToSq
  
   // ROB 重定向
-  rob.io.flush := io.flush || io.redirect.valid
+  rob.io.flush := brMsFlush || io.excpEedirect.valid
 
   rob.io.writeback <> io.writeback
   dispatchStage.io.wakeupPorts <> io.wakeupPorts
@@ -122,5 +127,5 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  重定向信号
   // ================================================================
-  io.redirect := rob.io.redirect
+  io.excpEedirect := rob.io.redirect
 }

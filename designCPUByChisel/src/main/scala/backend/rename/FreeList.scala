@@ -39,7 +39,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
     val deallocReqs = Input(Vec(CommitWidth, Valid(UInt(PhyRegIdxWidth.W))))
   
     // ── 分支快照相关 ──
-    val renBrTags   = Input(Vec(CtrlBlockWidth, Valid(UInt(log2Ceil(SnapshotNum).W))))
+    val needSsBrTags   = Input(Vec(CtrlBlockWidth, Valid(UInt(log2Ceil(SnapshotNum).W))))
     val brMispredict = Input(Bool())
     val brMispredTag = Input(UInt(log2Ceil(SnapshotNum).W))
   
@@ -58,7 +58,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
   //  2. 分支快照：记录每个 brTag 之后分配出去的寄存器集合
   // ================================================================
   //val allocsAfterBr = Reg(Vec(SnapshotNum, UInt(IntPhyRegs.W)))
-  val allocsAfterBr = RegInit(VecInit(Seq.fill(SnapshotNum)(0.U(IntPhyRegs.W))))
+
  
   // ================================================================
   //  3. 迭代 mask 分配候选（组合逻辑）
@@ -119,9 +119,10 @@ class FreeList(implicit p: Parameters) extends NSModule {
       port.valid := valid
       port.bits  := idx
   }
- 
+
+   val allocsAfterBr = RegInit(VecInit(Seq.fill(SnapshotNum)(0.U(IntPhyRegs.W))))
   // ================================================================
-  //  6. allocsAfterBr 维护（iFuCore 原版逻辑）
+  //  6. allocsAfterBr 维护
   //
   //  allocOHs(i): 第 i 通道分配出去的寄存器 OH
   //  allocMasks:  前缀 OR 扫描，allocMasks(k) = 前 k 个通道分配集合的并集
@@ -154,7 +155,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
  
   // 更新 allocsAfterBr
   for (i <- 0 until SnapshotNum) {
-    val matchVec = VecInit(io.renBrTags.map(t => t.valid && t.bits === i.U)).asUInt
+    val matchVec = VecInit(io.needSsBrTags.map(t => t.valid && t.bits === i.U)).asUInt
     allocsAfterBr(i) := Mux(
       matchVec.orR,
       // 该分支之后（含该分支所在通道之后）的分配集合

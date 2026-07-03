@@ -17,6 +17,7 @@ import nscscc.mem._
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
+  val brMsRedirect   =ValidIO( new brMispredictRedirect )    // 误预测重定向
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
   val lsEnq    = new LsEnqIO
@@ -74,6 +75,8 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
 
   val brMsRedirectFromExe3 =  exeUnits(2).io.brMsRedirect
   dontTouch(brMsRedirectFromExe3)
+  io.brMsRedirect <> brMsRedirectFromExe3
+  ctrlBlock.io.brMsRedirect <> brMsRedirectFromExe3
  
   val writeback = Module(new Writeback(numExeUnits))
  
@@ -81,7 +84,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  前端指令输入
   // ══════════════════════════════════════════════════════════════
   ctrlBlock.io.in     <> io.in
-  ctrlBlock.io.flush  := io.flush
+  //ctrlBlock.io.flush  := io.flush
   ctrlBlock.io.extInt := io.extInt
  
   // ══════════════════════════════════════════════════════════════
@@ -182,7 +185,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  重定向 / 冲刷
   // ══════════════════════════════════════════════════
   val wbRedirect = writeback.io.redirect
-  val ctrlRedirect = ctrlBlock.io.redirect
+  val ctrlRedirect = ctrlBlock.io.excpEedirect
   val finalRedirect = Mux(wbRedirect.valid, wbRedirect.bits, ctrlRedirect)
  
   io.redirect := 0.U.asTypeOf(new RedirectInfo)//finalRedirect

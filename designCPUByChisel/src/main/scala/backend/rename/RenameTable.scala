@@ -38,6 +38,7 @@ class RenameTable(implicit p: Parameters) extends NSModule {
     })
  
     // ── 快照控制 ──
+    val snptRemaining = Output(UInt(log2Ceil(SnapshotNum + 1).W))
     val snptEnq      = Input(Bool())
     val snptDeq      = Input(Bool())
     val snptRedirect = Input(Bool())
@@ -92,13 +93,21 @@ class RenameTable(implicit p: Parameters) extends NSModule {
     snptValids(t1EnqPtr) := true.B
     snptEnqPtr           := t1EnqPtr + 1.U
   }
- 
+  
   // 快照出队（分支正确提交）
   val t1SnptDeq = RegNext(io.snptDeq, false.B)
   when(t1SnptDeq && !t1Redirect) {
     snptValids(snptDeqPtr) := false.B
     snptDeqPtr             := snptDeqPtr + 1.U
   }
+
+
+   
+  // 在快照管理逻辑中新增计算：
+  // 环形队列剩余空间 = SnapshotNum - (enqPtr - deqPtr) mod SnapshotNum - 1
+  // 简化：计数有效快照数量，用总数减去
+  val snptCount = PopCount(snptValids)
+  io.snptRemaining := (SnapshotNum.U - snptCount)
  
   // ================================================================
   //  4. 草稿表写入逻辑（T1 执行）

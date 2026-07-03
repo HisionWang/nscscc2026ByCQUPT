@@ -36,7 +36,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     
     val robEnq  = Flipped(new RobEnqIO)
     val flush   = Input(Bool())
-    val redirect = Input(new RedirectInfo)
+    //val redirect = Input(new RedirectInfo)
 
     val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
   })
@@ -224,7 +224,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  状态转移
   // ================================================================
-  when(io.flush || io.redirect.valid) {
+  when(io.flush) {
     for (i <- 0 until CtrlBlockWidth) {
       laneValid(i)  := false.B
       robWritten(i) := false.B
@@ -275,7 +275,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     }
   }
 
-  when(io.flush || io.redirect.valid) {
+  when(io.flush) {
     lqHeadPtr := 0.U.asTypeOf(new LqPtr(LqSize))
     sqHeadPtr := 0.U.asTypeOf(new SqPtr(SqSize))
   }

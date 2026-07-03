@@ -19,6 +19,7 @@ class brMispredictRedirect(implicit p: Parameters) extends NSBundle {
  // val valid     = Bool()
   val robIdx    = new RobPtr(RobSize)   // 误预测指令的 ROB 索引
   val target = UInt(XLEN.W)                    // 是否冲刷误预测指令本身
+  val freeSs = Bool()                    // 是否冲刷误预测指令本身
 }
 
 class BRU(implicit p: Parameters) extends NSModule {
@@ -80,8 +81,9 @@ class BRU(implicit p: Parameters) extends NSModule {
   io.isBranch := op =/= BruOp.none
   io.taken    := branchTaken
  
-  io.brMsRedirect.valid := io.valid && io.isBranch && branchTaken
+  io.brMsRedirect.valid := io.valid && io.isBranch && branchTaken && ( !io.uop.pdInfo.isJal)
   io.brMsRedirect.bits.robIdx := io.uop.robIdxFull
   io.brMsRedirect.bits.target := target
+  io.brMsRedirect.bits.freeSs := RegNext( io.valid && io.isBranch && ( !io.uop.pdInfo.isJal) )
   //io.redirect.bits.target := target
 }

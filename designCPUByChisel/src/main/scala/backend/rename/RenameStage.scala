@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
+import nscscc.backend.execute._
 import nscscc.util.CircularQueuePtr
  
 /**
@@ -55,6 +56,8 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     val commit  = Input(Vec(CommitWidth, new RobCommitInfo))
     // ── 重定向 ──
     val redirect = Input(new RedirectInfo)
+    val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+
     // ── 全局冲刷 ──
     val flush   = Input(Bool())
 
@@ -96,13 +99,32 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val needAllocVec = VecInit((0 until CtrlBlockWidth).map(i =>
     stgValid && laneValid(i) && stgData(i).rdValid && stgData(i).rd =/= 0.U
   ))
- 
-  // ── 1-3. FreeList 能否满足本周期所有分配请求 ──
-  val canFireThisCycle = freeList.io.canAlloc
- 
-  // ── 1-4. outFire：整组可以安全发射 ──
+
+  // designCPUByChisel/src/main/scala/backend/rename/RenameStage.scala
+  // ===== 新增：快照容量检查 =====
+   
+  // 统计本周期需要快照的分支数量
+  val branchInLane = VecInit((0 until CtrlBlockWidth).map(i =>
+    stgValid && laneValid(i) && stgData(i).ctrl.isBranch  // 译码信号中是否有分支标志
+  ))
+   
+  val branchCount = PopCount(branchInLane)
+   
+  // 快照队列剩余容量（从 RAT 取出）
+  val snptRemaining = Wire(UInt(log2Ceil(SnapshotNum + 1).W))
+  // RAT 的快照队列是环形的，剩余空间 = (deqPtr - enqPtr - 1) mod SnapshotNum
+  // 需要从 RAT 暴露出来
+  snptRemaining := rat.io.snptRemaining
+   
+  // 本周期快照容量是否足够
+  val snptCanAccept = branchCount <= snptRemaining
+   
+  // ===== 修改发射条件 =====
+  val canFireThisCycle = freeList.io.canAlloc && snptCanAccept
+   
   val outFire = stgValid && outReadyAll && canFireThisCycle
  
+
   // ── 1-5. stgReady：本级可以接收新数据 ──
   val stgReady = !stgValid || outFire
  
@@ -116,7 +138,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   }
  
   // ── 1-8. 严格状态转移 ──
-  val doFlush = io.flush || io.redirect.valid
+  val doFlush = io.flush || io.brMsRedirect.valid
  
   when(doFlush) {
     // 冲刷/重定向：清空本级
@@ -346,11 +368,11 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val robIdxHeadNext = Wire(new RobPtr(RobSize))
   robIdxHeadNext := robIdxHead   // 默认保持
  
-  when(io.redirect.valid) {
+  when(io.brMsRedirect.valid) {
     // 重定向：跳转到指定位置
     val targetValue = //Mux(
       //io.redirect.flushSelf,
-      io.redirect.robIdx //,
+      io.brMsRedirect.bits.robIdx //,
       //io.redirect.robIdx + 1.U
    // )
     robIdxHeadNext.value := targetValue.value
@@ -374,33 +396,32 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // ================================================================
   //  2-7. FreeList 重定向与分支快照
   // ================================================================
-  freeList.io.flush        := io.flush
-  freeList.io.brMispredict := io.redirect.valid
-  freeList.io.brMispredTag := io.redirect.robIdx.value(log2Ceil(SnapshotNum) - 1, 0)
+  freeList.io.flush        := true.B //io.flush
+  freeList.io.brMispredict := io.brMsRedirect.valid
+  freeList.io.brMispredTag := io.brMsRedirect.bits.robIdx.value(log2Ceil(SnapshotNum) - 1, 0)
  
   // 分支标记：检测本周期是否有条件分支指令
   // brTag 由 ROB 分配，这里用 robIdx 的低位作为 brTag 索引
-  for (i <- 0 until CtrlBlockWidth) {
-    freeList.io.renBrTags(i).valid := outFire && laneValid(i) && stgData(i).ctrl.isBranch
-    freeList.io.renBrTags(i).bits  :=
-      (robIdxHead + i.U).value(log2Ceil(SnapshotNum) - 1, 0)
-      // robIdxHead 在下方定义，此处引用
-  }
- 
-  // ================================================================
+    // ================================================================
   //  2-10. 快照管理（RAT 快照由 RAT 内部维护）
   //  本级只需在条件分支指令发射时通知 RAT 创建快照
   // ================================================================
-  val hasBranch = VecInit((0 until CtrlBlockWidth).map(i =>
-    stgValid && laneValid(i) && stgData(i).ctrl.isBranch
+  val needSs = VecInit((0 until CtrlBlockWidth).map(i =>
+    stgValid && laneValid(i) && stgData(i).ctrl.isBranch  && !stgData(i).pdInfo.isJal && outFire
   )).asUInt.orR
- 
+
+  for (i <- 0 until CtrlBlockWidth) {
+    freeList.io.needSsBrTags(i).valid := needSs(i)
+    freeList.io.needSsBrTags(i).bits  :=
+      (robIdxHead + i.U).value(log2Ceil(SnapshotNum) - 1, 0)
+      // robIdxHead 在下方定义，此处引用
+  }
   // 只有在真正发射（outFire）时才创建快照
-  rat.io.snptEnq      := hasBranch && outFire
+  rat.io.snptEnq      := needSs.orR
   // 分支正确提交时释放快照（由外部 ROB 提交逻辑驱动）
-  rat.io.snptDeq      := false.B   // 外部接入
-  rat.io.snptRedirect := io.redirect.valid
-  rat.io.snptSelect   := io.redirect.robIdx.value(log2Ceil(SnapshotNum) - 1, 0)
+  rat.io.snptDeq      := io.brMsRedirect.bits.freeSs
+  rat.io.snptRedirect := io.brMsRedirect.valid
+  rat.io.snptSelect   := io.brMsRedirect.bits.robIdx.value(log2Ceil(SnapshotNum) - 1, 0)
  
   // ================================================================
   //  2-11. 组装输出
