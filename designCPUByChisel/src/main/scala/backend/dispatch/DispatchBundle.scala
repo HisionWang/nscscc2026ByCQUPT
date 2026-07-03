@@ -7,6 +7,7 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.frontend.PredecodeInfo
 import nscscc.util.CircularQueuePtr
+import nscscc.frontend.bpuInfoBundle
 
 object IssueQueueId {
   val Q1 = 0   // ALU + CSR
@@ -37,6 +38,7 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
   val pdInfo     = new PredecodeInfo
+  val bpuInfo     = new bpuInfoBundle
  
   val ldst = UInt(5.W)
   val lrs1 = UInt(5.W)

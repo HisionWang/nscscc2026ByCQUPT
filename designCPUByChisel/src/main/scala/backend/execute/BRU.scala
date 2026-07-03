@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
+import nscscc.backend.rename._
 import nscscc.backend.dispatch.DispatchedInst
 import nscscc.backend.rename.RedirectInfo
  
@@ -13,6 +14,13 @@ import nscscc.backend.rename.RedirectInfo
 //  支持操作：jirl, b, bl, beq, bne, blt, bge, bltu, bgeu
 //  单拍组合逻辑完成
 // ═══════════════════════════════════════════════════════════════
+
+class brMispredictRedirect(implicit p: Parameters) extends NSBundle {
+ // val valid     = Bool()
+  val robIdx    = new RobPtr(RobSize)   // 误预测指令的 ROB 索引
+  val target = UInt(XLEN.W)                    // 是否冲刷误预测指令本身
+}
+
 class BRU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val valid      = Input(Bool())
@@ -20,10 +28,11 @@ class BRU(implicit p: Parameters) extends NSModule {
     val rs1        = Input(UInt(XLEN.W))
     val rs2        = Input(UInt(XLEN.W))
     val result     = Output(UInt(XLEN.W))       // 写回目标寄存器的值（如 BL 的 PC+4）
-    val redirect   = Valid(new RedirectInfo)     // 误预测重定向
+    val brMsRedirect   =ValidIO( new brMispredictRedirect )    // 误预测重定向
     val isBranch   = Output(Bool())              // 是否为分支指令（用于分支预测更新）
     val taken      = Output(Bool())              // 分支是否 taken
   })
+  dontTouch(io.uop)
  
   val op   = io.uop.ctrl.bruOp
   val src1 = io.rs1
@@ -71,7 +80,8 @@ class BRU(implicit p: Parameters) extends NSModule {
   io.isBranch := op =/= BruOp.none
   io.taken    := branchTaken
  
-  io.redirect.valid := io.valid && io.isBranch && branchTaken
-  io.redirect.bits.valid      := true.B
-  io.redirect.bits.robIdx := io.uop.robIdxFull
+  io.brMsRedirect.valid := io.valid && io.isBranch && branchTaken
+  io.brMsRedirect.bits.robIdx := io.uop.robIdxFull
+  io.brMsRedirect.bits.target := target
+  //io.redirect.bits.target := target
 }

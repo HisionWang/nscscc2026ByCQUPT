@@ -337,6 +337,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
     u.pdInfo     := stgData(i).pdInfo
+    u.bpuInfo     := stgData(i).bpuInfo
     u.ldst       := stgData(i).ldst
     u.lrs1       := stgData(i).lrs1
     u.lrs2       := stgData(i).lrs2

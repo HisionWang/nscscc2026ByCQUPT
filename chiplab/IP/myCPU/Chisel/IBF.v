@@ -39,6 +39,66 @@ module IBF(
   input         io_in_bits_pdInfo_3_isCall, // @[src/main/scala/frontend/IBF.scala 13:14]
   input         io_in_bits_pdInfo_3_isRet, // @[src/main/scala/frontend/IBF.scala 13:14]
   input  [31:0] io_in_bits_pdInfo_3_jumpTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_0_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_0_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_0_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_0_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_0_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_0_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [2:0]  io_in_bits_bpuInfo_0_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_0_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_0_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_1_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_1_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_1_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_1_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_1_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_1_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [2:0]  io_in_bits_bpuInfo_1_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_1_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_1_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_2_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_2_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_2_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_2_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_2_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_2_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [2:0]  io_in_bits_bpuInfo_2_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_2_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_2_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_3_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_3_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_3_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_3_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_3_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [1:0]  io_in_bits_bpuInfo_3_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [2:0]  io_in_bits_bpuInfo_3_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input         io_in_bits_bpuInfo_3_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  input  [31:0] io_in_bits_bpuInfo_3_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
   input         io_in_bits_enqMask_0, // @[src/main/scala/frontend/IBF.scala 13:14]
   input         io_in_bits_enqMask_1, // @[src/main/scala/frontend/IBF.scala 13:14]
   input         io_in_bits_enqMask_2, // @[src/main/scala/frontend/IBF.scala 13:14]
@@ -58,6 +118,21 @@ module IBF(
   output        io_out_0_bits_pdInfo_isCall, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_0_bits_pdInfo_isRet, // @[src/main/scala/frontend/IBF.scala 13:14]
   output [31:0] io_out_0_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_0_bits_bpuInfo_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [2:0]  io_out_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_0_bits_exception_excpTlbRefill, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_0_bits_exception_excpTlbPif, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_0_bits_exception_excpTlbPpi, // @[src/main/scala/frontend/IBF.scala 13:14]
@@ -73,6 +148,21 @@ module IBF(
   output        io_out_1_bits_pdInfo_isCall, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_1_bits_pdInfo_isRet, // @[src/main/scala/frontend/IBF.scala 13:14]
   output [31:0] io_out_1_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_1_bits_bpuInfo_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_1_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_1_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [2:0]  io_out_1_bits_bpuInfo_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_1_bits_exception_excpTlbRefill, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_1_bits_exception_excpTlbPif, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_1_bits_exception_excpTlbPpi, // @[src/main/scala/frontend/IBF.scala 13:14]
@@ -88,6 +178,21 @@ module IBF(
   output        io_out_2_bits_pdInfo_isCall, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_2_bits_pdInfo_isRet, // @[src/main/scala/frontend/IBF.scala 13:14]
   output [31:0] io_out_2_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_pc, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_fallThrough, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_taken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_target, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_2_bits_bpuInfo_takenOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbHit, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_2_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [1:0]  io_out_2_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [2:0]  io_out_2_bits_bpuInfo_meta_rasTop, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_predTaken, // @[src/main/scala/frontend/IBF.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_meta_predTarget, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_2_bits_exception_excpTlbRefill, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_2_bits_exception_excpTlbPif, // @[src/main/scala/frontend/IBF.scala 13:14]
   output        io_out_2_bits_exception_excpTlbPpi, // @[src/main/scala/frontend/IBF.scala 13:14]
@@ -107,6 +212,21 @@ module IBF(
   wire  queue_io_enq_0_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_0_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_enq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_0_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_0_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_enq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_0_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_0_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_0_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
@@ -122,6 +242,21 @@ module IBF(
   wire  queue_io_enq_1_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_1_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_enq_1_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_1_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_1_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_1_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_1_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_enq_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_1_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_1_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_1_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
@@ -137,6 +272,21 @@ module IBF(
   wire  queue_io_enq_2_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_2_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_enq_2_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_2_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_2_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_2_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_2_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_enq_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_2_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_2_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_2_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
@@ -152,6 +302,21 @@ module IBF(
   wire  queue_io_enq_3_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_3_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_enq_3_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_3_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_3_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_3_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_3_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_3_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_enq_3_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_enq_3_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_enq_3_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_enq_3_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_3_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_3_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_enq_3_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
@@ -167,6 +332,21 @@ module IBF(
   wire  queue_io_deq_0_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_0_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_deq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_0_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_0_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_deq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_0_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_0_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_0_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
@@ -182,6 +362,21 @@ module IBF(
   wire  queue_io_deq_1_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_1_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_deq_1_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_1_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_1_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_1_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_1_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_deq_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_1_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_1_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_1_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
@@ -197,18 +392,33 @@ module IBF(
   wire  queue_io_deq_2_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_2_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire [31:0] queue_io_deq_2_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_2_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_2_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_2_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_2_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [1:0] queue_io_deq_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [2:0] queue_io_deq_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire  queue_io_deq_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 27:21]
+  wire [31:0] queue_io_deq_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_2_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_2_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_2_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_deq_2_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 27:21]
   wire  queue_io_flush; // @[src/main/scala/frontend/IBF.scala 27:21]
-  wire [1:0] _io_in_ready_T = queue_io_enq_0_ready + queue_io_enq_1_ready; // @[src/main/scala/frontend/IBF.scala 63:27]
-  wire [1:0] _io_in_ready_T_2 = queue_io_enq_2_ready + queue_io_enq_3_ready; // @[src/main/scala/frontend/IBF.scala 63:27]
-  wire [2:0] _io_in_ready_T_4 = _io_in_ready_T + _io_in_ready_T_2; // @[src/main/scala/frontend/IBF.scala 63:27]
-  wire [1:0] _io_in_ready_T_6 = io_in_bits_enqMask_0 + io_in_bits_enqMask_1; // @[src/main/scala/frontend/IBF.scala 63:66]
-  wire [1:0] _io_in_ready_T_8 = io_in_bits_enqMask_2 + io_in_bits_enqMask_3; // @[src/main/scala/frontend/IBF.scala 63:66]
-  wire [2:0] _io_in_ready_T_10 = _io_in_ready_T_6 + _io_in_ready_T_8; // @[src/main/scala/frontend/IBF.scala 63:66]
-  wire  deqReadyMask_1 = io_out_1_ready & io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 92:40]
+  wire [1:0] _io_in_ready_T = queue_io_enq_0_ready + queue_io_enq_1_ready; // @[src/main/scala/frontend/IBF.scala 64:27]
+  wire [1:0] _io_in_ready_T_2 = queue_io_enq_2_ready + queue_io_enq_3_ready; // @[src/main/scala/frontend/IBF.scala 64:27]
+  wire [2:0] _io_in_ready_T_4 = _io_in_ready_T + _io_in_ready_T_2; // @[src/main/scala/frontend/IBF.scala 64:27]
+  wire [1:0] _io_in_ready_T_6 = io_in_bits_enqMask_0 + io_in_bits_enqMask_1; // @[src/main/scala/frontend/IBF.scala 64:66]
+  wire [1:0] _io_in_ready_T_8 = io_in_bits_enqMask_2 + io_in_bits_enqMask_3; // @[src/main/scala/frontend/IBF.scala 64:66]
+  wire [2:0] _io_in_ready_T_10 = _io_in_ready_T_6 + _io_in_ready_T_8; // @[src/main/scala/frontend/IBF.scala 64:66]
+  wire  deqReadyMask_1 = io_out_1_ready & io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 93:40]
   CircularQueue queue ( // @[src/main/scala/frontend/IBF.scala 27:21]
     .clock(queue_clock),
     .reset(queue_reset),
@@ -223,6 +433,21 @@ module IBF(
     .io_enq_0_bits_pdInfo_isCall(queue_io_enq_0_bits_pdInfo_isCall),
     .io_enq_0_bits_pdInfo_isRet(queue_io_enq_0_bits_pdInfo_isRet),
     .io_enq_0_bits_pdInfo_jumpTarget(queue_io_enq_0_bits_pdInfo_jumpTarget),
+    .io_enq_0_bits_bpuInfo_pc(queue_io_enq_0_bits_bpuInfo_pc),
+    .io_enq_0_bits_bpuInfo_fallThrough(queue_io_enq_0_bits_bpuInfo_fallThrough),
+    .io_enq_0_bits_bpuInfo_taken(queue_io_enq_0_bits_bpuInfo_taken),
+    .io_enq_0_bits_bpuInfo_target(queue_io_enq_0_bits_bpuInfo_target),
+    .io_enq_0_bits_bpuInfo_takenOffset(queue_io_enq_0_bits_bpuInfo_takenOffset),
+    .io_enq_0_bits_bpuInfo_meta_btbHit(queue_io_enq_0_bits_bpuInfo_meta_btbHit),
+    .io_enq_0_bits_bpuInfo_meta_btbIsJalr(queue_io_enq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_0_bits_bpuInfo_meta_btbIsJal(queue_io_enq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_0_bits_bpuInfo_meta_btbIsCall(queue_io_enq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_0_bits_bpuInfo_meta_btbIsRet(queue_io_enq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_0_bits_bpuInfo_meta_btbOffset(queue_io_enq_0_bits_bpuInfo_meta_btbOffset),
+    .io_enq_0_bits_bpuInfo_meta_phtCounter(queue_io_enq_0_bits_bpuInfo_meta_phtCounter),
+    .io_enq_0_bits_bpuInfo_meta_rasTop(queue_io_enq_0_bits_bpuInfo_meta_rasTop),
+    .io_enq_0_bits_bpuInfo_meta_predTaken(queue_io_enq_0_bits_bpuInfo_meta_predTaken),
+    .io_enq_0_bits_bpuInfo_meta_predTarget(queue_io_enq_0_bits_bpuInfo_meta_predTarget),
     .io_enq_0_bits_exception_excpTlbRefill(queue_io_enq_0_bits_exception_excpTlbRefill),
     .io_enq_0_bits_exception_excpTlbPif(queue_io_enq_0_bits_exception_excpTlbPif),
     .io_enq_0_bits_exception_excpTlbPpi(queue_io_enq_0_bits_exception_excpTlbPpi),
@@ -238,6 +463,21 @@ module IBF(
     .io_enq_1_bits_pdInfo_isCall(queue_io_enq_1_bits_pdInfo_isCall),
     .io_enq_1_bits_pdInfo_isRet(queue_io_enq_1_bits_pdInfo_isRet),
     .io_enq_1_bits_pdInfo_jumpTarget(queue_io_enq_1_bits_pdInfo_jumpTarget),
+    .io_enq_1_bits_bpuInfo_pc(queue_io_enq_1_bits_bpuInfo_pc),
+    .io_enq_1_bits_bpuInfo_fallThrough(queue_io_enq_1_bits_bpuInfo_fallThrough),
+    .io_enq_1_bits_bpuInfo_taken(queue_io_enq_1_bits_bpuInfo_taken),
+    .io_enq_1_bits_bpuInfo_target(queue_io_enq_1_bits_bpuInfo_target),
+    .io_enq_1_bits_bpuInfo_takenOffset(queue_io_enq_1_bits_bpuInfo_takenOffset),
+    .io_enq_1_bits_bpuInfo_meta_btbHit(queue_io_enq_1_bits_bpuInfo_meta_btbHit),
+    .io_enq_1_bits_bpuInfo_meta_btbIsJalr(queue_io_enq_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_1_bits_bpuInfo_meta_btbIsJal(queue_io_enq_1_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_1_bits_bpuInfo_meta_btbIsCall(queue_io_enq_1_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_1_bits_bpuInfo_meta_btbIsRet(queue_io_enq_1_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_1_bits_bpuInfo_meta_btbOffset(queue_io_enq_1_bits_bpuInfo_meta_btbOffset),
+    .io_enq_1_bits_bpuInfo_meta_phtCounter(queue_io_enq_1_bits_bpuInfo_meta_phtCounter),
+    .io_enq_1_bits_bpuInfo_meta_rasTop(queue_io_enq_1_bits_bpuInfo_meta_rasTop),
+    .io_enq_1_bits_bpuInfo_meta_predTaken(queue_io_enq_1_bits_bpuInfo_meta_predTaken),
+    .io_enq_1_bits_bpuInfo_meta_predTarget(queue_io_enq_1_bits_bpuInfo_meta_predTarget),
     .io_enq_1_bits_exception_excpTlbRefill(queue_io_enq_1_bits_exception_excpTlbRefill),
     .io_enq_1_bits_exception_excpTlbPif(queue_io_enq_1_bits_exception_excpTlbPif),
     .io_enq_1_bits_exception_excpTlbPpi(queue_io_enq_1_bits_exception_excpTlbPpi),
@@ -253,6 +493,21 @@ module IBF(
     .io_enq_2_bits_pdInfo_isCall(queue_io_enq_2_bits_pdInfo_isCall),
     .io_enq_2_bits_pdInfo_isRet(queue_io_enq_2_bits_pdInfo_isRet),
     .io_enq_2_bits_pdInfo_jumpTarget(queue_io_enq_2_bits_pdInfo_jumpTarget),
+    .io_enq_2_bits_bpuInfo_pc(queue_io_enq_2_bits_bpuInfo_pc),
+    .io_enq_2_bits_bpuInfo_fallThrough(queue_io_enq_2_bits_bpuInfo_fallThrough),
+    .io_enq_2_bits_bpuInfo_taken(queue_io_enq_2_bits_bpuInfo_taken),
+    .io_enq_2_bits_bpuInfo_target(queue_io_enq_2_bits_bpuInfo_target),
+    .io_enq_2_bits_bpuInfo_takenOffset(queue_io_enq_2_bits_bpuInfo_takenOffset),
+    .io_enq_2_bits_bpuInfo_meta_btbHit(queue_io_enq_2_bits_bpuInfo_meta_btbHit),
+    .io_enq_2_bits_bpuInfo_meta_btbIsJalr(queue_io_enq_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_2_bits_bpuInfo_meta_btbIsJal(queue_io_enq_2_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_2_bits_bpuInfo_meta_btbIsCall(queue_io_enq_2_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_2_bits_bpuInfo_meta_btbIsRet(queue_io_enq_2_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_2_bits_bpuInfo_meta_btbOffset(queue_io_enq_2_bits_bpuInfo_meta_btbOffset),
+    .io_enq_2_bits_bpuInfo_meta_phtCounter(queue_io_enq_2_bits_bpuInfo_meta_phtCounter),
+    .io_enq_2_bits_bpuInfo_meta_rasTop(queue_io_enq_2_bits_bpuInfo_meta_rasTop),
+    .io_enq_2_bits_bpuInfo_meta_predTaken(queue_io_enq_2_bits_bpuInfo_meta_predTaken),
+    .io_enq_2_bits_bpuInfo_meta_predTarget(queue_io_enq_2_bits_bpuInfo_meta_predTarget),
     .io_enq_2_bits_exception_excpTlbRefill(queue_io_enq_2_bits_exception_excpTlbRefill),
     .io_enq_2_bits_exception_excpTlbPif(queue_io_enq_2_bits_exception_excpTlbPif),
     .io_enq_2_bits_exception_excpTlbPpi(queue_io_enq_2_bits_exception_excpTlbPpi),
@@ -268,6 +523,21 @@ module IBF(
     .io_enq_3_bits_pdInfo_isCall(queue_io_enq_3_bits_pdInfo_isCall),
     .io_enq_3_bits_pdInfo_isRet(queue_io_enq_3_bits_pdInfo_isRet),
     .io_enq_3_bits_pdInfo_jumpTarget(queue_io_enq_3_bits_pdInfo_jumpTarget),
+    .io_enq_3_bits_bpuInfo_pc(queue_io_enq_3_bits_bpuInfo_pc),
+    .io_enq_3_bits_bpuInfo_fallThrough(queue_io_enq_3_bits_bpuInfo_fallThrough),
+    .io_enq_3_bits_bpuInfo_taken(queue_io_enq_3_bits_bpuInfo_taken),
+    .io_enq_3_bits_bpuInfo_target(queue_io_enq_3_bits_bpuInfo_target),
+    .io_enq_3_bits_bpuInfo_takenOffset(queue_io_enq_3_bits_bpuInfo_takenOffset),
+    .io_enq_3_bits_bpuInfo_meta_btbHit(queue_io_enq_3_bits_bpuInfo_meta_btbHit),
+    .io_enq_3_bits_bpuInfo_meta_btbIsJalr(queue_io_enq_3_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_3_bits_bpuInfo_meta_btbIsJal(queue_io_enq_3_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_3_bits_bpuInfo_meta_btbIsCall(queue_io_enq_3_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_3_bits_bpuInfo_meta_btbIsRet(queue_io_enq_3_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_3_bits_bpuInfo_meta_btbOffset(queue_io_enq_3_bits_bpuInfo_meta_btbOffset),
+    .io_enq_3_bits_bpuInfo_meta_phtCounter(queue_io_enq_3_bits_bpuInfo_meta_phtCounter),
+    .io_enq_3_bits_bpuInfo_meta_rasTop(queue_io_enq_3_bits_bpuInfo_meta_rasTop),
+    .io_enq_3_bits_bpuInfo_meta_predTaken(queue_io_enq_3_bits_bpuInfo_meta_predTaken),
+    .io_enq_3_bits_bpuInfo_meta_predTarget(queue_io_enq_3_bits_bpuInfo_meta_predTarget),
     .io_enq_3_bits_exception_excpTlbRefill(queue_io_enq_3_bits_exception_excpTlbRefill),
     .io_enq_3_bits_exception_excpTlbPif(queue_io_enq_3_bits_exception_excpTlbPif),
     .io_enq_3_bits_exception_excpTlbPpi(queue_io_enq_3_bits_exception_excpTlbPpi),
@@ -283,6 +553,21 @@ module IBF(
     .io_deq_0_bits_pdInfo_isCall(queue_io_deq_0_bits_pdInfo_isCall),
     .io_deq_0_bits_pdInfo_isRet(queue_io_deq_0_bits_pdInfo_isRet),
     .io_deq_0_bits_pdInfo_jumpTarget(queue_io_deq_0_bits_pdInfo_jumpTarget),
+    .io_deq_0_bits_bpuInfo_pc(queue_io_deq_0_bits_bpuInfo_pc),
+    .io_deq_0_bits_bpuInfo_fallThrough(queue_io_deq_0_bits_bpuInfo_fallThrough),
+    .io_deq_0_bits_bpuInfo_taken(queue_io_deq_0_bits_bpuInfo_taken),
+    .io_deq_0_bits_bpuInfo_target(queue_io_deq_0_bits_bpuInfo_target),
+    .io_deq_0_bits_bpuInfo_takenOffset(queue_io_deq_0_bits_bpuInfo_takenOffset),
+    .io_deq_0_bits_bpuInfo_meta_btbHit(queue_io_deq_0_bits_bpuInfo_meta_btbHit),
+    .io_deq_0_bits_bpuInfo_meta_btbIsJalr(queue_io_deq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_deq_0_bits_bpuInfo_meta_btbIsJal(queue_io_deq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_deq_0_bits_bpuInfo_meta_btbIsCall(queue_io_deq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_deq_0_bits_bpuInfo_meta_btbIsRet(queue_io_deq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_deq_0_bits_bpuInfo_meta_btbOffset(queue_io_deq_0_bits_bpuInfo_meta_btbOffset),
+    .io_deq_0_bits_bpuInfo_meta_phtCounter(queue_io_deq_0_bits_bpuInfo_meta_phtCounter),
+    .io_deq_0_bits_bpuInfo_meta_rasTop(queue_io_deq_0_bits_bpuInfo_meta_rasTop),
+    .io_deq_0_bits_bpuInfo_meta_predTaken(queue_io_deq_0_bits_bpuInfo_meta_predTaken),
+    .io_deq_0_bits_bpuInfo_meta_predTarget(queue_io_deq_0_bits_bpuInfo_meta_predTarget),
     .io_deq_0_bits_exception_excpTlbRefill(queue_io_deq_0_bits_exception_excpTlbRefill),
     .io_deq_0_bits_exception_excpTlbPif(queue_io_deq_0_bits_exception_excpTlbPif),
     .io_deq_0_bits_exception_excpTlbPpi(queue_io_deq_0_bits_exception_excpTlbPpi),
@@ -298,6 +583,21 @@ module IBF(
     .io_deq_1_bits_pdInfo_isCall(queue_io_deq_1_bits_pdInfo_isCall),
     .io_deq_1_bits_pdInfo_isRet(queue_io_deq_1_bits_pdInfo_isRet),
     .io_deq_1_bits_pdInfo_jumpTarget(queue_io_deq_1_bits_pdInfo_jumpTarget),
+    .io_deq_1_bits_bpuInfo_pc(queue_io_deq_1_bits_bpuInfo_pc),
+    .io_deq_1_bits_bpuInfo_fallThrough(queue_io_deq_1_bits_bpuInfo_fallThrough),
+    .io_deq_1_bits_bpuInfo_taken(queue_io_deq_1_bits_bpuInfo_taken),
+    .io_deq_1_bits_bpuInfo_target(queue_io_deq_1_bits_bpuInfo_target),
+    .io_deq_1_bits_bpuInfo_takenOffset(queue_io_deq_1_bits_bpuInfo_takenOffset),
+    .io_deq_1_bits_bpuInfo_meta_btbHit(queue_io_deq_1_bits_bpuInfo_meta_btbHit),
+    .io_deq_1_bits_bpuInfo_meta_btbIsJalr(queue_io_deq_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_deq_1_bits_bpuInfo_meta_btbIsJal(queue_io_deq_1_bits_bpuInfo_meta_btbIsJal),
+    .io_deq_1_bits_bpuInfo_meta_btbIsCall(queue_io_deq_1_bits_bpuInfo_meta_btbIsCall),
+    .io_deq_1_bits_bpuInfo_meta_btbIsRet(queue_io_deq_1_bits_bpuInfo_meta_btbIsRet),
+    .io_deq_1_bits_bpuInfo_meta_btbOffset(queue_io_deq_1_bits_bpuInfo_meta_btbOffset),
+    .io_deq_1_bits_bpuInfo_meta_phtCounter(queue_io_deq_1_bits_bpuInfo_meta_phtCounter),
+    .io_deq_1_bits_bpuInfo_meta_rasTop(queue_io_deq_1_bits_bpuInfo_meta_rasTop),
+    .io_deq_1_bits_bpuInfo_meta_predTaken(queue_io_deq_1_bits_bpuInfo_meta_predTaken),
+    .io_deq_1_bits_bpuInfo_meta_predTarget(queue_io_deq_1_bits_bpuInfo_meta_predTarget),
     .io_deq_1_bits_exception_excpTlbRefill(queue_io_deq_1_bits_exception_excpTlbRefill),
     .io_deq_1_bits_exception_excpTlbPif(queue_io_deq_1_bits_exception_excpTlbPif),
     .io_deq_1_bits_exception_excpTlbPpi(queue_io_deq_1_bits_exception_excpTlbPpi),
@@ -313,55 +613,115 @@ module IBF(
     .io_deq_2_bits_pdInfo_isCall(queue_io_deq_2_bits_pdInfo_isCall),
     .io_deq_2_bits_pdInfo_isRet(queue_io_deq_2_bits_pdInfo_isRet),
     .io_deq_2_bits_pdInfo_jumpTarget(queue_io_deq_2_bits_pdInfo_jumpTarget),
+    .io_deq_2_bits_bpuInfo_pc(queue_io_deq_2_bits_bpuInfo_pc),
+    .io_deq_2_bits_bpuInfo_fallThrough(queue_io_deq_2_bits_bpuInfo_fallThrough),
+    .io_deq_2_bits_bpuInfo_taken(queue_io_deq_2_bits_bpuInfo_taken),
+    .io_deq_2_bits_bpuInfo_target(queue_io_deq_2_bits_bpuInfo_target),
+    .io_deq_2_bits_bpuInfo_takenOffset(queue_io_deq_2_bits_bpuInfo_takenOffset),
+    .io_deq_2_bits_bpuInfo_meta_btbHit(queue_io_deq_2_bits_bpuInfo_meta_btbHit),
+    .io_deq_2_bits_bpuInfo_meta_btbIsJalr(queue_io_deq_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_deq_2_bits_bpuInfo_meta_btbIsJal(queue_io_deq_2_bits_bpuInfo_meta_btbIsJal),
+    .io_deq_2_bits_bpuInfo_meta_btbIsCall(queue_io_deq_2_bits_bpuInfo_meta_btbIsCall),
+    .io_deq_2_bits_bpuInfo_meta_btbIsRet(queue_io_deq_2_bits_bpuInfo_meta_btbIsRet),
+    .io_deq_2_bits_bpuInfo_meta_btbOffset(queue_io_deq_2_bits_bpuInfo_meta_btbOffset),
+    .io_deq_2_bits_bpuInfo_meta_phtCounter(queue_io_deq_2_bits_bpuInfo_meta_phtCounter),
+    .io_deq_2_bits_bpuInfo_meta_rasTop(queue_io_deq_2_bits_bpuInfo_meta_rasTop),
+    .io_deq_2_bits_bpuInfo_meta_predTaken(queue_io_deq_2_bits_bpuInfo_meta_predTaken),
+    .io_deq_2_bits_bpuInfo_meta_predTarget(queue_io_deq_2_bits_bpuInfo_meta_predTarget),
     .io_deq_2_bits_exception_excpTlbRefill(queue_io_deq_2_bits_exception_excpTlbRefill),
     .io_deq_2_bits_exception_excpTlbPif(queue_io_deq_2_bits_exception_excpTlbPif),
     .io_deq_2_bits_exception_excpTlbPpi(queue_io_deq_2_bits_exception_excpTlbPpi),
     .io_deq_2_bits_exception_excpAdef(queue_io_deq_2_bits_exception_excpAdef),
     .io_flush(queue_io_flush)
   );
-  assign io_in_ready = _io_in_ready_T_4 >= _io_in_ready_T_10; // @[src/main/scala/frontend/IBF.scala 63:55]
-  assign io_out_0_valid = queue_io_deq_0_valid; // @[src/main/scala/frontend/IBF.scala 71:21]
-  assign io_out_0_bits_instr = queue_io_deq_0_bits_instr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pc = queue_io_deq_0_bits_pc; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_valid = queue_io_deq_0_bits_pdInfo_valid; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_isBr = queue_io_deq_0_bits_pdInfo_isBr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_isJal = queue_io_deq_0_bits_pdInfo_isJal; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_isJalr = queue_io_deq_0_bits_pdInfo_isJalr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_isCall = queue_io_deq_0_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_isRet = queue_io_deq_0_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_pdInfo_jumpTarget = queue_io_deq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_exception_excpTlbRefill = queue_io_deq_0_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_exception_excpTlbPif = queue_io_deq_0_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_exception_excpTlbPpi = queue_io_deq_0_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_0_bits_exception_excpAdef = queue_io_deq_0_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_valid = queue_io_deq_1_valid; // @[src/main/scala/frontend/IBF.scala 71:21]
-  assign io_out_1_bits_instr = queue_io_deq_1_bits_instr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pc = queue_io_deq_1_bits_pc; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_valid = queue_io_deq_1_bits_pdInfo_valid; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_isBr = queue_io_deq_1_bits_pdInfo_isBr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_isJal = queue_io_deq_1_bits_pdInfo_isJal; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_isJalr = queue_io_deq_1_bits_pdInfo_isJalr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_isCall = queue_io_deq_1_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_isRet = queue_io_deq_1_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_pdInfo_jumpTarget = queue_io_deq_1_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_exception_excpTlbRefill = queue_io_deq_1_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_exception_excpTlbPif = queue_io_deq_1_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_exception_excpTlbPpi = queue_io_deq_1_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_1_bits_exception_excpAdef = queue_io_deq_1_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_valid = queue_io_deq_2_valid; // @[src/main/scala/frontend/IBF.scala 71:21]
-  assign io_out_2_bits_instr = queue_io_deq_2_bits_instr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pc = queue_io_deq_2_bits_pc; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_valid = queue_io_deq_2_bits_pdInfo_valid; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_isBr = queue_io_deq_2_bits_pdInfo_isBr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_isJal = queue_io_deq_2_bits_pdInfo_isJal; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_isJalr = queue_io_deq_2_bits_pdInfo_isJalr; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_isCall = queue_io_deq_2_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_isRet = queue_io_deq_2_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_pdInfo_jumpTarget = queue_io_deq_2_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_exception_excpTlbRefill = queue_io_deq_2_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_exception_excpTlbPif = queue_io_deq_2_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_exception_excpTlbPpi = queue_io_deq_2_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 72:20]
-  assign io_out_2_bits_exception_excpAdef = queue_io_deq_2_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 72:20]
+  assign io_in_ready = _io_in_ready_T_4 >= _io_in_ready_T_10; // @[src/main/scala/frontend/IBF.scala 64:55]
+  assign io_out_0_valid = queue_io_deq_0_valid; // @[src/main/scala/frontend/IBF.scala 72:21]
+  assign io_out_0_bits_instr = queue_io_deq_0_bits_instr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pc = queue_io_deq_0_bits_pc; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_valid = queue_io_deq_0_bits_pdInfo_valid; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_isBr = queue_io_deq_0_bits_pdInfo_isBr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_isJal = queue_io_deq_0_bits_pdInfo_isJal; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_isJalr = queue_io_deq_0_bits_pdInfo_isJalr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_isCall = queue_io_deq_0_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_isRet = queue_io_deq_0_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_pdInfo_jumpTarget = queue_io_deq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_pc = queue_io_deq_0_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_fallThrough = queue_io_deq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_taken = queue_io_deq_0_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_target = queue_io_deq_0_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_takenOffset = queue_io_deq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_btbHit = queue_io_deq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_btbIsJalr = queue_io_deq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_btbIsJal = queue_io_deq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_btbIsCall = queue_io_deq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_btbIsRet = queue_io_deq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_btbOffset = queue_io_deq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_phtCounter = queue_io_deq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_rasTop = queue_io_deq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_predTaken = queue_io_deq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_bpuInfo_meta_predTarget = queue_io_deq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_exception_excpTlbRefill = queue_io_deq_0_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_exception_excpTlbPif = queue_io_deq_0_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_exception_excpTlbPpi = queue_io_deq_0_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_0_bits_exception_excpAdef = queue_io_deq_0_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_valid = queue_io_deq_1_valid; // @[src/main/scala/frontend/IBF.scala 72:21]
+  assign io_out_1_bits_instr = queue_io_deq_1_bits_instr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pc = queue_io_deq_1_bits_pc; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_valid = queue_io_deq_1_bits_pdInfo_valid; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_isBr = queue_io_deq_1_bits_pdInfo_isBr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_isJal = queue_io_deq_1_bits_pdInfo_isJal; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_isJalr = queue_io_deq_1_bits_pdInfo_isJalr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_isCall = queue_io_deq_1_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_isRet = queue_io_deq_1_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_pdInfo_jumpTarget = queue_io_deq_1_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_pc = queue_io_deq_1_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_fallThrough = queue_io_deq_1_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_taken = queue_io_deq_1_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_target = queue_io_deq_1_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_takenOffset = queue_io_deq_1_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_btbHit = queue_io_deq_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_btbIsJalr = queue_io_deq_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_btbIsJal = queue_io_deq_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_btbIsCall = queue_io_deq_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_btbIsRet = queue_io_deq_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_btbOffset = queue_io_deq_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_phtCounter = queue_io_deq_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_rasTop = queue_io_deq_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_predTaken = queue_io_deq_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_bpuInfo_meta_predTarget = queue_io_deq_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_exception_excpTlbRefill = queue_io_deq_1_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_exception_excpTlbPif = queue_io_deq_1_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_exception_excpTlbPpi = queue_io_deq_1_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_1_bits_exception_excpAdef = queue_io_deq_1_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_valid = queue_io_deq_2_valid; // @[src/main/scala/frontend/IBF.scala 72:21]
+  assign io_out_2_bits_instr = queue_io_deq_2_bits_instr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pc = queue_io_deq_2_bits_pc; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_valid = queue_io_deq_2_bits_pdInfo_valid; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_isBr = queue_io_deq_2_bits_pdInfo_isBr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_isJal = queue_io_deq_2_bits_pdInfo_isJal; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_isJalr = queue_io_deq_2_bits_pdInfo_isJalr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_isCall = queue_io_deq_2_bits_pdInfo_isCall; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_isRet = queue_io_deq_2_bits_pdInfo_isRet; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_pdInfo_jumpTarget = queue_io_deq_2_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_pc = queue_io_deq_2_bits_bpuInfo_pc; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_fallThrough = queue_io_deq_2_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_taken = queue_io_deq_2_bits_bpuInfo_taken; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_target = queue_io_deq_2_bits_bpuInfo_target; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_takenOffset = queue_io_deq_2_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_btbHit = queue_io_deq_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_btbIsJalr = queue_io_deq_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_btbIsJal = queue_io_deq_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_btbIsCall = queue_io_deq_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_btbIsRet = queue_io_deq_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_btbOffset = queue_io_deq_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_phtCounter = queue_io_deq_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_rasTop = queue_io_deq_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_predTaken = queue_io_deq_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_bpuInfo_meta_predTarget = queue_io_deq_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_exception_excpTlbRefill = queue_io_deq_2_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_exception_excpTlbPif = queue_io_deq_2_bits_exception_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_exception_excpTlbPpi = queue_io_deq_2_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 73:20]
+  assign io_out_2_bits_exception_excpAdef = queue_io_deq_2_bits_exception_excpAdef; // @[src/main/scala/frontend/IBF.scala 73:20]
   assign queue_clock = clock;
   assign queue_reset = reset;
   assign queue_io_enq_0_valid = io_in_valid & io_in_bits_enqMask_0 & io_in_ready; // @[src/main/scala/frontend/IBF.scala 40:69]
@@ -374,10 +734,25 @@ module IBF(
   assign queue_io_enq_0_bits_pdInfo_isCall = io_in_bits_pdInfo_0_isCall; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_0_bits_pdInfo_isRet = io_in_bits_pdInfo_0_isRet; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_0_bits_pdInfo_jumpTarget = io_in_bits_pdInfo_0_jumpTarget; // @[src/main/scala/frontend/IBF.scala 47:35]
-  assign queue_io_enq_0_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_0_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_0_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_0_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 50:38]
+  assign queue_io_enq_0_bits_bpuInfo_pc = io_in_bits_bpuInfo_0_pc; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_fallThrough = io_in_bits_bpuInfo_0_fallThrough; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_taken = io_in_bits_bpuInfo_0_taken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_target = io_in_bits_bpuInfo_0_target; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_takenOffset = io_in_bits_bpuInfo_0_takenOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_btbHit = io_in_bits_bpuInfo_0_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_btbIsJalr = io_in_bits_bpuInfo_0_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_btbIsJal = io_in_bits_bpuInfo_0_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_btbIsCall = io_in_bits_bpuInfo_0_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_btbIsRet = io_in_bits_bpuInfo_0_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_btbOffset = io_in_bits_bpuInfo_0_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_phtCounter = io_in_bits_bpuInfo_0_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_rasTop = io_in_bits_bpuInfo_0_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_predTaken = io_in_bits_bpuInfo_0_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_bpuInfo_meta_predTarget = io_in_bits_bpuInfo_0_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_0_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_0_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_0_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_0_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 51:38]
   assign queue_io_enq_1_valid = io_in_valid & io_in_bits_enqMask_1 & io_in_ready; // @[src/main/scala/frontend/IBF.scala 40:69]
   assign queue_io_enq_1_bits_instr = io_in_bits_instrs_1; // @[src/main/scala/frontend/IBF.scala 45:34]
   assign queue_io_enq_1_bits_pc = io_in_bits_pcs_1; // @[src/main/scala/frontend/IBF.scala 46:31]
@@ -388,10 +763,25 @@ module IBF(
   assign queue_io_enq_1_bits_pdInfo_isCall = io_in_bits_pdInfo_1_isCall; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_1_bits_pdInfo_isRet = io_in_bits_pdInfo_1_isRet; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_1_bits_pdInfo_jumpTarget = io_in_bits_pdInfo_1_jumpTarget; // @[src/main/scala/frontend/IBF.scala 47:35]
-  assign queue_io_enq_1_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_1_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_1_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_1_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 50:38]
+  assign queue_io_enq_1_bits_bpuInfo_pc = io_in_bits_bpuInfo_1_pc; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_fallThrough = io_in_bits_bpuInfo_1_fallThrough; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_taken = io_in_bits_bpuInfo_1_taken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_target = io_in_bits_bpuInfo_1_target; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_takenOffset = io_in_bits_bpuInfo_1_takenOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_btbHit = io_in_bits_bpuInfo_1_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_btbIsJalr = io_in_bits_bpuInfo_1_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_btbIsJal = io_in_bits_bpuInfo_1_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_btbIsCall = io_in_bits_bpuInfo_1_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_btbIsRet = io_in_bits_bpuInfo_1_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_btbOffset = io_in_bits_bpuInfo_1_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_phtCounter = io_in_bits_bpuInfo_1_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_rasTop = io_in_bits_bpuInfo_1_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_predTaken = io_in_bits_bpuInfo_1_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_bpuInfo_meta_predTarget = io_in_bits_bpuInfo_1_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_1_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_1_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_1_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_1_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 51:38]
   assign queue_io_enq_2_valid = io_in_valid & io_in_bits_enqMask_2 & io_in_ready; // @[src/main/scala/frontend/IBF.scala 40:69]
   assign queue_io_enq_2_bits_instr = io_in_bits_instrs_2; // @[src/main/scala/frontend/IBF.scala 45:34]
   assign queue_io_enq_2_bits_pc = io_in_bits_pcs_2; // @[src/main/scala/frontend/IBF.scala 46:31]
@@ -402,10 +792,25 @@ module IBF(
   assign queue_io_enq_2_bits_pdInfo_isCall = io_in_bits_pdInfo_2_isCall; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_2_bits_pdInfo_isRet = io_in_bits_pdInfo_2_isRet; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_2_bits_pdInfo_jumpTarget = io_in_bits_pdInfo_2_jumpTarget; // @[src/main/scala/frontend/IBF.scala 47:35]
-  assign queue_io_enq_2_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_2_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_2_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_2_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 50:38]
+  assign queue_io_enq_2_bits_bpuInfo_pc = io_in_bits_bpuInfo_2_pc; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_fallThrough = io_in_bits_bpuInfo_2_fallThrough; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_taken = io_in_bits_bpuInfo_2_taken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_target = io_in_bits_bpuInfo_2_target; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_takenOffset = io_in_bits_bpuInfo_2_takenOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_btbHit = io_in_bits_bpuInfo_2_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_btbIsJalr = io_in_bits_bpuInfo_2_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_btbIsJal = io_in_bits_bpuInfo_2_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_btbIsCall = io_in_bits_bpuInfo_2_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_btbIsRet = io_in_bits_bpuInfo_2_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_btbOffset = io_in_bits_bpuInfo_2_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_phtCounter = io_in_bits_bpuInfo_2_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_rasTop = io_in_bits_bpuInfo_2_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_predTaken = io_in_bits_bpuInfo_2_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_bpuInfo_meta_predTarget = io_in_bits_bpuInfo_2_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_2_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_2_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_2_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_2_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 51:38]
   assign queue_io_enq_3_valid = io_in_valid & io_in_bits_enqMask_3 & io_in_ready; // @[src/main/scala/frontend/IBF.scala 40:69]
   assign queue_io_enq_3_bits_instr = io_in_bits_instrs_3; // @[src/main/scala/frontend/IBF.scala 45:34]
   assign queue_io_enq_3_bits_pc = io_in_bits_pcs_3; // @[src/main/scala/frontend/IBF.scala 46:31]
@@ -416,12 +821,27 @@ module IBF(
   assign queue_io_enq_3_bits_pdInfo_isCall = io_in_bits_pdInfo_3_isCall; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_3_bits_pdInfo_isRet = io_in_bits_pdInfo_3_isRet; // @[src/main/scala/frontend/IBF.scala 47:35]
   assign queue_io_enq_3_bits_pdInfo_jumpTarget = io_in_bits_pdInfo_3_jumpTarget; // @[src/main/scala/frontend/IBF.scala 47:35]
-  assign queue_io_enq_3_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_3_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_3_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_enq_3_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 50:38]
-  assign queue_io_deq_0_ready = io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 88:26 89:19]
-  assign queue_io_deq_1_ready = io_out_1_ready & io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 92:40]
-  assign queue_io_deq_2_ready = io_out_2_ready & deqReadyMask_1; // @[src/main/scala/frontend/IBF.scala 92:40]
+  assign queue_io_enq_3_bits_bpuInfo_pc = io_in_bits_bpuInfo_3_pc; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_fallThrough = io_in_bits_bpuInfo_3_fallThrough; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_taken = io_in_bits_bpuInfo_3_taken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_target = io_in_bits_bpuInfo_3_target; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_takenOffset = io_in_bits_bpuInfo_3_takenOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_btbHit = io_in_bits_bpuInfo_3_meta_btbHit; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_btbIsJalr = io_in_bits_bpuInfo_3_meta_btbIsJalr; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_btbIsJal = io_in_bits_bpuInfo_3_meta_btbIsJal; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_btbIsCall = io_in_bits_bpuInfo_3_meta_btbIsCall; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_btbIsRet = io_in_bits_bpuInfo_3_meta_btbIsRet; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_btbOffset = io_in_bits_bpuInfo_3_meta_btbOffset; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_phtCounter = io_in_bits_bpuInfo_3_meta_phtCounter; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_rasTop = io_in_bits_bpuInfo_3_meta_rasTop; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_predTaken = io_in_bits_bpuInfo_3_meta_predTaken; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_bpuInfo_meta_predTarget = io_in_bits_bpuInfo_3_meta_predTarget; // @[src/main/scala/frontend/IBF.scala 48:36]
+  assign queue_io_enq_3_bits_exception_excpTlbRefill = io_in_bits_mmu_error_excpTlbRefill; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_3_bits_exception_excpTlbPif = io_in_bits_mmu_error_excpTlbPif; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_3_bits_exception_excpTlbPpi = io_in_bits_mmu_error_excpTlbPpi; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_enq_3_bits_exception_excpAdef = io_in_bits_mmu_error_excpAdef; // @[src/main/scala/frontend/IBF.scala 51:38]
+  assign queue_io_deq_0_ready = io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 89:26 90:19]
+  assign queue_io_deq_1_ready = io_out_1_ready & io_out_0_ready; // @[src/main/scala/frontend/IBF.scala 93:40]
+  assign queue_io_deq_2_ready = io_out_2_ready & deqReadyMask_1; // @[src/main/scala/frontend/IBF.scala 93:40]
   assign queue_io_flush = io_flush; // @[src/main/scala/frontend/IBF.scala 35:18]
 endmodule

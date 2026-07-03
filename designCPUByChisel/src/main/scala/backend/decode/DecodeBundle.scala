@@ -3,7 +3,7 @@ package nscscc.backend.decode
 import chisel3._
 import chisel3.util._
 import nscscc.config.{NSBundle, Parameters}
-import nscscc.frontend.{PredecodeInfo, CtrlFlowIO}
+import nscscc.frontend.{PredecodeInfo, CtrlFlowIO, bpuInfoBundle}
 import nscscc.mmu.{MmuTransError}
 
 // 预译码信息
@@ -59,6 +59,7 @@ class DecodeCtrl(implicit p: Parameters) extends NSBundle {
   val rfWen    = Bool()
   val memRead  = Bool()
   val memWrite = Bool()
+  //val rs2UseRd = Bool()
   val csrWen   = Bool()
   val isBranch = Bool()
   val isJump   = Bool()
@@ -86,6 +87,7 @@ class DecodedInst(implicit p: Parameters) extends NSBundle {
   val ctrl       = new DecodeCtrl
   val excpVec    = UInt(ExceptionCode.width.W)
   val pdInfo     = new PredecodeInfo
+  val bpuInfo    = new bpuInfoBundle
 }
 
 

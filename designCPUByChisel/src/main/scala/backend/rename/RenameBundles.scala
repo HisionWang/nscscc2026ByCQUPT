@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
-import nscscc.frontend.PredecodeInfo
+import nscscc.frontend.{PredecodeInfo, bpuInfoBundle}
 import nscscc.util.CircularQueuePtr
 
 
@@ -25,6 +25,7 @@ class RenamedInst(implicit p: Parameters) extends NSBundle {
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
   val pdInfo     = new PredecodeInfo
+  val bpuInfo    = new bpuInfoBundle
  
   // ── 逻辑寄存器号（保留，供 ROB 提交时写架构表） ──
   val ldst = UInt(5.W)

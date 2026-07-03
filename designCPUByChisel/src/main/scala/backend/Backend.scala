@@ -71,6 +71,9 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
     Module(new ExeUnit(ExeUnitParams(hasStd = true)))
   )
   val numExeUnits = exeUnits.length  // 3
+
+  val brMsRedirectFromExe3 =  exeUnits(2).io.brMsRedirect
+  dontTouch(brMsRedirectFromExe3)
  
   val writeback = Module(new Writeback(numExeUnits))
  

@@ -31,6 +31,21 @@ module IssueQueue_1(
   input         io_enq_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input         io_enq_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input  [31:0] io_enq_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [31:0] io_enq_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [31:0] io_enq_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [31:0] io_enq_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [1:0]  io_enq_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [1:0]  io_enq_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [1:0]  io_enq_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [2:0]  io_enq_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input         io_enq_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  input  [31:0] io_enq_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input  [4:0]  io_enq_bits_ldst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input  [4:0]  io_enq_bits_lrs1, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   input  [4:0]  io_enq_bits_lrs2, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
@@ -79,6 +94,21 @@ module IssueQueue_1(
   output        io_issue_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output        io_issue_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output [31:0] io_issue_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [31:0] io_issue_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [31:0] io_issue_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [31:0] io_issue_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [1:0]  io_issue_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [1:0]  io_issue_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [1:0]  io_issue_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [2:0]  io_issue_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output        io_issue_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
+  output [31:0] io_issue_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output [4:0]  io_issue_bits_ldst, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output [4:0]  io_issue_bits_lrs1, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
   output [4:0]  io_issue_bits_lrs2, // @[src/main/scala/backend/scheduler/IssueQueue.scala 24:14]
@@ -829,6 +859,186 @@ module IssueQueue_1(
   reg [31:0] _RAND_717;
   reg [31:0] _RAND_718;
   reg [31:0] _RAND_719;
+  reg [31:0] _RAND_720;
+  reg [31:0] _RAND_721;
+  reg [31:0] _RAND_722;
+  reg [31:0] _RAND_723;
+  reg [31:0] _RAND_724;
+  reg [31:0] _RAND_725;
+  reg [31:0] _RAND_726;
+  reg [31:0] _RAND_727;
+  reg [31:0] _RAND_728;
+  reg [31:0] _RAND_729;
+  reg [31:0] _RAND_730;
+  reg [31:0] _RAND_731;
+  reg [31:0] _RAND_732;
+  reg [31:0] _RAND_733;
+  reg [31:0] _RAND_734;
+  reg [31:0] _RAND_735;
+  reg [31:0] _RAND_736;
+  reg [31:0] _RAND_737;
+  reg [31:0] _RAND_738;
+  reg [31:0] _RAND_739;
+  reg [31:0] _RAND_740;
+  reg [31:0] _RAND_741;
+  reg [31:0] _RAND_742;
+  reg [31:0] _RAND_743;
+  reg [31:0] _RAND_744;
+  reg [31:0] _RAND_745;
+  reg [31:0] _RAND_746;
+  reg [31:0] _RAND_747;
+  reg [31:0] _RAND_748;
+  reg [31:0] _RAND_749;
+  reg [31:0] _RAND_750;
+  reg [31:0] _RAND_751;
+  reg [31:0] _RAND_752;
+  reg [31:0] _RAND_753;
+  reg [31:0] _RAND_754;
+  reg [31:0] _RAND_755;
+  reg [31:0] _RAND_756;
+  reg [31:0] _RAND_757;
+  reg [31:0] _RAND_758;
+  reg [31:0] _RAND_759;
+  reg [31:0] _RAND_760;
+  reg [31:0] _RAND_761;
+  reg [31:0] _RAND_762;
+  reg [31:0] _RAND_763;
+  reg [31:0] _RAND_764;
+  reg [31:0] _RAND_765;
+  reg [31:0] _RAND_766;
+  reg [31:0] _RAND_767;
+  reg [31:0] _RAND_768;
+  reg [31:0] _RAND_769;
+  reg [31:0] _RAND_770;
+  reg [31:0] _RAND_771;
+  reg [31:0] _RAND_772;
+  reg [31:0] _RAND_773;
+  reg [31:0] _RAND_774;
+  reg [31:0] _RAND_775;
+  reg [31:0] _RAND_776;
+  reg [31:0] _RAND_777;
+  reg [31:0] _RAND_778;
+  reg [31:0] _RAND_779;
+  reg [31:0] _RAND_780;
+  reg [31:0] _RAND_781;
+  reg [31:0] _RAND_782;
+  reg [31:0] _RAND_783;
+  reg [31:0] _RAND_784;
+  reg [31:0] _RAND_785;
+  reg [31:0] _RAND_786;
+  reg [31:0] _RAND_787;
+  reg [31:0] _RAND_788;
+  reg [31:0] _RAND_789;
+  reg [31:0] _RAND_790;
+  reg [31:0] _RAND_791;
+  reg [31:0] _RAND_792;
+  reg [31:0] _RAND_793;
+  reg [31:0] _RAND_794;
+  reg [31:0] _RAND_795;
+  reg [31:0] _RAND_796;
+  reg [31:0] _RAND_797;
+  reg [31:0] _RAND_798;
+  reg [31:0] _RAND_799;
+  reg [31:0] _RAND_800;
+  reg [31:0] _RAND_801;
+  reg [31:0] _RAND_802;
+  reg [31:0] _RAND_803;
+  reg [31:0] _RAND_804;
+  reg [31:0] _RAND_805;
+  reg [31:0] _RAND_806;
+  reg [31:0] _RAND_807;
+  reg [31:0] _RAND_808;
+  reg [31:0] _RAND_809;
+  reg [31:0] _RAND_810;
+  reg [31:0] _RAND_811;
+  reg [31:0] _RAND_812;
+  reg [31:0] _RAND_813;
+  reg [31:0] _RAND_814;
+  reg [31:0] _RAND_815;
+  reg [31:0] _RAND_816;
+  reg [31:0] _RAND_817;
+  reg [31:0] _RAND_818;
+  reg [31:0] _RAND_819;
+  reg [31:0] _RAND_820;
+  reg [31:0] _RAND_821;
+  reg [31:0] _RAND_822;
+  reg [31:0] _RAND_823;
+  reg [31:0] _RAND_824;
+  reg [31:0] _RAND_825;
+  reg [31:0] _RAND_826;
+  reg [31:0] _RAND_827;
+  reg [31:0] _RAND_828;
+  reg [31:0] _RAND_829;
+  reg [31:0] _RAND_830;
+  reg [31:0] _RAND_831;
+  reg [31:0] _RAND_832;
+  reg [31:0] _RAND_833;
+  reg [31:0] _RAND_834;
+  reg [31:0] _RAND_835;
+  reg [31:0] _RAND_836;
+  reg [31:0] _RAND_837;
+  reg [31:0] _RAND_838;
+  reg [31:0] _RAND_839;
+  reg [31:0] _RAND_840;
+  reg [31:0] _RAND_841;
+  reg [31:0] _RAND_842;
+  reg [31:0] _RAND_843;
+  reg [31:0] _RAND_844;
+  reg [31:0] _RAND_845;
+  reg [31:0] _RAND_846;
+  reg [31:0] _RAND_847;
+  reg [31:0] _RAND_848;
+  reg [31:0] _RAND_849;
+  reg [31:0] _RAND_850;
+  reg [31:0] _RAND_851;
+  reg [31:0] _RAND_852;
+  reg [31:0] _RAND_853;
+  reg [31:0] _RAND_854;
+  reg [31:0] _RAND_855;
+  reg [31:0] _RAND_856;
+  reg [31:0] _RAND_857;
+  reg [31:0] _RAND_858;
+  reg [31:0] _RAND_859;
+  reg [31:0] _RAND_860;
+  reg [31:0] _RAND_861;
+  reg [31:0] _RAND_862;
+  reg [31:0] _RAND_863;
+  reg [31:0] _RAND_864;
+  reg [31:0] _RAND_865;
+  reg [31:0] _RAND_866;
+  reg [31:0] _RAND_867;
+  reg [31:0] _RAND_868;
+  reg [31:0] _RAND_869;
+  reg [31:0] _RAND_870;
+  reg [31:0] _RAND_871;
+  reg [31:0] _RAND_872;
+  reg [31:0] _RAND_873;
+  reg [31:0] _RAND_874;
+  reg [31:0] _RAND_875;
+  reg [31:0] _RAND_876;
+  reg [31:0] _RAND_877;
+  reg [31:0] _RAND_878;
+  reg [31:0] _RAND_879;
+  reg [31:0] _RAND_880;
+  reg [31:0] _RAND_881;
+  reg [31:0] _RAND_882;
+  reg [31:0] _RAND_883;
+  reg [31:0] _RAND_884;
+  reg [31:0] _RAND_885;
+  reg [31:0] _RAND_886;
+  reg [31:0] _RAND_887;
+  reg [31:0] _RAND_888;
+  reg [31:0] _RAND_889;
+  reg [31:0] _RAND_890;
+  reg [31:0] _RAND_891;
+  reg [31:0] _RAND_892;
+  reg [31:0] _RAND_893;
+  reg [31:0] _RAND_894;
+  reg [31:0] _RAND_895;
+  reg [31:0] _RAND_896;
+  reg [31:0] _RAND_897;
+  reg [31:0] _RAND_898;
+  reg [31:0] _RAND_899;
 `endif // RANDOMIZE_REG_INIT
   reg  entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
   reg  entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
@@ -871,6 +1081,21 @@ module IssueQueue_1(
   reg  entryUops_0_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_0_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_0_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_0_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_0_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_0_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_0_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_0_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_0_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_0_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_0_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_0_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_0_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_0_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_0_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -917,6 +1142,21 @@ module IssueQueue_1(
   reg  entryUops_1_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_1_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_1_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_1_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_1_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_1_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_1_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_1_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_1_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_1_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_1_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_1_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_1_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_1_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_1_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -963,6 +1203,21 @@ module IssueQueue_1(
   reg  entryUops_2_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_2_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_2_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_2_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_2_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_2_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_2_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_2_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_2_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_2_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_2_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_2_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_2_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_2_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_2_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1009,6 +1264,21 @@ module IssueQueue_1(
   reg  entryUops_3_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_3_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_3_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_3_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_3_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_3_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_3_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_3_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_3_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_3_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_3_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_3_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_3_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_3_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_3_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1055,6 +1325,21 @@ module IssueQueue_1(
   reg  entryUops_4_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_4_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_4_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_4_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_4_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_4_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_4_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_4_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_4_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_4_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_4_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_4_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_4_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_4_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_4_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1101,6 +1386,21 @@ module IssueQueue_1(
   reg  entryUops_5_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_5_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_5_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_5_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_5_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_5_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_5_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_5_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_5_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_5_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_5_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_5_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_5_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_5_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_5_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1147,6 +1447,21 @@ module IssueQueue_1(
   reg  entryUops_6_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_6_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_6_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_6_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_6_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_6_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_6_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_6_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_6_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_6_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_6_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_6_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_6_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_6_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_6_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1193,6 +1508,21 @@ module IssueQueue_1(
   reg  entryUops_7_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_7_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_7_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_7_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_7_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_7_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_7_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_7_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_7_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_7_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_7_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_7_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_7_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_7_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_7_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1239,6 +1569,21 @@ module IssueQueue_1(
   reg  entryUops_8_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_8_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_8_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_8_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_8_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_8_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_8_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_8_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_8_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_8_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_8_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_8_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_8_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_8_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_8_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1285,6 +1630,21 @@ module IssueQueue_1(
   reg  entryUops_9_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_9_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_9_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_9_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_9_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_9_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_9_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_9_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_9_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_9_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_9_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_9_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_9_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_9_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_9_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1331,6 +1691,21 @@ module IssueQueue_1(
   reg  entryUops_10_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_10_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_10_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_10_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_10_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_10_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_10_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_10_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_10_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_10_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_10_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_10_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_10_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_10_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_10_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -1377,6 +1752,21 @@ module IssueQueue_1(
   reg  entryUops_11_pdInfo_isCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg  entryUops_11_pdInfo_isRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [31:0] entryUops_11_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_11_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_11_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_11_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_11_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_11_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [1:0] entryUops_11_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [2:0] entryUops_11_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg  entryUops_11_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
+  reg [31:0] entryUops_11_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_11_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_11_lrs1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
   reg [4:0] entryUops_11_lrs2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 45:25]
@@ -2022,18 +2412,18 @@ module IssueQueue_1(
   wire [4:0] _io_issue_bits_T_525 = _io_issue_bits_T_524 | _io_issue_bits_T_514; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_issue_bits_T_526 = _io_issue_bits_T_525 | _io_issue_bits_T_515; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_issue_bits_T_527 = _io_issue_bits_T_526 | _io_issue_bits_T_516; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_529 = oldest_0 ? entryUops_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_530 = oldest_1 ? entryUops_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_531 = oldest_2 ? entryUops_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_532 = oldest_3 ? entryUops_3_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_533 = oldest_4 ? entryUops_4_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_534 = oldest_5 ? entryUops_5_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_535 = oldest_6 ? entryUops_6_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_536 = oldest_7 ? entryUops_7_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_537 = oldest_8 ? entryUops_8_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_538 = oldest_9 ? entryUops_9_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_539 = oldest_10 ? entryUops_10_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_540 = oldest_11 ? entryUops_11_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_529 = oldest_0 ? entryUops_0_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_530 = oldest_1 ? entryUops_1_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_531 = oldest_2 ? entryUops_2_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_532 = oldest_3 ? entryUops_3_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_533 = oldest_4 ? entryUops_4_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_534 = oldest_5 ? entryUops_5_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_535 = oldest_6 ? entryUops_6_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_536 = oldest_7 ? entryUops_7_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_537 = oldest_8 ? entryUops_8_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_538 = oldest_9 ? entryUops_9_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_539 = oldest_10 ? entryUops_10_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_540 = oldest_11 ? entryUops_11_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_issue_bits_T_541 = _io_issue_bits_T_529 | _io_issue_bits_T_530; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_issue_bits_T_542 = _io_issue_bits_T_541 | _io_issue_bits_T_531; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_issue_bits_T_543 = _io_issue_bits_T_542 | _io_issue_bits_T_532; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -2044,336 +2434,512 @@ module IssueQueue_1(
   wire [31:0] _io_issue_bits_T_548 = _io_issue_bits_T_547 | _io_issue_bits_T_537; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_issue_bits_T_549 = _io_issue_bits_T_548 | _io_issue_bits_T_538; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_issue_bits_T_550 = _io_issue_bits_T_549 | _io_issue_bits_T_539; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_690 = oldest_0 ? entryUops_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_691 = oldest_1 ? entryUops_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_692 = oldest_2 ? entryUops_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_693 = oldest_3 ? entryUops_3_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_694 = oldest_4 ? entryUops_4_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_695 = oldest_5 ? entryUops_5_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_696 = oldest_6 ? entryUops_6_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_697 = oldest_7 ? entryUops_7_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_698 = oldest_8 ? entryUops_8_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_699 = oldest_9 ? entryUops_9_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_700 = oldest_10 ? entryUops_10_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_701 = oldest_11 ? entryUops_11_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_702 = _io_issue_bits_T_690 | _io_issue_bits_T_691; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_703 = _io_issue_bits_T_702 | _io_issue_bits_T_692; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_704 = _io_issue_bits_T_703 | _io_issue_bits_T_693; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_705 = _io_issue_bits_T_704 | _io_issue_bits_T_694; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_706 = _io_issue_bits_T_705 | _io_issue_bits_T_695; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_707 = _io_issue_bits_T_706 | _io_issue_bits_T_696; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_708 = _io_issue_bits_T_707 | _io_issue_bits_T_697; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_709 = _io_issue_bits_T_708 | _io_issue_bits_T_698; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_710 = _io_issue_bits_T_709 | _io_issue_bits_T_699; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_issue_bits_T_711 = _io_issue_bits_T_710 | _io_issue_bits_T_700; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_713 = oldest_0 ? entryUops_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_714 = oldest_1 ? entryUops_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_715 = oldest_2 ? entryUops_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_716 = oldest_3 ? entryUops_3_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_717 = oldest_4 ? entryUops_4_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_718 = oldest_5 ? entryUops_5_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_719 = oldest_6 ? entryUops_6_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_720 = oldest_7 ? entryUops_7_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_721 = oldest_8 ? entryUops_8_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_722 = oldest_9 ? entryUops_9_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_723 = oldest_10 ? entryUops_10_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_724 = oldest_11 ? entryUops_11_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_725 = _io_issue_bits_T_713 | _io_issue_bits_T_714; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_726 = _io_issue_bits_T_725 | _io_issue_bits_T_715; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_727 = _io_issue_bits_T_726 | _io_issue_bits_T_716; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_728 = _io_issue_bits_T_727 | _io_issue_bits_T_717; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_729 = _io_issue_bits_T_728 | _io_issue_bits_T_718; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_730 = _io_issue_bits_T_729 | _io_issue_bits_T_719; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_731 = _io_issue_bits_T_730 | _io_issue_bits_T_720; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_732 = _io_issue_bits_T_731 | _io_issue_bits_T_721; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_733 = _io_issue_bits_T_732 | _io_issue_bits_T_722; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_734 = _io_issue_bits_T_733 | _io_issue_bits_T_723; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_736 = oldest_0 ? entryUops_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_737 = oldest_1 ? entryUops_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_738 = oldest_2 ? entryUops_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_739 = oldest_3 ? entryUops_3_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_740 = oldest_4 ? entryUops_4_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_741 = oldest_5 ? entryUops_5_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_742 = oldest_6 ? entryUops_6_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_743 = oldest_7 ? entryUops_7_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_744 = oldest_8 ? entryUops_8_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_745 = oldest_9 ? entryUops_9_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_746 = oldest_10 ? entryUops_10_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_747 = oldest_11 ? entryUops_11_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_748 = _io_issue_bits_T_736 | _io_issue_bits_T_737; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_749 = _io_issue_bits_T_748 | _io_issue_bits_T_738; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_750 = _io_issue_bits_T_749 | _io_issue_bits_T_739; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_751 = _io_issue_bits_T_750 | _io_issue_bits_T_740; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_752 = _io_issue_bits_T_751 | _io_issue_bits_T_741; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_753 = _io_issue_bits_T_752 | _io_issue_bits_T_742; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_754 = _io_issue_bits_T_753 | _io_issue_bits_T_743; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_755 = _io_issue_bits_T_754 | _io_issue_bits_T_744; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_756 = _io_issue_bits_T_755 | _io_issue_bits_T_745; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_issue_bits_T_757 = _io_issue_bits_T_756 | _io_issue_bits_T_746; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_920 = oldest_0 ? entryUops_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_921 = oldest_1 ? entryUops_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_922 = oldest_2 ? entryUops_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_923 = oldest_3 ? entryUops_3_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_924 = oldest_4 ? entryUops_4_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_925 = oldest_5 ? entryUops_5_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_926 = oldest_6 ? entryUops_6_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_927 = oldest_7 ? entryUops_7_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_928 = oldest_8 ? entryUops_8_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_929 = oldest_9 ? entryUops_9_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_930 = oldest_10 ? entryUops_10_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_931 = oldest_11 ? entryUops_11_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_932 = _io_issue_bits_T_920 | _io_issue_bits_T_921; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_933 = _io_issue_bits_T_932 | _io_issue_bits_T_922; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_934 = _io_issue_bits_T_933 | _io_issue_bits_T_923; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_935 = _io_issue_bits_T_934 | _io_issue_bits_T_924; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_936 = _io_issue_bits_T_935 | _io_issue_bits_T_925; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_937 = _io_issue_bits_T_936 | _io_issue_bits_T_926; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_938 = _io_issue_bits_T_937 | _io_issue_bits_T_927; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_939 = _io_issue_bits_T_938 | _io_issue_bits_T_928; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_940 = _io_issue_bits_T_939 | _io_issue_bits_T_929; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_941 = _io_issue_bits_T_940 | _io_issue_bits_T_930; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_943 = oldest_0 ? entryUops_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_944 = oldest_1 ? entryUops_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_945 = oldest_2 ? entryUops_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_946 = oldest_3 ? entryUops_3_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_947 = oldest_4 ? entryUops_4_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_948 = oldest_5 ? entryUops_5_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_949 = oldest_6 ? entryUops_6_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_950 = oldest_7 ? entryUops_7_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_951 = oldest_8 ? entryUops_8_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_952 = oldest_9 ? entryUops_9_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_953 = oldest_10 ? entryUops_10_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_954 = oldest_11 ? entryUops_11_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_955 = _io_issue_bits_T_943 | _io_issue_bits_T_944; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_956 = _io_issue_bits_T_955 | _io_issue_bits_T_945; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_957 = _io_issue_bits_T_956 | _io_issue_bits_T_946; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_958 = _io_issue_bits_T_957 | _io_issue_bits_T_947; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_959 = _io_issue_bits_T_958 | _io_issue_bits_T_948; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_960 = _io_issue_bits_T_959 | _io_issue_bits_T_949; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_961 = _io_issue_bits_T_960 | _io_issue_bits_T_950; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_962 = _io_issue_bits_T_961 | _io_issue_bits_T_951; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_963 = _io_issue_bits_T_962 | _io_issue_bits_T_952; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_964 = _io_issue_bits_T_963 | _io_issue_bits_T_953; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_966 = oldest_0 ? entryUops_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_967 = oldest_1 ? entryUops_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_968 = oldest_2 ? entryUops_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_969 = oldest_3 ? entryUops_3_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_970 = oldest_4 ? entryUops_4_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_971 = oldest_5 ? entryUops_5_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_972 = oldest_6 ? entryUops_6_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_973 = oldest_7 ? entryUops_7_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_974 = oldest_8 ? entryUops_8_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_975 = oldest_9 ? entryUops_9_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_976 = oldest_10 ? entryUops_10_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_977 = oldest_11 ? entryUops_11_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_978 = _io_issue_bits_T_966 | _io_issue_bits_T_967; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_979 = _io_issue_bits_T_978 | _io_issue_bits_T_968; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_980 = _io_issue_bits_T_979 | _io_issue_bits_T_969; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_981 = _io_issue_bits_T_980 | _io_issue_bits_T_970; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_982 = _io_issue_bits_T_981 | _io_issue_bits_T_971; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_983 = _io_issue_bits_T_982 | _io_issue_bits_T_972; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_984 = _io_issue_bits_T_983 | _io_issue_bits_T_973; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_985 = _io_issue_bits_T_984 | _io_issue_bits_T_974; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_986 = _io_issue_bits_T_985 | _io_issue_bits_T_975; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_987 = _io_issue_bits_T_986 | _io_issue_bits_T_976; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_989 = oldest_0 ? entryUops_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_990 = oldest_1 ? entryUops_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_991 = oldest_2 ? entryUops_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_992 = oldest_3 ? entryUops_3_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_993 = oldest_4 ? entryUops_4_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_994 = oldest_5 ? entryUops_5_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_995 = oldest_6 ? entryUops_6_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_996 = oldest_7 ? entryUops_7_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_997 = oldest_8 ? entryUops_8_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_998 = oldest_9 ? entryUops_9_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_999 = oldest_10 ? entryUops_10_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1000 = oldest_11 ? entryUops_11_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1001 = _io_issue_bits_T_989 | _io_issue_bits_T_990; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1002 = _io_issue_bits_T_1001 | _io_issue_bits_T_991; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1003 = _io_issue_bits_T_1002 | _io_issue_bits_T_992; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1004 = _io_issue_bits_T_1003 | _io_issue_bits_T_993; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1005 = _io_issue_bits_T_1004 | _io_issue_bits_T_994; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1006 = _io_issue_bits_T_1005 | _io_issue_bits_T_995; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1007 = _io_issue_bits_T_1006 | _io_issue_bits_T_996; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1008 = _io_issue_bits_T_1007 | _io_issue_bits_T_997; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1009 = _io_issue_bits_T_1008 | _io_issue_bits_T_998; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1010 = _io_issue_bits_T_1009 | _io_issue_bits_T_999; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1012 = oldest_0 ? entryUops_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1013 = oldest_1 ? entryUops_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1014 = oldest_2 ? entryUops_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1015 = oldest_3 ? entryUops_3_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1016 = oldest_4 ? entryUops_4_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1017 = oldest_5 ? entryUops_5_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1018 = oldest_6 ? entryUops_6_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1019 = oldest_7 ? entryUops_7_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1020 = oldest_8 ? entryUops_8_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1021 = oldest_9 ? entryUops_9_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1022 = oldest_10 ? entryUops_10_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1023 = oldest_11 ? entryUops_11_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1024 = _io_issue_bits_T_1012 | _io_issue_bits_T_1013; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1025 = _io_issue_bits_T_1024 | _io_issue_bits_T_1014; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1026 = _io_issue_bits_T_1025 | _io_issue_bits_T_1015; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1027 = _io_issue_bits_T_1026 | _io_issue_bits_T_1016; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1028 = _io_issue_bits_T_1027 | _io_issue_bits_T_1017; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1029 = _io_issue_bits_T_1028 | _io_issue_bits_T_1018; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1030 = _io_issue_bits_T_1029 | _io_issue_bits_T_1019; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1031 = _io_issue_bits_T_1030 | _io_issue_bits_T_1020; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1032 = _io_issue_bits_T_1031 | _io_issue_bits_T_1021; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1033 = _io_issue_bits_T_1032 | _io_issue_bits_T_1022; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1035 = oldest_0 ? entryUops_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1036 = oldest_1 ? entryUops_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1037 = oldest_2 ? entryUops_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1038 = oldest_3 ? entryUops_3_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1039 = oldest_4 ? entryUops_4_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1040 = oldest_5 ? entryUops_5_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1041 = oldest_6 ? entryUops_6_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1042 = oldest_7 ? entryUops_7_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1043 = oldest_8 ? entryUops_8_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1044 = oldest_9 ? entryUops_9_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1045 = oldest_10 ? entryUops_10_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1046 = oldest_11 ? entryUops_11_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1047 = _io_issue_bits_T_1035 | _io_issue_bits_T_1036; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1048 = _io_issue_bits_T_1047 | _io_issue_bits_T_1037; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1049 = _io_issue_bits_T_1048 | _io_issue_bits_T_1038; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1050 = _io_issue_bits_T_1049 | _io_issue_bits_T_1039; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1051 = _io_issue_bits_T_1050 | _io_issue_bits_T_1040; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1052 = _io_issue_bits_T_1051 | _io_issue_bits_T_1041; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1053 = _io_issue_bits_T_1052 | _io_issue_bits_T_1042; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1054 = _io_issue_bits_T_1053 | _io_issue_bits_T_1043; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1055 = _io_issue_bits_T_1054 | _io_issue_bits_T_1044; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_issue_bits_T_1056 = _io_issue_bits_T_1055 | _io_issue_bits_T_1045; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1058 = oldest_0 ? entryUops_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1059 = oldest_1 ? entryUops_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1060 = oldest_2 ? entryUops_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1061 = oldest_3 ? entryUops_3_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1062 = oldest_4 ? entryUops_4_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1063 = oldest_5 ? entryUops_5_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1064 = oldest_6 ? entryUops_6_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1065 = oldest_7 ? entryUops_7_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1066 = oldest_8 ? entryUops_8_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1067 = oldest_9 ? entryUops_9_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1068 = oldest_10 ? entryUops_10_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1069 = oldest_11 ? entryUops_11_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1070 = _io_issue_bits_T_1058 | _io_issue_bits_T_1059; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1071 = _io_issue_bits_T_1070 | _io_issue_bits_T_1060; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1072 = _io_issue_bits_T_1071 | _io_issue_bits_T_1061; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1073 = _io_issue_bits_T_1072 | _io_issue_bits_T_1062; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1074 = _io_issue_bits_T_1073 | _io_issue_bits_T_1063; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1075 = _io_issue_bits_T_1074 | _io_issue_bits_T_1064; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1076 = _io_issue_bits_T_1075 | _io_issue_bits_T_1065; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1077 = _io_issue_bits_T_1076 | _io_issue_bits_T_1066; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1078 = _io_issue_bits_T_1077 | _io_issue_bits_T_1067; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1079 = _io_issue_bits_T_1078 | _io_issue_bits_T_1068; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1081 = oldest_0 ? entryUops_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1082 = oldest_1 ? entryUops_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1083 = oldest_2 ? entryUops_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1084 = oldest_3 ? entryUops_3_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1085 = oldest_4 ? entryUops_4_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1086 = oldest_5 ? entryUops_5_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1087 = oldest_6 ? entryUops_6_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1088 = oldest_7 ? entryUops_7_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1089 = oldest_8 ? entryUops_8_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1090 = oldest_9 ? entryUops_9_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1091 = oldest_10 ? entryUops_10_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1092 = oldest_11 ? entryUops_11_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1093 = _io_issue_bits_T_1081 | _io_issue_bits_T_1082; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1094 = _io_issue_bits_T_1093 | _io_issue_bits_T_1083; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1095 = _io_issue_bits_T_1094 | _io_issue_bits_T_1084; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1096 = _io_issue_bits_T_1095 | _io_issue_bits_T_1085; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1097 = _io_issue_bits_T_1096 | _io_issue_bits_T_1086; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1098 = _io_issue_bits_T_1097 | _io_issue_bits_T_1087; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1099 = _io_issue_bits_T_1098 | _io_issue_bits_T_1088; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1100 = _io_issue_bits_T_1099 | _io_issue_bits_T_1089; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1101 = _io_issue_bits_T_1100 | _io_issue_bits_T_1090; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1102 = _io_issue_bits_T_1101 | _io_issue_bits_T_1091; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1104 = oldest_0 ? entryUops_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1105 = oldest_1 ? entryUops_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1106 = oldest_2 ? entryUops_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1107 = oldest_3 ? entryUops_3_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1108 = oldest_4 ? entryUops_4_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1109 = oldest_5 ? entryUops_5_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1110 = oldest_6 ? entryUops_6_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1111 = oldest_7 ? entryUops_7_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1112 = oldest_8 ? entryUops_8_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1113 = oldest_9 ? entryUops_9_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1114 = oldest_10 ? entryUops_10_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1115 = oldest_11 ? entryUops_11_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1116 = _io_issue_bits_T_1104 | _io_issue_bits_T_1105; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1117 = _io_issue_bits_T_1116 | _io_issue_bits_T_1106; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1118 = _io_issue_bits_T_1117 | _io_issue_bits_T_1107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1119 = _io_issue_bits_T_1118 | _io_issue_bits_T_1108; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1120 = _io_issue_bits_T_1119 | _io_issue_bits_T_1109; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1121 = _io_issue_bits_T_1120 | _io_issue_bits_T_1110; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1122 = _io_issue_bits_T_1121 | _io_issue_bits_T_1111; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1123 = _io_issue_bits_T_1122 | _io_issue_bits_T_1112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1124 = _io_issue_bits_T_1123 | _io_issue_bits_T_1113; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_issue_bits_T_1125 = _io_issue_bits_T_1124 | _io_issue_bits_T_1114; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1127 = oldest_0 ? entryUops_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1128 = oldest_1 ? entryUops_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1129 = oldest_2 ? entryUops_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1130 = oldest_3 ? entryUops_3_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1131 = oldest_4 ? entryUops_4_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1132 = oldest_5 ? entryUops_5_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1133 = oldest_6 ? entryUops_6_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1134 = oldest_7 ? entryUops_7_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1135 = oldest_8 ? entryUops_8_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1136 = oldest_9 ? entryUops_9_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1137 = oldest_10 ? entryUops_10_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1138 = oldest_11 ? entryUops_11_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1139 = _io_issue_bits_T_1127 | _io_issue_bits_T_1128; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1140 = _io_issue_bits_T_1139 | _io_issue_bits_T_1129; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1141 = _io_issue_bits_T_1140 | _io_issue_bits_T_1130; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1142 = _io_issue_bits_T_1141 | _io_issue_bits_T_1131; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1143 = _io_issue_bits_T_1142 | _io_issue_bits_T_1132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1144 = _io_issue_bits_T_1143 | _io_issue_bits_T_1133; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1145 = _io_issue_bits_T_1144 | _io_issue_bits_T_1134; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1146 = _io_issue_bits_T_1145 | _io_issue_bits_T_1135; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1147 = _io_issue_bits_T_1146 | _io_issue_bits_T_1136; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_issue_bits_T_1148 = _io_issue_bits_T_1147 | _io_issue_bits_T_1137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1150 = oldest_0 ? entryUops_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1151 = oldest_1 ? entryUops_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1152 = oldest_2 ? entryUops_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1153 = oldest_3 ? entryUops_3_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1154 = oldest_4 ? entryUops_4_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1155 = oldest_5 ? entryUops_5_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1156 = oldest_6 ? entryUops_6_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1157 = oldest_7 ? entryUops_7_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1158 = oldest_8 ? entryUops_8_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1159 = oldest_9 ? entryUops_9_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1160 = oldest_10 ? entryUops_10_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1161 = oldest_11 ? entryUops_11_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1162 = _io_issue_bits_T_1150 | _io_issue_bits_T_1151; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1163 = _io_issue_bits_T_1162 | _io_issue_bits_T_1152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1164 = _io_issue_bits_T_1163 | _io_issue_bits_T_1153; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1165 = _io_issue_bits_T_1164 | _io_issue_bits_T_1154; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1166 = _io_issue_bits_T_1165 | _io_issue_bits_T_1155; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1167 = _io_issue_bits_T_1166 | _io_issue_bits_T_1156; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1168 = _io_issue_bits_T_1167 | _io_issue_bits_T_1157; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1169 = _io_issue_bits_T_1168 | _io_issue_bits_T_1158; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1170 = _io_issue_bits_T_1169 | _io_issue_bits_T_1159; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1171 = _io_issue_bits_T_1170 | _io_issue_bits_T_1160; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1173 = oldest_0 ? entryUops_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1174 = oldest_1 ? entryUops_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1175 = oldest_2 ? entryUops_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1176 = oldest_3 ? entryUops_3_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1177 = oldest_4 ? entryUops_4_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1178 = oldest_5 ? entryUops_5_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1179 = oldest_6 ? entryUops_6_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1180 = oldest_7 ? entryUops_7_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1181 = oldest_8 ? entryUops_8_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1182 = oldest_9 ? entryUops_9_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1183 = oldest_10 ? entryUops_10_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1184 = oldest_11 ? entryUops_11_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1185 = _io_issue_bits_T_1173 | _io_issue_bits_T_1174; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1186 = _io_issue_bits_T_1185 | _io_issue_bits_T_1175; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1187 = _io_issue_bits_T_1186 | _io_issue_bits_T_1176; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1188 = _io_issue_bits_T_1187 | _io_issue_bits_T_1177; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1189 = _io_issue_bits_T_1188 | _io_issue_bits_T_1178; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1190 = _io_issue_bits_T_1189 | _io_issue_bits_T_1179; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1191 = _io_issue_bits_T_1190 | _io_issue_bits_T_1180; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1192 = _io_issue_bits_T_1191 | _io_issue_bits_T_1181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1193 = _io_issue_bits_T_1192 | _io_issue_bits_T_1182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_issue_bits_T_1194 = _io_issue_bits_T_1193 | _io_issue_bits_T_1183; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_575 = oldest_0 ? entryUops_0_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_576 = oldest_1 ? entryUops_1_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_577 = oldest_2 ? entryUops_2_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_578 = oldest_3 ? entryUops_3_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_579 = oldest_4 ? entryUops_4_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_580 = oldest_5 ? entryUops_5_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_581 = oldest_6 ? entryUops_6_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_582 = oldest_7 ? entryUops_7_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_583 = oldest_8 ? entryUops_8_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_584 = oldest_9 ? entryUops_9_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_585 = oldest_10 ? entryUops_10_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_586 = oldest_11 ? entryUops_11_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_587 = _io_issue_bits_T_575 | _io_issue_bits_T_576; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_588 = _io_issue_bits_T_587 | _io_issue_bits_T_577; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_589 = _io_issue_bits_T_588 | _io_issue_bits_T_578; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_590 = _io_issue_bits_T_589 | _io_issue_bits_T_579; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_591 = _io_issue_bits_T_590 | _io_issue_bits_T_580; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_592 = _io_issue_bits_T_591 | _io_issue_bits_T_581; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_593 = _io_issue_bits_T_592 | _io_issue_bits_T_582; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_594 = _io_issue_bits_T_593 | _io_issue_bits_T_583; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_595 = _io_issue_bits_T_594 | _io_issue_bits_T_584; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_596 = _io_issue_bits_T_595 | _io_issue_bits_T_585; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_598 = oldest_0 ? entryUops_0_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_599 = oldest_1 ? entryUops_1_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_600 = oldest_2 ? entryUops_2_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_601 = oldest_3 ? entryUops_3_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_602 = oldest_4 ? entryUops_4_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_603 = oldest_5 ? entryUops_5_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_604 = oldest_6 ? entryUops_6_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_605 = oldest_7 ? entryUops_7_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_606 = oldest_8 ? entryUops_8_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_607 = oldest_9 ? entryUops_9_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_608 = oldest_10 ? entryUops_10_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_609 = oldest_11 ? entryUops_11_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_610 = _io_issue_bits_T_598 | _io_issue_bits_T_599; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_611 = _io_issue_bits_T_610 | _io_issue_bits_T_600; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_612 = _io_issue_bits_T_611 | _io_issue_bits_T_601; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_613 = _io_issue_bits_T_612 | _io_issue_bits_T_602; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_614 = _io_issue_bits_T_613 | _io_issue_bits_T_603; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_615 = _io_issue_bits_T_614 | _io_issue_bits_T_604; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_616 = _io_issue_bits_T_615 | _io_issue_bits_T_605; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_617 = _io_issue_bits_T_616 | _io_issue_bits_T_606; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_618 = _io_issue_bits_T_617 | _io_issue_bits_T_607; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_619 = _io_issue_bits_T_618 | _io_issue_bits_T_608; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_621 = oldest_0 ? entryUops_0_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_622 = oldest_1 ? entryUops_1_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_623 = oldest_2 ? entryUops_2_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_624 = oldest_3 ? entryUops_3_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_625 = oldest_4 ? entryUops_4_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_626 = oldest_5 ? entryUops_5_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_627 = oldest_6 ? entryUops_6_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_628 = oldest_7 ? entryUops_7_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_629 = oldest_8 ? entryUops_8_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_630 = oldest_9 ? entryUops_9_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_631 = oldest_10 ? entryUops_10_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_632 = oldest_11 ? entryUops_11_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_633 = _io_issue_bits_T_621 | _io_issue_bits_T_622; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_634 = _io_issue_bits_T_633 | _io_issue_bits_T_623; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_635 = _io_issue_bits_T_634 | _io_issue_bits_T_624; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_636 = _io_issue_bits_T_635 | _io_issue_bits_T_625; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_637 = _io_issue_bits_T_636 | _io_issue_bits_T_626; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_638 = _io_issue_bits_T_637 | _io_issue_bits_T_627; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_639 = _io_issue_bits_T_638 | _io_issue_bits_T_628; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_640 = _io_issue_bits_T_639 | _io_issue_bits_T_629; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_641 = _io_issue_bits_T_640 | _io_issue_bits_T_630; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_642 = _io_issue_bits_T_641 | _io_issue_bits_T_631; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_759 = oldest_0 ? entryUops_0_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_760 = oldest_1 ? entryUops_1_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_761 = oldest_2 ? entryUops_2_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_762 = oldest_3 ? entryUops_3_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_763 = oldest_4 ? entryUops_4_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_764 = oldest_5 ? entryUops_5_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_765 = oldest_6 ? entryUops_6_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_766 = oldest_7 ? entryUops_7_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_767 = oldest_8 ? entryUops_8_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_768 = oldest_9 ? entryUops_9_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_769 = oldest_10 ? entryUops_10_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_770 = oldest_11 ? entryUops_11_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_771 = _io_issue_bits_T_759 | _io_issue_bits_T_760; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_772 = _io_issue_bits_T_771 | _io_issue_bits_T_761; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_773 = _io_issue_bits_T_772 | _io_issue_bits_T_762; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_774 = _io_issue_bits_T_773 | _io_issue_bits_T_763; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_775 = _io_issue_bits_T_774 | _io_issue_bits_T_764; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_776 = _io_issue_bits_T_775 | _io_issue_bits_T_765; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_777 = _io_issue_bits_T_776 | _io_issue_bits_T_766; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_778 = _io_issue_bits_T_777 | _io_issue_bits_T_767; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_779 = _io_issue_bits_T_778 | _io_issue_bits_T_768; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_issue_bits_T_780 = _io_issue_bits_T_779 | _io_issue_bits_T_769; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_782 = oldest_0 ? entryUops_0_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_783 = oldest_1 ? entryUops_1_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_784 = oldest_2 ? entryUops_2_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_785 = oldest_3 ? entryUops_3_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_786 = oldest_4 ? entryUops_4_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_787 = oldest_5 ? entryUops_5_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_788 = oldest_6 ? entryUops_6_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_789 = oldest_7 ? entryUops_7_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_790 = oldest_8 ? entryUops_8_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_791 = oldest_9 ? entryUops_9_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_792 = oldest_10 ? entryUops_10_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_793 = oldest_11 ? entryUops_11_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_794 = _io_issue_bits_T_782 | _io_issue_bits_T_783; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_795 = _io_issue_bits_T_794 | _io_issue_bits_T_784; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_796 = _io_issue_bits_T_795 | _io_issue_bits_T_785; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_797 = _io_issue_bits_T_796 | _io_issue_bits_T_786; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_798 = _io_issue_bits_T_797 | _io_issue_bits_T_787; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_799 = _io_issue_bits_T_798 | _io_issue_bits_T_788; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_800 = _io_issue_bits_T_799 | _io_issue_bits_T_789; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_801 = _io_issue_bits_T_800 | _io_issue_bits_T_790; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_802 = _io_issue_bits_T_801 | _io_issue_bits_T_791; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_803 = _io_issue_bits_T_802 | _io_issue_bits_T_792; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_828 = oldest_0 ? entryUops_0_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_829 = oldest_1 ? entryUops_1_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_830 = oldest_2 ? entryUops_2_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_831 = oldest_3 ? entryUops_3_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_832 = oldest_4 ? entryUops_4_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_833 = oldest_5 ? entryUops_5_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_834 = oldest_6 ? entryUops_6_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_835 = oldest_7 ? entryUops_7_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_836 = oldest_8 ? entryUops_8_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_837 = oldest_9 ? entryUops_9_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_838 = oldest_10 ? entryUops_10_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_839 = oldest_11 ? entryUops_11_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_840 = _io_issue_bits_T_828 | _io_issue_bits_T_829; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_841 = _io_issue_bits_T_840 | _io_issue_bits_T_830; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_842 = _io_issue_bits_T_841 | _io_issue_bits_T_831; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_843 = _io_issue_bits_T_842 | _io_issue_bits_T_832; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_844 = _io_issue_bits_T_843 | _io_issue_bits_T_833; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_845 = _io_issue_bits_T_844 | _io_issue_bits_T_834; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_846 = _io_issue_bits_T_845 | _io_issue_bits_T_835; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_847 = _io_issue_bits_T_846 | _io_issue_bits_T_836; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_848 = _io_issue_bits_T_847 | _io_issue_bits_T_837; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_849 = _io_issue_bits_T_848 | _io_issue_bits_T_838; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_851 = oldest_0 ? entryUops_0_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_852 = oldest_1 ? entryUops_1_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_853 = oldest_2 ? entryUops_2_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_854 = oldest_3 ? entryUops_3_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_855 = oldest_4 ? entryUops_4_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_856 = oldest_5 ? entryUops_5_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_857 = oldest_6 ? entryUops_6_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_858 = oldest_7 ? entryUops_7_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_859 = oldest_8 ? entryUops_8_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_860 = oldest_9 ? entryUops_9_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_861 = oldest_10 ? entryUops_10_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_862 = oldest_11 ? entryUops_11_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_863 = _io_issue_bits_T_851 | _io_issue_bits_T_852; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_864 = _io_issue_bits_T_863 | _io_issue_bits_T_853; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_865 = _io_issue_bits_T_864 | _io_issue_bits_T_854; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_866 = _io_issue_bits_T_865 | _io_issue_bits_T_855; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_867 = _io_issue_bits_T_866 | _io_issue_bits_T_856; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_868 = _io_issue_bits_T_867 | _io_issue_bits_T_857; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_869 = _io_issue_bits_T_868 | _io_issue_bits_T_858; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_870 = _io_issue_bits_T_869 | _io_issue_bits_T_859; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_871 = _io_issue_bits_T_870 | _io_issue_bits_T_860; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_872 = _io_issue_bits_T_871 | _io_issue_bits_T_861; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_874 = oldest_0 ? entryUops_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_875 = oldest_1 ? entryUops_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_876 = oldest_2 ? entryUops_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_877 = oldest_3 ? entryUops_3_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_878 = oldest_4 ? entryUops_4_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_879 = oldest_5 ? entryUops_5_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_880 = oldest_6 ? entryUops_6_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_881 = oldest_7 ? entryUops_7_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_882 = oldest_8 ? entryUops_8_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_883 = oldest_9 ? entryUops_9_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_884 = oldest_10 ? entryUops_10_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_885 = oldest_11 ? entryUops_11_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_886 = _io_issue_bits_T_874 | _io_issue_bits_T_875; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_887 = _io_issue_bits_T_886 | _io_issue_bits_T_876; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_888 = _io_issue_bits_T_887 | _io_issue_bits_T_877; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_889 = _io_issue_bits_T_888 | _io_issue_bits_T_878; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_890 = _io_issue_bits_T_889 | _io_issue_bits_T_879; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_891 = _io_issue_bits_T_890 | _io_issue_bits_T_880; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_892 = _io_issue_bits_T_891 | _io_issue_bits_T_881; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_893 = _io_issue_bits_T_892 | _io_issue_bits_T_882; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_894 = _io_issue_bits_T_893 | _io_issue_bits_T_883; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_895 = _io_issue_bits_T_894 | _io_issue_bits_T_884; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1035 = oldest_0 ? entryUops_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1036 = oldest_1 ? entryUops_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1037 = oldest_2 ? entryUops_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1038 = oldest_3 ? entryUops_3_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1039 = oldest_4 ? entryUops_4_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1040 = oldest_5 ? entryUops_5_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1041 = oldest_6 ? entryUops_6_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1042 = oldest_7 ? entryUops_7_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1043 = oldest_8 ? entryUops_8_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1044 = oldest_9 ? entryUops_9_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1045 = oldest_10 ? entryUops_10_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1046 = oldest_11 ? entryUops_11_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1047 = _io_issue_bits_T_1035 | _io_issue_bits_T_1036; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1048 = _io_issue_bits_T_1047 | _io_issue_bits_T_1037; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1049 = _io_issue_bits_T_1048 | _io_issue_bits_T_1038; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1050 = _io_issue_bits_T_1049 | _io_issue_bits_T_1039; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1051 = _io_issue_bits_T_1050 | _io_issue_bits_T_1040; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1052 = _io_issue_bits_T_1051 | _io_issue_bits_T_1041; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1053 = _io_issue_bits_T_1052 | _io_issue_bits_T_1042; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1054 = _io_issue_bits_T_1053 | _io_issue_bits_T_1043; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1055 = _io_issue_bits_T_1054 | _io_issue_bits_T_1044; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_issue_bits_T_1056 = _io_issue_bits_T_1055 | _io_issue_bits_T_1045; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1058 = oldest_0 ? entryUops_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1059 = oldest_1 ? entryUops_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1060 = oldest_2 ? entryUops_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1061 = oldest_3 ? entryUops_3_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1062 = oldest_4 ? entryUops_4_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1063 = oldest_5 ? entryUops_5_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1064 = oldest_6 ? entryUops_6_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1065 = oldest_7 ? entryUops_7_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1066 = oldest_8 ? entryUops_8_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1067 = oldest_9 ? entryUops_9_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1068 = oldest_10 ? entryUops_10_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1069 = oldest_11 ? entryUops_11_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1070 = _io_issue_bits_T_1058 | _io_issue_bits_T_1059; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1071 = _io_issue_bits_T_1070 | _io_issue_bits_T_1060; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1072 = _io_issue_bits_T_1071 | _io_issue_bits_T_1061; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1073 = _io_issue_bits_T_1072 | _io_issue_bits_T_1062; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1074 = _io_issue_bits_T_1073 | _io_issue_bits_T_1063; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1075 = _io_issue_bits_T_1074 | _io_issue_bits_T_1064; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1076 = _io_issue_bits_T_1075 | _io_issue_bits_T_1065; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1077 = _io_issue_bits_T_1076 | _io_issue_bits_T_1066; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1078 = _io_issue_bits_T_1077 | _io_issue_bits_T_1067; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1079 = _io_issue_bits_T_1078 | _io_issue_bits_T_1068; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1081 = oldest_0 ? entryUops_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1082 = oldest_1 ? entryUops_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1083 = oldest_2 ? entryUops_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1084 = oldest_3 ? entryUops_3_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1085 = oldest_4 ? entryUops_4_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1086 = oldest_5 ? entryUops_5_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1087 = oldest_6 ? entryUops_6_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1088 = oldest_7 ? entryUops_7_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1089 = oldest_8 ? entryUops_8_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1090 = oldest_9 ? entryUops_9_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1091 = oldest_10 ? entryUops_10_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1092 = oldest_11 ? entryUops_11_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1093 = _io_issue_bits_T_1081 | _io_issue_bits_T_1082; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1094 = _io_issue_bits_T_1093 | _io_issue_bits_T_1083; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1095 = _io_issue_bits_T_1094 | _io_issue_bits_T_1084; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1096 = _io_issue_bits_T_1095 | _io_issue_bits_T_1085; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1097 = _io_issue_bits_T_1096 | _io_issue_bits_T_1086; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1098 = _io_issue_bits_T_1097 | _io_issue_bits_T_1087; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1099 = _io_issue_bits_T_1098 | _io_issue_bits_T_1088; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1100 = _io_issue_bits_T_1099 | _io_issue_bits_T_1089; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1101 = _io_issue_bits_T_1100 | _io_issue_bits_T_1090; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_issue_bits_T_1102 = _io_issue_bits_T_1101 | _io_issue_bits_T_1091; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1265 = oldest_0 ? entryUops_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1266 = oldest_1 ? entryUops_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1267 = oldest_2 ? entryUops_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1268 = oldest_3 ? entryUops_3_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1269 = oldest_4 ? entryUops_4_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1270 = oldest_5 ? entryUops_5_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1271 = oldest_6 ? entryUops_6_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1272 = oldest_7 ? entryUops_7_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1273 = oldest_8 ? entryUops_8_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1274 = oldest_9 ? entryUops_9_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1275 = oldest_10 ? entryUops_10_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1276 = oldest_11 ? entryUops_11_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1277 = _io_issue_bits_T_1265 | _io_issue_bits_T_1266; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1278 = _io_issue_bits_T_1277 | _io_issue_bits_T_1267; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1279 = _io_issue_bits_T_1278 | _io_issue_bits_T_1268; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1280 = _io_issue_bits_T_1279 | _io_issue_bits_T_1269; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1281 = _io_issue_bits_T_1280 | _io_issue_bits_T_1270; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1282 = _io_issue_bits_T_1281 | _io_issue_bits_T_1271; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1283 = _io_issue_bits_T_1282 | _io_issue_bits_T_1272; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1284 = _io_issue_bits_T_1283 | _io_issue_bits_T_1273; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1285 = _io_issue_bits_T_1284 | _io_issue_bits_T_1274; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1286 = _io_issue_bits_T_1285 | _io_issue_bits_T_1275; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1288 = oldest_0 ? entryUops_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1289 = oldest_1 ? entryUops_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1290 = oldest_2 ? entryUops_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1291 = oldest_3 ? entryUops_3_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1292 = oldest_4 ? entryUops_4_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1293 = oldest_5 ? entryUops_5_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1294 = oldest_6 ? entryUops_6_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1295 = oldest_7 ? entryUops_7_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1296 = oldest_8 ? entryUops_8_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1297 = oldest_9 ? entryUops_9_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1298 = oldest_10 ? entryUops_10_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1299 = oldest_11 ? entryUops_11_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1300 = _io_issue_bits_T_1288 | _io_issue_bits_T_1289; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1301 = _io_issue_bits_T_1300 | _io_issue_bits_T_1290; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1302 = _io_issue_bits_T_1301 | _io_issue_bits_T_1291; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1303 = _io_issue_bits_T_1302 | _io_issue_bits_T_1292; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1304 = _io_issue_bits_T_1303 | _io_issue_bits_T_1293; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1305 = _io_issue_bits_T_1304 | _io_issue_bits_T_1294; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1306 = _io_issue_bits_T_1305 | _io_issue_bits_T_1295; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1307 = _io_issue_bits_T_1306 | _io_issue_bits_T_1296; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1308 = _io_issue_bits_T_1307 | _io_issue_bits_T_1297; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1309 = _io_issue_bits_T_1308 | _io_issue_bits_T_1298; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1311 = oldest_0 ? entryUops_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1312 = oldest_1 ? entryUops_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1313 = oldest_2 ? entryUops_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1314 = oldest_3 ? entryUops_3_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1315 = oldest_4 ? entryUops_4_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1316 = oldest_5 ? entryUops_5_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1317 = oldest_6 ? entryUops_6_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1318 = oldest_7 ? entryUops_7_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1319 = oldest_8 ? entryUops_8_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1320 = oldest_9 ? entryUops_9_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1321 = oldest_10 ? entryUops_10_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1322 = oldest_11 ? entryUops_11_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1323 = _io_issue_bits_T_1311 | _io_issue_bits_T_1312; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1324 = _io_issue_bits_T_1323 | _io_issue_bits_T_1313; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1325 = _io_issue_bits_T_1324 | _io_issue_bits_T_1314; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1326 = _io_issue_bits_T_1325 | _io_issue_bits_T_1315; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1327 = _io_issue_bits_T_1326 | _io_issue_bits_T_1316; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1328 = _io_issue_bits_T_1327 | _io_issue_bits_T_1317; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1329 = _io_issue_bits_T_1328 | _io_issue_bits_T_1318; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1330 = _io_issue_bits_T_1329 | _io_issue_bits_T_1319; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1331 = _io_issue_bits_T_1330 | _io_issue_bits_T_1320; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1332 = _io_issue_bits_T_1331 | _io_issue_bits_T_1321; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1334 = oldest_0 ? entryUops_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1335 = oldest_1 ? entryUops_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1336 = oldest_2 ? entryUops_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1337 = oldest_3 ? entryUops_3_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1338 = oldest_4 ? entryUops_4_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1339 = oldest_5 ? entryUops_5_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1340 = oldest_6 ? entryUops_6_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1341 = oldest_7 ? entryUops_7_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1342 = oldest_8 ? entryUops_8_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1343 = oldest_9 ? entryUops_9_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1344 = oldest_10 ? entryUops_10_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1345 = oldest_11 ? entryUops_11_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1346 = _io_issue_bits_T_1334 | _io_issue_bits_T_1335; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1347 = _io_issue_bits_T_1346 | _io_issue_bits_T_1336; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1348 = _io_issue_bits_T_1347 | _io_issue_bits_T_1337; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1349 = _io_issue_bits_T_1348 | _io_issue_bits_T_1338; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1350 = _io_issue_bits_T_1349 | _io_issue_bits_T_1339; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1351 = _io_issue_bits_T_1350 | _io_issue_bits_T_1340; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1352 = _io_issue_bits_T_1351 | _io_issue_bits_T_1341; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1353 = _io_issue_bits_T_1352 | _io_issue_bits_T_1342; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1354 = _io_issue_bits_T_1353 | _io_issue_bits_T_1343; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1355 = _io_issue_bits_T_1354 | _io_issue_bits_T_1344; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1357 = oldest_0 ? entryUops_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1358 = oldest_1 ? entryUops_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1359 = oldest_2 ? entryUops_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1360 = oldest_3 ? entryUops_3_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1361 = oldest_4 ? entryUops_4_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1362 = oldest_5 ? entryUops_5_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1363 = oldest_6 ? entryUops_6_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1364 = oldest_7 ? entryUops_7_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1365 = oldest_8 ? entryUops_8_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1366 = oldest_9 ? entryUops_9_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1367 = oldest_10 ? entryUops_10_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1368 = oldest_11 ? entryUops_11_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1369 = _io_issue_bits_T_1357 | _io_issue_bits_T_1358; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1370 = _io_issue_bits_T_1369 | _io_issue_bits_T_1359; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1371 = _io_issue_bits_T_1370 | _io_issue_bits_T_1360; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1372 = _io_issue_bits_T_1371 | _io_issue_bits_T_1361; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1373 = _io_issue_bits_T_1372 | _io_issue_bits_T_1362; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1374 = _io_issue_bits_T_1373 | _io_issue_bits_T_1363; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1375 = _io_issue_bits_T_1374 | _io_issue_bits_T_1364; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1376 = _io_issue_bits_T_1375 | _io_issue_bits_T_1365; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1377 = _io_issue_bits_T_1376 | _io_issue_bits_T_1366; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1378 = _io_issue_bits_T_1377 | _io_issue_bits_T_1367; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1380 = oldest_0 ? entryUops_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1381 = oldest_1 ? entryUops_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1382 = oldest_2 ? entryUops_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1383 = oldest_3 ? entryUops_3_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1384 = oldest_4 ? entryUops_4_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1385 = oldest_5 ? entryUops_5_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1386 = oldest_6 ? entryUops_6_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1387 = oldest_7 ? entryUops_7_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1388 = oldest_8 ? entryUops_8_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1389 = oldest_9 ? entryUops_9_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1390 = oldest_10 ? entryUops_10_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1391 = oldest_11 ? entryUops_11_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1392 = _io_issue_bits_T_1380 | _io_issue_bits_T_1381; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1393 = _io_issue_bits_T_1392 | _io_issue_bits_T_1382; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1394 = _io_issue_bits_T_1393 | _io_issue_bits_T_1383; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1395 = _io_issue_bits_T_1394 | _io_issue_bits_T_1384; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1396 = _io_issue_bits_T_1395 | _io_issue_bits_T_1385; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1397 = _io_issue_bits_T_1396 | _io_issue_bits_T_1386; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1398 = _io_issue_bits_T_1397 | _io_issue_bits_T_1387; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1399 = _io_issue_bits_T_1398 | _io_issue_bits_T_1388; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1400 = _io_issue_bits_T_1399 | _io_issue_bits_T_1389; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_issue_bits_T_1401 = _io_issue_bits_T_1400 | _io_issue_bits_T_1390; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1403 = oldest_0 ? entryUops_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1404 = oldest_1 ? entryUops_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1405 = oldest_2 ? entryUops_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1406 = oldest_3 ? entryUops_3_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1407 = oldest_4 ? entryUops_4_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1408 = oldest_5 ? entryUops_5_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1409 = oldest_6 ? entryUops_6_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1410 = oldest_7 ? entryUops_7_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1411 = oldest_8 ? entryUops_8_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1412 = oldest_9 ? entryUops_9_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1413 = oldest_10 ? entryUops_10_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1414 = oldest_11 ? entryUops_11_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1415 = _io_issue_bits_T_1403 | _io_issue_bits_T_1404; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1416 = _io_issue_bits_T_1415 | _io_issue_bits_T_1405; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1417 = _io_issue_bits_T_1416 | _io_issue_bits_T_1406; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1418 = _io_issue_bits_T_1417 | _io_issue_bits_T_1407; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1419 = _io_issue_bits_T_1418 | _io_issue_bits_T_1408; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1420 = _io_issue_bits_T_1419 | _io_issue_bits_T_1409; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1421 = _io_issue_bits_T_1420 | _io_issue_bits_T_1410; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1422 = _io_issue_bits_T_1421 | _io_issue_bits_T_1411; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1423 = _io_issue_bits_T_1422 | _io_issue_bits_T_1412; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1424 = _io_issue_bits_T_1423 | _io_issue_bits_T_1413; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1426 = oldest_0 ? entryUops_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1427 = oldest_1 ? entryUops_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1428 = oldest_2 ? entryUops_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1429 = oldest_3 ? entryUops_3_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1430 = oldest_4 ? entryUops_4_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1431 = oldest_5 ? entryUops_5_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1432 = oldest_6 ? entryUops_6_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1433 = oldest_7 ? entryUops_7_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1434 = oldest_8 ? entryUops_8_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1435 = oldest_9 ? entryUops_9_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1436 = oldest_10 ? entryUops_10_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1437 = oldest_11 ? entryUops_11_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1438 = _io_issue_bits_T_1426 | _io_issue_bits_T_1427; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1439 = _io_issue_bits_T_1438 | _io_issue_bits_T_1428; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1440 = _io_issue_bits_T_1439 | _io_issue_bits_T_1429; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1441 = _io_issue_bits_T_1440 | _io_issue_bits_T_1430; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1442 = _io_issue_bits_T_1441 | _io_issue_bits_T_1431; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1443 = _io_issue_bits_T_1442 | _io_issue_bits_T_1432; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1444 = _io_issue_bits_T_1443 | _io_issue_bits_T_1433; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1445 = _io_issue_bits_T_1444 | _io_issue_bits_T_1434; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1446 = _io_issue_bits_T_1445 | _io_issue_bits_T_1435; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1447 = _io_issue_bits_T_1446 | _io_issue_bits_T_1436; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1449 = oldest_0 ? entryUops_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1450 = oldest_1 ? entryUops_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1451 = oldest_2 ? entryUops_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1452 = oldest_3 ? entryUops_3_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1453 = oldest_4 ? entryUops_4_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1454 = oldest_5 ? entryUops_5_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1455 = oldest_6 ? entryUops_6_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1456 = oldest_7 ? entryUops_7_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1457 = oldest_8 ? entryUops_8_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1458 = oldest_9 ? entryUops_9_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1459 = oldest_10 ? entryUops_10_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1460 = oldest_11 ? entryUops_11_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1461 = _io_issue_bits_T_1449 | _io_issue_bits_T_1450; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1462 = _io_issue_bits_T_1461 | _io_issue_bits_T_1451; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1463 = _io_issue_bits_T_1462 | _io_issue_bits_T_1452; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1464 = _io_issue_bits_T_1463 | _io_issue_bits_T_1453; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1465 = _io_issue_bits_T_1464 | _io_issue_bits_T_1454; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1466 = _io_issue_bits_T_1465 | _io_issue_bits_T_1455; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1467 = _io_issue_bits_T_1466 | _io_issue_bits_T_1456; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1468 = _io_issue_bits_T_1467 | _io_issue_bits_T_1457; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1469 = _io_issue_bits_T_1468 | _io_issue_bits_T_1458; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_issue_bits_T_1470 = _io_issue_bits_T_1469 | _io_issue_bits_T_1459; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1472 = oldest_0 ? entryUops_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1473 = oldest_1 ? entryUops_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1474 = oldest_2 ? entryUops_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1475 = oldest_3 ? entryUops_3_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1476 = oldest_4 ? entryUops_4_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1477 = oldest_5 ? entryUops_5_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1478 = oldest_6 ? entryUops_6_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1479 = oldest_7 ? entryUops_7_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1480 = oldest_8 ? entryUops_8_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1481 = oldest_9 ? entryUops_9_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1482 = oldest_10 ? entryUops_10_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1483 = oldest_11 ? entryUops_11_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1484 = _io_issue_bits_T_1472 | _io_issue_bits_T_1473; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1485 = _io_issue_bits_T_1484 | _io_issue_bits_T_1474; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1486 = _io_issue_bits_T_1485 | _io_issue_bits_T_1475; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1487 = _io_issue_bits_T_1486 | _io_issue_bits_T_1476; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1488 = _io_issue_bits_T_1487 | _io_issue_bits_T_1477; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1489 = _io_issue_bits_T_1488 | _io_issue_bits_T_1478; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1490 = _io_issue_bits_T_1489 | _io_issue_bits_T_1479; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1491 = _io_issue_bits_T_1490 | _io_issue_bits_T_1480; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1492 = _io_issue_bits_T_1491 | _io_issue_bits_T_1481; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_issue_bits_T_1493 = _io_issue_bits_T_1492 | _io_issue_bits_T_1482; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1495 = oldest_0 ? entryUops_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1496 = oldest_1 ? entryUops_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1497 = oldest_2 ? entryUops_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1498 = oldest_3 ? entryUops_3_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1499 = oldest_4 ? entryUops_4_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1500 = oldest_5 ? entryUops_5_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1501 = oldest_6 ? entryUops_6_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1502 = oldest_7 ? entryUops_7_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1503 = oldest_8 ? entryUops_8_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1504 = oldest_9 ? entryUops_9_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1505 = oldest_10 ? entryUops_10_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1506 = oldest_11 ? entryUops_11_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1507 = _io_issue_bits_T_1495 | _io_issue_bits_T_1496; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1508 = _io_issue_bits_T_1507 | _io_issue_bits_T_1497; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1509 = _io_issue_bits_T_1508 | _io_issue_bits_T_1498; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1510 = _io_issue_bits_T_1509 | _io_issue_bits_T_1499; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1511 = _io_issue_bits_T_1510 | _io_issue_bits_T_1500; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1512 = _io_issue_bits_T_1511 | _io_issue_bits_T_1501; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1513 = _io_issue_bits_T_1512 | _io_issue_bits_T_1502; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1514 = _io_issue_bits_T_1513 | _io_issue_bits_T_1503; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1515 = _io_issue_bits_T_1514 | _io_issue_bits_T_1504; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1516 = _io_issue_bits_T_1515 | _io_issue_bits_T_1505; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1518 = oldest_0 ? entryUops_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1519 = oldest_1 ? entryUops_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1520 = oldest_2 ? entryUops_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1521 = oldest_3 ? entryUops_3_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1522 = oldest_4 ? entryUops_4_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1523 = oldest_5 ? entryUops_5_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1524 = oldest_6 ? entryUops_6_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1525 = oldest_7 ? entryUops_7_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1526 = oldest_8 ? entryUops_8_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1527 = oldest_9 ? entryUops_9_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1528 = oldest_10 ? entryUops_10_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1529 = oldest_11 ? entryUops_11_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1530 = _io_issue_bits_T_1518 | _io_issue_bits_T_1519; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1531 = _io_issue_bits_T_1530 | _io_issue_bits_T_1520; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1532 = _io_issue_bits_T_1531 | _io_issue_bits_T_1521; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1533 = _io_issue_bits_T_1532 | _io_issue_bits_T_1522; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1534 = _io_issue_bits_T_1533 | _io_issue_bits_T_1523; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1535 = _io_issue_bits_T_1534 | _io_issue_bits_T_1524; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1536 = _io_issue_bits_T_1535 | _io_issue_bits_T_1525; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1537 = _io_issue_bits_T_1536 | _io_issue_bits_T_1526; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1538 = _io_issue_bits_T_1537 | _io_issue_bits_T_1527; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_issue_bits_T_1539 = _io_issue_bits_T_1538 | _io_issue_bits_T_1528; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire  issueFire = io_issue_valid & io_issue_ready; // @[src/main/scala/backend/scheduler/IssueQueue.scala 135:34]
   wire  freeMask_0 = ~entryValid_0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 140:47]
   wire  freeMask_1 = ~entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 140:47]
@@ -2439,45 +3005,45 @@ module IssueQueue_1(
   wire  _T_964 = enqFire & enqIdx == 4'h9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 192:26]
   wire  _T_973 = enqFire & enqIdx == 4'ha; // @[src/main/scala/backend/scheduler/IssueQueue.scala 192:26]
   wire  _T_982 = enqFire & enqIdx == 4'hb; // @[src/main/scala/backend/scheduler/IssueQueue.scala 192:26]
-  wire  _GEN_104 = _T_892 | entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_208 = _T_901 | entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_312 = _T_910 | entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_416 = _T_919 | entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_520 = _T_928 | entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_624 = _T_937 | entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_728 = _T_946 | entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_832 = _T_955 | entryValid_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_936 = _T_964 | entryValid_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_1040 = _T_973 | entryValid_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
-  wire  _GEN_1144 = _T_982 | entryValid_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_119 = _T_892 | entryValid_1; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_238 = _T_901 | entryValid_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_357 = _T_910 | entryValid_3; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_476 = _T_919 | entryValid_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_595 = _T_928 | entryValid_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_714 = _T_937 | entryValid_6; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_833 = _T_946 | entryValid_7; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_952 = _T_955 | entryValid_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_1071 = _T_964 | entryValid_9; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_1190 = _T_973 | entryValid_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
+  wire  _GEN_1309 = _T_982 | entryValid_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 164:43 165:21 43:29]
   wire [1:0] _io_freeEntries_T = freeMask_1 + freeMask_2; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [1:0] _GEN_1248 = {{1'd0}, freeMask_0}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [2:0] _io_freeEntries_T_2 = _GEN_1248 + _io_freeEntries_T; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [1:0] _GEN_1428 = {{1'd0}, freeMask_0}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [2:0] _io_freeEntries_T_2 = _GEN_1428 + _io_freeEntries_T; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
   wire [1:0] _io_freeEntries_T_4 = freeMask_4 + freeMask_5; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [1:0] _GEN_1249 = {{1'd0}, freeMask_3}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [2:0] _io_freeEntries_T_6 = _GEN_1249 + _io_freeEntries_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [1:0] _GEN_1429 = {{1'd0}, freeMask_3}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [2:0] _io_freeEntries_T_6 = _GEN_1429 + _io_freeEntries_T_4; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
   wire [2:0] _io_freeEntries_T_8 = _io_freeEntries_T_2[1:0] + _io_freeEntries_T_6[1:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
   wire [1:0] _io_freeEntries_T_10 = freeMask_7 + freeMask_8; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [1:0] _GEN_1250 = {{1'd0}, freeMask_6}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [2:0] _io_freeEntries_T_12 = _GEN_1250 + _io_freeEntries_T_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [1:0] _GEN_1430 = {{1'd0}, freeMask_6}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [2:0] _io_freeEntries_T_12 = _GEN_1430 + _io_freeEntries_T_10; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
   wire [1:0] _io_freeEntries_T_14 = freeMask_10 + freeMask_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [1:0] _GEN_1251 = {{1'd0}, freeMask_9}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
-  wire [2:0] _io_freeEntries_T_16 = _GEN_1251 + _io_freeEntries_T_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [1:0] _GEN_1431 = {{1'd0}, freeMask_9}; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
+  wire [2:0] _io_freeEntries_T_16 = _GEN_1431 + _io_freeEntries_T_14; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
   wire [2:0] _io_freeEntries_T_18 = _io_freeEntries_T_12[1:0] + _io_freeEntries_T_16[1:0]; // @[src/main/scala/backend/scheduler/IssueQueue.scala 206:29]
   assign io_issue_valid = oldest_0 | oldest_1 | oldest_2 | oldest_3 | oldest_4 | oldest_5 | oldest_6 | oldest_7 |
     oldest_8 | oldest_9 | oldest_10 | oldest_11; // @[src/main/scala/backend/scheduler/IssueQueue.scala 132:36]
-  assign io_issue_bits_pc = _io_issue_bits_T_1194 | _io_issue_bits_T_1184; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_inst = _io_issue_bits_T_1171 | _io_issue_bits_T_1161; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_fuType = _io_issue_bits_T_1148 | _io_issue_bits_T_1138; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_aluOp = _io_issue_bits_T_1125 | _io_issue_bits_T_1115; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_bruOp = _io_issue_bits_T_1102 | _io_issue_bits_T_1092; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_lsuOp = _io_issue_bits_T_1079 | _io_issue_bits_T_1069; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_csrOp = _io_issue_bits_T_1056 | _io_issue_bits_T_1046; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_mulOp = _io_issue_bits_T_1033 | _io_issue_bits_T_1023; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_divOp = _io_issue_bits_T_1010 | _io_issue_bits_T_1000; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_src1Type = _io_issue_bits_T_987 | _io_issue_bits_T_977; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_src2Type = _io_issue_bits_T_964 | _io_issue_bits_T_954; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_ctrl_immType = _io_issue_bits_T_941 | _io_issue_bits_T_931; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_pc = _io_issue_bits_T_1539 | _io_issue_bits_T_1529; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_inst = _io_issue_bits_T_1516 | _io_issue_bits_T_1506; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_fuType = _io_issue_bits_T_1493 | _io_issue_bits_T_1483; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_aluOp = _io_issue_bits_T_1470 | _io_issue_bits_T_1460; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_bruOp = _io_issue_bits_T_1447 | _io_issue_bits_T_1437; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_lsuOp = _io_issue_bits_T_1424 | _io_issue_bits_T_1414; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_csrOp = _io_issue_bits_T_1401 | _io_issue_bits_T_1391; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_mulOp = _io_issue_bits_T_1378 | _io_issue_bits_T_1368; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_divOp = _io_issue_bits_T_1355 | _io_issue_bits_T_1345; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_src1Type = _io_issue_bits_T_1332 | _io_issue_bits_T_1322; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_src2Type = _io_issue_bits_T_1309 | _io_issue_bits_T_1299; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_ctrl_immType = _io_issue_bits_T_1286 | _io_issue_bits_T_1276; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_issue_bits_ctrl_rfWen = oldest_0 & entryUops_0_ctrl_rfWen | oldest_1 & entryUops_1_ctrl_rfWen | oldest_2 &
     entryUops_2_ctrl_rfWen | oldest_3 & entryUops_3_ctrl_rfWen | oldest_4 & entryUops_4_ctrl_rfWen | oldest_5 &
     entryUops_5_ctrl_rfWen | oldest_6 & entryUops_6_ctrl_rfWen | oldest_7 & entryUops_7_ctrl_rfWen | oldest_8 &
@@ -2513,9 +3079,9 @@ module IssueQueue_1(
     entryUops_5_ctrl_isPriv | oldest_6 & entryUops_6_ctrl_isPriv | oldest_7 & entryUops_7_ctrl_isPriv | oldest_8 &
     entryUops_8_ctrl_isPriv | oldest_9 & entryUops_9_ctrl_isPriv | oldest_10 & entryUops_10_ctrl_isPriv | oldest_11 &
     entryUops_11_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_excpVec = _io_issue_bits_T_757 | _io_issue_bits_T_747; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_imm = _io_issue_bits_T_734 | _io_issue_bits_T_724; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_csrAddress = _io_issue_bits_T_711 | _io_issue_bits_T_701; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_excpVec = _io_issue_bits_T_1102 | _io_issue_bits_T_1092; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_imm = _io_issue_bits_T_1079 | _io_issue_bits_T_1069; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_csrAddress = _io_issue_bits_T_1056 | _io_issue_bits_T_1046; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_issue_bits_pdInfo_valid = oldest_0 & entryUops_0_pdInfo_valid | oldest_1 & entryUops_1_pdInfo_valid |
     oldest_2 & entryUops_2_pdInfo_valid | oldest_3 & entryUops_3_pdInfo_valid | oldest_4 & entryUops_4_pdInfo_valid |
     oldest_5 & entryUops_5_pdInfo_valid | oldest_6 & entryUops_6_pdInfo_valid | oldest_7 & entryUops_7_pdInfo_valid |
@@ -2546,7 +3112,62 @@ module IssueQueue_1(
     oldest_5 & entryUops_5_pdInfo_isRet | oldest_6 & entryUops_6_pdInfo_isRet | oldest_7 & entryUops_7_pdInfo_isRet |
     oldest_8 & entryUops_8_pdInfo_isRet | oldest_9 & entryUops_9_pdInfo_isRet | oldest_10 & entryUops_10_pdInfo_isRet |
     oldest_11 & entryUops_11_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_issue_bits_pdInfo_jumpTarget = _io_issue_bits_T_550 | _io_issue_bits_T_540; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_pdInfo_jumpTarget = _io_issue_bits_T_895 | _io_issue_bits_T_885; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_pc = _io_issue_bits_T_872 | _io_issue_bits_T_862; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_fallThrough = _io_issue_bits_T_849 | _io_issue_bits_T_839; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_taken = oldest_0 & entryUops_0_bpuInfo_taken | oldest_1 & entryUops_1_bpuInfo_taken |
+    oldest_2 & entryUops_2_bpuInfo_taken | oldest_3 & entryUops_3_bpuInfo_taken | oldest_4 & entryUops_4_bpuInfo_taken
+     | oldest_5 & entryUops_5_bpuInfo_taken | oldest_6 & entryUops_6_bpuInfo_taken | oldest_7 &
+    entryUops_7_bpuInfo_taken | oldest_8 & entryUops_8_bpuInfo_taken | oldest_9 & entryUops_9_bpuInfo_taken | oldest_10
+     & entryUops_10_bpuInfo_taken | oldest_11 & entryUops_11_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_target = _io_issue_bits_T_803 | _io_issue_bits_T_793; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_takenOffset = _io_issue_bits_T_780 | _io_issue_bits_T_770; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_btbHit = oldest_0 & entryUops_0_bpuInfo_meta_btbHit | oldest_1 &
+    entryUops_1_bpuInfo_meta_btbHit | oldest_2 & entryUops_2_bpuInfo_meta_btbHit | oldest_3 &
+    entryUops_3_bpuInfo_meta_btbHit | oldest_4 & entryUops_4_bpuInfo_meta_btbHit | oldest_5 &
+    entryUops_5_bpuInfo_meta_btbHit | oldest_6 & entryUops_6_bpuInfo_meta_btbHit | oldest_7 &
+    entryUops_7_bpuInfo_meta_btbHit | oldest_8 & entryUops_8_bpuInfo_meta_btbHit | oldest_9 &
+    entryUops_9_bpuInfo_meta_btbHit | oldest_10 & entryUops_10_bpuInfo_meta_btbHit | oldest_11 &
+    entryUops_11_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_btbIsJalr = oldest_0 & entryUops_0_bpuInfo_meta_btbIsJalr | oldest_1 &
+    entryUops_1_bpuInfo_meta_btbIsJalr | oldest_2 & entryUops_2_bpuInfo_meta_btbIsJalr | oldest_3 &
+    entryUops_3_bpuInfo_meta_btbIsJalr | oldest_4 & entryUops_4_bpuInfo_meta_btbIsJalr | oldest_5 &
+    entryUops_5_bpuInfo_meta_btbIsJalr | oldest_6 & entryUops_6_bpuInfo_meta_btbIsJalr | oldest_7 &
+    entryUops_7_bpuInfo_meta_btbIsJalr | oldest_8 & entryUops_8_bpuInfo_meta_btbIsJalr | oldest_9 &
+    entryUops_9_bpuInfo_meta_btbIsJalr | oldest_10 & entryUops_10_bpuInfo_meta_btbIsJalr | oldest_11 &
+    entryUops_11_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_btbIsJal = oldest_0 & entryUops_0_bpuInfo_meta_btbIsJal | oldest_1 &
+    entryUops_1_bpuInfo_meta_btbIsJal | oldest_2 & entryUops_2_bpuInfo_meta_btbIsJal | oldest_3 &
+    entryUops_3_bpuInfo_meta_btbIsJal | oldest_4 & entryUops_4_bpuInfo_meta_btbIsJal | oldest_5 &
+    entryUops_5_bpuInfo_meta_btbIsJal | oldest_6 & entryUops_6_bpuInfo_meta_btbIsJal | oldest_7 &
+    entryUops_7_bpuInfo_meta_btbIsJal | oldest_8 & entryUops_8_bpuInfo_meta_btbIsJal | oldest_9 &
+    entryUops_9_bpuInfo_meta_btbIsJal | oldest_10 & entryUops_10_bpuInfo_meta_btbIsJal | oldest_11 &
+    entryUops_11_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_btbIsCall = oldest_0 & entryUops_0_bpuInfo_meta_btbIsCall | oldest_1 &
+    entryUops_1_bpuInfo_meta_btbIsCall | oldest_2 & entryUops_2_bpuInfo_meta_btbIsCall | oldest_3 &
+    entryUops_3_bpuInfo_meta_btbIsCall | oldest_4 & entryUops_4_bpuInfo_meta_btbIsCall | oldest_5 &
+    entryUops_5_bpuInfo_meta_btbIsCall | oldest_6 & entryUops_6_bpuInfo_meta_btbIsCall | oldest_7 &
+    entryUops_7_bpuInfo_meta_btbIsCall | oldest_8 & entryUops_8_bpuInfo_meta_btbIsCall | oldest_9 &
+    entryUops_9_bpuInfo_meta_btbIsCall | oldest_10 & entryUops_10_bpuInfo_meta_btbIsCall | oldest_11 &
+    entryUops_11_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_btbIsRet = oldest_0 & entryUops_0_bpuInfo_meta_btbIsRet | oldest_1 &
+    entryUops_1_bpuInfo_meta_btbIsRet | oldest_2 & entryUops_2_bpuInfo_meta_btbIsRet | oldest_3 &
+    entryUops_3_bpuInfo_meta_btbIsRet | oldest_4 & entryUops_4_bpuInfo_meta_btbIsRet | oldest_5 &
+    entryUops_5_bpuInfo_meta_btbIsRet | oldest_6 & entryUops_6_bpuInfo_meta_btbIsRet | oldest_7 &
+    entryUops_7_bpuInfo_meta_btbIsRet | oldest_8 & entryUops_8_bpuInfo_meta_btbIsRet | oldest_9 &
+    entryUops_9_bpuInfo_meta_btbIsRet | oldest_10 & entryUops_10_bpuInfo_meta_btbIsRet | oldest_11 &
+    entryUops_11_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_btbOffset = _io_issue_bits_T_642 | _io_issue_bits_T_632; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_phtCounter = _io_issue_bits_T_619 | _io_issue_bits_T_609; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_rasTop = _io_issue_bits_T_596 | _io_issue_bits_T_586; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_predTaken = oldest_0 & entryUops_0_bpuInfo_meta_predTaken | oldest_1 &
+    entryUops_1_bpuInfo_meta_predTaken | oldest_2 & entryUops_2_bpuInfo_meta_predTaken | oldest_3 &
+    entryUops_3_bpuInfo_meta_predTaken | oldest_4 & entryUops_4_bpuInfo_meta_predTaken | oldest_5 &
+    entryUops_5_bpuInfo_meta_predTaken | oldest_6 & entryUops_6_bpuInfo_meta_predTaken | oldest_7 &
+    entryUops_7_bpuInfo_meta_predTaken | oldest_8 & entryUops_8_bpuInfo_meta_predTaken | oldest_9 &
+    entryUops_9_bpuInfo_meta_predTaken | oldest_10 & entryUops_10_bpuInfo_meta_predTaken | oldest_11 &
+    entryUops_11_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_issue_bits_bpuInfo_meta_predTarget = _io_issue_bits_T_550 | _io_issue_bits_T_540; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_issue_bits_ldst = _io_issue_bits_T_527 | _io_issue_bits_T_517; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_issue_bits_lrs1 = _io_issue_bits_T_504 | _io_issue_bits_T_494; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_issue_bits_lrs2 = _io_issue_bits_T_481 | _io_issue_bits_T_471; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -2606,77 +3227,77 @@ module IssueQueue_1(
     end else if (_validAfterKillGrant_1_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_1 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_1 <= _GEN_104;
+      entryValid_1 <= _GEN_119;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_2_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_2 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_2 <= _GEN_208;
+      entryValid_2 <= _GEN_238;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_3_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_3 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_3 <= _GEN_312;
+      entryValid_3 <= _GEN_357;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_4_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_4 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_4 <= _GEN_416;
+      entryValid_4 <= _GEN_476;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_5_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_5 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_5 <= _GEN_520;
+      entryValid_5 <= _GEN_595;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_6_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_6 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_6 <= _GEN_624;
+      entryValid_6 <= _GEN_714;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_7_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_7 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_7 <= _GEN_728;
+      entryValid_7 <= _GEN_833;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_8_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_8 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_8 <= _GEN_832;
+      entryValid_8 <= _GEN_952;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_9_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_9 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_9 <= _GEN_936;
+      entryValid_9 <= _GEN_1071;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_10_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_10 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_10 <= _GEN_1040;
+      entryValid_10 <= _GEN_1190;
     end
     if (reset) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
       entryValid_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 43:29]
     end else if (_validAfterKillGrant_11_T_2) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 162:39]
       entryValid_11 <= 1'h0; // @[src/main/scala/backend/scheduler/IssueQueue.scala 163:21]
     end else begin
-      entryValid_11 <= _GEN_1144;
+      entryValid_11 <= _GEN_1309;
     end
     if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_0_pc <= io_enq_bits_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -2764,6 +3385,51 @@ module IssueQueue_1(
     end
     if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_0_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_0_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_878) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_0_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -2904,6 +3570,51 @@ module IssueQueue_1(
       entryUops_1_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_1_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_1_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_892) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
@@ -3040,6 +3751,51 @@ module IssueQueue_1(
     end
     if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_2_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_2_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_901) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_2_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -3180,6 +3936,51 @@ module IssueQueue_1(
       entryUops_3_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_3_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_3_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_910) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
@@ -3316,6 +4117,51 @@ module IssueQueue_1(
     end
     if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_4_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_4_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_919) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_4_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -3456,6 +4302,51 @@ module IssueQueue_1(
       entryUops_5_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_5_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_5_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_928) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
@@ -3592,6 +4483,51 @@ module IssueQueue_1(
     end
     if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_6_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_6_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_937) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_6_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -3732,6 +4668,51 @@ module IssueQueue_1(
       entryUops_7_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_7_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_7_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_946) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
@@ -3868,6 +4849,51 @@ module IssueQueue_1(
     end
     if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_8_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_8_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_955) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_8_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -4008,6 +5034,51 @@ module IssueQueue_1(
       entryUops_9_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_9_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_9_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_964) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
@@ -4146,6 +5217,51 @@ module IssueQueue_1(
       entryUops_10_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_10_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_10_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_973) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
@@ -4282,6 +5398,51 @@ module IssueQueue_1(
     end
     if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_11_pdInfo_jumpTarget <= io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_pc <= io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_fallThrough <= io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_taken <= io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_target <= io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_takenOffset <= io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_btbHit <= io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_btbIsJalr <= io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_btbIsJal <= io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_btbIsCall <= io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_btbIsRet <= io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_btbOffset <= io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_phtCounter <= io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_rasTop <= io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_predTaken <= io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
+    end
+    if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
+      entryUops_11_bpuInfo_meta_predTarget <= io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
     end
     if (_T_982) begin // @[src/main/scala/backend/scheduler/IssueQueue.scala 181:37]
       entryUops_11_ldst <= io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/IssueQueue.scala 182:20]
@@ -5858,1363 +7019,1723 @@ initial begin
   _RAND_40 = {1{`RANDOM}};
   entryUops_0_pdInfo_jumpTarget = _RAND_40[31:0];
   _RAND_41 = {1{`RANDOM}};
-  entryUops_0_ldst = _RAND_41[4:0];
+  entryUops_0_bpuInfo_pc = _RAND_41[31:0];
   _RAND_42 = {1{`RANDOM}};
-  entryUops_0_lrs1 = _RAND_42[4:0];
+  entryUops_0_bpuInfo_fallThrough = _RAND_42[31:0];
   _RAND_43 = {1{`RANDOM}};
-  entryUops_0_lrs2 = _RAND_43[4:0];
+  entryUops_0_bpuInfo_taken = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  entryUops_0_pdst = _RAND_44[6:0];
+  entryUops_0_bpuInfo_target = _RAND_44[31:0];
   _RAND_45 = {1{`RANDOM}};
-  entryUops_0_prs1 = _RAND_45[6:0];
+  entryUops_0_bpuInfo_takenOffset = _RAND_45[1:0];
   _RAND_46 = {1{`RANDOM}};
-  entryUops_0_prs2 = _RAND_46[6:0];
+  entryUops_0_bpuInfo_meta_btbHit = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  entryUops_0_oldPdst = _RAND_47[6:0];
+  entryUops_0_bpuInfo_meta_btbIsJalr = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  entryUops_0_rs1Valid = _RAND_48[0:0];
+  entryUops_0_bpuInfo_meta_btbIsJal = _RAND_48[0:0];
   _RAND_49 = {1{`RANDOM}};
-  entryUops_0_rs2Valid = _RAND_49[0:0];
+  entryUops_0_bpuInfo_meta_btbIsCall = _RAND_49[0:0];
   _RAND_50 = {1{`RANDOM}};
-  entryUops_0_rdValid = _RAND_50[0:0];
+  entryUops_0_bpuInfo_meta_btbIsRet = _RAND_50[0:0];
   _RAND_51 = {1{`RANDOM}};
-  entryUops_0_robIdx_value = _RAND_51[5:0];
+  entryUops_0_bpuInfo_meta_btbOffset = _RAND_51[1:0];
   _RAND_52 = {1{`RANDOM}};
-  entryUops_0_robIdx_flag = _RAND_52[0:0];
+  entryUops_0_bpuInfo_meta_phtCounter = _RAND_52[1:0];
   _RAND_53 = {1{`RANDOM}};
-  entryUops_0_robIdxFull_value = _RAND_53[5:0];
+  entryUops_0_bpuInfo_meta_rasTop = _RAND_53[2:0];
   _RAND_54 = {1{`RANDOM}};
-  entryUops_0_robIdxFull_flag = _RAND_54[0:0];
+  entryUops_0_bpuInfo_meta_predTaken = _RAND_54[0:0];
   _RAND_55 = {1{`RANDOM}};
-  entryUops_0_issueQueue = _RAND_55[2:0];
+  entryUops_0_bpuInfo_meta_predTarget = _RAND_55[31:0];
   _RAND_56 = {1{`RANDOM}};
-  entryUops_0_prs1Busy = _RAND_56[0:0];
+  entryUops_0_ldst = _RAND_56[4:0];
   _RAND_57 = {1{`RANDOM}};
-  entryUops_0_prs2Busy = _RAND_57[0:0];
+  entryUops_0_lrs1 = _RAND_57[4:0];
   _RAND_58 = {1{`RANDOM}};
-  entryUops_1_pc = _RAND_58[31:0];
+  entryUops_0_lrs2 = _RAND_58[4:0];
   _RAND_59 = {1{`RANDOM}};
-  entryUops_1_inst = _RAND_59[31:0];
+  entryUops_0_pdst = _RAND_59[6:0];
   _RAND_60 = {1{`RANDOM}};
-  entryUops_1_ctrl_fuType = _RAND_60[3:0];
+  entryUops_0_prs1 = _RAND_60[6:0];
   _RAND_61 = {1{`RANDOM}};
-  entryUops_1_ctrl_aluOp = _RAND_61[4:0];
+  entryUops_0_prs2 = _RAND_61[6:0];
   _RAND_62 = {1{`RANDOM}};
-  entryUops_1_ctrl_bruOp = _RAND_62[3:0];
+  entryUops_0_oldPdst = _RAND_62[6:0];
   _RAND_63 = {1{`RANDOM}};
-  entryUops_1_ctrl_lsuOp = _RAND_63[3:0];
+  entryUops_0_rs1Valid = _RAND_63[0:0];
   _RAND_64 = {1{`RANDOM}};
-  entryUops_1_ctrl_csrOp = _RAND_64[2:0];
+  entryUops_0_rs2Valid = _RAND_64[0:0];
   _RAND_65 = {1{`RANDOM}};
-  entryUops_1_ctrl_mulOp = _RAND_65[2:0];
+  entryUops_0_rdValid = _RAND_65[0:0];
   _RAND_66 = {1{`RANDOM}};
-  entryUops_1_ctrl_divOp = _RAND_66[2:0];
+  entryUops_0_robIdx_value = _RAND_66[5:0];
   _RAND_67 = {1{`RANDOM}};
-  entryUops_1_ctrl_src1Type = _RAND_67[2:0];
+  entryUops_0_robIdx_flag = _RAND_67[0:0];
   _RAND_68 = {1{`RANDOM}};
-  entryUops_1_ctrl_src2Type = _RAND_68[2:0];
+  entryUops_0_robIdxFull_value = _RAND_68[5:0];
   _RAND_69 = {1{`RANDOM}};
-  entryUops_1_ctrl_immType = _RAND_69[3:0];
+  entryUops_0_robIdxFull_flag = _RAND_69[0:0];
   _RAND_70 = {1{`RANDOM}};
-  entryUops_1_ctrl_rfWen = _RAND_70[0:0];
+  entryUops_0_issueQueue = _RAND_70[2:0];
   _RAND_71 = {1{`RANDOM}};
-  entryUops_1_ctrl_memRead = _RAND_71[0:0];
+  entryUops_0_prs1Busy = _RAND_71[0:0];
   _RAND_72 = {1{`RANDOM}};
-  entryUops_1_ctrl_memWrite = _RAND_72[0:0];
+  entryUops_0_prs2Busy = _RAND_72[0:0];
   _RAND_73 = {1{`RANDOM}};
-  entryUops_1_ctrl_csrWen = _RAND_73[0:0];
+  entryUops_1_pc = _RAND_73[31:0];
   _RAND_74 = {1{`RANDOM}};
-  entryUops_1_ctrl_isBranch = _RAND_74[0:0];
+  entryUops_1_inst = _RAND_74[31:0];
   _RAND_75 = {1{`RANDOM}};
-  entryUops_1_ctrl_isJump = _RAND_75[0:0];
+  entryUops_1_ctrl_fuType = _RAND_75[3:0];
   _RAND_76 = {1{`RANDOM}};
-  entryUops_1_ctrl_isPriv = _RAND_76[0:0];
+  entryUops_1_ctrl_aluOp = _RAND_76[4:0];
   _RAND_77 = {1{`RANDOM}};
-  entryUops_1_excpVec = _RAND_77[9:0];
+  entryUops_1_ctrl_bruOp = _RAND_77[3:0];
   _RAND_78 = {1{`RANDOM}};
-  entryUops_1_imm = _RAND_78[31:0];
+  entryUops_1_ctrl_lsuOp = _RAND_78[3:0];
   _RAND_79 = {1{`RANDOM}};
-  entryUops_1_csrAddress = _RAND_79[13:0];
+  entryUops_1_ctrl_csrOp = _RAND_79[2:0];
   _RAND_80 = {1{`RANDOM}};
-  entryUops_1_pdInfo_valid = _RAND_80[0:0];
+  entryUops_1_ctrl_mulOp = _RAND_80[2:0];
   _RAND_81 = {1{`RANDOM}};
-  entryUops_1_pdInfo_isBr = _RAND_81[0:0];
+  entryUops_1_ctrl_divOp = _RAND_81[2:0];
   _RAND_82 = {1{`RANDOM}};
-  entryUops_1_pdInfo_isJal = _RAND_82[0:0];
+  entryUops_1_ctrl_src1Type = _RAND_82[2:0];
   _RAND_83 = {1{`RANDOM}};
-  entryUops_1_pdInfo_isJalr = _RAND_83[0:0];
+  entryUops_1_ctrl_src2Type = _RAND_83[2:0];
   _RAND_84 = {1{`RANDOM}};
-  entryUops_1_pdInfo_isCall = _RAND_84[0:0];
+  entryUops_1_ctrl_immType = _RAND_84[3:0];
   _RAND_85 = {1{`RANDOM}};
-  entryUops_1_pdInfo_isRet = _RAND_85[0:0];
+  entryUops_1_ctrl_rfWen = _RAND_85[0:0];
   _RAND_86 = {1{`RANDOM}};
-  entryUops_1_pdInfo_jumpTarget = _RAND_86[31:0];
+  entryUops_1_ctrl_memRead = _RAND_86[0:0];
   _RAND_87 = {1{`RANDOM}};
-  entryUops_1_ldst = _RAND_87[4:0];
+  entryUops_1_ctrl_memWrite = _RAND_87[0:0];
   _RAND_88 = {1{`RANDOM}};
-  entryUops_1_lrs1 = _RAND_88[4:0];
+  entryUops_1_ctrl_csrWen = _RAND_88[0:0];
   _RAND_89 = {1{`RANDOM}};
-  entryUops_1_lrs2 = _RAND_89[4:0];
+  entryUops_1_ctrl_isBranch = _RAND_89[0:0];
   _RAND_90 = {1{`RANDOM}};
-  entryUops_1_pdst = _RAND_90[6:0];
+  entryUops_1_ctrl_isJump = _RAND_90[0:0];
   _RAND_91 = {1{`RANDOM}};
-  entryUops_1_prs1 = _RAND_91[6:0];
+  entryUops_1_ctrl_isPriv = _RAND_91[0:0];
   _RAND_92 = {1{`RANDOM}};
-  entryUops_1_prs2 = _RAND_92[6:0];
+  entryUops_1_excpVec = _RAND_92[9:0];
   _RAND_93 = {1{`RANDOM}};
-  entryUops_1_oldPdst = _RAND_93[6:0];
+  entryUops_1_imm = _RAND_93[31:0];
   _RAND_94 = {1{`RANDOM}};
-  entryUops_1_rs1Valid = _RAND_94[0:0];
+  entryUops_1_csrAddress = _RAND_94[13:0];
   _RAND_95 = {1{`RANDOM}};
-  entryUops_1_rs2Valid = _RAND_95[0:0];
+  entryUops_1_pdInfo_valid = _RAND_95[0:0];
   _RAND_96 = {1{`RANDOM}};
-  entryUops_1_rdValid = _RAND_96[0:0];
+  entryUops_1_pdInfo_isBr = _RAND_96[0:0];
   _RAND_97 = {1{`RANDOM}};
-  entryUops_1_robIdx_value = _RAND_97[5:0];
+  entryUops_1_pdInfo_isJal = _RAND_97[0:0];
   _RAND_98 = {1{`RANDOM}};
-  entryUops_1_robIdx_flag = _RAND_98[0:0];
+  entryUops_1_pdInfo_isJalr = _RAND_98[0:0];
   _RAND_99 = {1{`RANDOM}};
-  entryUops_1_robIdxFull_value = _RAND_99[5:0];
+  entryUops_1_pdInfo_isCall = _RAND_99[0:0];
   _RAND_100 = {1{`RANDOM}};
-  entryUops_1_robIdxFull_flag = _RAND_100[0:0];
+  entryUops_1_pdInfo_isRet = _RAND_100[0:0];
   _RAND_101 = {1{`RANDOM}};
-  entryUops_1_issueQueue = _RAND_101[2:0];
+  entryUops_1_pdInfo_jumpTarget = _RAND_101[31:0];
   _RAND_102 = {1{`RANDOM}};
-  entryUops_1_prs1Busy = _RAND_102[0:0];
+  entryUops_1_bpuInfo_pc = _RAND_102[31:0];
   _RAND_103 = {1{`RANDOM}};
-  entryUops_1_prs2Busy = _RAND_103[0:0];
+  entryUops_1_bpuInfo_fallThrough = _RAND_103[31:0];
   _RAND_104 = {1{`RANDOM}};
-  entryUops_2_pc = _RAND_104[31:0];
+  entryUops_1_bpuInfo_taken = _RAND_104[0:0];
   _RAND_105 = {1{`RANDOM}};
-  entryUops_2_inst = _RAND_105[31:0];
+  entryUops_1_bpuInfo_target = _RAND_105[31:0];
   _RAND_106 = {1{`RANDOM}};
-  entryUops_2_ctrl_fuType = _RAND_106[3:0];
+  entryUops_1_bpuInfo_takenOffset = _RAND_106[1:0];
   _RAND_107 = {1{`RANDOM}};
-  entryUops_2_ctrl_aluOp = _RAND_107[4:0];
+  entryUops_1_bpuInfo_meta_btbHit = _RAND_107[0:0];
   _RAND_108 = {1{`RANDOM}};
-  entryUops_2_ctrl_bruOp = _RAND_108[3:0];
+  entryUops_1_bpuInfo_meta_btbIsJalr = _RAND_108[0:0];
   _RAND_109 = {1{`RANDOM}};
-  entryUops_2_ctrl_lsuOp = _RAND_109[3:0];
+  entryUops_1_bpuInfo_meta_btbIsJal = _RAND_109[0:0];
   _RAND_110 = {1{`RANDOM}};
-  entryUops_2_ctrl_csrOp = _RAND_110[2:0];
+  entryUops_1_bpuInfo_meta_btbIsCall = _RAND_110[0:0];
   _RAND_111 = {1{`RANDOM}};
-  entryUops_2_ctrl_mulOp = _RAND_111[2:0];
+  entryUops_1_bpuInfo_meta_btbIsRet = _RAND_111[0:0];
   _RAND_112 = {1{`RANDOM}};
-  entryUops_2_ctrl_divOp = _RAND_112[2:0];
+  entryUops_1_bpuInfo_meta_btbOffset = _RAND_112[1:0];
   _RAND_113 = {1{`RANDOM}};
-  entryUops_2_ctrl_src1Type = _RAND_113[2:0];
+  entryUops_1_bpuInfo_meta_phtCounter = _RAND_113[1:0];
   _RAND_114 = {1{`RANDOM}};
-  entryUops_2_ctrl_src2Type = _RAND_114[2:0];
+  entryUops_1_bpuInfo_meta_rasTop = _RAND_114[2:0];
   _RAND_115 = {1{`RANDOM}};
-  entryUops_2_ctrl_immType = _RAND_115[3:0];
+  entryUops_1_bpuInfo_meta_predTaken = _RAND_115[0:0];
   _RAND_116 = {1{`RANDOM}};
-  entryUops_2_ctrl_rfWen = _RAND_116[0:0];
+  entryUops_1_bpuInfo_meta_predTarget = _RAND_116[31:0];
   _RAND_117 = {1{`RANDOM}};
-  entryUops_2_ctrl_memRead = _RAND_117[0:0];
+  entryUops_1_ldst = _RAND_117[4:0];
   _RAND_118 = {1{`RANDOM}};
-  entryUops_2_ctrl_memWrite = _RAND_118[0:0];
+  entryUops_1_lrs1 = _RAND_118[4:0];
   _RAND_119 = {1{`RANDOM}};
-  entryUops_2_ctrl_csrWen = _RAND_119[0:0];
+  entryUops_1_lrs2 = _RAND_119[4:0];
   _RAND_120 = {1{`RANDOM}};
-  entryUops_2_ctrl_isBranch = _RAND_120[0:0];
+  entryUops_1_pdst = _RAND_120[6:0];
   _RAND_121 = {1{`RANDOM}};
-  entryUops_2_ctrl_isJump = _RAND_121[0:0];
+  entryUops_1_prs1 = _RAND_121[6:0];
   _RAND_122 = {1{`RANDOM}};
-  entryUops_2_ctrl_isPriv = _RAND_122[0:0];
+  entryUops_1_prs2 = _RAND_122[6:0];
   _RAND_123 = {1{`RANDOM}};
-  entryUops_2_excpVec = _RAND_123[9:0];
+  entryUops_1_oldPdst = _RAND_123[6:0];
   _RAND_124 = {1{`RANDOM}};
-  entryUops_2_imm = _RAND_124[31:0];
+  entryUops_1_rs1Valid = _RAND_124[0:0];
   _RAND_125 = {1{`RANDOM}};
-  entryUops_2_csrAddress = _RAND_125[13:0];
+  entryUops_1_rs2Valid = _RAND_125[0:0];
   _RAND_126 = {1{`RANDOM}};
-  entryUops_2_pdInfo_valid = _RAND_126[0:0];
+  entryUops_1_rdValid = _RAND_126[0:0];
   _RAND_127 = {1{`RANDOM}};
-  entryUops_2_pdInfo_isBr = _RAND_127[0:0];
+  entryUops_1_robIdx_value = _RAND_127[5:0];
   _RAND_128 = {1{`RANDOM}};
-  entryUops_2_pdInfo_isJal = _RAND_128[0:0];
+  entryUops_1_robIdx_flag = _RAND_128[0:0];
   _RAND_129 = {1{`RANDOM}};
-  entryUops_2_pdInfo_isJalr = _RAND_129[0:0];
+  entryUops_1_robIdxFull_value = _RAND_129[5:0];
   _RAND_130 = {1{`RANDOM}};
-  entryUops_2_pdInfo_isCall = _RAND_130[0:0];
+  entryUops_1_robIdxFull_flag = _RAND_130[0:0];
   _RAND_131 = {1{`RANDOM}};
-  entryUops_2_pdInfo_isRet = _RAND_131[0:0];
+  entryUops_1_issueQueue = _RAND_131[2:0];
   _RAND_132 = {1{`RANDOM}};
-  entryUops_2_pdInfo_jumpTarget = _RAND_132[31:0];
+  entryUops_1_prs1Busy = _RAND_132[0:0];
   _RAND_133 = {1{`RANDOM}};
-  entryUops_2_ldst = _RAND_133[4:0];
+  entryUops_1_prs2Busy = _RAND_133[0:0];
   _RAND_134 = {1{`RANDOM}};
-  entryUops_2_lrs1 = _RAND_134[4:0];
+  entryUops_2_pc = _RAND_134[31:0];
   _RAND_135 = {1{`RANDOM}};
-  entryUops_2_lrs2 = _RAND_135[4:0];
+  entryUops_2_inst = _RAND_135[31:0];
   _RAND_136 = {1{`RANDOM}};
-  entryUops_2_pdst = _RAND_136[6:0];
+  entryUops_2_ctrl_fuType = _RAND_136[3:0];
   _RAND_137 = {1{`RANDOM}};
-  entryUops_2_prs1 = _RAND_137[6:0];
+  entryUops_2_ctrl_aluOp = _RAND_137[4:0];
   _RAND_138 = {1{`RANDOM}};
-  entryUops_2_prs2 = _RAND_138[6:0];
+  entryUops_2_ctrl_bruOp = _RAND_138[3:0];
   _RAND_139 = {1{`RANDOM}};
-  entryUops_2_oldPdst = _RAND_139[6:0];
+  entryUops_2_ctrl_lsuOp = _RAND_139[3:0];
   _RAND_140 = {1{`RANDOM}};
-  entryUops_2_rs1Valid = _RAND_140[0:0];
+  entryUops_2_ctrl_csrOp = _RAND_140[2:0];
   _RAND_141 = {1{`RANDOM}};
-  entryUops_2_rs2Valid = _RAND_141[0:0];
+  entryUops_2_ctrl_mulOp = _RAND_141[2:0];
   _RAND_142 = {1{`RANDOM}};
-  entryUops_2_rdValid = _RAND_142[0:0];
+  entryUops_2_ctrl_divOp = _RAND_142[2:0];
   _RAND_143 = {1{`RANDOM}};
-  entryUops_2_robIdx_value = _RAND_143[5:0];
+  entryUops_2_ctrl_src1Type = _RAND_143[2:0];
   _RAND_144 = {1{`RANDOM}};
-  entryUops_2_robIdx_flag = _RAND_144[0:0];
+  entryUops_2_ctrl_src2Type = _RAND_144[2:0];
   _RAND_145 = {1{`RANDOM}};
-  entryUops_2_robIdxFull_value = _RAND_145[5:0];
+  entryUops_2_ctrl_immType = _RAND_145[3:0];
   _RAND_146 = {1{`RANDOM}};
-  entryUops_2_robIdxFull_flag = _RAND_146[0:0];
+  entryUops_2_ctrl_rfWen = _RAND_146[0:0];
   _RAND_147 = {1{`RANDOM}};
-  entryUops_2_issueQueue = _RAND_147[2:0];
+  entryUops_2_ctrl_memRead = _RAND_147[0:0];
   _RAND_148 = {1{`RANDOM}};
-  entryUops_2_prs1Busy = _RAND_148[0:0];
+  entryUops_2_ctrl_memWrite = _RAND_148[0:0];
   _RAND_149 = {1{`RANDOM}};
-  entryUops_2_prs2Busy = _RAND_149[0:0];
+  entryUops_2_ctrl_csrWen = _RAND_149[0:0];
   _RAND_150 = {1{`RANDOM}};
-  entryUops_3_pc = _RAND_150[31:0];
+  entryUops_2_ctrl_isBranch = _RAND_150[0:0];
   _RAND_151 = {1{`RANDOM}};
-  entryUops_3_inst = _RAND_151[31:0];
+  entryUops_2_ctrl_isJump = _RAND_151[0:0];
   _RAND_152 = {1{`RANDOM}};
-  entryUops_3_ctrl_fuType = _RAND_152[3:0];
+  entryUops_2_ctrl_isPriv = _RAND_152[0:0];
   _RAND_153 = {1{`RANDOM}};
-  entryUops_3_ctrl_aluOp = _RAND_153[4:0];
+  entryUops_2_excpVec = _RAND_153[9:0];
   _RAND_154 = {1{`RANDOM}};
-  entryUops_3_ctrl_bruOp = _RAND_154[3:0];
+  entryUops_2_imm = _RAND_154[31:0];
   _RAND_155 = {1{`RANDOM}};
-  entryUops_3_ctrl_lsuOp = _RAND_155[3:0];
+  entryUops_2_csrAddress = _RAND_155[13:0];
   _RAND_156 = {1{`RANDOM}};
-  entryUops_3_ctrl_csrOp = _RAND_156[2:0];
+  entryUops_2_pdInfo_valid = _RAND_156[0:0];
   _RAND_157 = {1{`RANDOM}};
-  entryUops_3_ctrl_mulOp = _RAND_157[2:0];
+  entryUops_2_pdInfo_isBr = _RAND_157[0:0];
   _RAND_158 = {1{`RANDOM}};
-  entryUops_3_ctrl_divOp = _RAND_158[2:0];
+  entryUops_2_pdInfo_isJal = _RAND_158[0:0];
   _RAND_159 = {1{`RANDOM}};
-  entryUops_3_ctrl_src1Type = _RAND_159[2:0];
+  entryUops_2_pdInfo_isJalr = _RAND_159[0:0];
   _RAND_160 = {1{`RANDOM}};
-  entryUops_3_ctrl_src2Type = _RAND_160[2:0];
+  entryUops_2_pdInfo_isCall = _RAND_160[0:0];
   _RAND_161 = {1{`RANDOM}};
-  entryUops_3_ctrl_immType = _RAND_161[3:0];
+  entryUops_2_pdInfo_isRet = _RAND_161[0:0];
   _RAND_162 = {1{`RANDOM}};
-  entryUops_3_ctrl_rfWen = _RAND_162[0:0];
+  entryUops_2_pdInfo_jumpTarget = _RAND_162[31:0];
   _RAND_163 = {1{`RANDOM}};
-  entryUops_3_ctrl_memRead = _RAND_163[0:0];
+  entryUops_2_bpuInfo_pc = _RAND_163[31:0];
   _RAND_164 = {1{`RANDOM}};
-  entryUops_3_ctrl_memWrite = _RAND_164[0:0];
+  entryUops_2_bpuInfo_fallThrough = _RAND_164[31:0];
   _RAND_165 = {1{`RANDOM}};
-  entryUops_3_ctrl_csrWen = _RAND_165[0:0];
+  entryUops_2_bpuInfo_taken = _RAND_165[0:0];
   _RAND_166 = {1{`RANDOM}};
-  entryUops_3_ctrl_isBranch = _RAND_166[0:0];
+  entryUops_2_bpuInfo_target = _RAND_166[31:0];
   _RAND_167 = {1{`RANDOM}};
-  entryUops_3_ctrl_isJump = _RAND_167[0:0];
+  entryUops_2_bpuInfo_takenOffset = _RAND_167[1:0];
   _RAND_168 = {1{`RANDOM}};
-  entryUops_3_ctrl_isPriv = _RAND_168[0:0];
+  entryUops_2_bpuInfo_meta_btbHit = _RAND_168[0:0];
   _RAND_169 = {1{`RANDOM}};
-  entryUops_3_excpVec = _RAND_169[9:0];
+  entryUops_2_bpuInfo_meta_btbIsJalr = _RAND_169[0:0];
   _RAND_170 = {1{`RANDOM}};
-  entryUops_3_imm = _RAND_170[31:0];
+  entryUops_2_bpuInfo_meta_btbIsJal = _RAND_170[0:0];
   _RAND_171 = {1{`RANDOM}};
-  entryUops_3_csrAddress = _RAND_171[13:0];
+  entryUops_2_bpuInfo_meta_btbIsCall = _RAND_171[0:0];
   _RAND_172 = {1{`RANDOM}};
-  entryUops_3_pdInfo_valid = _RAND_172[0:0];
+  entryUops_2_bpuInfo_meta_btbIsRet = _RAND_172[0:0];
   _RAND_173 = {1{`RANDOM}};
-  entryUops_3_pdInfo_isBr = _RAND_173[0:0];
+  entryUops_2_bpuInfo_meta_btbOffset = _RAND_173[1:0];
   _RAND_174 = {1{`RANDOM}};
-  entryUops_3_pdInfo_isJal = _RAND_174[0:0];
+  entryUops_2_bpuInfo_meta_phtCounter = _RAND_174[1:0];
   _RAND_175 = {1{`RANDOM}};
-  entryUops_3_pdInfo_isJalr = _RAND_175[0:0];
+  entryUops_2_bpuInfo_meta_rasTop = _RAND_175[2:0];
   _RAND_176 = {1{`RANDOM}};
-  entryUops_3_pdInfo_isCall = _RAND_176[0:0];
+  entryUops_2_bpuInfo_meta_predTaken = _RAND_176[0:0];
   _RAND_177 = {1{`RANDOM}};
-  entryUops_3_pdInfo_isRet = _RAND_177[0:0];
+  entryUops_2_bpuInfo_meta_predTarget = _RAND_177[31:0];
   _RAND_178 = {1{`RANDOM}};
-  entryUops_3_pdInfo_jumpTarget = _RAND_178[31:0];
+  entryUops_2_ldst = _RAND_178[4:0];
   _RAND_179 = {1{`RANDOM}};
-  entryUops_3_ldst = _RAND_179[4:0];
+  entryUops_2_lrs1 = _RAND_179[4:0];
   _RAND_180 = {1{`RANDOM}};
-  entryUops_3_lrs1 = _RAND_180[4:0];
+  entryUops_2_lrs2 = _RAND_180[4:0];
   _RAND_181 = {1{`RANDOM}};
-  entryUops_3_lrs2 = _RAND_181[4:0];
+  entryUops_2_pdst = _RAND_181[6:0];
   _RAND_182 = {1{`RANDOM}};
-  entryUops_3_pdst = _RAND_182[6:0];
+  entryUops_2_prs1 = _RAND_182[6:0];
   _RAND_183 = {1{`RANDOM}};
-  entryUops_3_prs1 = _RAND_183[6:0];
+  entryUops_2_prs2 = _RAND_183[6:0];
   _RAND_184 = {1{`RANDOM}};
-  entryUops_3_prs2 = _RAND_184[6:0];
+  entryUops_2_oldPdst = _RAND_184[6:0];
   _RAND_185 = {1{`RANDOM}};
-  entryUops_3_oldPdst = _RAND_185[6:0];
+  entryUops_2_rs1Valid = _RAND_185[0:0];
   _RAND_186 = {1{`RANDOM}};
-  entryUops_3_rs1Valid = _RAND_186[0:0];
+  entryUops_2_rs2Valid = _RAND_186[0:0];
   _RAND_187 = {1{`RANDOM}};
-  entryUops_3_rs2Valid = _RAND_187[0:0];
+  entryUops_2_rdValid = _RAND_187[0:0];
   _RAND_188 = {1{`RANDOM}};
-  entryUops_3_rdValid = _RAND_188[0:0];
+  entryUops_2_robIdx_value = _RAND_188[5:0];
   _RAND_189 = {1{`RANDOM}};
-  entryUops_3_robIdx_value = _RAND_189[5:0];
+  entryUops_2_robIdx_flag = _RAND_189[0:0];
   _RAND_190 = {1{`RANDOM}};
-  entryUops_3_robIdx_flag = _RAND_190[0:0];
+  entryUops_2_robIdxFull_value = _RAND_190[5:0];
   _RAND_191 = {1{`RANDOM}};
-  entryUops_3_robIdxFull_value = _RAND_191[5:0];
+  entryUops_2_robIdxFull_flag = _RAND_191[0:0];
   _RAND_192 = {1{`RANDOM}};
-  entryUops_3_robIdxFull_flag = _RAND_192[0:0];
+  entryUops_2_issueQueue = _RAND_192[2:0];
   _RAND_193 = {1{`RANDOM}};
-  entryUops_3_issueQueue = _RAND_193[2:0];
+  entryUops_2_prs1Busy = _RAND_193[0:0];
   _RAND_194 = {1{`RANDOM}};
-  entryUops_3_prs1Busy = _RAND_194[0:0];
+  entryUops_2_prs2Busy = _RAND_194[0:0];
   _RAND_195 = {1{`RANDOM}};
-  entryUops_3_prs2Busy = _RAND_195[0:0];
+  entryUops_3_pc = _RAND_195[31:0];
   _RAND_196 = {1{`RANDOM}};
-  entryUops_4_pc = _RAND_196[31:0];
+  entryUops_3_inst = _RAND_196[31:0];
   _RAND_197 = {1{`RANDOM}};
-  entryUops_4_inst = _RAND_197[31:0];
+  entryUops_3_ctrl_fuType = _RAND_197[3:0];
   _RAND_198 = {1{`RANDOM}};
-  entryUops_4_ctrl_fuType = _RAND_198[3:0];
+  entryUops_3_ctrl_aluOp = _RAND_198[4:0];
   _RAND_199 = {1{`RANDOM}};
-  entryUops_4_ctrl_aluOp = _RAND_199[4:0];
+  entryUops_3_ctrl_bruOp = _RAND_199[3:0];
   _RAND_200 = {1{`RANDOM}};
-  entryUops_4_ctrl_bruOp = _RAND_200[3:0];
+  entryUops_3_ctrl_lsuOp = _RAND_200[3:0];
   _RAND_201 = {1{`RANDOM}};
-  entryUops_4_ctrl_lsuOp = _RAND_201[3:0];
+  entryUops_3_ctrl_csrOp = _RAND_201[2:0];
   _RAND_202 = {1{`RANDOM}};
-  entryUops_4_ctrl_csrOp = _RAND_202[2:0];
+  entryUops_3_ctrl_mulOp = _RAND_202[2:0];
   _RAND_203 = {1{`RANDOM}};
-  entryUops_4_ctrl_mulOp = _RAND_203[2:0];
+  entryUops_3_ctrl_divOp = _RAND_203[2:0];
   _RAND_204 = {1{`RANDOM}};
-  entryUops_4_ctrl_divOp = _RAND_204[2:0];
+  entryUops_3_ctrl_src1Type = _RAND_204[2:0];
   _RAND_205 = {1{`RANDOM}};
-  entryUops_4_ctrl_src1Type = _RAND_205[2:0];
+  entryUops_3_ctrl_src2Type = _RAND_205[2:0];
   _RAND_206 = {1{`RANDOM}};
-  entryUops_4_ctrl_src2Type = _RAND_206[2:0];
+  entryUops_3_ctrl_immType = _RAND_206[3:0];
   _RAND_207 = {1{`RANDOM}};
-  entryUops_4_ctrl_immType = _RAND_207[3:0];
+  entryUops_3_ctrl_rfWen = _RAND_207[0:0];
   _RAND_208 = {1{`RANDOM}};
-  entryUops_4_ctrl_rfWen = _RAND_208[0:0];
+  entryUops_3_ctrl_memRead = _RAND_208[0:0];
   _RAND_209 = {1{`RANDOM}};
-  entryUops_4_ctrl_memRead = _RAND_209[0:0];
+  entryUops_3_ctrl_memWrite = _RAND_209[0:0];
   _RAND_210 = {1{`RANDOM}};
-  entryUops_4_ctrl_memWrite = _RAND_210[0:0];
+  entryUops_3_ctrl_csrWen = _RAND_210[0:0];
   _RAND_211 = {1{`RANDOM}};
-  entryUops_4_ctrl_csrWen = _RAND_211[0:0];
+  entryUops_3_ctrl_isBranch = _RAND_211[0:0];
   _RAND_212 = {1{`RANDOM}};
-  entryUops_4_ctrl_isBranch = _RAND_212[0:0];
+  entryUops_3_ctrl_isJump = _RAND_212[0:0];
   _RAND_213 = {1{`RANDOM}};
-  entryUops_4_ctrl_isJump = _RAND_213[0:0];
+  entryUops_3_ctrl_isPriv = _RAND_213[0:0];
   _RAND_214 = {1{`RANDOM}};
-  entryUops_4_ctrl_isPriv = _RAND_214[0:0];
+  entryUops_3_excpVec = _RAND_214[9:0];
   _RAND_215 = {1{`RANDOM}};
-  entryUops_4_excpVec = _RAND_215[9:0];
+  entryUops_3_imm = _RAND_215[31:0];
   _RAND_216 = {1{`RANDOM}};
-  entryUops_4_imm = _RAND_216[31:0];
+  entryUops_3_csrAddress = _RAND_216[13:0];
   _RAND_217 = {1{`RANDOM}};
-  entryUops_4_csrAddress = _RAND_217[13:0];
+  entryUops_3_pdInfo_valid = _RAND_217[0:0];
   _RAND_218 = {1{`RANDOM}};
-  entryUops_4_pdInfo_valid = _RAND_218[0:0];
+  entryUops_3_pdInfo_isBr = _RAND_218[0:0];
   _RAND_219 = {1{`RANDOM}};
-  entryUops_4_pdInfo_isBr = _RAND_219[0:0];
+  entryUops_3_pdInfo_isJal = _RAND_219[0:0];
   _RAND_220 = {1{`RANDOM}};
-  entryUops_4_pdInfo_isJal = _RAND_220[0:0];
+  entryUops_3_pdInfo_isJalr = _RAND_220[0:0];
   _RAND_221 = {1{`RANDOM}};
-  entryUops_4_pdInfo_isJalr = _RAND_221[0:0];
+  entryUops_3_pdInfo_isCall = _RAND_221[0:0];
   _RAND_222 = {1{`RANDOM}};
-  entryUops_4_pdInfo_isCall = _RAND_222[0:0];
+  entryUops_3_pdInfo_isRet = _RAND_222[0:0];
   _RAND_223 = {1{`RANDOM}};
-  entryUops_4_pdInfo_isRet = _RAND_223[0:0];
+  entryUops_3_pdInfo_jumpTarget = _RAND_223[31:0];
   _RAND_224 = {1{`RANDOM}};
-  entryUops_4_pdInfo_jumpTarget = _RAND_224[31:0];
+  entryUops_3_bpuInfo_pc = _RAND_224[31:0];
   _RAND_225 = {1{`RANDOM}};
-  entryUops_4_ldst = _RAND_225[4:0];
+  entryUops_3_bpuInfo_fallThrough = _RAND_225[31:0];
   _RAND_226 = {1{`RANDOM}};
-  entryUops_4_lrs1 = _RAND_226[4:0];
+  entryUops_3_bpuInfo_taken = _RAND_226[0:0];
   _RAND_227 = {1{`RANDOM}};
-  entryUops_4_lrs2 = _RAND_227[4:0];
+  entryUops_3_bpuInfo_target = _RAND_227[31:0];
   _RAND_228 = {1{`RANDOM}};
-  entryUops_4_pdst = _RAND_228[6:0];
+  entryUops_3_bpuInfo_takenOffset = _RAND_228[1:0];
   _RAND_229 = {1{`RANDOM}};
-  entryUops_4_prs1 = _RAND_229[6:0];
+  entryUops_3_bpuInfo_meta_btbHit = _RAND_229[0:0];
   _RAND_230 = {1{`RANDOM}};
-  entryUops_4_prs2 = _RAND_230[6:0];
+  entryUops_3_bpuInfo_meta_btbIsJalr = _RAND_230[0:0];
   _RAND_231 = {1{`RANDOM}};
-  entryUops_4_oldPdst = _RAND_231[6:0];
+  entryUops_3_bpuInfo_meta_btbIsJal = _RAND_231[0:0];
   _RAND_232 = {1{`RANDOM}};
-  entryUops_4_rs1Valid = _RAND_232[0:0];
+  entryUops_3_bpuInfo_meta_btbIsCall = _RAND_232[0:0];
   _RAND_233 = {1{`RANDOM}};
-  entryUops_4_rs2Valid = _RAND_233[0:0];
+  entryUops_3_bpuInfo_meta_btbIsRet = _RAND_233[0:0];
   _RAND_234 = {1{`RANDOM}};
-  entryUops_4_rdValid = _RAND_234[0:0];
+  entryUops_3_bpuInfo_meta_btbOffset = _RAND_234[1:0];
   _RAND_235 = {1{`RANDOM}};
-  entryUops_4_robIdx_value = _RAND_235[5:0];
+  entryUops_3_bpuInfo_meta_phtCounter = _RAND_235[1:0];
   _RAND_236 = {1{`RANDOM}};
-  entryUops_4_robIdx_flag = _RAND_236[0:0];
+  entryUops_3_bpuInfo_meta_rasTop = _RAND_236[2:0];
   _RAND_237 = {1{`RANDOM}};
-  entryUops_4_robIdxFull_value = _RAND_237[5:0];
+  entryUops_3_bpuInfo_meta_predTaken = _RAND_237[0:0];
   _RAND_238 = {1{`RANDOM}};
-  entryUops_4_robIdxFull_flag = _RAND_238[0:0];
+  entryUops_3_bpuInfo_meta_predTarget = _RAND_238[31:0];
   _RAND_239 = {1{`RANDOM}};
-  entryUops_4_issueQueue = _RAND_239[2:0];
+  entryUops_3_ldst = _RAND_239[4:0];
   _RAND_240 = {1{`RANDOM}};
-  entryUops_4_prs1Busy = _RAND_240[0:0];
+  entryUops_3_lrs1 = _RAND_240[4:0];
   _RAND_241 = {1{`RANDOM}};
-  entryUops_4_prs2Busy = _RAND_241[0:0];
+  entryUops_3_lrs2 = _RAND_241[4:0];
   _RAND_242 = {1{`RANDOM}};
-  entryUops_5_pc = _RAND_242[31:0];
+  entryUops_3_pdst = _RAND_242[6:0];
   _RAND_243 = {1{`RANDOM}};
-  entryUops_5_inst = _RAND_243[31:0];
+  entryUops_3_prs1 = _RAND_243[6:0];
   _RAND_244 = {1{`RANDOM}};
-  entryUops_5_ctrl_fuType = _RAND_244[3:0];
+  entryUops_3_prs2 = _RAND_244[6:0];
   _RAND_245 = {1{`RANDOM}};
-  entryUops_5_ctrl_aluOp = _RAND_245[4:0];
+  entryUops_3_oldPdst = _RAND_245[6:0];
   _RAND_246 = {1{`RANDOM}};
-  entryUops_5_ctrl_bruOp = _RAND_246[3:0];
+  entryUops_3_rs1Valid = _RAND_246[0:0];
   _RAND_247 = {1{`RANDOM}};
-  entryUops_5_ctrl_lsuOp = _RAND_247[3:0];
+  entryUops_3_rs2Valid = _RAND_247[0:0];
   _RAND_248 = {1{`RANDOM}};
-  entryUops_5_ctrl_csrOp = _RAND_248[2:0];
+  entryUops_3_rdValid = _RAND_248[0:0];
   _RAND_249 = {1{`RANDOM}};
-  entryUops_5_ctrl_mulOp = _RAND_249[2:0];
+  entryUops_3_robIdx_value = _RAND_249[5:0];
   _RAND_250 = {1{`RANDOM}};
-  entryUops_5_ctrl_divOp = _RAND_250[2:0];
+  entryUops_3_robIdx_flag = _RAND_250[0:0];
   _RAND_251 = {1{`RANDOM}};
-  entryUops_5_ctrl_src1Type = _RAND_251[2:0];
+  entryUops_3_robIdxFull_value = _RAND_251[5:0];
   _RAND_252 = {1{`RANDOM}};
-  entryUops_5_ctrl_src2Type = _RAND_252[2:0];
+  entryUops_3_robIdxFull_flag = _RAND_252[0:0];
   _RAND_253 = {1{`RANDOM}};
-  entryUops_5_ctrl_immType = _RAND_253[3:0];
+  entryUops_3_issueQueue = _RAND_253[2:0];
   _RAND_254 = {1{`RANDOM}};
-  entryUops_5_ctrl_rfWen = _RAND_254[0:0];
+  entryUops_3_prs1Busy = _RAND_254[0:0];
   _RAND_255 = {1{`RANDOM}};
-  entryUops_5_ctrl_memRead = _RAND_255[0:0];
+  entryUops_3_prs2Busy = _RAND_255[0:0];
   _RAND_256 = {1{`RANDOM}};
-  entryUops_5_ctrl_memWrite = _RAND_256[0:0];
+  entryUops_4_pc = _RAND_256[31:0];
   _RAND_257 = {1{`RANDOM}};
-  entryUops_5_ctrl_csrWen = _RAND_257[0:0];
+  entryUops_4_inst = _RAND_257[31:0];
   _RAND_258 = {1{`RANDOM}};
-  entryUops_5_ctrl_isBranch = _RAND_258[0:0];
+  entryUops_4_ctrl_fuType = _RAND_258[3:0];
   _RAND_259 = {1{`RANDOM}};
-  entryUops_5_ctrl_isJump = _RAND_259[0:0];
+  entryUops_4_ctrl_aluOp = _RAND_259[4:0];
   _RAND_260 = {1{`RANDOM}};
-  entryUops_5_ctrl_isPriv = _RAND_260[0:0];
+  entryUops_4_ctrl_bruOp = _RAND_260[3:0];
   _RAND_261 = {1{`RANDOM}};
-  entryUops_5_excpVec = _RAND_261[9:0];
+  entryUops_4_ctrl_lsuOp = _RAND_261[3:0];
   _RAND_262 = {1{`RANDOM}};
-  entryUops_5_imm = _RAND_262[31:0];
+  entryUops_4_ctrl_csrOp = _RAND_262[2:0];
   _RAND_263 = {1{`RANDOM}};
-  entryUops_5_csrAddress = _RAND_263[13:0];
+  entryUops_4_ctrl_mulOp = _RAND_263[2:0];
   _RAND_264 = {1{`RANDOM}};
-  entryUops_5_pdInfo_valid = _RAND_264[0:0];
+  entryUops_4_ctrl_divOp = _RAND_264[2:0];
   _RAND_265 = {1{`RANDOM}};
-  entryUops_5_pdInfo_isBr = _RAND_265[0:0];
+  entryUops_4_ctrl_src1Type = _RAND_265[2:0];
   _RAND_266 = {1{`RANDOM}};
-  entryUops_5_pdInfo_isJal = _RAND_266[0:0];
+  entryUops_4_ctrl_src2Type = _RAND_266[2:0];
   _RAND_267 = {1{`RANDOM}};
-  entryUops_5_pdInfo_isJalr = _RAND_267[0:0];
+  entryUops_4_ctrl_immType = _RAND_267[3:0];
   _RAND_268 = {1{`RANDOM}};
-  entryUops_5_pdInfo_isCall = _RAND_268[0:0];
+  entryUops_4_ctrl_rfWen = _RAND_268[0:0];
   _RAND_269 = {1{`RANDOM}};
-  entryUops_5_pdInfo_isRet = _RAND_269[0:0];
+  entryUops_4_ctrl_memRead = _RAND_269[0:0];
   _RAND_270 = {1{`RANDOM}};
-  entryUops_5_pdInfo_jumpTarget = _RAND_270[31:0];
+  entryUops_4_ctrl_memWrite = _RAND_270[0:0];
   _RAND_271 = {1{`RANDOM}};
-  entryUops_5_ldst = _RAND_271[4:0];
+  entryUops_4_ctrl_csrWen = _RAND_271[0:0];
   _RAND_272 = {1{`RANDOM}};
-  entryUops_5_lrs1 = _RAND_272[4:0];
+  entryUops_4_ctrl_isBranch = _RAND_272[0:0];
   _RAND_273 = {1{`RANDOM}};
-  entryUops_5_lrs2 = _RAND_273[4:0];
+  entryUops_4_ctrl_isJump = _RAND_273[0:0];
   _RAND_274 = {1{`RANDOM}};
-  entryUops_5_pdst = _RAND_274[6:0];
+  entryUops_4_ctrl_isPriv = _RAND_274[0:0];
   _RAND_275 = {1{`RANDOM}};
-  entryUops_5_prs1 = _RAND_275[6:0];
+  entryUops_4_excpVec = _RAND_275[9:0];
   _RAND_276 = {1{`RANDOM}};
-  entryUops_5_prs2 = _RAND_276[6:0];
+  entryUops_4_imm = _RAND_276[31:0];
   _RAND_277 = {1{`RANDOM}};
-  entryUops_5_oldPdst = _RAND_277[6:0];
+  entryUops_4_csrAddress = _RAND_277[13:0];
   _RAND_278 = {1{`RANDOM}};
-  entryUops_5_rs1Valid = _RAND_278[0:0];
+  entryUops_4_pdInfo_valid = _RAND_278[0:0];
   _RAND_279 = {1{`RANDOM}};
-  entryUops_5_rs2Valid = _RAND_279[0:0];
+  entryUops_4_pdInfo_isBr = _RAND_279[0:0];
   _RAND_280 = {1{`RANDOM}};
-  entryUops_5_rdValid = _RAND_280[0:0];
+  entryUops_4_pdInfo_isJal = _RAND_280[0:0];
   _RAND_281 = {1{`RANDOM}};
-  entryUops_5_robIdx_value = _RAND_281[5:0];
+  entryUops_4_pdInfo_isJalr = _RAND_281[0:0];
   _RAND_282 = {1{`RANDOM}};
-  entryUops_5_robIdx_flag = _RAND_282[0:0];
+  entryUops_4_pdInfo_isCall = _RAND_282[0:0];
   _RAND_283 = {1{`RANDOM}};
-  entryUops_5_robIdxFull_value = _RAND_283[5:0];
+  entryUops_4_pdInfo_isRet = _RAND_283[0:0];
   _RAND_284 = {1{`RANDOM}};
-  entryUops_5_robIdxFull_flag = _RAND_284[0:0];
+  entryUops_4_pdInfo_jumpTarget = _RAND_284[31:0];
   _RAND_285 = {1{`RANDOM}};
-  entryUops_5_issueQueue = _RAND_285[2:0];
+  entryUops_4_bpuInfo_pc = _RAND_285[31:0];
   _RAND_286 = {1{`RANDOM}};
-  entryUops_5_prs1Busy = _RAND_286[0:0];
+  entryUops_4_bpuInfo_fallThrough = _RAND_286[31:0];
   _RAND_287 = {1{`RANDOM}};
-  entryUops_5_prs2Busy = _RAND_287[0:0];
+  entryUops_4_bpuInfo_taken = _RAND_287[0:0];
   _RAND_288 = {1{`RANDOM}};
-  entryUops_6_pc = _RAND_288[31:0];
+  entryUops_4_bpuInfo_target = _RAND_288[31:0];
   _RAND_289 = {1{`RANDOM}};
-  entryUops_6_inst = _RAND_289[31:0];
+  entryUops_4_bpuInfo_takenOffset = _RAND_289[1:0];
   _RAND_290 = {1{`RANDOM}};
-  entryUops_6_ctrl_fuType = _RAND_290[3:0];
+  entryUops_4_bpuInfo_meta_btbHit = _RAND_290[0:0];
   _RAND_291 = {1{`RANDOM}};
-  entryUops_6_ctrl_aluOp = _RAND_291[4:0];
+  entryUops_4_bpuInfo_meta_btbIsJalr = _RAND_291[0:0];
   _RAND_292 = {1{`RANDOM}};
-  entryUops_6_ctrl_bruOp = _RAND_292[3:0];
+  entryUops_4_bpuInfo_meta_btbIsJal = _RAND_292[0:0];
   _RAND_293 = {1{`RANDOM}};
-  entryUops_6_ctrl_lsuOp = _RAND_293[3:0];
+  entryUops_4_bpuInfo_meta_btbIsCall = _RAND_293[0:0];
   _RAND_294 = {1{`RANDOM}};
-  entryUops_6_ctrl_csrOp = _RAND_294[2:0];
+  entryUops_4_bpuInfo_meta_btbIsRet = _RAND_294[0:0];
   _RAND_295 = {1{`RANDOM}};
-  entryUops_6_ctrl_mulOp = _RAND_295[2:0];
+  entryUops_4_bpuInfo_meta_btbOffset = _RAND_295[1:0];
   _RAND_296 = {1{`RANDOM}};
-  entryUops_6_ctrl_divOp = _RAND_296[2:0];
+  entryUops_4_bpuInfo_meta_phtCounter = _RAND_296[1:0];
   _RAND_297 = {1{`RANDOM}};
-  entryUops_6_ctrl_src1Type = _RAND_297[2:0];
+  entryUops_4_bpuInfo_meta_rasTop = _RAND_297[2:0];
   _RAND_298 = {1{`RANDOM}};
-  entryUops_6_ctrl_src2Type = _RAND_298[2:0];
+  entryUops_4_bpuInfo_meta_predTaken = _RAND_298[0:0];
   _RAND_299 = {1{`RANDOM}};
-  entryUops_6_ctrl_immType = _RAND_299[3:0];
+  entryUops_4_bpuInfo_meta_predTarget = _RAND_299[31:0];
   _RAND_300 = {1{`RANDOM}};
-  entryUops_6_ctrl_rfWen = _RAND_300[0:0];
+  entryUops_4_ldst = _RAND_300[4:0];
   _RAND_301 = {1{`RANDOM}};
-  entryUops_6_ctrl_memRead = _RAND_301[0:0];
+  entryUops_4_lrs1 = _RAND_301[4:0];
   _RAND_302 = {1{`RANDOM}};
-  entryUops_6_ctrl_memWrite = _RAND_302[0:0];
+  entryUops_4_lrs2 = _RAND_302[4:0];
   _RAND_303 = {1{`RANDOM}};
-  entryUops_6_ctrl_csrWen = _RAND_303[0:0];
+  entryUops_4_pdst = _RAND_303[6:0];
   _RAND_304 = {1{`RANDOM}};
-  entryUops_6_ctrl_isBranch = _RAND_304[0:0];
+  entryUops_4_prs1 = _RAND_304[6:0];
   _RAND_305 = {1{`RANDOM}};
-  entryUops_6_ctrl_isJump = _RAND_305[0:0];
+  entryUops_4_prs2 = _RAND_305[6:0];
   _RAND_306 = {1{`RANDOM}};
-  entryUops_6_ctrl_isPriv = _RAND_306[0:0];
+  entryUops_4_oldPdst = _RAND_306[6:0];
   _RAND_307 = {1{`RANDOM}};
-  entryUops_6_excpVec = _RAND_307[9:0];
+  entryUops_4_rs1Valid = _RAND_307[0:0];
   _RAND_308 = {1{`RANDOM}};
-  entryUops_6_imm = _RAND_308[31:0];
+  entryUops_4_rs2Valid = _RAND_308[0:0];
   _RAND_309 = {1{`RANDOM}};
-  entryUops_6_csrAddress = _RAND_309[13:0];
+  entryUops_4_rdValid = _RAND_309[0:0];
   _RAND_310 = {1{`RANDOM}};
-  entryUops_6_pdInfo_valid = _RAND_310[0:0];
+  entryUops_4_robIdx_value = _RAND_310[5:0];
   _RAND_311 = {1{`RANDOM}};
-  entryUops_6_pdInfo_isBr = _RAND_311[0:0];
+  entryUops_4_robIdx_flag = _RAND_311[0:0];
   _RAND_312 = {1{`RANDOM}};
-  entryUops_6_pdInfo_isJal = _RAND_312[0:0];
+  entryUops_4_robIdxFull_value = _RAND_312[5:0];
   _RAND_313 = {1{`RANDOM}};
-  entryUops_6_pdInfo_isJalr = _RAND_313[0:0];
+  entryUops_4_robIdxFull_flag = _RAND_313[0:0];
   _RAND_314 = {1{`RANDOM}};
-  entryUops_6_pdInfo_isCall = _RAND_314[0:0];
+  entryUops_4_issueQueue = _RAND_314[2:0];
   _RAND_315 = {1{`RANDOM}};
-  entryUops_6_pdInfo_isRet = _RAND_315[0:0];
+  entryUops_4_prs1Busy = _RAND_315[0:0];
   _RAND_316 = {1{`RANDOM}};
-  entryUops_6_pdInfo_jumpTarget = _RAND_316[31:0];
+  entryUops_4_prs2Busy = _RAND_316[0:0];
   _RAND_317 = {1{`RANDOM}};
-  entryUops_6_ldst = _RAND_317[4:0];
+  entryUops_5_pc = _RAND_317[31:0];
   _RAND_318 = {1{`RANDOM}};
-  entryUops_6_lrs1 = _RAND_318[4:0];
+  entryUops_5_inst = _RAND_318[31:0];
   _RAND_319 = {1{`RANDOM}};
-  entryUops_6_lrs2 = _RAND_319[4:0];
+  entryUops_5_ctrl_fuType = _RAND_319[3:0];
   _RAND_320 = {1{`RANDOM}};
-  entryUops_6_pdst = _RAND_320[6:0];
+  entryUops_5_ctrl_aluOp = _RAND_320[4:0];
   _RAND_321 = {1{`RANDOM}};
-  entryUops_6_prs1 = _RAND_321[6:0];
+  entryUops_5_ctrl_bruOp = _RAND_321[3:0];
   _RAND_322 = {1{`RANDOM}};
-  entryUops_6_prs2 = _RAND_322[6:0];
+  entryUops_5_ctrl_lsuOp = _RAND_322[3:0];
   _RAND_323 = {1{`RANDOM}};
-  entryUops_6_oldPdst = _RAND_323[6:0];
+  entryUops_5_ctrl_csrOp = _RAND_323[2:0];
   _RAND_324 = {1{`RANDOM}};
-  entryUops_6_rs1Valid = _RAND_324[0:0];
+  entryUops_5_ctrl_mulOp = _RAND_324[2:0];
   _RAND_325 = {1{`RANDOM}};
-  entryUops_6_rs2Valid = _RAND_325[0:0];
+  entryUops_5_ctrl_divOp = _RAND_325[2:0];
   _RAND_326 = {1{`RANDOM}};
-  entryUops_6_rdValid = _RAND_326[0:0];
+  entryUops_5_ctrl_src1Type = _RAND_326[2:0];
   _RAND_327 = {1{`RANDOM}};
-  entryUops_6_robIdx_value = _RAND_327[5:0];
+  entryUops_5_ctrl_src2Type = _RAND_327[2:0];
   _RAND_328 = {1{`RANDOM}};
-  entryUops_6_robIdx_flag = _RAND_328[0:0];
+  entryUops_5_ctrl_immType = _RAND_328[3:0];
   _RAND_329 = {1{`RANDOM}};
-  entryUops_6_robIdxFull_value = _RAND_329[5:0];
+  entryUops_5_ctrl_rfWen = _RAND_329[0:0];
   _RAND_330 = {1{`RANDOM}};
-  entryUops_6_robIdxFull_flag = _RAND_330[0:0];
+  entryUops_5_ctrl_memRead = _RAND_330[0:0];
   _RAND_331 = {1{`RANDOM}};
-  entryUops_6_issueQueue = _RAND_331[2:0];
+  entryUops_5_ctrl_memWrite = _RAND_331[0:0];
   _RAND_332 = {1{`RANDOM}};
-  entryUops_6_prs1Busy = _RAND_332[0:0];
+  entryUops_5_ctrl_csrWen = _RAND_332[0:0];
   _RAND_333 = {1{`RANDOM}};
-  entryUops_6_prs2Busy = _RAND_333[0:0];
+  entryUops_5_ctrl_isBranch = _RAND_333[0:0];
   _RAND_334 = {1{`RANDOM}};
-  entryUops_7_pc = _RAND_334[31:0];
+  entryUops_5_ctrl_isJump = _RAND_334[0:0];
   _RAND_335 = {1{`RANDOM}};
-  entryUops_7_inst = _RAND_335[31:0];
+  entryUops_5_ctrl_isPriv = _RAND_335[0:0];
   _RAND_336 = {1{`RANDOM}};
-  entryUops_7_ctrl_fuType = _RAND_336[3:0];
+  entryUops_5_excpVec = _RAND_336[9:0];
   _RAND_337 = {1{`RANDOM}};
-  entryUops_7_ctrl_aluOp = _RAND_337[4:0];
+  entryUops_5_imm = _RAND_337[31:0];
   _RAND_338 = {1{`RANDOM}};
-  entryUops_7_ctrl_bruOp = _RAND_338[3:0];
+  entryUops_5_csrAddress = _RAND_338[13:0];
   _RAND_339 = {1{`RANDOM}};
-  entryUops_7_ctrl_lsuOp = _RAND_339[3:0];
+  entryUops_5_pdInfo_valid = _RAND_339[0:0];
   _RAND_340 = {1{`RANDOM}};
-  entryUops_7_ctrl_csrOp = _RAND_340[2:0];
+  entryUops_5_pdInfo_isBr = _RAND_340[0:0];
   _RAND_341 = {1{`RANDOM}};
-  entryUops_7_ctrl_mulOp = _RAND_341[2:0];
+  entryUops_5_pdInfo_isJal = _RAND_341[0:0];
   _RAND_342 = {1{`RANDOM}};
-  entryUops_7_ctrl_divOp = _RAND_342[2:0];
+  entryUops_5_pdInfo_isJalr = _RAND_342[0:0];
   _RAND_343 = {1{`RANDOM}};
-  entryUops_7_ctrl_src1Type = _RAND_343[2:0];
+  entryUops_5_pdInfo_isCall = _RAND_343[0:0];
   _RAND_344 = {1{`RANDOM}};
-  entryUops_7_ctrl_src2Type = _RAND_344[2:0];
+  entryUops_5_pdInfo_isRet = _RAND_344[0:0];
   _RAND_345 = {1{`RANDOM}};
-  entryUops_7_ctrl_immType = _RAND_345[3:0];
+  entryUops_5_pdInfo_jumpTarget = _RAND_345[31:0];
   _RAND_346 = {1{`RANDOM}};
-  entryUops_7_ctrl_rfWen = _RAND_346[0:0];
+  entryUops_5_bpuInfo_pc = _RAND_346[31:0];
   _RAND_347 = {1{`RANDOM}};
-  entryUops_7_ctrl_memRead = _RAND_347[0:0];
+  entryUops_5_bpuInfo_fallThrough = _RAND_347[31:0];
   _RAND_348 = {1{`RANDOM}};
-  entryUops_7_ctrl_memWrite = _RAND_348[0:0];
+  entryUops_5_bpuInfo_taken = _RAND_348[0:0];
   _RAND_349 = {1{`RANDOM}};
-  entryUops_7_ctrl_csrWen = _RAND_349[0:0];
+  entryUops_5_bpuInfo_target = _RAND_349[31:0];
   _RAND_350 = {1{`RANDOM}};
-  entryUops_7_ctrl_isBranch = _RAND_350[0:0];
+  entryUops_5_bpuInfo_takenOffset = _RAND_350[1:0];
   _RAND_351 = {1{`RANDOM}};
-  entryUops_7_ctrl_isJump = _RAND_351[0:0];
+  entryUops_5_bpuInfo_meta_btbHit = _RAND_351[0:0];
   _RAND_352 = {1{`RANDOM}};
-  entryUops_7_ctrl_isPriv = _RAND_352[0:0];
+  entryUops_5_bpuInfo_meta_btbIsJalr = _RAND_352[0:0];
   _RAND_353 = {1{`RANDOM}};
-  entryUops_7_excpVec = _RAND_353[9:0];
+  entryUops_5_bpuInfo_meta_btbIsJal = _RAND_353[0:0];
   _RAND_354 = {1{`RANDOM}};
-  entryUops_7_imm = _RAND_354[31:0];
+  entryUops_5_bpuInfo_meta_btbIsCall = _RAND_354[0:0];
   _RAND_355 = {1{`RANDOM}};
-  entryUops_7_csrAddress = _RAND_355[13:0];
+  entryUops_5_bpuInfo_meta_btbIsRet = _RAND_355[0:0];
   _RAND_356 = {1{`RANDOM}};
-  entryUops_7_pdInfo_valid = _RAND_356[0:0];
+  entryUops_5_bpuInfo_meta_btbOffset = _RAND_356[1:0];
   _RAND_357 = {1{`RANDOM}};
-  entryUops_7_pdInfo_isBr = _RAND_357[0:0];
+  entryUops_5_bpuInfo_meta_phtCounter = _RAND_357[1:0];
   _RAND_358 = {1{`RANDOM}};
-  entryUops_7_pdInfo_isJal = _RAND_358[0:0];
+  entryUops_5_bpuInfo_meta_rasTop = _RAND_358[2:0];
   _RAND_359 = {1{`RANDOM}};
-  entryUops_7_pdInfo_isJalr = _RAND_359[0:0];
+  entryUops_5_bpuInfo_meta_predTaken = _RAND_359[0:0];
   _RAND_360 = {1{`RANDOM}};
-  entryUops_7_pdInfo_isCall = _RAND_360[0:0];
+  entryUops_5_bpuInfo_meta_predTarget = _RAND_360[31:0];
   _RAND_361 = {1{`RANDOM}};
-  entryUops_7_pdInfo_isRet = _RAND_361[0:0];
+  entryUops_5_ldst = _RAND_361[4:0];
   _RAND_362 = {1{`RANDOM}};
-  entryUops_7_pdInfo_jumpTarget = _RAND_362[31:0];
+  entryUops_5_lrs1 = _RAND_362[4:0];
   _RAND_363 = {1{`RANDOM}};
-  entryUops_7_ldst = _RAND_363[4:0];
+  entryUops_5_lrs2 = _RAND_363[4:0];
   _RAND_364 = {1{`RANDOM}};
-  entryUops_7_lrs1 = _RAND_364[4:0];
+  entryUops_5_pdst = _RAND_364[6:0];
   _RAND_365 = {1{`RANDOM}};
-  entryUops_7_lrs2 = _RAND_365[4:0];
+  entryUops_5_prs1 = _RAND_365[6:0];
   _RAND_366 = {1{`RANDOM}};
-  entryUops_7_pdst = _RAND_366[6:0];
+  entryUops_5_prs2 = _RAND_366[6:0];
   _RAND_367 = {1{`RANDOM}};
-  entryUops_7_prs1 = _RAND_367[6:0];
+  entryUops_5_oldPdst = _RAND_367[6:0];
   _RAND_368 = {1{`RANDOM}};
-  entryUops_7_prs2 = _RAND_368[6:0];
+  entryUops_5_rs1Valid = _RAND_368[0:0];
   _RAND_369 = {1{`RANDOM}};
-  entryUops_7_oldPdst = _RAND_369[6:0];
+  entryUops_5_rs2Valid = _RAND_369[0:0];
   _RAND_370 = {1{`RANDOM}};
-  entryUops_7_rs1Valid = _RAND_370[0:0];
+  entryUops_5_rdValid = _RAND_370[0:0];
   _RAND_371 = {1{`RANDOM}};
-  entryUops_7_rs2Valid = _RAND_371[0:0];
+  entryUops_5_robIdx_value = _RAND_371[5:0];
   _RAND_372 = {1{`RANDOM}};
-  entryUops_7_rdValid = _RAND_372[0:0];
+  entryUops_5_robIdx_flag = _RAND_372[0:0];
   _RAND_373 = {1{`RANDOM}};
-  entryUops_7_robIdx_value = _RAND_373[5:0];
+  entryUops_5_robIdxFull_value = _RAND_373[5:0];
   _RAND_374 = {1{`RANDOM}};
-  entryUops_7_robIdx_flag = _RAND_374[0:0];
+  entryUops_5_robIdxFull_flag = _RAND_374[0:0];
   _RAND_375 = {1{`RANDOM}};
-  entryUops_7_robIdxFull_value = _RAND_375[5:0];
+  entryUops_5_issueQueue = _RAND_375[2:0];
   _RAND_376 = {1{`RANDOM}};
-  entryUops_7_robIdxFull_flag = _RAND_376[0:0];
+  entryUops_5_prs1Busy = _RAND_376[0:0];
   _RAND_377 = {1{`RANDOM}};
-  entryUops_7_issueQueue = _RAND_377[2:0];
+  entryUops_5_prs2Busy = _RAND_377[0:0];
   _RAND_378 = {1{`RANDOM}};
-  entryUops_7_prs1Busy = _RAND_378[0:0];
+  entryUops_6_pc = _RAND_378[31:0];
   _RAND_379 = {1{`RANDOM}};
-  entryUops_7_prs2Busy = _RAND_379[0:0];
+  entryUops_6_inst = _RAND_379[31:0];
   _RAND_380 = {1{`RANDOM}};
-  entryUops_8_pc = _RAND_380[31:0];
+  entryUops_6_ctrl_fuType = _RAND_380[3:0];
   _RAND_381 = {1{`RANDOM}};
-  entryUops_8_inst = _RAND_381[31:0];
+  entryUops_6_ctrl_aluOp = _RAND_381[4:0];
   _RAND_382 = {1{`RANDOM}};
-  entryUops_8_ctrl_fuType = _RAND_382[3:0];
+  entryUops_6_ctrl_bruOp = _RAND_382[3:0];
   _RAND_383 = {1{`RANDOM}};
-  entryUops_8_ctrl_aluOp = _RAND_383[4:0];
+  entryUops_6_ctrl_lsuOp = _RAND_383[3:0];
   _RAND_384 = {1{`RANDOM}};
-  entryUops_8_ctrl_bruOp = _RAND_384[3:0];
+  entryUops_6_ctrl_csrOp = _RAND_384[2:0];
   _RAND_385 = {1{`RANDOM}};
-  entryUops_8_ctrl_lsuOp = _RAND_385[3:0];
+  entryUops_6_ctrl_mulOp = _RAND_385[2:0];
   _RAND_386 = {1{`RANDOM}};
-  entryUops_8_ctrl_csrOp = _RAND_386[2:0];
+  entryUops_6_ctrl_divOp = _RAND_386[2:0];
   _RAND_387 = {1{`RANDOM}};
-  entryUops_8_ctrl_mulOp = _RAND_387[2:0];
+  entryUops_6_ctrl_src1Type = _RAND_387[2:0];
   _RAND_388 = {1{`RANDOM}};
-  entryUops_8_ctrl_divOp = _RAND_388[2:0];
+  entryUops_6_ctrl_src2Type = _RAND_388[2:0];
   _RAND_389 = {1{`RANDOM}};
-  entryUops_8_ctrl_src1Type = _RAND_389[2:0];
+  entryUops_6_ctrl_immType = _RAND_389[3:0];
   _RAND_390 = {1{`RANDOM}};
-  entryUops_8_ctrl_src2Type = _RAND_390[2:0];
+  entryUops_6_ctrl_rfWen = _RAND_390[0:0];
   _RAND_391 = {1{`RANDOM}};
-  entryUops_8_ctrl_immType = _RAND_391[3:0];
+  entryUops_6_ctrl_memRead = _RAND_391[0:0];
   _RAND_392 = {1{`RANDOM}};
-  entryUops_8_ctrl_rfWen = _RAND_392[0:0];
+  entryUops_6_ctrl_memWrite = _RAND_392[0:0];
   _RAND_393 = {1{`RANDOM}};
-  entryUops_8_ctrl_memRead = _RAND_393[0:0];
+  entryUops_6_ctrl_csrWen = _RAND_393[0:0];
   _RAND_394 = {1{`RANDOM}};
-  entryUops_8_ctrl_memWrite = _RAND_394[0:0];
+  entryUops_6_ctrl_isBranch = _RAND_394[0:0];
   _RAND_395 = {1{`RANDOM}};
-  entryUops_8_ctrl_csrWen = _RAND_395[0:0];
+  entryUops_6_ctrl_isJump = _RAND_395[0:0];
   _RAND_396 = {1{`RANDOM}};
-  entryUops_8_ctrl_isBranch = _RAND_396[0:0];
+  entryUops_6_ctrl_isPriv = _RAND_396[0:0];
   _RAND_397 = {1{`RANDOM}};
-  entryUops_8_ctrl_isJump = _RAND_397[0:0];
+  entryUops_6_excpVec = _RAND_397[9:0];
   _RAND_398 = {1{`RANDOM}};
-  entryUops_8_ctrl_isPriv = _RAND_398[0:0];
+  entryUops_6_imm = _RAND_398[31:0];
   _RAND_399 = {1{`RANDOM}};
-  entryUops_8_excpVec = _RAND_399[9:0];
+  entryUops_6_csrAddress = _RAND_399[13:0];
   _RAND_400 = {1{`RANDOM}};
-  entryUops_8_imm = _RAND_400[31:0];
+  entryUops_6_pdInfo_valid = _RAND_400[0:0];
   _RAND_401 = {1{`RANDOM}};
-  entryUops_8_csrAddress = _RAND_401[13:0];
+  entryUops_6_pdInfo_isBr = _RAND_401[0:0];
   _RAND_402 = {1{`RANDOM}};
-  entryUops_8_pdInfo_valid = _RAND_402[0:0];
+  entryUops_6_pdInfo_isJal = _RAND_402[0:0];
   _RAND_403 = {1{`RANDOM}};
-  entryUops_8_pdInfo_isBr = _RAND_403[0:0];
+  entryUops_6_pdInfo_isJalr = _RAND_403[0:0];
   _RAND_404 = {1{`RANDOM}};
-  entryUops_8_pdInfo_isJal = _RAND_404[0:0];
+  entryUops_6_pdInfo_isCall = _RAND_404[0:0];
   _RAND_405 = {1{`RANDOM}};
-  entryUops_8_pdInfo_isJalr = _RAND_405[0:0];
+  entryUops_6_pdInfo_isRet = _RAND_405[0:0];
   _RAND_406 = {1{`RANDOM}};
-  entryUops_8_pdInfo_isCall = _RAND_406[0:0];
+  entryUops_6_pdInfo_jumpTarget = _RAND_406[31:0];
   _RAND_407 = {1{`RANDOM}};
-  entryUops_8_pdInfo_isRet = _RAND_407[0:0];
+  entryUops_6_bpuInfo_pc = _RAND_407[31:0];
   _RAND_408 = {1{`RANDOM}};
-  entryUops_8_pdInfo_jumpTarget = _RAND_408[31:0];
+  entryUops_6_bpuInfo_fallThrough = _RAND_408[31:0];
   _RAND_409 = {1{`RANDOM}};
-  entryUops_8_ldst = _RAND_409[4:0];
+  entryUops_6_bpuInfo_taken = _RAND_409[0:0];
   _RAND_410 = {1{`RANDOM}};
-  entryUops_8_lrs1 = _RAND_410[4:0];
+  entryUops_6_bpuInfo_target = _RAND_410[31:0];
   _RAND_411 = {1{`RANDOM}};
-  entryUops_8_lrs2 = _RAND_411[4:0];
+  entryUops_6_bpuInfo_takenOffset = _RAND_411[1:0];
   _RAND_412 = {1{`RANDOM}};
-  entryUops_8_pdst = _RAND_412[6:0];
+  entryUops_6_bpuInfo_meta_btbHit = _RAND_412[0:0];
   _RAND_413 = {1{`RANDOM}};
-  entryUops_8_prs1 = _RAND_413[6:0];
+  entryUops_6_bpuInfo_meta_btbIsJalr = _RAND_413[0:0];
   _RAND_414 = {1{`RANDOM}};
-  entryUops_8_prs2 = _RAND_414[6:0];
+  entryUops_6_bpuInfo_meta_btbIsJal = _RAND_414[0:0];
   _RAND_415 = {1{`RANDOM}};
-  entryUops_8_oldPdst = _RAND_415[6:0];
+  entryUops_6_bpuInfo_meta_btbIsCall = _RAND_415[0:0];
   _RAND_416 = {1{`RANDOM}};
-  entryUops_8_rs1Valid = _RAND_416[0:0];
+  entryUops_6_bpuInfo_meta_btbIsRet = _RAND_416[0:0];
   _RAND_417 = {1{`RANDOM}};
-  entryUops_8_rs2Valid = _RAND_417[0:0];
+  entryUops_6_bpuInfo_meta_btbOffset = _RAND_417[1:0];
   _RAND_418 = {1{`RANDOM}};
-  entryUops_8_rdValid = _RAND_418[0:0];
+  entryUops_6_bpuInfo_meta_phtCounter = _RAND_418[1:0];
   _RAND_419 = {1{`RANDOM}};
-  entryUops_8_robIdx_value = _RAND_419[5:0];
+  entryUops_6_bpuInfo_meta_rasTop = _RAND_419[2:0];
   _RAND_420 = {1{`RANDOM}};
-  entryUops_8_robIdx_flag = _RAND_420[0:0];
+  entryUops_6_bpuInfo_meta_predTaken = _RAND_420[0:0];
   _RAND_421 = {1{`RANDOM}};
-  entryUops_8_robIdxFull_value = _RAND_421[5:0];
+  entryUops_6_bpuInfo_meta_predTarget = _RAND_421[31:0];
   _RAND_422 = {1{`RANDOM}};
-  entryUops_8_robIdxFull_flag = _RAND_422[0:0];
+  entryUops_6_ldst = _RAND_422[4:0];
   _RAND_423 = {1{`RANDOM}};
-  entryUops_8_issueQueue = _RAND_423[2:0];
+  entryUops_6_lrs1 = _RAND_423[4:0];
   _RAND_424 = {1{`RANDOM}};
-  entryUops_8_prs1Busy = _RAND_424[0:0];
+  entryUops_6_lrs2 = _RAND_424[4:0];
   _RAND_425 = {1{`RANDOM}};
-  entryUops_8_prs2Busy = _RAND_425[0:0];
+  entryUops_6_pdst = _RAND_425[6:0];
   _RAND_426 = {1{`RANDOM}};
-  entryUops_9_pc = _RAND_426[31:0];
+  entryUops_6_prs1 = _RAND_426[6:0];
   _RAND_427 = {1{`RANDOM}};
-  entryUops_9_inst = _RAND_427[31:0];
+  entryUops_6_prs2 = _RAND_427[6:0];
   _RAND_428 = {1{`RANDOM}};
-  entryUops_9_ctrl_fuType = _RAND_428[3:0];
+  entryUops_6_oldPdst = _RAND_428[6:0];
   _RAND_429 = {1{`RANDOM}};
-  entryUops_9_ctrl_aluOp = _RAND_429[4:0];
+  entryUops_6_rs1Valid = _RAND_429[0:0];
   _RAND_430 = {1{`RANDOM}};
-  entryUops_9_ctrl_bruOp = _RAND_430[3:0];
+  entryUops_6_rs2Valid = _RAND_430[0:0];
   _RAND_431 = {1{`RANDOM}};
-  entryUops_9_ctrl_lsuOp = _RAND_431[3:0];
+  entryUops_6_rdValid = _RAND_431[0:0];
   _RAND_432 = {1{`RANDOM}};
-  entryUops_9_ctrl_csrOp = _RAND_432[2:0];
+  entryUops_6_robIdx_value = _RAND_432[5:0];
   _RAND_433 = {1{`RANDOM}};
-  entryUops_9_ctrl_mulOp = _RAND_433[2:0];
+  entryUops_6_robIdx_flag = _RAND_433[0:0];
   _RAND_434 = {1{`RANDOM}};
-  entryUops_9_ctrl_divOp = _RAND_434[2:0];
+  entryUops_6_robIdxFull_value = _RAND_434[5:0];
   _RAND_435 = {1{`RANDOM}};
-  entryUops_9_ctrl_src1Type = _RAND_435[2:0];
+  entryUops_6_robIdxFull_flag = _RAND_435[0:0];
   _RAND_436 = {1{`RANDOM}};
-  entryUops_9_ctrl_src2Type = _RAND_436[2:0];
+  entryUops_6_issueQueue = _RAND_436[2:0];
   _RAND_437 = {1{`RANDOM}};
-  entryUops_9_ctrl_immType = _RAND_437[3:0];
+  entryUops_6_prs1Busy = _RAND_437[0:0];
   _RAND_438 = {1{`RANDOM}};
-  entryUops_9_ctrl_rfWen = _RAND_438[0:0];
+  entryUops_6_prs2Busy = _RAND_438[0:0];
   _RAND_439 = {1{`RANDOM}};
-  entryUops_9_ctrl_memRead = _RAND_439[0:0];
+  entryUops_7_pc = _RAND_439[31:0];
   _RAND_440 = {1{`RANDOM}};
-  entryUops_9_ctrl_memWrite = _RAND_440[0:0];
+  entryUops_7_inst = _RAND_440[31:0];
   _RAND_441 = {1{`RANDOM}};
-  entryUops_9_ctrl_csrWen = _RAND_441[0:0];
+  entryUops_7_ctrl_fuType = _RAND_441[3:0];
   _RAND_442 = {1{`RANDOM}};
-  entryUops_9_ctrl_isBranch = _RAND_442[0:0];
+  entryUops_7_ctrl_aluOp = _RAND_442[4:0];
   _RAND_443 = {1{`RANDOM}};
-  entryUops_9_ctrl_isJump = _RAND_443[0:0];
+  entryUops_7_ctrl_bruOp = _RAND_443[3:0];
   _RAND_444 = {1{`RANDOM}};
-  entryUops_9_ctrl_isPriv = _RAND_444[0:0];
+  entryUops_7_ctrl_lsuOp = _RAND_444[3:0];
   _RAND_445 = {1{`RANDOM}};
-  entryUops_9_excpVec = _RAND_445[9:0];
+  entryUops_7_ctrl_csrOp = _RAND_445[2:0];
   _RAND_446 = {1{`RANDOM}};
-  entryUops_9_imm = _RAND_446[31:0];
+  entryUops_7_ctrl_mulOp = _RAND_446[2:0];
   _RAND_447 = {1{`RANDOM}};
-  entryUops_9_csrAddress = _RAND_447[13:0];
+  entryUops_7_ctrl_divOp = _RAND_447[2:0];
   _RAND_448 = {1{`RANDOM}};
-  entryUops_9_pdInfo_valid = _RAND_448[0:0];
+  entryUops_7_ctrl_src1Type = _RAND_448[2:0];
   _RAND_449 = {1{`RANDOM}};
-  entryUops_9_pdInfo_isBr = _RAND_449[0:0];
+  entryUops_7_ctrl_src2Type = _RAND_449[2:0];
   _RAND_450 = {1{`RANDOM}};
-  entryUops_9_pdInfo_isJal = _RAND_450[0:0];
+  entryUops_7_ctrl_immType = _RAND_450[3:0];
   _RAND_451 = {1{`RANDOM}};
-  entryUops_9_pdInfo_isJalr = _RAND_451[0:0];
+  entryUops_7_ctrl_rfWen = _RAND_451[0:0];
   _RAND_452 = {1{`RANDOM}};
-  entryUops_9_pdInfo_isCall = _RAND_452[0:0];
+  entryUops_7_ctrl_memRead = _RAND_452[0:0];
   _RAND_453 = {1{`RANDOM}};
-  entryUops_9_pdInfo_isRet = _RAND_453[0:0];
+  entryUops_7_ctrl_memWrite = _RAND_453[0:0];
   _RAND_454 = {1{`RANDOM}};
-  entryUops_9_pdInfo_jumpTarget = _RAND_454[31:0];
+  entryUops_7_ctrl_csrWen = _RAND_454[0:0];
   _RAND_455 = {1{`RANDOM}};
-  entryUops_9_ldst = _RAND_455[4:0];
+  entryUops_7_ctrl_isBranch = _RAND_455[0:0];
   _RAND_456 = {1{`RANDOM}};
-  entryUops_9_lrs1 = _RAND_456[4:0];
+  entryUops_7_ctrl_isJump = _RAND_456[0:0];
   _RAND_457 = {1{`RANDOM}};
-  entryUops_9_lrs2 = _RAND_457[4:0];
+  entryUops_7_ctrl_isPriv = _RAND_457[0:0];
   _RAND_458 = {1{`RANDOM}};
-  entryUops_9_pdst = _RAND_458[6:0];
+  entryUops_7_excpVec = _RAND_458[9:0];
   _RAND_459 = {1{`RANDOM}};
-  entryUops_9_prs1 = _RAND_459[6:0];
+  entryUops_7_imm = _RAND_459[31:0];
   _RAND_460 = {1{`RANDOM}};
-  entryUops_9_prs2 = _RAND_460[6:0];
+  entryUops_7_csrAddress = _RAND_460[13:0];
   _RAND_461 = {1{`RANDOM}};
-  entryUops_9_oldPdst = _RAND_461[6:0];
+  entryUops_7_pdInfo_valid = _RAND_461[0:0];
   _RAND_462 = {1{`RANDOM}};
-  entryUops_9_rs1Valid = _RAND_462[0:0];
+  entryUops_7_pdInfo_isBr = _RAND_462[0:0];
   _RAND_463 = {1{`RANDOM}};
-  entryUops_9_rs2Valid = _RAND_463[0:0];
+  entryUops_7_pdInfo_isJal = _RAND_463[0:0];
   _RAND_464 = {1{`RANDOM}};
-  entryUops_9_rdValid = _RAND_464[0:0];
+  entryUops_7_pdInfo_isJalr = _RAND_464[0:0];
   _RAND_465 = {1{`RANDOM}};
-  entryUops_9_robIdx_value = _RAND_465[5:0];
+  entryUops_7_pdInfo_isCall = _RAND_465[0:0];
   _RAND_466 = {1{`RANDOM}};
-  entryUops_9_robIdx_flag = _RAND_466[0:0];
+  entryUops_7_pdInfo_isRet = _RAND_466[0:0];
   _RAND_467 = {1{`RANDOM}};
-  entryUops_9_robIdxFull_value = _RAND_467[5:0];
+  entryUops_7_pdInfo_jumpTarget = _RAND_467[31:0];
   _RAND_468 = {1{`RANDOM}};
-  entryUops_9_robIdxFull_flag = _RAND_468[0:0];
+  entryUops_7_bpuInfo_pc = _RAND_468[31:0];
   _RAND_469 = {1{`RANDOM}};
-  entryUops_9_issueQueue = _RAND_469[2:0];
+  entryUops_7_bpuInfo_fallThrough = _RAND_469[31:0];
   _RAND_470 = {1{`RANDOM}};
-  entryUops_9_prs1Busy = _RAND_470[0:0];
+  entryUops_7_bpuInfo_taken = _RAND_470[0:0];
   _RAND_471 = {1{`RANDOM}};
-  entryUops_9_prs2Busy = _RAND_471[0:0];
+  entryUops_7_bpuInfo_target = _RAND_471[31:0];
   _RAND_472 = {1{`RANDOM}};
-  entryUops_10_pc = _RAND_472[31:0];
+  entryUops_7_bpuInfo_takenOffset = _RAND_472[1:0];
   _RAND_473 = {1{`RANDOM}};
-  entryUops_10_inst = _RAND_473[31:0];
+  entryUops_7_bpuInfo_meta_btbHit = _RAND_473[0:0];
   _RAND_474 = {1{`RANDOM}};
-  entryUops_10_ctrl_fuType = _RAND_474[3:0];
+  entryUops_7_bpuInfo_meta_btbIsJalr = _RAND_474[0:0];
   _RAND_475 = {1{`RANDOM}};
-  entryUops_10_ctrl_aluOp = _RAND_475[4:0];
+  entryUops_7_bpuInfo_meta_btbIsJal = _RAND_475[0:0];
   _RAND_476 = {1{`RANDOM}};
-  entryUops_10_ctrl_bruOp = _RAND_476[3:0];
+  entryUops_7_bpuInfo_meta_btbIsCall = _RAND_476[0:0];
   _RAND_477 = {1{`RANDOM}};
-  entryUops_10_ctrl_lsuOp = _RAND_477[3:0];
+  entryUops_7_bpuInfo_meta_btbIsRet = _RAND_477[0:0];
   _RAND_478 = {1{`RANDOM}};
-  entryUops_10_ctrl_csrOp = _RAND_478[2:0];
+  entryUops_7_bpuInfo_meta_btbOffset = _RAND_478[1:0];
   _RAND_479 = {1{`RANDOM}};
-  entryUops_10_ctrl_mulOp = _RAND_479[2:0];
+  entryUops_7_bpuInfo_meta_phtCounter = _RAND_479[1:0];
   _RAND_480 = {1{`RANDOM}};
-  entryUops_10_ctrl_divOp = _RAND_480[2:0];
+  entryUops_7_bpuInfo_meta_rasTop = _RAND_480[2:0];
   _RAND_481 = {1{`RANDOM}};
-  entryUops_10_ctrl_src1Type = _RAND_481[2:0];
+  entryUops_7_bpuInfo_meta_predTaken = _RAND_481[0:0];
   _RAND_482 = {1{`RANDOM}};
-  entryUops_10_ctrl_src2Type = _RAND_482[2:0];
+  entryUops_7_bpuInfo_meta_predTarget = _RAND_482[31:0];
   _RAND_483 = {1{`RANDOM}};
-  entryUops_10_ctrl_immType = _RAND_483[3:0];
+  entryUops_7_ldst = _RAND_483[4:0];
   _RAND_484 = {1{`RANDOM}};
-  entryUops_10_ctrl_rfWen = _RAND_484[0:0];
+  entryUops_7_lrs1 = _RAND_484[4:0];
   _RAND_485 = {1{`RANDOM}};
-  entryUops_10_ctrl_memRead = _RAND_485[0:0];
+  entryUops_7_lrs2 = _RAND_485[4:0];
   _RAND_486 = {1{`RANDOM}};
-  entryUops_10_ctrl_memWrite = _RAND_486[0:0];
+  entryUops_7_pdst = _RAND_486[6:0];
   _RAND_487 = {1{`RANDOM}};
-  entryUops_10_ctrl_csrWen = _RAND_487[0:0];
+  entryUops_7_prs1 = _RAND_487[6:0];
   _RAND_488 = {1{`RANDOM}};
-  entryUops_10_ctrl_isBranch = _RAND_488[0:0];
+  entryUops_7_prs2 = _RAND_488[6:0];
   _RAND_489 = {1{`RANDOM}};
-  entryUops_10_ctrl_isJump = _RAND_489[0:0];
+  entryUops_7_oldPdst = _RAND_489[6:0];
   _RAND_490 = {1{`RANDOM}};
-  entryUops_10_ctrl_isPriv = _RAND_490[0:0];
+  entryUops_7_rs1Valid = _RAND_490[0:0];
   _RAND_491 = {1{`RANDOM}};
-  entryUops_10_excpVec = _RAND_491[9:0];
+  entryUops_7_rs2Valid = _RAND_491[0:0];
   _RAND_492 = {1{`RANDOM}};
-  entryUops_10_imm = _RAND_492[31:0];
+  entryUops_7_rdValid = _RAND_492[0:0];
   _RAND_493 = {1{`RANDOM}};
-  entryUops_10_csrAddress = _RAND_493[13:0];
+  entryUops_7_robIdx_value = _RAND_493[5:0];
   _RAND_494 = {1{`RANDOM}};
-  entryUops_10_pdInfo_valid = _RAND_494[0:0];
+  entryUops_7_robIdx_flag = _RAND_494[0:0];
   _RAND_495 = {1{`RANDOM}};
-  entryUops_10_pdInfo_isBr = _RAND_495[0:0];
+  entryUops_7_robIdxFull_value = _RAND_495[5:0];
   _RAND_496 = {1{`RANDOM}};
-  entryUops_10_pdInfo_isJal = _RAND_496[0:0];
+  entryUops_7_robIdxFull_flag = _RAND_496[0:0];
   _RAND_497 = {1{`RANDOM}};
-  entryUops_10_pdInfo_isJalr = _RAND_497[0:0];
+  entryUops_7_issueQueue = _RAND_497[2:0];
   _RAND_498 = {1{`RANDOM}};
-  entryUops_10_pdInfo_isCall = _RAND_498[0:0];
+  entryUops_7_prs1Busy = _RAND_498[0:0];
   _RAND_499 = {1{`RANDOM}};
-  entryUops_10_pdInfo_isRet = _RAND_499[0:0];
+  entryUops_7_prs2Busy = _RAND_499[0:0];
   _RAND_500 = {1{`RANDOM}};
-  entryUops_10_pdInfo_jumpTarget = _RAND_500[31:0];
+  entryUops_8_pc = _RAND_500[31:0];
   _RAND_501 = {1{`RANDOM}};
-  entryUops_10_ldst = _RAND_501[4:0];
+  entryUops_8_inst = _RAND_501[31:0];
   _RAND_502 = {1{`RANDOM}};
-  entryUops_10_lrs1 = _RAND_502[4:0];
+  entryUops_8_ctrl_fuType = _RAND_502[3:0];
   _RAND_503 = {1{`RANDOM}};
-  entryUops_10_lrs2 = _RAND_503[4:0];
+  entryUops_8_ctrl_aluOp = _RAND_503[4:0];
   _RAND_504 = {1{`RANDOM}};
-  entryUops_10_pdst = _RAND_504[6:0];
+  entryUops_8_ctrl_bruOp = _RAND_504[3:0];
   _RAND_505 = {1{`RANDOM}};
-  entryUops_10_prs1 = _RAND_505[6:0];
+  entryUops_8_ctrl_lsuOp = _RAND_505[3:0];
   _RAND_506 = {1{`RANDOM}};
-  entryUops_10_prs2 = _RAND_506[6:0];
+  entryUops_8_ctrl_csrOp = _RAND_506[2:0];
   _RAND_507 = {1{`RANDOM}};
-  entryUops_10_oldPdst = _RAND_507[6:0];
+  entryUops_8_ctrl_mulOp = _RAND_507[2:0];
   _RAND_508 = {1{`RANDOM}};
-  entryUops_10_rs1Valid = _RAND_508[0:0];
+  entryUops_8_ctrl_divOp = _RAND_508[2:0];
   _RAND_509 = {1{`RANDOM}};
-  entryUops_10_rs2Valid = _RAND_509[0:0];
+  entryUops_8_ctrl_src1Type = _RAND_509[2:0];
   _RAND_510 = {1{`RANDOM}};
-  entryUops_10_rdValid = _RAND_510[0:0];
+  entryUops_8_ctrl_src2Type = _RAND_510[2:0];
   _RAND_511 = {1{`RANDOM}};
-  entryUops_10_robIdx_value = _RAND_511[5:0];
+  entryUops_8_ctrl_immType = _RAND_511[3:0];
   _RAND_512 = {1{`RANDOM}};
-  entryUops_10_robIdx_flag = _RAND_512[0:0];
+  entryUops_8_ctrl_rfWen = _RAND_512[0:0];
   _RAND_513 = {1{`RANDOM}};
-  entryUops_10_robIdxFull_value = _RAND_513[5:0];
+  entryUops_8_ctrl_memRead = _RAND_513[0:0];
   _RAND_514 = {1{`RANDOM}};
-  entryUops_10_robIdxFull_flag = _RAND_514[0:0];
+  entryUops_8_ctrl_memWrite = _RAND_514[0:0];
   _RAND_515 = {1{`RANDOM}};
-  entryUops_10_issueQueue = _RAND_515[2:0];
+  entryUops_8_ctrl_csrWen = _RAND_515[0:0];
   _RAND_516 = {1{`RANDOM}};
-  entryUops_10_prs1Busy = _RAND_516[0:0];
+  entryUops_8_ctrl_isBranch = _RAND_516[0:0];
   _RAND_517 = {1{`RANDOM}};
-  entryUops_10_prs2Busy = _RAND_517[0:0];
+  entryUops_8_ctrl_isJump = _RAND_517[0:0];
   _RAND_518 = {1{`RANDOM}};
-  entryUops_11_pc = _RAND_518[31:0];
+  entryUops_8_ctrl_isPriv = _RAND_518[0:0];
   _RAND_519 = {1{`RANDOM}};
-  entryUops_11_inst = _RAND_519[31:0];
+  entryUops_8_excpVec = _RAND_519[9:0];
   _RAND_520 = {1{`RANDOM}};
-  entryUops_11_ctrl_fuType = _RAND_520[3:0];
+  entryUops_8_imm = _RAND_520[31:0];
   _RAND_521 = {1{`RANDOM}};
-  entryUops_11_ctrl_aluOp = _RAND_521[4:0];
+  entryUops_8_csrAddress = _RAND_521[13:0];
   _RAND_522 = {1{`RANDOM}};
-  entryUops_11_ctrl_bruOp = _RAND_522[3:0];
+  entryUops_8_pdInfo_valid = _RAND_522[0:0];
   _RAND_523 = {1{`RANDOM}};
-  entryUops_11_ctrl_lsuOp = _RAND_523[3:0];
+  entryUops_8_pdInfo_isBr = _RAND_523[0:0];
   _RAND_524 = {1{`RANDOM}};
-  entryUops_11_ctrl_csrOp = _RAND_524[2:0];
+  entryUops_8_pdInfo_isJal = _RAND_524[0:0];
   _RAND_525 = {1{`RANDOM}};
-  entryUops_11_ctrl_mulOp = _RAND_525[2:0];
+  entryUops_8_pdInfo_isJalr = _RAND_525[0:0];
   _RAND_526 = {1{`RANDOM}};
-  entryUops_11_ctrl_divOp = _RAND_526[2:0];
+  entryUops_8_pdInfo_isCall = _RAND_526[0:0];
   _RAND_527 = {1{`RANDOM}};
-  entryUops_11_ctrl_src1Type = _RAND_527[2:0];
+  entryUops_8_pdInfo_isRet = _RAND_527[0:0];
   _RAND_528 = {1{`RANDOM}};
-  entryUops_11_ctrl_src2Type = _RAND_528[2:0];
+  entryUops_8_pdInfo_jumpTarget = _RAND_528[31:0];
   _RAND_529 = {1{`RANDOM}};
-  entryUops_11_ctrl_immType = _RAND_529[3:0];
+  entryUops_8_bpuInfo_pc = _RAND_529[31:0];
   _RAND_530 = {1{`RANDOM}};
-  entryUops_11_ctrl_rfWen = _RAND_530[0:0];
+  entryUops_8_bpuInfo_fallThrough = _RAND_530[31:0];
   _RAND_531 = {1{`RANDOM}};
-  entryUops_11_ctrl_memRead = _RAND_531[0:0];
+  entryUops_8_bpuInfo_taken = _RAND_531[0:0];
   _RAND_532 = {1{`RANDOM}};
-  entryUops_11_ctrl_memWrite = _RAND_532[0:0];
+  entryUops_8_bpuInfo_target = _RAND_532[31:0];
   _RAND_533 = {1{`RANDOM}};
-  entryUops_11_ctrl_csrWen = _RAND_533[0:0];
+  entryUops_8_bpuInfo_takenOffset = _RAND_533[1:0];
   _RAND_534 = {1{`RANDOM}};
-  entryUops_11_ctrl_isBranch = _RAND_534[0:0];
+  entryUops_8_bpuInfo_meta_btbHit = _RAND_534[0:0];
   _RAND_535 = {1{`RANDOM}};
-  entryUops_11_ctrl_isJump = _RAND_535[0:0];
+  entryUops_8_bpuInfo_meta_btbIsJalr = _RAND_535[0:0];
   _RAND_536 = {1{`RANDOM}};
-  entryUops_11_ctrl_isPriv = _RAND_536[0:0];
+  entryUops_8_bpuInfo_meta_btbIsJal = _RAND_536[0:0];
   _RAND_537 = {1{`RANDOM}};
-  entryUops_11_excpVec = _RAND_537[9:0];
+  entryUops_8_bpuInfo_meta_btbIsCall = _RAND_537[0:0];
   _RAND_538 = {1{`RANDOM}};
-  entryUops_11_imm = _RAND_538[31:0];
+  entryUops_8_bpuInfo_meta_btbIsRet = _RAND_538[0:0];
   _RAND_539 = {1{`RANDOM}};
-  entryUops_11_csrAddress = _RAND_539[13:0];
+  entryUops_8_bpuInfo_meta_btbOffset = _RAND_539[1:0];
   _RAND_540 = {1{`RANDOM}};
-  entryUops_11_pdInfo_valid = _RAND_540[0:0];
+  entryUops_8_bpuInfo_meta_phtCounter = _RAND_540[1:0];
   _RAND_541 = {1{`RANDOM}};
-  entryUops_11_pdInfo_isBr = _RAND_541[0:0];
+  entryUops_8_bpuInfo_meta_rasTop = _RAND_541[2:0];
   _RAND_542 = {1{`RANDOM}};
-  entryUops_11_pdInfo_isJal = _RAND_542[0:0];
+  entryUops_8_bpuInfo_meta_predTaken = _RAND_542[0:0];
   _RAND_543 = {1{`RANDOM}};
-  entryUops_11_pdInfo_isJalr = _RAND_543[0:0];
+  entryUops_8_bpuInfo_meta_predTarget = _RAND_543[31:0];
   _RAND_544 = {1{`RANDOM}};
-  entryUops_11_pdInfo_isCall = _RAND_544[0:0];
+  entryUops_8_ldst = _RAND_544[4:0];
   _RAND_545 = {1{`RANDOM}};
-  entryUops_11_pdInfo_isRet = _RAND_545[0:0];
+  entryUops_8_lrs1 = _RAND_545[4:0];
   _RAND_546 = {1{`RANDOM}};
-  entryUops_11_pdInfo_jumpTarget = _RAND_546[31:0];
+  entryUops_8_lrs2 = _RAND_546[4:0];
   _RAND_547 = {1{`RANDOM}};
-  entryUops_11_ldst = _RAND_547[4:0];
+  entryUops_8_pdst = _RAND_547[6:0];
   _RAND_548 = {1{`RANDOM}};
-  entryUops_11_lrs1 = _RAND_548[4:0];
+  entryUops_8_prs1 = _RAND_548[6:0];
   _RAND_549 = {1{`RANDOM}};
-  entryUops_11_lrs2 = _RAND_549[4:0];
+  entryUops_8_prs2 = _RAND_549[6:0];
   _RAND_550 = {1{`RANDOM}};
-  entryUops_11_pdst = _RAND_550[6:0];
+  entryUops_8_oldPdst = _RAND_550[6:0];
   _RAND_551 = {1{`RANDOM}};
-  entryUops_11_prs1 = _RAND_551[6:0];
+  entryUops_8_rs1Valid = _RAND_551[0:0];
   _RAND_552 = {1{`RANDOM}};
-  entryUops_11_prs2 = _RAND_552[6:0];
+  entryUops_8_rs2Valid = _RAND_552[0:0];
   _RAND_553 = {1{`RANDOM}};
-  entryUops_11_oldPdst = _RAND_553[6:0];
+  entryUops_8_rdValid = _RAND_553[0:0];
   _RAND_554 = {1{`RANDOM}};
-  entryUops_11_rs1Valid = _RAND_554[0:0];
+  entryUops_8_robIdx_value = _RAND_554[5:0];
   _RAND_555 = {1{`RANDOM}};
-  entryUops_11_rs2Valid = _RAND_555[0:0];
+  entryUops_8_robIdx_flag = _RAND_555[0:0];
   _RAND_556 = {1{`RANDOM}};
-  entryUops_11_rdValid = _RAND_556[0:0];
+  entryUops_8_robIdxFull_value = _RAND_556[5:0];
   _RAND_557 = {1{`RANDOM}};
-  entryUops_11_robIdx_value = _RAND_557[5:0];
+  entryUops_8_robIdxFull_flag = _RAND_557[0:0];
   _RAND_558 = {1{`RANDOM}};
-  entryUops_11_robIdx_flag = _RAND_558[0:0];
+  entryUops_8_issueQueue = _RAND_558[2:0];
   _RAND_559 = {1{`RANDOM}};
-  entryUops_11_robIdxFull_value = _RAND_559[5:0];
+  entryUops_8_prs1Busy = _RAND_559[0:0];
   _RAND_560 = {1{`RANDOM}};
-  entryUops_11_robIdxFull_flag = _RAND_560[0:0];
+  entryUops_8_prs2Busy = _RAND_560[0:0];
   _RAND_561 = {1{`RANDOM}};
-  entryUops_11_issueQueue = _RAND_561[2:0];
+  entryUops_9_pc = _RAND_561[31:0];
   _RAND_562 = {1{`RANDOM}};
-  entryUops_11_prs1Busy = _RAND_562[0:0];
+  entryUops_9_inst = _RAND_562[31:0];
   _RAND_563 = {1{`RANDOM}};
-  entryUops_11_prs2Busy = _RAND_563[0:0];
+  entryUops_9_ctrl_fuType = _RAND_563[3:0];
   _RAND_564 = {1{`RANDOM}};
-  entryP1Ready_0 = _RAND_564[0:0];
+  entryUops_9_ctrl_aluOp = _RAND_564[4:0];
   _RAND_565 = {1{`RANDOM}};
-  entryP1Ready_1 = _RAND_565[0:0];
+  entryUops_9_ctrl_bruOp = _RAND_565[3:0];
   _RAND_566 = {1{`RANDOM}};
-  entryP1Ready_2 = _RAND_566[0:0];
+  entryUops_9_ctrl_lsuOp = _RAND_566[3:0];
   _RAND_567 = {1{`RANDOM}};
-  entryP1Ready_3 = _RAND_567[0:0];
+  entryUops_9_ctrl_csrOp = _RAND_567[2:0];
   _RAND_568 = {1{`RANDOM}};
-  entryP1Ready_4 = _RAND_568[0:0];
+  entryUops_9_ctrl_mulOp = _RAND_568[2:0];
   _RAND_569 = {1{`RANDOM}};
-  entryP1Ready_5 = _RAND_569[0:0];
+  entryUops_9_ctrl_divOp = _RAND_569[2:0];
   _RAND_570 = {1{`RANDOM}};
-  entryP1Ready_6 = _RAND_570[0:0];
+  entryUops_9_ctrl_src1Type = _RAND_570[2:0];
   _RAND_571 = {1{`RANDOM}};
-  entryP1Ready_7 = _RAND_571[0:0];
+  entryUops_9_ctrl_src2Type = _RAND_571[2:0];
   _RAND_572 = {1{`RANDOM}};
-  entryP1Ready_8 = _RAND_572[0:0];
+  entryUops_9_ctrl_immType = _RAND_572[3:0];
   _RAND_573 = {1{`RANDOM}};
-  entryP1Ready_9 = _RAND_573[0:0];
+  entryUops_9_ctrl_rfWen = _RAND_573[0:0];
   _RAND_574 = {1{`RANDOM}};
-  entryP1Ready_10 = _RAND_574[0:0];
+  entryUops_9_ctrl_memRead = _RAND_574[0:0];
   _RAND_575 = {1{`RANDOM}};
-  entryP1Ready_11 = _RAND_575[0:0];
+  entryUops_9_ctrl_memWrite = _RAND_575[0:0];
   _RAND_576 = {1{`RANDOM}};
-  entryP2Ready_0 = _RAND_576[0:0];
+  entryUops_9_ctrl_csrWen = _RAND_576[0:0];
   _RAND_577 = {1{`RANDOM}};
-  entryP2Ready_1 = _RAND_577[0:0];
+  entryUops_9_ctrl_isBranch = _RAND_577[0:0];
   _RAND_578 = {1{`RANDOM}};
-  entryP2Ready_2 = _RAND_578[0:0];
+  entryUops_9_ctrl_isJump = _RAND_578[0:0];
   _RAND_579 = {1{`RANDOM}};
-  entryP2Ready_3 = _RAND_579[0:0];
+  entryUops_9_ctrl_isPriv = _RAND_579[0:0];
   _RAND_580 = {1{`RANDOM}};
-  entryP2Ready_4 = _RAND_580[0:0];
+  entryUops_9_excpVec = _RAND_580[9:0];
   _RAND_581 = {1{`RANDOM}};
-  entryP2Ready_5 = _RAND_581[0:0];
+  entryUops_9_imm = _RAND_581[31:0];
   _RAND_582 = {1{`RANDOM}};
-  entryP2Ready_6 = _RAND_582[0:0];
+  entryUops_9_csrAddress = _RAND_582[13:0];
   _RAND_583 = {1{`RANDOM}};
-  entryP2Ready_7 = _RAND_583[0:0];
+  entryUops_9_pdInfo_valid = _RAND_583[0:0];
   _RAND_584 = {1{`RANDOM}};
-  entryP2Ready_8 = _RAND_584[0:0];
+  entryUops_9_pdInfo_isBr = _RAND_584[0:0];
   _RAND_585 = {1{`RANDOM}};
-  entryP2Ready_9 = _RAND_585[0:0];
+  entryUops_9_pdInfo_isJal = _RAND_585[0:0];
   _RAND_586 = {1{`RANDOM}};
-  entryP2Ready_10 = _RAND_586[0:0];
+  entryUops_9_pdInfo_isJalr = _RAND_586[0:0];
   _RAND_587 = {1{`RANDOM}};
-  entryP2Ready_11 = _RAND_587[0:0];
+  entryUops_9_pdInfo_isCall = _RAND_587[0:0];
   _RAND_588 = {1{`RANDOM}};
-  age_0_1 = _RAND_588[0:0];
+  entryUops_9_pdInfo_isRet = _RAND_588[0:0];
   _RAND_589 = {1{`RANDOM}};
-  age_0_2 = _RAND_589[0:0];
+  entryUops_9_pdInfo_jumpTarget = _RAND_589[31:0];
   _RAND_590 = {1{`RANDOM}};
-  age_0_3 = _RAND_590[0:0];
+  entryUops_9_bpuInfo_pc = _RAND_590[31:0];
   _RAND_591 = {1{`RANDOM}};
-  age_0_4 = _RAND_591[0:0];
+  entryUops_9_bpuInfo_fallThrough = _RAND_591[31:0];
   _RAND_592 = {1{`RANDOM}};
-  age_0_5 = _RAND_592[0:0];
+  entryUops_9_bpuInfo_taken = _RAND_592[0:0];
   _RAND_593 = {1{`RANDOM}};
-  age_0_6 = _RAND_593[0:0];
+  entryUops_9_bpuInfo_target = _RAND_593[31:0];
   _RAND_594 = {1{`RANDOM}};
-  age_0_7 = _RAND_594[0:0];
+  entryUops_9_bpuInfo_takenOffset = _RAND_594[1:0];
   _RAND_595 = {1{`RANDOM}};
-  age_0_8 = _RAND_595[0:0];
+  entryUops_9_bpuInfo_meta_btbHit = _RAND_595[0:0];
   _RAND_596 = {1{`RANDOM}};
-  age_0_9 = _RAND_596[0:0];
+  entryUops_9_bpuInfo_meta_btbIsJalr = _RAND_596[0:0];
   _RAND_597 = {1{`RANDOM}};
-  age_0_10 = _RAND_597[0:0];
+  entryUops_9_bpuInfo_meta_btbIsJal = _RAND_597[0:0];
   _RAND_598 = {1{`RANDOM}};
-  age_0_11 = _RAND_598[0:0];
+  entryUops_9_bpuInfo_meta_btbIsCall = _RAND_598[0:0];
   _RAND_599 = {1{`RANDOM}};
-  age_1_0 = _RAND_599[0:0];
+  entryUops_9_bpuInfo_meta_btbIsRet = _RAND_599[0:0];
   _RAND_600 = {1{`RANDOM}};
-  age_1_2 = _RAND_600[0:0];
+  entryUops_9_bpuInfo_meta_btbOffset = _RAND_600[1:0];
   _RAND_601 = {1{`RANDOM}};
-  age_1_3 = _RAND_601[0:0];
+  entryUops_9_bpuInfo_meta_phtCounter = _RAND_601[1:0];
   _RAND_602 = {1{`RANDOM}};
-  age_1_4 = _RAND_602[0:0];
+  entryUops_9_bpuInfo_meta_rasTop = _RAND_602[2:0];
   _RAND_603 = {1{`RANDOM}};
-  age_1_5 = _RAND_603[0:0];
+  entryUops_9_bpuInfo_meta_predTaken = _RAND_603[0:0];
   _RAND_604 = {1{`RANDOM}};
-  age_1_6 = _RAND_604[0:0];
+  entryUops_9_bpuInfo_meta_predTarget = _RAND_604[31:0];
   _RAND_605 = {1{`RANDOM}};
-  age_1_7 = _RAND_605[0:0];
+  entryUops_9_ldst = _RAND_605[4:0];
   _RAND_606 = {1{`RANDOM}};
-  age_1_8 = _RAND_606[0:0];
+  entryUops_9_lrs1 = _RAND_606[4:0];
   _RAND_607 = {1{`RANDOM}};
-  age_1_9 = _RAND_607[0:0];
+  entryUops_9_lrs2 = _RAND_607[4:0];
   _RAND_608 = {1{`RANDOM}};
-  age_1_10 = _RAND_608[0:0];
+  entryUops_9_pdst = _RAND_608[6:0];
   _RAND_609 = {1{`RANDOM}};
-  age_1_11 = _RAND_609[0:0];
+  entryUops_9_prs1 = _RAND_609[6:0];
   _RAND_610 = {1{`RANDOM}};
-  age_2_0 = _RAND_610[0:0];
+  entryUops_9_prs2 = _RAND_610[6:0];
   _RAND_611 = {1{`RANDOM}};
-  age_2_1 = _RAND_611[0:0];
+  entryUops_9_oldPdst = _RAND_611[6:0];
   _RAND_612 = {1{`RANDOM}};
-  age_2_3 = _RAND_612[0:0];
+  entryUops_9_rs1Valid = _RAND_612[0:0];
   _RAND_613 = {1{`RANDOM}};
-  age_2_4 = _RAND_613[0:0];
+  entryUops_9_rs2Valid = _RAND_613[0:0];
   _RAND_614 = {1{`RANDOM}};
-  age_2_5 = _RAND_614[0:0];
+  entryUops_9_rdValid = _RAND_614[0:0];
   _RAND_615 = {1{`RANDOM}};
-  age_2_6 = _RAND_615[0:0];
+  entryUops_9_robIdx_value = _RAND_615[5:0];
   _RAND_616 = {1{`RANDOM}};
-  age_2_7 = _RAND_616[0:0];
+  entryUops_9_robIdx_flag = _RAND_616[0:0];
   _RAND_617 = {1{`RANDOM}};
-  age_2_8 = _RAND_617[0:0];
+  entryUops_9_robIdxFull_value = _RAND_617[5:0];
   _RAND_618 = {1{`RANDOM}};
-  age_2_9 = _RAND_618[0:0];
+  entryUops_9_robIdxFull_flag = _RAND_618[0:0];
   _RAND_619 = {1{`RANDOM}};
-  age_2_10 = _RAND_619[0:0];
+  entryUops_9_issueQueue = _RAND_619[2:0];
   _RAND_620 = {1{`RANDOM}};
-  age_2_11 = _RAND_620[0:0];
+  entryUops_9_prs1Busy = _RAND_620[0:0];
   _RAND_621 = {1{`RANDOM}};
-  age_3_0 = _RAND_621[0:0];
+  entryUops_9_prs2Busy = _RAND_621[0:0];
   _RAND_622 = {1{`RANDOM}};
-  age_3_1 = _RAND_622[0:0];
+  entryUops_10_pc = _RAND_622[31:0];
   _RAND_623 = {1{`RANDOM}};
-  age_3_2 = _RAND_623[0:0];
+  entryUops_10_inst = _RAND_623[31:0];
   _RAND_624 = {1{`RANDOM}};
-  age_3_4 = _RAND_624[0:0];
+  entryUops_10_ctrl_fuType = _RAND_624[3:0];
   _RAND_625 = {1{`RANDOM}};
-  age_3_5 = _RAND_625[0:0];
+  entryUops_10_ctrl_aluOp = _RAND_625[4:0];
   _RAND_626 = {1{`RANDOM}};
-  age_3_6 = _RAND_626[0:0];
+  entryUops_10_ctrl_bruOp = _RAND_626[3:0];
   _RAND_627 = {1{`RANDOM}};
-  age_3_7 = _RAND_627[0:0];
+  entryUops_10_ctrl_lsuOp = _RAND_627[3:0];
   _RAND_628 = {1{`RANDOM}};
-  age_3_8 = _RAND_628[0:0];
+  entryUops_10_ctrl_csrOp = _RAND_628[2:0];
   _RAND_629 = {1{`RANDOM}};
-  age_3_9 = _RAND_629[0:0];
+  entryUops_10_ctrl_mulOp = _RAND_629[2:0];
   _RAND_630 = {1{`RANDOM}};
-  age_3_10 = _RAND_630[0:0];
+  entryUops_10_ctrl_divOp = _RAND_630[2:0];
   _RAND_631 = {1{`RANDOM}};
-  age_3_11 = _RAND_631[0:0];
+  entryUops_10_ctrl_src1Type = _RAND_631[2:0];
   _RAND_632 = {1{`RANDOM}};
-  age_4_0 = _RAND_632[0:0];
+  entryUops_10_ctrl_src2Type = _RAND_632[2:0];
   _RAND_633 = {1{`RANDOM}};
-  age_4_1 = _RAND_633[0:0];
+  entryUops_10_ctrl_immType = _RAND_633[3:0];
   _RAND_634 = {1{`RANDOM}};
-  age_4_2 = _RAND_634[0:0];
+  entryUops_10_ctrl_rfWen = _RAND_634[0:0];
   _RAND_635 = {1{`RANDOM}};
-  age_4_3 = _RAND_635[0:0];
+  entryUops_10_ctrl_memRead = _RAND_635[0:0];
   _RAND_636 = {1{`RANDOM}};
-  age_4_5 = _RAND_636[0:0];
+  entryUops_10_ctrl_memWrite = _RAND_636[0:0];
   _RAND_637 = {1{`RANDOM}};
-  age_4_6 = _RAND_637[0:0];
+  entryUops_10_ctrl_csrWen = _RAND_637[0:0];
   _RAND_638 = {1{`RANDOM}};
-  age_4_7 = _RAND_638[0:0];
+  entryUops_10_ctrl_isBranch = _RAND_638[0:0];
   _RAND_639 = {1{`RANDOM}};
-  age_4_8 = _RAND_639[0:0];
+  entryUops_10_ctrl_isJump = _RAND_639[0:0];
   _RAND_640 = {1{`RANDOM}};
-  age_4_9 = _RAND_640[0:0];
+  entryUops_10_ctrl_isPriv = _RAND_640[0:0];
   _RAND_641 = {1{`RANDOM}};
-  age_4_10 = _RAND_641[0:0];
+  entryUops_10_excpVec = _RAND_641[9:0];
   _RAND_642 = {1{`RANDOM}};
-  age_4_11 = _RAND_642[0:0];
+  entryUops_10_imm = _RAND_642[31:0];
   _RAND_643 = {1{`RANDOM}};
-  age_5_0 = _RAND_643[0:0];
+  entryUops_10_csrAddress = _RAND_643[13:0];
   _RAND_644 = {1{`RANDOM}};
-  age_5_1 = _RAND_644[0:0];
+  entryUops_10_pdInfo_valid = _RAND_644[0:0];
   _RAND_645 = {1{`RANDOM}};
-  age_5_2 = _RAND_645[0:0];
+  entryUops_10_pdInfo_isBr = _RAND_645[0:0];
   _RAND_646 = {1{`RANDOM}};
-  age_5_3 = _RAND_646[0:0];
+  entryUops_10_pdInfo_isJal = _RAND_646[0:0];
   _RAND_647 = {1{`RANDOM}};
-  age_5_4 = _RAND_647[0:0];
+  entryUops_10_pdInfo_isJalr = _RAND_647[0:0];
   _RAND_648 = {1{`RANDOM}};
-  age_5_6 = _RAND_648[0:0];
+  entryUops_10_pdInfo_isCall = _RAND_648[0:0];
   _RAND_649 = {1{`RANDOM}};
-  age_5_7 = _RAND_649[0:0];
+  entryUops_10_pdInfo_isRet = _RAND_649[0:0];
   _RAND_650 = {1{`RANDOM}};
-  age_5_8 = _RAND_650[0:0];
+  entryUops_10_pdInfo_jumpTarget = _RAND_650[31:0];
   _RAND_651 = {1{`RANDOM}};
-  age_5_9 = _RAND_651[0:0];
+  entryUops_10_bpuInfo_pc = _RAND_651[31:0];
   _RAND_652 = {1{`RANDOM}};
-  age_5_10 = _RAND_652[0:0];
+  entryUops_10_bpuInfo_fallThrough = _RAND_652[31:0];
   _RAND_653 = {1{`RANDOM}};
-  age_5_11 = _RAND_653[0:0];
+  entryUops_10_bpuInfo_taken = _RAND_653[0:0];
   _RAND_654 = {1{`RANDOM}};
-  age_6_0 = _RAND_654[0:0];
+  entryUops_10_bpuInfo_target = _RAND_654[31:0];
   _RAND_655 = {1{`RANDOM}};
-  age_6_1 = _RAND_655[0:0];
+  entryUops_10_bpuInfo_takenOffset = _RAND_655[1:0];
   _RAND_656 = {1{`RANDOM}};
-  age_6_2 = _RAND_656[0:0];
+  entryUops_10_bpuInfo_meta_btbHit = _RAND_656[0:0];
   _RAND_657 = {1{`RANDOM}};
-  age_6_3 = _RAND_657[0:0];
+  entryUops_10_bpuInfo_meta_btbIsJalr = _RAND_657[0:0];
   _RAND_658 = {1{`RANDOM}};
-  age_6_4 = _RAND_658[0:0];
+  entryUops_10_bpuInfo_meta_btbIsJal = _RAND_658[0:0];
   _RAND_659 = {1{`RANDOM}};
-  age_6_5 = _RAND_659[0:0];
+  entryUops_10_bpuInfo_meta_btbIsCall = _RAND_659[0:0];
   _RAND_660 = {1{`RANDOM}};
-  age_6_7 = _RAND_660[0:0];
+  entryUops_10_bpuInfo_meta_btbIsRet = _RAND_660[0:0];
   _RAND_661 = {1{`RANDOM}};
-  age_6_8 = _RAND_661[0:0];
+  entryUops_10_bpuInfo_meta_btbOffset = _RAND_661[1:0];
   _RAND_662 = {1{`RANDOM}};
-  age_6_9 = _RAND_662[0:0];
+  entryUops_10_bpuInfo_meta_phtCounter = _RAND_662[1:0];
   _RAND_663 = {1{`RANDOM}};
-  age_6_10 = _RAND_663[0:0];
+  entryUops_10_bpuInfo_meta_rasTop = _RAND_663[2:0];
   _RAND_664 = {1{`RANDOM}};
-  age_6_11 = _RAND_664[0:0];
+  entryUops_10_bpuInfo_meta_predTaken = _RAND_664[0:0];
   _RAND_665 = {1{`RANDOM}};
-  age_7_0 = _RAND_665[0:0];
+  entryUops_10_bpuInfo_meta_predTarget = _RAND_665[31:0];
   _RAND_666 = {1{`RANDOM}};
-  age_7_1 = _RAND_666[0:0];
+  entryUops_10_ldst = _RAND_666[4:0];
   _RAND_667 = {1{`RANDOM}};
-  age_7_2 = _RAND_667[0:0];
+  entryUops_10_lrs1 = _RAND_667[4:0];
   _RAND_668 = {1{`RANDOM}};
-  age_7_3 = _RAND_668[0:0];
+  entryUops_10_lrs2 = _RAND_668[4:0];
   _RAND_669 = {1{`RANDOM}};
-  age_7_4 = _RAND_669[0:0];
+  entryUops_10_pdst = _RAND_669[6:0];
   _RAND_670 = {1{`RANDOM}};
-  age_7_5 = _RAND_670[0:0];
+  entryUops_10_prs1 = _RAND_670[6:0];
   _RAND_671 = {1{`RANDOM}};
-  age_7_6 = _RAND_671[0:0];
+  entryUops_10_prs2 = _RAND_671[6:0];
   _RAND_672 = {1{`RANDOM}};
-  age_7_8 = _RAND_672[0:0];
+  entryUops_10_oldPdst = _RAND_672[6:0];
   _RAND_673 = {1{`RANDOM}};
-  age_7_9 = _RAND_673[0:0];
+  entryUops_10_rs1Valid = _RAND_673[0:0];
   _RAND_674 = {1{`RANDOM}};
-  age_7_10 = _RAND_674[0:0];
+  entryUops_10_rs2Valid = _RAND_674[0:0];
   _RAND_675 = {1{`RANDOM}};
-  age_7_11 = _RAND_675[0:0];
+  entryUops_10_rdValid = _RAND_675[0:0];
   _RAND_676 = {1{`RANDOM}};
-  age_8_0 = _RAND_676[0:0];
+  entryUops_10_robIdx_value = _RAND_676[5:0];
   _RAND_677 = {1{`RANDOM}};
-  age_8_1 = _RAND_677[0:0];
+  entryUops_10_robIdx_flag = _RAND_677[0:0];
   _RAND_678 = {1{`RANDOM}};
-  age_8_2 = _RAND_678[0:0];
+  entryUops_10_robIdxFull_value = _RAND_678[5:0];
   _RAND_679 = {1{`RANDOM}};
-  age_8_3 = _RAND_679[0:0];
+  entryUops_10_robIdxFull_flag = _RAND_679[0:0];
   _RAND_680 = {1{`RANDOM}};
-  age_8_4 = _RAND_680[0:0];
+  entryUops_10_issueQueue = _RAND_680[2:0];
   _RAND_681 = {1{`RANDOM}};
-  age_8_5 = _RAND_681[0:0];
+  entryUops_10_prs1Busy = _RAND_681[0:0];
   _RAND_682 = {1{`RANDOM}};
-  age_8_6 = _RAND_682[0:0];
+  entryUops_10_prs2Busy = _RAND_682[0:0];
   _RAND_683 = {1{`RANDOM}};
-  age_8_7 = _RAND_683[0:0];
+  entryUops_11_pc = _RAND_683[31:0];
   _RAND_684 = {1{`RANDOM}};
-  age_8_9 = _RAND_684[0:0];
+  entryUops_11_inst = _RAND_684[31:0];
   _RAND_685 = {1{`RANDOM}};
-  age_8_10 = _RAND_685[0:0];
+  entryUops_11_ctrl_fuType = _RAND_685[3:0];
   _RAND_686 = {1{`RANDOM}};
-  age_8_11 = _RAND_686[0:0];
+  entryUops_11_ctrl_aluOp = _RAND_686[4:0];
   _RAND_687 = {1{`RANDOM}};
-  age_9_0 = _RAND_687[0:0];
+  entryUops_11_ctrl_bruOp = _RAND_687[3:0];
   _RAND_688 = {1{`RANDOM}};
-  age_9_1 = _RAND_688[0:0];
+  entryUops_11_ctrl_lsuOp = _RAND_688[3:0];
   _RAND_689 = {1{`RANDOM}};
-  age_9_2 = _RAND_689[0:0];
+  entryUops_11_ctrl_csrOp = _RAND_689[2:0];
   _RAND_690 = {1{`RANDOM}};
-  age_9_3 = _RAND_690[0:0];
+  entryUops_11_ctrl_mulOp = _RAND_690[2:0];
   _RAND_691 = {1{`RANDOM}};
-  age_9_4 = _RAND_691[0:0];
+  entryUops_11_ctrl_divOp = _RAND_691[2:0];
   _RAND_692 = {1{`RANDOM}};
-  age_9_5 = _RAND_692[0:0];
+  entryUops_11_ctrl_src1Type = _RAND_692[2:0];
   _RAND_693 = {1{`RANDOM}};
-  age_9_6 = _RAND_693[0:0];
+  entryUops_11_ctrl_src2Type = _RAND_693[2:0];
   _RAND_694 = {1{`RANDOM}};
-  age_9_7 = _RAND_694[0:0];
+  entryUops_11_ctrl_immType = _RAND_694[3:0];
   _RAND_695 = {1{`RANDOM}};
-  age_9_8 = _RAND_695[0:0];
+  entryUops_11_ctrl_rfWen = _RAND_695[0:0];
   _RAND_696 = {1{`RANDOM}};
-  age_9_10 = _RAND_696[0:0];
+  entryUops_11_ctrl_memRead = _RAND_696[0:0];
   _RAND_697 = {1{`RANDOM}};
-  age_9_11 = _RAND_697[0:0];
+  entryUops_11_ctrl_memWrite = _RAND_697[0:0];
   _RAND_698 = {1{`RANDOM}};
-  age_10_0 = _RAND_698[0:0];
+  entryUops_11_ctrl_csrWen = _RAND_698[0:0];
   _RAND_699 = {1{`RANDOM}};
-  age_10_1 = _RAND_699[0:0];
+  entryUops_11_ctrl_isBranch = _RAND_699[0:0];
   _RAND_700 = {1{`RANDOM}};
-  age_10_2 = _RAND_700[0:0];
+  entryUops_11_ctrl_isJump = _RAND_700[0:0];
   _RAND_701 = {1{`RANDOM}};
-  age_10_3 = _RAND_701[0:0];
+  entryUops_11_ctrl_isPriv = _RAND_701[0:0];
   _RAND_702 = {1{`RANDOM}};
-  age_10_4 = _RAND_702[0:0];
+  entryUops_11_excpVec = _RAND_702[9:0];
   _RAND_703 = {1{`RANDOM}};
-  age_10_5 = _RAND_703[0:0];
+  entryUops_11_imm = _RAND_703[31:0];
   _RAND_704 = {1{`RANDOM}};
-  age_10_6 = _RAND_704[0:0];
+  entryUops_11_csrAddress = _RAND_704[13:0];
   _RAND_705 = {1{`RANDOM}};
-  age_10_7 = _RAND_705[0:0];
+  entryUops_11_pdInfo_valid = _RAND_705[0:0];
   _RAND_706 = {1{`RANDOM}};
-  age_10_8 = _RAND_706[0:0];
+  entryUops_11_pdInfo_isBr = _RAND_706[0:0];
   _RAND_707 = {1{`RANDOM}};
-  age_10_9 = _RAND_707[0:0];
+  entryUops_11_pdInfo_isJal = _RAND_707[0:0];
   _RAND_708 = {1{`RANDOM}};
-  age_10_11 = _RAND_708[0:0];
+  entryUops_11_pdInfo_isJalr = _RAND_708[0:0];
   _RAND_709 = {1{`RANDOM}};
-  age_11_0 = _RAND_709[0:0];
+  entryUops_11_pdInfo_isCall = _RAND_709[0:0];
   _RAND_710 = {1{`RANDOM}};
-  age_11_1 = _RAND_710[0:0];
+  entryUops_11_pdInfo_isRet = _RAND_710[0:0];
   _RAND_711 = {1{`RANDOM}};
-  age_11_2 = _RAND_711[0:0];
+  entryUops_11_pdInfo_jumpTarget = _RAND_711[31:0];
   _RAND_712 = {1{`RANDOM}};
-  age_11_3 = _RAND_712[0:0];
+  entryUops_11_bpuInfo_pc = _RAND_712[31:0];
   _RAND_713 = {1{`RANDOM}};
-  age_11_4 = _RAND_713[0:0];
+  entryUops_11_bpuInfo_fallThrough = _RAND_713[31:0];
   _RAND_714 = {1{`RANDOM}};
-  age_11_5 = _RAND_714[0:0];
+  entryUops_11_bpuInfo_taken = _RAND_714[0:0];
   _RAND_715 = {1{`RANDOM}};
-  age_11_6 = _RAND_715[0:0];
+  entryUops_11_bpuInfo_target = _RAND_715[31:0];
   _RAND_716 = {1{`RANDOM}};
-  age_11_7 = _RAND_716[0:0];
+  entryUops_11_bpuInfo_takenOffset = _RAND_716[1:0];
   _RAND_717 = {1{`RANDOM}};
-  age_11_8 = _RAND_717[0:0];
+  entryUops_11_bpuInfo_meta_btbHit = _RAND_717[0:0];
   _RAND_718 = {1{`RANDOM}};
-  age_11_9 = _RAND_718[0:0];
+  entryUops_11_bpuInfo_meta_btbIsJalr = _RAND_718[0:0];
   _RAND_719 = {1{`RANDOM}};
-  age_11_10 = _RAND_719[0:0];
+  entryUops_11_bpuInfo_meta_btbIsJal = _RAND_719[0:0];
+  _RAND_720 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_btbIsCall = _RAND_720[0:0];
+  _RAND_721 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_btbIsRet = _RAND_721[0:0];
+  _RAND_722 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_btbOffset = _RAND_722[1:0];
+  _RAND_723 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_phtCounter = _RAND_723[1:0];
+  _RAND_724 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_rasTop = _RAND_724[2:0];
+  _RAND_725 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_predTaken = _RAND_725[0:0];
+  _RAND_726 = {1{`RANDOM}};
+  entryUops_11_bpuInfo_meta_predTarget = _RAND_726[31:0];
+  _RAND_727 = {1{`RANDOM}};
+  entryUops_11_ldst = _RAND_727[4:0];
+  _RAND_728 = {1{`RANDOM}};
+  entryUops_11_lrs1 = _RAND_728[4:0];
+  _RAND_729 = {1{`RANDOM}};
+  entryUops_11_lrs2 = _RAND_729[4:0];
+  _RAND_730 = {1{`RANDOM}};
+  entryUops_11_pdst = _RAND_730[6:0];
+  _RAND_731 = {1{`RANDOM}};
+  entryUops_11_prs1 = _RAND_731[6:0];
+  _RAND_732 = {1{`RANDOM}};
+  entryUops_11_prs2 = _RAND_732[6:0];
+  _RAND_733 = {1{`RANDOM}};
+  entryUops_11_oldPdst = _RAND_733[6:0];
+  _RAND_734 = {1{`RANDOM}};
+  entryUops_11_rs1Valid = _RAND_734[0:0];
+  _RAND_735 = {1{`RANDOM}};
+  entryUops_11_rs2Valid = _RAND_735[0:0];
+  _RAND_736 = {1{`RANDOM}};
+  entryUops_11_rdValid = _RAND_736[0:0];
+  _RAND_737 = {1{`RANDOM}};
+  entryUops_11_robIdx_value = _RAND_737[5:0];
+  _RAND_738 = {1{`RANDOM}};
+  entryUops_11_robIdx_flag = _RAND_738[0:0];
+  _RAND_739 = {1{`RANDOM}};
+  entryUops_11_robIdxFull_value = _RAND_739[5:0];
+  _RAND_740 = {1{`RANDOM}};
+  entryUops_11_robIdxFull_flag = _RAND_740[0:0];
+  _RAND_741 = {1{`RANDOM}};
+  entryUops_11_issueQueue = _RAND_741[2:0];
+  _RAND_742 = {1{`RANDOM}};
+  entryUops_11_prs1Busy = _RAND_742[0:0];
+  _RAND_743 = {1{`RANDOM}};
+  entryUops_11_prs2Busy = _RAND_743[0:0];
+  _RAND_744 = {1{`RANDOM}};
+  entryP1Ready_0 = _RAND_744[0:0];
+  _RAND_745 = {1{`RANDOM}};
+  entryP1Ready_1 = _RAND_745[0:0];
+  _RAND_746 = {1{`RANDOM}};
+  entryP1Ready_2 = _RAND_746[0:0];
+  _RAND_747 = {1{`RANDOM}};
+  entryP1Ready_3 = _RAND_747[0:0];
+  _RAND_748 = {1{`RANDOM}};
+  entryP1Ready_4 = _RAND_748[0:0];
+  _RAND_749 = {1{`RANDOM}};
+  entryP1Ready_5 = _RAND_749[0:0];
+  _RAND_750 = {1{`RANDOM}};
+  entryP1Ready_6 = _RAND_750[0:0];
+  _RAND_751 = {1{`RANDOM}};
+  entryP1Ready_7 = _RAND_751[0:0];
+  _RAND_752 = {1{`RANDOM}};
+  entryP1Ready_8 = _RAND_752[0:0];
+  _RAND_753 = {1{`RANDOM}};
+  entryP1Ready_9 = _RAND_753[0:0];
+  _RAND_754 = {1{`RANDOM}};
+  entryP1Ready_10 = _RAND_754[0:0];
+  _RAND_755 = {1{`RANDOM}};
+  entryP1Ready_11 = _RAND_755[0:0];
+  _RAND_756 = {1{`RANDOM}};
+  entryP2Ready_0 = _RAND_756[0:0];
+  _RAND_757 = {1{`RANDOM}};
+  entryP2Ready_1 = _RAND_757[0:0];
+  _RAND_758 = {1{`RANDOM}};
+  entryP2Ready_2 = _RAND_758[0:0];
+  _RAND_759 = {1{`RANDOM}};
+  entryP2Ready_3 = _RAND_759[0:0];
+  _RAND_760 = {1{`RANDOM}};
+  entryP2Ready_4 = _RAND_760[0:0];
+  _RAND_761 = {1{`RANDOM}};
+  entryP2Ready_5 = _RAND_761[0:0];
+  _RAND_762 = {1{`RANDOM}};
+  entryP2Ready_6 = _RAND_762[0:0];
+  _RAND_763 = {1{`RANDOM}};
+  entryP2Ready_7 = _RAND_763[0:0];
+  _RAND_764 = {1{`RANDOM}};
+  entryP2Ready_8 = _RAND_764[0:0];
+  _RAND_765 = {1{`RANDOM}};
+  entryP2Ready_9 = _RAND_765[0:0];
+  _RAND_766 = {1{`RANDOM}};
+  entryP2Ready_10 = _RAND_766[0:0];
+  _RAND_767 = {1{`RANDOM}};
+  entryP2Ready_11 = _RAND_767[0:0];
+  _RAND_768 = {1{`RANDOM}};
+  age_0_1 = _RAND_768[0:0];
+  _RAND_769 = {1{`RANDOM}};
+  age_0_2 = _RAND_769[0:0];
+  _RAND_770 = {1{`RANDOM}};
+  age_0_3 = _RAND_770[0:0];
+  _RAND_771 = {1{`RANDOM}};
+  age_0_4 = _RAND_771[0:0];
+  _RAND_772 = {1{`RANDOM}};
+  age_0_5 = _RAND_772[0:0];
+  _RAND_773 = {1{`RANDOM}};
+  age_0_6 = _RAND_773[0:0];
+  _RAND_774 = {1{`RANDOM}};
+  age_0_7 = _RAND_774[0:0];
+  _RAND_775 = {1{`RANDOM}};
+  age_0_8 = _RAND_775[0:0];
+  _RAND_776 = {1{`RANDOM}};
+  age_0_9 = _RAND_776[0:0];
+  _RAND_777 = {1{`RANDOM}};
+  age_0_10 = _RAND_777[0:0];
+  _RAND_778 = {1{`RANDOM}};
+  age_0_11 = _RAND_778[0:0];
+  _RAND_779 = {1{`RANDOM}};
+  age_1_0 = _RAND_779[0:0];
+  _RAND_780 = {1{`RANDOM}};
+  age_1_2 = _RAND_780[0:0];
+  _RAND_781 = {1{`RANDOM}};
+  age_1_3 = _RAND_781[0:0];
+  _RAND_782 = {1{`RANDOM}};
+  age_1_4 = _RAND_782[0:0];
+  _RAND_783 = {1{`RANDOM}};
+  age_1_5 = _RAND_783[0:0];
+  _RAND_784 = {1{`RANDOM}};
+  age_1_6 = _RAND_784[0:0];
+  _RAND_785 = {1{`RANDOM}};
+  age_1_7 = _RAND_785[0:0];
+  _RAND_786 = {1{`RANDOM}};
+  age_1_8 = _RAND_786[0:0];
+  _RAND_787 = {1{`RANDOM}};
+  age_1_9 = _RAND_787[0:0];
+  _RAND_788 = {1{`RANDOM}};
+  age_1_10 = _RAND_788[0:0];
+  _RAND_789 = {1{`RANDOM}};
+  age_1_11 = _RAND_789[0:0];
+  _RAND_790 = {1{`RANDOM}};
+  age_2_0 = _RAND_790[0:0];
+  _RAND_791 = {1{`RANDOM}};
+  age_2_1 = _RAND_791[0:0];
+  _RAND_792 = {1{`RANDOM}};
+  age_2_3 = _RAND_792[0:0];
+  _RAND_793 = {1{`RANDOM}};
+  age_2_4 = _RAND_793[0:0];
+  _RAND_794 = {1{`RANDOM}};
+  age_2_5 = _RAND_794[0:0];
+  _RAND_795 = {1{`RANDOM}};
+  age_2_6 = _RAND_795[0:0];
+  _RAND_796 = {1{`RANDOM}};
+  age_2_7 = _RAND_796[0:0];
+  _RAND_797 = {1{`RANDOM}};
+  age_2_8 = _RAND_797[0:0];
+  _RAND_798 = {1{`RANDOM}};
+  age_2_9 = _RAND_798[0:0];
+  _RAND_799 = {1{`RANDOM}};
+  age_2_10 = _RAND_799[0:0];
+  _RAND_800 = {1{`RANDOM}};
+  age_2_11 = _RAND_800[0:0];
+  _RAND_801 = {1{`RANDOM}};
+  age_3_0 = _RAND_801[0:0];
+  _RAND_802 = {1{`RANDOM}};
+  age_3_1 = _RAND_802[0:0];
+  _RAND_803 = {1{`RANDOM}};
+  age_3_2 = _RAND_803[0:0];
+  _RAND_804 = {1{`RANDOM}};
+  age_3_4 = _RAND_804[0:0];
+  _RAND_805 = {1{`RANDOM}};
+  age_3_5 = _RAND_805[0:0];
+  _RAND_806 = {1{`RANDOM}};
+  age_3_6 = _RAND_806[0:0];
+  _RAND_807 = {1{`RANDOM}};
+  age_3_7 = _RAND_807[0:0];
+  _RAND_808 = {1{`RANDOM}};
+  age_3_8 = _RAND_808[0:0];
+  _RAND_809 = {1{`RANDOM}};
+  age_3_9 = _RAND_809[0:0];
+  _RAND_810 = {1{`RANDOM}};
+  age_3_10 = _RAND_810[0:0];
+  _RAND_811 = {1{`RANDOM}};
+  age_3_11 = _RAND_811[0:0];
+  _RAND_812 = {1{`RANDOM}};
+  age_4_0 = _RAND_812[0:0];
+  _RAND_813 = {1{`RANDOM}};
+  age_4_1 = _RAND_813[0:0];
+  _RAND_814 = {1{`RANDOM}};
+  age_4_2 = _RAND_814[0:0];
+  _RAND_815 = {1{`RANDOM}};
+  age_4_3 = _RAND_815[0:0];
+  _RAND_816 = {1{`RANDOM}};
+  age_4_5 = _RAND_816[0:0];
+  _RAND_817 = {1{`RANDOM}};
+  age_4_6 = _RAND_817[0:0];
+  _RAND_818 = {1{`RANDOM}};
+  age_4_7 = _RAND_818[0:0];
+  _RAND_819 = {1{`RANDOM}};
+  age_4_8 = _RAND_819[0:0];
+  _RAND_820 = {1{`RANDOM}};
+  age_4_9 = _RAND_820[0:0];
+  _RAND_821 = {1{`RANDOM}};
+  age_4_10 = _RAND_821[0:0];
+  _RAND_822 = {1{`RANDOM}};
+  age_4_11 = _RAND_822[0:0];
+  _RAND_823 = {1{`RANDOM}};
+  age_5_0 = _RAND_823[0:0];
+  _RAND_824 = {1{`RANDOM}};
+  age_5_1 = _RAND_824[0:0];
+  _RAND_825 = {1{`RANDOM}};
+  age_5_2 = _RAND_825[0:0];
+  _RAND_826 = {1{`RANDOM}};
+  age_5_3 = _RAND_826[0:0];
+  _RAND_827 = {1{`RANDOM}};
+  age_5_4 = _RAND_827[0:0];
+  _RAND_828 = {1{`RANDOM}};
+  age_5_6 = _RAND_828[0:0];
+  _RAND_829 = {1{`RANDOM}};
+  age_5_7 = _RAND_829[0:0];
+  _RAND_830 = {1{`RANDOM}};
+  age_5_8 = _RAND_830[0:0];
+  _RAND_831 = {1{`RANDOM}};
+  age_5_9 = _RAND_831[0:0];
+  _RAND_832 = {1{`RANDOM}};
+  age_5_10 = _RAND_832[0:0];
+  _RAND_833 = {1{`RANDOM}};
+  age_5_11 = _RAND_833[0:0];
+  _RAND_834 = {1{`RANDOM}};
+  age_6_0 = _RAND_834[0:0];
+  _RAND_835 = {1{`RANDOM}};
+  age_6_1 = _RAND_835[0:0];
+  _RAND_836 = {1{`RANDOM}};
+  age_6_2 = _RAND_836[0:0];
+  _RAND_837 = {1{`RANDOM}};
+  age_6_3 = _RAND_837[0:0];
+  _RAND_838 = {1{`RANDOM}};
+  age_6_4 = _RAND_838[0:0];
+  _RAND_839 = {1{`RANDOM}};
+  age_6_5 = _RAND_839[0:0];
+  _RAND_840 = {1{`RANDOM}};
+  age_6_7 = _RAND_840[0:0];
+  _RAND_841 = {1{`RANDOM}};
+  age_6_8 = _RAND_841[0:0];
+  _RAND_842 = {1{`RANDOM}};
+  age_6_9 = _RAND_842[0:0];
+  _RAND_843 = {1{`RANDOM}};
+  age_6_10 = _RAND_843[0:0];
+  _RAND_844 = {1{`RANDOM}};
+  age_6_11 = _RAND_844[0:0];
+  _RAND_845 = {1{`RANDOM}};
+  age_7_0 = _RAND_845[0:0];
+  _RAND_846 = {1{`RANDOM}};
+  age_7_1 = _RAND_846[0:0];
+  _RAND_847 = {1{`RANDOM}};
+  age_7_2 = _RAND_847[0:0];
+  _RAND_848 = {1{`RANDOM}};
+  age_7_3 = _RAND_848[0:0];
+  _RAND_849 = {1{`RANDOM}};
+  age_7_4 = _RAND_849[0:0];
+  _RAND_850 = {1{`RANDOM}};
+  age_7_5 = _RAND_850[0:0];
+  _RAND_851 = {1{`RANDOM}};
+  age_7_6 = _RAND_851[0:0];
+  _RAND_852 = {1{`RANDOM}};
+  age_7_8 = _RAND_852[0:0];
+  _RAND_853 = {1{`RANDOM}};
+  age_7_9 = _RAND_853[0:0];
+  _RAND_854 = {1{`RANDOM}};
+  age_7_10 = _RAND_854[0:0];
+  _RAND_855 = {1{`RANDOM}};
+  age_7_11 = _RAND_855[0:0];
+  _RAND_856 = {1{`RANDOM}};
+  age_8_0 = _RAND_856[0:0];
+  _RAND_857 = {1{`RANDOM}};
+  age_8_1 = _RAND_857[0:0];
+  _RAND_858 = {1{`RANDOM}};
+  age_8_2 = _RAND_858[0:0];
+  _RAND_859 = {1{`RANDOM}};
+  age_8_3 = _RAND_859[0:0];
+  _RAND_860 = {1{`RANDOM}};
+  age_8_4 = _RAND_860[0:0];
+  _RAND_861 = {1{`RANDOM}};
+  age_8_5 = _RAND_861[0:0];
+  _RAND_862 = {1{`RANDOM}};
+  age_8_6 = _RAND_862[0:0];
+  _RAND_863 = {1{`RANDOM}};
+  age_8_7 = _RAND_863[0:0];
+  _RAND_864 = {1{`RANDOM}};
+  age_8_9 = _RAND_864[0:0];
+  _RAND_865 = {1{`RANDOM}};
+  age_8_10 = _RAND_865[0:0];
+  _RAND_866 = {1{`RANDOM}};
+  age_8_11 = _RAND_866[0:0];
+  _RAND_867 = {1{`RANDOM}};
+  age_9_0 = _RAND_867[0:0];
+  _RAND_868 = {1{`RANDOM}};
+  age_9_1 = _RAND_868[0:0];
+  _RAND_869 = {1{`RANDOM}};
+  age_9_2 = _RAND_869[0:0];
+  _RAND_870 = {1{`RANDOM}};
+  age_9_3 = _RAND_870[0:0];
+  _RAND_871 = {1{`RANDOM}};
+  age_9_4 = _RAND_871[0:0];
+  _RAND_872 = {1{`RANDOM}};
+  age_9_5 = _RAND_872[0:0];
+  _RAND_873 = {1{`RANDOM}};
+  age_9_6 = _RAND_873[0:0];
+  _RAND_874 = {1{`RANDOM}};
+  age_9_7 = _RAND_874[0:0];
+  _RAND_875 = {1{`RANDOM}};
+  age_9_8 = _RAND_875[0:0];
+  _RAND_876 = {1{`RANDOM}};
+  age_9_10 = _RAND_876[0:0];
+  _RAND_877 = {1{`RANDOM}};
+  age_9_11 = _RAND_877[0:0];
+  _RAND_878 = {1{`RANDOM}};
+  age_10_0 = _RAND_878[0:0];
+  _RAND_879 = {1{`RANDOM}};
+  age_10_1 = _RAND_879[0:0];
+  _RAND_880 = {1{`RANDOM}};
+  age_10_2 = _RAND_880[0:0];
+  _RAND_881 = {1{`RANDOM}};
+  age_10_3 = _RAND_881[0:0];
+  _RAND_882 = {1{`RANDOM}};
+  age_10_4 = _RAND_882[0:0];
+  _RAND_883 = {1{`RANDOM}};
+  age_10_5 = _RAND_883[0:0];
+  _RAND_884 = {1{`RANDOM}};
+  age_10_6 = _RAND_884[0:0];
+  _RAND_885 = {1{`RANDOM}};
+  age_10_7 = _RAND_885[0:0];
+  _RAND_886 = {1{`RANDOM}};
+  age_10_8 = _RAND_886[0:0];
+  _RAND_887 = {1{`RANDOM}};
+  age_10_9 = _RAND_887[0:0];
+  _RAND_888 = {1{`RANDOM}};
+  age_10_11 = _RAND_888[0:0];
+  _RAND_889 = {1{`RANDOM}};
+  age_11_0 = _RAND_889[0:0];
+  _RAND_890 = {1{`RANDOM}};
+  age_11_1 = _RAND_890[0:0];
+  _RAND_891 = {1{`RANDOM}};
+  age_11_2 = _RAND_891[0:0];
+  _RAND_892 = {1{`RANDOM}};
+  age_11_3 = _RAND_892[0:0];
+  _RAND_893 = {1{`RANDOM}};
+  age_11_4 = _RAND_893[0:0];
+  _RAND_894 = {1{`RANDOM}};
+  age_11_5 = _RAND_894[0:0];
+  _RAND_895 = {1{`RANDOM}};
+  age_11_6 = _RAND_895[0:0];
+  _RAND_896 = {1{`RANDOM}};
+  age_11_7 = _RAND_896[0:0];
+  _RAND_897 = {1{`RANDOM}};
+  age_11_8 = _RAND_897[0:0];
+  _RAND_898 = {1{`RANDOM}};
+  age_11_9 = _RAND_898[0:0];
+  _RAND_899 = {1{`RANDOM}};
+  age_11_10 = _RAND_899[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

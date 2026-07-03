@@ -305,11 +305,11 @@ class RenameStage(implicit p: Parameters) extends NSModule {
       val jPdst     = freeList.io.allocPdest(j).bits
  
       // rs1 旁路：j 写了 i 的 rs1
-      when(jHasAlloc && stgData(j).rd === stgData(i).rj && stgData(i).rs1Valid) {
+      when(jHasAlloc && stgData(j).rd === stgData(i).rs1 && stgData(i).rs1Valid) {
         prs1Final(i) := jPdst
       }
       // rs2 旁路：j 写了 i 的 rs2
-      when(jHasAlloc && stgData(j).rd === stgData(i).rk && stgData(i).rs2Valid) {
+      when(jHasAlloc && stgData(j).rd === stgData(i).rs2 && stgData(i).rs2Valid) {
         prs2Final(i) := jPdst
       }
       // oldPdst 旁路：j 写了 i 的 rd（同一逻辑寄存器被连续写）
@@ -416,6 +416,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
     u.pdInfo     := stgData(i).pdInfo
+    u.bpuInfo     := stgData(i).bpuInfo
  
     // ── 逻辑寄存器号 ──
     u.ldst := stgData(i).rd
@@ -424,9 +425,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
  
     // ── 物理寄存器号 ──
     // r0 固定映射 p0（值恒为 0），不需要读 RAT
-    u.prs1 := Mux(stgData(i).rj === 0.U || !stgData(i).rs1Valid,
+    u.prs1 := Mux(stgData(i).rs1 === 0.U || !stgData(i).rs1Valid,
                   0.U, prs1Final(i))
-    u.prs2 := Mux( (stgData(i).rk === 0.U && !stgData(i).ctrl.memWrite) || !stgData(i).rs2Valid,
+    u.prs2 := Mux( stgData(i).rs2 === 0.U || !stgData(i).rs2Valid,
                   0.U, prs2Final(i))
     u.pdst := Mux(needAllocVec(i), freeList.io.allocPdest(i).bits, 0.U)
     u.oldPdst := Mux(needAllocVec(i) && stgData(i).rd =/= 0.U,

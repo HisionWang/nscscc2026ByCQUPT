@@ -12,6 +12,21 @@ module Frontend(
   output        io_out_0_bits_pdInfo_isCall, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_0_bits_pdInfo_isRet, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output [31:0] io_out_0_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_pc, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_fallThrough, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_taken, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_target, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_0_bits_bpuInfo_takenOffset, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [2:0]  io_out_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_0_bits_exception_excpTlbRefill, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_0_bits_exception_excpTlbPif, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_0_bits_exception_excpTlbPpi, // @[src/main/scala/frontend/Frontend.scala 13:14]
@@ -27,6 +42,21 @@ module Frontend(
   output        io_out_1_bits_pdInfo_isCall, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_1_bits_pdInfo_isRet, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output [31:0] io_out_1_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_pc, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_fallThrough, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_taken, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_target, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_1_bits_bpuInfo_takenOffset, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbHit, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_1_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_1_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [2:0]  io_out_1_bits_bpuInfo_meta_rasTop, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_1_bits_bpuInfo_meta_predTaken, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_1_bits_bpuInfo_meta_predTarget, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_1_bits_exception_excpTlbRefill, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_1_bits_exception_excpTlbPif, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_1_bits_exception_excpTlbPpi, // @[src/main/scala/frontend/Frontend.scala 13:14]
@@ -42,6 +72,21 @@ module Frontend(
   output        io_out_2_bits_pdInfo_isCall, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_2_bits_pdInfo_isRet, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output [31:0] io_out_2_bits_pdInfo_jumpTarget, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_pc, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_fallThrough, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_taken, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_target, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_2_bits_bpuInfo_takenOffset, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbHit, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_2_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [1:0]  io_out_2_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [2:0]  io_out_2_bits_bpuInfo_meta_rasTop, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output        io_out_2_bits_bpuInfo_meta_predTaken, // @[src/main/scala/frontend/Frontend.scala 13:14]
+  output [31:0] io_out_2_bits_bpuInfo_meta_predTarget, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_2_bits_exception_excpTlbRefill, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_2_bits_exception_excpTlbPif, // @[src/main/scala/frontend/Frontend.scala 13:14]
   output        io_out_2_bits_exception_excpTlbPpi, // @[src/main/scala/frontend/Frontend.scala 13:14]
@@ -296,6 +341,66 @@ module Frontend(
   wire  predecoder_io_out_bits_pdInfo_3_isCall; // @[src/main/scala/frontend/Frontend.scala 40:26]
   wire  predecoder_io_out_bits_pdInfo_3_isRet; // @[src/main/scala/frontend/Frontend.scala 40:26]
   wire [31:0] predecoder_io_out_bits_pdInfo_3_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_0_pc; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_0_fallThrough; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_taken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_0_target; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_0_takenOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_0_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_0_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [2:0] predecoder_io_out_bits_bpuInfo_0_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_0_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_0_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_1_pc; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_1_fallThrough; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_taken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_1_target; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_1_takenOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_1_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_1_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [2:0] predecoder_io_out_bits_bpuInfo_1_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_1_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_1_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_2_pc; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_2_fallThrough; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_taken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_2_target; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_2_takenOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_2_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_2_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [2:0] predecoder_io_out_bits_bpuInfo_2_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_2_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_2_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_3_pc; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_3_fallThrough; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_taken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_3_target; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_3_takenOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_3_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [1:0] predecoder_io_out_bits_bpuInfo_3_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [2:0] predecoder_io_out_bits_bpuInfo_3_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire  predecoder_io_out_bits_bpuInfo_3_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 40:26]
+  wire [31:0] predecoder_io_out_bits_bpuInfo_3_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 40:26]
   wire  predecoder_io_out_bits_enqMask_0; // @[src/main/scala/frontend/Frontend.scala 40:26]
   wire  predecoder_io_out_bits_enqMask_1; // @[src/main/scala/frontend/Frontend.scala 40:26]
   wire  predecoder_io_out_bits_enqMask_2; // @[src/main/scala/frontend/Frontend.scala 40:26]
@@ -359,6 +464,66 @@ module Frontend(
   wire  ibuffer_io_in_bits_pdInfo_3_isCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_in_bits_pdInfo_3_isRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire [31:0] ibuffer_io_in_bits_pdInfo_3_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_0_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_0_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_0_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_0_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_0_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_0_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_in_bits_bpuInfo_0_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_0_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_0_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_1_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_1_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_1_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_1_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_1_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_1_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_in_bits_bpuInfo_1_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_1_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_1_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_2_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_2_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_2_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_2_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_2_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_2_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_in_bits_bpuInfo_2_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_2_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_2_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_3_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_3_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_3_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_3_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_3_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_in_bits_bpuInfo_3_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_in_bits_bpuInfo_3_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_in_bits_bpuInfo_3_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_in_bits_bpuInfo_3_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_in_bits_enqMask_0; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_in_bits_enqMask_1; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_in_bits_enqMask_2; // @[src/main/scala/frontend/Frontend.scala 41:24]
@@ -378,6 +543,21 @@ module Frontend(
   wire  ibuffer_io_out_0_bits_pdInfo_isCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_0_bits_pdInfo_isRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire [31:0] ibuffer_io_out_0_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_0_bits_bpuInfo_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_0_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_0_bits_bpuInfo_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_0_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_out_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_0_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_0_bits_exception_excpTlbPif; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_0_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/Frontend.scala 41:24]
@@ -393,6 +573,21 @@ module Frontend(
   wire  ibuffer_io_out_1_bits_pdInfo_isCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_1_bits_pdInfo_isRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire [31:0] ibuffer_io_out_1_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_1_bits_bpuInfo_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_1_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_1_bits_bpuInfo_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_1_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_out_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_1_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_1_bits_exception_excpTlbPif; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_1_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/Frontend.scala 41:24]
@@ -408,6 +603,21 @@ module Frontend(
   wire  ibuffer_io_out_2_bits_pdInfo_isCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_2_bits_pdInfo_isRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire [31:0] ibuffer_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_2_bits_bpuInfo_pc; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_2_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_taken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_2_bits_bpuInfo_target; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_2_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [1:0] ibuffer_io_out_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [2:0] ibuffer_io_out_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire  ibuffer_io_out_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 41:24]
+  wire [31:0] ibuffer_io_out_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_2_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_2_bits_exception_excpTlbPif; // @[src/main/scala/frontend/Frontend.scala 41:24]
   wire  ibuffer_io_out_2_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/Frontend.scala 41:24]
@@ -666,6 +876,66 @@ module Frontend(
     .io_out_bits_pdInfo_3_isCall(predecoder_io_out_bits_pdInfo_3_isCall),
     .io_out_bits_pdInfo_3_isRet(predecoder_io_out_bits_pdInfo_3_isRet),
     .io_out_bits_pdInfo_3_jumpTarget(predecoder_io_out_bits_pdInfo_3_jumpTarget),
+    .io_out_bits_bpuInfo_0_pc(predecoder_io_out_bits_bpuInfo_0_pc),
+    .io_out_bits_bpuInfo_0_fallThrough(predecoder_io_out_bits_bpuInfo_0_fallThrough),
+    .io_out_bits_bpuInfo_0_taken(predecoder_io_out_bits_bpuInfo_0_taken),
+    .io_out_bits_bpuInfo_0_target(predecoder_io_out_bits_bpuInfo_0_target),
+    .io_out_bits_bpuInfo_0_takenOffset(predecoder_io_out_bits_bpuInfo_0_takenOffset),
+    .io_out_bits_bpuInfo_0_meta_btbHit(predecoder_io_out_bits_bpuInfo_0_meta_btbHit),
+    .io_out_bits_bpuInfo_0_meta_btbIsJalr(predecoder_io_out_bits_bpuInfo_0_meta_btbIsJalr),
+    .io_out_bits_bpuInfo_0_meta_btbIsJal(predecoder_io_out_bits_bpuInfo_0_meta_btbIsJal),
+    .io_out_bits_bpuInfo_0_meta_btbIsCall(predecoder_io_out_bits_bpuInfo_0_meta_btbIsCall),
+    .io_out_bits_bpuInfo_0_meta_btbIsRet(predecoder_io_out_bits_bpuInfo_0_meta_btbIsRet),
+    .io_out_bits_bpuInfo_0_meta_btbOffset(predecoder_io_out_bits_bpuInfo_0_meta_btbOffset),
+    .io_out_bits_bpuInfo_0_meta_phtCounter(predecoder_io_out_bits_bpuInfo_0_meta_phtCounter),
+    .io_out_bits_bpuInfo_0_meta_rasTop(predecoder_io_out_bits_bpuInfo_0_meta_rasTop),
+    .io_out_bits_bpuInfo_0_meta_predTaken(predecoder_io_out_bits_bpuInfo_0_meta_predTaken),
+    .io_out_bits_bpuInfo_0_meta_predTarget(predecoder_io_out_bits_bpuInfo_0_meta_predTarget),
+    .io_out_bits_bpuInfo_1_pc(predecoder_io_out_bits_bpuInfo_1_pc),
+    .io_out_bits_bpuInfo_1_fallThrough(predecoder_io_out_bits_bpuInfo_1_fallThrough),
+    .io_out_bits_bpuInfo_1_taken(predecoder_io_out_bits_bpuInfo_1_taken),
+    .io_out_bits_bpuInfo_1_target(predecoder_io_out_bits_bpuInfo_1_target),
+    .io_out_bits_bpuInfo_1_takenOffset(predecoder_io_out_bits_bpuInfo_1_takenOffset),
+    .io_out_bits_bpuInfo_1_meta_btbHit(predecoder_io_out_bits_bpuInfo_1_meta_btbHit),
+    .io_out_bits_bpuInfo_1_meta_btbIsJalr(predecoder_io_out_bits_bpuInfo_1_meta_btbIsJalr),
+    .io_out_bits_bpuInfo_1_meta_btbIsJal(predecoder_io_out_bits_bpuInfo_1_meta_btbIsJal),
+    .io_out_bits_bpuInfo_1_meta_btbIsCall(predecoder_io_out_bits_bpuInfo_1_meta_btbIsCall),
+    .io_out_bits_bpuInfo_1_meta_btbIsRet(predecoder_io_out_bits_bpuInfo_1_meta_btbIsRet),
+    .io_out_bits_bpuInfo_1_meta_btbOffset(predecoder_io_out_bits_bpuInfo_1_meta_btbOffset),
+    .io_out_bits_bpuInfo_1_meta_phtCounter(predecoder_io_out_bits_bpuInfo_1_meta_phtCounter),
+    .io_out_bits_bpuInfo_1_meta_rasTop(predecoder_io_out_bits_bpuInfo_1_meta_rasTop),
+    .io_out_bits_bpuInfo_1_meta_predTaken(predecoder_io_out_bits_bpuInfo_1_meta_predTaken),
+    .io_out_bits_bpuInfo_1_meta_predTarget(predecoder_io_out_bits_bpuInfo_1_meta_predTarget),
+    .io_out_bits_bpuInfo_2_pc(predecoder_io_out_bits_bpuInfo_2_pc),
+    .io_out_bits_bpuInfo_2_fallThrough(predecoder_io_out_bits_bpuInfo_2_fallThrough),
+    .io_out_bits_bpuInfo_2_taken(predecoder_io_out_bits_bpuInfo_2_taken),
+    .io_out_bits_bpuInfo_2_target(predecoder_io_out_bits_bpuInfo_2_target),
+    .io_out_bits_bpuInfo_2_takenOffset(predecoder_io_out_bits_bpuInfo_2_takenOffset),
+    .io_out_bits_bpuInfo_2_meta_btbHit(predecoder_io_out_bits_bpuInfo_2_meta_btbHit),
+    .io_out_bits_bpuInfo_2_meta_btbIsJalr(predecoder_io_out_bits_bpuInfo_2_meta_btbIsJalr),
+    .io_out_bits_bpuInfo_2_meta_btbIsJal(predecoder_io_out_bits_bpuInfo_2_meta_btbIsJal),
+    .io_out_bits_bpuInfo_2_meta_btbIsCall(predecoder_io_out_bits_bpuInfo_2_meta_btbIsCall),
+    .io_out_bits_bpuInfo_2_meta_btbIsRet(predecoder_io_out_bits_bpuInfo_2_meta_btbIsRet),
+    .io_out_bits_bpuInfo_2_meta_btbOffset(predecoder_io_out_bits_bpuInfo_2_meta_btbOffset),
+    .io_out_bits_bpuInfo_2_meta_phtCounter(predecoder_io_out_bits_bpuInfo_2_meta_phtCounter),
+    .io_out_bits_bpuInfo_2_meta_rasTop(predecoder_io_out_bits_bpuInfo_2_meta_rasTop),
+    .io_out_bits_bpuInfo_2_meta_predTaken(predecoder_io_out_bits_bpuInfo_2_meta_predTaken),
+    .io_out_bits_bpuInfo_2_meta_predTarget(predecoder_io_out_bits_bpuInfo_2_meta_predTarget),
+    .io_out_bits_bpuInfo_3_pc(predecoder_io_out_bits_bpuInfo_3_pc),
+    .io_out_bits_bpuInfo_3_fallThrough(predecoder_io_out_bits_bpuInfo_3_fallThrough),
+    .io_out_bits_bpuInfo_3_taken(predecoder_io_out_bits_bpuInfo_3_taken),
+    .io_out_bits_bpuInfo_3_target(predecoder_io_out_bits_bpuInfo_3_target),
+    .io_out_bits_bpuInfo_3_takenOffset(predecoder_io_out_bits_bpuInfo_3_takenOffset),
+    .io_out_bits_bpuInfo_3_meta_btbHit(predecoder_io_out_bits_bpuInfo_3_meta_btbHit),
+    .io_out_bits_bpuInfo_3_meta_btbIsJalr(predecoder_io_out_bits_bpuInfo_3_meta_btbIsJalr),
+    .io_out_bits_bpuInfo_3_meta_btbIsJal(predecoder_io_out_bits_bpuInfo_3_meta_btbIsJal),
+    .io_out_bits_bpuInfo_3_meta_btbIsCall(predecoder_io_out_bits_bpuInfo_3_meta_btbIsCall),
+    .io_out_bits_bpuInfo_3_meta_btbIsRet(predecoder_io_out_bits_bpuInfo_3_meta_btbIsRet),
+    .io_out_bits_bpuInfo_3_meta_btbOffset(predecoder_io_out_bits_bpuInfo_3_meta_btbOffset),
+    .io_out_bits_bpuInfo_3_meta_phtCounter(predecoder_io_out_bits_bpuInfo_3_meta_phtCounter),
+    .io_out_bits_bpuInfo_3_meta_rasTop(predecoder_io_out_bits_bpuInfo_3_meta_rasTop),
+    .io_out_bits_bpuInfo_3_meta_predTaken(predecoder_io_out_bits_bpuInfo_3_meta_predTaken),
+    .io_out_bits_bpuInfo_3_meta_predTarget(predecoder_io_out_bits_bpuInfo_3_meta_predTarget),
     .io_out_bits_enqMask_0(predecoder_io_out_bits_enqMask_0),
     .io_out_bits_enqMask_1(predecoder_io_out_bits_enqMask_1),
     .io_out_bits_enqMask_2(predecoder_io_out_bits_enqMask_2),
@@ -731,6 +1001,66 @@ module Frontend(
     .io_in_bits_pdInfo_3_isCall(ibuffer_io_in_bits_pdInfo_3_isCall),
     .io_in_bits_pdInfo_3_isRet(ibuffer_io_in_bits_pdInfo_3_isRet),
     .io_in_bits_pdInfo_3_jumpTarget(ibuffer_io_in_bits_pdInfo_3_jumpTarget),
+    .io_in_bits_bpuInfo_0_pc(ibuffer_io_in_bits_bpuInfo_0_pc),
+    .io_in_bits_bpuInfo_0_fallThrough(ibuffer_io_in_bits_bpuInfo_0_fallThrough),
+    .io_in_bits_bpuInfo_0_taken(ibuffer_io_in_bits_bpuInfo_0_taken),
+    .io_in_bits_bpuInfo_0_target(ibuffer_io_in_bits_bpuInfo_0_target),
+    .io_in_bits_bpuInfo_0_takenOffset(ibuffer_io_in_bits_bpuInfo_0_takenOffset),
+    .io_in_bits_bpuInfo_0_meta_btbHit(ibuffer_io_in_bits_bpuInfo_0_meta_btbHit),
+    .io_in_bits_bpuInfo_0_meta_btbIsJalr(ibuffer_io_in_bits_bpuInfo_0_meta_btbIsJalr),
+    .io_in_bits_bpuInfo_0_meta_btbIsJal(ibuffer_io_in_bits_bpuInfo_0_meta_btbIsJal),
+    .io_in_bits_bpuInfo_0_meta_btbIsCall(ibuffer_io_in_bits_bpuInfo_0_meta_btbIsCall),
+    .io_in_bits_bpuInfo_0_meta_btbIsRet(ibuffer_io_in_bits_bpuInfo_0_meta_btbIsRet),
+    .io_in_bits_bpuInfo_0_meta_btbOffset(ibuffer_io_in_bits_bpuInfo_0_meta_btbOffset),
+    .io_in_bits_bpuInfo_0_meta_phtCounter(ibuffer_io_in_bits_bpuInfo_0_meta_phtCounter),
+    .io_in_bits_bpuInfo_0_meta_rasTop(ibuffer_io_in_bits_bpuInfo_0_meta_rasTop),
+    .io_in_bits_bpuInfo_0_meta_predTaken(ibuffer_io_in_bits_bpuInfo_0_meta_predTaken),
+    .io_in_bits_bpuInfo_0_meta_predTarget(ibuffer_io_in_bits_bpuInfo_0_meta_predTarget),
+    .io_in_bits_bpuInfo_1_pc(ibuffer_io_in_bits_bpuInfo_1_pc),
+    .io_in_bits_bpuInfo_1_fallThrough(ibuffer_io_in_bits_bpuInfo_1_fallThrough),
+    .io_in_bits_bpuInfo_1_taken(ibuffer_io_in_bits_bpuInfo_1_taken),
+    .io_in_bits_bpuInfo_1_target(ibuffer_io_in_bits_bpuInfo_1_target),
+    .io_in_bits_bpuInfo_1_takenOffset(ibuffer_io_in_bits_bpuInfo_1_takenOffset),
+    .io_in_bits_bpuInfo_1_meta_btbHit(ibuffer_io_in_bits_bpuInfo_1_meta_btbHit),
+    .io_in_bits_bpuInfo_1_meta_btbIsJalr(ibuffer_io_in_bits_bpuInfo_1_meta_btbIsJalr),
+    .io_in_bits_bpuInfo_1_meta_btbIsJal(ibuffer_io_in_bits_bpuInfo_1_meta_btbIsJal),
+    .io_in_bits_bpuInfo_1_meta_btbIsCall(ibuffer_io_in_bits_bpuInfo_1_meta_btbIsCall),
+    .io_in_bits_bpuInfo_1_meta_btbIsRet(ibuffer_io_in_bits_bpuInfo_1_meta_btbIsRet),
+    .io_in_bits_bpuInfo_1_meta_btbOffset(ibuffer_io_in_bits_bpuInfo_1_meta_btbOffset),
+    .io_in_bits_bpuInfo_1_meta_phtCounter(ibuffer_io_in_bits_bpuInfo_1_meta_phtCounter),
+    .io_in_bits_bpuInfo_1_meta_rasTop(ibuffer_io_in_bits_bpuInfo_1_meta_rasTop),
+    .io_in_bits_bpuInfo_1_meta_predTaken(ibuffer_io_in_bits_bpuInfo_1_meta_predTaken),
+    .io_in_bits_bpuInfo_1_meta_predTarget(ibuffer_io_in_bits_bpuInfo_1_meta_predTarget),
+    .io_in_bits_bpuInfo_2_pc(ibuffer_io_in_bits_bpuInfo_2_pc),
+    .io_in_bits_bpuInfo_2_fallThrough(ibuffer_io_in_bits_bpuInfo_2_fallThrough),
+    .io_in_bits_bpuInfo_2_taken(ibuffer_io_in_bits_bpuInfo_2_taken),
+    .io_in_bits_bpuInfo_2_target(ibuffer_io_in_bits_bpuInfo_2_target),
+    .io_in_bits_bpuInfo_2_takenOffset(ibuffer_io_in_bits_bpuInfo_2_takenOffset),
+    .io_in_bits_bpuInfo_2_meta_btbHit(ibuffer_io_in_bits_bpuInfo_2_meta_btbHit),
+    .io_in_bits_bpuInfo_2_meta_btbIsJalr(ibuffer_io_in_bits_bpuInfo_2_meta_btbIsJalr),
+    .io_in_bits_bpuInfo_2_meta_btbIsJal(ibuffer_io_in_bits_bpuInfo_2_meta_btbIsJal),
+    .io_in_bits_bpuInfo_2_meta_btbIsCall(ibuffer_io_in_bits_bpuInfo_2_meta_btbIsCall),
+    .io_in_bits_bpuInfo_2_meta_btbIsRet(ibuffer_io_in_bits_bpuInfo_2_meta_btbIsRet),
+    .io_in_bits_bpuInfo_2_meta_btbOffset(ibuffer_io_in_bits_bpuInfo_2_meta_btbOffset),
+    .io_in_bits_bpuInfo_2_meta_phtCounter(ibuffer_io_in_bits_bpuInfo_2_meta_phtCounter),
+    .io_in_bits_bpuInfo_2_meta_rasTop(ibuffer_io_in_bits_bpuInfo_2_meta_rasTop),
+    .io_in_bits_bpuInfo_2_meta_predTaken(ibuffer_io_in_bits_bpuInfo_2_meta_predTaken),
+    .io_in_bits_bpuInfo_2_meta_predTarget(ibuffer_io_in_bits_bpuInfo_2_meta_predTarget),
+    .io_in_bits_bpuInfo_3_pc(ibuffer_io_in_bits_bpuInfo_3_pc),
+    .io_in_bits_bpuInfo_3_fallThrough(ibuffer_io_in_bits_bpuInfo_3_fallThrough),
+    .io_in_bits_bpuInfo_3_taken(ibuffer_io_in_bits_bpuInfo_3_taken),
+    .io_in_bits_bpuInfo_3_target(ibuffer_io_in_bits_bpuInfo_3_target),
+    .io_in_bits_bpuInfo_3_takenOffset(ibuffer_io_in_bits_bpuInfo_3_takenOffset),
+    .io_in_bits_bpuInfo_3_meta_btbHit(ibuffer_io_in_bits_bpuInfo_3_meta_btbHit),
+    .io_in_bits_bpuInfo_3_meta_btbIsJalr(ibuffer_io_in_bits_bpuInfo_3_meta_btbIsJalr),
+    .io_in_bits_bpuInfo_3_meta_btbIsJal(ibuffer_io_in_bits_bpuInfo_3_meta_btbIsJal),
+    .io_in_bits_bpuInfo_3_meta_btbIsCall(ibuffer_io_in_bits_bpuInfo_3_meta_btbIsCall),
+    .io_in_bits_bpuInfo_3_meta_btbIsRet(ibuffer_io_in_bits_bpuInfo_3_meta_btbIsRet),
+    .io_in_bits_bpuInfo_3_meta_btbOffset(ibuffer_io_in_bits_bpuInfo_3_meta_btbOffset),
+    .io_in_bits_bpuInfo_3_meta_phtCounter(ibuffer_io_in_bits_bpuInfo_3_meta_phtCounter),
+    .io_in_bits_bpuInfo_3_meta_rasTop(ibuffer_io_in_bits_bpuInfo_3_meta_rasTop),
+    .io_in_bits_bpuInfo_3_meta_predTaken(ibuffer_io_in_bits_bpuInfo_3_meta_predTaken),
+    .io_in_bits_bpuInfo_3_meta_predTarget(ibuffer_io_in_bits_bpuInfo_3_meta_predTarget),
     .io_in_bits_enqMask_0(ibuffer_io_in_bits_enqMask_0),
     .io_in_bits_enqMask_1(ibuffer_io_in_bits_enqMask_1),
     .io_in_bits_enqMask_2(ibuffer_io_in_bits_enqMask_2),
@@ -750,6 +1080,21 @@ module Frontend(
     .io_out_0_bits_pdInfo_isCall(ibuffer_io_out_0_bits_pdInfo_isCall),
     .io_out_0_bits_pdInfo_isRet(ibuffer_io_out_0_bits_pdInfo_isRet),
     .io_out_0_bits_pdInfo_jumpTarget(ibuffer_io_out_0_bits_pdInfo_jumpTarget),
+    .io_out_0_bits_bpuInfo_pc(ibuffer_io_out_0_bits_bpuInfo_pc),
+    .io_out_0_bits_bpuInfo_fallThrough(ibuffer_io_out_0_bits_bpuInfo_fallThrough),
+    .io_out_0_bits_bpuInfo_taken(ibuffer_io_out_0_bits_bpuInfo_taken),
+    .io_out_0_bits_bpuInfo_target(ibuffer_io_out_0_bits_bpuInfo_target),
+    .io_out_0_bits_bpuInfo_takenOffset(ibuffer_io_out_0_bits_bpuInfo_takenOffset),
+    .io_out_0_bits_bpuInfo_meta_btbHit(ibuffer_io_out_0_bits_bpuInfo_meta_btbHit),
+    .io_out_0_bits_bpuInfo_meta_btbIsJalr(ibuffer_io_out_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_0_bits_bpuInfo_meta_btbIsJal(ibuffer_io_out_0_bits_bpuInfo_meta_btbIsJal),
+    .io_out_0_bits_bpuInfo_meta_btbIsCall(ibuffer_io_out_0_bits_bpuInfo_meta_btbIsCall),
+    .io_out_0_bits_bpuInfo_meta_btbIsRet(ibuffer_io_out_0_bits_bpuInfo_meta_btbIsRet),
+    .io_out_0_bits_bpuInfo_meta_btbOffset(ibuffer_io_out_0_bits_bpuInfo_meta_btbOffset),
+    .io_out_0_bits_bpuInfo_meta_phtCounter(ibuffer_io_out_0_bits_bpuInfo_meta_phtCounter),
+    .io_out_0_bits_bpuInfo_meta_rasTop(ibuffer_io_out_0_bits_bpuInfo_meta_rasTop),
+    .io_out_0_bits_bpuInfo_meta_predTaken(ibuffer_io_out_0_bits_bpuInfo_meta_predTaken),
+    .io_out_0_bits_bpuInfo_meta_predTarget(ibuffer_io_out_0_bits_bpuInfo_meta_predTarget),
     .io_out_0_bits_exception_excpTlbRefill(ibuffer_io_out_0_bits_exception_excpTlbRefill),
     .io_out_0_bits_exception_excpTlbPif(ibuffer_io_out_0_bits_exception_excpTlbPif),
     .io_out_0_bits_exception_excpTlbPpi(ibuffer_io_out_0_bits_exception_excpTlbPpi),
@@ -765,6 +1110,21 @@ module Frontend(
     .io_out_1_bits_pdInfo_isCall(ibuffer_io_out_1_bits_pdInfo_isCall),
     .io_out_1_bits_pdInfo_isRet(ibuffer_io_out_1_bits_pdInfo_isRet),
     .io_out_1_bits_pdInfo_jumpTarget(ibuffer_io_out_1_bits_pdInfo_jumpTarget),
+    .io_out_1_bits_bpuInfo_pc(ibuffer_io_out_1_bits_bpuInfo_pc),
+    .io_out_1_bits_bpuInfo_fallThrough(ibuffer_io_out_1_bits_bpuInfo_fallThrough),
+    .io_out_1_bits_bpuInfo_taken(ibuffer_io_out_1_bits_bpuInfo_taken),
+    .io_out_1_bits_bpuInfo_target(ibuffer_io_out_1_bits_bpuInfo_target),
+    .io_out_1_bits_bpuInfo_takenOffset(ibuffer_io_out_1_bits_bpuInfo_takenOffset),
+    .io_out_1_bits_bpuInfo_meta_btbHit(ibuffer_io_out_1_bits_bpuInfo_meta_btbHit),
+    .io_out_1_bits_bpuInfo_meta_btbIsJalr(ibuffer_io_out_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_1_bits_bpuInfo_meta_btbIsJal(ibuffer_io_out_1_bits_bpuInfo_meta_btbIsJal),
+    .io_out_1_bits_bpuInfo_meta_btbIsCall(ibuffer_io_out_1_bits_bpuInfo_meta_btbIsCall),
+    .io_out_1_bits_bpuInfo_meta_btbIsRet(ibuffer_io_out_1_bits_bpuInfo_meta_btbIsRet),
+    .io_out_1_bits_bpuInfo_meta_btbOffset(ibuffer_io_out_1_bits_bpuInfo_meta_btbOffset),
+    .io_out_1_bits_bpuInfo_meta_phtCounter(ibuffer_io_out_1_bits_bpuInfo_meta_phtCounter),
+    .io_out_1_bits_bpuInfo_meta_rasTop(ibuffer_io_out_1_bits_bpuInfo_meta_rasTop),
+    .io_out_1_bits_bpuInfo_meta_predTaken(ibuffer_io_out_1_bits_bpuInfo_meta_predTaken),
+    .io_out_1_bits_bpuInfo_meta_predTarget(ibuffer_io_out_1_bits_bpuInfo_meta_predTarget),
     .io_out_1_bits_exception_excpTlbRefill(ibuffer_io_out_1_bits_exception_excpTlbRefill),
     .io_out_1_bits_exception_excpTlbPif(ibuffer_io_out_1_bits_exception_excpTlbPif),
     .io_out_1_bits_exception_excpTlbPpi(ibuffer_io_out_1_bits_exception_excpTlbPpi),
@@ -780,6 +1140,21 @@ module Frontend(
     .io_out_2_bits_pdInfo_isCall(ibuffer_io_out_2_bits_pdInfo_isCall),
     .io_out_2_bits_pdInfo_isRet(ibuffer_io_out_2_bits_pdInfo_isRet),
     .io_out_2_bits_pdInfo_jumpTarget(ibuffer_io_out_2_bits_pdInfo_jumpTarget),
+    .io_out_2_bits_bpuInfo_pc(ibuffer_io_out_2_bits_bpuInfo_pc),
+    .io_out_2_bits_bpuInfo_fallThrough(ibuffer_io_out_2_bits_bpuInfo_fallThrough),
+    .io_out_2_bits_bpuInfo_taken(ibuffer_io_out_2_bits_bpuInfo_taken),
+    .io_out_2_bits_bpuInfo_target(ibuffer_io_out_2_bits_bpuInfo_target),
+    .io_out_2_bits_bpuInfo_takenOffset(ibuffer_io_out_2_bits_bpuInfo_takenOffset),
+    .io_out_2_bits_bpuInfo_meta_btbHit(ibuffer_io_out_2_bits_bpuInfo_meta_btbHit),
+    .io_out_2_bits_bpuInfo_meta_btbIsJalr(ibuffer_io_out_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_2_bits_bpuInfo_meta_btbIsJal(ibuffer_io_out_2_bits_bpuInfo_meta_btbIsJal),
+    .io_out_2_bits_bpuInfo_meta_btbIsCall(ibuffer_io_out_2_bits_bpuInfo_meta_btbIsCall),
+    .io_out_2_bits_bpuInfo_meta_btbIsRet(ibuffer_io_out_2_bits_bpuInfo_meta_btbIsRet),
+    .io_out_2_bits_bpuInfo_meta_btbOffset(ibuffer_io_out_2_bits_bpuInfo_meta_btbOffset),
+    .io_out_2_bits_bpuInfo_meta_phtCounter(ibuffer_io_out_2_bits_bpuInfo_meta_phtCounter),
+    .io_out_2_bits_bpuInfo_meta_rasTop(ibuffer_io_out_2_bits_bpuInfo_meta_rasTop),
+    .io_out_2_bits_bpuInfo_meta_predTaken(ibuffer_io_out_2_bits_bpuInfo_meta_predTaken),
+    .io_out_2_bits_bpuInfo_meta_predTarget(ibuffer_io_out_2_bits_bpuInfo_meta_predTarget),
     .io_out_2_bits_exception_excpTlbRefill(ibuffer_io_out_2_bits_exception_excpTlbRefill),
     .io_out_2_bits_exception_excpTlbPif(ibuffer_io_out_2_bits_exception_excpTlbPif),
     .io_out_2_bits_exception_excpTlbPpi(ibuffer_io_out_2_bits_exception_excpTlbPpi),
@@ -796,6 +1171,21 @@ module Frontend(
   assign io_out_0_bits_pdInfo_isCall = ibuffer_io_out_0_bits_pdInfo_isCall; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_0_bits_pdInfo_isRet = ibuffer_io_out_0_bits_pdInfo_isRet; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_0_bits_pdInfo_jumpTarget = ibuffer_io_out_0_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_pc = ibuffer_io_out_0_bits_bpuInfo_pc; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_fallThrough = ibuffer_io_out_0_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_taken = ibuffer_io_out_0_bits_bpuInfo_taken; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_target = ibuffer_io_out_0_bits_bpuInfo_target; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_takenOffset = ibuffer_io_out_0_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_btbHit = ibuffer_io_out_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_btbIsJalr = ibuffer_io_out_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_btbIsJal = ibuffer_io_out_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_btbIsCall = ibuffer_io_out_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_btbIsRet = ibuffer_io_out_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_btbOffset = ibuffer_io_out_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_phtCounter = ibuffer_io_out_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_rasTop = ibuffer_io_out_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_predTaken = ibuffer_io_out_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_0_bits_bpuInfo_meta_predTarget = ibuffer_io_out_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_0_bits_exception_excpTlbRefill = ibuffer_io_out_0_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_0_bits_exception_excpTlbPif = ibuffer_io_out_0_bits_exception_excpTlbPif; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_0_bits_exception_excpTlbPpi = ibuffer_io_out_0_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/Frontend.scala 127:10]
@@ -810,6 +1200,21 @@ module Frontend(
   assign io_out_1_bits_pdInfo_isCall = ibuffer_io_out_1_bits_pdInfo_isCall; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_1_bits_pdInfo_isRet = ibuffer_io_out_1_bits_pdInfo_isRet; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_1_bits_pdInfo_jumpTarget = ibuffer_io_out_1_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_pc = ibuffer_io_out_1_bits_bpuInfo_pc; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_fallThrough = ibuffer_io_out_1_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_taken = ibuffer_io_out_1_bits_bpuInfo_taken; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_target = ibuffer_io_out_1_bits_bpuInfo_target; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_takenOffset = ibuffer_io_out_1_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_btbHit = ibuffer_io_out_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_btbIsJalr = ibuffer_io_out_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_btbIsJal = ibuffer_io_out_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_btbIsCall = ibuffer_io_out_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_btbIsRet = ibuffer_io_out_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_btbOffset = ibuffer_io_out_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_phtCounter = ibuffer_io_out_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_rasTop = ibuffer_io_out_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_predTaken = ibuffer_io_out_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_1_bits_bpuInfo_meta_predTarget = ibuffer_io_out_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_1_bits_exception_excpTlbRefill = ibuffer_io_out_1_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_1_bits_exception_excpTlbPif = ibuffer_io_out_1_bits_exception_excpTlbPif; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_1_bits_exception_excpTlbPpi = ibuffer_io_out_1_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/Frontend.scala 127:10]
@@ -824,6 +1229,21 @@ module Frontend(
   assign io_out_2_bits_pdInfo_isCall = ibuffer_io_out_2_bits_pdInfo_isCall; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_2_bits_pdInfo_isRet = ibuffer_io_out_2_bits_pdInfo_isRet; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_2_bits_pdInfo_jumpTarget = ibuffer_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_pc = ibuffer_io_out_2_bits_bpuInfo_pc; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_fallThrough = ibuffer_io_out_2_bits_bpuInfo_fallThrough; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_taken = ibuffer_io_out_2_bits_bpuInfo_taken; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_target = ibuffer_io_out_2_bits_bpuInfo_target; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_takenOffset = ibuffer_io_out_2_bits_bpuInfo_takenOffset; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_btbHit = ibuffer_io_out_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_btbIsJalr = ibuffer_io_out_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_btbIsJal = ibuffer_io_out_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_btbIsCall = ibuffer_io_out_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_btbIsRet = ibuffer_io_out_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_btbOffset = ibuffer_io_out_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_phtCounter = ibuffer_io_out_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_rasTop = ibuffer_io_out_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_predTaken = ibuffer_io_out_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 127:10]
+  assign io_out_2_bits_bpuInfo_meta_predTarget = ibuffer_io_out_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_2_bits_exception_excpTlbRefill = ibuffer_io_out_2_bits_exception_excpTlbRefill; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_2_bits_exception_excpTlbPif = ibuffer_io_out_2_bits_exception_excpTlbPif; // @[src/main/scala/frontend/Frontend.scala 127:10]
   assign io_out_2_bits_exception_excpTlbPpi = ibuffer_io_out_2_bits_exception_excpTlbPpi; // @[src/main/scala/frontend/Frontend.scala 127:10]
@@ -988,6 +1408,66 @@ module Frontend(
   assign ibuffer_io_in_bits_pdInfo_3_isCall = predecoder_io_out_bits_pdInfo_3_isCall; // @[src/main/scala/frontend/Frontend.scala 124:17]
   assign ibuffer_io_in_bits_pdInfo_3_isRet = predecoder_io_out_bits_pdInfo_3_isRet; // @[src/main/scala/frontend/Frontend.scala 124:17]
   assign ibuffer_io_in_bits_pdInfo_3_jumpTarget = predecoder_io_out_bits_pdInfo_3_jumpTarget; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_pc = predecoder_io_out_bits_bpuInfo_0_pc; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_fallThrough = predecoder_io_out_bits_bpuInfo_0_fallThrough; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_taken = predecoder_io_out_bits_bpuInfo_0_taken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_target = predecoder_io_out_bits_bpuInfo_0_target; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_takenOffset = predecoder_io_out_bits_bpuInfo_0_takenOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_btbHit = predecoder_io_out_bits_bpuInfo_0_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_btbIsJalr = predecoder_io_out_bits_bpuInfo_0_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_btbIsJal = predecoder_io_out_bits_bpuInfo_0_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_btbIsCall = predecoder_io_out_bits_bpuInfo_0_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_btbIsRet = predecoder_io_out_bits_bpuInfo_0_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_btbOffset = predecoder_io_out_bits_bpuInfo_0_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_phtCounter = predecoder_io_out_bits_bpuInfo_0_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_rasTop = predecoder_io_out_bits_bpuInfo_0_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_predTaken = predecoder_io_out_bits_bpuInfo_0_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_0_meta_predTarget = predecoder_io_out_bits_bpuInfo_0_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_pc = predecoder_io_out_bits_bpuInfo_1_pc; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_fallThrough = predecoder_io_out_bits_bpuInfo_1_fallThrough; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_taken = predecoder_io_out_bits_bpuInfo_1_taken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_target = predecoder_io_out_bits_bpuInfo_1_target; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_takenOffset = predecoder_io_out_bits_bpuInfo_1_takenOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_btbHit = predecoder_io_out_bits_bpuInfo_1_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_btbIsJalr = predecoder_io_out_bits_bpuInfo_1_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_btbIsJal = predecoder_io_out_bits_bpuInfo_1_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_btbIsCall = predecoder_io_out_bits_bpuInfo_1_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_btbIsRet = predecoder_io_out_bits_bpuInfo_1_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_btbOffset = predecoder_io_out_bits_bpuInfo_1_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_phtCounter = predecoder_io_out_bits_bpuInfo_1_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_rasTop = predecoder_io_out_bits_bpuInfo_1_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_predTaken = predecoder_io_out_bits_bpuInfo_1_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_1_meta_predTarget = predecoder_io_out_bits_bpuInfo_1_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_pc = predecoder_io_out_bits_bpuInfo_2_pc; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_fallThrough = predecoder_io_out_bits_bpuInfo_2_fallThrough; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_taken = predecoder_io_out_bits_bpuInfo_2_taken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_target = predecoder_io_out_bits_bpuInfo_2_target; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_takenOffset = predecoder_io_out_bits_bpuInfo_2_takenOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_btbHit = predecoder_io_out_bits_bpuInfo_2_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_btbIsJalr = predecoder_io_out_bits_bpuInfo_2_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_btbIsJal = predecoder_io_out_bits_bpuInfo_2_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_btbIsCall = predecoder_io_out_bits_bpuInfo_2_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_btbIsRet = predecoder_io_out_bits_bpuInfo_2_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_btbOffset = predecoder_io_out_bits_bpuInfo_2_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_phtCounter = predecoder_io_out_bits_bpuInfo_2_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_rasTop = predecoder_io_out_bits_bpuInfo_2_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_predTaken = predecoder_io_out_bits_bpuInfo_2_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_2_meta_predTarget = predecoder_io_out_bits_bpuInfo_2_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_pc = predecoder_io_out_bits_bpuInfo_3_pc; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_fallThrough = predecoder_io_out_bits_bpuInfo_3_fallThrough; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_taken = predecoder_io_out_bits_bpuInfo_3_taken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_target = predecoder_io_out_bits_bpuInfo_3_target; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_takenOffset = predecoder_io_out_bits_bpuInfo_3_takenOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_btbHit = predecoder_io_out_bits_bpuInfo_3_meta_btbHit; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_btbIsJalr = predecoder_io_out_bits_bpuInfo_3_meta_btbIsJalr; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_btbIsJal = predecoder_io_out_bits_bpuInfo_3_meta_btbIsJal; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_btbIsCall = predecoder_io_out_bits_bpuInfo_3_meta_btbIsCall; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_btbIsRet = predecoder_io_out_bits_bpuInfo_3_meta_btbIsRet; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_btbOffset = predecoder_io_out_bits_bpuInfo_3_meta_btbOffset; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_phtCounter = predecoder_io_out_bits_bpuInfo_3_meta_phtCounter; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_rasTop = predecoder_io_out_bits_bpuInfo_3_meta_rasTop; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_predTaken = predecoder_io_out_bits_bpuInfo_3_meta_predTaken; // @[src/main/scala/frontend/Frontend.scala 124:17]
+  assign ibuffer_io_in_bits_bpuInfo_3_meta_predTarget = predecoder_io_out_bits_bpuInfo_3_meta_predTarget; // @[src/main/scala/frontend/Frontend.scala 124:17]
   assign ibuffer_io_in_bits_enqMask_0 = predecoder_io_out_bits_enqMask_0; // @[src/main/scala/frontend/Frontend.scala 124:17]
   assign ibuffer_io_in_bits_enqMask_1 = predecoder_io_out_bits_enqMask_1; // @[src/main/scala/frontend/Frontend.scala 124:17]
   assign ibuffer_io_in_bits_enqMask_2 = predecoder_io_out_bits_enqMask_2; // @[src/main/scala/frontend/Frontend.scala 124:17]

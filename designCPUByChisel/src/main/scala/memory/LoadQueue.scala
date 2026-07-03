@@ -222,6 +222,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
+  //io.outResult.bits.brMsRedirect := DontCare
   //io.outResult.bits.redirect.bits.flushSelf := true.B
  
   // 构造 DispatchedInst（必要字段严格按层级，非必要置零）
@@ -281,6 +282,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
  
   // pdInfo 置零
   wbUop.pdInfo := DontCare
+  wbUop.bpuInfo := DontCare
+
  
   when(io.outResult.fire) {
     entries(wbIdx).writtenBack := true.B

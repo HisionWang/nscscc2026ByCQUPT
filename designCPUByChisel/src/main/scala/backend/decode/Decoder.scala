@@ -157,10 +157,10 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 4. 有效寄存器计算
   // ===========================================================
-  val rs2UseRd = memWrite
+  val rs2UseRd = memWrite || io.inData.pdInfo.isBr
   
   val rs1Valid = src1Type === SrcType.reg 
-  val rs2Valid = src2Type === SrcType.reg || memWrite
+  val rs2Valid = src2Type === SrcType.reg || rs2UseRd
   val rdValid  = rfWen
 
   // ===========================================================
@@ -211,6 +211,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.ctrl.rfWen    := rfWen
   io.out.ctrl.memRead  := memRead
   io.out.ctrl.memWrite := memWrite
+ // io.out.ctrl.rs2UseRd := rs2UseRd
   io.out.ctrl.csrWen   := csrWen
   io.out.ctrl.isBranch := isBranch
   io.out.ctrl.isJump   := isJump
@@ -218,4 +219,5 @@ class Decoder(implicit p: Parameters) extends NSModule {
   
   io.out.excpVec := currentExcpVec
   io.out.pdInfo  := io.inData.pdInfo
+  io.out.bpuInfo  := io.inData.bpuInfo
 }

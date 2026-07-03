@@ -12,6 +12,21 @@ module CtrlBlock(
   input         io_in_0_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_0_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input  [31:0] io_in_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_0_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_0_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [2:0]  io_in_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_0_bits_exception_excpTlbRefill, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_0_bits_exception_excpTlbPif, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_0_bits_exception_excpTlbPpi, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -27,6 +42,21 @@ module CtrlBlock(
   input         io_in_1_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_1_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input  [31:0] io_in_1_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_1_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_1_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_1_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_1_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_1_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_1_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [2:0]  io_in_1_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_1_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_1_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_1_bits_exception_excpTlbRefill, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_1_bits_exception_excpTlbPif, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_1_bits_exception_excpTlbPpi, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -42,6 +72,21 @@ module CtrlBlock(
   input         io_in_2_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_2_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input  [31:0] io_in_2_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_2_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_2_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_2_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_2_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_2_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [1:0]  io_in_2_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [2:0]  io_in_2_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input         io_in_2_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  input  [31:0] io_in_2_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_2_bits_exception_excpTlbRefill, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_2_bits_exception_excpTlbPif, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   input         io_in_2_bits_exception_excpTlbPpi, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -76,6 +121,21 @@ module CtrlBlock(
   output        io_q1IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_q1IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [31:0] io_q1IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q1IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [2:0]  io_q1IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q1IQEnq_0_bits_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q1IQEnq_0_bits_lrs1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q1IQEnq_0_bits_lrs2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -122,6 +182,21 @@ module CtrlBlock(
   output        io_q2IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_q2IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [31:0] io_q2IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q2IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [2:0]  io_q2IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q2IQEnq_0_bits_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q2IQEnq_0_bits_lrs1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q2IQEnq_0_bits_lrs2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -169,6 +244,21 @@ module CtrlBlock(
   output        io_q3IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_q3IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [31:0] io_q3IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q3IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [2:0]  io_q3IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q3IQEnq_0_bits_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q3IQEnq_0_bits_lrs1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q3IQEnq_0_bits_lrs2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -216,6 +306,21 @@ module CtrlBlock(
   output        io_q4IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_q4IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [31:0] io_q4IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q4IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [2:0]  io_q4IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q4IQEnq_0_bits_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q4IQEnq_0_bits_lrs1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q4IQEnq_0_bits_lrs2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -269,6 +374,21 @@ module CtrlBlock(
   output        io_q5IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_q5IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [31:0] io_q5IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q5IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [2:0]  io_q5IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q5IQEnq_0_bits_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q5IQEnq_0_bits_lrs1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_q5IQEnq_0_bits_lrs2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -335,6 +455,21 @@ module CtrlBlock(
   output        io_lsEnq_toLsqData_pdInfo_isCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output        io_lsEnq_toLsqData_pdInfo_isRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [31:0] io_lsEnq_toLsqData_pdInfo_jumpTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_pc, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_fallThrough, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_taken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_target, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_lsEnq_toLsqData_bpuInfo_takenOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbHit, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_lsEnq_toLsqData_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [1:0]  io_lsEnq_toLsqData_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [2:0]  io_lsEnq_toLsqData_bpuInfo_meta_rasTop, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_predTaken, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_meta_predTarget, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_lsEnq_toLsqData_ldst, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_lsEnq_toLsqData_lrs1, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
   output [4:0]  io_lsEnq_toLsqData_lrs2, // @[src/main/scala/backend/CtrlBlock.scala 51:14]
@@ -457,6 +592,21 @@ module CtrlBlock(
   wire  decodeStage_io_in_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_in_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [2:0] decodeStage_io_in_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_0_bits_exception_excpTlbRefill; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_0_bits_exception_excpTlbPif; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_0_bits_exception_excpTlbPpi; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
@@ -472,6 +622,21 @@ module CtrlBlock(
   wire  decodeStage_io_in_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_in_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [2:0] decodeStage_io_in_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_1_bits_exception_excpTlbRefill; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_1_bits_exception_excpTlbPif; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_1_bits_exception_excpTlbPpi; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
@@ -487,6 +652,21 @@ module CtrlBlock(
   wire  decodeStage_io_in_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_in_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_in_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [2:0] decodeStage_io_in_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_in_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_in_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_2_bits_exception_excpTlbRefill; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_2_bits_exception_excpTlbPif; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_in_2_bits_exception_excpTlbPpi; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
@@ -530,6 +710,21 @@ module CtrlBlock(
   wire  decodeStage_io_out_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_out_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [2:0] decodeStage_io_out_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_1_ready; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_out_1_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
@@ -569,6 +764,21 @@ module CtrlBlock(
   wire  decodeStage_io_out_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_out_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [2:0] decodeStage_io_out_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_2_ready; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_out_2_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
@@ -608,6 +818,21 @@ module CtrlBlock(
   wire  decodeStage_io_out_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_out_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [31:0] decodeStage_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [1:0] decodeStage_io_out_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [2:0] decodeStage_io_out_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire  decodeStage_io_out_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
+  wire [31:0] decodeStage_io_out_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [4:0] decodeStage_io_ratRead_0_rs1; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire [4:0] decodeStage_io_ratRead_0_rs2; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
   wire  decodeStage_io_ratRead_0_hold1; // @[src/main/scala/backend/CtrlBlock.scala 56:27]
@@ -629,8 +854,6 @@ module CtrlBlock(
   wire [31:0] renameStage_io_in_0_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_0_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_0_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_in_0_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_in_0_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_0_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_0_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -663,13 +886,26 @@ module CtrlBlock(
   wire  renameStage_io_in_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [2:0] renameStage_io_in_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_1_ready; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_1_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_1_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_1_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_in_1_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_in_1_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_1_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_1_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -702,13 +938,26 @@ module CtrlBlock(
   wire  renameStage_io_in_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [2:0] renameStage_io_in_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_2_ready; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_2_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_2_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_2_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_in_2_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
-  wire [4:0] renameStage_io_in_2_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_2_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_in_2_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -741,6 +990,21 @@ module CtrlBlock(
   wire  renameStage_io_in_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_in_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_in_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_in_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [2:0] renameStage_io_in_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_in_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_in_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_ratRead_0_rs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_ratRead_0_rs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_ratRead_0_hold1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -784,6 +1048,21 @@ module CtrlBlock(
   wire  renameStage_io_out_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_out_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_out_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [2:0] renameStage_io_out_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -827,6 +1106,21 @@ module CtrlBlock(
   wire  renameStage_io_out_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_out_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_out_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [2:0] renameStage_io_out_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_1_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_1_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_1_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -870,6 +1164,21 @@ module CtrlBlock(
   wire  renameStage_io_out_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire  renameStage_io_out_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [31:0] renameStage_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [1:0] renameStage_io_out_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [2:0] renameStage_io_out_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire  renameStage_io_out_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
+  wire [31:0] renameStage_io_out_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_2_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_2_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
   wire [4:0] renameStage_io_out_2_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 64:27]
@@ -953,6 +1262,21 @@ module CtrlBlock(
   wire  dispatchStage_io_in_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_in_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_in_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_in_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -996,6 +1320,21 @@ module CtrlBlock(
   wire  dispatchStage_io_in_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_in_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_in_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_in_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_1_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_1_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_1_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1039,6 +1378,21 @@ module CtrlBlock(
   wire  dispatchStage_io_in_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_in_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_in_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_in_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_in_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_in_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_in_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_2_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_2_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_in_2_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1081,6 +1435,21 @@ module CtrlBlock(
   wire  dispatchStage_io_q1IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_q1IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_q1IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q1IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q1IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q1IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1127,6 +1496,21 @@ module CtrlBlock(
   wire  dispatchStage_io_q2IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_q2IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_q2IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q2IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q2IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q2IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1174,6 +1558,21 @@ module CtrlBlock(
   wire  dispatchStage_io_q3IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_q3IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_q3IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q3IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q3IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q3IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1221,6 +1620,21 @@ module CtrlBlock(
   wire  dispatchStage_io_q4IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_q4IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_q4IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q4IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q4IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q4IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1274,6 +1688,21 @@ module CtrlBlock(
   wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_q5IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_q5IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q5IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q5IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_q5IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1340,6 +1769,21 @@ module CtrlBlock(
   wire  dispatchStage_io_lsEnq_toLsqData_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire  dispatchStage_io_lsEnq_toLsqData_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [31:0] dispatchStage_io_lsEnq_toLsqData_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [1:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [2:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire  dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
+  wire [31:0] dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_lsEnq_toLsqData_ldst; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_lsEnq_toLsqData_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
   wire [4:0] dispatchStage_io_lsEnq_toLsqData_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 75:29]
@@ -1512,6 +1956,21 @@ module CtrlBlock(
     .io_in_0_bits_pdInfo_isCall(decodeStage_io_in_0_bits_pdInfo_isCall),
     .io_in_0_bits_pdInfo_isRet(decodeStage_io_in_0_bits_pdInfo_isRet),
     .io_in_0_bits_pdInfo_jumpTarget(decodeStage_io_in_0_bits_pdInfo_jumpTarget),
+    .io_in_0_bits_bpuInfo_pc(decodeStage_io_in_0_bits_bpuInfo_pc),
+    .io_in_0_bits_bpuInfo_fallThrough(decodeStage_io_in_0_bits_bpuInfo_fallThrough),
+    .io_in_0_bits_bpuInfo_taken(decodeStage_io_in_0_bits_bpuInfo_taken),
+    .io_in_0_bits_bpuInfo_target(decodeStage_io_in_0_bits_bpuInfo_target),
+    .io_in_0_bits_bpuInfo_takenOffset(decodeStage_io_in_0_bits_bpuInfo_takenOffset),
+    .io_in_0_bits_bpuInfo_meta_btbHit(decodeStage_io_in_0_bits_bpuInfo_meta_btbHit),
+    .io_in_0_bits_bpuInfo_meta_btbIsJalr(decodeStage_io_in_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_0_bits_bpuInfo_meta_btbIsJal(decodeStage_io_in_0_bits_bpuInfo_meta_btbIsJal),
+    .io_in_0_bits_bpuInfo_meta_btbIsCall(decodeStage_io_in_0_bits_bpuInfo_meta_btbIsCall),
+    .io_in_0_bits_bpuInfo_meta_btbIsRet(decodeStage_io_in_0_bits_bpuInfo_meta_btbIsRet),
+    .io_in_0_bits_bpuInfo_meta_btbOffset(decodeStage_io_in_0_bits_bpuInfo_meta_btbOffset),
+    .io_in_0_bits_bpuInfo_meta_phtCounter(decodeStage_io_in_0_bits_bpuInfo_meta_phtCounter),
+    .io_in_0_bits_bpuInfo_meta_rasTop(decodeStage_io_in_0_bits_bpuInfo_meta_rasTop),
+    .io_in_0_bits_bpuInfo_meta_predTaken(decodeStage_io_in_0_bits_bpuInfo_meta_predTaken),
+    .io_in_0_bits_bpuInfo_meta_predTarget(decodeStage_io_in_0_bits_bpuInfo_meta_predTarget),
     .io_in_0_bits_exception_excpTlbRefill(decodeStage_io_in_0_bits_exception_excpTlbRefill),
     .io_in_0_bits_exception_excpTlbPif(decodeStage_io_in_0_bits_exception_excpTlbPif),
     .io_in_0_bits_exception_excpTlbPpi(decodeStage_io_in_0_bits_exception_excpTlbPpi),
@@ -1527,6 +1986,21 @@ module CtrlBlock(
     .io_in_1_bits_pdInfo_isCall(decodeStage_io_in_1_bits_pdInfo_isCall),
     .io_in_1_bits_pdInfo_isRet(decodeStage_io_in_1_bits_pdInfo_isRet),
     .io_in_1_bits_pdInfo_jumpTarget(decodeStage_io_in_1_bits_pdInfo_jumpTarget),
+    .io_in_1_bits_bpuInfo_pc(decodeStage_io_in_1_bits_bpuInfo_pc),
+    .io_in_1_bits_bpuInfo_fallThrough(decodeStage_io_in_1_bits_bpuInfo_fallThrough),
+    .io_in_1_bits_bpuInfo_taken(decodeStage_io_in_1_bits_bpuInfo_taken),
+    .io_in_1_bits_bpuInfo_target(decodeStage_io_in_1_bits_bpuInfo_target),
+    .io_in_1_bits_bpuInfo_takenOffset(decodeStage_io_in_1_bits_bpuInfo_takenOffset),
+    .io_in_1_bits_bpuInfo_meta_btbHit(decodeStage_io_in_1_bits_bpuInfo_meta_btbHit),
+    .io_in_1_bits_bpuInfo_meta_btbIsJalr(decodeStage_io_in_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_1_bits_bpuInfo_meta_btbIsJal(decodeStage_io_in_1_bits_bpuInfo_meta_btbIsJal),
+    .io_in_1_bits_bpuInfo_meta_btbIsCall(decodeStage_io_in_1_bits_bpuInfo_meta_btbIsCall),
+    .io_in_1_bits_bpuInfo_meta_btbIsRet(decodeStage_io_in_1_bits_bpuInfo_meta_btbIsRet),
+    .io_in_1_bits_bpuInfo_meta_btbOffset(decodeStage_io_in_1_bits_bpuInfo_meta_btbOffset),
+    .io_in_1_bits_bpuInfo_meta_phtCounter(decodeStage_io_in_1_bits_bpuInfo_meta_phtCounter),
+    .io_in_1_bits_bpuInfo_meta_rasTop(decodeStage_io_in_1_bits_bpuInfo_meta_rasTop),
+    .io_in_1_bits_bpuInfo_meta_predTaken(decodeStage_io_in_1_bits_bpuInfo_meta_predTaken),
+    .io_in_1_bits_bpuInfo_meta_predTarget(decodeStage_io_in_1_bits_bpuInfo_meta_predTarget),
     .io_in_1_bits_exception_excpTlbRefill(decodeStage_io_in_1_bits_exception_excpTlbRefill),
     .io_in_1_bits_exception_excpTlbPif(decodeStage_io_in_1_bits_exception_excpTlbPif),
     .io_in_1_bits_exception_excpTlbPpi(decodeStage_io_in_1_bits_exception_excpTlbPpi),
@@ -1542,6 +2016,21 @@ module CtrlBlock(
     .io_in_2_bits_pdInfo_isCall(decodeStage_io_in_2_bits_pdInfo_isCall),
     .io_in_2_bits_pdInfo_isRet(decodeStage_io_in_2_bits_pdInfo_isRet),
     .io_in_2_bits_pdInfo_jumpTarget(decodeStage_io_in_2_bits_pdInfo_jumpTarget),
+    .io_in_2_bits_bpuInfo_pc(decodeStage_io_in_2_bits_bpuInfo_pc),
+    .io_in_2_bits_bpuInfo_fallThrough(decodeStage_io_in_2_bits_bpuInfo_fallThrough),
+    .io_in_2_bits_bpuInfo_taken(decodeStage_io_in_2_bits_bpuInfo_taken),
+    .io_in_2_bits_bpuInfo_target(decodeStage_io_in_2_bits_bpuInfo_target),
+    .io_in_2_bits_bpuInfo_takenOffset(decodeStage_io_in_2_bits_bpuInfo_takenOffset),
+    .io_in_2_bits_bpuInfo_meta_btbHit(decodeStage_io_in_2_bits_bpuInfo_meta_btbHit),
+    .io_in_2_bits_bpuInfo_meta_btbIsJalr(decodeStage_io_in_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_2_bits_bpuInfo_meta_btbIsJal(decodeStage_io_in_2_bits_bpuInfo_meta_btbIsJal),
+    .io_in_2_bits_bpuInfo_meta_btbIsCall(decodeStage_io_in_2_bits_bpuInfo_meta_btbIsCall),
+    .io_in_2_bits_bpuInfo_meta_btbIsRet(decodeStage_io_in_2_bits_bpuInfo_meta_btbIsRet),
+    .io_in_2_bits_bpuInfo_meta_btbOffset(decodeStage_io_in_2_bits_bpuInfo_meta_btbOffset),
+    .io_in_2_bits_bpuInfo_meta_phtCounter(decodeStage_io_in_2_bits_bpuInfo_meta_phtCounter),
+    .io_in_2_bits_bpuInfo_meta_rasTop(decodeStage_io_in_2_bits_bpuInfo_meta_rasTop),
+    .io_in_2_bits_bpuInfo_meta_predTaken(decodeStage_io_in_2_bits_bpuInfo_meta_predTaken),
+    .io_in_2_bits_bpuInfo_meta_predTarget(decodeStage_io_in_2_bits_bpuInfo_meta_predTarget),
     .io_in_2_bits_exception_excpTlbRefill(decodeStage_io_in_2_bits_exception_excpTlbRefill),
     .io_in_2_bits_exception_excpTlbPif(decodeStage_io_in_2_bits_exception_excpTlbPif),
     .io_in_2_bits_exception_excpTlbPpi(decodeStage_io_in_2_bits_exception_excpTlbPpi),
@@ -1585,6 +2074,21 @@ module CtrlBlock(
     .io_out_0_bits_pdInfo_isCall(decodeStage_io_out_0_bits_pdInfo_isCall),
     .io_out_0_bits_pdInfo_isRet(decodeStage_io_out_0_bits_pdInfo_isRet),
     .io_out_0_bits_pdInfo_jumpTarget(decodeStage_io_out_0_bits_pdInfo_jumpTarget),
+    .io_out_0_bits_bpuInfo_pc(decodeStage_io_out_0_bits_bpuInfo_pc),
+    .io_out_0_bits_bpuInfo_fallThrough(decodeStage_io_out_0_bits_bpuInfo_fallThrough),
+    .io_out_0_bits_bpuInfo_taken(decodeStage_io_out_0_bits_bpuInfo_taken),
+    .io_out_0_bits_bpuInfo_target(decodeStage_io_out_0_bits_bpuInfo_target),
+    .io_out_0_bits_bpuInfo_takenOffset(decodeStage_io_out_0_bits_bpuInfo_takenOffset),
+    .io_out_0_bits_bpuInfo_meta_btbHit(decodeStage_io_out_0_bits_bpuInfo_meta_btbHit),
+    .io_out_0_bits_bpuInfo_meta_btbIsJalr(decodeStage_io_out_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_0_bits_bpuInfo_meta_btbIsJal(decodeStage_io_out_0_bits_bpuInfo_meta_btbIsJal),
+    .io_out_0_bits_bpuInfo_meta_btbIsCall(decodeStage_io_out_0_bits_bpuInfo_meta_btbIsCall),
+    .io_out_0_bits_bpuInfo_meta_btbIsRet(decodeStage_io_out_0_bits_bpuInfo_meta_btbIsRet),
+    .io_out_0_bits_bpuInfo_meta_btbOffset(decodeStage_io_out_0_bits_bpuInfo_meta_btbOffset),
+    .io_out_0_bits_bpuInfo_meta_phtCounter(decodeStage_io_out_0_bits_bpuInfo_meta_phtCounter),
+    .io_out_0_bits_bpuInfo_meta_rasTop(decodeStage_io_out_0_bits_bpuInfo_meta_rasTop),
+    .io_out_0_bits_bpuInfo_meta_predTaken(decodeStage_io_out_0_bits_bpuInfo_meta_predTaken),
+    .io_out_0_bits_bpuInfo_meta_predTarget(decodeStage_io_out_0_bits_bpuInfo_meta_predTarget),
     .io_out_1_ready(decodeStage_io_out_1_ready),
     .io_out_1_valid(decodeStage_io_out_1_valid),
     .io_out_1_bits_pc(decodeStage_io_out_1_bits_pc),
@@ -1624,6 +2128,21 @@ module CtrlBlock(
     .io_out_1_bits_pdInfo_isCall(decodeStage_io_out_1_bits_pdInfo_isCall),
     .io_out_1_bits_pdInfo_isRet(decodeStage_io_out_1_bits_pdInfo_isRet),
     .io_out_1_bits_pdInfo_jumpTarget(decodeStage_io_out_1_bits_pdInfo_jumpTarget),
+    .io_out_1_bits_bpuInfo_pc(decodeStage_io_out_1_bits_bpuInfo_pc),
+    .io_out_1_bits_bpuInfo_fallThrough(decodeStage_io_out_1_bits_bpuInfo_fallThrough),
+    .io_out_1_bits_bpuInfo_taken(decodeStage_io_out_1_bits_bpuInfo_taken),
+    .io_out_1_bits_bpuInfo_target(decodeStage_io_out_1_bits_bpuInfo_target),
+    .io_out_1_bits_bpuInfo_takenOffset(decodeStage_io_out_1_bits_bpuInfo_takenOffset),
+    .io_out_1_bits_bpuInfo_meta_btbHit(decodeStage_io_out_1_bits_bpuInfo_meta_btbHit),
+    .io_out_1_bits_bpuInfo_meta_btbIsJalr(decodeStage_io_out_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_1_bits_bpuInfo_meta_btbIsJal(decodeStage_io_out_1_bits_bpuInfo_meta_btbIsJal),
+    .io_out_1_bits_bpuInfo_meta_btbIsCall(decodeStage_io_out_1_bits_bpuInfo_meta_btbIsCall),
+    .io_out_1_bits_bpuInfo_meta_btbIsRet(decodeStage_io_out_1_bits_bpuInfo_meta_btbIsRet),
+    .io_out_1_bits_bpuInfo_meta_btbOffset(decodeStage_io_out_1_bits_bpuInfo_meta_btbOffset),
+    .io_out_1_bits_bpuInfo_meta_phtCounter(decodeStage_io_out_1_bits_bpuInfo_meta_phtCounter),
+    .io_out_1_bits_bpuInfo_meta_rasTop(decodeStage_io_out_1_bits_bpuInfo_meta_rasTop),
+    .io_out_1_bits_bpuInfo_meta_predTaken(decodeStage_io_out_1_bits_bpuInfo_meta_predTaken),
+    .io_out_1_bits_bpuInfo_meta_predTarget(decodeStage_io_out_1_bits_bpuInfo_meta_predTarget),
     .io_out_2_ready(decodeStage_io_out_2_ready),
     .io_out_2_valid(decodeStage_io_out_2_valid),
     .io_out_2_bits_pc(decodeStage_io_out_2_bits_pc),
@@ -1663,6 +2182,21 @@ module CtrlBlock(
     .io_out_2_bits_pdInfo_isCall(decodeStage_io_out_2_bits_pdInfo_isCall),
     .io_out_2_bits_pdInfo_isRet(decodeStage_io_out_2_bits_pdInfo_isRet),
     .io_out_2_bits_pdInfo_jumpTarget(decodeStage_io_out_2_bits_pdInfo_jumpTarget),
+    .io_out_2_bits_bpuInfo_pc(decodeStage_io_out_2_bits_bpuInfo_pc),
+    .io_out_2_bits_bpuInfo_fallThrough(decodeStage_io_out_2_bits_bpuInfo_fallThrough),
+    .io_out_2_bits_bpuInfo_taken(decodeStage_io_out_2_bits_bpuInfo_taken),
+    .io_out_2_bits_bpuInfo_target(decodeStage_io_out_2_bits_bpuInfo_target),
+    .io_out_2_bits_bpuInfo_takenOffset(decodeStage_io_out_2_bits_bpuInfo_takenOffset),
+    .io_out_2_bits_bpuInfo_meta_btbHit(decodeStage_io_out_2_bits_bpuInfo_meta_btbHit),
+    .io_out_2_bits_bpuInfo_meta_btbIsJalr(decodeStage_io_out_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_2_bits_bpuInfo_meta_btbIsJal(decodeStage_io_out_2_bits_bpuInfo_meta_btbIsJal),
+    .io_out_2_bits_bpuInfo_meta_btbIsCall(decodeStage_io_out_2_bits_bpuInfo_meta_btbIsCall),
+    .io_out_2_bits_bpuInfo_meta_btbIsRet(decodeStage_io_out_2_bits_bpuInfo_meta_btbIsRet),
+    .io_out_2_bits_bpuInfo_meta_btbOffset(decodeStage_io_out_2_bits_bpuInfo_meta_btbOffset),
+    .io_out_2_bits_bpuInfo_meta_phtCounter(decodeStage_io_out_2_bits_bpuInfo_meta_phtCounter),
+    .io_out_2_bits_bpuInfo_meta_rasTop(decodeStage_io_out_2_bits_bpuInfo_meta_rasTop),
+    .io_out_2_bits_bpuInfo_meta_predTaken(decodeStage_io_out_2_bits_bpuInfo_meta_predTaken),
+    .io_out_2_bits_bpuInfo_meta_predTarget(decodeStage_io_out_2_bits_bpuInfo_meta_predTarget),
     .io_ratRead_0_rs1(decodeStage_io_ratRead_0_rs1),
     .io_ratRead_0_rs2(decodeStage_io_ratRead_0_rs2),
     .io_ratRead_0_hold1(decodeStage_io_ratRead_0_hold1),
@@ -1686,8 +2220,6 @@ module CtrlBlock(
     .io_in_0_bits_pc(renameStage_io_in_0_bits_pc),
     .io_in_0_bits_inst(renameStage_io_in_0_bits_inst),
     .io_in_0_bits_rd(renameStage_io_in_0_bits_rd),
-    .io_in_0_bits_rj(renameStage_io_in_0_bits_rj),
-    .io_in_0_bits_rk(renameStage_io_in_0_bits_rk),
     .io_in_0_bits_rs1(renameStage_io_in_0_bits_rs1),
     .io_in_0_bits_rs2(renameStage_io_in_0_bits_rs2),
     .io_in_0_bits_rs1Valid(renameStage_io_in_0_bits_rs1Valid),
@@ -1720,13 +2252,26 @@ module CtrlBlock(
     .io_in_0_bits_pdInfo_isCall(renameStage_io_in_0_bits_pdInfo_isCall),
     .io_in_0_bits_pdInfo_isRet(renameStage_io_in_0_bits_pdInfo_isRet),
     .io_in_0_bits_pdInfo_jumpTarget(renameStage_io_in_0_bits_pdInfo_jumpTarget),
+    .io_in_0_bits_bpuInfo_pc(renameStage_io_in_0_bits_bpuInfo_pc),
+    .io_in_0_bits_bpuInfo_fallThrough(renameStage_io_in_0_bits_bpuInfo_fallThrough),
+    .io_in_0_bits_bpuInfo_taken(renameStage_io_in_0_bits_bpuInfo_taken),
+    .io_in_0_bits_bpuInfo_target(renameStage_io_in_0_bits_bpuInfo_target),
+    .io_in_0_bits_bpuInfo_takenOffset(renameStage_io_in_0_bits_bpuInfo_takenOffset),
+    .io_in_0_bits_bpuInfo_meta_btbHit(renameStage_io_in_0_bits_bpuInfo_meta_btbHit),
+    .io_in_0_bits_bpuInfo_meta_btbIsJalr(renameStage_io_in_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_0_bits_bpuInfo_meta_btbIsJal(renameStage_io_in_0_bits_bpuInfo_meta_btbIsJal),
+    .io_in_0_bits_bpuInfo_meta_btbIsCall(renameStage_io_in_0_bits_bpuInfo_meta_btbIsCall),
+    .io_in_0_bits_bpuInfo_meta_btbIsRet(renameStage_io_in_0_bits_bpuInfo_meta_btbIsRet),
+    .io_in_0_bits_bpuInfo_meta_btbOffset(renameStage_io_in_0_bits_bpuInfo_meta_btbOffset),
+    .io_in_0_bits_bpuInfo_meta_phtCounter(renameStage_io_in_0_bits_bpuInfo_meta_phtCounter),
+    .io_in_0_bits_bpuInfo_meta_rasTop(renameStage_io_in_0_bits_bpuInfo_meta_rasTop),
+    .io_in_0_bits_bpuInfo_meta_predTaken(renameStage_io_in_0_bits_bpuInfo_meta_predTaken),
+    .io_in_0_bits_bpuInfo_meta_predTarget(renameStage_io_in_0_bits_bpuInfo_meta_predTarget),
     .io_in_1_ready(renameStage_io_in_1_ready),
     .io_in_1_valid(renameStage_io_in_1_valid),
     .io_in_1_bits_pc(renameStage_io_in_1_bits_pc),
     .io_in_1_bits_inst(renameStage_io_in_1_bits_inst),
     .io_in_1_bits_rd(renameStage_io_in_1_bits_rd),
-    .io_in_1_bits_rj(renameStage_io_in_1_bits_rj),
-    .io_in_1_bits_rk(renameStage_io_in_1_bits_rk),
     .io_in_1_bits_rs1(renameStage_io_in_1_bits_rs1),
     .io_in_1_bits_rs2(renameStage_io_in_1_bits_rs2),
     .io_in_1_bits_rs1Valid(renameStage_io_in_1_bits_rs1Valid),
@@ -1759,13 +2304,26 @@ module CtrlBlock(
     .io_in_1_bits_pdInfo_isCall(renameStage_io_in_1_bits_pdInfo_isCall),
     .io_in_1_bits_pdInfo_isRet(renameStage_io_in_1_bits_pdInfo_isRet),
     .io_in_1_bits_pdInfo_jumpTarget(renameStage_io_in_1_bits_pdInfo_jumpTarget),
+    .io_in_1_bits_bpuInfo_pc(renameStage_io_in_1_bits_bpuInfo_pc),
+    .io_in_1_bits_bpuInfo_fallThrough(renameStage_io_in_1_bits_bpuInfo_fallThrough),
+    .io_in_1_bits_bpuInfo_taken(renameStage_io_in_1_bits_bpuInfo_taken),
+    .io_in_1_bits_bpuInfo_target(renameStage_io_in_1_bits_bpuInfo_target),
+    .io_in_1_bits_bpuInfo_takenOffset(renameStage_io_in_1_bits_bpuInfo_takenOffset),
+    .io_in_1_bits_bpuInfo_meta_btbHit(renameStage_io_in_1_bits_bpuInfo_meta_btbHit),
+    .io_in_1_bits_bpuInfo_meta_btbIsJalr(renameStage_io_in_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_1_bits_bpuInfo_meta_btbIsJal(renameStage_io_in_1_bits_bpuInfo_meta_btbIsJal),
+    .io_in_1_bits_bpuInfo_meta_btbIsCall(renameStage_io_in_1_bits_bpuInfo_meta_btbIsCall),
+    .io_in_1_bits_bpuInfo_meta_btbIsRet(renameStage_io_in_1_bits_bpuInfo_meta_btbIsRet),
+    .io_in_1_bits_bpuInfo_meta_btbOffset(renameStage_io_in_1_bits_bpuInfo_meta_btbOffset),
+    .io_in_1_bits_bpuInfo_meta_phtCounter(renameStage_io_in_1_bits_bpuInfo_meta_phtCounter),
+    .io_in_1_bits_bpuInfo_meta_rasTop(renameStage_io_in_1_bits_bpuInfo_meta_rasTop),
+    .io_in_1_bits_bpuInfo_meta_predTaken(renameStage_io_in_1_bits_bpuInfo_meta_predTaken),
+    .io_in_1_bits_bpuInfo_meta_predTarget(renameStage_io_in_1_bits_bpuInfo_meta_predTarget),
     .io_in_2_ready(renameStage_io_in_2_ready),
     .io_in_2_valid(renameStage_io_in_2_valid),
     .io_in_2_bits_pc(renameStage_io_in_2_bits_pc),
     .io_in_2_bits_inst(renameStage_io_in_2_bits_inst),
     .io_in_2_bits_rd(renameStage_io_in_2_bits_rd),
-    .io_in_2_bits_rj(renameStage_io_in_2_bits_rj),
-    .io_in_2_bits_rk(renameStage_io_in_2_bits_rk),
     .io_in_2_bits_rs1(renameStage_io_in_2_bits_rs1),
     .io_in_2_bits_rs2(renameStage_io_in_2_bits_rs2),
     .io_in_2_bits_rs1Valid(renameStage_io_in_2_bits_rs1Valid),
@@ -1798,6 +2356,21 @@ module CtrlBlock(
     .io_in_2_bits_pdInfo_isCall(renameStage_io_in_2_bits_pdInfo_isCall),
     .io_in_2_bits_pdInfo_isRet(renameStage_io_in_2_bits_pdInfo_isRet),
     .io_in_2_bits_pdInfo_jumpTarget(renameStage_io_in_2_bits_pdInfo_jumpTarget),
+    .io_in_2_bits_bpuInfo_pc(renameStage_io_in_2_bits_bpuInfo_pc),
+    .io_in_2_bits_bpuInfo_fallThrough(renameStage_io_in_2_bits_bpuInfo_fallThrough),
+    .io_in_2_bits_bpuInfo_taken(renameStage_io_in_2_bits_bpuInfo_taken),
+    .io_in_2_bits_bpuInfo_target(renameStage_io_in_2_bits_bpuInfo_target),
+    .io_in_2_bits_bpuInfo_takenOffset(renameStage_io_in_2_bits_bpuInfo_takenOffset),
+    .io_in_2_bits_bpuInfo_meta_btbHit(renameStage_io_in_2_bits_bpuInfo_meta_btbHit),
+    .io_in_2_bits_bpuInfo_meta_btbIsJalr(renameStage_io_in_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_2_bits_bpuInfo_meta_btbIsJal(renameStage_io_in_2_bits_bpuInfo_meta_btbIsJal),
+    .io_in_2_bits_bpuInfo_meta_btbIsCall(renameStage_io_in_2_bits_bpuInfo_meta_btbIsCall),
+    .io_in_2_bits_bpuInfo_meta_btbIsRet(renameStage_io_in_2_bits_bpuInfo_meta_btbIsRet),
+    .io_in_2_bits_bpuInfo_meta_btbOffset(renameStage_io_in_2_bits_bpuInfo_meta_btbOffset),
+    .io_in_2_bits_bpuInfo_meta_phtCounter(renameStage_io_in_2_bits_bpuInfo_meta_phtCounter),
+    .io_in_2_bits_bpuInfo_meta_rasTop(renameStage_io_in_2_bits_bpuInfo_meta_rasTop),
+    .io_in_2_bits_bpuInfo_meta_predTaken(renameStage_io_in_2_bits_bpuInfo_meta_predTaken),
+    .io_in_2_bits_bpuInfo_meta_predTarget(renameStage_io_in_2_bits_bpuInfo_meta_predTarget),
     .io_ratRead_0_rs1(renameStage_io_ratRead_0_rs1),
     .io_ratRead_0_rs2(renameStage_io_ratRead_0_rs2),
     .io_ratRead_0_hold1(renameStage_io_ratRead_0_hold1),
@@ -1841,6 +2414,21 @@ module CtrlBlock(
     .io_out_0_bits_pdInfo_isCall(renameStage_io_out_0_bits_pdInfo_isCall),
     .io_out_0_bits_pdInfo_isRet(renameStage_io_out_0_bits_pdInfo_isRet),
     .io_out_0_bits_pdInfo_jumpTarget(renameStage_io_out_0_bits_pdInfo_jumpTarget),
+    .io_out_0_bits_bpuInfo_pc(renameStage_io_out_0_bits_bpuInfo_pc),
+    .io_out_0_bits_bpuInfo_fallThrough(renameStage_io_out_0_bits_bpuInfo_fallThrough),
+    .io_out_0_bits_bpuInfo_taken(renameStage_io_out_0_bits_bpuInfo_taken),
+    .io_out_0_bits_bpuInfo_target(renameStage_io_out_0_bits_bpuInfo_target),
+    .io_out_0_bits_bpuInfo_takenOffset(renameStage_io_out_0_bits_bpuInfo_takenOffset),
+    .io_out_0_bits_bpuInfo_meta_btbHit(renameStage_io_out_0_bits_bpuInfo_meta_btbHit),
+    .io_out_0_bits_bpuInfo_meta_btbIsJalr(renameStage_io_out_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_0_bits_bpuInfo_meta_btbIsJal(renameStage_io_out_0_bits_bpuInfo_meta_btbIsJal),
+    .io_out_0_bits_bpuInfo_meta_btbIsCall(renameStage_io_out_0_bits_bpuInfo_meta_btbIsCall),
+    .io_out_0_bits_bpuInfo_meta_btbIsRet(renameStage_io_out_0_bits_bpuInfo_meta_btbIsRet),
+    .io_out_0_bits_bpuInfo_meta_btbOffset(renameStage_io_out_0_bits_bpuInfo_meta_btbOffset),
+    .io_out_0_bits_bpuInfo_meta_phtCounter(renameStage_io_out_0_bits_bpuInfo_meta_phtCounter),
+    .io_out_0_bits_bpuInfo_meta_rasTop(renameStage_io_out_0_bits_bpuInfo_meta_rasTop),
+    .io_out_0_bits_bpuInfo_meta_predTaken(renameStage_io_out_0_bits_bpuInfo_meta_predTaken),
+    .io_out_0_bits_bpuInfo_meta_predTarget(renameStage_io_out_0_bits_bpuInfo_meta_predTarget),
     .io_out_0_bits_ldst(renameStage_io_out_0_bits_ldst),
     .io_out_0_bits_lrs1(renameStage_io_out_0_bits_lrs1),
     .io_out_0_bits_lrs2(renameStage_io_out_0_bits_lrs2),
@@ -1884,6 +2472,21 @@ module CtrlBlock(
     .io_out_1_bits_pdInfo_isCall(renameStage_io_out_1_bits_pdInfo_isCall),
     .io_out_1_bits_pdInfo_isRet(renameStage_io_out_1_bits_pdInfo_isRet),
     .io_out_1_bits_pdInfo_jumpTarget(renameStage_io_out_1_bits_pdInfo_jumpTarget),
+    .io_out_1_bits_bpuInfo_pc(renameStage_io_out_1_bits_bpuInfo_pc),
+    .io_out_1_bits_bpuInfo_fallThrough(renameStage_io_out_1_bits_bpuInfo_fallThrough),
+    .io_out_1_bits_bpuInfo_taken(renameStage_io_out_1_bits_bpuInfo_taken),
+    .io_out_1_bits_bpuInfo_target(renameStage_io_out_1_bits_bpuInfo_target),
+    .io_out_1_bits_bpuInfo_takenOffset(renameStage_io_out_1_bits_bpuInfo_takenOffset),
+    .io_out_1_bits_bpuInfo_meta_btbHit(renameStage_io_out_1_bits_bpuInfo_meta_btbHit),
+    .io_out_1_bits_bpuInfo_meta_btbIsJalr(renameStage_io_out_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_1_bits_bpuInfo_meta_btbIsJal(renameStage_io_out_1_bits_bpuInfo_meta_btbIsJal),
+    .io_out_1_bits_bpuInfo_meta_btbIsCall(renameStage_io_out_1_bits_bpuInfo_meta_btbIsCall),
+    .io_out_1_bits_bpuInfo_meta_btbIsRet(renameStage_io_out_1_bits_bpuInfo_meta_btbIsRet),
+    .io_out_1_bits_bpuInfo_meta_btbOffset(renameStage_io_out_1_bits_bpuInfo_meta_btbOffset),
+    .io_out_1_bits_bpuInfo_meta_phtCounter(renameStage_io_out_1_bits_bpuInfo_meta_phtCounter),
+    .io_out_1_bits_bpuInfo_meta_rasTop(renameStage_io_out_1_bits_bpuInfo_meta_rasTop),
+    .io_out_1_bits_bpuInfo_meta_predTaken(renameStage_io_out_1_bits_bpuInfo_meta_predTaken),
+    .io_out_1_bits_bpuInfo_meta_predTarget(renameStage_io_out_1_bits_bpuInfo_meta_predTarget),
     .io_out_1_bits_ldst(renameStage_io_out_1_bits_ldst),
     .io_out_1_bits_lrs1(renameStage_io_out_1_bits_lrs1),
     .io_out_1_bits_lrs2(renameStage_io_out_1_bits_lrs2),
@@ -1927,6 +2530,21 @@ module CtrlBlock(
     .io_out_2_bits_pdInfo_isCall(renameStage_io_out_2_bits_pdInfo_isCall),
     .io_out_2_bits_pdInfo_isRet(renameStage_io_out_2_bits_pdInfo_isRet),
     .io_out_2_bits_pdInfo_jumpTarget(renameStage_io_out_2_bits_pdInfo_jumpTarget),
+    .io_out_2_bits_bpuInfo_pc(renameStage_io_out_2_bits_bpuInfo_pc),
+    .io_out_2_bits_bpuInfo_fallThrough(renameStage_io_out_2_bits_bpuInfo_fallThrough),
+    .io_out_2_bits_bpuInfo_taken(renameStage_io_out_2_bits_bpuInfo_taken),
+    .io_out_2_bits_bpuInfo_target(renameStage_io_out_2_bits_bpuInfo_target),
+    .io_out_2_bits_bpuInfo_takenOffset(renameStage_io_out_2_bits_bpuInfo_takenOffset),
+    .io_out_2_bits_bpuInfo_meta_btbHit(renameStage_io_out_2_bits_bpuInfo_meta_btbHit),
+    .io_out_2_bits_bpuInfo_meta_btbIsJalr(renameStage_io_out_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_out_2_bits_bpuInfo_meta_btbIsJal(renameStage_io_out_2_bits_bpuInfo_meta_btbIsJal),
+    .io_out_2_bits_bpuInfo_meta_btbIsCall(renameStage_io_out_2_bits_bpuInfo_meta_btbIsCall),
+    .io_out_2_bits_bpuInfo_meta_btbIsRet(renameStage_io_out_2_bits_bpuInfo_meta_btbIsRet),
+    .io_out_2_bits_bpuInfo_meta_btbOffset(renameStage_io_out_2_bits_bpuInfo_meta_btbOffset),
+    .io_out_2_bits_bpuInfo_meta_phtCounter(renameStage_io_out_2_bits_bpuInfo_meta_phtCounter),
+    .io_out_2_bits_bpuInfo_meta_rasTop(renameStage_io_out_2_bits_bpuInfo_meta_rasTop),
+    .io_out_2_bits_bpuInfo_meta_predTaken(renameStage_io_out_2_bits_bpuInfo_meta_predTaken),
+    .io_out_2_bits_bpuInfo_meta_predTarget(renameStage_io_out_2_bits_bpuInfo_meta_predTarget),
     .io_out_2_bits_ldst(renameStage_io_out_2_bits_ldst),
     .io_out_2_bits_lrs1(renameStage_io_out_2_bits_lrs1),
     .io_out_2_bits_lrs2(renameStage_io_out_2_bits_lrs2),
@@ -2012,6 +2630,21 @@ module CtrlBlock(
     .io_in_0_bits_pdInfo_isCall(dispatchStage_io_in_0_bits_pdInfo_isCall),
     .io_in_0_bits_pdInfo_isRet(dispatchStage_io_in_0_bits_pdInfo_isRet),
     .io_in_0_bits_pdInfo_jumpTarget(dispatchStage_io_in_0_bits_pdInfo_jumpTarget),
+    .io_in_0_bits_bpuInfo_pc(dispatchStage_io_in_0_bits_bpuInfo_pc),
+    .io_in_0_bits_bpuInfo_fallThrough(dispatchStage_io_in_0_bits_bpuInfo_fallThrough),
+    .io_in_0_bits_bpuInfo_taken(dispatchStage_io_in_0_bits_bpuInfo_taken),
+    .io_in_0_bits_bpuInfo_target(dispatchStage_io_in_0_bits_bpuInfo_target),
+    .io_in_0_bits_bpuInfo_takenOffset(dispatchStage_io_in_0_bits_bpuInfo_takenOffset),
+    .io_in_0_bits_bpuInfo_meta_btbHit(dispatchStage_io_in_0_bits_bpuInfo_meta_btbHit),
+    .io_in_0_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_0_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsJal),
+    .io_in_0_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsCall),
+    .io_in_0_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsRet),
+    .io_in_0_bits_bpuInfo_meta_btbOffset(dispatchStage_io_in_0_bits_bpuInfo_meta_btbOffset),
+    .io_in_0_bits_bpuInfo_meta_phtCounter(dispatchStage_io_in_0_bits_bpuInfo_meta_phtCounter),
+    .io_in_0_bits_bpuInfo_meta_rasTop(dispatchStage_io_in_0_bits_bpuInfo_meta_rasTop),
+    .io_in_0_bits_bpuInfo_meta_predTaken(dispatchStage_io_in_0_bits_bpuInfo_meta_predTaken),
+    .io_in_0_bits_bpuInfo_meta_predTarget(dispatchStage_io_in_0_bits_bpuInfo_meta_predTarget),
     .io_in_0_bits_ldst(dispatchStage_io_in_0_bits_ldst),
     .io_in_0_bits_lrs1(dispatchStage_io_in_0_bits_lrs1),
     .io_in_0_bits_lrs2(dispatchStage_io_in_0_bits_lrs2),
@@ -2055,6 +2688,21 @@ module CtrlBlock(
     .io_in_1_bits_pdInfo_isCall(dispatchStage_io_in_1_bits_pdInfo_isCall),
     .io_in_1_bits_pdInfo_isRet(dispatchStage_io_in_1_bits_pdInfo_isRet),
     .io_in_1_bits_pdInfo_jumpTarget(dispatchStage_io_in_1_bits_pdInfo_jumpTarget),
+    .io_in_1_bits_bpuInfo_pc(dispatchStage_io_in_1_bits_bpuInfo_pc),
+    .io_in_1_bits_bpuInfo_fallThrough(dispatchStage_io_in_1_bits_bpuInfo_fallThrough),
+    .io_in_1_bits_bpuInfo_taken(dispatchStage_io_in_1_bits_bpuInfo_taken),
+    .io_in_1_bits_bpuInfo_target(dispatchStage_io_in_1_bits_bpuInfo_target),
+    .io_in_1_bits_bpuInfo_takenOffset(dispatchStage_io_in_1_bits_bpuInfo_takenOffset),
+    .io_in_1_bits_bpuInfo_meta_btbHit(dispatchStage_io_in_1_bits_bpuInfo_meta_btbHit),
+    .io_in_1_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_1_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsJal),
+    .io_in_1_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsCall),
+    .io_in_1_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsRet),
+    .io_in_1_bits_bpuInfo_meta_btbOffset(dispatchStage_io_in_1_bits_bpuInfo_meta_btbOffset),
+    .io_in_1_bits_bpuInfo_meta_phtCounter(dispatchStage_io_in_1_bits_bpuInfo_meta_phtCounter),
+    .io_in_1_bits_bpuInfo_meta_rasTop(dispatchStage_io_in_1_bits_bpuInfo_meta_rasTop),
+    .io_in_1_bits_bpuInfo_meta_predTaken(dispatchStage_io_in_1_bits_bpuInfo_meta_predTaken),
+    .io_in_1_bits_bpuInfo_meta_predTarget(dispatchStage_io_in_1_bits_bpuInfo_meta_predTarget),
     .io_in_1_bits_ldst(dispatchStage_io_in_1_bits_ldst),
     .io_in_1_bits_lrs1(dispatchStage_io_in_1_bits_lrs1),
     .io_in_1_bits_lrs2(dispatchStage_io_in_1_bits_lrs2),
@@ -2098,6 +2746,21 @@ module CtrlBlock(
     .io_in_2_bits_pdInfo_isCall(dispatchStage_io_in_2_bits_pdInfo_isCall),
     .io_in_2_bits_pdInfo_isRet(dispatchStage_io_in_2_bits_pdInfo_isRet),
     .io_in_2_bits_pdInfo_jumpTarget(dispatchStage_io_in_2_bits_pdInfo_jumpTarget),
+    .io_in_2_bits_bpuInfo_pc(dispatchStage_io_in_2_bits_bpuInfo_pc),
+    .io_in_2_bits_bpuInfo_fallThrough(dispatchStage_io_in_2_bits_bpuInfo_fallThrough),
+    .io_in_2_bits_bpuInfo_taken(dispatchStage_io_in_2_bits_bpuInfo_taken),
+    .io_in_2_bits_bpuInfo_target(dispatchStage_io_in_2_bits_bpuInfo_target),
+    .io_in_2_bits_bpuInfo_takenOffset(dispatchStage_io_in_2_bits_bpuInfo_takenOffset),
+    .io_in_2_bits_bpuInfo_meta_btbHit(dispatchStage_io_in_2_bits_bpuInfo_meta_btbHit),
+    .io_in_2_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsJalr),
+    .io_in_2_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsJal),
+    .io_in_2_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsCall),
+    .io_in_2_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsRet),
+    .io_in_2_bits_bpuInfo_meta_btbOffset(dispatchStage_io_in_2_bits_bpuInfo_meta_btbOffset),
+    .io_in_2_bits_bpuInfo_meta_phtCounter(dispatchStage_io_in_2_bits_bpuInfo_meta_phtCounter),
+    .io_in_2_bits_bpuInfo_meta_rasTop(dispatchStage_io_in_2_bits_bpuInfo_meta_rasTop),
+    .io_in_2_bits_bpuInfo_meta_predTaken(dispatchStage_io_in_2_bits_bpuInfo_meta_predTaken),
+    .io_in_2_bits_bpuInfo_meta_predTarget(dispatchStage_io_in_2_bits_bpuInfo_meta_predTarget),
     .io_in_2_bits_ldst(dispatchStage_io_in_2_bits_ldst),
     .io_in_2_bits_lrs1(dispatchStage_io_in_2_bits_lrs1),
     .io_in_2_bits_lrs2(dispatchStage_io_in_2_bits_lrs2),
@@ -2140,6 +2803,21 @@ module CtrlBlock(
     .io_q1IQEnq_0_bits_pdInfo_isCall(dispatchStage_io_q1IQEnq_0_bits_pdInfo_isCall),
     .io_q1IQEnq_0_bits_pdInfo_isRet(dispatchStage_io_q1IQEnq_0_bits_pdInfo_isRet),
     .io_q1IQEnq_0_bits_pdInfo_jumpTarget(dispatchStage_io_q1IQEnq_0_bits_pdInfo_jumpTarget),
+    .io_q1IQEnq_0_bits_bpuInfo_pc(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_pc),
+    .io_q1IQEnq_0_bits_bpuInfo_fallThrough(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_fallThrough),
+    .io_q1IQEnq_0_bits_bpuInfo_taken(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_taken),
+    .io_q1IQEnq_0_bits_bpuInfo_target(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_target),
+    .io_q1IQEnq_0_bits_bpuInfo_takenOffset(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_takenOffset),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_btbHit(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbHit),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_rasTop(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_rasTop),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_predTaken(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_predTaken),
+    .io_q1IQEnq_0_bits_bpuInfo_meta_predTarget(dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_predTarget),
     .io_q1IQEnq_0_bits_ldst(dispatchStage_io_q1IQEnq_0_bits_ldst),
     .io_q1IQEnq_0_bits_lrs1(dispatchStage_io_q1IQEnq_0_bits_lrs1),
     .io_q1IQEnq_0_bits_lrs2(dispatchStage_io_q1IQEnq_0_bits_lrs2),
@@ -2186,6 +2864,21 @@ module CtrlBlock(
     .io_q2IQEnq_0_bits_pdInfo_isCall(dispatchStage_io_q2IQEnq_0_bits_pdInfo_isCall),
     .io_q2IQEnq_0_bits_pdInfo_isRet(dispatchStage_io_q2IQEnq_0_bits_pdInfo_isRet),
     .io_q2IQEnq_0_bits_pdInfo_jumpTarget(dispatchStage_io_q2IQEnq_0_bits_pdInfo_jumpTarget),
+    .io_q2IQEnq_0_bits_bpuInfo_pc(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_pc),
+    .io_q2IQEnq_0_bits_bpuInfo_fallThrough(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_fallThrough),
+    .io_q2IQEnq_0_bits_bpuInfo_taken(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_taken),
+    .io_q2IQEnq_0_bits_bpuInfo_target(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_target),
+    .io_q2IQEnq_0_bits_bpuInfo_takenOffset(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_takenOffset),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_btbHit(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbHit),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_rasTop(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_rasTop),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_predTaken(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_predTaken),
+    .io_q2IQEnq_0_bits_bpuInfo_meta_predTarget(dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_predTarget),
     .io_q2IQEnq_0_bits_ldst(dispatchStage_io_q2IQEnq_0_bits_ldst),
     .io_q2IQEnq_0_bits_lrs1(dispatchStage_io_q2IQEnq_0_bits_lrs1),
     .io_q2IQEnq_0_bits_lrs2(dispatchStage_io_q2IQEnq_0_bits_lrs2),
@@ -2233,6 +2926,21 @@ module CtrlBlock(
     .io_q3IQEnq_0_bits_pdInfo_isCall(dispatchStage_io_q3IQEnq_0_bits_pdInfo_isCall),
     .io_q3IQEnq_0_bits_pdInfo_isRet(dispatchStage_io_q3IQEnq_0_bits_pdInfo_isRet),
     .io_q3IQEnq_0_bits_pdInfo_jumpTarget(dispatchStage_io_q3IQEnq_0_bits_pdInfo_jumpTarget),
+    .io_q3IQEnq_0_bits_bpuInfo_pc(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_pc),
+    .io_q3IQEnq_0_bits_bpuInfo_fallThrough(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_fallThrough),
+    .io_q3IQEnq_0_bits_bpuInfo_taken(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_taken),
+    .io_q3IQEnq_0_bits_bpuInfo_target(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_target),
+    .io_q3IQEnq_0_bits_bpuInfo_takenOffset(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_takenOffset),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_btbHit(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbHit),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_rasTop(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_rasTop),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_predTaken(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_predTaken),
+    .io_q3IQEnq_0_bits_bpuInfo_meta_predTarget(dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_predTarget),
     .io_q3IQEnq_0_bits_ldst(dispatchStage_io_q3IQEnq_0_bits_ldst),
     .io_q3IQEnq_0_bits_lrs1(dispatchStage_io_q3IQEnq_0_bits_lrs1),
     .io_q3IQEnq_0_bits_lrs2(dispatchStage_io_q3IQEnq_0_bits_lrs2),
@@ -2280,6 +2988,21 @@ module CtrlBlock(
     .io_q4IQEnq_0_bits_pdInfo_isCall(dispatchStage_io_q4IQEnq_0_bits_pdInfo_isCall),
     .io_q4IQEnq_0_bits_pdInfo_isRet(dispatchStage_io_q4IQEnq_0_bits_pdInfo_isRet),
     .io_q4IQEnq_0_bits_pdInfo_jumpTarget(dispatchStage_io_q4IQEnq_0_bits_pdInfo_jumpTarget),
+    .io_q4IQEnq_0_bits_bpuInfo_pc(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_pc),
+    .io_q4IQEnq_0_bits_bpuInfo_fallThrough(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_fallThrough),
+    .io_q4IQEnq_0_bits_bpuInfo_taken(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_taken),
+    .io_q4IQEnq_0_bits_bpuInfo_target(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_target),
+    .io_q4IQEnq_0_bits_bpuInfo_takenOffset(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_takenOffset),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_btbHit(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbHit),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_rasTop(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_rasTop),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_predTaken(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_predTaken),
+    .io_q4IQEnq_0_bits_bpuInfo_meta_predTarget(dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_predTarget),
     .io_q4IQEnq_0_bits_ldst(dispatchStage_io_q4IQEnq_0_bits_ldst),
     .io_q4IQEnq_0_bits_lrs1(dispatchStage_io_q4IQEnq_0_bits_lrs1),
     .io_q4IQEnq_0_bits_lrs2(dispatchStage_io_q4IQEnq_0_bits_lrs2),
@@ -2333,6 +3056,21 @@ module CtrlBlock(
     .io_q5IQEnq_0_bits_pdInfo_isCall(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isCall),
     .io_q5IQEnq_0_bits_pdInfo_isRet(dispatchStage_io_q5IQEnq_0_bits_pdInfo_isRet),
     .io_q5IQEnq_0_bits_pdInfo_jumpTarget(dispatchStage_io_q5IQEnq_0_bits_pdInfo_jumpTarget),
+    .io_q5IQEnq_0_bits_bpuInfo_pc(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_pc),
+    .io_q5IQEnq_0_bits_bpuInfo_fallThrough(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_fallThrough),
+    .io_q5IQEnq_0_bits_bpuInfo_taken(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_taken),
+    .io_q5IQEnq_0_bits_bpuInfo_target(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_target),
+    .io_q5IQEnq_0_bits_bpuInfo_takenOffset(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_takenOffset),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_btbHit(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbHit),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_rasTop(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_rasTop),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_predTaken(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_predTaken),
+    .io_q5IQEnq_0_bits_bpuInfo_meta_predTarget(dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_predTarget),
     .io_q5IQEnq_0_bits_ldst(dispatchStage_io_q5IQEnq_0_bits_ldst),
     .io_q5IQEnq_0_bits_lrs1(dispatchStage_io_q5IQEnq_0_bits_lrs1),
     .io_q5IQEnq_0_bits_lrs2(dispatchStage_io_q5IQEnq_0_bits_lrs2),
@@ -2399,6 +3137,21 @@ module CtrlBlock(
     .io_lsEnq_toLsqData_pdInfo_isCall(dispatchStage_io_lsEnq_toLsqData_pdInfo_isCall),
     .io_lsEnq_toLsqData_pdInfo_isRet(dispatchStage_io_lsEnq_toLsqData_pdInfo_isRet),
     .io_lsEnq_toLsqData_pdInfo_jumpTarget(dispatchStage_io_lsEnq_toLsqData_pdInfo_jumpTarget),
+    .io_lsEnq_toLsqData_bpuInfo_pc(dispatchStage_io_lsEnq_toLsqData_bpuInfo_pc),
+    .io_lsEnq_toLsqData_bpuInfo_fallThrough(dispatchStage_io_lsEnq_toLsqData_bpuInfo_fallThrough),
+    .io_lsEnq_toLsqData_bpuInfo_taken(dispatchStage_io_lsEnq_toLsqData_bpuInfo_taken),
+    .io_lsEnq_toLsqData_bpuInfo_target(dispatchStage_io_lsEnq_toLsqData_bpuInfo_target),
+    .io_lsEnq_toLsqData_bpuInfo_takenOffset(dispatchStage_io_lsEnq_toLsqData_bpuInfo_takenOffset),
+    .io_lsEnq_toLsqData_bpuInfo_meta_btbHit(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbHit),
+    .io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr),
+    .io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal),
+    .io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall),
+    .io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet),
+    .io_lsEnq_toLsqData_bpuInfo_meta_btbOffset(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbOffset),
+    .io_lsEnq_toLsqData_bpuInfo_meta_phtCounter(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_phtCounter),
+    .io_lsEnq_toLsqData_bpuInfo_meta_rasTop(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_rasTop),
+    .io_lsEnq_toLsqData_bpuInfo_meta_predTaken(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_predTaken),
+    .io_lsEnq_toLsqData_bpuInfo_meta_predTarget(dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_predTarget),
     .io_lsEnq_toLsqData_ldst(dispatchStage_io_lsEnq_toLsqData_ldst),
     .io_lsEnq_toLsqData_lrs1(dispatchStage_io_lsEnq_toLsqData_lrs1),
     .io_lsEnq_toLsqData_lrs2(dispatchStage_io_lsEnq_toLsqData_lrs2),
@@ -2593,6 +3346,21 @@ module CtrlBlock(
   assign io_q1IQEnq_0_bits_pdInfo_isCall = dispatchStage_io_q1IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q1IQEnq_0_bits_pdInfo_isRet = dispatchStage_io_q1IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q1IQEnq_0_bits_pdInfo_jumpTarget = dispatchStage_io_q1IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_pc = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_fallThrough = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_taken = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_target = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_takenOffset = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbHit = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_rasTop = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_predTaken = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_predTarget = dispatchStage_io_q1IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q1IQEnq_0_bits_ldst = dispatchStage_io_q1IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q1IQEnq_0_bits_lrs1 = dispatchStage_io_q1IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
   assign io_q1IQEnq_0_bits_lrs2 = dispatchStage_io_q1IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 81:32]
@@ -2639,6 +3407,21 @@ module CtrlBlock(
   assign io_q2IQEnq_0_bits_pdInfo_isCall = dispatchStage_io_q2IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q2IQEnq_0_bits_pdInfo_isRet = dispatchStage_io_q2IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q2IQEnq_0_bits_pdInfo_jumpTarget = dispatchStage_io_q2IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_pc = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_fallThrough = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_taken = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_target = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_takenOffset = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbHit = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_rasTop = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_predTaken = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_predTarget = dispatchStage_io_q2IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q2IQEnq_0_bits_ldst = dispatchStage_io_q2IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q2IQEnq_0_bits_lrs1 = dispatchStage_io_q2IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
   assign io_q2IQEnq_0_bits_lrs2 = dispatchStage_io_q2IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 82:32]
@@ -2686,6 +3469,21 @@ module CtrlBlock(
   assign io_q3IQEnq_0_bits_pdInfo_isCall = dispatchStage_io_q3IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q3IQEnq_0_bits_pdInfo_isRet = dispatchStage_io_q3IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q3IQEnq_0_bits_pdInfo_jumpTarget = dispatchStage_io_q3IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_pc = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_fallThrough = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_taken = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_target = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_takenOffset = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbHit = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_rasTop = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_predTaken = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_predTarget = dispatchStage_io_q3IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q3IQEnq_0_bits_ldst = dispatchStage_io_q3IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q3IQEnq_0_bits_lrs1 = dispatchStage_io_q3IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
   assign io_q3IQEnq_0_bits_lrs2 = dispatchStage_io_q3IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 83:32]
@@ -2733,6 +3531,21 @@ module CtrlBlock(
   assign io_q4IQEnq_0_bits_pdInfo_isCall = dispatchStage_io_q4IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q4IQEnq_0_bits_pdInfo_isRet = dispatchStage_io_q4IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q4IQEnq_0_bits_pdInfo_jumpTarget = dispatchStage_io_q4IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_pc = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_fallThrough = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_taken = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_target = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_takenOffset = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbHit = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_rasTop = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_predTaken = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_predTarget = dispatchStage_io_q4IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q4IQEnq_0_bits_ldst = dispatchStage_io_q4IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q4IQEnq_0_bits_lrs1 = dispatchStage_io_q4IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
   assign io_q4IQEnq_0_bits_lrs2 = dispatchStage_io_q4IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 84:32]
@@ -2786,6 +3599,21 @@ module CtrlBlock(
   assign io_q5IQEnq_0_bits_pdInfo_isCall = dispatchStage_io_q5IQEnq_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
   assign io_q5IQEnq_0_bits_pdInfo_isRet = dispatchStage_io_q5IQEnq_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
   assign io_q5IQEnq_0_bits_pdInfo_jumpTarget = dispatchStage_io_q5IQEnq_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_pc = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_fallThrough = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_taken = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_target = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_takenOffset = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbHit = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_rasTop = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_predTaken = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_predTarget = dispatchStage_io_q5IQEnq_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
   assign io_q5IQEnq_0_bits_ldst = dispatchStage_io_q5IQEnq_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
   assign io_q5IQEnq_0_bits_lrs1 = dispatchStage_io_q5IQEnq_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
   assign io_q5IQEnq_0_bits_lrs2 = dispatchStage_io_q5IQEnq_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 85:32]
@@ -2847,6 +3675,21 @@ module CtrlBlock(
   assign io_lsEnq_toLsqData_pdInfo_isCall = dispatchStage_io_lsEnq_toLsqData_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_pdInfo_isRet = dispatchStage_io_lsEnq_toLsqData_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_pdInfo_jumpTarget = dispatchStage_io_lsEnq_toLsqData_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_pc = dispatchStage_io_lsEnq_toLsqData_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_fallThrough = dispatchStage_io_lsEnq_toLsqData_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_taken = dispatchStage_io_lsEnq_toLsqData_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_target = dispatchStage_io_lsEnq_toLsqData_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_takenOffset = dispatchStage_io_lsEnq_toLsqData_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbHit = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbOffset = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_phtCounter = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_rasTop = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_predTaken = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_predTarget = dispatchStage_io_lsEnq_toLsqData_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_ldst = dispatchStage_io_lsEnq_toLsqData_ldst; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_lrs1 = dispatchStage_io_lsEnq_toLsqData_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
   assign io_lsEnq_toLsqData_lrs2 = dispatchStage_io_lsEnq_toLsqData_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 91:26]
@@ -2919,6 +3762,21 @@ module CtrlBlock(
   assign decodeStage_io_in_0_bits_pdInfo_isCall = io_in_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_0_bits_pdInfo_isRet = io_in_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_0_bits_pdInfo_jumpTarget = io_in_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_pc = io_in_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_fallThrough = io_in_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_taken = io_in_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_target = io_in_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_takenOffset = io_in_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_btbHit = io_in_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_btbIsJalr = io_in_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_btbIsJal = io_in_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_btbIsCall = io_in_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_btbIsRet = io_in_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_btbOffset = io_in_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_phtCounter = io_in_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_rasTop = io_in_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_predTaken = io_in_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_0_bits_bpuInfo_meta_predTarget = io_in_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_0_bits_exception_excpTlbRefill = io_in_0_bits_exception_excpTlbRefill; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_0_bits_exception_excpTlbPif = io_in_0_bits_exception_excpTlbPif; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_0_bits_exception_excpTlbPpi = io_in_0_bits_exception_excpTlbPpi; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
@@ -2933,6 +3791,21 @@ module CtrlBlock(
   assign decodeStage_io_in_1_bits_pdInfo_isCall = io_in_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_1_bits_pdInfo_isRet = io_in_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_1_bits_pdInfo_jumpTarget = io_in_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_pc = io_in_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_fallThrough = io_in_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_taken = io_in_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_target = io_in_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_takenOffset = io_in_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_btbHit = io_in_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_btbIsJalr = io_in_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_btbIsJal = io_in_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_btbIsCall = io_in_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_btbIsRet = io_in_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_btbOffset = io_in_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_phtCounter = io_in_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_rasTop = io_in_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_predTaken = io_in_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_1_bits_bpuInfo_meta_predTarget = io_in_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_1_bits_exception_excpTlbRefill = io_in_1_bits_exception_excpTlbRefill; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_1_bits_exception_excpTlbPif = io_in_1_bits_exception_excpTlbPif; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_1_bits_exception_excpTlbPpi = io_in_1_bits_exception_excpTlbPpi; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
@@ -2947,6 +3820,21 @@ module CtrlBlock(
   assign decodeStage_io_in_2_bits_pdInfo_isCall = io_in_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_2_bits_pdInfo_isRet = io_in_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_2_bits_pdInfo_jumpTarget = io_in_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_pc = io_in_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_fallThrough = io_in_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_taken = io_in_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_target = io_in_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_takenOffset = io_in_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_btbHit = io_in_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_btbIsJalr = io_in_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_btbIsJal = io_in_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_btbIsCall = io_in_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_btbIsRet = io_in_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_btbOffset = io_in_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_phtCounter = io_in_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_rasTop = io_in_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_predTaken = io_in_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
+  assign decodeStage_io_in_2_bits_bpuInfo_meta_predTarget = io_in_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_2_bits_exception_excpTlbRefill = io_in_2_bits_exception_excpTlbRefill; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_2_bits_exception_excpTlbPif = io_in_2_bits_exception_excpTlbPif; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
   assign decodeStage_io_in_2_bits_exception_excpTlbPpi = io_in_2_bits_exception_excpTlbPpi; // @[src/main/scala/backend/CtrlBlock.scala 57:24]
@@ -2962,8 +3850,6 @@ module CtrlBlock(
   assign renameStage_io_in_0_bits_pc = decodeStage_io_out_0_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_inst = decodeStage_io_out_0_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_rd = decodeStage_io_out_0_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
-  assign renameStage_io_in_0_bits_rj = decodeStage_io_out_0_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
-  assign renameStage_io_in_0_bits_rk = decodeStage_io_out_0_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_rs1 = decodeStage_io_out_0_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_rs2 = decodeStage_io_out_0_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_rs1Valid = decodeStage_io_out_0_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
@@ -2996,12 +3882,25 @@ module CtrlBlock(
   assign renameStage_io_in_0_bits_pdInfo_isCall = decodeStage_io_out_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_pdInfo_isRet = decodeStage_io_out_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_0_bits_pdInfo_jumpTarget = decodeStage_io_out_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_pc = decodeStage_io_out_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_fallThrough = decodeStage_io_out_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_taken = decodeStage_io_out_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_target = decodeStage_io_out_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_takenOffset = decodeStage_io_out_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_btbHit = decodeStage_io_out_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_btbIsJalr = decodeStage_io_out_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_btbIsJal = decodeStage_io_out_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_btbIsCall = decodeStage_io_out_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_btbIsRet = decodeStage_io_out_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_btbOffset = decodeStage_io_out_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_phtCounter = decodeStage_io_out_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_rasTop = decodeStage_io_out_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_predTaken = decodeStage_io_out_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_0_bits_bpuInfo_meta_predTarget = decodeStage_io_out_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_valid = decodeStage_io_out_1_valid; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_pc = decodeStage_io_out_1_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_inst = decodeStage_io_out_1_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_rd = decodeStage_io_out_1_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
-  assign renameStage_io_in_1_bits_rj = decodeStage_io_out_1_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
-  assign renameStage_io_in_1_bits_rk = decodeStage_io_out_1_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_rs1 = decodeStage_io_out_1_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_rs2 = decodeStage_io_out_1_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_rs1Valid = decodeStage_io_out_1_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
@@ -3034,12 +3933,25 @@ module CtrlBlock(
   assign renameStage_io_in_1_bits_pdInfo_isCall = decodeStage_io_out_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_pdInfo_isRet = decodeStage_io_out_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_1_bits_pdInfo_jumpTarget = decodeStage_io_out_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_pc = decodeStage_io_out_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_fallThrough = decodeStage_io_out_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_taken = decodeStage_io_out_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_target = decodeStage_io_out_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_takenOffset = decodeStage_io_out_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_btbHit = decodeStage_io_out_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_btbIsJalr = decodeStage_io_out_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_btbIsJal = decodeStage_io_out_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_btbIsCall = decodeStage_io_out_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_btbIsRet = decodeStage_io_out_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_btbOffset = decodeStage_io_out_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_phtCounter = decodeStage_io_out_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_rasTop = decodeStage_io_out_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_predTaken = decodeStage_io_out_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_1_bits_bpuInfo_meta_predTarget = decodeStage_io_out_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_valid = decodeStage_io_out_2_valid; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_pc = decodeStage_io_out_2_bits_pc; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_inst = decodeStage_io_out_2_bits_inst; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_rd = decodeStage_io_out_2_bits_rd; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
-  assign renameStage_io_in_2_bits_rj = decodeStage_io_out_2_bits_rj; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
-  assign renameStage_io_in_2_bits_rk = decodeStage_io_out_2_bits_rk; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_rs1 = decodeStage_io_out_2_bits_rs1; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_rs2 = decodeStage_io_out_2_bits_rs2; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_rs1Valid = decodeStage_io_out_2_bits_rs1Valid; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
@@ -3072,6 +3984,21 @@ module CtrlBlock(
   assign renameStage_io_in_2_bits_pdInfo_isCall = decodeStage_io_out_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_pdInfo_isRet = decodeStage_io_out_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_in_2_bits_pdInfo_jumpTarget = decodeStage_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_pc = decodeStage_io_out_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_fallThrough = decodeStage_io_out_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_taken = decodeStage_io_out_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_target = decodeStage_io_out_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_takenOffset = decodeStage_io_out_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_btbHit = decodeStage_io_out_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_btbIsJalr = decodeStage_io_out_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_btbIsJal = decodeStage_io_out_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_btbIsCall = decodeStage_io_out_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_btbIsRet = decodeStage_io_out_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_btbOffset = decodeStage_io_out_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_phtCounter = decodeStage_io_out_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_rasTop = decodeStage_io_out_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_predTaken = decodeStage_io_out_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
+  assign renameStage_io_in_2_bits_bpuInfo_meta_predTarget = decodeStage_io_out_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 65:26]
   assign renameStage_io_ratRead_0_rs1 = decodeStage_io_ratRead_0_rs1; // @[src/main/scala/backend/CtrlBlock.scala 66:26]
   assign renameStage_io_ratRead_0_rs2 = decodeStage_io_ratRead_0_rs2; // @[src/main/scala/backend/CtrlBlock.scala 66:26]
   assign renameStage_io_ratRead_0_hold1 = decodeStage_io_ratRead_0_hold1; // @[src/main/scala/backend/CtrlBlock.scala 66:26]
@@ -3125,6 +4052,21 @@ module CtrlBlock(
   assign dispatchStage_io_in_0_bits_pdInfo_isCall = renameStage_io_out_0_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_0_bits_pdInfo_isRet = renameStage_io_out_0_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_0_bits_pdInfo_jumpTarget = renameStage_io_out_0_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_pc = renameStage_io_out_0_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_fallThrough = renameStage_io_out_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_taken = renameStage_io_out_0_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_target = renameStage_io_out_0_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_takenOffset = renameStage_io_out_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_btbHit = renameStage_io_out_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsJalr = renameStage_io_out_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsJal = renameStage_io_out_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsCall = renameStage_io_out_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_btbIsRet = renameStage_io_out_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_btbOffset = renameStage_io_out_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_phtCounter = renameStage_io_out_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_rasTop = renameStage_io_out_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_predTaken = renameStage_io_out_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_0_bits_bpuInfo_meta_predTarget = renameStage_io_out_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_0_bits_ldst = renameStage_io_out_0_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_0_bits_lrs1 = renameStage_io_out_0_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_0_bits_lrs2 = renameStage_io_out_0_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
@@ -3167,6 +4109,21 @@ module CtrlBlock(
   assign dispatchStage_io_in_1_bits_pdInfo_isCall = renameStage_io_out_1_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_1_bits_pdInfo_isRet = renameStage_io_out_1_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_1_bits_pdInfo_jumpTarget = renameStage_io_out_1_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_pc = renameStage_io_out_1_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_fallThrough = renameStage_io_out_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_taken = renameStage_io_out_1_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_target = renameStage_io_out_1_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_takenOffset = renameStage_io_out_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_btbHit = renameStage_io_out_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsJalr = renameStage_io_out_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsJal = renameStage_io_out_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsCall = renameStage_io_out_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_btbIsRet = renameStage_io_out_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_btbOffset = renameStage_io_out_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_phtCounter = renameStage_io_out_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_rasTop = renameStage_io_out_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_predTaken = renameStage_io_out_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_1_bits_bpuInfo_meta_predTarget = renameStage_io_out_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_1_bits_ldst = renameStage_io_out_1_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_1_bits_lrs1 = renameStage_io_out_1_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_1_bits_lrs2 = renameStage_io_out_1_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
@@ -3209,6 +4166,21 @@ module CtrlBlock(
   assign dispatchStage_io_in_2_bits_pdInfo_isCall = renameStage_io_out_2_bits_pdInfo_isCall; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_2_bits_pdInfo_isRet = renameStage_io_out_2_bits_pdInfo_isRet; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_2_bits_pdInfo_jumpTarget = renameStage_io_out_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_pc = renameStage_io_out_2_bits_bpuInfo_pc; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_fallThrough = renameStage_io_out_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_taken = renameStage_io_out_2_bits_bpuInfo_taken; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_target = renameStage_io_out_2_bits_bpuInfo_target; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_takenOffset = renameStage_io_out_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_btbHit = renameStage_io_out_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsJalr = renameStage_io_out_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsJal = renameStage_io_out_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsCall = renameStage_io_out_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_btbIsRet = renameStage_io_out_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_btbOffset = renameStage_io_out_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_phtCounter = renameStage_io_out_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_rasTop = renameStage_io_out_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_predTaken = renameStage_io_out_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
+  assign dispatchStage_io_in_2_bits_bpuInfo_meta_predTarget = renameStage_io_out_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_2_bits_ldst = renameStage_io_out_2_bits_ldst; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_2_bits_lrs1 = renameStage_io_out_2_bits_lrs1; // @[src/main/scala/backend/CtrlBlock.scala 76:29]
   assign dispatchStage_io_in_2_bits_lrs2 = renameStage_io_out_2_bits_lrs2; // @[src/main/scala/backend/CtrlBlock.scala 76:29]

@@ -45,6 +45,7 @@ class IBF(implicit p: Parameters) extends NSModule {
       queue.io.enq(i).bits.instr := io.in.bits.instrs(i)
       queue.io.enq(i).bits.pc := io.in.bits.pcs(i)
       queue.io.enq(i).bits.pdInfo := io.in.bits.pdInfo(i)
+      queue.io.enq(i).bits.bpuInfo := io.in.bits.bpuInfo(i)
 
       // 异常处理
       queue.io.enq(i).bits.exception := io.in.bits.mmu_error

@@ -61,9 +61,9 @@ module MemAddrTrans(
   reg [31:0] s2_exe_data_data; // @[src/main/scala/memory/MemAddrTrans.scala 61:24]
   reg [31:0] s2_mmu_resp_paddr; // @[src/main/scala/memory/MemAddrTrans.scala 66:24]
   reg  s2_mmu_resp_cacheable; // @[src/main/scala/memory/MemAddrTrans.scala 66:24]
-  wire  _GEN_176 = s1_fire | s2_valid; // @[src/main/scala/memory/MemAddrTrans.scala 90:19 91:19 60:28]
-  wire  _GEN_177 = s1_fire ? 1'h0 : s2_mmu_done; // @[src/main/scala/memory/MemAddrTrans.scala 90:19 93:19 65:28]
-  wire  _GEN_178 = s2_valid & ~s2_mmu_done & io_mmuResp_valid | _GEN_177; // @[src/main/scala/memory/MemAddrTrans.scala 98:56 99:19]
+  wire  _GEN_221 = s1_fire | s2_valid; // @[src/main/scala/memory/MemAddrTrans.scala 90:19 91:19 60:28]
+  wire  _GEN_222 = s1_fire ? 1'h0 : s2_mmu_done; // @[src/main/scala/memory/MemAddrTrans.scala 90:19 93:19 65:28]
+  wire  _GEN_223 = s2_valid & ~s2_mmu_done & io_mmuResp_valid | _GEN_222; // @[src/main/scala/memory/MemAddrTrans.scala 98:56 99:19]
   assign io_in_ready = ~s1_valid | s1_fire; // @[src/main/scala/memory/MemAddrTrans.scala 38:28]
   assign io_out_valid = s2_valid & _s2_fire_T; // @[src/main/scala/memory/MemAddrTrans.scala 110:28]
   assign io_out_bits_exeRes_uop_ctrl_memRead = s2_exe_data_uop_ctrl_memRead; // @[src/main/scala/memory/MemAddrTrans.scala 111:22]
@@ -101,14 +101,14 @@ module MemAddrTrans(
     end else if (s2_fire) begin // @[src/main/scala/memory/MemAddrTrans.scala 78:23]
       s2_valid <= s1_fire;
     end else begin
-      s2_valid <= _GEN_176;
+      s2_valid <= _GEN_221;
     end
     if (reset) begin // @[src/main/scala/memory/MemAddrTrans.scala 65:28]
       s2_mmu_done <= 1'h0; // @[src/main/scala/memory/MemAddrTrans.scala 65:28]
     end else if (s2_fire) begin // @[src/main/scala/memory/MemAddrTrans.scala 78:23]
       s2_mmu_done <= 1'h0;
     end else begin
-      s2_mmu_done <= _GEN_178;
+      s2_mmu_done <= _GEN_223;
     end
     if (s1_fire) begin // @[src/main/scala/memory/MemAddrTrans.scala 80:19]
       s2_exe_data_uop_ctrl_memRead <= s1_data_uop_ctrl_memRead; // @[src/main/scala/memory/MemAddrTrans.scala 82:19]

@@ -252,6 +252,9 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   io.out.bits.uncached       := s_pd_uncached
   io.out.bits.mmu_error      := s_pd_mmuError
   io.out.bits.pdInfo         := pdInfo
+  for(i <- 0 until fetchWidth){
+    io.out.bits.bpuInfo(i)         := s_pd_bpu
+  }
   io.out.bits.enqMask        := enqMask
 
   io.out.bits.frontendRedirect := feRedirect

@@ -32,6 +32,21 @@ module DispatchStage(
   input         io_in_0_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input         io_in_0_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [31:0] io_in_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_0_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_0_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [2:0]  io_in_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_0_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_0_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_0_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -75,6 +90,21 @@ module DispatchStage(
   input         io_in_1_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input         io_in_1_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [31:0] io_in_1_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_1_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_1_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_1_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_1_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_1_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_1_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [2:0]  io_in_1_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_1_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_1_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_1_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_1_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_1_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -118,6 +148,21 @@ module DispatchStage(
   input         io_in_2_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input         io_in_2_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [31:0] io_in_2_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_2_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_2_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_2_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_2_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_2_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [1:0]  io_in_2_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [2:0]  io_in_2_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input         io_in_2_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  input  [31:0] io_in_2_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_2_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_2_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   input  [4:0]  io_in_2_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -160,6 +205,21 @@ module DispatchStage(
   output        io_q1IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output        io_q1IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [31:0] io_q1IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q1IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [2:0]  io_q1IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q1IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q1IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q1IQEnq_0_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q1IQEnq_0_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q1IQEnq_0_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -206,6 +266,21 @@ module DispatchStage(
   output        io_q2IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output        io_q2IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [31:0] io_q2IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q2IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [2:0]  io_q2IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q2IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q2IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q2IQEnq_0_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q2IQEnq_0_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q2IQEnq_0_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -253,6 +328,21 @@ module DispatchStage(
   output        io_q3IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output        io_q3IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [31:0] io_q3IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q3IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [2:0]  io_q3IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q3IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q3IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q3IQEnq_0_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q3IQEnq_0_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q3IQEnq_0_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -300,6 +390,21 @@ module DispatchStage(
   output        io_q4IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output        io_q4IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [31:0] io_q4IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q4IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [2:0]  io_q4IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q4IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q4IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q4IQEnq_0_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q4IQEnq_0_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q4IQEnq_0_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -353,6 +458,21 @@ module DispatchStage(
   output        io_q5IQEnq_0_bits_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output        io_q5IQEnq_0_bits_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [31:0] io_q5IQEnq_0_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q5IQEnq_0_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [2:0]  io_q5IQEnq_0_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_q5IQEnq_0_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_q5IQEnq_0_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q5IQEnq_0_bits_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q5IQEnq_0_bits_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_q5IQEnq_0_bits_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -419,6 +539,21 @@ module DispatchStage(
   output        io_lsEnq_toLsqData_pdInfo_isCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output        io_lsEnq_toLsqData_pdInfo_isRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [31:0] io_lsEnq_toLsqData_pdInfo_jumpTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_pc, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_fallThrough, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_taken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_target, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_lsEnq_toLsqData_bpuInfo_takenOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbHit, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_lsEnq_toLsqData_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [1:0]  io_lsEnq_toLsqData_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [2:0]  io_lsEnq_toLsqData_bpuInfo_meta_rasTop, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output        io_lsEnq_toLsqData_bpuInfo_meta_predTaken, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
+  output [31:0] io_lsEnq_toLsqData_bpuInfo_meta_predTarget, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_lsEnq_toLsqData_ldst, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_lsEnq_toLsqData_lrs1, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
   output [4:0]  io_lsEnq_toLsqData_lrs2, // @[src/main/scala/backend/dispatch/DispatchStage.scala 25:14]
@@ -622,6 +757,51 @@ module DispatchStage(
   reg [31:0] _RAND_133;
   reg [31:0] _RAND_134;
   reg [31:0] _RAND_135;
+  reg [31:0] _RAND_136;
+  reg [31:0] _RAND_137;
+  reg [31:0] _RAND_138;
+  reg [31:0] _RAND_139;
+  reg [31:0] _RAND_140;
+  reg [31:0] _RAND_141;
+  reg [31:0] _RAND_142;
+  reg [31:0] _RAND_143;
+  reg [31:0] _RAND_144;
+  reg [31:0] _RAND_145;
+  reg [31:0] _RAND_146;
+  reg [31:0] _RAND_147;
+  reg [31:0] _RAND_148;
+  reg [31:0] _RAND_149;
+  reg [31:0] _RAND_150;
+  reg [31:0] _RAND_151;
+  reg [31:0] _RAND_152;
+  reg [31:0] _RAND_153;
+  reg [31:0] _RAND_154;
+  reg [31:0] _RAND_155;
+  reg [31:0] _RAND_156;
+  reg [31:0] _RAND_157;
+  reg [31:0] _RAND_158;
+  reg [31:0] _RAND_159;
+  reg [31:0] _RAND_160;
+  reg [31:0] _RAND_161;
+  reg [31:0] _RAND_162;
+  reg [31:0] _RAND_163;
+  reg [31:0] _RAND_164;
+  reg [31:0] _RAND_165;
+  reg [31:0] _RAND_166;
+  reg [31:0] _RAND_167;
+  reg [31:0] _RAND_168;
+  reg [31:0] _RAND_169;
+  reg [31:0] _RAND_170;
+  reg [31:0] _RAND_171;
+  reg [31:0] _RAND_172;
+  reg [31:0] _RAND_173;
+  reg [31:0] _RAND_174;
+  reg [31:0] _RAND_175;
+  reg [31:0] _RAND_176;
+  reg [31:0] _RAND_177;
+  reg [31:0] _RAND_178;
+  reg [31:0] _RAND_179;
+  reg [31:0] _RAND_180;
 `endif // RANDOMIZE_REG_INIT
   wire  busyTable_clock; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
   wire  busyTable_reset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
@@ -691,6 +871,21 @@ module DispatchStage(
   reg  stgData_0_pdInfo_isCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg  stgData_0_pdInfo_isRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [31:0] stgData_0_pdInfo_jumpTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_0_bpuInfo_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_0_bpuInfo_fallThrough; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_taken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_0_bpuInfo_target; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_0_bpuInfo_takenOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_meta_btbHit; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_0_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_0_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [2:0] stgData_0_bpuInfo_meta_rasTop; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_0_bpuInfo_meta_predTaken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_0_bpuInfo_meta_predTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_0_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_0_lrs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_0_lrs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
@@ -732,6 +927,21 @@ module DispatchStage(
   reg  stgData_1_pdInfo_isCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg  stgData_1_pdInfo_isRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [31:0] stgData_1_pdInfo_jumpTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_1_bpuInfo_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_1_bpuInfo_fallThrough; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_taken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_1_bpuInfo_target; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_1_bpuInfo_takenOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_meta_btbHit; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_1_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_1_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [2:0] stgData_1_bpuInfo_meta_rasTop; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_1_bpuInfo_meta_predTaken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_1_bpuInfo_meta_predTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_1_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_1_lrs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_1_lrs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
@@ -773,6 +983,21 @@ module DispatchStage(
   reg  stgData_2_pdInfo_isCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg  stgData_2_pdInfo_isRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [31:0] stgData_2_pdInfo_jumpTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_2_bpuInfo_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_2_bpuInfo_fallThrough; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_taken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_2_bpuInfo_target; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_2_bpuInfo_takenOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_2_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [1:0] stgData_2_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [2:0] stgData_2_bpuInfo_meta_rasTop; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg  stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
+  reg [31:0] stgData_2_bpuInfo_meta_predTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_2_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_2_lrs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
   reg [4:0] stgData_2_lrs2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 58:24]
@@ -857,10 +1082,10 @@ module DispatchStage(
   wire [4:0] q1AluPriority = q1FreeAfterExclusive ? io_iqFeedback_q1FreeEntries : 5'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 117:26]
   wire [3:0] q2AluPriority = q2FreeAfterExclusive ? io_iqFeedback_q2FreeEntries : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 118:26]
   wire [4:0] q3AluPriority = q3FreeAfterExclusive ? io_iqFeedback_q3FreeEntries : 5'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 119:26]
-  wire [4:0] _GEN_553 = {{1'd0}, q2AluPriority}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 122:32]
-  wire  rank0OH_0 = q1AluPriority >= _GEN_553 & q1AluPriority >= q3AluPriority; // @[src/main/scala/backend/dispatch/DispatchStage.scala 122:50]
+  wire [4:0] _GEN_718 = {{1'd0}, q2AluPriority}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 122:32]
+  wire  rank0OH_0 = q1AluPriority >= _GEN_718 & q1AluPriority >= q3AluPriority; // @[src/main/scala/backend/dispatch/DispatchStage.scala 122:50]
   wire  _rank0OH_1_T = ~rank0OH_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 123:17]
-  wire  rank0OH_1 = ~rank0OH_0 & _GEN_553 >= q3AluPriority; // @[src/main/scala/backend/dispatch/DispatchStage.scala 123:29]
+  wire  rank0OH_1 = ~rank0OH_0 & _GEN_718 >= q3AluPriority; // @[src/main/scala/backend/dispatch/DispatchStage.scala 123:29]
   wire  _rank0OH_2_T_1 = ~rank0OH_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 124:32]
   wire  rank0OH_2 = _rank0OH_1_T & ~rank0OH_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 124:29]
   wire [4:0] exclRank0_0 = rank0OH_0 ? 5'h0 : q1AluPriority; // @[src/main/scala/backend/dispatch/DispatchStage.scala 127:24]
@@ -1035,70 +1260,102 @@ module DispatchStage(
   wire [4:0] _selectedMemInst_T_56 = q4Selected_1 ? stgData_1_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _selectedMemInst_T_57 = q4Selected_2 ? stgData_2_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _selectedMemInst_T_58 = _selectedMemInst_T_55 | _selectedMemInst_T_56; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_60 = _q4Cand_T_1 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_61 = q4Selected_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_62 = q4Selected_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_60 = _q4Cand_T_1 ? stgData_0_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_61 = q4Selected_1 ? stgData_1_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_62 = q4Selected_2 ? stgData_2_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _selectedMemInst_T_63 = _selectedMemInst_T_60 | _selectedMemInst_T_61; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _selectedMemInst_T_95 = _q4Cand_T_1 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _selectedMemInst_T_96 = q4Selected_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _selectedMemInst_T_97 = q4Selected_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _selectedMemInst_T_98 = _selectedMemInst_T_95 | _selectedMemInst_T_96; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_100 = _q4Cand_T_1 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_101 = q4Selected_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_102 = q4Selected_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_103 = _selectedMemInst_T_100 | _selectedMemInst_T_101; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _selectedMemInst_T_105 = _q4Cand_T_1 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _selectedMemInst_T_106 = q4Selected_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _selectedMemInst_T_107 = q4Selected_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _selectedMemInst_T_108 = _selectedMemInst_T_105 | _selectedMemInst_T_106; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_145 = _q4Cand_T_1 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_146 = q4Selected_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_147 = q4Selected_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_148 = _selectedMemInst_T_145 | _selectedMemInst_T_146; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_150 = _q4Cand_T_1 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_151 = q4Selected_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_152 = q4Selected_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_153 = _selectedMemInst_T_150 | _selectedMemInst_T_151; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_155 = _q4Cand_T_1 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_156 = q4Selected_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_157 = q4Selected_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_158 = _selectedMemInst_T_155 | _selectedMemInst_T_156; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_160 = _q4Cand_T_1 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_161 = q4Selected_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_162 = q4Selected_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_163 = _selectedMemInst_T_160 | _selectedMemInst_T_161; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_165 = _q4Cand_T_1 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_166 = q4Selected_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_167 = q4Selected_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_168 = _selectedMemInst_T_165 | _selectedMemInst_T_166; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_170 = _q4Cand_T_1 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_171 = q4Selected_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_172 = q4Selected_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _selectedMemInst_T_173 = _selectedMemInst_T_170 | _selectedMemInst_T_171; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_175 = _q4Cand_T_1 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_176 = q4Selected_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_177 = q4Selected_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_178 = _selectedMemInst_T_175 | _selectedMemInst_T_176; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_180 = _q4Cand_T_1 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_181 = q4Selected_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_182 = q4Selected_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_183 = _selectedMemInst_T_180 | _selectedMemInst_T_181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _selectedMemInst_T_185 = _q4Cand_T_1 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _selectedMemInst_T_186 = q4Selected_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _selectedMemInst_T_187 = q4Selected_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _selectedMemInst_T_188 = _selectedMemInst_T_185 | _selectedMemInst_T_186; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_190 = _q4Cand_T_1 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_191 = q4Selected_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_192 = q4Selected_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _selectedMemInst_T_193 = _selectedMemInst_T_190 | _selectedMemInst_T_191; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_195 = _q4Cand_T_1 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_196 = q4Selected_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_197 = q4Selected_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_198 = _selectedMemInst_T_195 | _selectedMemInst_T_196; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_200 = _q4Cand_T_1 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_201 = q4Selected_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_202 = q4Selected_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _selectedMemInst_T_203 = _selectedMemInst_T_200 | _selectedMemInst_T_201; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_70 = _q4Cand_T_1 ? stgData_0_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_71 = q4Selected_1 ? stgData_1_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_72 = q4Selected_2 ? stgData_2_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_73 = _selectedMemInst_T_70 | _selectedMemInst_T_71; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_75 = _q4Cand_T_1 ? stgData_0_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_76 = q4Selected_1 ? stgData_1_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_77 = q4Selected_2 ? stgData_2_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_78 = _selectedMemInst_T_75 | _selectedMemInst_T_76; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_80 = _q4Cand_T_1 ? stgData_0_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_81 = q4Selected_1 ? stgData_1_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_82 = q4Selected_2 ? stgData_2_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_83 = _selectedMemInst_T_80 | _selectedMemInst_T_81; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_110 = _q4Cand_T_1 ? stgData_0_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_111 = q4Selected_1 ? stgData_1_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_112 = q4Selected_2 ? stgData_2_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _selectedMemInst_T_113 = _selectedMemInst_T_110 | _selectedMemInst_T_111; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_115 = _q4Cand_T_1 ? stgData_0_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_116 = q4Selected_1 ? stgData_1_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_117 = q4Selected_2 ? stgData_2_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_118 = _selectedMemInst_T_115 | _selectedMemInst_T_116; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_125 = _q4Cand_T_1 ? stgData_0_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_126 = q4Selected_1 ? stgData_1_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_127 = q4Selected_2 ? stgData_2_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_128 = _selectedMemInst_T_125 | _selectedMemInst_T_126; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_130 = _q4Cand_T_1 ? stgData_0_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_131 = q4Selected_1 ? stgData_1_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_132 = q4Selected_2 ? stgData_2_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_133 = _selectedMemInst_T_130 | _selectedMemInst_T_131; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_135 = _q4Cand_T_1 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_136 = q4Selected_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_137 = q4Selected_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_138 = _selectedMemInst_T_135 | _selectedMemInst_T_136; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _selectedMemInst_T_170 = _q4Cand_T_1 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _selectedMemInst_T_171 = q4Selected_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _selectedMemInst_T_172 = q4Selected_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _selectedMemInst_T_173 = _selectedMemInst_T_170 | _selectedMemInst_T_171; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_175 = _q4Cand_T_1 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_176 = q4Selected_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_177 = q4Selected_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_178 = _selectedMemInst_T_175 | _selectedMemInst_T_176; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _selectedMemInst_T_180 = _q4Cand_T_1 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _selectedMemInst_T_181 = q4Selected_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _selectedMemInst_T_182 = q4Selected_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _selectedMemInst_T_183 = _selectedMemInst_T_180 | _selectedMemInst_T_181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_220 = _q4Cand_T_1 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_221 = q4Selected_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_222 = q4Selected_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_223 = _selectedMemInst_T_220 | _selectedMemInst_T_221; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_225 = _q4Cand_T_1 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_226 = q4Selected_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_227 = q4Selected_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_228 = _selectedMemInst_T_225 | _selectedMemInst_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_230 = _q4Cand_T_1 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_231 = q4Selected_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_232 = q4Selected_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_233 = _selectedMemInst_T_230 | _selectedMemInst_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_235 = _q4Cand_T_1 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_236 = q4Selected_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_237 = q4Selected_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_238 = _selectedMemInst_T_235 | _selectedMemInst_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_240 = _q4Cand_T_1 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_241 = q4Selected_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_242 = q4Selected_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_243 = _selectedMemInst_T_240 | _selectedMemInst_T_241; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_245 = _q4Cand_T_1 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_246 = q4Selected_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_247 = q4Selected_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _selectedMemInst_T_248 = _selectedMemInst_T_245 | _selectedMemInst_T_246; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_250 = _q4Cand_T_1 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_251 = q4Selected_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_252 = q4Selected_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_253 = _selectedMemInst_T_250 | _selectedMemInst_T_251; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_255 = _q4Cand_T_1 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_256 = q4Selected_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_257 = q4Selected_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_258 = _selectedMemInst_T_255 | _selectedMemInst_T_256; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _selectedMemInst_T_260 = _q4Cand_T_1 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _selectedMemInst_T_261 = q4Selected_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _selectedMemInst_T_262 = q4Selected_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _selectedMemInst_T_263 = _selectedMemInst_T_260 | _selectedMemInst_T_261; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_265 = _q4Cand_T_1 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_266 = q4Selected_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_267 = q4Selected_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _selectedMemInst_T_268 = _selectedMemInst_T_265 | _selectedMemInst_T_266; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_270 = _q4Cand_T_1 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_271 = q4Selected_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_272 = q4Selected_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_273 = _selectedMemInst_T_270 | _selectedMemInst_T_271; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_275 = _q4Cand_T_1 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_276 = q4Selected_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_277 = q4Selected_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _selectedMemInst_T_278 = _selectedMemInst_T_275 | _selectedMemInst_T_276; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] lqHeadPtr_newIncValue = lqHeadPtr_value + 4'h1; // @[src/main/scala/util/CircularQueuePtr.scala 83:34]
   wire  lqHeadPtr_wrap = lqHeadPtr_newIncValue >= 5'h10; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [3:0] lqHeadPtr_newPtr_value = lqHeadPtr_newIncValue[3:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
@@ -1177,13 +1434,13 @@ module DispatchStage(
   wire  prs1Busy_2 = prs1AllocByOlder_1 | prs1BusyRaw_2 & ~prs1WokenUp_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 324:37]
   wire  prs2BusyRaw_2 = busyTable_io_readResp_5; // @[src/main/scala/backend/dispatch/DispatchStage.scala 305:{28,28}]
   wire  prs2Busy_2 = prs2AllocByOlder_1 | prs2BusyRaw_2 & ~prs2WokenUp_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 325:37]
-  wire  q1Uops_u_u_prs1Busy = stgData_0_rs1Valid & stgData_0_lrs1 != 5'h0 & prs1Busy_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 358:24]
-  wire  q1Uops_u_u_prs2Busy = stgData_0_rs2Valid & stgData_0_lrs2 != 5'h0 & prs2Busy_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 359:24]
-  wire  q1Uops_u_u_1_prs1Busy = stgData_1_rs1Valid & stgData_1_lrs1 != 5'h0 & prs1Busy_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 358:24]
-  wire  q1Uops_u_u_1_prs2Busy = stgData_1_rs2Valid & stgData_1_lrs2 != 5'h0 & prs2Busy_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 359:24]
-  wire  q1Uops_u_u_2_prs1Busy = stgData_2_rs1Valid & stgData_2_lrs1 != 5'h0 & prs1Busy_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 358:24]
-  wire  q1Uops_u_u_2_prs2Busy = stgData_2_rs2Valid & stgData_2_lrs2 != 5'h0 & prs2Busy_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 359:24]
-  wire [2:0] _T_14 = {q1Final_2,q1Final_1,q1Final_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 412:16]
+  wire  q1Uops_u_u_prs1Busy = stgData_0_rs1Valid & stgData_0_lrs1 != 5'h0 & prs1Busy_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 359:24]
+  wire  q1Uops_u_u_prs2Busy = stgData_0_rs2Valid & stgData_0_lrs2 != 5'h0 & prs2Busy_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 360:24]
+  wire  q1Uops_u_u_1_prs1Busy = stgData_1_rs1Valid & stgData_1_lrs1 != 5'h0 & prs1Busy_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 359:24]
+  wire  q1Uops_u_u_1_prs2Busy = stgData_1_rs2Valid & stgData_1_lrs2 != 5'h0 & prs2Busy_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 360:24]
+  wire  q1Uops_u_u_2_prs1Busy = stgData_2_rs1Valid & stgData_2_lrs1 != 5'h0 & prs1Busy_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 359:24]
+  wire  q1Uops_u_u_2_prs2Busy = stgData_2_rs2Valid & stgData_2_lrs2 != 5'h0 & prs2Busy_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 360:24]
+  wire [2:0] _T_14 = {q1Final_2,q1Final_1,q1Final_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 413:16]
   wire [5:0] _io_q1IQEnq_0_bits_T_50 = q1Final_0 ? stgData_0_robIdx_value : 6'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [5:0] _io_q1IQEnq_0_bits_T_51 = q1Final_1 ? stgData_1_robIdx_value : 6'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [5:0] _io_q1IQEnq_0_bits_T_52 = q1Final_2 ? stgData_2_robIdx_value : 6'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1216,71 +1473,103 @@ module DispatchStage(
   wire [4:0] _io_q1IQEnq_0_bits_T_111 = q1Final_1 ? stgData_1_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q1IQEnq_0_bits_T_112 = q1Final_2 ? stgData_2_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q1IQEnq_0_bits_T_113 = _io_q1IQEnq_0_bits_T_110 | _io_q1IQEnq_0_bits_T_111; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_115 = q1Final_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_116 = q1Final_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_117 = q1Final_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_115 = q1Final_0 ? stgData_0_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_116 = q1Final_1 ? stgData_1_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_117 = q1Final_2 ? stgData_2_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_q1IQEnq_0_bits_T_118 = _io_q1IQEnq_0_bits_T_115 | _io_q1IQEnq_0_bits_T_116; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q1IQEnq_0_bits_T_150 = q1Final_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q1IQEnq_0_bits_T_151 = q1Final_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q1IQEnq_0_bits_T_152 = q1Final_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q1IQEnq_0_bits_T_153 = _io_q1IQEnq_0_bits_T_150 | _io_q1IQEnq_0_bits_T_151; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_155 = q1Final_0 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_156 = q1Final_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_157 = q1Final_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_158 = _io_q1IQEnq_0_bits_T_155 | _io_q1IQEnq_0_bits_T_156; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q1IQEnq_0_bits_T_160 = q1Final_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q1IQEnq_0_bits_T_161 = q1Final_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q1IQEnq_0_bits_T_162 = q1Final_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q1IQEnq_0_bits_T_163 = _io_q1IQEnq_0_bits_T_160 | _io_q1IQEnq_0_bits_T_161; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_200 = q1Final_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_201 = q1Final_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_202 = q1Final_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_203 = _io_q1IQEnq_0_bits_T_200 | _io_q1IQEnq_0_bits_T_201; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_205 = q1Final_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_206 = q1Final_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_207 = q1Final_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_208 = _io_q1IQEnq_0_bits_T_205 | _io_q1IQEnq_0_bits_T_206; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_210 = q1Final_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_211 = q1Final_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_212 = q1Final_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_213 = _io_q1IQEnq_0_bits_T_210 | _io_q1IQEnq_0_bits_T_211; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_215 = q1Final_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_216 = q1Final_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_217 = q1Final_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_218 = _io_q1IQEnq_0_bits_T_215 | _io_q1IQEnq_0_bits_T_216; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_220 = q1Final_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_221 = q1Final_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_222 = q1Final_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_223 = _io_q1IQEnq_0_bits_T_220 | _io_q1IQEnq_0_bits_T_221; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_225 = q1Final_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_226 = q1Final_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_227 = q1Final_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q1IQEnq_0_bits_T_228 = _io_q1IQEnq_0_bits_T_225 | _io_q1IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_230 = q1Final_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_231 = q1Final_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_232 = q1Final_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_233 = _io_q1IQEnq_0_bits_T_230 | _io_q1IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_235 = q1Final_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_236 = q1Final_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_237 = q1Final_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_238 = _io_q1IQEnq_0_bits_T_235 | _io_q1IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q1IQEnq_0_bits_T_240 = q1Final_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q1IQEnq_0_bits_T_241 = q1Final_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q1IQEnq_0_bits_T_242 = q1Final_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q1IQEnq_0_bits_T_243 = _io_q1IQEnq_0_bits_T_240 | _io_q1IQEnq_0_bits_T_241; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_245 = q1Final_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_246 = q1Final_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_247 = q1Final_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q1IQEnq_0_bits_T_248 = _io_q1IQEnq_0_bits_T_245 | _io_q1IQEnq_0_bits_T_246; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_250 = q1Final_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_251 = q1Final_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_252 = q1Final_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_253 = _io_q1IQEnq_0_bits_T_250 | _io_q1IQEnq_0_bits_T_251; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_255 = q1Final_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_256 = q1Final_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_257 = q1Final_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q1IQEnq_0_bits_T_258 = _io_q1IQEnq_0_bits_T_255 | _io_q1IQEnq_0_bits_T_256; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _T_17 = {q2Final_2,q2Final_1,q2Final_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 423:16]
+  wire [2:0] _io_q1IQEnq_0_bits_T_125 = q1Final_0 ? stgData_0_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_126 = q1Final_1 ? stgData_1_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_127 = q1Final_2 ? stgData_2_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_128 = _io_q1IQEnq_0_bits_T_125 | _io_q1IQEnq_0_bits_T_126; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_130 = q1Final_0 ? stgData_0_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_131 = q1Final_1 ? stgData_1_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_132 = q1Final_2 ? stgData_2_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_133 = _io_q1IQEnq_0_bits_T_130 | _io_q1IQEnq_0_bits_T_131; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_135 = q1Final_0 ? stgData_0_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_136 = q1Final_1 ? stgData_1_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_137 = q1Final_2 ? stgData_2_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_138 = _io_q1IQEnq_0_bits_T_135 | _io_q1IQEnq_0_bits_T_136; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_165 = q1Final_0 ? stgData_0_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_166 = q1Final_1 ? stgData_1_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_167 = q1Final_2 ? stgData_2_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q1IQEnq_0_bits_T_168 = _io_q1IQEnq_0_bits_T_165 | _io_q1IQEnq_0_bits_T_166; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_170 = q1Final_0 ? stgData_0_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_171 = q1Final_1 ? stgData_1_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_172 = q1Final_2 ? stgData_2_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_173 = _io_q1IQEnq_0_bits_T_170 | _io_q1IQEnq_0_bits_T_171; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_180 = q1Final_0 ? stgData_0_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_181 = q1Final_1 ? stgData_1_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_182 = q1Final_2 ? stgData_2_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_183 = _io_q1IQEnq_0_bits_T_180 | _io_q1IQEnq_0_bits_T_181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_185 = q1Final_0 ? stgData_0_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_186 = q1Final_1 ? stgData_1_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_187 = q1Final_2 ? stgData_2_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_188 = _io_q1IQEnq_0_bits_T_185 | _io_q1IQEnq_0_bits_T_186; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_190 = q1Final_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_191 = q1Final_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_192 = q1Final_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_193 = _io_q1IQEnq_0_bits_T_190 | _io_q1IQEnq_0_bits_T_191; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q1IQEnq_0_bits_T_225 = q1Final_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q1IQEnq_0_bits_T_226 = q1Final_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q1IQEnq_0_bits_T_227 = q1Final_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q1IQEnq_0_bits_T_228 = _io_q1IQEnq_0_bits_T_225 | _io_q1IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_230 = q1Final_0 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_231 = q1Final_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_232 = q1Final_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_233 = _io_q1IQEnq_0_bits_T_230 | _io_q1IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q1IQEnq_0_bits_T_235 = q1Final_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q1IQEnq_0_bits_T_236 = q1Final_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q1IQEnq_0_bits_T_237 = q1Final_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q1IQEnq_0_bits_T_238 = _io_q1IQEnq_0_bits_T_235 | _io_q1IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_275 = q1Final_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_276 = q1Final_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_277 = q1Final_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_278 = _io_q1IQEnq_0_bits_T_275 | _io_q1IQEnq_0_bits_T_276; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_280 = q1Final_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_281 = q1Final_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_282 = q1Final_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_283 = _io_q1IQEnq_0_bits_T_280 | _io_q1IQEnq_0_bits_T_281; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_285 = q1Final_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_286 = q1Final_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_287 = q1Final_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_288 = _io_q1IQEnq_0_bits_T_285 | _io_q1IQEnq_0_bits_T_286; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_290 = q1Final_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_291 = q1Final_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_292 = q1Final_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_293 = _io_q1IQEnq_0_bits_T_290 | _io_q1IQEnq_0_bits_T_291; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_295 = q1Final_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_296 = q1Final_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_297 = q1Final_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_298 = _io_q1IQEnq_0_bits_T_295 | _io_q1IQEnq_0_bits_T_296; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_300 = q1Final_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_301 = q1Final_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_302 = q1Final_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q1IQEnq_0_bits_T_303 = _io_q1IQEnq_0_bits_T_300 | _io_q1IQEnq_0_bits_T_301; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_305 = q1Final_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_306 = q1Final_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_307 = q1Final_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_308 = _io_q1IQEnq_0_bits_T_305 | _io_q1IQEnq_0_bits_T_306; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_310 = q1Final_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_311 = q1Final_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_312 = q1Final_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_313 = _io_q1IQEnq_0_bits_T_310 | _io_q1IQEnq_0_bits_T_311; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q1IQEnq_0_bits_T_315 = q1Final_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q1IQEnq_0_bits_T_316 = q1Final_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q1IQEnq_0_bits_T_317 = q1Final_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q1IQEnq_0_bits_T_318 = _io_q1IQEnq_0_bits_T_315 | _io_q1IQEnq_0_bits_T_316; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_320 = q1Final_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_321 = q1Final_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_322 = q1Final_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q1IQEnq_0_bits_T_323 = _io_q1IQEnq_0_bits_T_320 | _io_q1IQEnq_0_bits_T_321; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_325 = q1Final_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_326 = q1Final_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_327 = q1Final_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_328 = _io_q1IQEnq_0_bits_T_325 | _io_q1IQEnq_0_bits_T_326; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_330 = q1Final_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_331 = q1Final_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_332 = q1Final_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q1IQEnq_0_bits_T_333 = _io_q1IQEnq_0_bits_T_330 | _io_q1IQEnq_0_bits_T_331; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _T_17 = {q2Final_2,q2Final_1,q2Final_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 424:16]
   wire [2:0] _io_q2IQEnq_0_bits_T_20 = q2Final_0 ? 3'h1 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [2:0] _io_q2IQEnq_0_bits_T_21 = q2Final_1 ? 3'h1 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [2:0] _io_q2IQEnq_0_bits_T_22 = q2Final_2 ? 3'h1 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1317,71 +1606,103 @@ module DispatchStage(
   wire [4:0] _io_q2IQEnq_0_bits_T_111 = q2Final_1 ? stgData_1_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q2IQEnq_0_bits_T_112 = q2Final_2 ? stgData_2_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q2IQEnq_0_bits_T_113 = _io_q2IQEnq_0_bits_T_110 | _io_q2IQEnq_0_bits_T_111; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_115 = q2Final_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_116 = q2Final_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_117 = q2Final_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_115 = q2Final_0 ? stgData_0_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_116 = q2Final_1 ? stgData_1_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_117 = q2Final_2 ? stgData_2_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_q2IQEnq_0_bits_T_118 = _io_q2IQEnq_0_bits_T_115 | _io_q2IQEnq_0_bits_T_116; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q2IQEnq_0_bits_T_150 = q2Final_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q2IQEnq_0_bits_T_151 = q2Final_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q2IQEnq_0_bits_T_152 = q2Final_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q2IQEnq_0_bits_T_153 = _io_q2IQEnq_0_bits_T_150 | _io_q2IQEnq_0_bits_T_151; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_155 = q2Final_0 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_156 = q2Final_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_157 = q2Final_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_158 = _io_q2IQEnq_0_bits_T_155 | _io_q2IQEnq_0_bits_T_156; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q2IQEnq_0_bits_T_160 = q2Final_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q2IQEnq_0_bits_T_161 = q2Final_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q2IQEnq_0_bits_T_162 = q2Final_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q2IQEnq_0_bits_T_163 = _io_q2IQEnq_0_bits_T_160 | _io_q2IQEnq_0_bits_T_161; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_200 = q2Final_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_201 = q2Final_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_202 = q2Final_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_203 = _io_q2IQEnq_0_bits_T_200 | _io_q2IQEnq_0_bits_T_201; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_205 = q2Final_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_206 = q2Final_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_207 = q2Final_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_208 = _io_q2IQEnq_0_bits_T_205 | _io_q2IQEnq_0_bits_T_206; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_210 = q2Final_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_211 = q2Final_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_212 = q2Final_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_213 = _io_q2IQEnq_0_bits_T_210 | _io_q2IQEnq_0_bits_T_211; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_215 = q2Final_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_216 = q2Final_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_217 = q2Final_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_218 = _io_q2IQEnq_0_bits_T_215 | _io_q2IQEnq_0_bits_T_216; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_220 = q2Final_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_221 = q2Final_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_222 = q2Final_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_223 = _io_q2IQEnq_0_bits_T_220 | _io_q2IQEnq_0_bits_T_221; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_225 = q2Final_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_226 = q2Final_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_227 = q2Final_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q2IQEnq_0_bits_T_228 = _io_q2IQEnq_0_bits_T_225 | _io_q2IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_230 = q2Final_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_231 = q2Final_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_232 = q2Final_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_233 = _io_q2IQEnq_0_bits_T_230 | _io_q2IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_235 = q2Final_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_236 = q2Final_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_237 = q2Final_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_238 = _io_q2IQEnq_0_bits_T_235 | _io_q2IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q2IQEnq_0_bits_T_240 = q2Final_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q2IQEnq_0_bits_T_241 = q2Final_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q2IQEnq_0_bits_T_242 = q2Final_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q2IQEnq_0_bits_T_243 = _io_q2IQEnq_0_bits_T_240 | _io_q2IQEnq_0_bits_T_241; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_245 = q2Final_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_246 = q2Final_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_247 = q2Final_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q2IQEnq_0_bits_T_248 = _io_q2IQEnq_0_bits_T_245 | _io_q2IQEnq_0_bits_T_246; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_250 = q2Final_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_251 = q2Final_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_252 = q2Final_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_253 = _io_q2IQEnq_0_bits_T_250 | _io_q2IQEnq_0_bits_T_251; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_255 = q2Final_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_256 = q2Final_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_257 = q2Final_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q2IQEnq_0_bits_T_258 = _io_q2IQEnq_0_bits_T_255 | _io_q2IQEnq_0_bits_T_256; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _T_20 = {q3Final_2,q3Final_1,q3Final_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 434:16]
+  wire [2:0] _io_q2IQEnq_0_bits_T_125 = q2Final_0 ? stgData_0_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_126 = q2Final_1 ? stgData_1_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_127 = q2Final_2 ? stgData_2_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_128 = _io_q2IQEnq_0_bits_T_125 | _io_q2IQEnq_0_bits_T_126; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_130 = q2Final_0 ? stgData_0_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_131 = q2Final_1 ? stgData_1_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_132 = q2Final_2 ? stgData_2_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_133 = _io_q2IQEnq_0_bits_T_130 | _io_q2IQEnq_0_bits_T_131; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_135 = q2Final_0 ? stgData_0_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_136 = q2Final_1 ? stgData_1_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_137 = q2Final_2 ? stgData_2_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_138 = _io_q2IQEnq_0_bits_T_135 | _io_q2IQEnq_0_bits_T_136; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_165 = q2Final_0 ? stgData_0_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_166 = q2Final_1 ? stgData_1_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_167 = q2Final_2 ? stgData_2_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q2IQEnq_0_bits_T_168 = _io_q2IQEnq_0_bits_T_165 | _io_q2IQEnq_0_bits_T_166; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_170 = q2Final_0 ? stgData_0_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_171 = q2Final_1 ? stgData_1_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_172 = q2Final_2 ? stgData_2_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_173 = _io_q2IQEnq_0_bits_T_170 | _io_q2IQEnq_0_bits_T_171; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_180 = q2Final_0 ? stgData_0_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_181 = q2Final_1 ? stgData_1_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_182 = q2Final_2 ? stgData_2_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_183 = _io_q2IQEnq_0_bits_T_180 | _io_q2IQEnq_0_bits_T_181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_185 = q2Final_0 ? stgData_0_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_186 = q2Final_1 ? stgData_1_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_187 = q2Final_2 ? stgData_2_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_188 = _io_q2IQEnq_0_bits_T_185 | _io_q2IQEnq_0_bits_T_186; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_190 = q2Final_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_191 = q2Final_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_192 = q2Final_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_193 = _io_q2IQEnq_0_bits_T_190 | _io_q2IQEnq_0_bits_T_191; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q2IQEnq_0_bits_T_225 = q2Final_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q2IQEnq_0_bits_T_226 = q2Final_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q2IQEnq_0_bits_T_227 = q2Final_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q2IQEnq_0_bits_T_228 = _io_q2IQEnq_0_bits_T_225 | _io_q2IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_230 = q2Final_0 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_231 = q2Final_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_232 = q2Final_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_233 = _io_q2IQEnq_0_bits_T_230 | _io_q2IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q2IQEnq_0_bits_T_235 = q2Final_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q2IQEnq_0_bits_T_236 = q2Final_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q2IQEnq_0_bits_T_237 = q2Final_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q2IQEnq_0_bits_T_238 = _io_q2IQEnq_0_bits_T_235 | _io_q2IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_275 = q2Final_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_276 = q2Final_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_277 = q2Final_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_278 = _io_q2IQEnq_0_bits_T_275 | _io_q2IQEnq_0_bits_T_276; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_280 = q2Final_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_281 = q2Final_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_282 = q2Final_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_283 = _io_q2IQEnq_0_bits_T_280 | _io_q2IQEnq_0_bits_T_281; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_285 = q2Final_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_286 = q2Final_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_287 = q2Final_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_288 = _io_q2IQEnq_0_bits_T_285 | _io_q2IQEnq_0_bits_T_286; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_290 = q2Final_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_291 = q2Final_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_292 = q2Final_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_293 = _io_q2IQEnq_0_bits_T_290 | _io_q2IQEnq_0_bits_T_291; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_295 = q2Final_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_296 = q2Final_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_297 = q2Final_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_298 = _io_q2IQEnq_0_bits_T_295 | _io_q2IQEnq_0_bits_T_296; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_300 = q2Final_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_301 = q2Final_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_302 = q2Final_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q2IQEnq_0_bits_T_303 = _io_q2IQEnq_0_bits_T_300 | _io_q2IQEnq_0_bits_T_301; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_305 = q2Final_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_306 = q2Final_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_307 = q2Final_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_308 = _io_q2IQEnq_0_bits_T_305 | _io_q2IQEnq_0_bits_T_306; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_310 = q2Final_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_311 = q2Final_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_312 = q2Final_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_313 = _io_q2IQEnq_0_bits_T_310 | _io_q2IQEnq_0_bits_T_311; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q2IQEnq_0_bits_T_315 = q2Final_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q2IQEnq_0_bits_T_316 = q2Final_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q2IQEnq_0_bits_T_317 = q2Final_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q2IQEnq_0_bits_T_318 = _io_q2IQEnq_0_bits_T_315 | _io_q2IQEnq_0_bits_T_316; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_320 = q2Final_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_321 = q2Final_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_322 = q2Final_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q2IQEnq_0_bits_T_323 = _io_q2IQEnq_0_bits_T_320 | _io_q2IQEnq_0_bits_T_321; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_325 = q2Final_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_326 = q2Final_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_327 = q2Final_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_328 = _io_q2IQEnq_0_bits_T_325 | _io_q2IQEnq_0_bits_T_326; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_330 = q2Final_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_331 = q2Final_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_332 = q2Final_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q2IQEnq_0_bits_T_333 = _io_q2IQEnq_0_bits_T_330 | _io_q2IQEnq_0_bits_T_331; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _T_20 = {q3Final_2,q3Final_1,q3Final_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 435:16]
   wire [2:0] _io_q3IQEnq_0_bits_T_20 = q3Final_0 ? 3'h2 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [2:0] _io_q3IQEnq_0_bits_T_21 = q3Final_1 ? 3'h2 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [2:0] _io_q3IQEnq_0_bits_T_22 = q3Final_2 ? 3'h2 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1418,97 +1739,129 @@ module DispatchStage(
   wire [4:0] _io_q3IQEnq_0_bits_T_111 = q3Final_1 ? stgData_1_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q3IQEnq_0_bits_T_112 = q3Final_2 ? stgData_2_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q3IQEnq_0_bits_T_113 = _io_q3IQEnq_0_bits_T_110 | _io_q3IQEnq_0_bits_T_111; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_115 = q3Final_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_116 = q3Final_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_117 = q3Final_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_115 = q3Final_0 ? stgData_0_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_116 = q3Final_1 ? stgData_1_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_117 = q3Final_2 ? stgData_2_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_q3IQEnq_0_bits_T_118 = _io_q3IQEnq_0_bits_T_115 | _io_q3IQEnq_0_bits_T_116; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q3IQEnq_0_bits_T_150 = q3Final_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q3IQEnq_0_bits_T_151 = q3Final_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q3IQEnq_0_bits_T_152 = q3Final_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q3IQEnq_0_bits_T_153 = _io_q3IQEnq_0_bits_T_150 | _io_q3IQEnq_0_bits_T_151; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_155 = q3Final_0 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_156 = q3Final_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_157 = q3Final_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_158 = _io_q3IQEnq_0_bits_T_155 | _io_q3IQEnq_0_bits_T_156; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q3IQEnq_0_bits_T_160 = q3Final_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q3IQEnq_0_bits_T_161 = q3Final_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q3IQEnq_0_bits_T_162 = q3Final_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q3IQEnq_0_bits_T_163 = _io_q3IQEnq_0_bits_T_160 | _io_q3IQEnq_0_bits_T_161; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_200 = q3Final_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_201 = q3Final_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_202 = q3Final_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_203 = _io_q3IQEnq_0_bits_T_200 | _io_q3IQEnq_0_bits_T_201; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_205 = q3Final_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_206 = q3Final_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_207 = q3Final_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_208 = _io_q3IQEnq_0_bits_T_205 | _io_q3IQEnq_0_bits_T_206; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_210 = q3Final_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_211 = q3Final_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_212 = q3Final_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_213 = _io_q3IQEnq_0_bits_T_210 | _io_q3IQEnq_0_bits_T_211; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_215 = q3Final_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_216 = q3Final_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_217 = q3Final_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_218 = _io_q3IQEnq_0_bits_T_215 | _io_q3IQEnq_0_bits_T_216; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_220 = q3Final_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_221 = q3Final_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_222 = q3Final_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_223 = _io_q3IQEnq_0_bits_T_220 | _io_q3IQEnq_0_bits_T_221; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_225 = q3Final_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_226 = q3Final_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_227 = q3Final_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q3IQEnq_0_bits_T_228 = _io_q3IQEnq_0_bits_T_225 | _io_q3IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_230 = q3Final_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_231 = q3Final_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_232 = q3Final_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_233 = _io_q3IQEnq_0_bits_T_230 | _io_q3IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_235 = q3Final_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_236 = q3Final_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_237 = q3Final_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_238 = _io_q3IQEnq_0_bits_T_235 | _io_q3IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q3IQEnq_0_bits_T_240 = q3Final_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q3IQEnq_0_bits_T_241 = q3Final_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q3IQEnq_0_bits_T_242 = q3Final_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q3IQEnq_0_bits_T_243 = _io_q3IQEnq_0_bits_T_240 | _io_q3IQEnq_0_bits_T_241; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_245 = q3Final_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_246 = q3Final_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_247 = q3Final_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q3IQEnq_0_bits_T_248 = _io_q3IQEnq_0_bits_T_245 | _io_q3IQEnq_0_bits_T_246; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_250 = q3Final_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_251 = q3Final_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_252 = q3Final_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_253 = _io_q3IQEnq_0_bits_T_250 | _io_q3IQEnq_0_bits_T_251; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_255 = q3Final_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_256 = q3Final_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_257 = q3Final_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q3IQEnq_0_bits_T_258 = _io_q3IQEnq_0_bits_T_255 | _io_q3IQEnq_0_bits_T_256; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [6:0] q4Uops_0_pdst = isStoreLane_0 ? 7'h0 : stgData_0_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_0_rs2Valid = isStoreLane_0 ? 1'h0 : stgData_0_rs2Valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_0_rdValid = isStoreLane_0 ? 1'h0 : stgData_0_rdValid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [3:0] q4Uops_0_lqIdx_value = isStoreLane_0 ? 4'h0 : lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_0_lqIdx_flag = isStoreLane_0 ? 1'h0 : lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [3:0] q4Uops_0_sqIdx_value = isStoreLane_0 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_0_sqIdx_flag = isStoreLane_0 & sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_0_prs1Busy = isStoreLane_0 ? q1Uops_u_u_prs1Busy : q1Uops_u_u_prs1Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_0_prs2Busy = isStoreLane_0 ? 1'h0 : q1Uops_u_u_prs2Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [6:0] q4Uops_1_pdst = isStoreLane_1 ? 7'h0 : stgData_1_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_1_rs2Valid = isStoreLane_1 ? 1'h0 : stgData_1_rs2Valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_1_rdValid = isStoreLane_1 ? 1'h0 : stgData_1_rdValid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [3:0] q4Uops_1_lqIdx_value = isStoreLane_1 ? 4'h0 : lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_1_lqIdx_flag = isStoreLane_1 ? 1'h0 : lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [3:0] q4Uops_1_sqIdx_value = isStoreLane_1 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_1_sqIdx_flag = isStoreLane_1 & sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_1_prs1Busy = isStoreLane_1 ? q1Uops_u_u_1_prs1Busy : q1Uops_u_u_1_prs1Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_1_prs2Busy = isStoreLane_1 ? 1'h0 : q1Uops_u_u_1_prs2Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [6:0] q4Uops_2_pdst = isStoreLane_2 ? 7'h0 : stgData_2_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_2_rs2Valid = isStoreLane_2 ? 1'h0 : stgData_2_rs2Valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_2_rdValid = isStoreLane_2 ? 1'h0 : stgData_2_rdValid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [3:0] q4Uops_2_lqIdx_value = isStoreLane_2 ? 4'h0 : lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_2_lqIdx_flag = isStoreLane_2 ? 1'h0 : lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire [3:0] q4Uops_2_sqIdx_value = isStoreLane_2 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_2_sqIdx_flag = isStoreLane_2 & sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_2_prs1Busy = isStoreLane_2 ? q1Uops_u_u_2_prs1Busy : q1Uops_u_u_2_prs1Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
-  wire  q4Uops_2_prs2Busy = isStoreLane_2 ? 1'h0 : q1Uops_u_u_2_prs2Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 439:53]
+  wire [2:0] _io_q3IQEnq_0_bits_T_125 = q3Final_0 ? stgData_0_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_126 = q3Final_1 ? stgData_1_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_127 = q3Final_2 ? stgData_2_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_128 = _io_q3IQEnq_0_bits_T_125 | _io_q3IQEnq_0_bits_T_126; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_130 = q3Final_0 ? stgData_0_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_131 = q3Final_1 ? stgData_1_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_132 = q3Final_2 ? stgData_2_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_133 = _io_q3IQEnq_0_bits_T_130 | _io_q3IQEnq_0_bits_T_131; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_135 = q3Final_0 ? stgData_0_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_136 = q3Final_1 ? stgData_1_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_137 = q3Final_2 ? stgData_2_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_138 = _io_q3IQEnq_0_bits_T_135 | _io_q3IQEnq_0_bits_T_136; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_165 = q3Final_0 ? stgData_0_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_166 = q3Final_1 ? stgData_1_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_167 = q3Final_2 ? stgData_2_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q3IQEnq_0_bits_T_168 = _io_q3IQEnq_0_bits_T_165 | _io_q3IQEnq_0_bits_T_166; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_170 = q3Final_0 ? stgData_0_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_171 = q3Final_1 ? stgData_1_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_172 = q3Final_2 ? stgData_2_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_173 = _io_q3IQEnq_0_bits_T_170 | _io_q3IQEnq_0_bits_T_171; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_180 = q3Final_0 ? stgData_0_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_181 = q3Final_1 ? stgData_1_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_182 = q3Final_2 ? stgData_2_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_183 = _io_q3IQEnq_0_bits_T_180 | _io_q3IQEnq_0_bits_T_181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_185 = q3Final_0 ? stgData_0_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_186 = q3Final_1 ? stgData_1_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_187 = q3Final_2 ? stgData_2_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_188 = _io_q3IQEnq_0_bits_T_185 | _io_q3IQEnq_0_bits_T_186; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_190 = q3Final_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_191 = q3Final_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_192 = q3Final_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_193 = _io_q3IQEnq_0_bits_T_190 | _io_q3IQEnq_0_bits_T_191; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q3IQEnq_0_bits_T_225 = q3Final_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q3IQEnq_0_bits_T_226 = q3Final_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q3IQEnq_0_bits_T_227 = q3Final_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q3IQEnq_0_bits_T_228 = _io_q3IQEnq_0_bits_T_225 | _io_q3IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_230 = q3Final_0 ? stgData_0_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_231 = q3Final_1 ? stgData_1_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_232 = q3Final_2 ? stgData_2_imm : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_233 = _io_q3IQEnq_0_bits_T_230 | _io_q3IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q3IQEnq_0_bits_T_235 = q3Final_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q3IQEnq_0_bits_T_236 = q3Final_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q3IQEnq_0_bits_T_237 = q3Final_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q3IQEnq_0_bits_T_238 = _io_q3IQEnq_0_bits_T_235 | _io_q3IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_275 = q3Final_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_276 = q3Final_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_277 = q3Final_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_278 = _io_q3IQEnq_0_bits_T_275 | _io_q3IQEnq_0_bits_T_276; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_280 = q3Final_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_281 = q3Final_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_282 = q3Final_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_283 = _io_q3IQEnq_0_bits_T_280 | _io_q3IQEnq_0_bits_T_281; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_285 = q3Final_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_286 = q3Final_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_287 = q3Final_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_288 = _io_q3IQEnq_0_bits_T_285 | _io_q3IQEnq_0_bits_T_286; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_290 = q3Final_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_291 = q3Final_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_292 = q3Final_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_293 = _io_q3IQEnq_0_bits_T_290 | _io_q3IQEnq_0_bits_T_291; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_295 = q3Final_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_296 = q3Final_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_297 = q3Final_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_298 = _io_q3IQEnq_0_bits_T_295 | _io_q3IQEnq_0_bits_T_296; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_300 = q3Final_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_301 = q3Final_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_302 = q3Final_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q3IQEnq_0_bits_T_303 = _io_q3IQEnq_0_bits_T_300 | _io_q3IQEnq_0_bits_T_301; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_305 = q3Final_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_306 = q3Final_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_307 = q3Final_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_308 = _io_q3IQEnq_0_bits_T_305 | _io_q3IQEnq_0_bits_T_306; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_310 = q3Final_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_311 = q3Final_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_312 = q3Final_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_313 = _io_q3IQEnq_0_bits_T_310 | _io_q3IQEnq_0_bits_T_311; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q3IQEnq_0_bits_T_315 = q3Final_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q3IQEnq_0_bits_T_316 = q3Final_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q3IQEnq_0_bits_T_317 = q3Final_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q3IQEnq_0_bits_T_318 = _io_q3IQEnq_0_bits_T_315 | _io_q3IQEnq_0_bits_T_316; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_320 = q3Final_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_321 = q3Final_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_322 = q3Final_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q3IQEnq_0_bits_T_323 = _io_q3IQEnq_0_bits_T_320 | _io_q3IQEnq_0_bits_T_321; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_325 = q3Final_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_326 = q3Final_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_327 = q3Final_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_328 = _io_q3IQEnq_0_bits_T_325 | _io_q3IQEnq_0_bits_T_326; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_330 = q3Final_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_331 = q3Final_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_332 = q3Final_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q3IQEnq_0_bits_T_333 = _io_q3IQEnq_0_bits_T_330 | _io_q3IQEnq_0_bits_T_331; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [6:0] q4Uops_0_pdst = isStoreLane_0 ? 7'h0 : stgData_0_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_0_rs2Valid = isStoreLane_0 ? 1'h0 : stgData_0_rs2Valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_0_rdValid = isStoreLane_0 ? 1'h0 : stgData_0_rdValid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [3:0] q4Uops_0_lqIdx_value = isStoreLane_0 ? 4'h0 : lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_0_lqIdx_flag = isStoreLane_0 ? 1'h0 : lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [3:0] q4Uops_0_sqIdx_value = isStoreLane_0 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_0_sqIdx_flag = isStoreLane_0 & sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_0_prs1Busy = isStoreLane_0 ? q1Uops_u_u_prs1Busy : q1Uops_u_u_prs1Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_0_prs2Busy = isStoreLane_0 ? 1'h0 : q1Uops_u_u_prs2Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [6:0] q4Uops_1_pdst = isStoreLane_1 ? 7'h0 : stgData_1_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_1_rs2Valid = isStoreLane_1 ? 1'h0 : stgData_1_rs2Valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_1_rdValid = isStoreLane_1 ? 1'h0 : stgData_1_rdValid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [3:0] q4Uops_1_lqIdx_value = isStoreLane_1 ? 4'h0 : lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_1_lqIdx_flag = isStoreLane_1 ? 1'h0 : lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [3:0] q4Uops_1_sqIdx_value = isStoreLane_1 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_1_sqIdx_flag = isStoreLane_1 & sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_1_prs1Busy = isStoreLane_1 ? q1Uops_u_u_1_prs1Busy : q1Uops_u_u_1_prs1Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_1_prs2Busy = isStoreLane_1 ? 1'h0 : q1Uops_u_u_1_prs2Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [6:0] q4Uops_2_pdst = isStoreLane_2 ? 7'h0 : stgData_2_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_2_rs2Valid = isStoreLane_2 ? 1'h0 : stgData_2_rs2Valid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_2_rdValid = isStoreLane_2 ? 1'h0 : stgData_2_rdValid; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [3:0] q4Uops_2_lqIdx_value = isStoreLane_2 ? 4'h0 : lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_2_lqIdx_flag = isStoreLane_2 ? 1'h0 : lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire [3:0] q4Uops_2_sqIdx_value = isStoreLane_2 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_2_sqIdx_flag = isStoreLane_2 & sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_2_prs1Busy = isStoreLane_2 ? q1Uops_u_u_2_prs1Busy : q1Uops_u_u_2_prs1Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
+  wire  q4Uops_2_prs2Busy = isStoreLane_2 ? 1'h0 : q1Uops_u_u_2_prs2Busy; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:53]
   wire [2:0] _io_q4IQEnq_0_bits_T_20 = _q4Cand_T_1 ? 3'h3 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [2:0] _io_q4IQEnq_0_bits_T_21 = q4Selected_1 ? 3'h3 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [2:0] _io_q4IQEnq_0_bits_T_22 = q4Selected_2 ? 3'h3 : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1525,7 +1878,7 @@ module DispatchStage(
   wire [6:0] _io_q4IQEnq_0_bits_T_96 = q4Selected_1 ? q4Uops_1_pdst : 7'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [6:0] _io_q4IQEnq_0_bits_T_97 = q4Selected_2 ? q4Uops_2_pdst : 7'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [6:0] _io_q4IQEnq_0_bits_T_98 = _io_q4IQEnq_0_bits_T_95 | _io_q4IQEnq_0_bits_T_96; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _T_26 = {q5Selected_2,q5Selected_1,q5Selected_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 446:19]
+  wire [2:0] _T_26 = {q5Selected_2,q5Selected_1,q5Selected_0}; // @[src/main/scala/backend/dispatch/DispatchStage.scala 447:19]
   wire [2:0] _io_q5IQEnq_0_bits_T_23 = _laneTargetQ_0_T | _laneTargetQ_1_T; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [3:0] _io_q5IQEnq_0_bits_T_30 = q5Selected_0 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [3:0] _io_q5IQEnq_0_bits_T_31 = q5Selected_1 ? sqHeadPtr_value : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1559,66 +1912,98 @@ module DispatchStage(
   wire [4:0] _io_q5IQEnq_0_bits_T_111 = q5Selected_1 ? stgData_1_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q5IQEnq_0_bits_T_112 = q5Selected_2 ? stgData_2_ldst : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [4:0] _io_q5IQEnq_0_bits_T_113 = _io_q5IQEnq_0_bits_T_110 | _io_q5IQEnq_0_bits_T_111; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_115 = q5Selected_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_116 = q5Selected_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_117 = q5Selected_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_115 = q5Selected_0 ? stgData_0_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_116 = q5Selected_1 ? stgData_1_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_117 = q5Selected_2 ? stgData_2_bpuInfo_meta_predTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_q5IQEnq_0_bits_T_118 = _io_q5IQEnq_0_bits_T_115 | _io_q5IQEnq_0_bits_T_116; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q5IQEnq_0_bits_T_150 = q5Selected_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q5IQEnq_0_bits_T_151 = q5Selected_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q5IQEnq_0_bits_T_152 = q5Selected_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [13:0] _io_q5IQEnq_0_bits_T_153 = _io_q5IQEnq_0_bits_T_150 | _io_q5IQEnq_0_bits_T_151; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q5IQEnq_0_bits_T_160 = q5Selected_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q5IQEnq_0_bits_T_161 = q5Selected_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q5IQEnq_0_bits_T_162 = q5Selected_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [9:0] _io_q5IQEnq_0_bits_T_163 = _io_q5IQEnq_0_bits_T_160 | _io_q5IQEnq_0_bits_T_161; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_200 = q5Selected_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_201 = q5Selected_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_202 = q5Selected_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_203 = _io_q5IQEnq_0_bits_T_200 | _io_q5IQEnq_0_bits_T_201; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_205 = q5Selected_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_206 = q5Selected_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_207 = q5Selected_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_208 = _io_q5IQEnq_0_bits_T_205 | _io_q5IQEnq_0_bits_T_206; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_210 = q5Selected_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_211 = q5Selected_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_212 = q5Selected_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_213 = _io_q5IQEnq_0_bits_T_210 | _io_q5IQEnq_0_bits_T_211; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_215 = q5Selected_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_216 = q5Selected_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_217 = q5Selected_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_218 = _io_q5IQEnq_0_bits_T_215 | _io_q5IQEnq_0_bits_T_216; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_220 = q5Selected_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_221 = q5Selected_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_222 = q5Selected_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_223 = _io_q5IQEnq_0_bits_T_220 | _io_q5IQEnq_0_bits_T_221; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_225 = q5Selected_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_226 = q5Selected_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_227 = q5Selected_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [2:0] _io_q5IQEnq_0_bits_T_228 = _io_q5IQEnq_0_bits_T_225 | _io_q5IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_230 = q5Selected_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_231 = q5Selected_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_232 = q5Selected_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_233 = _io_q5IQEnq_0_bits_T_230 | _io_q5IQEnq_0_bits_T_231; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_235 = q5Selected_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_236 = q5Selected_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_237 = q5Selected_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_238 = _io_q5IQEnq_0_bits_T_235 | _io_q5IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q5IQEnq_0_bits_T_240 = q5Selected_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q5IQEnq_0_bits_T_241 = q5Selected_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q5IQEnq_0_bits_T_242 = q5Selected_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [4:0] _io_q5IQEnq_0_bits_T_243 = _io_q5IQEnq_0_bits_T_240 | _io_q5IQEnq_0_bits_T_241; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_245 = q5Selected_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_246 = q5Selected_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_247 = q5Selected_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [3:0] _io_q5IQEnq_0_bits_T_248 = _io_q5IQEnq_0_bits_T_245 | _io_q5IQEnq_0_bits_T_246; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_250 = q5Selected_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_251 = q5Selected_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_252 = q5Selected_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_253 = _io_q5IQEnq_0_bits_T_250 | _io_q5IQEnq_0_bits_T_251; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_255 = q5Selected_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_256 = q5Selected_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_257 = q5Selected_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  wire [31:0] _io_q5IQEnq_0_bits_T_258 = _io_q5IQEnq_0_bits_T_255 | _io_q5IQEnq_0_bits_T_256; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_125 = q5Selected_0 ? stgData_0_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_126 = q5Selected_1 ? stgData_1_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_127 = q5Selected_2 ? stgData_2_bpuInfo_meta_rasTop : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_128 = _io_q5IQEnq_0_bits_T_125 | _io_q5IQEnq_0_bits_T_126; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_130 = q5Selected_0 ? stgData_0_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_131 = q5Selected_1 ? stgData_1_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_132 = q5Selected_2 ? stgData_2_bpuInfo_meta_phtCounter : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_133 = _io_q5IQEnq_0_bits_T_130 | _io_q5IQEnq_0_bits_T_131; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_135 = q5Selected_0 ? stgData_0_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_136 = q5Selected_1 ? stgData_1_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_137 = q5Selected_2 ? stgData_2_bpuInfo_meta_btbOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_138 = _io_q5IQEnq_0_bits_T_135 | _io_q5IQEnq_0_bits_T_136; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_165 = q5Selected_0 ? stgData_0_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_166 = q5Selected_1 ? stgData_1_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_167 = q5Selected_2 ? stgData_2_bpuInfo_takenOffset : 2'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [1:0] _io_q5IQEnq_0_bits_T_168 = _io_q5IQEnq_0_bits_T_165 | _io_q5IQEnq_0_bits_T_166; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_170 = q5Selected_0 ? stgData_0_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_171 = q5Selected_1 ? stgData_1_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_172 = q5Selected_2 ? stgData_2_bpuInfo_target : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_173 = _io_q5IQEnq_0_bits_T_170 | _io_q5IQEnq_0_bits_T_171; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_180 = q5Selected_0 ? stgData_0_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_181 = q5Selected_1 ? stgData_1_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_182 = q5Selected_2 ? stgData_2_bpuInfo_fallThrough : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_183 = _io_q5IQEnq_0_bits_T_180 | _io_q5IQEnq_0_bits_T_181; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_185 = q5Selected_0 ? stgData_0_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_186 = q5Selected_1 ? stgData_1_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_187 = q5Selected_2 ? stgData_2_bpuInfo_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_188 = _io_q5IQEnq_0_bits_T_185 | _io_q5IQEnq_0_bits_T_186; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_190 = q5Selected_0 ? stgData_0_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_191 = q5Selected_1 ? stgData_1_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_192 = q5Selected_2 ? stgData_2_pdInfo_jumpTarget : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_193 = _io_q5IQEnq_0_bits_T_190 | _io_q5IQEnq_0_bits_T_191; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q5IQEnq_0_bits_T_225 = q5Selected_0 ? stgData_0_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q5IQEnq_0_bits_T_226 = q5Selected_1 ? stgData_1_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q5IQEnq_0_bits_T_227 = q5Selected_2 ? stgData_2_csrAddress : 14'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [13:0] _io_q5IQEnq_0_bits_T_228 = _io_q5IQEnq_0_bits_T_225 | _io_q5IQEnq_0_bits_T_226; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q5IQEnq_0_bits_T_235 = q5Selected_0 ? stgData_0_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q5IQEnq_0_bits_T_236 = q5Selected_1 ? stgData_1_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q5IQEnq_0_bits_T_237 = q5Selected_2 ? stgData_2_excpVec : 10'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [9:0] _io_q5IQEnq_0_bits_T_238 = _io_q5IQEnq_0_bits_T_235 | _io_q5IQEnq_0_bits_T_236; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_275 = q5Selected_0 ? stgData_0_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_276 = q5Selected_1 ? stgData_1_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_277 = q5Selected_2 ? stgData_2_ctrl_immType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_278 = _io_q5IQEnq_0_bits_T_275 | _io_q5IQEnq_0_bits_T_276; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_280 = q5Selected_0 ? stgData_0_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_281 = q5Selected_1 ? stgData_1_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_282 = q5Selected_2 ? stgData_2_ctrl_src2Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_283 = _io_q5IQEnq_0_bits_T_280 | _io_q5IQEnq_0_bits_T_281; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_285 = q5Selected_0 ? stgData_0_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_286 = q5Selected_1 ? stgData_1_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_287 = q5Selected_2 ? stgData_2_ctrl_src1Type : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_288 = _io_q5IQEnq_0_bits_T_285 | _io_q5IQEnq_0_bits_T_286; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_290 = q5Selected_0 ? stgData_0_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_291 = q5Selected_1 ? stgData_1_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_292 = q5Selected_2 ? stgData_2_ctrl_divOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_293 = _io_q5IQEnq_0_bits_T_290 | _io_q5IQEnq_0_bits_T_291; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_295 = q5Selected_0 ? stgData_0_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_296 = q5Selected_1 ? stgData_1_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_297 = q5Selected_2 ? stgData_2_ctrl_mulOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_298 = _io_q5IQEnq_0_bits_T_295 | _io_q5IQEnq_0_bits_T_296; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_300 = q5Selected_0 ? stgData_0_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_301 = q5Selected_1 ? stgData_1_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_302 = q5Selected_2 ? stgData_2_ctrl_csrOp : 3'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [2:0] _io_q5IQEnq_0_bits_T_303 = _io_q5IQEnq_0_bits_T_300 | _io_q5IQEnq_0_bits_T_301; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_305 = q5Selected_0 ? stgData_0_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_306 = q5Selected_1 ? stgData_1_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_307 = q5Selected_2 ? stgData_2_ctrl_lsuOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_308 = _io_q5IQEnq_0_bits_T_305 | _io_q5IQEnq_0_bits_T_306; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_310 = q5Selected_0 ? stgData_0_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_311 = q5Selected_1 ? stgData_1_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_312 = q5Selected_2 ? stgData_2_ctrl_bruOp : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_313 = _io_q5IQEnq_0_bits_T_310 | _io_q5IQEnq_0_bits_T_311; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q5IQEnq_0_bits_T_315 = q5Selected_0 ? stgData_0_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q5IQEnq_0_bits_T_316 = q5Selected_1 ? stgData_1_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q5IQEnq_0_bits_T_317 = q5Selected_2 ? stgData_2_ctrl_aluOp : 5'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [4:0] _io_q5IQEnq_0_bits_T_318 = _io_q5IQEnq_0_bits_T_315 | _io_q5IQEnq_0_bits_T_316; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_320 = q5Selected_0 ? stgData_0_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_321 = q5Selected_1 ? stgData_1_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_322 = q5Selected_2 ? stgData_2_ctrl_fuType : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [3:0] _io_q5IQEnq_0_bits_T_323 = _io_q5IQEnq_0_bits_T_320 | _io_q5IQEnq_0_bits_T_321; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_325 = q5Selected_0 ? stgData_0_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_326 = q5Selected_1 ? stgData_1_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_327 = q5Selected_2 ? stgData_2_inst : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_328 = _io_q5IQEnq_0_bits_T_325 | _io_q5IQEnq_0_bits_T_326; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_330 = q5Selected_0 ? stgData_0_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_331 = q5Selected_1 ? stgData_1_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_332 = q5Selected_2 ? stgData_2_pc : 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  wire [31:0] _io_q5IQEnq_0_bits_T_333 = _io_q5IQEnq_0_bits_T_330 | _io_q5IQEnq_0_bits_T_331; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   BusyTable busyTable ( // @[src/main/scala/backend/dispatch/DispatchStage.scala 44:25]
     .clock(busyTable_clock),
     .reset(busyTable_reset),
@@ -1654,19 +2039,19 @@ module DispatchStage(
   assign io_in_0_ready = ~stgValid | dispatchFire & AllWillFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 216:32]
   assign io_in_1_ready = ~stgValid | dispatchFire & AllWillFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 216:32]
   assign io_in_2_ready = ~stgValid | dispatchFire & AllWillFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 216:32]
-  assign io_q1IQEnq_0_valid = |_T_14 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 412:27]
-  assign io_q1IQEnq_0_bits_pc = _io_q1IQEnq_0_bits_T_258 | _io_q1IQEnq_0_bits_T_257; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_inst = _io_q1IQEnq_0_bits_T_253 | _io_q1IQEnq_0_bits_T_252; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_fuType = _io_q1IQEnq_0_bits_T_248 | _io_q1IQEnq_0_bits_T_247; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_aluOp = _io_q1IQEnq_0_bits_T_243 | _io_q1IQEnq_0_bits_T_242; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_bruOp = _io_q1IQEnq_0_bits_T_238 | _io_q1IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_lsuOp = _io_q1IQEnq_0_bits_T_233 | _io_q1IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_csrOp = _io_q1IQEnq_0_bits_T_228 | _io_q1IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_mulOp = _io_q1IQEnq_0_bits_T_223 | _io_q1IQEnq_0_bits_T_222; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_divOp = _io_q1IQEnq_0_bits_T_218 | _io_q1IQEnq_0_bits_T_217; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_src1Type = _io_q1IQEnq_0_bits_T_213 | _io_q1IQEnq_0_bits_T_212; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_src2Type = _io_q1IQEnq_0_bits_T_208 | _io_q1IQEnq_0_bits_T_207; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_ctrl_immType = _io_q1IQEnq_0_bits_T_203 | _io_q1IQEnq_0_bits_T_202; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_valid = |_T_14 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 413:27]
+  assign io_q1IQEnq_0_bits_pc = _io_q1IQEnq_0_bits_T_333 | _io_q1IQEnq_0_bits_T_332; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_inst = _io_q1IQEnq_0_bits_T_328 | _io_q1IQEnq_0_bits_T_327; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_fuType = _io_q1IQEnq_0_bits_T_323 | _io_q1IQEnq_0_bits_T_322; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_aluOp = _io_q1IQEnq_0_bits_T_318 | _io_q1IQEnq_0_bits_T_317; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_bruOp = _io_q1IQEnq_0_bits_T_313 | _io_q1IQEnq_0_bits_T_312; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_lsuOp = _io_q1IQEnq_0_bits_T_308 | _io_q1IQEnq_0_bits_T_307; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_csrOp = _io_q1IQEnq_0_bits_T_303 | _io_q1IQEnq_0_bits_T_302; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_mulOp = _io_q1IQEnq_0_bits_T_298 | _io_q1IQEnq_0_bits_T_297; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_divOp = _io_q1IQEnq_0_bits_T_293 | _io_q1IQEnq_0_bits_T_292; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_src1Type = _io_q1IQEnq_0_bits_T_288 | _io_q1IQEnq_0_bits_T_287; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_src2Type = _io_q1IQEnq_0_bits_T_283 | _io_q1IQEnq_0_bits_T_282; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_ctrl_immType = _io_q1IQEnq_0_bits_T_278 | _io_q1IQEnq_0_bits_T_277; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_ctrl_rfWen = q1Final_0 & stgData_0_ctrl_rfWen | q1Final_1 & stgData_1_ctrl_rfWen | q1Final_2
      & stgData_2_ctrl_rfWen; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_ctrl_memRead = q1Final_0 & stgData_0_ctrl_memRead | q1Final_1 & stgData_1_ctrl_memRead |
@@ -1681,9 +2066,9 @@ module DispatchStage(
     q1Final_2 & stgData_2_ctrl_isJump; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_ctrl_isPriv = q1Final_0 & stgData_0_ctrl_isPriv | q1Final_1 & stgData_1_ctrl_isPriv |
     q1Final_2 & stgData_2_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_excpVec = _io_q1IQEnq_0_bits_T_163 | _io_q1IQEnq_0_bits_T_162; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_imm = _io_q1IQEnq_0_bits_T_158 | _io_q1IQEnq_0_bits_T_157; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_csrAddress = _io_q1IQEnq_0_bits_T_153 | _io_q1IQEnq_0_bits_T_152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_excpVec = _io_q1IQEnq_0_bits_T_238 | _io_q1IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_imm = _io_q1IQEnq_0_bits_T_233 | _io_q1IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_csrAddress = _io_q1IQEnq_0_bits_T_228 | _io_q1IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_pdInfo_valid = q1Final_0 & stgData_0_pdInfo_valid | q1Final_1 & stgData_1_pdInfo_valid |
     q1Final_2 & stgData_2_pdInfo_valid; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_pdInfo_isBr = q1Final_0 & stgData_0_pdInfo_isBr | q1Final_1 & stgData_1_pdInfo_isBr |
@@ -1696,7 +2081,29 @@ module DispatchStage(
     q1Final_2 & stgData_2_pdInfo_isCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_pdInfo_isRet = q1Final_0 & stgData_0_pdInfo_isRet | q1Final_1 & stgData_1_pdInfo_isRet |
     q1Final_2 & stgData_2_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q1IQEnq_0_bits_pdInfo_jumpTarget = _io_q1IQEnq_0_bits_T_118 | _io_q1IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_pdInfo_jumpTarget = _io_q1IQEnq_0_bits_T_193 | _io_q1IQEnq_0_bits_T_192; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_pc = _io_q1IQEnq_0_bits_T_188 | _io_q1IQEnq_0_bits_T_187; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_fallThrough = _io_q1IQEnq_0_bits_T_183 | _io_q1IQEnq_0_bits_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_taken = q1Final_0 & stgData_0_bpuInfo_taken | q1Final_1 & stgData_1_bpuInfo_taken |
+    q1Final_2 & stgData_2_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_target = _io_q1IQEnq_0_bits_T_173 | _io_q1IQEnq_0_bits_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_takenOffset = _io_q1IQEnq_0_bits_T_168 | _io_q1IQEnq_0_bits_T_167; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbHit = q1Final_0 & stgData_0_bpuInfo_meta_btbHit | q1Final_1 &
+    stgData_1_bpuInfo_meta_btbHit | q1Final_2 & stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJalr = q1Final_0 & stgData_0_bpuInfo_meta_btbIsJalr | q1Final_1 &
+    stgData_1_bpuInfo_meta_btbIsJalr | q1Final_2 & stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsJal = q1Final_0 & stgData_0_bpuInfo_meta_btbIsJal | q1Final_1 &
+    stgData_1_bpuInfo_meta_btbIsJal | q1Final_2 & stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsCall = q1Final_0 & stgData_0_bpuInfo_meta_btbIsCall | q1Final_1 &
+    stgData_1_bpuInfo_meta_btbIsCall | q1Final_2 & stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbIsRet = q1Final_0 & stgData_0_bpuInfo_meta_btbIsRet | q1Final_1 &
+    stgData_1_bpuInfo_meta_btbIsRet | q1Final_2 & stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_btbOffset = _io_q1IQEnq_0_bits_T_138 | _io_q1IQEnq_0_bits_T_137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_phtCounter = _io_q1IQEnq_0_bits_T_133 | _io_q1IQEnq_0_bits_T_132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_rasTop = _io_q1IQEnq_0_bits_T_128 | _io_q1IQEnq_0_bits_T_127; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_predTaken = q1Final_0 & stgData_0_bpuInfo_meta_predTaken | q1Final_1 &
+    stgData_1_bpuInfo_meta_predTaken | q1Final_2 & stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q1IQEnq_0_bits_bpuInfo_meta_predTarget = _io_q1IQEnq_0_bits_T_118 | _io_q1IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_ldst = _io_q1IQEnq_0_bits_T_113 | _io_q1IQEnq_0_bits_T_112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_lrs1 = _io_q1IQEnq_0_bits_T_108 | _io_q1IQEnq_0_bits_T_107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_lrs2 = _io_q1IQEnq_0_bits_T_103 | _io_q1IQEnq_0_bits_T_102; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1720,19 +2127,19 @@ module DispatchStage(
     q1Uops_u_u_2_prs1Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q1IQEnq_0_bits_prs2Busy = q1Final_0 & q1Uops_u_u_prs2Busy | q1Final_1 & q1Uops_u_u_1_prs2Busy | q1Final_2 &
     q1Uops_u_u_2_prs2Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_valid = |_T_17 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 423:27]
-  assign io_q2IQEnq_0_bits_pc = _io_q2IQEnq_0_bits_T_258 | _io_q2IQEnq_0_bits_T_257; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_inst = _io_q2IQEnq_0_bits_T_253 | _io_q2IQEnq_0_bits_T_252; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_fuType = _io_q2IQEnq_0_bits_T_248 | _io_q2IQEnq_0_bits_T_247; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_aluOp = _io_q2IQEnq_0_bits_T_243 | _io_q2IQEnq_0_bits_T_242; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_bruOp = _io_q2IQEnq_0_bits_T_238 | _io_q2IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_lsuOp = _io_q2IQEnq_0_bits_T_233 | _io_q2IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_csrOp = _io_q2IQEnq_0_bits_T_228 | _io_q2IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_mulOp = _io_q2IQEnq_0_bits_T_223 | _io_q2IQEnq_0_bits_T_222; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_divOp = _io_q2IQEnq_0_bits_T_218 | _io_q2IQEnq_0_bits_T_217; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_src1Type = _io_q2IQEnq_0_bits_T_213 | _io_q2IQEnq_0_bits_T_212; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_src2Type = _io_q2IQEnq_0_bits_T_208 | _io_q2IQEnq_0_bits_T_207; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_ctrl_immType = _io_q2IQEnq_0_bits_T_203 | _io_q2IQEnq_0_bits_T_202; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_valid = |_T_17 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 424:27]
+  assign io_q2IQEnq_0_bits_pc = _io_q2IQEnq_0_bits_T_333 | _io_q2IQEnq_0_bits_T_332; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_inst = _io_q2IQEnq_0_bits_T_328 | _io_q2IQEnq_0_bits_T_327; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_fuType = _io_q2IQEnq_0_bits_T_323 | _io_q2IQEnq_0_bits_T_322; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_aluOp = _io_q2IQEnq_0_bits_T_318 | _io_q2IQEnq_0_bits_T_317; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_bruOp = _io_q2IQEnq_0_bits_T_313 | _io_q2IQEnq_0_bits_T_312; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_lsuOp = _io_q2IQEnq_0_bits_T_308 | _io_q2IQEnq_0_bits_T_307; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_csrOp = _io_q2IQEnq_0_bits_T_303 | _io_q2IQEnq_0_bits_T_302; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_mulOp = _io_q2IQEnq_0_bits_T_298 | _io_q2IQEnq_0_bits_T_297; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_divOp = _io_q2IQEnq_0_bits_T_293 | _io_q2IQEnq_0_bits_T_292; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_src1Type = _io_q2IQEnq_0_bits_T_288 | _io_q2IQEnq_0_bits_T_287; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_src2Type = _io_q2IQEnq_0_bits_T_283 | _io_q2IQEnq_0_bits_T_282; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_ctrl_immType = _io_q2IQEnq_0_bits_T_278 | _io_q2IQEnq_0_bits_T_277; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_ctrl_rfWen = q2Final_0 & stgData_0_ctrl_rfWen | q2Final_1 & stgData_1_ctrl_rfWen | q2Final_2
      & stgData_2_ctrl_rfWen; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_ctrl_memRead = q2Final_0 & stgData_0_ctrl_memRead | q2Final_1 & stgData_1_ctrl_memRead |
@@ -1747,9 +2154,9 @@ module DispatchStage(
     q2Final_2 & stgData_2_ctrl_isJump; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_ctrl_isPriv = q2Final_0 & stgData_0_ctrl_isPriv | q2Final_1 & stgData_1_ctrl_isPriv |
     q2Final_2 & stgData_2_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_excpVec = _io_q2IQEnq_0_bits_T_163 | _io_q2IQEnq_0_bits_T_162; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_imm = _io_q2IQEnq_0_bits_T_158 | _io_q2IQEnq_0_bits_T_157; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_csrAddress = _io_q2IQEnq_0_bits_T_153 | _io_q2IQEnq_0_bits_T_152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_excpVec = _io_q2IQEnq_0_bits_T_238 | _io_q2IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_imm = _io_q2IQEnq_0_bits_T_233 | _io_q2IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_csrAddress = _io_q2IQEnq_0_bits_T_228 | _io_q2IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_pdInfo_valid = q2Final_0 & stgData_0_pdInfo_valid | q2Final_1 & stgData_1_pdInfo_valid |
     q2Final_2 & stgData_2_pdInfo_valid; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_pdInfo_isBr = q2Final_0 & stgData_0_pdInfo_isBr | q2Final_1 & stgData_1_pdInfo_isBr |
@@ -1762,7 +2169,29 @@ module DispatchStage(
     q2Final_2 & stgData_2_pdInfo_isCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_pdInfo_isRet = q2Final_0 & stgData_0_pdInfo_isRet | q2Final_1 & stgData_1_pdInfo_isRet |
     q2Final_2 & stgData_2_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q2IQEnq_0_bits_pdInfo_jumpTarget = _io_q2IQEnq_0_bits_T_118 | _io_q2IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_pdInfo_jumpTarget = _io_q2IQEnq_0_bits_T_193 | _io_q2IQEnq_0_bits_T_192; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_pc = _io_q2IQEnq_0_bits_T_188 | _io_q2IQEnq_0_bits_T_187; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_fallThrough = _io_q2IQEnq_0_bits_T_183 | _io_q2IQEnq_0_bits_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_taken = q2Final_0 & stgData_0_bpuInfo_taken | q2Final_1 & stgData_1_bpuInfo_taken |
+    q2Final_2 & stgData_2_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_target = _io_q2IQEnq_0_bits_T_173 | _io_q2IQEnq_0_bits_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_takenOffset = _io_q2IQEnq_0_bits_T_168 | _io_q2IQEnq_0_bits_T_167; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbHit = q2Final_0 & stgData_0_bpuInfo_meta_btbHit | q2Final_1 &
+    stgData_1_bpuInfo_meta_btbHit | q2Final_2 & stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJalr = q2Final_0 & stgData_0_bpuInfo_meta_btbIsJalr | q2Final_1 &
+    stgData_1_bpuInfo_meta_btbIsJalr | q2Final_2 & stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsJal = q2Final_0 & stgData_0_bpuInfo_meta_btbIsJal | q2Final_1 &
+    stgData_1_bpuInfo_meta_btbIsJal | q2Final_2 & stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsCall = q2Final_0 & stgData_0_bpuInfo_meta_btbIsCall | q2Final_1 &
+    stgData_1_bpuInfo_meta_btbIsCall | q2Final_2 & stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbIsRet = q2Final_0 & stgData_0_bpuInfo_meta_btbIsRet | q2Final_1 &
+    stgData_1_bpuInfo_meta_btbIsRet | q2Final_2 & stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_btbOffset = _io_q2IQEnq_0_bits_T_138 | _io_q2IQEnq_0_bits_T_137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_phtCounter = _io_q2IQEnq_0_bits_T_133 | _io_q2IQEnq_0_bits_T_132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_rasTop = _io_q2IQEnq_0_bits_T_128 | _io_q2IQEnq_0_bits_T_127; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_predTaken = q2Final_0 & stgData_0_bpuInfo_meta_predTaken | q2Final_1 &
+    stgData_1_bpuInfo_meta_predTaken | q2Final_2 & stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q2IQEnq_0_bits_bpuInfo_meta_predTarget = _io_q2IQEnq_0_bits_T_118 | _io_q2IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_ldst = _io_q2IQEnq_0_bits_T_113 | _io_q2IQEnq_0_bits_T_112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_lrs1 = _io_q2IQEnq_0_bits_T_108 | _io_q2IQEnq_0_bits_T_107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_lrs2 = _io_q2IQEnq_0_bits_T_103 | _io_q2IQEnq_0_bits_T_102; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1787,19 +2216,19 @@ module DispatchStage(
     q1Uops_u_u_2_prs1Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q2IQEnq_0_bits_prs2Busy = q2Final_0 & q1Uops_u_u_prs2Busy | q2Final_1 & q1Uops_u_u_1_prs2Busy | q2Final_2 &
     q1Uops_u_u_2_prs2Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_valid = |_T_20 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 434:27]
-  assign io_q3IQEnq_0_bits_pc = _io_q3IQEnq_0_bits_T_258 | _io_q3IQEnq_0_bits_T_257; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_inst = _io_q3IQEnq_0_bits_T_253 | _io_q3IQEnq_0_bits_T_252; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_fuType = _io_q3IQEnq_0_bits_T_248 | _io_q3IQEnq_0_bits_T_247; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_aluOp = _io_q3IQEnq_0_bits_T_243 | _io_q3IQEnq_0_bits_T_242; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_bruOp = _io_q3IQEnq_0_bits_T_238 | _io_q3IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_lsuOp = _io_q3IQEnq_0_bits_T_233 | _io_q3IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_csrOp = _io_q3IQEnq_0_bits_T_228 | _io_q3IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_mulOp = _io_q3IQEnq_0_bits_T_223 | _io_q3IQEnq_0_bits_T_222; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_divOp = _io_q3IQEnq_0_bits_T_218 | _io_q3IQEnq_0_bits_T_217; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_src1Type = _io_q3IQEnq_0_bits_T_213 | _io_q3IQEnq_0_bits_T_212; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_src2Type = _io_q3IQEnq_0_bits_T_208 | _io_q3IQEnq_0_bits_T_207; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_ctrl_immType = _io_q3IQEnq_0_bits_T_203 | _io_q3IQEnq_0_bits_T_202; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_valid = |_T_20 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 435:27]
+  assign io_q3IQEnq_0_bits_pc = _io_q3IQEnq_0_bits_T_333 | _io_q3IQEnq_0_bits_T_332; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_inst = _io_q3IQEnq_0_bits_T_328 | _io_q3IQEnq_0_bits_T_327; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_fuType = _io_q3IQEnq_0_bits_T_323 | _io_q3IQEnq_0_bits_T_322; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_aluOp = _io_q3IQEnq_0_bits_T_318 | _io_q3IQEnq_0_bits_T_317; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_bruOp = _io_q3IQEnq_0_bits_T_313 | _io_q3IQEnq_0_bits_T_312; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_lsuOp = _io_q3IQEnq_0_bits_T_308 | _io_q3IQEnq_0_bits_T_307; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_csrOp = _io_q3IQEnq_0_bits_T_303 | _io_q3IQEnq_0_bits_T_302; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_mulOp = _io_q3IQEnq_0_bits_T_298 | _io_q3IQEnq_0_bits_T_297; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_divOp = _io_q3IQEnq_0_bits_T_293 | _io_q3IQEnq_0_bits_T_292; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_src1Type = _io_q3IQEnq_0_bits_T_288 | _io_q3IQEnq_0_bits_T_287; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_src2Type = _io_q3IQEnq_0_bits_T_283 | _io_q3IQEnq_0_bits_T_282; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_ctrl_immType = _io_q3IQEnq_0_bits_T_278 | _io_q3IQEnq_0_bits_T_277; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_ctrl_rfWen = q3Final_0 & stgData_0_ctrl_rfWen | q3Final_1 & stgData_1_ctrl_rfWen | q3Final_2
      & stgData_2_ctrl_rfWen; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_ctrl_memRead = q3Final_0 & stgData_0_ctrl_memRead | q3Final_1 & stgData_1_ctrl_memRead |
@@ -1814,9 +2243,9 @@ module DispatchStage(
     q3Final_2 & stgData_2_ctrl_isJump; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_ctrl_isPriv = q3Final_0 & stgData_0_ctrl_isPriv | q3Final_1 & stgData_1_ctrl_isPriv |
     q3Final_2 & stgData_2_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_excpVec = _io_q3IQEnq_0_bits_T_163 | _io_q3IQEnq_0_bits_T_162; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_imm = _io_q3IQEnq_0_bits_T_158 | _io_q3IQEnq_0_bits_T_157; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_csrAddress = _io_q3IQEnq_0_bits_T_153 | _io_q3IQEnq_0_bits_T_152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_excpVec = _io_q3IQEnq_0_bits_T_238 | _io_q3IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_imm = _io_q3IQEnq_0_bits_T_233 | _io_q3IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_csrAddress = _io_q3IQEnq_0_bits_T_228 | _io_q3IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_pdInfo_valid = q3Final_0 & stgData_0_pdInfo_valid | q3Final_1 & stgData_1_pdInfo_valid |
     q3Final_2 & stgData_2_pdInfo_valid; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_pdInfo_isBr = q3Final_0 & stgData_0_pdInfo_isBr | q3Final_1 & stgData_1_pdInfo_isBr |
@@ -1829,7 +2258,29 @@ module DispatchStage(
     q3Final_2 & stgData_2_pdInfo_isCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_pdInfo_isRet = q3Final_0 & stgData_0_pdInfo_isRet | q3Final_1 & stgData_1_pdInfo_isRet |
     q3Final_2 & stgData_2_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q3IQEnq_0_bits_pdInfo_jumpTarget = _io_q3IQEnq_0_bits_T_118 | _io_q3IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_pdInfo_jumpTarget = _io_q3IQEnq_0_bits_T_193 | _io_q3IQEnq_0_bits_T_192; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_pc = _io_q3IQEnq_0_bits_T_188 | _io_q3IQEnq_0_bits_T_187; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_fallThrough = _io_q3IQEnq_0_bits_T_183 | _io_q3IQEnq_0_bits_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_taken = q3Final_0 & stgData_0_bpuInfo_taken | q3Final_1 & stgData_1_bpuInfo_taken |
+    q3Final_2 & stgData_2_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_target = _io_q3IQEnq_0_bits_T_173 | _io_q3IQEnq_0_bits_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_takenOffset = _io_q3IQEnq_0_bits_T_168 | _io_q3IQEnq_0_bits_T_167; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbHit = q3Final_0 & stgData_0_bpuInfo_meta_btbHit | q3Final_1 &
+    stgData_1_bpuInfo_meta_btbHit | q3Final_2 & stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJalr = q3Final_0 & stgData_0_bpuInfo_meta_btbIsJalr | q3Final_1 &
+    stgData_1_bpuInfo_meta_btbIsJalr | q3Final_2 & stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsJal = q3Final_0 & stgData_0_bpuInfo_meta_btbIsJal | q3Final_1 &
+    stgData_1_bpuInfo_meta_btbIsJal | q3Final_2 & stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsCall = q3Final_0 & stgData_0_bpuInfo_meta_btbIsCall | q3Final_1 &
+    stgData_1_bpuInfo_meta_btbIsCall | q3Final_2 & stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbIsRet = q3Final_0 & stgData_0_bpuInfo_meta_btbIsRet | q3Final_1 &
+    stgData_1_bpuInfo_meta_btbIsRet | q3Final_2 & stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_btbOffset = _io_q3IQEnq_0_bits_T_138 | _io_q3IQEnq_0_bits_T_137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_phtCounter = _io_q3IQEnq_0_bits_T_133 | _io_q3IQEnq_0_bits_T_132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_rasTop = _io_q3IQEnq_0_bits_T_128 | _io_q3IQEnq_0_bits_T_127; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_predTaken = q3Final_0 & stgData_0_bpuInfo_meta_predTaken | q3Final_1 &
+    stgData_1_bpuInfo_meta_predTaken | q3Final_2 & stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q3IQEnq_0_bits_bpuInfo_meta_predTarget = _io_q3IQEnq_0_bits_T_118 | _io_q3IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_ldst = _io_q3IQEnq_0_bits_T_113 | _io_q3IQEnq_0_bits_T_112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_lrs1 = _io_q3IQEnq_0_bits_T_108 | _io_q3IQEnq_0_bits_T_107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_lrs2 = _io_q3IQEnq_0_bits_T_103 | _io_q3IQEnq_0_bits_T_102; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1854,19 +2305,19 @@ module DispatchStage(
     q1Uops_u_u_2_prs1Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q3IQEnq_0_bits_prs2Busy = q3Final_0 & q1Uops_u_u_prs2Busy | q3Final_1 & q1Uops_u_u_1_prs2Busy | q3Final_2 &
     q1Uops_u_u_2_prs2Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_valid = _memDispatchedThisCycle_T_1 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 440:30]
-  assign io_q4IQEnq_0_bits_pc = _selectedMemInst_T_203 | _selectedMemInst_T_202; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_inst = _selectedMemInst_T_198 | _selectedMemInst_T_197; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_fuType = _selectedMemInst_T_193 | _selectedMemInst_T_192; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_aluOp = _selectedMemInst_T_188 | _selectedMemInst_T_187; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_bruOp = _selectedMemInst_T_183 | _selectedMemInst_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_lsuOp = _selectedMemInst_T_178 | _selectedMemInst_T_177; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_csrOp = _selectedMemInst_T_173 | _selectedMemInst_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_mulOp = _selectedMemInst_T_168 | _selectedMemInst_T_167; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_divOp = _selectedMemInst_T_163 | _selectedMemInst_T_162; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_src1Type = _selectedMemInst_T_158 | _selectedMemInst_T_157; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_src2Type = _selectedMemInst_T_153 | _selectedMemInst_T_152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_ctrl_immType = _selectedMemInst_T_148 | _selectedMemInst_T_147; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_valid = _memDispatchedThisCycle_T_1 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 441:30]
+  assign io_q4IQEnq_0_bits_pc = _selectedMemInst_T_278 | _selectedMemInst_T_277; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_inst = _selectedMemInst_T_273 | _selectedMemInst_T_272; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_fuType = _selectedMemInst_T_268 | _selectedMemInst_T_267; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_aluOp = _selectedMemInst_T_263 | _selectedMemInst_T_262; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_bruOp = _selectedMemInst_T_258 | _selectedMemInst_T_257; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_lsuOp = _selectedMemInst_T_253 | _selectedMemInst_T_252; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_csrOp = _selectedMemInst_T_248 | _selectedMemInst_T_247; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_mulOp = _selectedMemInst_T_243 | _selectedMemInst_T_242; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_divOp = _selectedMemInst_T_238 | _selectedMemInst_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_src1Type = _selectedMemInst_T_233 | _selectedMemInst_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_src2Type = _selectedMemInst_T_228 | _selectedMemInst_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_ctrl_immType = _selectedMemInst_T_223 | _selectedMemInst_T_222; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_ctrl_rfWen = _q4Cand_T_1 & stgData_0_ctrl_rfWen | q4Selected_1 & stgData_1_ctrl_rfWen |
     q4Selected_2 & stgData_2_ctrl_rfWen; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_ctrl_memRead = _q4Cand_T_1 & stgData_0_ctrl_memRead | q4Selected_1 & stgData_1_ctrl_memRead
@@ -1881,9 +2332,9 @@ module DispatchStage(
     q4Selected_2 & stgData_2_ctrl_isJump; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_ctrl_isPriv = _q4Cand_T_1 & stgData_0_ctrl_isPriv | q4Selected_1 & stgData_1_ctrl_isPriv |
     q4Selected_2 & stgData_2_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_excpVec = _selectedMemInst_T_108 | _selectedMemInst_T_107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_imm = _selectedMemInst_T_103 | _selectedMemInst_T_102; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_csrAddress = _selectedMemInst_T_98 | _selectedMemInst_T_97; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_excpVec = _selectedMemInst_T_183 | _selectedMemInst_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_imm = _selectedMemInst_T_178 | _selectedMemInst_T_177; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_csrAddress = _selectedMemInst_T_173 | _selectedMemInst_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_pdInfo_valid = _q4Cand_T_1 & stgData_0_pdInfo_valid | q4Selected_1 & stgData_1_pdInfo_valid
      | q4Selected_2 & stgData_2_pdInfo_valid; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_pdInfo_isBr = _q4Cand_T_1 & stgData_0_pdInfo_isBr | q4Selected_1 & stgData_1_pdInfo_isBr |
@@ -1896,7 +2347,29 @@ module DispatchStage(
     stgData_1_pdInfo_isCall | q4Selected_2 & stgData_2_pdInfo_isCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_pdInfo_isRet = _q4Cand_T_1 & stgData_0_pdInfo_isRet | q4Selected_1 & stgData_1_pdInfo_isRet
      | q4Selected_2 & stgData_2_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q4IQEnq_0_bits_pdInfo_jumpTarget = _selectedMemInst_T_63 | _selectedMemInst_T_62; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_pdInfo_jumpTarget = _selectedMemInst_T_138 | _selectedMemInst_T_137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_pc = _selectedMemInst_T_133 | _selectedMemInst_T_132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_fallThrough = _selectedMemInst_T_128 | _selectedMemInst_T_127; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_taken = _q4Cand_T_1 & stgData_0_bpuInfo_taken | q4Selected_1 &
+    stgData_1_bpuInfo_taken | q4Selected_2 & stgData_2_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_target = _selectedMemInst_T_118 | _selectedMemInst_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_takenOffset = _selectedMemInst_T_113 | _selectedMemInst_T_112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbHit = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbHit | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbHit | q4Selected_2 & stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJalr = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsJalr | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsJalr | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsJal = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsJal | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsJal | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsCall = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsCall | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsCall | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbIsRet = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsRet | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsRet | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_btbOffset = _selectedMemInst_T_83 | _selectedMemInst_T_82; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_phtCounter = _selectedMemInst_T_78 | _selectedMemInst_T_77; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_rasTop = _selectedMemInst_T_73 | _selectedMemInst_T_72; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_predTaken = _q4Cand_T_1 & stgData_0_bpuInfo_meta_predTaken | q4Selected_1 &
+    stgData_1_bpuInfo_meta_predTaken | q4Selected_2 & stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q4IQEnq_0_bits_bpuInfo_meta_predTarget = _selectedMemInst_T_63 | _selectedMemInst_T_62; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_ldst = _selectedMemInst_T_58 | _selectedMemInst_T_57; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_lrs1 = _selectedMemInst_T_53 | _selectedMemInst_T_52; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_lrs2 = _selectedMemInst_T_48 | _selectedMemInst_T_47; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -1929,19 +2402,19 @@ module DispatchStage(
      & q4Uops_2_prs2Busy; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_isSta = _q5Selected_T | _q5Selected_T_1 | _q5Selected_T_2; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q4IQEnq_0_bits_isStd = 1'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_valid = |_T_26 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 446:30]
-  assign io_q5IQEnq_0_bits_pc = _io_q5IQEnq_0_bits_T_258 | _io_q5IQEnq_0_bits_T_257; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_inst = _io_q5IQEnq_0_bits_T_253 | _io_q5IQEnq_0_bits_T_252; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_fuType = _io_q5IQEnq_0_bits_T_248 | _io_q5IQEnq_0_bits_T_247; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_aluOp = _io_q5IQEnq_0_bits_T_243 | _io_q5IQEnq_0_bits_T_242; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_bruOp = _io_q5IQEnq_0_bits_T_238 | _io_q5IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_lsuOp = _io_q5IQEnq_0_bits_T_233 | _io_q5IQEnq_0_bits_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_csrOp = _io_q5IQEnq_0_bits_T_228 | _io_q5IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_mulOp = _io_q5IQEnq_0_bits_T_223 | _io_q5IQEnq_0_bits_T_222; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_divOp = _io_q5IQEnq_0_bits_T_218 | _io_q5IQEnq_0_bits_T_217; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_src1Type = _io_q5IQEnq_0_bits_T_213 | _io_q5IQEnq_0_bits_T_212; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_src2Type = _io_q5IQEnq_0_bits_T_208 | _io_q5IQEnq_0_bits_T_207; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_ctrl_immType = _io_q5IQEnq_0_bits_T_203 | _io_q5IQEnq_0_bits_T_202; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_valid = |_T_26 & dispatchFire; // @[src/main/scala/backend/dispatch/DispatchStage.scala 447:30]
+  assign io_q5IQEnq_0_bits_pc = _io_q5IQEnq_0_bits_T_333 | _io_q5IQEnq_0_bits_T_332; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_inst = _io_q5IQEnq_0_bits_T_328 | _io_q5IQEnq_0_bits_T_327; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_fuType = _io_q5IQEnq_0_bits_T_323 | _io_q5IQEnq_0_bits_T_322; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_aluOp = _io_q5IQEnq_0_bits_T_318 | _io_q5IQEnq_0_bits_T_317; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_bruOp = _io_q5IQEnq_0_bits_T_313 | _io_q5IQEnq_0_bits_T_312; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_lsuOp = _io_q5IQEnq_0_bits_T_308 | _io_q5IQEnq_0_bits_T_307; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_csrOp = _io_q5IQEnq_0_bits_T_303 | _io_q5IQEnq_0_bits_T_302; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_mulOp = _io_q5IQEnq_0_bits_T_298 | _io_q5IQEnq_0_bits_T_297; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_divOp = _io_q5IQEnq_0_bits_T_293 | _io_q5IQEnq_0_bits_T_292; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_src1Type = _io_q5IQEnq_0_bits_T_288 | _io_q5IQEnq_0_bits_T_287; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_src2Type = _io_q5IQEnq_0_bits_T_283 | _io_q5IQEnq_0_bits_T_282; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_ctrl_immType = _io_q5IQEnq_0_bits_T_278 | _io_q5IQEnq_0_bits_T_277; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_ctrl_rfWen = q5Selected_0 & stgData_0_ctrl_rfWen | q5Selected_1 & stgData_1_ctrl_rfWen |
     q5Selected_2 & stgData_2_ctrl_rfWen; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_ctrl_memRead = q5Selected_0 & stgData_0_ctrl_memRead | q5Selected_1 & stgData_1_ctrl_memRead
@@ -1956,9 +2429,9 @@ module DispatchStage(
     q5Selected_2 & stgData_2_ctrl_isJump; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_ctrl_isPriv = q5Selected_0 & stgData_0_ctrl_isPriv | q5Selected_1 & stgData_1_ctrl_isPriv |
     q5Selected_2 & stgData_2_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_excpVec = _io_q5IQEnq_0_bits_T_163 | _io_q5IQEnq_0_bits_T_162; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_excpVec = _io_q5IQEnq_0_bits_T_238 | _io_q5IQEnq_0_bits_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_imm = 32'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_csrAddress = _io_q5IQEnq_0_bits_T_153 | _io_q5IQEnq_0_bits_T_152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_csrAddress = _io_q5IQEnq_0_bits_T_228 | _io_q5IQEnq_0_bits_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_pdInfo_valid = q5Selected_0 & stgData_0_pdInfo_valid | q5Selected_1 & stgData_1_pdInfo_valid
      | q5Selected_2 & stgData_2_pdInfo_valid; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_pdInfo_isBr = q5Selected_0 & stgData_0_pdInfo_isBr | q5Selected_1 & stgData_1_pdInfo_isBr |
@@ -1971,7 +2444,29 @@ module DispatchStage(
     stgData_1_pdInfo_isCall | q5Selected_2 & stgData_2_pdInfo_isCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_pdInfo_isRet = q5Selected_0 & stgData_0_pdInfo_isRet | q5Selected_1 & stgData_1_pdInfo_isRet
      | q5Selected_2 & stgData_2_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_q5IQEnq_0_bits_pdInfo_jumpTarget = _io_q5IQEnq_0_bits_T_118 | _io_q5IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_pdInfo_jumpTarget = _io_q5IQEnq_0_bits_T_193 | _io_q5IQEnq_0_bits_T_192; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_pc = _io_q5IQEnq_0_bits_T_188 | _io_q5IQEnq_0_bits_T_187; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_fallThrough = _io_q5IQEnq_0_bits_T_183 | _io_q5IQEnq_0_bits_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_taken = q5Selected_0 & stgData_0_bpuInfo_taken | q5Selected_1 &
+    stgData_1_bpuInfo_taken | q5Selected_2 & stgData_2_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_target = _io_q5IQEnq_0_bits_T_173 | _io_q5IQEnq_0_bits_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_takenOffset = _io_q5IQEnq_0_bits_T_168 | _io_q5IQEnq_0_bits_T_167; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbHit = q5Selected_0 & stgData_0_bpuInfo_meta_btbHit | q5Selected_1 &
+    stgData_1_bpuInfo_meta_btbHit | q5Selected_2 & stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJalr = q5Selected_0 & stgData_0_bpuInfo_meta_btbIsJalr | q5Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsJalr | q5Selected_2 & stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsJal = q5Selected_0 & stgData_0_bpuInfo_meta_btbIsJal | q5Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsJal | q5Selected_2 & stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsCall = q5Selected_0 & stgData_0_bpuInfo_meta_btbIsCall | q5Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsCall | q5Selected_2 & stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbIsRet = q5Selected_0 & stgData_0_bpuInfo_meta_btbIsRet | q5Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsRet | q5Selected_2 & stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_btbOffset = _io_q5IQEnq_0_bits_T_138 | _io_q5IQEnq_0_bits_T_137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_phtCounter = _io_q5IQEnq_0_bits_T_133 | _io_q5IQEnq_0_bits_T_132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_rasTop = _io_q5IQEnq_0_bits_T_128 | _io_q5IQEnq_0_bits_T_127; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_predTaken = q5Selected_0 & stgData_0_bpuInfo_meta_predTaken | q5Selected_1 &
+    stgData_1_bpuInfo_meta_predTaken | q5Selected_2 & stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_q5IQEnq_0_bits_bpuInfo_meta_predTarget = _io_q5IQEnq_0_bits_T_118 | _io_q5IQEnq_0_bits_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_ldst = _io_q5IQEnq_0_bits_T_113 | _io_q5IQEnq_0_bits_T_112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_lrs1 = _io_q5IQEnq_0_bits_T_108 | _io_q5IQEnq_0_bits_T_107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_q5IQEnq_0_bits_lrs2 = _io_q5IQEnq_0_bits_T_103 | _io_q5IQEnq_0_bits_T_102; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -2012,18 +2507,18 @@ module DispatchStage(
   assign io_lsEnq_req_bits_sqIdx_flag = sqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 265:29]
   assign io_lsEnq_req_bits_lqIdx_value = lqHeadPtr_value; // @[src/main/scala/backend/dispatch/DispatchStage.scala 264:29]
   assign io_lsEnq_req_bits_lqIdx_flag = lqHeadPtr_flag; // @[src/main/scala/backend/dispatch/DispatchStage.scala 264:29]
-  assign io_lsEnq_toLsqData_pc = _selectedMemInst_T_203 | _selectedMemInst_T_202; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_inst = _selectedMemInst_T_198 | _selectedMemInst_T_197; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_fuType = _selectedMemInst_T_193 | _selectedMemInst_T_192; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_aluOp = _selectedMemInst_T_188 | _selectedMemInst_T_187; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_bruOp = _selectedMemInst_T_183 | _selectedMemInst_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_lsuOp = _selectedMemInst_T_178 | _selectedMemInst_T_177; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_csrOp = _selectedMemInst_T_173 | _selectedMemInst_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_mulOp = _selectedMemInst_T_168 | _selectedMemInst_T_167; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_divOp = _selectedMemInst_T_163 | _selectedMemInst_T_162; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_src1Type = _selectedMemInst_T_158 | _selectedMemInst_T_157; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_src2Type = _selectedMemInst_T_153 | _selectedMemInst_T_152; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_ctrl_immType = _selectedMemInst_T_148 | _selectedMemInst_T_147; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_pc = _selectedMemInst_T_278 | _selectedMemInst_T_277; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_inst = _selectedMemInst_T_273 | _selectedMemInst_T_272; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_fuType = _selectedMemInst_T_268 | _selectedMemInst_T_267; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_aluOp = _selectedMemInst_T_263 | _selectedMemInst_T_262; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_bruOp = _selectedMemInst_T_258 | _selectedMemInst_T_257; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_lsuOp = _selectedMemInst_T_253 | _selectedMemInst_T_252; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_csrOp = _selectedMemInst_T_248 | _selectedMemInst_T_247; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_mulOp = _selectedMemInst_T_243 | _selectedMemInst_T_242; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_divOp = _selectedMemInst_T_238 | _selectedMemInst_T_237; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_src1Type = _selectedMemInst_T_233 | _selectedMemInst_T_232; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_src2Type = _selectedMemInst_T_228 | _selectedMemInst_T_227; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_ctrl_immType = _selectedMemInst_T_223 | _selectedMemInst_T_222; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_ctrl_rfWen = _q4Cand_T_1 & stgData_0_ctrl_rfWen | q4Selected_1 & stgData_1_ctrl_rfWen |
     q4Selected_2 & stgData_2_ctrl_rfWen; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_ctrl_memRead = _q4Cand_T_1 & stgData_0_ctrl_memRead | q4Selected_1 & stgData_1_ctrl_memRead
@@ -2038,9 +2533,9 @@ module DispatchStage(
     q4Selected_2 & stgData_2_ctrl_isJump; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_ctrl_isPriv = _q4Cand_T_1 & stgData_0_ctrl_isPriv | q4Selected_1 & stgData_1_ctrl_isPriv |
     q4Selected_2 & stgData_2_ctrl_isPriv; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_excpVec = _selectedMemInst_T_108 | _selectedMemInst_T_107; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_imm = _selectedMemInst_T_103 | _selectedMemInst_T_102; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_csrAddress = _selectedMemInst_T_98 | _selectedMemInst_T_97; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_excpVec = _selectedMemInst_T_183 | _selectedMemInst_T_182; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_imm = _selectedMemInst_T_178 | _selectedMemInst_T_177; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_csrAddress = _selectedMemInst_T_173 | _selectedMemInst_T_172; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_pdInfo_valid = _q4Cand_T_1 & stgData_0_pdInfo_valid | q4Selected_1 & stgData_1_pdInfo_valid
      | q4Selected_2 & stgData_2_pdInfo_valid; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_pdInfo_isBr = _q4Cand_T_1 & stgData_0_pdInfo_isBr | q4Selected_1 & stgData_1_pdInfo_isBr |
@@ -2053,7 +2548,29 @@ module DispatchStage(
     stgData_1_pdInfo_isCall | q4Selected_2 & stgData_2_pdInfo_isCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_pdInfo_isRet = _q4Cand_T_1 & stgData_0_pdInfo_isRet | q4Selected_1 & stgData_1_pdInfo_isRet
      | q4Selected_2 & stgData_2_pdInfo_isRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_lsEnq_toLsqData_pdInfo_jumpTarget = _selectedMemInst_T_63 | _selectedMemInst_T_62; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_pdInfo_jumpTarget = _selectedMemInst_T_138 | _selectedMemInst_T_137; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_pc = _selectedMemInst_T_133 | _selectedMemInst_T_132; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_fallThrough = _selectedMemInst_T_128 | _selectedMemInst_T_127; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_taken = _q4Cand_T_1 & stgData_0_bpuInfo_taken | q4Selected_1 &
+    stgData_1_bpuInfo_taken | q4Selected_2 & stgData_2_bpuInfo_taken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_target = _selectedMemInst_T_118 | _selectedMemInst_T_117; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_takenOffset = _selectedMemInst_T_113 | _selectedMemInst_T_112; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbHit = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbHit | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbHit | q4Selected_2 & stgData_2_bpuInfo_meta_btbHit; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsJalr = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsJalr | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsJalr | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsJalr; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsJal = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsJal | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsJal | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsJal; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsCall = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsCall | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsCall | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsCall; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbIsRet = _q4Cand_T_1 & stgData_0_bpuInfo_meta_btbIsRet | q4Selected_1 &
+    stgData_1_bpuInfo_meta_btbIsRet | q4Selected_2 & stgData_2_bpuInfo_meta_btbIsRet; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_btbOffset = _selectedMemInst_T_83 | _selectedMemInst_T_82; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_phtCounter = _selectedMemInst_T_78 | _selectedMemInst_T_77; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_rasTop = _selectedMemInst_T_73 | _selectedMemInst_T_72; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_predTaken = _q4Cand_T_1 & stgData_0_bpuInfo_meta_predTaken | q4Selected_1 &
+    stgData_1_bpuInfo_meta_predTaken | q4Selected_2 & stgData_2_bpuInfo_meta_predTaken; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
+  assign io_lsEnq_toLsqData_bpuInfo_meta_predTarget = _selectedMemInst_T_63 | _selectedMemInst_T_62; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_ldst = _selectedMemInst_T_58 | _selectedMemInst_T_57; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_lrs1 = _selectedMemInst_T_53 | _selectedMemInst_T_52; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_lrs2 = _selectedMemInst_T_48 | _selectedMemInst_T_47; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
@@ -2070,45 +2587,45 @@ module DispatchStage(
   assign io_lsEnq_toLsqData_robIdx_value = _selectedMemInst_T_8 | _selectedMemInst_T_7; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   assign io_lsEnq_toLsqData_robIdx_flag = _q4Cand_T_1 & stgData_0_robIdx_flag | q4Selected_1 & stgData_1_robIdx_flag |
     q4Selected_2 & stgData_2_robIdx_flag; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  assign io_robEnq_valid_0 = dispatchFire & needRob_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 457:41]
-  assign io_robEnq_valid_1 = dispatchFire & needRob_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 457:41]
-  assign io_robEnq_valid_2 = dispatchFire & needRob_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 457:41]
+  assign io_robEnq_valid_0 = dispatchFire & needRob_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 458:41]
+  assign io_robEnq_valid_1 = dispatchFire & needRob_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 458:41]
+  assign io_robEnq_valid_2 = dispatchFire & needRob_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 458:41]
   assign io_robEnq_valids_0 = laneValid_0 & ~robWritten_0; // @[src/main/scala/backend/dispatch/DispatchStage.scala 61:72]
   assign io_robEnq_valids_1 = laneValid_1 & ~robWritten_1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 61:72]
   assign io_robEnq_valids_2 = laneValid_2 & ~robWritten_2; // @[src/main/scala/backend/dispatch/DispatchStage.scala 61:72]
-  assign io_robEnq_bits_0_pc = stgData_0_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 459:32]
-  assign io_robEnq_bits_0_inst = stgData_0_inst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 460:32]
-  assign io_robEnq_bits_0_pdst = stgData_0_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 461:32]
-  assign io_robEnq_bits_0_oldPdst = stgData_0_oldPdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 462:32]
-  assign io_robEnq_bits_0_ldst = stgData_0_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 463:32]
-  assign io_robEnq_bits_0_rfWen = stgData_0_ctrl_rfWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 464:32]
-  assign io_robEnq_bits_0_memRead = stgData_0_ctrl_memRead; // @[src/main/scala/backend/dispatch/DispatchStage.scala 465:32]
-  assign io_robEnq_bits_0_memWrite = stgData_0_ctrl_memWrite; // @[src/main/scala/backend/dispatch/DispatchStage.scala 466:32]
-  assign io_robEnq_bits_0_csrWen = stgData_0_ctrl_csrWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 467:32]
-  assign io_robEnq_bits_0_excpVec = stgData_0_excpVec; // @[src/main/scala/backend/dispatch/DispatchStage.scala 469:32]
-  assign io_robEnq_bits_0_fuType = stgData_0_ctrl_fuType; // @[src/main/scala/backend/dispatch/DispatchStage.scala 468:32]
-  assign io_robEnq_bits_1_pc = stgData_1_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 459:32]
-  assign io_robEnq_bits_1_inst = stgData_1_inst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 460:32]
-  assign io_robEnq_bits_1_pdst = stgData_1_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 461:32]
-  assign io_robEnq_bits_1_oldPdst = stgData_1_oldPdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 462:32]
-  assign io_robEnq_bits_1_ldst = stgData_1_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 463:32]
-  assign io_robEnq_bits_1_rfWen = stgData_1_ctrl_rfWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 464:32]
-  assign io_robEnq_bits_1_memRead = stgData_1_ctrl_memRead; // @[src/main/scala/backend/dispatch/DispatchStage.scala 465:32]
-  assign io_robEnq_bits_1_memWrite = stgData_1_ctrl_memWrite; // @[src/main/scala/backend/dispatch/DispatchStage.scala 466:32]
-  assign io_robEnq_bits_1_csrWen = stgData_1_ctrl_csrWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 467:32]
-  assign io_robEnq_bits_1_excpVec = stgData_1_excpVec; // @[src/main/scala/backend/dispatch/DispatchStage.scala 469:32]
-  assign io_robEnq_bits_1_fuType = stgData_1_ctrl_fuType; // @[src/main/scala/backend/dispatch/DispatchStage.scala 468:32]
-  assign io_robEnq_bits_2_pc = stgData_2_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 459:32]
-  assign io_robEnq_bits_2_inst = stgData_2_inst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 460:32]
-  assign io_robEnq_bits_2_pdst = stgData_2_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 461:32]
-  assign io_robEnq_bits_2_oldPdst = stgData_2_oldPdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 462:32]
-  assign io_robEnq_bits_2_ldst = stgData_2_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 463:32]
-  assign io_robEnq_bits_2_rfWen = stgData_2_ctrl_rfWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 464:32]
-  assign io_robEnq_bits_2_memRead = stgData_2_ctrl_memRead; // @[src/main/scala/backend/dispatch/DispatchStage.scala 465:32]
-  assign io_robEnq_bits_2_memWrite = stgData_2_ctrl_memWrite; // @[src/main/scala/backend/dispatch/DispatchStage.scala 466:32]
-  assign io_robEnq_bits_2_csrWen = stgData_2_ctrl_csrWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 467:32]
-  assign io_robEnq_bits_2_excpVec = stgData_2_excpVec; // @[src/main/scala/backend/dispatch/DispatchStage.scala 469:32]
-  assign io_robEnq_bits_2_fuType = stgData_2_ctrl_fuType; // @[src/main/scala/backend/dispatch/DispatchStage.scala 468:32]
+  assign io_robEnq_bits_0_pc = stgData_0_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 460:32]
+  assign io_robEnq_bits_0_inst = stgData_0_inst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 461:32]
+  assign io_robEnq_bits_0_pdst = stgData_0_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 462:32]
+  assign io_robEnq_bits_0_oldPdst = stgData_0_oldPdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 463:32]
+  assign io_robEnq_bits_0_ldst = stgData_0_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 464:32]
+  assign io_robEnq_bits_0_rfWen = stgData_0_ctrl_rfWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 465:32]
+  assign io_robEnq_bits_0_memRead = stgData_0_ctrl_memRead; // @[src/main/scala/backend/dispatch/DispatchStage.scala 466:32]
+  assign io_robEnq_bits_0_memWrite = stgData_0_ctrl_memWrite; // @[src/main/scala/backend/dispatch/DispatchStage.scala 467:32]
+  assign io_robEnq_bits_0_csrWen = stgData_0_ctrl_csrWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 468:32]
+  assign io_robEnq_bits_0_excpVec = stgData_0_excpVec; // @[src/main/scala/backend/dispatch/DispatchStage.scala 470:32]
+  assign io_robEnq_bits_0_fuType = stgData_0_ctrl_fuType; // @[src/main/scala/backend/dispatch/DispatchStage.scala 469:32]
+  assign io_robEnq_bits_1_pc = stgData_1_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 460:32]
+  assign io_robEnq_bits_1_inst = stgData_1_inst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 461:32]
+  assign io_robEnq_bits_1_pdst = stgData_1_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 462:32]
+  assign io_robEnq_bits_1_oldPdst = stgData_1_oldPdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 463:32]
+  assign io_robEnq_bits_1_ldst = stgData_1_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 464:32]
+  assign io_robEnq_bits_1_rfWen = stgData_1_ctrl_rfWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 465:32]
+  assign io_robEnq_bits_1_memRead = stgData_1_ctrl_memRead; // @[src/main/scala/backend/dispatch/DispatchStage.scala 466:32]
+  assign io_robEnq_bits_1_memWrite = stgData_1_ctrl_memWrite; // @[src/main/scala/backend/dispatch/DispatchStage.scala 467:32]
+  assign io_robEnq_bits_1_csrWen = stgData_1_ctrl_csrWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 468:32]
+  assign io_robEnq_bits_1_excpVec = stgData_1_excpVec; // @[src/main/scala/backend/dispatch/DispatchStage.scala 470:32]
+  assign io_robEnq_bits_1_fuType = stgData_1_ctrl_fuType; // @[src/main/scala/backend/dispatch/DispatchStage.scala 469:32]
+  assign io_robEnq_bits_2_pc = stgData_2_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 460:32]
+  assign io_robEnq_bits_2_inst = stgData_2_inst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 461:32]
+  assign io_robEnq_bits_2_pdst = stgData_2_pdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 462:32]
+  assign io_robEnq_bits_2_oldPdst = stgData_2_oldPdst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 463:32]
+  assign io_robEnq_bits_2_ldst = stgData_2_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 464:32]
+  assign io_robEnq_bits_2_rfWen = stgData_2_ctrl_rfWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 465:32]
+  assign io_robEnq_bits_2_memRead = stgData_2_ctrl_memRead; // @[src/main/scala/backend/dispatch/DispatchStage.scala 466:32]
+  assign io_robEnq_bits_2_memWrite = stgData_2_ctrl_memWrite; // @[src/main/scala/backend/dispatch/DispatchStage.scala 467:32]
+  assign io_robEnq_bits_2_csrWen = stgData_2_ctrl_csrWen; // @[src/main/scala/backend/dispatch/DispatchStage.scala 468:32]
+  assign io_robEnq_bits_2_excpVec = stgData_2_excpVec; // @[src/main/scala/backend/dispatch/DispatchStage.scala 470:32]
+  assign io_robEnq_bits_2_fuType = stgData_2_ctrl_fuType; // @[src/main/scala/backend/dispatch/DispatchStage.scala 469:32]
   assign busyTable_clock = clock;
   assign busyTable_reset = reset;
   assign busyTable_io_readReq_0 = stgData_0_prs1; // @[src/main/scala/backend/dispatch/DispatchStage.scala 287:37]
@@ -2356,6 +2873,81 @@ module DispatchStage(
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
       if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_pc <= io_in_0_bits_bpuInfo_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_fallThrough <= io_in_0_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_taken <= io_in_0_bits_bpuInfo_taken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_target <= io_in_0_bits_bpuInfo_target; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_takenOffset <= io_in_0_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_btbHit <= io_in_0_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_btbIsJalr <= io_in_0_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_btbIsJal <= io_in_0_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_btbIsCall <= io_in_0_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_btbIsRet <= io_in_0_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_btbOffset <= io_in_0_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_phtCounter <= io_in_0_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_rasTop <= io_in_0_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_predTaken <= io_in_0_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_0_bpuInfo_meta_predTarget <= io_in_0_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
         stgData_0_ldst <= io_in_0_bits_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
       end
     end
@@ -2561,6 +3153,81 @@ module DispatchStage(
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
       if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_pc <= io_in_1_bits_bpuInfo_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_fallThrough <= io_in_1_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_taken <= io_in_1_bits_bpuInfo_taken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_target <= io_in_1_bits_bpuInfo_target; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_takenOffset <= io_in_1_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_btbHit <= io_in_1_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_btbIsJalr <= io_in_1_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_btbIsJal <= io_in_1_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_btbIsCall <= io_in_1_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_btbIsRet <= io_in_1_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_btbOffset <= io_in_1_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_phtCounter <= io_in_1_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_rasTop <= io_in_1_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_predTaken <= io_in_1_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_1_bpuInfo_meta_predTarget <= io_in_1_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
         stgData_1_ldst <= io_in_1_bits_ldst; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
       end
     end
@@ -2762,6 +3429,81 @@ module DispatchStage(
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
       if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
         stgData_2_pdInfo_jumpTarget <= io_in_2_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_pc <= io_in_2_bits_bpuInfo_pc; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_fallThrough <= io_in_2_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_taken <= io_in_2_bits_bpuInfo_taken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_target <= io_in_2_bits_bpuInfo_target; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_takenOffset <= io_in_2_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_btbHit <= io_in_2_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_btbIsJalr <= io_in_2_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_btbIsJal <= io_in_2_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_btbIsCall <= io_in_2_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_btbIsRet <= io_in_2_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_btbOffset <= io_in_2_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_phtCounter <= io_in_2_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_rasTop <= io_in_2_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_predTaken <= io_in_2_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
+      end
+    end
+    if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
+      if (inFire) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 233:22]
+        stgData_2_bpuInfo_meta_predTarget <= io_in_2_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/dispatch/DispatchStage.scala 238:21]
       end
     end
     if (!(io_redirect_valid)) begin // @[src/main/scala/backend/dispatch/DispatchStage.scala 227:39]
@@ -2974,201 +3716,291 @@ initial begin
   _RAND_37 = {1{`RANDOM}};
   stgData_0_pdInfo_jumpTarget = _RAND_37[31:0];
   _RAND_38 = {1{`RANDOM}};
-  stgData_0_ldst = _RAND_38[4:0];
+  stgData_0_bpuInfo_pc = _RAND_38[31:0];
   _RAND_39 = {1{`RANDOM}};
-  stgData_0_lrs1 = _RAND_39[4:0];
+  stgData_0_bpuInfo_fallThrough = _RAND_39[31:0];
   _RAND_40 = {1{`RANDOM}};
-  stgData_0_lrs2 = _RAND_40[4:0];
+  stgData_0_bpuInfo_taken = _RAND_40[0:0];
   _RAND_41 = {1{`RANDOM}};
-  stgData_0_pdst = _RAND_41[6:0];
+  stgData_0_bpuInfo_target = _RAND_41[31:0];
   _RAND_42 = {1{`RANDOM}};
-  stgData_0_prs1 = _RAND_42[6:0];
+  stgData_0_bpuInfo_takenOffset = _RAND_42[1:0];
   _RAND_43 = {1{`RANDOM}};
-  stgData_0_prs2 = _RAND_43[6:0];
+  stgData_0_bpuInfo_meta_btbHit = _RAND_43[0:0];
   _RAND_44 = {1{`RANDOM}};
-  stgData_0_oldPdst = _RAND_44[6:0];
+  stgData_0_bpuInfo_meta_btbIsJalr = _RAND_44[0:0];
   _RAND_45 = {1{`RANDOM}};
-  stgData_0_rs1Valid = _RAND_45[0:0];
+  stgData_0_bpuInfo_meta_btbIsJal = _RAND_45[0:0];
   _RAND_46 = {1{`RANDOM}};
-  stgData_0_rs2Valid = _RAND_46[0:0];
+  stgData_0_bpuInfo_meta_btbIsCall = _RAND_46[0:0];
   _RAND_47 = {1{`RANDOM}};
-  stgData_0_rdValid = _RAND_47[0:0];
+  stgData_0_bpuInfo_meta_btbIsRet = _RAND_47[0:0];
   _RAND_48 = {1{`RANDOM}};
-  stgData_0_robIdx_value = _RAND_48[5:0];
+  stgData_0_bpuInfo_meta_btbOffset = _RAND_48[1:0];
   _RAND_49 = {1{`RANDOM}};
-  stgData_0_robIdx_flag = _RAND_49[0:0];
+  stgData_0_bpuInfo_meta_phtCounter = _RAND_49[1:0];
   _RAND_50 = {1{`RANDOM}};
-  stgData_1_pc = _RAND_50[31:0];
+  stgData_0_bpuInfo_meta_rasTop = _RAND_50[2:0];
   _RAND_51 = {1{`RANDOM}};
-  stgData_1_inst = _RAND_51[31:0];
+  stgData_0_bpuInfo_meta_predTaken = _RAND_51[0:0];
   _RAND_52 = {1{`RANDOM}};
-  stgData_1_ctrl_fuType = _RAND_52[3:0];
+  stgData_0_bpuInfo_meta_predTarget = _RAND_52[31:0];
   _RAND_53 = {1{`RANDOM}};
-  stgData_1_ctrl_aluOp = _RAND_53[4:0];
+  stgData_0_ldst = _RAND_53[4:0];
   _RAND_54 = {1{`RANDOM}};
-  stgData_1_ctrl_bruOp = _RAND_54[3:0];
+  stgData_0_lrs1 = _RAND_54[4:0];
   _RAND_55 = {1{`RANDOM}};
-  stgData_1_ctrl_lsuOp = _RAND_55[3:0];
+  stgData_0_lrs2 = _RAND_55[4:0];
   _RAND_56 = {1{`RANDOM}};
-  stgData_1_ctrl_csrOp = _RAND_56[2:0];
+  stgData_0_pdst = _RAND_56[6:0];
   _RAND_57 = {1{`RANDOM}};
-  stgData_1_ctrl_mulOp = _RAND_57[2:0];
+  stgData_0_prs1 = _RAND_57[6:0];
   _RAND_58 = {1{`RANDOM}};
-  stgData_1_ctrl_divOp = _RAND_58[2:0];
+  stgData_0_prs2 = _RAND_58[6:0];
   _RAND_59 = {1{`RANDOM}};
-  stgData_1_ctrl_src1Type = _RAND_59[2:0];
+  stgData_0_oldPdst = _RAND_59[6:0];
   _RAND_60 = {1{`RANDOM}};
-  stgData_1_ctrl_src2Type = _RAND_60[2:0];
+  stgData_0_rs1Valid = _RAND_60[0:0];
   _RAND_61 = {1{`RANDOM}};
-  stgData_1_ctrl_immType = _RAND_61[3:0];
+  stgData_0_rs2Valid = _RAND_61[0:0];
   _RAND_62 = {1{`RANDOM}};
-  stgData_1_ctrl_rfWen = _RAND_62[0:0];
+  stgData_0_rdValid = _RAND_62[0:0];
   _RAND_63 = {1{`RANDOM}};
-  stgData_1_ctrl_memRead = _RAND_63[0:0];
+  stgData_0_robIdx_value = _RAND_63[5:0];
   _RAND_64 = {1{`RANDOM}};
-  stgData_1_ctrl_memWrite = _RAND_64[0:0];
+  stgData_0_robIdx_flag = _RAND_64[0:0];
   _RAND_65 = {1{`RANDOM}};
-  stgData_1_ctrl_csrWen = _RAND_65[0:0];
+  stgData_1_pc = _RAND_65[31:0];
   _RAND_66 = {1{`RANDOM}};
-  stgData_1_ctrl_isBranch = _RAND_66[0:0];
+  stgData_1_inst = _RAND_66[31:0];
   _RAND_67 = {1{`RANDOM}};
-  stgData_1_ctrl_isJump = _RAND_67[0:0];
+  stgData_1_ctrl_fuType = _RAND_67[3:0];
   _RAND_68 = {1{`RANDOM}};
-  stgData_1_ctrl_isPriv = _RAND_68[0:0];
+  stgData_1_ctrl_aluOp = _RAND_68[4:0];
   _RAND_69 = {1{`RANDOM}};
-  stgData_1_excpVec = _RAND_69[9:0];
+  stgData_1_ctrl_bruOp = _RAND_69[3:0];
   _RAND_70 = {1{`RANDOM}};
-  stgData_1_imm = _RAND_70[31:0];
+  stgData_1_ctrl_lsuOp = _RAND_70[3:0];
   _RAND_71 = {1{`RANDOM}};
-  stgData_1_csrAddress = _RAND_71[13:0];
+  stgData_1_ctrl_csrOp = _RAND_71[2:0];
   _RAND_72 = {1{`RANDOM}};
-  stgData_1_pdInfo_valid = _RAND_72[0:0];
+  stgData_1_ctrl_mulOp = _RAND_72[2:0];
   _RAND_73 = {1{`RANDOM}};
-  stgData_1_pdInfo_isBr = _RAND_73[0:0];
+  stgData_1_ctrl_divOp = _RAND_73[2:0];
   _RAND_74 = {1{`RANDOM}};
-  stgData_1_pdInfo_isJal = _RAND_74[0:0];
+  stgData_1_ctrl_src1Type = _RAND_74[2:0];
   _RAND_75 = {1{`RANDOM}};
-  stgData_1_pdInfo_isJalr = _RAND_75[0:0];
+  stgData_1_ctrl_src2Type = _RAND_75[2:0];
   _RAND_76 = {1{`RANDOM}};
-  stgData_1_pdInfo_isCall = _RAND_76[0:0];
+  stgData_1_ctrl_immType = _RAND_76[3:0];
   _RAND_77 = {1{`RANDOM}};
-  stgData_1_pdInfo_isRet = _RAND_77[0:0];
+  stgData_1_ctrl_rfWen = _RAND_77[0:0];
   _RAND_78 = {1{`RANDOM}};
-  stgData_1_pdInfo_jumpTarget = _RAND_78[31:0];
+  stgData_1_ctrl_memRead = _RAND_78[0:0];
   _RAND_79 = {1{`RANDOM}};
-  stgData_1_ldst = _RAND_79[4:0];
+  stgData_1_ctrl_memWrite = _RAND_79[0:0];
   _RAND_80 = {1{`RANDOM}};
-  stgData_1_lrs1 = _RAND_80[4:0];
+  stgData_1_ctrl_csrWen = _RAND_80[0:0];
   _RAND_81 = {1{`RANDOM}};
-  stgData_1_lrs2 = _RAND_81[4:0];
+  stgData_1_ctrl_isBranch = _RAND_81[0:0];
   _RAND_82 = {1{`RANDOM}};
-  stgData_1_pdst = _RAND_82[6:0];
+  stgData_1_ctrl_isJump = _RAND_82[0:0];
   _RAND_83 = {1{`RANDOM}};
-  stgData_1_prs1 = _RAND_83[6:0];
+  stgData_1_ctrl_isPriv = _RAND_83[0:0];
   _RAND_84 = {1{`RANDOM}};
-  stgData_1_prs2 = _RAND_84[6:0];
+  stgData_1_excpVec = _RAND_84[9:0];
   _RAND_85 = {1{`RANDOM}};
-  stgData_1_oldPdst = _RAND_85[6:0];
+  stgData_1_imm = _RAND_85[31:0];
   _RAND_86 = {1{`RANDOM}};
-  stgData_1_rs1Valid = _RAND_86[0:0];
+  stgData_1_csrAddress = _RAND_86[13:0];
   _RAND_87 = {1{`RANDOM}};
-  stgData_1_rs2Valid = _RAND_87[0:0];
+  stgData_1_pdInfo_valid = _RAND_87[0:0];
   _RAND_88 = {1{`RANDOM}};
-  stgData_1_rdValid = _RAND_88[0:0];
+  stgData_1_pdInfo_isBr = _RAND_88[0:0];
   _RAND_89 = {1{`RANDOM}};
-  stgData_1_robIdx_value = _RAND_89[5:0];
+  stgData_1_pdInfo_isJal = _RAND_89[0:0];
   _RAND_90 = {1{`RANDOM}};
-  stgData_1_robIdx_flag = _RAND_90[0:0];
+  stgData_1_pdInfo_isJalr = _RAND_90[0:0];
   _RAND_91 = {1{`RANDOM}};
-  stgData_2_pc = _RAND_91[31:0];
+  stgData_1_pdInfo_isCall = _RAND_91[0:0];
   _RAND_92 = {1{`RANDOM}};
-  stgData_2_inst = _RAND_92[31:0];
+  stgData_1_pdInfo_isRet = _RAND_92[0:0];
   _RAND_93 = {1{`RANDOM}};
-  stgData_2_ctrl_fuType = _RAND_93[3:0];
+  stgData_1_pdInfo_jumpTarget = _RAND_93[31:0];
   _RAND_94 = {1{`RANDOM}};
-  stgData_2_ctrl_aluOp = _RAND_94[4:0];
+  stgData_1_bpuInfo_pc = _RAND_94[31:0];
   _RAND_95 = {1{`RANDOM}};
-  stgData_2_ctrl_bruOp = _RAND_95[3:0];
+  stgData_1_bpuInfo_fallThrough = _RAND_95[31:0];
   _RAND_96 = {1{`RANDOM}};
-  stgData_2_ctrl_lsuOp = _RAND_96[3:0];
+  stgData_1_bpuInfo_taken = _RAND_96[0:0];
   _RAND_97 = {1{`RANDOM}};
-  stgData_2_ctrl_csrOp = _RAND_97[2:0];
+  stgData_1_bpuInfo_target = _RAND_97[31:0];
   _RAND_98 = {1{`RANDOM}};
-  stgData_2_ctrl_mulOp = _RAND_98[2:0];
+  stgData_1_bpuInfo_takenOffset = _RAND_98[1:0];
   _RAND_99 = {1{`RANDOM}};
-  stgData_2_ctrl_divOp = _RAND_99[2:0];
+  stgData_1_bpuInfo_meta_btbHit = _RAND_99[0:0];
   _RAND_100 = {1{`RANDOM}};
-  stgData_2_ctrl_src1Type = _RAND_100[2:0];
+  stgData_1_bpuInfo_meta_btbIsJalr = _RAND_100[0:0];
   _RAND_101 = {1{`RANDOM}};
-  stgData_2_ctrl_src2Type = _RAND_101[2:0];
+  stgData_1_bpuInfo_meta_btbIsJal = _RAND_101[0:0];
   _RAND_102 = {1{`RANDOM}};
-  stgData_2_ctrl_immType = _RAND_102[3:0];
+  stgData_1_bpuInfo_meta_btbIsCall = _RAND_102[0:0];
   _RAND_103 = {1{`RANDOM}};
-  stgData_2_ctrl_rfWen = _RAND_103[0:0];
+  stgData_1_bpuInfo_meta_btbIsRet = _RAND_103[0:0];
   _RAND_104 = {1{`RANDOM}};
-  stgData_2_ctrl_memRead = _RAND_104[0:0];
+  stgData_1_bpuInfo_meta_btbOffset = _RAND_104[1:0];
   _RAND_105 = {1{`RANDOM}};
-  stgData_2_ctrl_memWrite = _RAND_105[0:0];
+  stgData_1_bpuInfo_meta_phtCounter = _RAND_105[1:0];
   _RAND_106 = {1{`RANDOM}};
-  stgData_2_ctrl_csrWen = _RAND_106[0:0];
+  stgData_1_bpuInfo_meta_rasTop = _RAND_106[2:0];
   _RAND_107 = {1{`RANDOM}};
-  stgData_2_ctrl_isBranch = _RAND_107[0:0];
+  stgData_1_bpuInfo_meta_predTaken = _RAND_107[0:0];
   _RAND_108 = {1{`RANDOM}};
-  stgData_2_ctrl_isJump = _RAND_108[0:0];
+  stgData_1_bpuInfo_meta_predTarget = _RAND_108[31:0];
   _RAND_109 = {1{`RANDOM}};
-  stgData_2_ctrl_isPriv = _RAND_109[0:0];
+  stgData_1_ldst = _RAND_109[4:0];
   _RAND_110 = {1{`RANDOM}};
-  stgData_2_excpVec = _RAND_110[9:0];
+  stgData_1_lrs1 = _RAND_110[4:0];
   _RAND_111 = {1{`RANDOM}};
-  stgData_2_imm = _RAND_111[31:0];
+  stgData_1_lrs2 = _RAND_111[4:0];
   _RAND_112 = {1{`RANDOM}};
-  stgData_2_csrAddress = _RAND_112[13:0];
+  stgData_1_pdst = _RAND_112[6:0];
   _RAND_113 = {1{`RANDOM}};
-  stgData_2_pdInfo_valid = _RAND_113[0:0];
+  stgData_1_prs1 = _RAND_113[6:0];
   _RAND_114 = {1{`RANDOM}};
-  stgData_2_pdInfo_isBr = _RAND_114[0:0];
+  stgData_1_prs2 = _RAND_114[6:0];
   _RAND_115 = {1{`RANDOM}};
-  stgData_2_pdInfo_isJal = _RAND_115[0:0];
+  stgData_1_oldPdst = _RAND_115[6:0];
   _RAND_116 = {1{`RANDOM}};
-  stgData_2_pdInfo_isJalr = _RAND_116[0:0];
+  stgData_1_rs1Valid = _RAND_116[0:0];
   _RAND_117 = {1{`RANDOM}};
-  stgData_2_pdInfo_isCall = _RAND_117[0:0];
+  stgData_1_rs2Valid = _RAND_117[0:0];
   _RAND_118 = {1{`RANDOM}};
-  stgData_2_pdInfo_isRet = _RAND_118[0:0];
+  stgData_1_rdValid = _RAND_118[0:0];
   _RAND_119 = {1{`RANDOM}};
-  stgData_2_pdInfo_jumpTarget = _RAND_119[31:0];
+  stgData_1_robIdx_value = _RAND_119[5:0];
   _RAND_120 = {1{`RANDOM}};
-  stgData_2_ldst = _RAND_120[4:0];
+  stgData_1_robIdx_flag = _RAND_120[0:0];
   _RAND_121 = {1{`RANDOM}};
-  stgData_2_lrs1 = _RAND_121[4:0];
+  stgData_2_pc = _RAND_121[31:0];
   _RAND_122 = {1{`RANDOM}};
-  stgData_2_lrs2 = _RAND_122[4:0];
+  stgData_2_inst = _RAND_122[31:0];
   _RAND_123 = {1{`RANDOM}};
-  stgData_2_pdst = _RAND_123[6:0];
+  stgData_2_ctrl_fuType = _RAND_123[3:0];
   _RAND_124 = {1{`RANDOM}};
-  stgData_2_prs1 = _RAND_124[6:0];
+  stgData_2_ctrl_aluOp = _RAND_124[4:0];
   _RAND_125 = {1{`RANDOM}};
-  stgData_2_prs2 = _RAND_125[6:0];
+  stgData_2_ctrl_bruOp = _RAND_125[3:0];
   _RAND_126 = {1{`RANDOM}};
-  stgData_2_oldPdst = _RAND_126[6:0];
+  stgData_2_ctrl_lsuOp = _RAND_126[3:0];
   _RAND_127 = {1{`RANDOM}};
-  stgData_2_rs1Valid = _RAND_127[0:0];
+  stgData_2_ctrl_csrOp = _RAND_127[2:0];
   _RAND_128 = {1{`RANDOM}};
-  stgData_2_rs2Valid = _RAND_128[0:0];
+  stgData_2_ctrl_mulOp = _RAND_128[2:0];
   _RAND_129 = {1{`RANDOM}};
-  stgData_2_rdValid = _RAND_129[0:0];
+  stgData_2_ctrl_divOp = _RAND_129[2:0];
   _RAND_130 = {1{`RANDOM}};
-  stgData_2_robIdx_value = _RAND_130[5:0];
+  stgData_2_ctrl_src1Type = _RAND_130[2:0];
   _RAND_131 = {1{`RANDOM}};
-  stgData_2_robIdx_flag = _RAND_131[0:0];
+  stgData_2_ctrl_src2Type = _RAND_131[2:0];
   _RAND_132 = {1{`RANDOM}};
-  lqHeadPtr_value = _RAND_132[3:0];
+  stgData_2_ctrl_immType = _RAND_132[3:0];
   _RAND_133 = {1{`RANDOM}};
-  lqHeadPtr_flag = _RAND_133[0:0];
+  stgData_2_ctrl_rfWen = _RAND_133[0:0];
   _RAND_134 = {1{`RANDOM}};
-  sqHeadPtr_value = _RAND_134[3:0];
+  stgData_2_ctrl_memRead = _RAND_134[0:0];
   _RAND_135 = {1{`RANDOM}};
-  sqHeadPtr_flag = _RAND_135[0:0];
+  stgData_2_ctrl_memWrite = _RAND_135[0:0];
+  _RAND_136 = {1{`RANDOM}};
+  stgData_2_ctrl_csrWen = _RAND_136[0:0];
+  _RAND_137 = {1{`RANDOM}};
+  stgData_2_ctrl_isBranch = _RAND_137[0:0];
+  _RAND_138 = {1{`RANDOM}};
+  stgData_2_ctrl_isJump = _RAND_138[0:0];
+  _RAND_139 = {1{`RANDOM}};
+  stgData_2_ctrl_isPriv = _RAND_139[0:0];
+  _RAND_140 = {1{`RANDOM}};
+  stgData_2_excpVec = _RAND_140[9:0];
+  _RAND_141 = {1{`RANDOM}};
+  stgData_2_imm = _RAND_141[31:0];
+  _RAND_142 = {1{`RANDOM}};
+  stgData_2_csrAddress = _RAND_142[13:0];
+  _RAND_143 = {1{`RANDOM}};
+  stgData_2_pdInfo_valid = _RAND_143[0:0];
+  _RAND_144 = {1{`RANDOM}};
+  stgData_2_pdInfo_isBr = _RAND_144[0:0];
+  _RAND_145 = {1{`RANDOM}};
+  stgData_2_pdInfo_isJal = _RAND_145[0:0];
+  _RAND_146 = {1{`RANDOM}};
+  stgData_2_pdInfo_isJalr = _RAND_146[0:0];
+  _RAND_147 = {1{`RANDOM}};
+  stgData_2_pdInfo_isCall = _RAND_147[0:0];
+  _RAND_148 = {1{`RANDOM}};
+  stgData_2_pdInfo_isRet = _RAND_148[0:0];
+  _RAND_149 = {1{`RANDOM}};
+  stgData_2_pdInfo_jumpTarget = _RAND_149[31:0];
+  _RAND_150 = {1{`RANDOM}};
+  stgData_2_bpuInfo_pc = _RAND_150[31:0];
+  _RAND_151 = {1{`RANDOM}};
+  stgData_2_bpuInfo_fallThrough = _RAND_151[31:0];
+  _RAND_152 = {1{`RANDOM}};
+  stgData_2_bpuInfo_taken = _RAND_152[0:0];
+  _RAND_153 = {1{`RANDOM}};
+  stgData_2_bpuInfo_target = _RAND_153[31:0];
+  _RAND_154 = {1{`RANDOM}};
+  stgData_2_bpuInfo_takenOffset = _RAND_154[1:0];
+  _RAND_155 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_btbHit = _RAND_155[0:0];
+  _RAND_156 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_btbIsJalr = _RAND_156[0:0];
+  _RAND_157 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_btbIsJal = _RAND_157[0:0];
+  _RAND_158 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_btbIsCall = _RAND_158[0:0];
+  _RAND_159 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_btbIsRet = _RAND_159[0:0];
+  _RAND_160 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_btbOffset = _RAND_160[1:0];
+  _RAND_161 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_phtCounter = _RAND_161[1:0];
+  _RAND_162 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_rasTop = _RAND_162[2:0];
+  _RAND_163 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_predTaken = _RAND_163[0:0];
+  _RAND_164 = {1{`RANDOM}};
+  stgData_2_bpuInfo_meta_predTarget = _RAND_164[31:0];
+  _RAND_165 = {1{`RANDOM}};
+  stgData_2_ldst = _RAND_165[4:0];
+  _RAND_166 = {1{`RANDOM}};
+  stgData_2_lrs1 = _RAND_166[4:0];
+  _RAND_167 = {1{`RANDOM}};
+  stgData_2_lrs2 = _RAND_167[4:0];
+  _RAND_168 = {1{`RANDOM}};
+  stgData_2_pdst = _RAND_168[6:0];
+  _RAND_169 = {1{`RANDOM}};
+  stgData_2_prs1 = _RAND_169[6:0];
+  _RAND_170 = {1{`RANDOM}};
+  stgData_2_prs2 = _RAND_170[6:0];
+  _RAND_171 = {1{`RANDOM}};
+  stgData_2_oldPdst = _RAND_171[6:0];
+  _RAND_172 = {1{`RANDOM}};
+  stgData_2_rs1Valid = _RAND_172[0:0];
+  _RAND_173 = {1{`RANDOM}};
+  stgData_2_rs2Valid = _RAND_173[0:0];
+  _RAND_174 = {1{`RANDOM}};
+  stgData_2_rdValid = _RAND_174[0:0];
+  _RAND_175 = {1{`RANDOM}};
+  stgData_2_robIdx_value = _RAND_175[5:0];
+  _RAND_176 = {1{`RANDOM}};
+  stgData_2_robIdx_flag = _RAND_176[0:0];
+  _RAND_177 = {1{`RANDOM}};
+  lqHeadPtr_value = _RAND_177[3:0];
+  _RAND_178 = {1{`RANDOM}};
+  lqHeadPtr_flag = _RAND_178[0:0];
+  _RAND_179 = {1{`RANDOM}};
+  sqHeadPtr_value = _RAND_179[3:0];
+  _RAND_180 = {1{`RANDOM}};
+  sqHeadPtr_flag = _RAND_180[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

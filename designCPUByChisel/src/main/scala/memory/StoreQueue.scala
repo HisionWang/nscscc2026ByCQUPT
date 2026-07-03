@@ -208,6 +208,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
   //io.outResult.bits.redirect.bits.flushSelf := true.B
+  //io.outResult.bits.brMsRedirect := DontCare
  
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
@@ -262,6 +263,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.isPriv   := false.B
  
   wbUop.pdInfo := DontCare
+  wbUop.bpuInfo := DontCare
  
   when(io.outResult.fire) {
     entries(wbIdx).writtenBack := true.B

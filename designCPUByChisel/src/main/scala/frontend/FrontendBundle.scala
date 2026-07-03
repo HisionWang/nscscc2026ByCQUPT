@@ -135,6 +135,7 @@ class PredecodeResp(implicit p: Parameters) extends NSBundle {
   val pcs              = Vec(fetchWidth, UInt(32.W))
   val instvalids           = Vec(fetchWidth, Bool())
   val pdInfo           = Vec(fetchWidth, new PredecodeInfo)
+  val bpuInfo          = Vec(fetchWidth, new bpuInfoBundle)
   val enqMask          = Vec(fetchWidth, Bool())     // 入队掩码(经预译码校验修正)
   val frontendRedirect = new FrontendRedirect
   val bpuUpdate        = new BpuUpdateReq            // BPU快速更新请求
@@ -150,6 +151,7 @@ class CtrlFlowIO(implicit p: Parameters) extends NSBundle {
   val pc         = Output(UInt(32.W))
   // === 预译码结果 ===
   val pdInfo     = new PredecodeInfo
+  val bpuInfo    = new bpuInfoBundle
   // === 取指异常向量 (索引=LoongArch32 ECODE) ===
   val exception = new MmuTransError
   //  [0]  INT  - 中断（暂未使用，预留）

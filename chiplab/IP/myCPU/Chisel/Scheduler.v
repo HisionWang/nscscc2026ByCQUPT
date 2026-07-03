@@ -31,6 +31,21 @@ module Scheduler(
   input         io_q1IQEnq_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input         io_q1IQEnq_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [31:0] io_q1IQEnq_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q1IQEnq_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q1IQEnq_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q1IQEnq_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q1IQEnq_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q1IQEnq_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q1IQEnq_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [2:0]  io_q1IQEnq_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q1IQEnq_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q1IQEnq_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q1IQEnq_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q1IQEnq_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q1IQEnq_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -77,6 +92,21 @@ module Scheduler(
   input         io_q2IQEnq_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input         io_q2IQEnq_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [31:0] io_q2IQEnq_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q2IQEnq_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q2IQEnq_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q2IQEnq_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q2IQEnq_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q2IQEnq_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q2IQEnq_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [2:0]  io_q2IQEnq_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q2IQEnq_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q2IQEnq_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q2IQEnq_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q2IQEnq_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q2IQEnq_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -124,6 +154,21 @@ module Scheduler(
   input         io_q3IQEnq_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input         io_q3IQEnq_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [31:0] io_q3IQEnq_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q3IQEnq_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q3IQEnq_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q3IQEnq_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q3IQEnq_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q3IQEnq_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q3IQEnq_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [2:0]  io_q3IQEnq_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q3IQEnq_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q3IQEnq_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q3IQEnq_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q3IQEnq_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q3IQEnq_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -171,6 +216,21 @@ module Scheduler(
   input         io_q4IQEnq_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input         io_q4IQEnq_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [31:0] io_q4IQEnq_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q4IQEnq_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q4IQEnq_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q4IQEnq_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q4IQEnq_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q4IQEnq_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q4IQEnq_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [2:0]  io_q4IQEnq_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q4IQEnq_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q4IQEnq_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q4IQEnq_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q4IQEnq_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q4IQEnq_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -224,6 +284,21 @@ module Scheduler(
   input         io_q5IQEnq_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input         io_q5IQEnq_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [31:0] io_q5IQEnq_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q5IQEnq_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q5IQEnq_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q5IQEnq_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q5IQEnq_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q5IQEnq_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [1:0]  io_q5IQEnq_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [2:0]  io_q5IQEnq_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input         io_q5IQEnq_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  input  [31:0] io_q5IQEnq_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q5IQEnq_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q5IQEnq_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   input  [4:0]  io_q5IQEnq_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -278,6 +353,21 @@ module Scheduler(
   output        io_q1Issue_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output        io_q1Issue_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [31:0] io_q1Issue_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q1Issue_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q1Issue_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q1Issue_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q1Issue_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q1Issue_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q1Issue_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [2:0]  io_q1Issue_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q1Issue_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q1Issue_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q1Issue_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q1Issue_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q1Issue_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -332,6 +422,21 @@ module Scheduler(
   output        io_q2Issue_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output        io_q2Issue_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [31:0] io_q2Issue_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q2Issue_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q2Issue_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q2Issue_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q2Issue_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q2Issue_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q2Issue_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [2:0]  io_q2Issue_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q2Issue_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q2Issue_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q2Issue_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q2Issue_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q2Issue_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -380,6 +485,21 @@ module Scheduler(
   output        io_q3Issue_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output        io_q3Issue_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [31:0] io_q3Issue_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q3Issue_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q3Issue_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q3Issue_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q3Issue_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q3Issue_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q3Issue_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [2:0]  io_q3Issue_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q3Issue_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q3Issue_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q3Issue_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q3Issue_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q3Issue_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -434,6 +554,21 @@ module Scheduler(
   output        io_q4Issue_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output        io_q4Issue_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [31:0] io_q4Issue_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q4Issue_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q4Issue_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q4Issue_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q4Issue_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q4Issue_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q4Issue_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [2:0]  io_q4Issue_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q4Issue_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q4Issue_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q4Issue_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q4Issue_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q4Issue_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -488,6 +623,21 @@ module Scheduler(
   output        io_q5Issue_bits_pdInfo_isCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output        io_q5Issue_bits_pdInfo_isRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [31:0] io_q5Issue_bits_pdInfo_jumpTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q5Issue_bits_bpuInfo_pc, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q5Issue_bits_bpuInfo_fallThrough, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_taken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q5Issue_bits_bpuInfo_target, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q5Issue_bits_bpuInfo_takenOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_meta_btbHit, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_meta_btbIsJalr, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_meta_btbIsJal, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_meta_btbIsCall, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_meta_btbIsRet, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q5Issue_bits_bpuInfo_meta_btbOffset, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [1:0]  io_q5Issue_bits_bpuInfo_meta_phtCounter, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [2:0]  io_q5Issue_bits_bpuInfo_meta_rasTop, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output        io_q5Issue_bits_bpuInfo_meta_predTaken, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
+  output [31:0] io_q5Issue_bits_bpuInfo_meta_predTarget, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q5Issue_bits_ldst, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q5Issue_bits_lrs1, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
   output [4:0]  io_q5Issue_bits_lrs2, // @[src/main/scala/backend/scheduler/Scheduler.scala 21:14]
@@ -559,6 +709,21 @@ module Scheduler(
   wire  q1_io_enq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire  q1_io_enq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [31:0] q1_io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [1:0] q1_io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [1:0] q1_io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [1:0] q1_io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [2:0] q1_io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_enq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_enq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
@@ -613,6 +778,21 @@ module Scheduler(
   wire  q1_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire  q1_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [31:0] q1_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [1:0] q1_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [1:0] q1_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [1:0] q1_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [2:0] q1_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire  q1_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
+  wire [31:0] q1_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
   wire [4:0] q1_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 50:18]
@@ -679,6 +859,21 @@ module Scheduler(
   wire  q2_io_enq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire  q2_io_enq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [31:0] q2_io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [1:0] q2_io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [1:0] q2_io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [1:0] q2_io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [2:0] q2_io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [4:0] q2_io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [4:0] q2_io_enq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [4:0] q2_io_enq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
@@ -727,6 +922,21 @@ module Scheduler(
   wire  q2_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire  q2_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [31:0] q2_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [1:0] q2_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [1:0] q2_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [1:0] q2_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [2:0] q2_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire  q2_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
+  wire [31:0] q2_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [4:0] q2_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [4:0] q2_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
   wire [4:0] q2_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 51:18]
@@ -787,6 +997,21 @@ module Scheduler(
   wire  q3_io_enq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire  q3_io_enq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [31:0] q3_io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [1:0] q3_io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [1:0] q3_io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [1:0] q3_io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [2:0] q3_io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_enq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_enq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
@@ -841,6 +1066,21 @@ module Scheduler(
   wire  q3_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire  q3_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [31:0] q3_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [1:0] q3_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [1:0] q3_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [1:0] q3_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [2:0] q3_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire  q3_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
+  wire [31:0] q3_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
   wire [4:0] q3_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 52:18]
@@ -907,6 +1147,21 @@ module Scheduler(
   wire  q4_io_enq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire  q4_io_enq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [31:0] q4_io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [1:0] q4_io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [1:0] q4_io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [1:0] q4_io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [2:0] q4_io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_enq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_enq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
@@ -961,6 +1216,21 @@ module Scheduler(
   wire  q4_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire  q4_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [31:0] q4_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [1:0] q4_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [1:0] q4_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [1:0] q4_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [2:0] q4_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire  q4_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
+  wire [31:0] q4_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
   wire [4:0] q4_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 53:18]
@@ -1027,6 +1297,21 @@ module Scheduler(
   wire  q5_io_enq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire  q5_io_enq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [31:0] q5_io_enq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_enq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_enq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_enq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [1:0] q5_io_enq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [1:0] q5_io_enq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [1:0] q5_io_enq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [2:0] q5_io_enq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_enq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_enq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [4:0] q5_io_enq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [4:0] q5_io_enq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [4:0] q5_io_enq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
@@ -1081,6 +1366,21 @@ module Scheduler(
   wire  q5_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire  q5_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [31:0] q5_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [1:0] q5_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [1:0] q5_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [1:0] q5_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [2:0] q5_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire  q5_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
+  wire [31:0] q5_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [4:0] q5_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [4:0] q5_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
   wire [4:0] q5_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 54:18]
@@ -1148,6 +1448,21 @@ module Scheduler(
     .io_enq_bits_pdInfo_isCall(q1_io_enq_bits_pdInfo_isCall),
     .io_enq_bits_pdInfo_isRet(q1_io_enq_bits_pdInfo_isRet),
     .io_enq_bits_pdInfo_jumpTarget(q1_io_enq_bits_pdInfo_jumpTarget),
+    .io_enq_bits_bpuInfo_pc(q1_io_enq_bits_bpuInfo_pc),
+    .io_enq_bits_bpuInfo_fallThrough(q1_io_enq_bits_bpuInfo_fallThrough),
+    .io_enq_bits_bpuInfo_taken(q1_io_enq_bits_bpuInfo_taken),
+    .io_enq_bits_bpuInfo_target(q1_io_enq_bits_bpuInfo_target),
+    .io_enq_bits_bpuInfo_takenOffset(q1_io_enq_bits_bpuInfo_takenOffset),
+    .io_enq_bits_bpuInfo_meta_btbHit(q1_io_enq_bits_bpuInfo_meta_btbHit),
+    .io_enq_bits_bpuInfo_meta_btbIsJalr(q1_io_enq_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_bits_bpuInfo_meta_btbIsJal(q1_io_enq_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_bits_bpuInfo_meta_btbIsCall(q1_io_enq_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_bits_bpuInfo_meta_btbIsRet(q1_io_enq_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_bits_bpuInfo_meta_btbOffset(q1_io_enq_bits_bpuInfo_meta_btbOffset),
+    .io_enq_bits_bpuInfo_meta_phtCounter(q1_io_enq_bits_bpuInfo_meta_phtCounter),
+    .io_enq_bits_bpuInfo_meta_rasTop(q1_io_enq_bits_bpuInfo_meta_rasTop),
+    .io_enq_bits_bpuInfo_meta_predTaken(q1_io_enq_bits_bpuInfo_meta_predTaken),
+    .io_enq_bits_bpuInfo_meta_predTarget(q1_io_enq_bits_bpuInfo_meta_predTarget),
     .io_enq_bits_ldst(q1_io_enq_bits_ldst),
     .io_enq_bits_lrs1(q1_io_enq_bits_lrs1),
     .io_enq_bits_lrs2(q1_io_enq_bits_lrs2),
@@ -1202,6 +1517,21 @@ module Scheduler(
     .io_issue_bits_pdInfo_isCall(q1_io_issue_bits_pdInfo_isCall),
     .io_issue_bits_pdInfo_isRet(q1_io_issue_bits_pdInfo_isRet),
     .io_issue_bits_pdInfo_jumpTarget(q1_io_issue_bits_pdInfo_jumpTarget),
+    .io_issue_bits_bpuInfo_pc(q1_io_issue_bits_bpuInfo_pc),
+    .io_issue_bits_bpuInfo_fallThrough(q1_io_issue_bits_bpuInfo_fallThrough),
+    .io_issue_bits_bpuInfo_taken(q1_io_issue_bits_bpuInfo_taken),
+    .io_issue_bits_bpuInfo_target(q1_io_issue_bits_bpuInfo_target),
+    .io_issue_bits_bpuInfo_takenOffset(q1_io_issue_bits_bpuInfo_takenOffset),
+    .io_issue_bits_bpuInfo_meta_btbHit(q1_io_issue_bits_bpuInfo_meta_btbHit),
+    .io_issue_bits_bpuInfo_meta_btbIsJalr(q1_io_issue_bits_bpuInfo_meta_btbIsJalr),
+    .io_issue_bits_bpuInfo_meta_btbIsJal(q1_io_issue_bits_bpuInfo_meta_btbIsJal),
+    .io_issue_bits_bpuInfo_meta_btbIsCall(q1_io_issue_bits_bpuInfo_meta_btbIsCall),
+    .io_issue_bits_bpuInfo_meta_btbIsRet(q1_io_issue_bits_bpuInfo_meta_btbIsRet),
+    .io_issue_bits_bpuInfo_meta_btbOffset(q1_io_issue_bits_bpuInfo_meta_btbOffset),
+    .io_issue_bits_bpuInfo_meta_phtCounter(q1_io_issue_bits_bpuInfo_meta_phtCounter),
+    .io_issue_bits_bpuInfo_meta_rasTop(q1_io_issue_bits_bpuInfo_meta_rasTop),
+    .io_issue_bits_bpuInfo_meta_predTaken(q1_io_issue_bits_bpuInfo_meta_predTaken),
+    .io_issue_bits_bpuInfo_meta_predTarget(q1_io_issue_bits_bpuInfo_meta_predTarget),
     .io_issue_bits_ldst(q1_io_issue_bits_ldst),
     .io_issue_bits_lrs1(q1_io_issue_bits_lrs1),
     .io_issue_bits_lrs2(q1_io_issue_bits_lrs2),
@@ -1270,6 +1600,21 @@ module Scheduler(
     .io_enq_bits_pdInfo_isCall(q2_io_enq_bits_pdInfo_isCall),
     .io_enq_bits_pdInfo_isRet(q2_io_enq_bits_pdInfo_isRet),
     .io_enq_bits_pdInfo_jumpTarget(q2_io_enq_bits_pdInfo_jumpTarget),
+    .io_enq_bits_bpuInfo_pc(q2_io_enq_bits_bpuInfo_pc),
+    .io_enq_bits_bpuInfo_fallThrough(q2_io_enq_bits_bpuInfo_fallThrough),
+    .io_enq_bits_bpuInfo_taken(q2_io_enq_bits_bpuInfo_taken),
+    .io_enq_bits_bpuInfo_target(q2_io_enq_bits_bpuInfo_target),
+    .io_enq_bits_bpuInfo_takenOffset(q2_io_enq_bits_bpuInfo_takenOffset),
+    .io_enq_bits_bpuInfo_meta_btbHit(q2_io_enq_bits_bpuInfo_meta_btbHit),
+    .io_enq_bits_bpuInfo_meta_btbIsJalr(q2_io_enq_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_bits_bpuInfo_meta_btbIsJal(q2_io_enq_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_bits_bpuInfo_meta_btbIsCall(q2_io_enq_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_bits_bpuInfo_meta_btbIsRet(q2_io_enq_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_bits_bpuInfo_meta_btbOffset(q2_io_enq_bits_bpuInfo_meta_btbOffset),
+    .io_enq_bits_bpuInfo_meta_phtCounter(q2_io_enq_bits_bpuInfo_meta_phtCounter),
+    .io_enq_bits_bpuInfo_meta_rasTop(q2_io_enq_bits_bpuInfo_meta_rasTop),
+    .io_enq_bits_bpuInfo_meta_predTaken(q2_io_enq_bits_bpuInfo_meta_predTaken),
+    .io_enq_bits_bpuInfo_meta_predTarget(q2_io_enq_bits_bpuInfo_meta_predTarget),
     .io_enq_bits_ldst(q2_io_enq_bits_ldst),
     .io_enq_bits_lrs1(q2_io_enq_bits_lrs1),
     .io_enq_bits_lrs2(q2_io_enq_bits_lrs2),
@@ -1318,6 +1663,21 @@ module Scheduler(
     .io_issue_bits_pdInfo_isCall(q2_io_issue_bits_pdInfo_isCall),
     .io_issue_bits_pdInfo_isRet(q2_io_issue_bits_pdInfo_isRet),
     .io_issue_bits_pdInfo_jumpTarget(q2_io_issue_bits_pdInfo_jumpTarget),
+    .io_issue_bits_bpuInfo_pc(q2_io_issue_bits_bpuInfo_pc),
+    .io_issue_bits_bpuInfo_fallThrough(q2_io_issue_bits_bpuInfo_fallThrough),
+    .io_issue_bits_bpuInfo_taken(q2_io_issue_bits_bpuInfo_taken),
+    .io_issue_bits_bpuInfo_target(q2_io_issue_bits_bpuInfo_target),
+    .io_issue_bits_bpuInfo_takenOffset(q2_io_issue_bits_bpuInfo_takenOffset),
+    .io_issue_bits_bpuInfo_meta_btbHit(q2_io_issue_bits_bpuInfo_meta_btbHit),
+    .io_issue_bits_bpuInfo_meta_btbIsJalr(q2_io_issue_bits_bpuInfo_meta_btbIsJalr),
+    .io_issue_bits_bpuInfo_meta_btbIsJal(q2_io_issue_bits_bpuInfo_meta_btbIsJal),
+    .io_issue_bits_bpuInfo_meta_btbIsCall(q2_io_issue_bits_bpuInfo_meta_btbIsCall),
+    .io_issue_bits_bpuInfo_meta_btbIsRet(q2_io_issue_bits_bpuInfo_meta_btbIsRet),
+    .io_issue_bits_bpuInfo_meta_btbOffset(q2_io_issue_bits_bpuInfo_meta_btbOffset),
+    .io_issue_bits_bpuInfo_meta_phtCounter(q2_io_issue_bits_bpuInfo_meta_phtCounter),
+    .io_issue_bits_bpuInfo_meta_rasTop(q2_io_issue_bits_bpuInfo_meta_rasTop),
+    .io_issue_bits_bpuInfo_meta_predTaken(q2_io_issue_bits_bpuInfo_meta_predTaken),
+    .io_issue_bits_bpuInfo_meta_predTarget(q2_io_issue_bits_bpuInfo_meta_predTarget),
     .io_issue_bits_ldst(q2_io_issue_bits_ldst),
     .io_issue_bits_lrs1(q2_io_issue_bits_lrs1),
     .io_issue_bits_lrs2(q2_io_issue_bits_lrs2),
@@ -1380,6 +1740,21 @@ module Scheduler(
     .io_enq_bits_pdInfo_isCall(q3_io_enq_bits_pdInfo_isCall),
     .io_enq_bits_pdInfo_isRet(q3_io_enq_bits_pdInfo_isRet),
     .io_enq_bits_pdInfo_jumpTarget(q3_io_enq_bits_pdInfo_jumpTarget),
+    .io_enq_bits_bpuInfo_pc(q3_io_enq_bits_bpuInfo_pc),
+    .io_enq_bits_bpuInfo_fallThrough(q3_io_enq_bits_bpuInfo_fallThrough),
+    .io_enq_bits_bpuInfo_taken(q3_io_enq_bits_bpuInfo_taken),
+    .io_enq_bits_bpuInfo_target(q3_io_enq_bits_bpuInfo_target),
+    .io_enq_bits_bpuInfo_takenOffset(q3_io_enq_bits_bpuInfo_takenOffset),
+    .io_enq_bits_bpuInfo_meta_btbHit(q3_io_enq_bits_bpuInfo_meta_btbHit),
+    .io_enq_bits_bpuInfo_meta_btbIsJalr(q3_io_enq_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_bits_bpuInfo_meta_btbIsJal(q3_io_enq_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_bits_bpuInfo_meta_btbIsCall(q3_io_enq_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_bits_bpuInfo_meta_btbIsRet(q3_io_enq_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_bits_bpuInfo_meta_btbOffset(q3_io_enq_bits_bpuInfo_meta_btbOffset),
+    .io_enq_bits_bpuInfo_meta_phtCounter(q3_io_enq_bits_bpuInfo_meta_phtCounter),
+    .io_enq_bits_bpuInfo_meta_rasTop(q3_io_enq_bits_bpuInfo_meta_rasTop),
+    .io_enq_bits_bpuInfo_meta_predTaken(q3_io_enq_bits_bpuInfo_meta_predTaken),
+    .io_enq_bits_bpuInfo_meta_predTarget(q3_io_enq_bits_bpuInfo_meta_predTarget),
     .io_enq_bits_ldst(q3_io_enq_bits_ldst),
     .io_enq_bits_lrs1(q3_io_enq_bits_lrs1),
     .io_enq_bits_lrs2(q3_io_enq_bits_lrs2),
@@ -1434,6 +1809,21 @@ module Scheduler(
     .io_issue_bits_pdInfo_isCall(q3_io_issue_bits_pdInfo_isCall),
     .io_issue_bits_pdInfo_isRet(q3_io_issue_bits_pdInfo_isRet),
     .io_issue_bits_pdInfo_jumpTarget(q3_io_issue_bits_pdInfo_jumpTarget),
+    .io_issue_bits_bpuInfo_pc(q3_io_issue_bits_bpuInfo_pc),
+    .io_issue_bits_bpuInfo_fallThrough(q3_io_issue_bits_bpuInfo_fallThrough),
+    .io_issue_bits_bpuInfo_taken(q3_io_issue_bits_bpuInfo_taken),
+    .io_issue_bits_bpuInfo_target(q3_io_issue_bits_bpuInfo_target),
+    .io_issue_bits_bpuInfo_takenOffset(q3_io_issue_bits_bpuInfo_takenOffset),
+    .io_issue_bits_bpuInfo_meta_btbHit(q3_io_issue_bits_bpuInfo_meta_btbHit),
+    .io_issue_bits_bpuInfo_meta_btbIsJalr(q3_io_issue_bits_bpuInfo_meta_btbIsJalr),
+    .io_issue_bits_bpuInfo_meta_btbIsJal(q3_io_issue_bits_bpuInfo_meta_btbIsJal),
+    .io_issue_bits_bpuInfo_meta_btbIsCall(q3_io_issue_bits_bpuInfo_meta_btbIsCall),
+    .io_issue_bits_bpuInfo_meta_btbIsRet(q3_io_issue_bits_bpuInfo_meta_btbIsRet),
+    .io_issue_bits_bpuInfo_meta_btbOffset(q3_io_issue_bits_bpuInfo_meta_btbOffset),
+    .io_issue_bits_bpuInfo_meta_phtCounter(q3_io_issue_bits_bpuInfo_meta_phtCounter),
+    .io_issue_bits_bpuInfo_meta_rasTop(q3_io_issue_bits_bpuInfo_meta_rasTop),
+    .io_issue_bits_bpuInfo_meta_predTaken(q3_io_issue_bits_bpuInfo_meta_predTaken),
+    .io_issue_bits_bpuInfo_meta_predTarget(q3_io_issue_bits_bpuInfo_meta_predTarget),
     .io_issue_bits_ldst(q3_io_issue_bits_ldst),
     .io_issue_bits_lrs1(q3_io_issue_bits_lrs1),
     .io_issue_bits_lrs2(q3_io_issue_bits_lrs2),
@@ -1502,6 +1892,21 @@ module Scheduler(
     .io_enq_bits_pdInfo_isCall(q4_io_enq_bits_pdInfo_isCall),
     .io_enq_bits_pdInfo_isRet(q4_io_enq_bits_pdInfo_isRet),
     .io_enq_bits_pdInfo_jumpTarget(q4_io_enq_bits_pdInfo_jumpTarget),
+    .io_enq_bits_bpuInfo_pc(q4_io_enq_bits_bpuInfo_pc),
+    .io_enq_bits_bpuInfo_fallThrough(q4_io_enq_bits_bpuInfo_fallThrough),
+    .io_enq_bits_bpuInfo_taken(q4_io_enq_bits_bpuInfo_taken),
+    .io_enq_bits_bpuInfo_target(q4_io_enq_bits_bpuInfo_target),
+    .io_enq_bits_bpuInfo_takenOffset(q4_io_enq_bits_bpuInfo_takenOffset),
+    .io_enq_bits_bpuInfo_meta_btbHit(q4_io_enq_bits_bpuInfo_meta_btbHit),
+    .io_enq_bits_bpuInfo_meta_btbIsJalr(q4_io_enq_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_bits_bpuInfo_meta_btbIsJal(q4_io_enq_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_bits_bpuInfo_meta_btbIsCall(q4_io_enq_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_bits_bpuInfo_meta_btbIsRet(q4_io_enq_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_bits_bpuInfo_meta_btbOffset(q4_io_enq_bits_bpuInfo_meta_btbOffset),
+    .io_enq_bits_bpuInfo_meta_phtCounter(q4_io_enq_bits_bpuInfo_meta_phtCounter),
+    .io_enq_bits_bpuInfo_meta_rasTop(q4_io_enq_bits_bpuInfo_meta_rasTop),
+    .io_enq_bits_bpuInfo_meta_predTaken(q4_io_enq_bits_bpuInfo_meta_predTaken),
+    .io_enq_bits_bpuInfo_meta_predTarget(q4_io_enq_bits_bpuInfo_meta_predTarget),
     .io_enq_bits_ldst(q4_io_enq_bits_ldst),
     .io_enq_bits_lrs1(q4_io_enq_bits_lrs1),
     .io_enq_bits_lrs2(q4_io_enq_bits_lrs2),
@@ -1556,6 +1961,21 @@ module Scheduler(
     .io_issue_bits_pdInfo_isCall(q4_io_issue_bits_pdInfo_isCall),
     .io_issue_bits_pdInfo_isRet(q4_io_issue_bits_pdInfo_isRet),
     .io_issue_bits_pdInfo_jumpTarget(q4_io_issue_bits_pdInfo_jumpTarget),
+    .io_issue_bits_bpuInfo_pc(q4_io_issue_bits_bpuInfo_pc),
+    .io_issue_bits_bpuInfo_fallThrough(q4_io_issue_bits_bpuInfo_fallThrough),
+    .io_issue_bits_bpuInfo_taken(q4_io_issue_bits_bpuInfo_taken),
+    .io_issue_bits_bpuInfo_target(q4_io_issue_bits_bpuInfo_target),
+    .io_issue_bits_bpuInfo_takenOffset(q4_io_issue_bits_bpuInfo_takenOffset),
+    .io_issue_bits_bpuInfo_meta_btbHit(q4_io_issue_bits_bpuInfo_meta_btbHit),
+    .io_issue_bits_bpuInfo_meta_btbIsJalr(q4_io_issue_bits_bpuInfo_meta_btbIsJalr),
+    .io_issue_bits_bpuInfo_meta_btbIsJal(q4_io_issue_bits_bpuInfo_meta_btbIsJal),
+    .io_issue_bits_bpuInfo_meta_btbIsCall(q4_io_issue_bits_bpuInfo_meta_btbIsCall),
+    .io_issue_bits_bpuInfo_meta_btbIsRet(q4_io_issue_bits_bpuInfo_meta_btbIsRet),
+    .io_issue_bits_bpuInfo_meta_btbOffset(q4_io_issue_bits_bpuInfo_meta_btbOffset),
+    .io_issue_bits_bpuInfo_meta_phtCounter(q4_io_issue_bits_bpuInfo_meta_phtCounter),
+    .io_issue_bits_bpuInfo_meta_rasTop(q4_io_issue_bits_bpuInfo_meta_rasTop),
+    .io_issue_bits_bpuInfo_meta_predTaken(q4_io_issue_bits_bpuInfo_meta_predTaken),
+    .io_issue_bits_bpuInfo_meta_predTarget(q4_io_issue_bits_bpuInfo_meta_predTarget),
     .io_issue_bits_ldst(q4_io_issue_bits_ldst),
     .io_issue_bits_lrs1(q4_io_issue_bits_lrs1),
     .io_issue_bits_lrs2(q4_io_issue_bits_lrs2),
@@ -1624,6 +2044,21 @@ module Scheduler(
     .io_enq_bits_pdInfo_isCall(q5_io_enq_bits_pdInfo_isCall),
     .io_enq_bits_pdInfo_isRet(q5_io_enq_bits_pdInfo_isRet),
     .io_enq_bits_pdInfo_jumpTarget(q5_io_enq_bits_pdInfo_jumpTarget),
+    .io_enq_bits_bpuInfo_pc(q5_io_enq_bits_bpuInfo_pc),
+    .io_enq_bits_bpuInfo_fallThrough(q5_io_enq_bits_bpuInfo_fallThrough),
+    .io_enq_bits_bpuInfo_taken(q5_io_enq_bits_bpuInfo_taken),
+    .io_enq_bits_bpuInfo_target(q5_io_enq_bits_bpuInfo_target),
+    .io_enq_bits_bpuInfo_takenOffset(q5_io_enq_bits_bpuInfo_takenOffset),
+    .io_enq_bits_bpuInfo_meta_btbHit(q5_io_enq_bits_bpuInfo_meta_btbHit),
+    .io_enq_bits_bpuInfo_meta_btbIsJalr(q5_io_enq_bits_bpuInfo_meta_btbIsJalr),
+    .io_enq_bits_bpuInfo_meta_btbIsJal(q5_io_enq_bits_bpuInfo_meta_btbIsJal),
+    .io_enq_bits_bpuInfo_meta_btbIsCall(q5_io_enq_bits_bpuInfo_meta_btbIsCall),
+    .io_enq_bits_bpuInfo_meta_btbIsRet(q5_io_enq_bits_bpuInfo_meta_btbIsRet),
+    .io_enq_bits_bpuInfo_meta_btbOffset(q5_io_enq_bits_bpuInfo_meta_btbOffset),
+    .io_enq_bits_bpuInfo_meta_phtCounter(q5_io_enq_bits_bpuInfo_meta_phtCounter),
+    .io_enq_bits_bpuInfo_meta_rasTop(q5_io_enq_bits_bpuInfo_meta_rasTop),
+    .io_enq_bits_bpuInfo_meta_predTaken(q5_io_enq_bits_bpuInfo_meta_predTaken),
+    .io_enq_bits_bpuInfo_meta_predTarget(q5_io_enq_bits_bpuInfo_meta_predTarget),
     .io_enq_bits_ldst(q5_io_enq_bits_ldst),
     .io_enq_bits_lrs1(q5_io_enq_bits_lrs1),
     .io_enq_bits_lrs2(q5_io_enq_bits_lrs2),
@@ -1678,6 +2113,21 @@ module Scheduler(
     .io_issue_bits_pdInfo_isCall(q5_io_issue_bits_pdInfo_isCall),
     .io_issue_bits_pdInfo_isRet(q5_io_issue_bits_pdInfo_isRet),
     .io_issue_bits_pdInfo_jumpTarget(q5_io_issue_bits_pdInfo_jumpTarget),
+    .io_issue_bits_bpuInfo_pc(q5_io_issue_bits_bpuInfo_pc),
+    .io_issue_bits_bpuInfo_fallThrough(q5_io_issue_bits_bpuInfo_fallThrough),
+    .io_issue_bits_bpuInfo_taken(q5_io_issue_bits_bpuInfo_taken),
+    .io_issue_bits_bpuInfo_target(q5_io_issue_bits_bpuInfo_target),
+    .io_issue_bits_bpuInfo_takenOffset(q5_io_issue_bits_bpuInfo_takenOffset),
+    .io_issue_bits_bpuInfo_meta_btbHit(q5_io_issue_bits_bpuInfo_meta_btbHit),
+    .io_issue_bits_bpuInfo_meta_btbIsJalr(q5_io_issue_bits_bpuInfo_meta_btbIsJalr),
+    .io_issue_bits_bpuInfo_meta_btbIsJal(q5_io_issue_bits_bpuInfo_meta_btbIsJal),
+    .io_issue_bits_bpuInfo_meta_btbIsCall(q5_io_issue_bits_bpuInfo_meta_btbIsCall),
+    .io_issue_bits_bpuInfo_meta_btbIsRet(q5_io_issue_bits_bpuInfo_meta_btbIsRet),
+    .io_issue_bits_bpuInfo_meta_btbOffset(q5_io_issue_bits_bpuInfo_meta_btbOffset),
+    .io_issue_bits_bpuInfo_meta_phtCounter(q5_io_issue_bits_bpuInfo_meta_phtCounter),
+    .io_issue_bits_bpuInfo_meta_rasTop(q5_io_issue_bits_bpuInfo_meta_rasTop),
+    .io_issue_bits_bpuInfo_meta_predTaken(q5_io_issue_bits_bpuInfo_meta_predTaken),
+    .io_issue_bits_bpuInfo_meta_predTarget(q5_io_issue_bits_bpuInfo_meta_predTarget),
     .io_issue_bits_ldst(q5_io_issue_bits_ldst),
     .io_issue_bits_lrs1(q5_io_issue_bits_lrs1),
     .io_issue_bits_lrs2(q5_io_issue_bits_lrs2),
@@ -1743,6 +2193,21 @@ module Scheduler(
   assign io_q1Issue_bits_pdInfo_isCall = q1_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
   assign io_q1Issue_bits_pdInfo_isRet = q1_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
   assign io_q1Issue_bits_pdInfo_jumpTarget = q1_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_pc = q1_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_fallThrough = q1_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_taken = q1_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_target = q1_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_takenOffset = q1_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_btbHit = q1_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_btbIsJalr = q1_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_btbIsJal = q1_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_btbIsCall = q1_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_btbIsRet = q1_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_btbOffset = q1_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_phtCounter = q1_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_rasTop = q1_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_predTaken = q1_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
+  assign io_q1Issue_bits_bpuInfo_meta_predTarget = q1_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
   assign io_q1Issue_bits_ldst = q1_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
   assign io_q1Issue_bits_lrs1 = q1_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
   assign io_q1Issue_bits_lrs2 = q1_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 70:14]
@@ -1796,6 +2261,21 @@ module Scheduler(
   assign io_q2Issue_bits_pdInfo_isCall = q2_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
   assign io_q2Issue_bits_pdInfo_isRet = q2_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
   assign io_q2Issue_bits_pdInfo_jumpTarget = q2_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_pc = q2_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_fallThrough = q2_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_taken = q2_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_target = q2_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_takenOffset = q2_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_btbHit = q2_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_btbIsJalr = q2_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_btbIsJal = q2_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_btbIsCall = q2_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_btbIsRet = q2_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_btbOffset = q2_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_phtCounter = q2_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_rasTop = q2_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_predTaken = q2_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
+  assign io_q2Issue_bits_bpuInfo_meta_predTarget = q2_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
   assign io_q2Issue_bits_ldst = q2_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
   assign io_q2Issue_bits_lrs1 = q2_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
   assign io_q2Issue_bits_lrs2 = q2_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 71:14]
@@ -1843,6 +2323,21 @@ module Scheduler(
   assign io_q3Issue_bits_pdInfo_isCall = q3_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
   assign io_q3Issue_bits_pdInfo_isRet = q3_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
   assign io_q3Issue_bits_pdInfo_jumpTarget = q3_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_pc = q3_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_fallThrough = q3_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_taken = q3_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_target = q3_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_takenOffset = q3_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_btbHit = q3_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_btbIsJalr = q3_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_btbIsJal = q3_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_btbIsCall = q3_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_btbIsRet = q3_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_btbOffset = q3_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_phtCounter = q3_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_rasTop = q3_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_predTaken = q3_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
+  assign io_q3Issue_bits_bpuInfo_meta_predTarget = q3_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
   assign io_q3Issue_bits_ldst = q3_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
   assign io_q3Issue_bits_lrs1 = q3_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
   assign io_q3Issue_bits_lrs2 = q3_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 72:14]
@@ -1896,6 +2391,21 @@ module Scheduler(
   assign io_q4Issue_bits_pdInfo_isCall = q4_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
   assign io_q4Issue_bits_pdInfo_isRet = q4_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
   assign io_q4Issue_bits_pdInfo_jumpTarget = q4_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_pc = q4_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_fallThrough = q4_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_taken = q4_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_target = q4_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_takenOffset = q4_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_btbHit = q4_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_btbIsJalr = q4_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_btbIsJal = q4_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_btbIsCall = q4_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_btbIsRet = q4_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_btbOffset = q4_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_phtCounter = q4_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_rasTop = q4_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_predTaken = q4_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
+  assign io_q4Issue_bits_bpuInfo_meta_predTarget = q4_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
   assign io_q4Issue_bits_ldst = q4_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
   assign io_q4Issue_bits_lrs1 = q4_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
   assign io_q4Issue_bits_lrs2 = q4_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 73:14]
@@ -1949,6 +2459,21 @@ module Scheduler(
   assign io_q5Issue_bits_pdInfo_isCall = q5_io_issue_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
   assign io_q5Issue_bits_pdInfo_isRet = q5_io_issue_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
   assign io_q5Issue_bits_pdInfo_jumpTarget = q5_io_issue_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_pc = q5_io_issue_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_fallThrough = q5_io_issue_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_taken = q5_io_issue_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_target = q5_io_issue_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_takenOffset = q5_io_issue_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_btbHit = q5_io_issue_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_btbIsJalr = q5_io_issue_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_btbIsJal = q5_io_issue_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_btbIsCall = q5_io_issue_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_btbIsRet = q5_io_issue_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_btbOffset = q5_io_issue_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_phtCounter = q5_io_issue_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_rasTop = q5_io_issue_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_predTaken = q5_io_issue_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
+  assign io_q5Issue_bits_bpuInfo_meta_predTarget = q5_io_issue_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
   assign io_q5Issue_bits_ldst = q5_io_issue_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
   assign io_q5Issue_bits_lrs1 = q5_io_issue_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
   assign io_q5Issue_bits_lrs2 = q5_io_issue_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 74:14]
@@ -2009,6 +2534,21 @@ module Scheduler(
   assign q1_io_enq_bits_pdInfo_isCall = io_q1IQEnq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
   assign q1_io_enq_bits_pdInfo_isRet = io_q1IQEnq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
   assign q1_io_enq_bits_pdInfo_jumpTarget = io_q1IQEnq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_pc = io_q1IQEnq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_fallThrough = io_q1IQEnq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_taken = io_q1IQEnq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_target = io_q1IQEnq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_takenOffset = io_q1IQEnq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_btbHit = io_q1IQEnq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_btbIsJalr = io_q1IQEnq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_btbIsJal = io_q1IQEnq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_btbIsCall = io_q1IQEnq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_btbIsRet = io_q1IQEnq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_btbOffset = io_q1IQEnq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_phtCounter = io_q1IQEnq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_rasTop = io_q1IQEnq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_predTaken = io_q1IQEnq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
+  assign q1_io_enq_bits_bpuInfo_meta_predTarget = io_q1IQEnq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
   assign q1_io_enq_bits_ldst = io_q1IQEnq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
   assign q1_io_enq_bits_lrs1 = io_q1IQEnq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
   assign q1_io_enq_bits_lrs2 = io_q1IQEnq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 61:13]
@@ -2075,6 +2615,21 @@ module Scheduler(
   assign q2_io_enq_bits_pdInfo_isCall = io_q2IQEnq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
   assign q2_io_enq_bits_pdInfo_isRet = io_q2IQEnq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
   assign q2_io_enq_bits_pdInfo_jumpTarget = io_q2IQEnq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_pc = io_q2IQEnq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_fallThrough = io_q2IQEnq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_taken = io_q2IQEnq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_target = io_q2IQEnq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_takenOffset = io_q2IQEnq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_btbHit = io_q2IQEnq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_btbIsJalr = io_q2IQEnq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_btbIsJal = io_q2IQEnq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_btbIsCall = io_q2IQEnq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_btbIsRet = io_q2IQEnq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_btbOffset = io_q2IQEnq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_phtCounter = io_q2IQEnq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_rasTop = io_q2IQEnq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_predTaken = io_q2IQEnq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
+  assign q2_io_enq_bits_bpuInfo_meta_predTarget = io_q2IQEnq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
   assign q2_io_enq_bits_ldst = io_q2IQEnq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
   assign q2_io_enq_bits_lrs1 = io_q2IQEnq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
   assign q2_io_enq_bits_lrs2 = io_q2IQEnq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 62:13]
@@ -2135,6 +2690,21 @@ module Scheduler(
   assign q3_io_enq_bits_pdInfo_isCall = io_q3IQEnq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
   assign q3_io_enq_bits_pdInfo_isRet = io_q3IQEnq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
   assign q3_io_enq_bits_pdInfo_jumpTarget = io_q3IQEnq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_pc = io_q3IQEnq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_fallThrough = io_q3IQEnq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_taken = io_q3IQEnq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_target = io_q3IQEnq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_takenOffset = io_q3IQEnq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_btbHit = io_q3IQEnq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_btbIsJalr = io_q3IQEnq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_btbIsJal = io_q3IQEnq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_btbIsCall = io_q3IQEnq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_btbIsRet = io_q3IQEnq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_btbOffset = io_q3IQEnq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_phtCounter = io_q3IQEnq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_rasTop = io_q3IQEnq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_predTaken = io_q3IQEnq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
+  assign q3_io_enq_bits_bpuInfo_meta_predTarget = io_q3IQEnq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
   assign q3_io_enq_bits_ldst = io_q3IQEnq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
   assign q3_io_enq_bits_lrs1 = io_q3IQEnq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
   assign q3_io_enq_bits_lrs2 = io_q3IQEnq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 63:13]
@@ -2201,6 +2771,21 @@ module Scheduler(
   assign q4_io_enq_bits_pdInfo_isCall = io_q4IQEnq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
   assign q4_io_enq_bits_pdInfo_isRet = io_q4IQEnq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
   assign q4_io_enq_bits_pdInfo_jumpTarget = io_q4IQEnq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_pc = io_q4IQEnq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_fallThrough = io_q4IQEnq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_taken = io_q4IQEnq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_target = io_q4IQEnq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_takenOffset = io_q4IQEnq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_btbHit = io_q4IQEnq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_btbIsJalr = io_q4IQEnq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_btbIsJal = io_q4IQEnq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_btbIsCall = io_q4IQEnq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_btbIsRet = io_q4IQEnq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_btbOffset = io_q4IQEnq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_phtCounter = io_q4IQEnq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_rasTop = io_q4IQEnq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_predTaken = io_q4IQEnq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
+  assign q4_io_enq_bits_bpuInfo_meta_predTarget = io_q4IQEnq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
   assign q4_io_enq_bits_ldst = io_q4IQEnq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
   assign q4_io_enq_bits_lrs1 = io_q4IQEnq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
   assign q4_io_enq_bits_lrs2 = io_q4IQEnq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 64:13]
@@ -2267,6 +2852,21 @@ module Scheduler(
   assign q5_io_enq_bits_pdInfo_isCall = io_q5IQEnq_bits_pdInfo_isCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
   assign q5_io_enq_bits_pdInfo_isRet = io_q5IQEnq_bits_pdInfo_isRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
   assign q5_io_enq_bits_pdInfo_jumpTarget = io_q5IQEnq_bits_pdInfo_jumpTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_pc = io_q5IQEnq_bits_bpuInfo_pc; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_fallThrough = io_q5IQEnq_bits_bpuInfo_fallThrough; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_taken = io_q5IQEnq_bits_bpuInfo_taken; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_target = io_q5IQEnq_bits_bpuInfo_target; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_takenOffset = io_q5IQEnq_bits_bpuInfo_takenOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_btbHit = io_q5IQEnq_bits_bpuInfo_meta_btbHit; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_btbIsJalr = io_q5IQEnq_bits_bpuInfo_meta_btbIsJalr; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_btbIsJal = io_q5IQEnq_bits_bpuInfo_meta_btbIsJal; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_btbIsCall = io_q5IQEnq_bits_bpuInfo_meta_btbIsCall; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_btbIsRet = io_q5IQEnq_bits_bpuInfo_meta_btbIsRet; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_btbOffset = io_q5IQEnq_bits_bpuInfo_meta_btbOffset; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_phtCounter = io_q5IQEnq_bits_bpuInfo_meta_phtCounter; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_rasTop = io_q5IQEnq_bits_bpuInfo_meta_rasTop; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_predTaken = io_q5IQEnq_bits_bpuInfo_meta_predTaken; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
+  assign q5_io_enq_bits_bpuInfo_meta_predTarget = io_q5IQEnq_bits_bpuInfo_meta_predTarget; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
   assign q5_io_enq_bits_ldst = io_q5IQEnq_bits_ldst; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
   assign q5_io_enq_bits_lrs1 = io_q5IQEnq_bits_lrs1; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]
   assign q5_io_enq_bits_lrs2 = io_q5IQEnq_bits_lrs2; // @[src/main/scala/backend/scheduler/Scheduler.scala 65:13]

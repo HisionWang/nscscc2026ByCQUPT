@@ -2689,138 +2689,138 @@ module LoadQueue(
   wire  _GEN_3022 = 4'hc == wbIdx ? entries_12_robIdxFull_flag : _GEN_3021; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
   wire  _GEN_3023 = 4'hd == wbIdx ? entries_13_robIdxFull_flag : _GEN_3022; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
   wire  _GEN_3024 = 4'he == wbIdx ? entries_14_robIdxFull_flag : _GEN_3023; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
-  wire [31:0] _GEN_3027 = 4'h1 == wbIdx ? entries_1_pc : entries_0_pc; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3028 = 4'h2 == wbIdx ? entries_2_pc : _GEN_3027; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3029 = 4'h3 == wbIdx ? entries_3_pc : _GEN_3028; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3030 = 4'h4 == wbIdx ? entries_4_pc : _GEN_3029; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3031 = 4'h5 == wbIdx ? entries_5_pc : _GEN_3030; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3032 = 4'h6 == wbIdx ? entries_6_pc : _GEN_3031; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3033 = 4'h7 == wbIdx ? entries_7_pc : _GEN_3032; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3034 = 4'h8 == wbIdx ? entries_8_pc : _GEN_3033; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3035 = 4'h9 == wbIdx ? entries_9_pc : _GEN_3034; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3036 = 4'ha == wbIdx ? entries_10_pc : _GEN_3035; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3037 = 4'hb == wbIdx ? entries_11_pc : _GEN_3036; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3038 = 4'hc == wbIdx ? entries_12_pc : _GEN_3037; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3039 = 4'hd == wbIdx ? entries_13_pc : _GEN_3038; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [31:0] _GEN_3040 = 4'he == wbIdx ? entries_14_pc : _GEN_3039; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  wire [6:0] _GEN_3043 = 4'h1 == wbIdx ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3044 = 4'h2 == wbIdx ? entries_2_pdst : _GEN_3043; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3045 = 4'h3 == wbIdx ? entries_3_pdst : _GEN_3044; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3046 = 4'h4 == wbIdx ? entries_4_pdst : _GEN_3045; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3047 = 4'h5 == wbIdx ? entries_5_pdst : _GEN_3046; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3048 = 4'h6 == wbIdx ? entries_6_pdst : _GEN_3047; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3049 = 4'h7 == wbIdx ? entries_7_pdst : _GEN_3048; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3050 = 4'h8 == wbIdx ? entries_8_pdst : _GEN_3049; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3051 = 4'h9 == wbIdx ? entries_9_pdst : _GEN_3050; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3052 = 4'ha == wbIdx ? entries_10_pdst : _GEN_3051; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3053 = 4'hb == wbIdx ? entries_11_pdst : _GEN_3052; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3054 = 4'hc == wbIdx ? entries_12_pdst : _GEN_3053; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3055 = 4'hd == wbIdx ? entries_13_pdst : _GEN_3054; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire [6:0] _GEN_3056 = 4'he == wbIdx ? entries_14_pdst : _GEN_3055; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  wire  _GEN_3059 = 4'h1 == wbIdx ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3060 = 4'h2 == wbIdx ? entries_2_rfWen : _GEN_3059; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3061 = 4'h3 == wbIdx ? entries_3_rfWen : _GEN_3060; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3062 = 4'h4 == wbIdx ? entries_4_rfWen : _GEN_3061; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3063 = 4'h5 == wbIdx ? entries_5_rfWen : _GEN_3062; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3064 = 4'h6 == wbIdx ? entries_6_rfWen : _GEN_3063; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3065 = 4'h7 == wbIdx ? entries_7_rfWen : _GEN_3064; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3066 = 4'h8 == wbIdx ? entries_8_rfWen : _GEN_3065; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3067 = 4'h9 == wbIdx ? entries_9_rfWen : _GEN_3066; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3068 = 4'ha == wbIdx ? entries_10_rfWen : _GEN_3067; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3069 = 4'hb == wbIdx ? entries_11_rfWen : _GEN_3068; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3070 = 4'hc == wbIdx ? entries_12_rfWen : _GEN_3069; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3071 = 4'hd == wbIdx ? entries_13_rfWen : _GEN_3070; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire  _GEN_3072 = 4'he == wbIdx ? entries_14_rfWen : _GEN_3071; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
-  wire [3:0] _GEN_3075 = 4'h1 == wbIdx ? entries_1_sqIdx : entries_0_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3076 = 4'h2 == wbIdx ? entries_2_sqIdx : _GEN_3075; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3077 = 4'h3 == wbIdx ? entries_3_sqIdx : _GEN_3076; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3078 = 4'h4 == wbIdx ? entries_4_sqIdx : _GEN_3077; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3079 = 4'h5 == wbIdx ? entries_5_sqIdx : _GEN_3078; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3080 = 4'h6 == wbIdx ? entries_6_sqIdx : _GEN_3079; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3081 = 4'h7 == wbIdx ? entries_7_sqIdx : _GEN_3080; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3082 = 4'h8 == wbIdx ? entries_8_sqIdx : _GEN_3081; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3083 = 4'h9 == wbIdx ? entries_9_sqIdx : _GEN_3082; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3084 = 4'ha == wbIdx ? entries_10_sqIdx : _GEN_3083; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3085 = 4'hb == wbIdx ? entries_11_sqIdx : _GEN_3084; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3086 = 4'hc == wbIdx ? entries_12_sqIdx : _GEN_3085; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3087 = 4'hd == wbIdx ? entries_13_sqIdx : _GEN_3086; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3088 = 4'he == wbIdx ? entries_14_sqIdx : _GEN_3087; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
-  wire [3:0] _GEN_3091 = 4'h1 == wbIdx ? entries_1_fuType : entries_0_fuType; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3092 = 4'h2 == wbIdx ? entries_2_fuType : _GEN_3091; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3093 = 4'h3 == wbIdx ? entries_3_fuType : _GEN_3092; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3094 = 4'h4 == wbIdx ? entries_4_fuType : _GEN_3093; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3095 = 4'h5 == wbIdx ? entries_5_fuType : _GEN_3094; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3096 = 4'h6 == wbIdx ? entries_6_fuType : _GEN_3095; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3097 = 4'h7 == wbIdx ? entries_7_fuType : _GEN_3096; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3098 = 4'h8 == wbIdx ? entries_8_fuType : _GEN_3097; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3099 = 4'h9 == wbIdx ? entries_9_fuType : _GEN_3098; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3100 = 4'ha == wbIdx ? entries_10_fuType : _GEN_3099; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3101 = 4'hb == wbIdx ? entries_11_fuType : _GEN_3100; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3102 = 4'hc == wbIdx ? entries_12_fuType : _GEN_3101; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3103 = 4'hd == wbIdx ? entries_13_fuType : _GEN_3102; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3104 = 4'he == wbIdx ? entries_14_fuType : _GEN_3103; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  wire [3:0] _GEN_3107 = 4'h1 == wbIdx ? entries_1_lsuOp : entries_0_lsuOp; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3108 = 4'h2 == wbIdx ? entries_2_lsuOp : _GEN_3107; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3109 = 4'h3 == wbIdx ? entries_3_lsuOp : _GEN_3108; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3110 = 4'h4 == wbIdx ? entries_4_lsuOp : _GEN_3109; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3111 = 4'h5 == wbIdx ? entries_5_lsuOp : _GEN_3110; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3112 = 4'h6 == wbIdx ? entries_6_lsuOp : _GEN_3111; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3113 = 4'h7 == wbIdx ? entries_7_lsuOp : _GEN_3112; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3114 = 4'h8 == wbIdx ? entries_8_lsuOp : _GEN_3113; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3115 = 4'h9 == wbIdx ? entries_9_lsuOp : _GEN_3114; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3116 = 4'ha == wbIdx ? entries_10_lsuOp : _GEN_3115; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3117 = 4'hb == wbIdx ? entries_11_lsuOp : _GEN_3116; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3118 = 4'hc == wbIdx ? entries_12_lsuOp : _GEN_3117; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3119 = 4'hd == wbIdx ? entries_13_lsuOp : _GEN_3118; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  wire [3:0] _GEN_3120 = 4'he == wbIdx ? entries_14_lsuOp : _GEN_3119; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [31:0] _GEN_3027 = 4'h1 == wbIdx ? entries_1_pc : entries_0_pc; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3028 = 4'h2 == wbIdx ? entries_2_pc : _GEN_3027; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3029 = 4'h3 == wbIdx ? entries_3_pc : _GEN_3028; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3030 = 4'h4 == wbIdx ? entries_4_pc : _GEN_3029; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3031 = 4'h5 == wbIdx ? entries_5_pc : _GEN_3030; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3032 = 4'h6 == wbIdx ? entries_6_pc : _GEN_3031; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3033 = 4'h7 == wbIdx ? entries_7_pc : _GEN_3032; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3034 = 4'h8 == wbIdx ? entries_8_pc : _GEN_3033; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3035 = 4'h9 == wbIdx ? entries_9_pc : _GEN_3034; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3036 = 4'ha == wbIdx ? entries_10_pc : _GEN_3035; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3037 = 4'hb == wbIdx ? entries_11_pc : _GEN_3036; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3038 = 4'hc == wbIdx ? entries_12_pc : _GEN_3037; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3039 = 4'hd == wbIdx ? entries_13_pc : _GEN_3038; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [31:0] _GEN_3040 = 4'he == wbIdx ? entries_14_pc : _GEN_3039; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  wire [6:0] _GEN_3043 = 4'h1 == wbIdx ? entries_1_pdst : entries_0_pdst; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3044 = 4'h2 == wbIdx ? entries_2_pdst : _GEN_3043; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3045 = 4'h3 == wbIdx ? entries_3_pdst : _GEN_3044; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3046 = 4'h4 == wbIdx ? entries_4_pdst : _GEN_3045; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3047 = 4'h5 == wbIdx ? entries_5_pdst : _GEN_3046; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3048 = 4'h6 == wbIdx ? entries_6_pdst : _GEN_3047; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3049 = 4'h7 == wbIdx ? entries_7_pdst : _GEN_3048; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3050 = 4'h8 == wbIdx ? entries_8_pdst : _GEN_3049; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3051 = 4'h9 == wbIdx ? entries_9_pdst : _GEN_3050; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3052 = 4'ha == wbIdx ? entries_10_pdst : _GEN_3051; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3053 = 4'hb == wbIdx ? entries_11_pdst : _GEN_3052; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3054 = 4'hc == wbIdx ? entries_12_pdst : _GEN_3053; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3055 = 4'hd == wbIdx ? entries_13_pdst : _GEN_3054; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire [6:0] _GEN_3056 = 4'he == wbIdx ? entries_14_pdst : _GEN_3055; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  wire  _GEN_3059 = 4'h1 == wbIdx ? entries_1_rfWen : entries_0_rfWen; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3060 = 4'h2 == wbIdx ? entries_2_rfWen : _GEN_3059; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3061 = 4'h3 == wbIdx ? entries_3_rfWen : _GEN_3060; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3062 = 4'h4 == wbIdx ? entries_4_rfWen : _GEN_3061; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3063 = 4'h5 == wbIdx ? entries_5_rfWen : _GEN_3062; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3064 = 4'h6 == wbIdx ? entries_6_rfWen : _GEN_3063; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3065 = 4'h7 == wbIdx ? entries_7_rfWen : _GEN_3064; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3066 = 4'h8 == wbIdx ? entries_8_rfWen : _GEN_3065; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3067 = 4'h9 == wbIdx ? entries_9_rfWen : _GEN_3066; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3068 = 4'ha == wbIdx ? entries_10_rfWen : _GEN_3067; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3069 = 4'hb == wbIdx ? entries_11_rfWen : _GEN_3068; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3070 = 4'hc == wbIdx ? entries_12_rfWen : _GEN_3069; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3071 = 4'hd == wbIdx ? entries_13_rfWen : _GEN_3070; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire  _GEN_3072 = 4'he == wbIdx ? entries_14_rfWen : _GEN_3071; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
+  wire [3:0] _GEN_3075 = 4'h1 == wbIdx ? entries_1_sqIdx : entries_0_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3076 = 4'h2 == wbIdx ? entries_2_sqIdx : _GEN_3075; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3077 = 4'h3 == wbIdx ? entries_3_sqIdx : _GEN_3076; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3078 = 4'h4 == wbIdx ? entries_4_sqIdx : _GEN_3077; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3079 = 4'h5 == wbIdx ? entries_5_sqIdx : _GEN_3078; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3080 = 4'h6 == wbIdx ? entries_6_sqIdx : _GEN_3079; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3081 = 4'h7 == wbIdx ? entries_7_sqIdx : _GEN_3080; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3082 = 4'h8 == wbIdx ? entries_8_sqIdx : _GEN_3081; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3083 = 4'h9 == wbIdx ? entries_9_sqIdx : _GEN_3082; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3084 = 4'ha == wbIdx ? entries_10_sqIdx : _GEN_3083; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3085 = 4'hb == wbIdx ? entries_11_sqIdx : _GEN_3084; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3086 = 4'hc == wbIdx ? entries_12_sqIdx : _GEN_3085; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3087 = 4'hd == wbIdx ? entries_13_sqIdx : _GEN_3086; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3088 = 4'he == wbIdx ? entries_14_sqIdx : _GEN_3087; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
+  wire [3:0] _GEN_3091 = 4'h1 == wbIdx ? entries_1_fuType : entries_0_fuType; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3092 = 4'h2 == wbIdx ? entries_2_fuType : _GEN_3091; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3093 = 4'h3 == wbIdx ? entries_3_fuType : _GEN_3092; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3094 = 4'h4 == wbIdx ? entries_4_fuType : _GEN_3093; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3095 = 4'h5 == wbIdx ? entries_5_fuType : _GEN_3094; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3096 = 4'h6 == wbIdx ? entries_6_fuType : _GEN_3095; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3097 = 4'h7 == wbIdx ? entries_7_fuType : _GEN_3096; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3098 = 4'h8 == wbIdx ? entries_8_fuType : _GEN_3097; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3099 = 4'h9 == wbIdx ? entries_9_fuType : _GEN_3098; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3100 = 4'ha == wbIdx ? entries_10_fuType : _GEN_3099; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3101 = 4'hb == wbIdx ? entries_11_fuType : _GEN_3100; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3102 = 4'hc == wbIdx ? entries_12_fuType : _GEN_3101; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3103 = 4'hd == wbIdx ? entries_13_fuType : _GEN_3102; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3104 = 4'he == wbIdx ? entries_14_fuType : _GEN_3103; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  wire [3:0] _GEN_3107 = 4'h1 == wbIdx ? entries_1_lsuOp : entries_0_lsuOp; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3108 = 4'h2 == wbIdx ? entries_2_lsuOp : _GEN_3107; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3109 = 4'h3 == wbIdx ? entries_3_lsuOp : _GEN_3108; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3110 = 4'h4 == wbIdx ? entries_4_lsuOp : _GEN_3109; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3111 = 4'h5 == wbIdx ? entries_5_lsuOp : _GEN_3110; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3112 = 4'h6 == wbIdx ? entries_6_lsuOp : _GEN_3111; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3113 = 4'h7 == wbIdx ? entries_7_lsuOp : _GEN_3112; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3114 = 4'h8 == wbIdx ? entries_8_lsuOp : _GEN_3113; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3115 = 4'h9 == wbIdx ? entries_9_lsuOp : _GEN_3114; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3116 = 4'ha == wbIdx ? entries_10_lsuOp : _GEN_3115; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3117 = 4'hb == wbIdx ? entries_11_lsuOp : _GEN_3116; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3118 = 4'hc == wbIdx ? entries_12_lsuOp : _GEN_3117; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3119 = 4'hd == wbIdx ? entries_13_lsuOp : _GEN_3118; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  wire [3:0] _GEN_3120 = 4'he == wbIdx ? entries_14_lsuOp : _GEN_3119; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
   wire  _T_2 = io_outResult_ready & io_outResult_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire  _GEN_3122 = 4'h0 == wbIdx | _GEN_400; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3123 = 4'h1 == wbIdx | _GEN_401; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3124 = 4'h2 == wbIdx | _GEN_402; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3125 = 4'h3 == wbIdx | _GEN_403; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3126 = 4'h4 == wbIdx | _GEN_404; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3127 = 4'h5 == wbIdx | _GEN_405; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3128 = 4'h6 == wbIdx | _GEN_406; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3129 = 4'h7 == wbIdx | _GEN_407; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3130 = 4'h8 == wbIdx | _GEN_408; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3131 = 4'h9 == wbIdx | _GEN_409; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3132 = 4'ha == wbIdx | _GEN_410; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3133 = 4'hb == wbIdx | _GEN_411; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3134 = 4'hc == wbIdx | _GEN_412; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3135 = 4'hd == wbIdx | _GEN_413; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3136 = 4'he == wbIdx | _GEN_414; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3137 = 4'hf == wbIdx | _GEN_415; // @[src/main/scala/memory/LoadQueue.scala 286:{32,32}]
-  wire  _GEN_3155 = 4'h1 == deqPtr_value ? entries_1_valid : entries_0_valid; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3156 = 4'h2 == deqPtr_value ? entries_2_valid : _GEN_3155; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3157 = 4'h3 == deqPtr_value ? entries_3_valid : _GEN_3156; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3158 = 4'h4 == deqPtr_value ? entries_4_valid : _GEN_3157; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3159 = 4'h5 == deqPtr_value ? entries_5_valid : _GEN_3158; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3160 = 4'h6 == deqPtr_value ? entries_6_valid : _GEN_3159; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3161 = 4'h7 == deqPtr_value ? entries_7_valid : _GEN_3160; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3162 = 4'h8 == deqPtr_value ? entries_8_valid : _GEN_3161; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3163 = 4'h9 == deqPtr_value ? entries_9_valid : _GEN_3162; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3164 = 4'ha == deqPtr_value ? entries_10_valid : _GEN_3163; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3165 = 4'hb == deqPtr_value ? entries_11_valid : _GEN_3164; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3166 = 4'hc == deqPtr_value ? entries_12_valid : _GEN_3165; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3167 = 4'hd == deqPtr_value ? entries_13_valid : _GEN_3166; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3168 = 4'he == deqPtr_value ? entries_14_valid : _GEN_3167; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3169 = 4'hf == deqPtr_value ? entries_15_valid : _GEN_3168; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3171 = 4'h1 == deqPtr_value ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3172 = 4'h2 == deqPtr_value ? entries_2_writtenBack : _GEN_3171; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3173 = 4'h3 == deqPtr_value ? entries_3_writtenBack : _GEN_3172; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3174 = 4'h4 == deqPtr_value ? entries_4_writtenBack : _GEN_3173; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3175 = 4'h5 == deqPtr_value ? entries_5_writtenBack : _GEN_3174; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3176 = 4'h6 == deqPtr_value ? entries_6_writtenBack : _GEN_3175; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3177 = 4'h7 == deqPtr_value ? entries_7_writtenBack : _GEN_3176; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3178 = 4'h8 == deqPtr_value ? entries_8_writtenBack : _GEN_3177; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3179 = 4'h9 == deqPtr_value ? entries_9_writtenBack : _GEN_3178; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3180 = 4'ha == deqPtr_value ? entries_10_writtenBack : _GEN_3179; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3181 = 4'hb == deqPtr_value ? entries_11_writtenBack : _GEN_3180; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3182 = 4'hc == deqPtr_value ? entries_12_writtenBack : _GEN_3181; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3183 = 4'hd == deqPtr_value ? entries_13_writtenBack : _GEN_3182; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3184 = 4'he == deqPtr_value ? entries_14_writtenBack : _GEN_3183; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  _GEN_3185 = 4'hf == deqPtr_value ? entries_15_writtenBack : _GEN_3184; // @[src/main/scala/memory/LoadQueue.scala 292:{44,44}]
-  wire  canDeq = _GEN_3169 & _GEN_3185; // @[src/main/scala/memory/LoadQueue.scala 292:44]
+  wire  _GEN_3122 = 4'h0 == wbIdx | _GEN_400; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3123 = 4'h1 == wbIdx | _GEN_401; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3124 = 4'h2 == wbIdx | _GEN_402; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3125 = 4'h3 == wbIdx | _GEN_403; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3126 = 4'h4 == wbIdx | _GEN_404; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3127 = 4'h5 == wbIdx | _GEN_405; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3128 = 4'h6 == wbIdx | _GEN_406; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3129 = 4'h7 == wbIdx | _GEN_407; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3130 = 4'h8 == wbIdx | _GEN_408; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3131 = 4'h9 == wbIdx | _GEN_409; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3132 = 4'ha == wbIdx | _GEN_410; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3133 = 4'hb == wbIdx | _GEN_411; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3134 = 4'hc == wbIdx | _GEN_412; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3135 = 4'hd == wbIdx | _GEN_413; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3136 = 4'he == wbIdx | _GEN_414; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3137 = 4'hf == wbIdx | _GEN_415; // @[src/main/scala/memory/LoadQueue.scala 289:{32,32}]
+  wire  _GEN_3155 = 4'h1 == deqPtr_value ? entries_1_valid : entries_0_valid; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3156 = 4'h2 == deqPtr_value ? entries_2_valid : _GEN_3155; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3157 = 4'h3 == deqPtr_value ? entries_3_valid : _GEN_3156; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3158 = 4'h4 == deqPtr_value ? entries_4_valid : _GEN_3157; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3159 = 4'h5 == deqPtr_value ? entries_5_valid : _GEN_3158; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3160 = 4'h6 == deqPtr_value ? entries_6_valid : _GEN_3159; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3161 = 4'h7 == deqPtr_value ? entries_7_valid : _GEN_3160; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3162 = 4'h8 == deqPtr_value ? entries_8_valid : _GEN_3161; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3163 = 4'h9 == deqPtr_value ? entries_9_valid : _GEN_3162; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3164 = 4'ha == deqPtr_value ? entries_10_valid : _GEN_3163; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3165 = 4'hb == deqPtr_value ? entries_11_valid : _GEN_3164; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3166 = 4'hc == deqPtr_value ? entries_12_valid : _GEN_3165; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3167 = 4'hd == deqPtr_value ? entries_13_valid : _GEN_3166; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3168 = 4'he == deqPtr_value ? entries_14_valid : _GEN_3167; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3169 = 4'hf == deqPtr_value ? entries_15_valid : _GEN_3168; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3171 = 4'h1 == deqPtr_value ? entries_1_writtenBack : entries_0_writtenBack; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3172 = 4'h2 == deqPtr_value ? entries_2_writtenBack : _GEN_3171; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3173 = 4'h3 == deqPtr_value ? entries_3_writtenBack : _GEN_3172; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3174 = 4'h4 == deqPtr_value ? entries_4_writtenBack : _GEN_3173; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3175 = 4'h5 == deqPtr_value ? entries_5_writtenBack : _GEN_3174; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3176 = 4'h6 == deqPtr_value ? entries_6_writtenBack : _GEN_3175; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3177 = 4'h7 == deqPtr_value ? entries_7_writtenBack : _GEN_3176; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3178 = 4'h8 == deqPtr_value ? entries_8_writtenBack : _GEN_3177; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3179 = 4'h9 == deqPtr_value ? entries_9_writtenBack : _GEN_3178; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3180 = 4'ha == deqPtr_value ? entries_10_writtenBack : _GEN_3179; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3181 = 4'hb == deqPtr_value ? entries_11_writtenBack : _GEN_3180; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3182 = 4'hc == deqPtr_value ? entries_12_writtenBack : _GEN_3181; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3183 = 4'hd == deqPtr_value ? entries_13_writtenBack : _GEN_3182; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3184 = 4'he == deqPtr_value ? entries_14_writtenBack : _GEN_3183; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  _GEN_3185 = 4'hf == deqPtr_value ? entries_15_writtenBack : _GEN_3184; // @[src/main/scala/memory/LoadQueue.scala 295:{44,44}]
+  wire  canDeq = _GEN_3169 & _GEN_3185; // @[src/main/scala/memory/LoadQueue.scala 295:44]
   wire  deqPtr_wrap = _idx_T_2 >= 5'h10; // @[src/main/scala/util/CircularQueuePtr.scala 86:28]
   wire [3:0] deqPtr_newPtr_value = _idx_T_2[3:0]; // @[src/main/scala/util/CircularQueuePtr.scala 87:32]
   assign io_dcacheReq_valid = hasIssueCandidate & orderingOk; // @[src/main/scala/memory/LoadQueue.scala 171:49]
@@ -2834,19 +2834,19 @@ module LoadQueue(
   assign io_outResult_valid = wbCandidates_0 | wbCandidates_1 | wbCandidates_2 | wbCandidates_3 | wbCandidates_4 |
     wbCandidates_5 | wbCandidates_6 | wbCandidates_7 | wbCandidates_8 | wbCandidates_9 | wbCandidates_10 |
     wbCandidates_11 | wbCandidates_12 | wbCandidates_13 | wbCandidates_14 | wbCandidates_15; // @[src/main/scala/memory/LoadQueue.scala 205:46]
-  assign io_outResult_bits_uop_pc = 4'hf == wbIdx ? entries_15_pc : _GEN_3040; // @[src/main/scala/memory/LoadQueue.scala 229:{20,20}]
-  assign io_outResult_bits_uop_ctrl_fuType = 4'hf == wbIdx ? entries_15_fuType : _GEN_3104; // @[src/main/scala/memory/LoadQueue.scala 264:{23,23}]
-  assign io_outResult_bits_uop_ctrl_lsuOp = 4'hf == wbIdx ? entries_15_lsuOp : _GEN_3120; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
-  assign io_outResult_bits_uop_ctrl_rfWen = 4'hf == wbIdx ? entries_15_rfWen : _GEN_3072; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
+  assign io_outResult_bits_uop_pc = 4'hf == wbIdx ? entries_15_pc : _GEN_3040; // @[src/main/scala/memory/LoadQueue.scala 230:{20,20}]
+  assign io_outResult_bits_uop_ctrl_fuType = 4'hf == wbIdx ? entries_15_fuType : _GEN_3104; // @[src/main/scala/memory/LoadQueue.scala 265:{23,23}]
+  assign io_outResult_bits_uop_ctrl_lsuOp = 4'hf == wbIdx ? entries_15_lsuOp : _GEN_3120; // @[src/main/scala/memory/LoadQueue.scala 266:{23,23}]
+  assign io_outResult_bits_uop_ctrl_rfWen = 4'hf == wbIdx ? entries_15_rfWen : _GEN_3072; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
   assign io_outResult_bits_uop_excpVec = 4'hf == wbIdx ? entries_15_excpVec : _GEN_2992; // @[src/main/scala/memory/LoadQueue.scala 222:{56,56}]
-  assign io_outResult_bits_uop_pdst = 4'hf == wbIdx ? entries_15_pdst : _GEN_3056; // @[src/main/scala/memory/LoadQueue.scala 237:{20,20}]
-  assign io_outResult_bits_uop_rdValid = 4'hf == wbIdx ? entries_15_rfWen : _GEN_3072; // @[src/main/scala/memory/LoadQueue.scala 243:{20,20}]
+  assign io_outResult_bits_uop_pdst = 4'hf == wbIdx ? entries_15_pdst : _GEN_3056; // @[src/main/scala/memory/LoadQueue.scala 238:{20,20}]
+  assign io_outResult_bits_uop_rdValid = 4'hf == wbIdx ? entries_15_rfWen : _GEN_3072; // @[src/main/scala/memory/LoadQueue.scala 244:{20,20}]
   assign io_outResult_bits_uop_robIdx_value = 4'hf == wbIdx ? entries_15_robIdxFull_value : _GEN_3008; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
   assign io_outResult_bits_uop_robIdx_flag = 4'hf == wbIdx ? entries_15_robIdxFull_flag : _GEN_3024; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
   assign io_outResult_bits_uop_robIdxFull_value = 4'hf == wbIdx ? entries_15_robIdxFull_value : _GEN_3008; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
   assign io_outResult_bits_uop_robIdxFull_flag = 4'hf == wbIdx ? entries_15_robIdxFull_flag : _GEN_3024; // @[src/main/scala/memory/LoadQueue.scala 224:{45,45}]
   assign io_outResult_bits_uop_lqIdx_value = deqPtr_value + wbOffset; // @[src/main/scala/memory/LoadQueue.scala 207:38]
-  assign io_outResult_bits_uop_sqIdx_value = 4'hf == wbIdx ? entries_15_sqIdx : _GEN_3088; // @[src/main/scala/memory/LoadQueue.scala 259:{17,17}]
+  assign io_outResult_bits_uop_sqIdx_value = 4'hf == wbIdx ? entries_15_sqIdx : _GEN_3088; // @[src/main/scala/memory/LoadQueue.scala 260:{17,17}]
   assign io_outResult_bits_data = 4'hf == wbIdx ? entries_15_data : _GEN_2976; // @[src/main/scala/memory/LoadQueue.scala 221:{37,37}]
   assign io_outResult_bits_redirect_valid = |_GEN_2993; // @[src/main/scala/memory/LoadQueue.scala 222:56]
   assign io_outResult_bits_redirect_bits_valid = |_GEN_2993; // @[src/main/scala/memory/LoadQueue.scala 223:64]
@@ -2869,9 +2869,9 @@ module LoadQueue(
         entries_0_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h0 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_0_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h0 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_0_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_0_valid <= _GEN_336;
       end
@@ -2899,7 +2899,7 @@ module LoadQueue(
         entries_0_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_0_writtenBack <= _GEN_3122;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h0 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -2991,9 +2991,9 @@ module LoadQueue(
         entries_1_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h1 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_1_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h1 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_1_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_1_valid <= _GEN_337;
       end
@@ -3021,7 +3021,7 @@ module LoadQueue(
         entries_1_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_1_writtenBack <= _GEN_3123;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h1 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3113,9 +3113,9 @@ module LoadQueue(
         entries_2_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h2 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_2_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h2 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_2_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_2_valid <= _GEN_338;
       end
@@ -3143,7 +3143,7 @@ module LoadQueue(
         entries_2_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_2_writtenBack <= _GEN_3124;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h2 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3235,9 +3235,9 @@ module LoadQueue(
         entries_3_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h3 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_3_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h3 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_3_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_3_valid <= _GEN_339;
       end
@@ -3265,7 +3265,7 @@ module LoadQueue(
         entries_3_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_3_writtenBack <= _GEN_3125;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h3 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3357,9 +3357,9 @@ module LoadQueue(
         entries_4_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h4 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_4_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h4 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_4_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_4_valid <= _GEN_340;
       end
@@ -3387,7 +3387,7 @@ module LoadQueue(
         entries_4_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_4_writtenBack <= _GEN_3126;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h4 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3479,9 +3479,9 @@ module LoadQueue(
         entries_5_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h5 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_5_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h5 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_5_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_5_valid <= _GEN_341;
       end
@@ -3509,7 +3509,7 @@ module LoadQueue(
         entries_5_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_5_writtenBack <= _GEN_3127;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h5 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3601,9 +3601,9 @@ module LoadQueue(
         entries_6_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h6 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_6_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h6 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_6_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_6_valid <= _GEN_342;
       end
@@ -3631,7 +3631,7 @@ module LoadQueue(
         entries_6_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_6_writtenBack <= _GEN_3128;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h6 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3723,9 +3723,9 @@ module LoadQueue(
         entries_7_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h7 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_7_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h7 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_7_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_7_valid <= _GEN_343;
       end
@@ -3753,7 +3753,7 @@ module LoadQueue(
         entries_7_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_7_writtenBack <= _GEN_3129;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h7 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3845,9 +3845,9 @@ module LoadQueue(
         entries_8_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h8 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_8_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h8 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_8_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_8_valid <= _GEN_344;
       end
@@ -3875,7 +3875,7 @@ module LoadQueue(
         entries_8_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_8_writtenBack <= _GEN_3130;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h8 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -3967,9 +3967,9 @@ module LoadQueue(
         entries_9_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'h9 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_9_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'h9 == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_9_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_9_valid <= _GEN_345;
       end
@@ -3997,7 +3997,7 @@ module LoadQueue(
         entries_9_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_9_writtenBack <= _GEN_3131;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'h9 == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4089,9 +4089,9 @@ module LoadQueue(
         entries_10_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'ha == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_10_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'ha == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_10_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_10_valid <= _GEN_346;
       end
@@ -4119,7 +4119,7 @@ module LoadQueue(
         entries_10_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_10_writtenBack <= _GEN_3132;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'ha == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4211,9 +4211,9 @@ module LoadQueue(
         entries_11_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'hb == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_11_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'hb == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_11_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_11_valid <= _GEN_347;
       end
@@ -4241,7 +4241,7 @@ module LoadQueue(
         entries_11_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_11_writtenBack <= _GEN_3133;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'hb == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4333,9 +4333,9 @@ module LoadQueue(
         entries_12_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'hc == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_12_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'hc == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_12_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_12_valid <= _GEN_348;
       end
@@ -4363,7 +4363,7 @@ module LoadQueue(
         entries_12_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_12_writtenBack <= _GEN_3134;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'hc == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4455,9 +4455,9 @@ module LoadQueue(
         entries_13_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'hd == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_13_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'hd == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_13_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_13_valid <= _GEN_349;
       end
@@ -4485,7 +4485,7 @@ module LoadQueue(
         entries_13_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_13_writtenBack <= _GEN_3135;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'hd == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4577,9 +4577,9 @@ module LoadQueue(
         entries_14_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'he == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_14_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'he == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_14_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_14_valid <= _GEN_350;
       end
@@ -4607,7 +4607,7 @@ module LoadQueue(
         entries_14_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_14_writtenBack <= _GEN_3136;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'he == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4699,9 +4699,9 @@ module LoadQueue(
         entries_15_sqIdx <= io_enq_sqIdx; // @[src/main/scala/memory/LoadQueue.scala 120:30]
       end
     end
-    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      if (4'hf == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 294:33]
-        entries_15_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 294:33]
+    if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      if (4'hf == deqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 297:33]
+        entries_15_valid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 297:33]
       end else begin
         entries_15_valid <= _GEN_351;
       end
@@ -4729,7 +4729,7 @@ module LoadQueue(
         entries_15_dataValid <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 124:30]
       end
     end
-    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 285:27]
+    if (_T_2) begin // @[src/main/scala/memory/LoadQueue.scala 288:27]
       entries_15_writtenBack <= _GEN_3137;
     end else if (enqFire) begin // @[src/main/scala/memory/LoadQueue.scala 117:17]
       if (4'hf == enqPtr_value) begin // @[src/main/scala/memory/LoadQueue.scala 125:30]
@@ -4820,12 +4820,12 @@ module LoadQueue(
     end
     if (reset) begin // @[src/main/scala/memory/LoadQueue.scala 101:23]
       deqPtr_value <= 4'h0; // @[src/main/scala/memory/LoadQueue.scala 101:23]
-    end else if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
-      deqPtr_value <= deqPtr_newPtr_value; // @[src/main/scala/memory/LoadQueue.scala 295:12]
+    end else if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
+      deqPtr_value <= deqPtr_newPtr_value; // @[src/main/scala/memory/LoadQueue.scala 298:12]
     end
     if (reset) begin // @[src/main/scala/memory/LoadQueue.scala 101:23]
       deqPtr_flag <= 1'h0; // @[src/main/scala/memory/LoadQueue.scala 101:23]
-    end else if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 293:16]
+    end else if (canDeq) begin // @[src/main/scala/memory/LoadQueue.scala 296:16]
       if (deqPtr_wrap) begin // @[src/main/scala/util/CircularQueuePtr.scala 88:24]
         deqPtr_flag <= ~deqPtr_flag;
       end
