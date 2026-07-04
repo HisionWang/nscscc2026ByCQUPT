@@ -9,6 +9,7 @@ import nscscc.backend.rename._
 import nscscc.backend.dispatch._
 import nscscc.backend.rob._
 import nscscc.backend.issue._
+import nscscc.difftest._
  
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
@@ -32,7 +33,6 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
  
   // ── ROB 提交 ──
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
-  val debugCommit  = new RobCommitIO
   val commitToSq  = new RobCommitToSq
  
   // ── 重定向 ──
@@ -42,13 +42,12 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
 
-
-  val debugArchState = Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W)))
   val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
 }
  
 class CtrlBlock(implicit p: Parameters) extends NSModule {
   val io = IO(new CtrlBlockIO)
+  val difftest = if (EnableDifftest) Some(IO(Output(new CtrlBlockDifftestBundle))) else None
  
   // ================================================================
   //  译码级
@@ -67,7 +66,9 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.redirect := io.redirect
   renameStage.io.flush    := io.flush
 
-  io.debugArchState := renameStage.io.debugArchState
+  if (EnableDifftest) {
+    difftest.get.archState := renameStage.difftest.get
+  }
  
   // ================================================================
   //  分发级
@@ -105,9 +106,38 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
     renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
   }
  
-
-  io.debugCommit   := rob.io.commit
   io.commitToSq := rob.io.commitToSq
+  if (EnableDifftest) {
+    for (i <- 0 until CommitWidth) {
+      val robCommit = rob.io.commit.bits(i)
+      val diffCommit = difftest.get.commit(i)
+      val isCsrRead = robCommit.fuType === FuType.csr && robCommit.csrOp === CsrOp.read
+
+      diffCommit.valid      := rob.io.commit.valid(i)
+      diffCommit.pc         := robCommit.pc
+      diffCommit.instr      := robCommit.inst(31, 0)
+      diffCommit.rfWen      := robCommit.rfWen
+      diffCommit.wdest      := robCommit.ldst
+      diffCommit.wdata      := robCommit.wrdata
+      diffCommit.isCntInst  := DifftestUtils.isCntInst(robCommit.inst)
+      diffCommit.csrRstat   := isCsrRead && robCommit.csrAddress === csrAddr.estat.U
+      diffCommit.csrData    := robCommit.wrdata
+      diffCommit.excpFlush  := robCommit.excpVec.orR
+      diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst)
+      diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excpVec)
+      diffCommit.tlbfillEn  := false.B
+      diffCommit.randIndex  := 0.U
+      diffCommit.trap       := DifftestUtils.isTrap(robCommit.inst)
+      diffCommit.trapCode   := 0.U
+      diffCommit.load.valid := robCommit.memRead
+      diffCommit.load.paddr := robCommit.memPaddr
+      diffCommit.load.vaddr := robCommit.memVaddr
+      diffCommit.store.valid := robCommit.memWrite
+      diffCommit.store.paddr := robCommit.memPaddr
+      diffCommit.store.vaddr := robCommit.memVaddr
+      diffCommit.store.data  := robCommit.storeData
+    }
+  }
  
   // ROB 重定向
   rob.io.flush := io.flush || io.redirect.valid

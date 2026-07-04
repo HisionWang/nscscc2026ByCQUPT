@@ -32,10 +32,8 @@ class RegFile(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val io = IO(new Bundle {
     val readPorts  = Vec(intRegFileReadPorts, new PRFReadPortIO)
     val writePorts = Vec(intRegFileWritePorts, new PRFWritePortIO)
-
-    val debugState = Output(Vec(IntPhyRegs, UInt(XLEN.W)))
-
   })
+  val difftest = if (EnableDifftest) Some(IO(Output(Vec(IntPhyRegs, UInt(XLEN.W))))) else None
  
 //  val regfile = Mem(IntPhyRegs, UInt(XLEN.W))
 //  for (i <- 0 until IntPhyRegs) {
@@ -45,7 +43,9 @@ class RegFile(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val tableInit = VecInit.tabulate(IntPhyRegs)(_.U(XLEN.W))
  
   val regfile     = RegInit(tableInit)
-  io.debugState := regfile
+  if (EnableDifftest) {
+    difftest.get := regfile
+  }
   // ── 同步读：注册读地址 ──
   val readAddrs = io.readPorts.map(p => RegNext(p.addr, 0.U))
  

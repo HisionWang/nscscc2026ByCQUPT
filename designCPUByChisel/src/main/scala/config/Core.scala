@@ -8,6 +8,11 @@ object MmuconfigKeys {
   val TlbNum = new Field[Int](32)
   val TlbSearchPortNum = new Field[Int](2)
 }
+
+object DebugConfigKeys {
+  val EnableDifftest = new Field[Boolean](true)
+}
+
 case class IQParams(
   numEntries: Int,
   numWakeupPorts: Int,
@@ -70,6 +75,7 @@ trait HasCoreParameters {
   // ── IssueQueue 参数 ──
   val IQNumWakeupPorts : Int = WbBusWidth
   val IQNum : Int = 5 
+  val EnableDifftest: Boolean = p(DebugConfigKeys.EnableDifftest)
   
   val IQ1Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts))) //ALU_CSR
   val IQ2Params = p(new Field[IQParams](IQParams(12, IQNumWakeupPorts))) //ALU_DIV

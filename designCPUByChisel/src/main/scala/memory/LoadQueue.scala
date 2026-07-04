@@ -219,6 +219,12 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   // 构造 ExeResult
   io.outResult.valid                := hasWbCandidate
   io.outResult.bits.data            := wbEntry.data //loadData
+  io.outResult.bits.memValid        := true.B
+  io.outResult.bits.memRead         := true.B
+  io.outResult.bits.memWrite        := false.B
+  io.outResult.bits.memVaddr        := wbEntry.vaddr
+  io.outResult.bits.memPaddr        := wbEntry.paddr
+  io.outResult.bits.memStoreData    := 0.U
   io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull

@@ -54,7 +54,8 @@ class Mmu(implicit p: Parameters) extends NSModule {
     }
   }
 
-  val reqVaddr = Mux(isIdle, io.fromIcache.bits.vaddr, reqBuffer.vaddr)
+  val reqVaddr   = Mux(isIdle, io.fromIcache.bits.vaddr, reqBuffer.vaddr)
+  val inReqVaddr = io.fromIcache.bits.vaddr
 
   val isPaging = io.fromCsr.pgda === 2.U
   val isDirect = io.fromCsr.pgda === 1.U
@@ -64,6 +65,10 @@ class Mmu(implicit p: Parameters) extends NSModule {
   val dmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, reqVaddr, io.fromCsr.plv)
   val dmwHit  = dmw0Hit || dmw1Hit
   val needTlb  = isPaging && !dmwHit // DMW miss
+
+  val inDmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, inReqVaddr, io.fromCsr.plv)
+  val inDmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, inReqVaddr, io.fromCsr.plv)
+  val inNeedTlb = isPaging && !(inDmw0Hit || inDmw1Hit)
 
   val directResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
   directResp.paddr := reqVaddr
@@ -89,15 +94,17 @@ class Mmu(implicit p: Parameters) extends NSModule {
   val ifTlbReq  = tlb.io.search(0).req
   val ifTlbResp = tlb.io.search(0).resp
 
-  // 非idle不接受请求，每次处理一个search请求
-  // locked
-  ifTlbReq.valid        := isIdle && io.fromIcache.valid && needTlb && !io.fromIcacheFlush
-  ifTlbReq.bits.vppn    := reqVaddr(31, 13)
-  ifTlbReq.bits.vaBit12 := reqVaddr(12)
-  ifTlbReq.bits.offset  := reqVaddr(21,  0)
+  // 保留单请求锁，但允许响应fire的同一拍接收下一条请求。
+  val respFire     = io.toIcache.fire
+  val canAcceptReq = (isIdle || respFire) && !io.fromIcacheFlush
+
+  ifTlbReq.valid        := canAcceptReq && io.fromIcache.valid && inNeedTlb
+  ifTlbReq.bits.vppn    := inReqVaddr(31, 13)
+  ifTlbReq.bits.vaBit12 := inReqVaddr(12)
+  ifTlbReq.bits.offset  := inReqVaddr(21,  0)
   ifTlbReq.bits.asid    := io.fromCsr.asid
 
-  io.fromIcache.ready := isIdle && (!needTlb || ifTlbReq.ready) && !io.fromIcacheFlush
+  io.fromIcache.ready := canAcceptReq && (!inNeedTlb || ifTlbReq.ready)
 
   ifTlbResp.ready := isBusy && io.toIcache.ready && !io.fromIcacheFlush
   tlb.io.search(0).flush := io.fromIcacheFlush

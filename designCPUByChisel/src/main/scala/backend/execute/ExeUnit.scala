@@ -12,6 +12,12 @@ class ExeResult(implicit p: Parameters) extends NSBundle {
   val uop      = new DispatchedInst
   val data     = UInt(XLEN.W)
   val redirect = Valid(new RedirectInfo)
+  val memValid = Bool()
+  val memRead  = Bool()
+  val memWrite = Bool()
+  val memVaddr = UInt(XLEN.W)
+  val memPaddr = UInt(XLEN.W)
+  val memStoreData = UInt(XLEN.W)
   
 
 }
@@ -156,6 +162,12 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   
   // 仲裁并输出计算结果数据
   io.outResult.bits.data := Mux1H(subValids, subData)
+  io.outResult.bits.memValid := false.B
+  io.outResult.bits.memRead := false.B
+  io.outResult.bits.memWrite := false.B
+  io.outResult.bits.memVaddr := 0.U
+  io.outResult.bits.memPaddr := 0.U
+  io.outResult.bits.memStoreData := 0.U
 
 
   io.outResult.bits.redirect.valid := false.B

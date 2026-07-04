@@ -13,6 +13,7 @@ import nscscc.backend.regread._
 import nscscc.backend.execute._
 import nscscc.backend.writeback._
 import nscscc.mem._
+import nscscc.difftest._
  
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
@@ -23,38 +24,33 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val toMemResult  = Vec(2, Decoupled(new ExeResult) )
   val fromMemResult  = Flipped (Vec(2, Decoupled(new ExeResult) ))
   val commitToSq  = new RobCommitToSq
-
-  val debugCommit  = new RobCommitIO
-  val debugLogicRegs = Output(Vec(IntLogicRegs, UInt(XLEN.W)))
 }
 
 class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val io = IO(new BackendIO)
+  val difftest = if (EnableDifftest) Some(IO(Output(new BackendDifftestBundle))) else None
  
   // ══════════════════════════════════════════════════════════════
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
-  io.debugCommit <> ctrlBlock.io.debugCommit
 
   io.commitToSq <> ctrlBlock.io.commitToSq
-  
+
   io.lsEnq <> ctrlBlock.io.lsEnq
-  dontTouch(ctrlBlock.io.debugCommit)
   val scheduler   = Module(new Scheduler)
   val regRead     = Module(new RegisterRead)
   val regFile     = Module(new RegFile)
-  // ══════════════════════════════════════════════════════════════
-  //  全局调试信号连接：生成最终的逻辑寄存器架构状态
-  // ══════════════════════════════════════════════════════════════
-  val archState = ctrlBlock.io.debugArchState
-  val phyState  = regFile.io.debugState
 
-  // 遍历 32 个逻辑寄存器，用架构表的值作为物理寄存器堆的索引
-  for (i <- 0 until IntLogicRegs) {
-    io.debugLogicRegs(i) := phyState(archState(i))
+  if (EnableDifftest) {
+    val archState = ctrlBlock.difftest.get.archState
+    val phyState  = regFile.difftest.get
+
+    difftest.get.commit := ctrlBlock.difftest.get.commit
+    for (i <- 0 until IntLogicRegs) {
+      difftest.get.regs(i) := phyState(archState(i))
+    }
   }
-  dontTouch(io.debugLogicRegs)
 
 
  

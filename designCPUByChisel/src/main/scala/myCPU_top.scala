@@ -143,11 +143,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   memory.io.redirect.bits.robIdx.value := 0.U
   memory.io.redirect.bits.robIdx.flag := true.B
   
-
-
-  dontTouch(backend.io.debugLogicRegs)
-
-  
   backend.io.flush := false.B
   backend.io.extInt := intrpt =/= 0.U
 
@@ -312,96 +307,23 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // ================================================================
   // Difftest 协同仿真
   // ================================================================
-  val cycleCount = RegInit(0.U(64.W))
-  cycleCount := cycleCount + 1.U
- 
-  val difftest = Module(new DifftestInCore)
+  if (EnableDifftest) {
+    val difftest = Module(new DifftestInCore)
+    val difftestInfo = Wire(new CoreDifftestBundle)
 
-  // ================================================================
-  // 提交全局索引计数器
-  // ================================================================
-  val committedInstCnt = RegInit(0.U(64.W))
-  dontTouch(committedInstCnt)
-   
-  val debugCommit = backend.io.debugCommit  // RobCommitIO, CommitWidth 路
-   
-  // 本次提交的有效指令数
-  val commitValidCount = PopCount(debugCommit.valid)
-   
-  // 传给 difftest：第 0 个提交的全局序号
-  
-   
-  // 有提交时更新计数器
-  when(commitValidCount.orR) {
-    committedInstCnt := committedInstCnt + commitValidCount
-  }
-  difftest.io.cnt_index_diff := committedInstCnt
+    difftestInfo.commit := backend.difftest.get.commit
+    difftestInfo.regs   := backend.difftest.get.regs
+    difftestInfo.csr    := csr.difftest.get
+    difftest.io := difftestInfo
 
-  // 指令有效: 前端输出第一条指令握手成功
-
-  difftest.io.inst_valid_diff   := debugCommit.valid(0)
-  difftest.io.cnt_inst_diff     := debugCommit.bits(0).inst
-  difftest.io.timer_64_diff     := cycleCount
-   // 写回调试
-  difftest.io.debug0_wb_rf_wen  := debugCommit.bits(0).rfWen
-  difftest.io.debug0_wb_rf_wnum := debugCommit.bits(0).pdst
-  difftest.io.debug0_wb_rf_wdata:= debugCommit.bits(0).wrdata
-  difftest.io.debug0_wb_pc      := debugCommit.bits(0).pc
-  difftest.io.debug0_wb_inst    := debugCommit.bits(0).inst
-
-  // Load/Store (暂无后端)
-  difftest.io.inst_ld_en_diff   := false.B
-  difftest.io.ld_paddr_diff     := 0.U
-  difftest.io.ld_vaddr_diff     := 0.U
-  difftest.io.inst_st_en_diff   := false.B
-  difftest.io.st_paddr_diff     := 0.U
-  difftest.io.st_vaddr_diff     := 0.U
-  difftest.io.st_data_diff      := 0.U
- 
-  // CSR (从CSR模块读出)
-  difftest.io.csr_rstat_en_diff := false.B
-  difftest.io.csr_data_diff     := 0.U
- 
-
- 
-  // 异常相关
-  difftest.io.excp_flush   := false.B
-  difftest.io.ertn_flush   := false.B
-  difftest.io.ws_csr_ecode := 0.U
-  difftest.io.tlbfill_en   := false.B
-  difftest.io.rand_index   := 0.U
- 
-  // CSR快照 (从CSR模块读出)
-  difftest.io.csr_estat_diff_0      := 0.U
-  difftest.io.csr_crmd_diff_0       := 0.U
-  difftest.io.csr_prmd_diff_0       := 0.U
-  difftest.io.csr_ectl_diff_0       := 0.U
-  difftest.io.csr_era_diff_0        := 0.U
-  difftest.io.csr_badv_diff_0       := 0.U
-  difftest.io.csr_eentry_diff_0     := 0.U
-  difftest.io.csr_tlbidx_diff_0     := 0.U
-  difftest.io.csr_tlbehi_diff_0     := 0.U
-  difftest.io.csr_tlbelo0_diff_0    := 0.U
-  difftest.io.csr_tlbelo1_diff_0    := 0.U
-  difftest.io.csr_asid_diff_0       := 0.U
-  difftest.io.csr_pgdl_diff_0       := 0.U
-  difftest.io.csr_pgdh_diff_0       := 0.U
-  difftest.io.csr_save0_diff_0      := 0.U
-  difftest.io.csr_save1_diff_0      := 0.U
-  difftest.io.csr_save2_diff_0      := 0.U
-  difftest.io.csr_save3_diff_0      := 0.U
-  difftest.io.csr_tid_diff_0        := 0.U
-  difftest.io.csr_tcfg_diff_0       := 0.U
-  difftest.io.csr_tval_diff_0       := 0.U
-  difftest.io.csr_ticlr_diff_0      := 0.U
-  difftest.io.csr_llbctl_diff_0     := 0.U
-  difftest.io.csr_tlbrentry_diff_0  := 0.U
-  difftest.io.csr_dmw0_diff_0       := 0.U
-  difftest.io.csr_dmw1_diff_0       := 0.U
- 
-  // 寄存器堆 (暂无, 置0)
-  for (i <- 0 until 32) {
-    difftest.io.regs(i) := backend.io.debugLogicRegs(i)
+    val legacyCommit = backend.difftest.get.commit(0)
+    ws_valid           := legacyCommit.valid
+    debug0_wb_pc       := legacyCommit.pc(31, 0)
+    debug0_wb_rf_wen   := legacyCommit.valid && legacyCommit.rfWen
+    debug0_wb_rf_wnum  := legacyCommit.wdest
+    debug0_wb_rf_wdata := legacyCommit.wdata(31, 0)
+    debug0_wb_inst     := legacyCommit.instr
+    rf_rdata           := backend.difftest.get.regs(reg_num)
   }
 
   
@@ -422,48 +344,4 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   dontTouch(bresp)
  
   } // end withClockAndReset
-}
- 
-// ================================================================
-// Verilog 生成入口
-// ================================================================
-import config._
-import java.io.File
-import scala.sys.process._
- 
-object myCPU_top extends App {
- 
-  val targetDirPath = "./../chiplab/IP/myCPU/Chisel"
-  val targetDir = new File(targetDirPath)
- 
-  if (targetDir.exists() && targetDir.isDirectory) {
-    def deleteRecursively(file: File): Unit = {
-      if (file.isDirectory) {
-        file.listFiles().foreach(deleteRecursively)
-      }
-      if (file.exists && !file.delete()) {
-        throw new Exception(s"Exception DeleFail: ${file.getAbsolutePath}")
-      }
-    }
-    deleteRecursively(targetDir)
-  }
-  targetDir.mkdirs()
- 
-  implicit val config: Parameters = new Parameters(Map())
- 
-  emitVerilog(
-    new core_top,
-    Array(
-      "--target-dir", targetDirPath,
-      "--emit-modules", "verilog"
-    )
-  )
- 
-  val filesToDelete = List("core_top.anno.json", "core_top.fir")
-  filesToDelete.foreach { filename =>
-    val fileToDelete = new File(targetDir, filename)
-    if (fileToDelete.exists()) {
-      fileToDelete.delete()
-    }
-  }
 }

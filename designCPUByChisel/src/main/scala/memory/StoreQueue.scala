@@ -204,6 +204,12 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   io.outResult.valid                := hasWbCandidate
   io.outResult.bits.data            := 0.U
+  io.outResult.bits.memValid        := true.B
+  io.outResult.bits.memRead         := false.B
+  io.outResult.bits.memWrite        := true.B
+  io.outResult.bits.memVaddr        := wbEntry.vaddr
+  io.outResult.bits.memPaddr        := wbEntry.paddr
+  io.outResult.bits.memStoreData    := wbEntry.data
   io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull

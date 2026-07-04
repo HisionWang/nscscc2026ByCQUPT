@@ -28,7 +28,6 @@ class RenameTable(implicit p: Parameters) extends NSModule {
  
     // ── 架构表写端口（提交时当拍写入） ──
     val archWritePorts = Vec(CommitWidth, Input(new RatWritePort))
-    val debugArchState = Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W)))
  
     // ── 新增：架构表读端口（纯组合逻辑直出，用于外部追踪或系统回滚） ──
     // 数量通常与系统的提交宽度对齐，或根据调试需求设置
@@ -43,7 +42,8 @@ class RenameTable(implicit p: Parameters) extends NSModule {
     val snptRedirect = Input(Bool())
     val snptSelect   = Input(UInt(log2Ceil(SnapshotNum).W))
   })
-  
+  val difftest = if (EnableDifftest) Some(IO(Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W))))) else None
+
   // ================================================================
   //  1. 双表初始化：逻辑寄存器 i 初始映射到物理寄存器 i
   // ================================================================
@@ -54,7 +54,9 @@ class RenameTable(implicit p: Parameters) extends NSModule {
  
   val archTable     = RegInit(tableInit)
   val archTableNext = WireInit(archTable)
-  io.debugArchState := archTable
+  if (EnableDifftest) {
+    difftest.get := archTable
+  }
  
   // ================================================================
   //  2. T0→T1 打拍

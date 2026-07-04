@@ -136,6 +136,9 @@ class RobEntry(implicit p: Parameters) extends NSBundle {
   val memRead  = Bool()
   val memWrite = Bool()
   val csrWen   = Bool()
+  val csrOp    = UInt(CsrOp.width.W)
+  val csrAddress = UInt(csrAddrLen.W)
+  val isPriv   = Bool()
   val excpVec  = UInt(ExceptionCode.width.W)
   val fuType   = UInt(FuType.width.W)
   val robIdx   = new RobPtr(RobSize)
@@ -160,6 +163,16 @@ class RobCommitEntry(implicit p: Parameters) extends NSBundle {
 
   val sqIdx    = new SqPtr(SqSize)
   val memWrite    = Bool()
+  val memRead     = Bool()
+  val memVaddr    = UInt(XLEN.W)
+  val memPaddr    = UInt(XLEN.W)
+  val storeData   = UInt(XLEN.W)
+  val csrWen      = Bool()
+  val csrOp       = UInt(CsrOp.width.W)
+  val csrAddress  = UInt(csrAddrLen.W)
+  val isPriv      = Bool()
+  val fuType      = UInt(FuType.width.W)
+  val excpVec     = UInt(ExceptionCode.width.W)
 }
 
 
@@ -197,6 +210,11 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
   val robIdx  = new RobPtr(RobSize)
   val sqIdx  = new SqPtr(SqSize)
   val isMemWrite  = Bool()
+  val isMemRead  = Bool()
+  val memValid  = Bool()
+  val memVaddr  = UInt(XLEN.W)
+  val memPaddr  = UInt(XLEN.W)
+  val memStoreData  = UInt(XLEN.W)
   val rfdata  = UInt(XLEN.W)
 
   val excpVec = UInt(ExceptionCode.width.W)

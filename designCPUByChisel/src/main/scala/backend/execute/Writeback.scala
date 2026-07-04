@@ -108,6 +108,11 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
     io.toRObResults(w).bits.rfdata   := res.data
     io.toRObResults(w).bits.sqIdx   := res.uop.sqIdx
     io.toRObResults(w).bits.isMemWrite   := res.uop.ctrl.memWrite
+    io.toRObResults(w).bits.isMemRead    := res.uop.ctrl.memRead
+    io.toRObResults(w).bits.memValid     := res.memValid
+    io.toRObResults(w).bits.memVaddr     := res.memVaddr
+    io.toRObResults(w).bits.memPaddr     := res.memPaddr
+    io.toRObResults(w).bits.memStoreData := res.memStoreData
 
   }
  

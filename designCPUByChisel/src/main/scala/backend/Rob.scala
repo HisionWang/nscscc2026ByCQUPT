@@ -44,8 +44,14 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val rfdata       = UInt(XLEN.W)
   val memRead     = Bool()
   val memWrite    = Bool()
+  val memVaddr    = UInt(XLEN.W)
+  val memPaddr    = UInt(XLEN.W)
+  val storeData   = UInt(XLEN.W)
   val sqIdx       = new SqPtr(SqSize)
   val csrWen      = Bool()
+  val csrOp       = UInt(CsrOp.width.W)
+  val csrAddress  = UInt(csrAddrLen.W)
+  val isPriv      = Bool()
   val fuType      = UInt(FuType.width.W)
   val excpVec     = UInt(ExceptionCode.width.W)
   val writtenBack = Bool()    // 执行单元是否已写回
@@ -111,7 +117,13 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).rfWen       := io.enq.bits(i).rfWen
       entries(writeIdx).memRead     := io.enq.bits(i).memRead
       entries(writeIdx).memWrite    := io.enq.bits(i).memWrite
+      entries(writeIdx).memVaddr    := 0.U
+      entries(writeIdx).memPaddr    := 0.U
+      entries(writeIdx).storeData   := 0.U
       entries(writeIdx).csrWen      := io.enq.bits(i).csrWen
+      entries(writeIdx).csrOp       := io.enq.bits(i).csrOp
+      entries(writeIdx).csrAddress  := io.enq.bits(i).csrAddress
+      entries(writeIdx).isPriv      := io.enq.bits(i).isPriv
       entries(writeIdx).fuType      := io.enq.bits(i).fuType
       entries(writeIdx).excpVec     := io.enq.bits(i).excpVec
       entries(writeIdx).writtenBack := false.B
@@ -134,7 +146,13 @@ class ROB(implicit p: Parameters) extends NSModule {
     when(wb.valid) {
       entries(wb.bits.robIdx.value).writtenBack := true.B
       entries(wb.bits.robIdx.value).rfdata := wb.bits.rfdata
-      entries(wb.bits.robIdx.value).memWrite := wb.bits.isMemWrite
+      when(wb.bits.memValid) {
+        entries(wb.bits.robIdx.value).memRead   := wb.bits.isMemRead
+        entries(wb.bits.robIdx.value).memWrite  := wb.bits.isMemWrite
+        entries(wb.bits.robIdx.value).memVaddr  := wb.bits.memVaddr
+        entries(wb.bits.robIdx.value).memPaddr  := wb.bits.memPaddr
+        entries(wb.bits.robIdx.value).storeData := wb.bits.memStoreData
+      }
       entries(wb.bits.robIdx.value).sqIdx := wb.bits.sqIdx
       // 如果有异常，更新异常向量
       when(wb.bits.excpVec.orR) {
@@ -176,6 +194,16 @@ class ROB(implicit p: Parameters) extends NSModule {
     //SQ的
     commitCandidates(i).sqIdx   := entry.sqIdx
     commitCandidates(i).memWrite   := entry.memWrite
+    commitCandidates(i).memRead    := entry.memRead
+    commitCandidates(i).memVaddr   := entry.memVaddr
+    commitCandidates(i).memPaddr   := entry.memPaddr
+    commitCandidates(i).storeData  := entry.storeData
+    commitCandidates(i).csrWen     := entry.csrWen
+    commitCandidates(i).csrOp      := entry.csrOp
+    commitCandidates(i).csrAddress := entry.csrAddress
+    commitCandidates(i).isPriv     := entry.isPriv
+    commitCandidates(i).fuType     := entry.fuType
+    commitCandidates(i).excpVec    := entry.excpVec
    
     // 累积条件：前序都能提交 && 本身就绪（异常也算就绪，但会停止后续）
     prevCanCommit = prevCanCommit && thisReady

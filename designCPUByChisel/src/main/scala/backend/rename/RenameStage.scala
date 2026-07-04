@@ -57,9 +57,8 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     val redirect = Input(new RedirectInfo)
     // ── 全局冲刷 ──
     val flush   = Input(Bool())
-
-    val debugArchState = Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W)))
   })
+  val difftest = if (EnableDifftest) Some(IO(Output(Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W))))) else None
  
   // ================================================================
   //  ROB 指针类型（复用 CircularQueuePtr）在Bundles中使用
@@ -72,7 +71,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val rat      = Module(new RenameTable)
   val freeList = Module(new FreeList)
  
-  io.debugArchState := rat.io.debugArchState
+  if (EnableDifftest) {
+    difftest.get := rat.difftest.get
+  }
   // ================================================================
   //  Phase 1: 流水级寄存器（严格对齐 DecodeStage 风格）
   //

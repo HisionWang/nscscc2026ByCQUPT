@@ -4,9 +4,11 @@ import chisel3._
 import chisel3.util._
 import nscscc.config.{NSModule, Parameters}
 import nscscc.csr.CsrBundles._
+import nscscc.difftest.DifftestCSRState
 
 class CsrFile(implicit p: Parameters) extends NSModule {
   val io = IO(new CsrFileIo)
+  val difftest = if (EnableDifftest) Some(IO(Output(new DifftestCSRState))) else None
 
   // CSR寄存器实例
   val crmd = RegInit({
@@ -380,4 +382,35 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   io.toTlb.tlbelo1 := tlbelo1.toUInt
   io.toTlb.asid    := asid.asid.bits
   io.toTlb.random  := timer64(4, 0)
+
+  if (EnableDifftest) {
+    val dt = difftest.get
+    dt.estat     := estat.toUInt
+    dt.crmd      := crmd.toUInt
+    dt.prmd      := prmd.toUInt
+    dt.ecfg      := ecfg.toUInt
+    dt.era       := era.toUInt
+    dt.badv      := badv.toUInt
+    dt.eentry    := eentry.toUInt
+    dt.tlbidx    := tlbidx.toUInt
+    dt.tlbehi    := tlbehi.toUInt
+    dt.tlbelo0   := tlbelo0.toUInt
+    dt.tlbelo1   := tlbelo1.toUInt
+    dt.asid      := asid.toUInt
+    dt.pgdl      := pgdl.toUInt
+    dt.pgdh      := pgdh.toUInt
+    dt.save0     := save0.toUInt
+    dt.save1     := save1.toUInt
+    dt.save2     := save2.toUInt
+    dt.save3     := save3.toUInt
+    dt.tid       := tid.toUInt
+    dt.tcfg      := tcfg.toUInt
+    dt.tval      := tval.toUInt
+    dt.ticlr     := ticlr.toUInt
+    dt.llbctl    := llbctl.toUInt
+    dt.tlbrentry := tlbrentry.toUInt
+    dt.dmw0      := dmw0.toUInt
+    dt.dmw1      := dmw1.toUInt
+    dt.timer64   := timer64
+  }
 }

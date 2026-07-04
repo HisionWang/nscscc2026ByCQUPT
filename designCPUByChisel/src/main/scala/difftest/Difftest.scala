@@ -3,6 +3,7 @@ package nscscc.difftest
 import chisel3._
 import chisel3.util._
 import chisel3.experimental._
+import nscscc.config._
 
 // 定义所有Difftest模块的黑盒接口
 class DifftestInstrCommit extends BlackBox with HasBlackBoxResource {
@@ -154,252 +155,150 @@ class DifftestGRegState extends BlackBox with HasBlackBoxResource {
 }
 
 // 顶层模块
-class DifftestInCore extends Module {
-  val io = IO(new Bundle {
-    
-    // 来自CPU的信号
-    val inst_valid_diff = Input(Bool())
-    val cnt_inst_diff = Input(Bool())
-    val cnt_index_diff = Input(UInt(64.W))
-    val timer_64_diff = Input(UInt(64.W))
-    val inst_ld_en_diff = Input(Bool())
-    val ld_paddr_diff = Input(UInt(64.W))
-    val ld_vaddr_diff = Input(UInt(64.W))
-    val inst_st_en_diff = Input(Bool())
-    val st_paddr_diff = Input(UInt(64.W))
-    val st_vaddr_diff = Input(UInt(64.W))
-    val st_data_diff = Input(UInt(64.W))
-    val csr_rstat_en_diff = Input(Bool())
-    val csr_data_diff = Input(UInt(64.W))
-    
-    val debug0_wb_rf_wen = Input(Bool())
-    val debug0_wb_rf_wnum = Input(UInt(5.W))
-    val debug0_wb_rf_wdata = Input(UInt(64.W))
-    val debug0_wb_pc = Input(UInt(64.W))
-    val debug0_wb_inst = Input(UInt(32.W))
-    
-    val excp_flush = Input(Bool())
-    val ertn_flush = Input(Bool())
-    val ws_csr_ecode = Input(UInt(6.W))
-    val tlbfill_en = Input(Bool())
-    val rand_index = Input(UInt(5.W))
-    
-    val csr_estat_diff_0 = Input(UInt(32.W))
-    val csr_crmd_diff_0 = Input(UInt(32.W))
-    val csr_prmd_diff_0 = Input(UInt(32.W))
-    val csr_ectl_diff_0 = Input(UInt(32.W))
-    val csr_era_diff_0 = Input(UInt(64.W))
-    val csr_badv_diff_0 = Input(UInt(64.W))
-    val csr_eentry_diff_0 = Input(UInt(64.W))
-    val csr_tlbidx_diff_0 = Input(UInt(32.W))
-    val csr_tlbehi_diff_0 = Input(UInt(64.W))
-    val csr_tlbelo0_diff_0 = Input(UInt(32.W))
-    val csr_tlbelo1_diff_0 = Input(UInt(32.W))
-    val csr_asid_diff_0 = Input(UInt(32.W))
-    val csr_pgdl_diff_0 = Input(UInt(64.W))
-    val csr_pgdh_diff_0 = Input(UInt(64.W))
-    val csr_save0_diff_0 = Input(UInt(64.W))
-    val csr_save1_diff_0 = Input(UInt(64.W))
-    val csr_save2_diff_0 = Input(UInt(64.W))
-    val csr_save3_diff_0 = Input(UInt(64.W))
-    val csr_tid_diff_0 = Input(UInt(64.W))
-    val csr_tcfg_diff_0 = Input(UInt(32.W))
-    val csr_tval_diff_0 = Input(UInt(64.W))
-    val csr_ticlr_diff_0 = Input(UInt(32.W))
-    val csr_llbctl_diff_0 = Input(UInt(32.W))
-    val csr_tlbrentry_diff_0 = Input(UInt(64.W))
-    val csr_dmw0_diff_0 = Input(UInt(32.W))
-    val csr_dmw1_diff_0 = Input(UInt(32.W))
-    
-    val regs = Input(Vec(32, UInt(64.W)))
-  })
-  
-  // 寄存器定义
-  val cmt_valid = RegInit(false.B)
-  val cmt_index = RegInit(0.U(64.W))
-  val cmt_cnt_inst = RegInit(false.B)
-  val cmt_timer_64 = RegInit(0.U(64.W))
-  val cmt_inst_ld_en = RegInit(false.B)
-  val cmt_ld_paddr = RegInit(0.U(64.W))
-  val cmt_ld_vaddr = RegInit(0.U(64.W))
-  val cmt_inst_st_en = RegInit(false.B)
-  val cmt_st_paddr = RegInit(0.U(64.W))
-  val cmt_st_vaddr = RegInit(0.U(64.W))
-  val cmt_st_data = RegInit(0.U(64.W))
-  val cmt_csr_rstat_en = RegInit(false.B)
-  val cmt_csr_data = RegInit(0.U(64.W))
-  
-  val cmt_wen = RegInit(false.B)
-  val cmt_wdest = RegInit(0.U(8.W))
-  val cmt_wdata = RegInit(0.U(64.W))
-  val cmt_pc = RegInit(0.U(64.W))
-  val cmt_inst = RegInit(0.U(32.W))
-  
-  val cmt_excp_flush = RegInit(false.B)
-  val cmt_ertn = RegInit(false.B)
-  val cmt_csr_ecode = RegInit(0.U(6.W))
-  val cmt_tlbfill_en = RegInit(false.B)
-  val cmt_rand_index = RegInit(0.U(5.W))
-  
-  val trap = RegInit(false.B)
-  val trap_code = RegInit(0.U(8.W))
+class DifftestInCore(implicit p: Parameters) extends NSModule {
+  val io = IO(Input(new CoreDifftestBundle))
+
+  private def zeroExt64(x: UInt): UInt = {
+    val width = x.getWidth
+    if (width >= 64) x(63, 0) else Cat(0.U((64 - width).W), x)
+  }
+
+  val cmt = RegInit(0.U.asTypeOf(Vec(CommitWidth, new DifftestCommitInfo)))
+  val cmtTimer64 = RegInit(0.U(64.W))
+  cmt := io.commit
+  cmtTimer64 := io.csr.timer64
+
   val cycleCnt = RegInit(0.U(64.W))
   val instrCnt = RegInit(0.U(64.W))
-  
-    when(!trap) {
-      cmt_valid := io.inst_valid_diff
-      cmt_index := io.cnt_index_diff
-      cmt_cnt_inst := io.cnt_inst_diff
-      cmt_timer_64 := io.timer_64_diff
-      cmt_inst_ld_en := io.inst_ld_en_diff
-      cmt_ld_paddr := io.ld_paddr_diff
-      cmt_ld_vaddr := io.ld_vaddr_diff
-      cmt_inst_st_en := io.inst_st_en_diff
-      cmt_st_paddr := io.st_paddr_diff
-      cmt_st_vaddr := io.st_vaddr_diff
-      cmt_st_data := io.st_data_diff
-      cmt_csr_rstat_en := io.csr_rstat_en_diff
-      cmt_csr_data := io.csr_data_diff
-      
-      cmt_wen := io.debug0_wb_rf_wen
-      cmt_wdest := Cat(0.U(3.W), io.debug0_wb_rf_wnum)
-      cmt_wdata := io.debug0_wb_rf_wdata
-      cmt_pc := io.debug0_wb_pc
-      cmt_inst := io.debug0_wb_inst
-      
-      cmt_excp_flush := io.excp_flush
-      cmt_ertn := io.ertn_flush
-      cmt_csr_ecode := io.ws_csr_ecode
-      cmt_tlbfill_en := io.tlbfill_en
-      cmt_rand_index := io.rand_index
-      
-      trap := false.B
-      trap_code := io.regs(10)(7, 0)
-      cycleCnt := cycleCnt + 1.U
-      instrCnt := instrCnt + io.inst_valid_diff
-    }
-  
-  
-  // 实例化Difftest模块
-  val difftestInstrCommit = Module(new DifftestInstrCommit)
+  cycleCnt := cycleCnt + 1.U
+  instrCnt := instrCnt + PopCount(io.commit.map(_.valid))
 
-  difftestInstrCommit.io.clock := clock
-  difftestInstrCommit.io.coreid := 0.U
-  difftestInstrCommit.io.index := 0.U
-  difftestInstrCommit.io.valid := cmt_valid
-  difftestInstrCommit.io.pc := cmt_pc
-  difftestInstrCommit.io.instr := cmt_inst
-  difftestInstrCommit.io.skip := false.B
-  difftestInstrCommit.io.is_TLBFILL := cmt_tlbfill_en
-  difftestInstrCommit.io.TLBFILL_index := cmt_rand_index
-  difftestInstrCommit.io.is_CNTinst := cmt_cnt_inst
-  difftestInstrCommit.io.timer_64_value := cmt_timer_64
-  difftestInstrCommit.io.wen := cmt_wen
-  difftestInstrCommit.io.wdest := cmt_wdest
-  difftestInstrCommit.io.wdata := cmt_wdata
-  difftestInstrCommit.io.csr_rstat := cmt_csr_rstat_en
-  difftestInstrCommit.io.csr_data := cmt_csr_data
-  
+  for (i <- 0 until CommitWidth) {
+    val commit = cmt(i)
+
+    val difftestInstrCommit = Module(new DifftestInstrCommit)
+    difftestInstrCommit.io.clock := clock
+    difftestInstrCommit.io.coreid := 0.U
+    difftestInstrCommit.io.index := i.U
+    difftestInstrCommit.io.valid := commit.valid
+    difftestInstrCommit.io.pc := zeroExt64(commit.pc)
+    difftestInstrCommit.io.instr := commit.instr
+    difftestInstrCommit.io.skip := false.B
+    difftestInstrCommit.io.is_TLBFILL := commit.tlbfillEn
+    difftestInstrCommit.io.TLBFILL_index := commit.randIndex
+    difftestInstrCommit.io.is_CNTinst := commit.isCntInst
+    difftestInstrCommit.io.timer_64_value := cmtTimer64
+    difftestInstrCommit.io.wen := commit.valid && commit.rfWen
+    difftestInstrCommit.io.wdest := Cat(0.U(3.W), commit.wdest)
+    difftestInstrCommit.io.wdata := zeroExt64(commit.wdata)
+    difftestInstrCommit.io.csr_rstat := commit.valid && commit.csrRstat
+    difftestInstrCommit.io.csr_data := zeroExt64(commit.csrData)
+
+    val difftestStoreEvent = Module(new DifftestStoreEvent)
+    difftestStoreEvent.io.clock := clock
+    difftestStoreEvent.io.coreid := 0.U
+    difftestStoreEvent.io.index := i.U
+    difftestStoreEvent.io.valid := commit.valid && commit.store.valid
+    difftestStoreEvent.io.storePAddr := zeroExt64(commit.store.paddr)
+    difftestStoreEvent.io.storeVAddr := zeroExt64(commit.store.vaddr)
+    difftestStoreEvent.io.storeData := zeroExt64(commit.store.data)
+
+    val difftestLoadEvent = Module(new DifftestLoadEvent)
+    difftestLoadEvent.io.clock := clock
+    difftestLoadEvent.io.coreid := 0.U
+    difftestLoadEvent.io.index := i.U
+    difftestLoadEvent.io.valid := commit.valid && commit.load.valid
+    difftestLoadEvent.io.paddr := zeroExt64(commit.load.paddr)
+    difftestLoadEvent.io.vaddr := zeroExt64(commit.load.vaddr)
+  }
+
+  val excpValids = VecInit(cmt.map(c => c.valid && (c.excpFlush || c.ertnFlush)))
+  val excpCommit = PriorityMux(excpValids, cmt)
   val difftestExcpEvent = Module(new DifftestExcpEvent)
   difftestExcpEvent.io.clock := clock
   difftestExcpEvent.io.coreid := 0.U
-  difftestExcpEvent.io.excp_valid := cmt_excp_flush
-  difftestExcpEvent.io.eret := cmt_ertn
-  difftestExcpEvent.io.intrNo := io.csr_estat_diff_0(12, 2)
-  difftestExcpEvent.io.cause := cmt_csr_ecode
-  difftestExcpEvent.io.exceptionPC := cmt_pc
-  difftestExcpEvent.io.exceptionInst := cmt_inst
-  
+  difftestExcpEvent.io.excp_valid := excpValids.asUInt.orR && excpCommit.excpFlush
+  difftestExcpEvent.io.eret := excpValids.asUInt.orR && excpCommit.ertnFlush
+  difftestExcpEvent.io.intrNo := io.csr.estat(12, 2)
+  difftestExcpEvent.io.cause := excpCommit.csrEcode
+  difftestExcpEvent.io.exceptionPC := zeroExt64(excpCommit.pc)
+  difftestExcpEvent.io.exceptionInst := excpCommit.instr
+
+  val trapValids = VecInit(cmt.map(c => c.valid && c.trap))
+  val trapCommit = PriorityMux(trapValids, cmt)
   val difftestTrapEvent = Module(new DifftestTrapEvent)
   difftestTrapEvent.io.clock := clock
   difftestTrapEvent.io.coreid := 0.U
-  difftestTrapEvent.io.valid := trap
-  difftestTrapEvent.io.code := trap_code
-  difftestTrapEvent.io.pc := cmt_pc
+  difftestTrapEvent.io.valid := trapValids.asUInt.orR
+  difftestTrapEvent.io.code := Mux(trapCommit.trapCode.orR, trapCommit.trapCode, io.regs(10)(7, 0))
+  difftestTrapEvent.io.pc := zeroExt64(trapCommit.pc)
   difftestTrapEvent.io.cycleCnt := cycleCnt
   difftestTrapEvent.io.instrCnt := instrCnt
-  
-  val difftestStoreEvent = Module(new DifftestStoreEvent)
-  difftestStoreEvent.io.clock := clock
-  difftestStoreEvent.io.coreid := 0.U
-  difftestStoreEvent.io.index := 0.U
-  difftestStoreEvent.io.valid := cmt_inst_st_en
-  difftestStoreEvent.io.storePAddr := cmt_st_paddr
-  difftestStoreEvent.io.storeVAddr := cmt_st_vaddr
-  difftestStoreEvent.io.storeData := cmt_st_data
-  
-  val difftestLoadEvent = Module(new DifftestLoadEvent)
-  difftestLoadEvent.io.clock := clock
-  difftestLoadEvent.io.coreid := 0.U
-  difftestLoadEvent.io.index := 0.U
-  difftestLoadEvent.io.valid := cmt_inst_ld_en
-  difftestLoadEvent.io.paddr := cmt_ld_paddr
-  difftestLoadEvent.io.vaddr := cmt_ld_vaddr
-  
+
   val difftestCSRRegState = Module(new DifftestCSRRegState)
   difftestCSRRegState.io.clock := clock
   difftestCSRRegState.io.coreid := 0.U
-  difftestCSRRegState.io.crmd := io.csr_crmd_diff_0
-  difftestCSRRegState.io.prmd := io.csr_prmd_diff_0
+  difftestCSRRegState.io.crmd := io.csr.crmd
+  difftestCSRRegState.io.prmd := io.csr.prmd
   difftestCSRRegState.io.euen := 0.U
-  difftestCSRRegState.io.ecfg := io.csr_ectl_diff_0
-  difftestCSRRegState.io.estat := io.csr_estat_diff_0
-  difftestCSRRegState.io.era := io.csr_era_diff_0
-  difftestCSRRegState.io.badv := io.csr_badv_diff_0
-  difftestCSRRegState.io.eentry := io.csr_eentry_diff_0
-  difftestCSRRegState.io.tlbidx := io.csr_tlbidx_diff_0
-  difftestCSRRegState.io.tlbehi := io.csr_tlbehi_diff_0
-  difftestCSRRegState.io.tlbelo0 := io.csr_tlbelo0_diff_0
-  difftestCSRRegState.io.tlbelo1 := io.csr_tlbelo1_diff_0
-  difftestCSRRegState.io.asid := io.csr_asid_diff_0
-  difftestCSRRegState.io.pgdl := io.csr_pgdl_diff_0
-  difftestCSRRegState.io.pgdh := io.csr_pgdh_diff_0
-  difftestCSRRegState.io.save0 := io.csr_save0_diff_0
-  difftestCSRRegState.io.save1 := io.csr_save1_diff_0
-  difftestCSRRegState.io.save2 := io.csr_save2_diff_0
-  difftestCSRRegState.io.save3 := io.csr_save3_diff_0
-  difftestCSRRegState.io.tid := io.csr_tid_diff_0
-  difftestCSRRegState.io.tcfg := io.csr_tcfg_diff_0
-  difftestCSRRegState.io.tval := io.csr_tval_diff_0
-  difftestCSRRegState.io.ticlr := io.csr_ticlr_diff_0
-  difftestCSRRegState.io.llbctl := io.csr_llbctl_diff_0
-  difftestCSRRegState.io.tlbrentry := io.csr_tlbrentry_diff_0
-  difftestCSRRegState.io.dmw0 := io.csr_dmw0_diff_0
-  difftestCSRRegState.io.dmw1 := io.csr_dmw1_diff_0
-  
+  difftestCSRRegState.io.ecfg := io.csr.ecfg
+  difftestCSRRegState.io.estat := io.csr.estat
+  difftestCSRRegState.io.era := io.csr.era
+  difftestCSRRegState.io.badv := io.csr.badv
+  difftestCSRRegState.io.eentry := io.csr.eentry
+  difftestCSRRegState.io.tlbidx := io.csr.tlbidx
+  difftestCSRRegState.io.tlbehi := io.csr.tlbehi
+  difftestCSRRegState.io.tlbelo0 := io.csr.tlbelo0
+  difftestCSRRegState.io.tlbelo1 := io.csr.tlbelo1
+  difftestCSRRegState.io.asid := io.csr.asid
+  difftestCSRRegState.io.pgdl := io.csr.pgdl
+  difftestCSRRegState.io.pgdh := io.csr.pgdh
+  difftestCSRRegState.io.save0 := io.csr.save0
+  difftestCSRRegState.io.save1 := io.csr.save1
+  difftestCSRRegState.io.save2 := io.csr.save2
+  difftestCSRRegState.io.save3 := io.csr.save3
+  difftestCSRRegState.io.tid := io.csr.tid
+  difftestCSRRegState.io.tcfg := io.csr.tcfg
+  difftestCSRRegState.io.tval := io.csr.tval
+  difftestCSRRegState.io.ticlr := io.csr.ticlr
+  difftestCSRRegState.io.llbctl := io.csr.llbctl
+  difftestCSRRegState.io.tlbrentry := io.csr.tlbrentry
+  difftestCSRRegState.io.dmw0 := io.csr.dmw0
+  difftestCSRRegState.io.dmw1 := io.csr.dmw1
+
   val difftestGRegState = Module(new DifftestGRegState)
   difftestGRegState.io.clock := clock
   difftestGRegState.io.coreid := 0.U
   difftestGRegState.io.gpr_0 := 0.U
-  difftestGRegState.io.gpr_1 := io.regs(1)
-  difftestGRegState.io.gpr_2 := io.regs(2)
-  difftestGRegState.io.gpr_3 := io.regs(3)
-  difftestGRegState.io.gpr_4 := io.regs(4)
-  difftestGRegState.io.gpr_5 := io.regs(5)
-  difftestGRegState.io.gpr_6 := io.regs(6)
-  difftestGRegState.io.gpr_7 := io.regs(7)
-  difftestGRegState.io.gpr_8 := io.regs(8)
-  difftestGRegState.io.gpr_9 := io.regs(9)
-  difftestGRegState.io.gpr_10 := io.regs(10)
-  difftestGRegState.io.gpr_11 := io.regs(11)
-  difftestGRegState.io.gpr_12 := io.regs(12)
-  difftestGRegState.io.gpr_13 := io.regs(13)
-  difftestGRegState.io.gpr_14 := io.regs(14)
-  difftestGRegState.io.gpr_15 := io.regs(15)
-  difftestGRegState.io.gpr_16 := io.regs(16)
-  difftestGRegState.io.gpr_17 := io.regs(17)
-  difftestGRegState.io.gpr_18 := io.regs(18)
-  difftestGRegState.io.gpr_19 := io.regs(19)
-  difftestGRegState.io.gpr_20 := io.regs(20)
-  difftestGRegState.io.gpr_21 := io.regs(21)
-  difftestGRegState.io.gpr_22 := io.regs(22)
-  difftestGRegState.io.gpr_23 := io.regs(23)
-  difftestGRegState.io.gpr_24 := io.regs(24)
-  difftestGRegState.io.gpr_25 := io.regs(25)
-  difftestGRegState.io.gpr_26 := io.regs(26)
-  difftestGRegState.io.gpr_27 := io.regs(27)
-  difftestGRegState.io.gpr_28 := io.regs(28)
-  difftestGRegState.io.gpr_29 := io.regs(29)
-  difftestGRegState.io.gpr_30 := io.regs(30)
-  difftestGRegState.io.gpr_31 := io.regs(31)
+  difftestGRegState.io.gpr_1 := zeroExt64(io.regs(1))
+  difftestGRegState.io.gpr_2 := zeroExt64(io.regs(2))
+  difftestGRegState.io.gpr_3 := zeroExt64(io.regs(3))
+  difftestGRegState.io.gpr_4 := zeroExt64(io.regs(4))
+  difftestGRegState.io.gpr_5 := zeroExt64(io.regs(5))
+  difftestGRegState.io.gpr_6 := zeroExt64(io.regs(6))
+  difftestGRegState.io.gpr_7 := zeroExt64(io.regs(7))
+  difftestGRegState.io.gpr_8 := zeroExt64(io.regs(8))
+  difftestGRegState.io.gpr_9 := zeroExt64(io.regs(9))
+  difftestGRegState.io.gpr_10 := zeroExt64(io.regs(10))
+  difftestGRegState.io.gpr_11 := zeroExt64(io.regs(11))
+  difftestGRegState.io.gpr_12 := zeroExt64(io.regs(12))
+  difftestGRegState.io.gpr_13 := zeroExt64(io.regs(13))
+  difftestGRegState.io.gpr_14 := zeroExt64(io.regs(14))
+  difftestGRegState.io.gpr_15 := zeroExt64(io.regs(15))
+  difftestGRegState.io.gpr_16 := zeroExt64(io.regs(16))
+  difftestGRegState.io.gpr_17 := zeroExt64(io.regs(17))
+  difftestGRegState.io.gpr_18 := zeroExt64(io.regs(18))
+  difftestGRegState.io.gpr_19 := zeroExt64(io.regs(19))
+  difftestGRegState.io.gpr_20 := zeroExt64(io.regs(20))
+  difftestGRegState.io.gpr_21 := zeroExt64(io.regs(21))
+  difftestGRegState.io.gpr_22 := zeroExt64(io.regs(22))
+  difftestGRegState.io.gpr_23 := zeroExt64(io.regs(23))
+  difftestGRegState.io.gpr_24 := zeroExt64(io.regs(24))
+  difftestGRegState.io.gpr_25 := zeroExt64(io.regs(25))
+  difftestGRegState.io.gpr_26 := zeroExt64(io.regs(26))
+  difftestGRegState.io.gpr_27 := zeroExt64(io.regs(27))
+  difftestGRegState.io.gpr_28 := zeroExt64(io.regs(28))
+  difftestGRegState.io.gpr_29 := zeroExt64(io.regs(29))
+  difftestGRegState.io.gpr_30 := zeroExt64(io.regs(30))
+  difftestGRegState.io.gpr_31 := zeroExt64(io.regs(31))
 }

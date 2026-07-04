@@ -1,37 +1,25 @@
-# 指定使用 bash（source 需要 bash）
+.PHONY: all run-sbt run-make clean verilog clean_mill
+.DEFAULT_GOAL := verilog
+
 SHELL := /bin/bash
-
-
 
 MILL     ?= ./mill
 MODULE   := RamOn
+CORE_TOP := nscscc.CoreSimu
 BUILD_MILL := ./build.mill
 BUILD_FILES := $(BUILD_MILL) $(MILL)
 
 BUILD_DIR := ./build
-RTL_DIR   := $(BUILD_DIR)/rtl
+RTL_DIR   := ../chiplab/IP/myCPU/Chisel
 
 SCALA_FILES := $(shell find ./src/main/scala -name "*.scala")
 
-# EMIT_TOPS := nscscc.core_top
-EMIT_TOPS := nscscc.mmu.Mmu
-# only last valid
-TOP_V     := $(RTL_DIR)/$(lastword $(subst ., ,$(EMIT_TOPS))).sv
-
-FIRTOOL_OPTS := -disable-all-randomization -strip-debug-info
-
-.DEFAULT_GOAL := verilog
+TOP_V     := $(RTL_DIR)/core_top.v
 
 verilog: $(TOP_V)
 $(TOP_V): $(SCALA_FILES) $(BUILD_FILES)
 	@mkdir -p $(RTL_DIR)
-	@$(MILL) -i $(MODULE).runMain nscscc.Elaborate 	\
-	$(addprefix --top ,$(EMIT_TOPS)) 				\
-	$(addprefix --firtool-opt ,$(FIRTOOL_OPTS)) 	\
-	--target-dir $(RTL_DIR) 						\
-	--split-verilog
-
-.PHONY: all run-sbt run-make clean verilog clean_mill
+	@$(MILL) -i $(MODULE).runMain $(CORE_TOP)
 
 # 路径变量（强烈建议统一在这里管理）
 ENV_SCRIPT   := ..
