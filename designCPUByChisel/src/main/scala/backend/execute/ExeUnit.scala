@@ -51,7 +51,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     val outResult  = Decoupled(new ExeResult)
     // 增加全局冲刷信号（因为现在模块内部有状态寄存器了，必须能被冲刷）
     val flush      = Input(Bool()) 
-    val brMsRedirect   =ValidIO( new brMispredictRedirect )    // 误预测重定向
+    val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
   })
  
   // ================================================================
@@ -164,11 +164,11 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   // ── 重定向：BRU 产生的分支预测结果 ──
   if (params.hasBru) {
     // 只有在 BRU 有效执行时，才允许向外发出重定向请求
-    io.brMsRedirect.valid := bruValid && bru.io.brMsRedirect.valid
-    io.brMsRedirect.bits  := bru.io.brMsRedirect.bits
+    io.bruInfo.valid := bruValid && bru.io.bruInfo.valid
+    io.bruInfo.bits  := bru.io.bruInfo.bits
   } else {
-    io.brMsRedirect.valid := false.B
-    io.brMsRedirect.bits  := DontCare
+    io.bruInfo.valid := false.B
+    io.bruInfo.bits  := DontCare
   }
 
 

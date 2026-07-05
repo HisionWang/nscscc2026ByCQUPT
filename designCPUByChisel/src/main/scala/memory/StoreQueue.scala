@@ -27,6 +27,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val committed    = Bool()    // ROB 已提交
     val writtenBack  = Bool()    // 已向后端写回
     val Memwritten  = Bool()    // 已向后端写回
+    val alreadyFlush     = Bool()
     val dcacheIssued = Bool()    // 已向 DCache 发出写请求
     val vaddr        = UInt(XLEN.W)
     val paddr        = UInt(XLEN.W)
@@ -41,6 +42,9 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   }
  
   val io = IO(new Bundle {
+
+    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+
     // ── 入队（来自 Dispatch） ──
     val enq = new Bundle {
       val valid  = Input(Bool())
@@ -147,6 +151,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     //entries(idx).paddrValid   := false.B
     //entries(idx).mmuIssued    := false.B
     entries(idx).committed    := false.B
+    entries(idx).alreadyFlush := false.B
     entries(idx).writtenBack  := false.B
     entries(idx).Memwritten  := false.B
     entries(idx).dcacheIssued := false.B
@@ -162,6 +167,36 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).fuType       := io.enq.fuType
     enqPtr := enqPtr + 1.U
   }
+
+  // ================================================================
+//  重定向：清除比 redirect.robIdx 更新的 SQ 表项
+// ================================================================
+val doRedirect = io.bruInfo.valid && io.bruInfo.bits.doRedirect
+val redirectRobIdx = io.bruInfo.bits.robIdx
+when(doRedirect) {
+  for (i <- 0 until SqSize) {
+    val e = entries(i)
+    when(e.valid) {
+      // 比较 e.robIdxFull 是否比 redirect.robIdx 更新
+      val sameFlag = e.robIdxFull.flag === redirectRobIdx.flag
+      // flushSelf=true: >= (包含自身); flushSelf=false: > (不含自身)
+      val isNewer = Mux(sameFlag,
+        Mux(false.B, //io.redirect.flushSelf,
+          e.robIdxFull.value >= redirectRobIdx.value,
+          e.robIdxFull.value >  redirectRobIdx.value
+        ),
+        Mux(false.B,  //io.redirect.flushSelf,
+          e.robIdxFull.value <= redirectRobIdx.value,
+          e.robIdxFull.value <  redirectRobIdx.value
+        )
+      )
+      when(isNewer) {
+        e.alreadyFlush := false.B
+      }
+    }
+  }
+}
+
  
   // ================================================================
   //  2. STA 地址写入
@@ -264,7 +299,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   wbUop.pdInfo := DontCare
   wbUop.bpuInfo := DontCare
- 
+  wbUop.snptId := DontCare
   when(io.outResult.fire) {
     entries(wbIdx).writtenBack := true.B
   }
@@ -290,7 +325,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    dcacheCandidates(i) := e.valid && e.committed && !e.excpVec.orR && !e.dcacheIssued
+    dcacheCandidates(i) := e.valid && e.committed && !e.excpVec.orR && !e.dcacheIssued && !e.alreadyFlush
   }
  
   val hasDcacheCandidate = dcacheCandidates.reduce(_ || _)
@@ -323,7 +358,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  9. 出队
   // ================================================================
-  val canDeqNormal = entries(deqPtr.value).valid && ( entries(deqPtr.value).Memwritten ) //|| entries(deqPtr.value).excpVec.orR )
+  val canDeqNormal = entries(deqPtr.value).valid && ( entries(deqPtr.value).Memwritten ||  entries(deqPtr.value).alreadyFlush)
   val canDeqExcp   = entries(deqPtr.value).valid && entries(deqPtr.value).writtenBack &&
                      entries(deqPtr.value).excpVec.orR
   val canDeq = canDeqNormal || canDeqExcp

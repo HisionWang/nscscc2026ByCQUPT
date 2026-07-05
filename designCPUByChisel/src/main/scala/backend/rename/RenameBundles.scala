@@ -13,6 +13,13 @@ import nscscc.util.CircularQueuePtr
 // ================================================================
 class RobPtr(robEntries: Int) extends CircularQueuePtr[RobPtr](robEntries)
 
+
+class SnapshotResolveInfo(implicit p: Parameters) extends NSBundle {
+  val snptId       = UInt(log2Ceil(SnapshotNum).W)   // 快照槽位编号
+  val isMispredict = Bool()                           // 是否误预测
+}
+
+
 // ================================================================
 //  重命名后的指令（RenameStage 输出，流向 Dispatch/ROB）
 // ================================================================
@@ -37,7 +44,9 @@ class RenamedInst(implicit p: Parameters) extends NSBundle {
   val prs1      = UInt(PhyRegIdxWidth.W)   // 物理源寄存器 1
   val prs2      = UInt(PhyRegIdxWidth.W)   // 物理源寄存器 2
   val oldPdst = UInt(PhyRegIdxWidth.W)   // 被覆盖的旧物理目的寄存器（提交时释放）
- 
+  
+  val snptId = Valid(UInt(log2Ceil(SnapshotNum).W))
+  
   // ── 有效性 ──
   val rs1Valid = Bool()
   val rs2Valid = Bool()

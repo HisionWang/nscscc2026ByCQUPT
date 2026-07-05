@@ -275,10 +275,10 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     }
   }
 
-  when(io.flush) {
-    lqHeadPtr := 0.U.asTypeOf(new LqPtr(LqSize))
-    sqHeadPtr := 0.U.asTypeOf(new SqPtr(SqSize))
-  }
+ // when(io.flush) {
+ //   lqHeadPtr := 0.U.asTypeOf(new LqPtr(LqSize))
+ //   sqHeadPtr := 0.U.asTypeOf(new SqPtr(SqSize))
+ // }
  
   // ================================================================
   //  BusyTable 读写与更新逻辑
@@ -350,6 +350,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.rdValid    := stgData(i).rdValid
     u.robIdx     := stgData(i).robIdx
     u.robIdxFull := stgData(i).robIdx
+
+    u.snptId := stgData(i).snptId
     
     // 初始化清零
     u.sqIdx      :=  0.U.asTypeOf(new LqPtr(SqSize))

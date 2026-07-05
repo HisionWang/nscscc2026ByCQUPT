@@ -106,9 +106,11 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
+
+  memory.io.bruInfo <> backend.io.bruInfo
   
   frontend.io.out <> backend.io.in
-  frontend.io.brMsRedirect <> backend.io.brMsRedirect
+  frontend.io.bruInfo <> backend.io.bruInfo
 
 
   dontTouch(backend.io.lsEnq)
@@ -294,58 +296,149 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // ================================================================
   // 调试信号
   // ================================================================
-  // 从前端IBuffer取第一条有效指令作为调试输出
-//  val dbgFirstValid = frontend.io.out(0).fire
-//  when(dbgFirstValid) {
-//    debug0_wb_pc       := frontend.io.out(0).bits.pc
-//    debug0_wb_inst     := frontend.io.out(0).bits.instr(31, 0)
-//    debug0_wb_rf_wen   := false.B    // 后端实现后连接写回使能
-//    debug0_wb_rf_wnum  := 0.U
-//    debug0_wb_rf_wdata := 0.U
-//    ws_valid           := true.B
-//  }.otherwise {
-//    ws_valid := false.B
-//  }
- 
-  // 调试: 寄存器读数据 (暂无寄存器堆)
-//  rf_rdata := 0.U
- 
-  // ================================================================
-  // Difftest 协同仿真
-  // ================================================================
-  val cycleCount = RegInit(0.U(64.W))
-  cycleCount := cycleCount + 1.U
- 
-  val difftest = Module(new DifftestInCore)
+  // 不用那个仿la500的大模块了，太乱了他那个
+  //val difftest = Module(new DifftestInCore)
+   
+  val debugCommit = RegNext (backend.io.debugCommit ) // 因为寄存器值要下一个周期生效，所以这里RegNext（la500也是这样）
+  val debugReg =  backend.io.debugLogicRegs  // 
 
-  // ================================================================
-  // 提交全局索引计数器
-  // ================================================================
-  val committedInstCnt = RegInit(0.U(64.W))
-  dontTouch(committedInstCnt)
-   
-  val debugCommit = backend.io.debugCommit  // RobCommitIO, CommitWidth 路
-   
-  // 本次提交的有效指令数
-  val commitValidCount = PopCount(debugCommit.valid)
-   
-  // 传给 difftest：第 0 个提交的全局序号
-  
-   
-  // 有提交时更新计数器
-  when(commitValidCount.orR) {
-    committedInstCnt := committedInstCnt + commitValidCount
-  }
-  difftest.io.cnt_index_diff := committedInstCnt
+    // to思贤：下面的这些DifftestInstrCommit模块
+    //     CommitWidth是多少宽度，这下面的模块就有几个 并用传入的index区分前后
+    // 这里如果方便改的话也可以让我改CommitWidth的时候这里自动变，不用到这里手改注释掉后俩个
+  val difftestInstrCommit0 = Module(new DifftestInstrCommit)
+
+  difftestInstrCommit0.io.clock := aclk
+  difftestInstrCommit0.io.coreid := 0.U
+  difftestInstrCommit0.io.index := 0.U
+  difftestInstrCommit0.io.valid := debugCommit.valid(0)
+  difftestInstrCommit0.io.pc := debugCommit.bits(0).pc
+  difftestInstrCommit0.io.instr := debugCommit.bits(0).inst
+  difftestInstrCommit0.io.skip := false.B
+  difftestInstrCommit0.io.is_TLBFILL := 0.U
+  difftestInstrCommit0.io.TLBFILL_index := 0.U
+  difftestInstrCommit0.io.is_CNTinst := 0.U
+  difftestInstrCommit0.io.timer_64_value := 0.U
+  difftestInstrCommit0.io.wen := debugCommit.bits(0).rfWen
+  difftestInstrCommit0.io.wdest := debugCommit.bits(0).ldst
+  difftestInstrCommit0.io.wdata := debugCommit.bits(0).wrdata
+  difftestInstrCommit0.io.csr_rstat := 0.U
+  difftestInstrCommit0.io.csr_data := 0.U
+/*
+  val difftestInstrCommit1 = Module(new DifftestInstrCommit)
+
+  difftestInstrCommit1.io.clock := aclk
+  difftestInstrCommit1.io.coreid := 0.U
+  difftestInstrCommit1.io.index := 1.U
+  difftestInstrCommit1.io.valid := debugCommit.valid(1)
+  difftestInstrCommit1.io.pc := debugCommit.bits(1).pc
+  difftestInstrCommit1.io.instr := debugCommit.bits(1).inst
+  difftestInstrCommit1.io.skip := false.B
+  difftestInstrCommit1.io.is_TLBFILL := 0.U
+  difftestInstrCommit1.io.TLBFILL_index := 0.U
+  difftestInstrCommit1.io.is_CNTinst := 0.U
+  difftestInstrCommit1.io.timer_64_value := 0.U
+  difftestInstrCommit1.io.wen := debugCommit.bits(1).rfWen
+  difftestInstrCommit1.io.wdest := debugCommit.bits(1).ldst
+  difftestInstrCommit1.io.wdata := debugCommit.bits(1).wrdata
+  difftestInstrCommit1.io.csr_rstat := 0.U
+  difftestInstrCommit1.io.csr_data := 0.U
+
+  val difftestInstrCommit2 = Module(new DifftestInstrCommit)
+
+  difftestInstrCommit2.io.clock := aclk
+  difftestInstrCommit2.io.coreid := 0.U
+  difftestInstrCommit2.io.index := 2.U
+  difftestInstrCommit2.io.valid := debugCommit.valid(2)
+  difftestInstrCommit2.io.pc := debugCommit.bits(2).pc
+  difftestInstrCommit2.io.instr := debugCommit.bits(2).inst
+  difftestInstrCommit2.io.skip := false.B
+  difftestInstrCommit2.io.is_TLBFILL := 0.U
+  difftestInstrCommit2.io.TLBFILL_index := 0.U
+  difftestInstrCommit2.io.is_CNTinst := 0.U
+  difftestInstrCommit2.io.timer_64_value := 0.U
+  difftestInstrCommit2.io.wen := debugCommit.bits(2).rfWen
+  difftestInstrCommit2.io.wdest := debugCommit.bits(2).ldst
+  difftestInstrCommit2.io.wdata := debugCommit.bits(2).wrdata
+  difftestInstrCommit2.io.csr_rstat := 0.U
+  difftestInstrCommit2.io.csr_data := 0.U
+*/
+
+
+  val difftestGRegState = Module(new DifftestGRegState)
+  difftestGRegState.io.clock := aclk
+  difftestGRegState.io.coreid := 0.U
+  difftestGRegState.io.gpr_0 := debugReg(0)
+  difftestGRegState.io.gpr_1 := debugReg(1)
+  difftestGRegState.io.gpr_2 := debugReg(2)
+  difftestGRegState.io.gpr_3 := debugReg(3)
+  difftestGRegState.io.gpr_4 := debugReg(4)
+  difftestGRegState.io.gpr_5 := debugReg(5)
+  difftestGRegState.io.gpr_6 := debugReg(6)
+  difftestGRegState.io.gpr_7 := debugReg(7)
+  difftestGRegState.io.gpr_8 := debugReg(8)
+  difftestGRegState.io.gpr_9 := debugReg(9)
+  difftestGRegState.io.gpr_10 := debugReg(10)
+  difftestGRegState.io.gpr_11 := debugReg(11)
+  difftestGRegState.io.gpr_12 := debugReg(12)
+  difftestGRegState.io.gpr_13 := debugReg(13)
+  difftestGRegState.io.gpr_14 := debugReg(14)
+  difftestGRegState.io.gpr_15 := debugReg(15)
+  difftestGRegState.io.gpr_16 := debugReg(16)
+  difftestGRegState.io.gpr_17 := debugReg(17)
+  difftestGRegState.io.gpr_18 := debugReg(18)
+  difftestGRegState.io.gpr_19 := debugReg(19)
+  difftestGRegState.io.gpr_20 := debugReg(20)
+  difftestGRegState.io.gpr_21 := debugReg(21)
+  difftestGRegState.io.gpr_22 := debugReg(22)
+  difftestGRegState.io.gpr_23 := debugReg(23)
+  difftestGRegState.io.gpr_24 := debugReg(24)
+  difftestGRegState.io.gpr_25 := debugReg(25)
+  difftestGRegState.io.gpr_26 := debugReg(26)
+  difftestGRegState.io.gpr_27 := debugReg(27)
+  difftestGRegState.io.gpr_28 := debugReg(28)
+  difftestGRegState.io.gpr_29 := debugReg(29)
+  difftestGRegState.io.gpr_30 := debugReg(30)
+  difftestGRegState.io.gpr_31 := debugReg(31)
+
+    val difftestCSRRegState = Module(new DifftestCSRRegState)
+  difftestCSRRegState.io.clock := aclk
+  difftestCSRRegState.io.coreid    := 0.U
+  difftestCSRRegState.io.crmd      := 0.U
+  difftestCSRRegState.io.prmd      := 0.U
+  difftestCSRRegState.io.euen      := 0.U
+  difftestCSRRegState.io.ecfg      := 0.U
+  difftestCSRRegState.io.estat     := 0.U
+  difftestCSRRegState.io.era       := 0.U
+  difftestCSRRegState.io.badv      := 0.U
+  difftestCSRRegState.io.eentry    := 0.U
+  difftestCSRRegState.io.tlbidx    := 0.U
+  difftestCSRRegState.io.tlbehi    := 0.U
+  difftestCSRRegState.io.tlbelo0   := 0.U
+  difftestCSRRegState.io.tlbelo1   := 0.U
+  difftestCSRRegState.io.asid      := 0.U
+  difftestCSRRegState.io.pgdl      := 0.U
+  difftestCSRRegState.io.pgdh      := 0.U
+  difftestCSRRegState.io.save0     := 0.U
+  difftestCSRRegState.io.save1     := 0.U
+  difftestCSRRegState.io.save2     := 0.U
+  difftestCSRRegState.io.save3     := 0.U
+  difftestCSRRegState.io.tid       := 0.U
+  difftestCSRRegState.io.tcfg      := 0.U
+  difftestCSRRegState.io.tval      := 0.U
+  difftestCSRRegState.io.ticlr     := 0.U
+  difftestCSRRegState.io.llbctl    := 0.U
+  difftestCSRRegState.io.tlbrentry := 0.U
+  difftestCSRRegState.io.dmw0      := 0.U
+  difftestCSRRegState.io.dmw1      := 0.U
 
   // 指令有效: 前端输出第一条指令握手成功
-
+  /*
   difftest.io.inst_valid_diff   := debugCommit.valid(0)
   difftest.io.cnt_inst_diff     := debugCommit.bits(0).inst
   difftest.io.timer_64_diff     := cycleCount
    // 写回调试
   difftest.io.debug0_wb_rf_wen  := debugCommit.bits(0).rfWen
-  difftest.io.debug0_wb_rf_wnum := debugCommit.bits(0).pdst
+  difftest.io.debug0_wb_rf_wnum := debugCommit.bits(0).ldst
   difftest.io.debug0_wb_rf_wdata:= debugCommit.bits(0).wrdata
   difftest.io.debug0_wb_pc      := debugCommit.bits(0).pc
   difftest.io.debug0_wb_inst    := debugCommit.bits(0).inst
@@ -402,8 +495,9 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // 寄存器堆 (暂无, 置0)
   for (i <- 0 until 32) {
-    difftest.io.regs(i) := backend.io.debugLogicRegs(i)
+    difftest.debugReg(i) := backend.io.debugLogicRegs(i)
   }
+  */
 
   
  

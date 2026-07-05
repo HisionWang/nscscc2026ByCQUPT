@@ -18,7 +18,9 @@ class Frontend(implicit p: Parameters) extends NSModule {
     // ========== 后端到前端的反馈 ==========
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
-    val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+    //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+      val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+
 
 
     //MMU
@@ -44,7 +46,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
   val ibuffer  = Module(new IBF)
   val frontendRedirectValid  = predecoder.io.out.bits.frontendRedirect.valid && predecoder.io.out.valid
   val frontendRedirectTarget = predecoder.io.out.bits.frontendRedirect.target
-  val backendRedirectValid = io.brMsRedirect.valid
+  val backendRedirectValid = io.bruInfo.valid && io.bruInfo.bits.doRedirect
   dontTouch(frontendRedirectValid)
   dontTouch(frontendRedirectTarget)
   dontTouch(backendRedirectValid)
@@ -130,7 +132,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
   
  
   // ==================== 后端反馈 → IFU ====================
-  ifu.io.brMsRedirect       <> io.brMsRedirect
+  ifu.io.bruInfo       <> io.bruInfo
  
   // ==================== IBuffer flush ====================
   // 前端redirect: 不清空IBuffer (错误指令入队前已截断)

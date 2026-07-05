@@ -52,6 +52,9 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val rs1Valid = Bool()
   val rs2Valid = Bool()
   val rdValid  = Bool()
+
+  val snptId = Valid(UInt(log2Ceil(SnapshotNum).W))
+
  
   val robIdx   = new RobPtr(RobSize)
  

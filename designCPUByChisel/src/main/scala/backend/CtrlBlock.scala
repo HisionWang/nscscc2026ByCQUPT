@@ -38,7 +38,9 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
  
   // ── 重定向 ──
   val excpEedirect = Output(new RedirectInfo)
-  val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+  //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+  val bruInfo    = Flipped (ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+
 
  
   // ── 冲刷与外部中断 ──
@@ -53,7 +55,7 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
 class CtrlBlock(implicit p: Parameters) extends NSModule {
   val io = IO(new CtrlBlockIO)
 
-  val brMsFlush = io.brMsRedirect.valid
+  val brMsFlush = io.bruInfo.valid && io.bruInfo.bits.doRedirect
   // ================================================================
   //  译码级
   // ================================================================
@@ -69,8 +71,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.in      <> decodeStage.io.out
   renameStage.io.ratRead <> decodeStage.io.ratRead
   renameStage.io.flush    := brMsFlush
-  renameStage.io.redirect := io.excpEedirect
-  renameStage.io.brMsRedirect := io.brMsRedirect
+  //renameStage.io.redirect := io.excpEedirect
+  renameStage.io.bruInfo := io.bruInfo
   
 
   io.debugArchState := renameStage.io.debugArchState
@@ -115,7 +117,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   io.commitToSq := rob.io.commitToSq
  
   // ROB 重定向
-  rob.io.flush := brMsFlush || io.excpEedirect.valid
+  rob.io.flush := false.B//brMsFlush || io.excpEedirect.valid
+  rob.io.bruInfo := io.bruInfo
 
   rob.io.writeback <> io.writeback
   dispatchStage.io.wakeupPorts <> io.wakeupPorts

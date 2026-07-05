@@ -43,6 +43,7 @@ static int dead_clock = 0;
 #endif
 extern long long inst_total;
 
+// 这是每一个周期要做的事情
 int Difftest::step(vluint64_t &main_time) {
     // progress = false;
     idx_commit = 0;
@@ -57,30 +58,44 @@ int Difftest::step(vluint64_t &main_time) {
 #endif
         return STATE_END;
     }
-
+    
     while (idx_commit < DIFFTEST_COMMIT_WIDTH && dut.commit[idx_commit].valid) {
         inst_total += 1;
 #ifndef TRACE_COMP
         dut.commit[idx_commit].valid = 0;
 #endif
+
 #ifdef OUTPUT_PC_INFO
-#ifdef PRINT_CLK_TIME
-        printf("[%010ldns] mycpu : pc = %08x, inst = %08x, reg = %02d, val = %08x\n",
-            main_time, dut.commit[idx_commit].pc, dut.commit[idx_commit].inst, dut.commit[idx_commit].wen ? dut.commit[idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
-#else
-        printf("mycpu : pc = %08x, inst = %08x, reg = %02d, val = %08x\n",
-            dut.commit[idx_commit].pc, dut.commit[idx_commit].inst, dut.commit[idx_commit].wen ? dut.commit[idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
-#endif
+    #ifdef PRINT_CLK_TIME
+//            printf("[%010ldns] mycpu : pc = %08x, inst = %08x, reg = %02d, val = %08x\n",
+//
+//                main_time, dut.commit[idx_commit].pc, dut.commit[idx_commit].inst, dut.commit   [idx_commit].wen ? dut.commit[idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
+            printf("[%010ldns] mycpu : pc = %08x, inst = %08x",
+                
+                main_time, dut.commit[idx_commit].pc, dut.commit[idx_commit].inst);
+            if(dut.commit[idx_commit].wen == 1 && dut.commit[idx_commit].wdest != 0){
+                printf(", reg = %02d, val = %08x\n",
+                    dut.commit[idx_commit].wdest, dut.commit[idx_commit].wdata);
+            }else{
+                printf("\n");
+            }
+
+
+
+    #else   
+            printf("mycpu : pc = %08x, inst = %08x, reg = %02d, val = %08x\n",
+                dut.commit[idx_commit].pc, dut.commit[idx_commit].inst, dut.commit[idx_commit]. wen ? dut.commit[idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
+    #endif
 #endif
 
 #ifdef SIMU_TRACE
-#ifdef PRINT_CLK_TIME
-        fprintf(trace_out, "[%010ldns] mycpu : pc = %08x, inst = %08x, reg = %02d, val = %08x\n",
-            main_time, dut.commit[idx_commit].pc, dut.commit[idx_commit].inst, dut.commit[idx_commit].wen ? dut.commit[idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
-#else
-        fprintf(trace_out, "mycpu : pc = %08x, inst = %08x, reg = %02d, val = %08x\n",
-            dut.commit[idx_commit].pc, dut.commit[idx_commit].inst, dut.commit[idx_commit].wen ? dut.commit[idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
-#endif
+    #ifdef PRINT_CLK_TIME
+            fprintf(trace_out, "[%010ldns] mycpu : pc = %08x, inst =    %08x, reg = %02d, val = %08x\n",
+                main_time, dut.commit[idx_commit].pc, dut.commit    [idx_commit].inst, dut.commit[idx_commit].wen ? dut.    commit[idx_commit].wdest : 0, dut.commit[idx_commit].   wdata);
+    #else
+            fprintf(trace_out, "mycpu : pc = %08x, inst = %08x, reg =   %02d, val = %08x\n",
+                dut.commit[idx_commit].pc, dut.commit[idx_commit].  inst, dut.commit[idx_commit].wen ? dut.commit [idx_commit].wdest : 0, dut.commit[idx_commit].wdata);
+    #endif
 #endif
         // fflush(NULL);
         idx_commit++;

@@ -283,6 +283,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   // pdInfo 置零
   wbUop.pdInfo := DontCare
   wbUop.bpuInfo := DontCare
+  wbUop.snptId := DontCare
 
  
   when(io.outResult.fire) {

@@ -117,7 +117,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 1. 基础字段提取
   // ===========================================================
-  val rd      = inst(4, 0)
+  val rd      =  inst(4, 0)
   val rj      = inst(9, 5)
   val rk      = inst(14, 10)
   val csrAddress = inst(23, 10)
@@ -187,7 +187,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   
   io.out.pc         := pc
   io.out.inst       := inst
-  io.out.rd         := rd
+  io.out.rd         := Mux( bruOp === BruOp.bl, 1.U , rd)
   io.out.rj         := rj
   io.out.rk         := rk
   io.out.rs1        := rj

@@ -17,7 +17,8 @@ import nscscc.mem._
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
-  val brMsRedirect   =ValidIO( new brMispredictRedirect )    // 误预测重定向
+  val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
+
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
   val lsEnq    = new LsEnqIO
@@ -73,10 +74,10 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   )
   val numExeUnits = exeUnits.length  // 3
 
-  val brMsRedirectFromExe3 =  exeUnits(2).io.brMsRedirect
-  dontTouch(brMsRedirectFromExe3)
-  io.brMsRedirect <> brMsRedirectFromExe3
-  ctrlBlock.io.brMsRedirect <> brMsRedirectFromExe3
+  val bruInfoFromExe3 =  exeUnits(2).io.bruInfo
+  dontTouch(bruInfoFromExe3)
+  io.bruInfo <> bruInfoFromExe3
+  ctrlBlock.io.bruInfo <> bruInfoFromExe3
  
   val writeback = Module(new Writeback(numExeUnits))
  
@@ -192,11 +193,11 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
  
   scheduler.io.redirect      := 0.U.asTypeOf(new RedirectInfo) //wbRedirect.valid || ctrlRedirect.valid
   //scheduler.io.redirect.robIdx := finalRedirect.robIdx
-  scheduler.io.flushPipeline       := io.flush
+  scheduler.io.flushPipeline       := false.B //o.flush
  
   regRead.io.redirect      := 0.U.asTypeOf(new RedirectInfo) //wbRedirect.valid || ctrlRedirect.valid
   //regRead.io.redirect.robIdx := finalRedirect.robIdx
-  regRead.io.flushPipeline       := io.flush
+  regRead.io.flushPipeline       := false.B //io.flush
  
   // ══════════════════════════════════════════════════════════════
   //  ROB 提交：暂不实现，dontTouch 保留可见性
