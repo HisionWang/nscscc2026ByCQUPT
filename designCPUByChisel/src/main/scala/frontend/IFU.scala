@@ -7,12 +7,15 @@ import nscscc.config._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.icache._
+import nscscc.backend.execute._
  
 class IFU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     // 前后端后端重定向输入
-    val redirect = Flipped(new RedirectIO)
+    //val redirect = Flipped(new RedirectIO)
     val frontendRedirect = Input(new FrontendRedirect)
+    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+
 
     
     // BPU接口
@@ -49,15 +52,15 @@ class IFU(implicit p: Parameters) extends NSModule {
  
 
   // ==================== 接收预测的结果 ====================
-  val bpuTaken  = io.predictResp.taken
+  val bpuTaken  = false.B// io.predictResp.taken
   val bpuTarget = io.predictResp.target
   val bpuMeta   = io.predictResp.meta
  
   // 前端重定向
   val frontendRedirect =  io.frontendRedirect
   // 后端重定向
-  val backendRedirectValid  = io.redirect.valid
-  val backendRedirectTarget = io.redirect.target
+  val backendRedirectValid  = io.bruInfo.valid && io.bruInfo.bits.doRedirect
+  val backendRedirectTarget = io.bruInfo.bits.target
  
   // 下一拍PC选择 (优先级: 后端redirect > 前端redirect > BPU预测 > 顺序)
   val nextPC = Mux(  backendRedirectValid   ,  backendRedirectTarget   ,

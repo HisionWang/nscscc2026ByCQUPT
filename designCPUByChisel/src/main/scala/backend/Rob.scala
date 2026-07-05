@@ -1,3 +1,4 @@
+// designCPUByChisel/src/main/scala/backend/Rob.scala
 package nscscc.backend.rob
  
 import chisel3._
@@ -6,31 +7,23 @@ import nscscc.config._
 import nscscc.backend.dispatch._
 import nscscc.backend.rename._
 import nscscc.backend.decode._
+import nscscc.backend.execute._
 import nscscc.util.CircularQueuePtr
  
 /**
  * ═══════════════════════════════════════════════════════════════
- *  重排序缓冲区（ROB）
+ *  重排序缓冲区（ROB）—— 重构版
  * ═══════════════════════════════════════════════════════════════
  *
- *  环形队列结构，每条指令按序入队、按序提交。
+ *  【重定向冲刷机制】（学习香山）
+ *    使用 redirectBegin/redirectEnd 两个寄存器标记冲刷范围，
+ *    下一周期逐条判断每个 entry 是否落入该范围来清除 valid。
+ *    优点：避免当周期遍历全部 entry 的组合逻辑长路径。
  *
- *  【入队】由 Dispatch 驱动，CtrlBlockWidth 路同时入队
- *  【提交】从头部按序提交 CommitWidth 条（无异常且已写回）
- *  【写回】执行单元完成后标记该条目已写回
- *  【重定向】误预测/异常时清空到指定位置
- *
- *  【每条表项存储】
- *    · 指令基本信息（pc、inst 等）
- *    · 物理寄存器映射（pdst、oldPdst、ldst、rfWen）
- *    · 状态位：writtenBack（是否已写回）、valid（是否有效）
- *    · 异常向量
- *
- *  【与 CircularQueue 的区别】
- *    CircularQueue 的 deq 是标准 FIFO 出队，但 ROB 的提交
- *    需要检查 writtenBack 和 excpVec，且重定向需要冲刷到
- *    任意位置。因此 ROB 自行管理存储体和指针。
- * ═══════════════════════════════════════════════════════════════
+ *    对于分支误预测（不刷自己）：
+ *      redirectBegin = mispredRobIdx.value  （保留误预测指令自身）
+ *      redirectEnd   = enqPtr.value         （刷到当前入队位置）
+ *    范围内 (begin, end) 的条目被清除。
  */
  
 // ROB 内部表项
@@ -41,7 +34,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val oldPdst     = UInt(PhyRegIdxWidth.W)
   val ldst        = UInt(5.W)
   val rfWen       = Bool()
-  val rfdata       = UInt(XLEN.W)
+  val rfdata      = UInt(XLEN.W)
   val memRead     = Bool()
   val memWrite    = Bool()
   val memVaddr    = UInt(XLEN.W)
@@ -54,23 +47,25 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val isPriv      = Bool()
   val fuType      = UInt(FuType.width.W)
   val excpVec     = UInt(ExceptionCode.width.W)
-  val writtenBack = Bool()    // 执行单元是否已写回
-  val valid       = Bool()    // 该表项是否有效（含有效指令）
+  val writtenBack = Bool()
+  val valid       = Bool()
 }
  
 class ROB(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    val flush   = Input(Bool())
-    val enq     = new RobEnqIO
-    val commit  = new RobCommitIO
+    val flush      = Input(Bool())
+    val enq        = new RobEnqIO
+    val commit     = new RobCommitIO
     val commitToSq = new RobCommitToSq
-    val redirect = new RobRedirectIO
-    val writeback = Input(Vec(WbBusWidth, Valid(new RobWriteback)))  // 执行单元写回
+    val redirect   = new RobRedirectIO
+    val writeback  = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
+ 
+    // ── 新增：来自 BRU 的误预测重定向 ──
+    val bruInfo    =Flipped ( ValidIO( new redirectInfoFromBru ))    // 误预测重定向
   })
-
-
+ 
   // ================================================================
-  //  1. 指针类型（复用 CircularQueuePtr）
+  //  1. 指针类型
   // ================================================================
   class RobPtrInner extends CircularQueuePtr[RobPtrInner](RobSize)
  
@@ -92,22 +87,18 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   val empty = deqPtr === enqPtr
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
- 
-  // 计算已占用条目数
   val count = enqPtr.distanceTo(deqPtr)
  
   // ================================================================
   //  4. 入队逻辑（Dispatch 写入）
   // ================================================================
   val enqValidCount = PopCount(io.enq.valids)
- 
-  // 能否入队：剩余空间 >= 入队数
   io.enq.canEnq := !full && (count +& enqValidCount <= RobSize.U)
  
   var enqOffset = 0.U(log2Ceil(RobSize).W)
   for (i <- 0 until CtrlBlockWidth) {
     val writeIdx = (enqPtr.value + enqOffset)(log2Ceil(RobSize) - 1, 0)
-
+ 
     when(io.enq.valid(i) && io.enq.canEnq) {
       entries(writeIdx).pc          := io.enq.bits(i).pc
       entries(writeIdx).inst        := io.enq.bits(i).inst
@@ -129,12 +120,10 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).writtenBack := false.B
       entries(writeIdx).valid       := true.B
     }
-   
-    // 仅当前面的通道有效时才前进偏移
+ 
     enqOffset = enqOffset + io.enq.valid(i).asUInt
   }
  
-  // 入队成功后尾指针前进
   when(io.enq.canEnq && enqValidCount.orR && io.enq.valid(0)) {
     enqPtr := enqPtr + enqValidCount
   }
@@ -163,32 +152,25 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   // ================================================================
   //  6. 提交逻辑（从头部按序提交已写回且无异常的指令）
-  //
-  //  扫描头部最多 CommitWidth 条：
-  //    · valid && writtenBack && 无异常 → 正常提交
-  //    · valid && writtenBack && 有异常 → 触发重定向，提交到该条目
-  //    · !writtenBack 或 !valid → 停止提交
   // ================================================================
   val commitCandidates = Wire(Vec(CommitWidth, new RobCommitEntry))
   val commitValids     = Wire(Vec(CommitWidth, Bool()))
-  var prevCanCommit = true.B   // Scala var，指向不同周期的 Chisel 值
+  var prevCanCommit = true.B
   for (i <- 0 until CommitWidth) {
     val idx   = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
     val entry = entries(idx)
-   
+ 
     val thisReady = entry.valid && entry.writtenBack
     val hasExcp   = entry.excpVec.orR
-   
-    // 本槽能正常提交：前序都能提交 + 本身就绪 + 无异常
-    commitValids(i) := prevCanCommit && thisReady //&& !hasExcp
-   
-    commitCandidates(i).pdst    := entry.pdst
-    commitCandidates(i).oldPdst := entry.oldPdst
-    commitCandidates(i).ldst    := entry.ldst
-    commitCandidates(i).rfWen   := entry.rfWen
-
+ 
+    commitValids(i) := prevCanCommit && thisReady
+ 
+    commitCandidates(i).pdst     := entry.pdst
+    commitCandidates(i).oldPdst  := entry.oldPdst
+    commitCandidates(i).ldst     := entry.ldst
+    commitCandidates(i).rfWen    := entry.rfWen
     commitCandidates(i).pc       := entry.pc
-    commitCandidates(i).inst       := entry.inst
+    commitCandidates(i).inst     := entry.inst
     commitCandidates(i).wrdata   := entry.rfdata
 
     //SQ的
@@ -209,17 +191,15 @@ class ROB(implicit p: Parameters) extends NSModule {
     prevCanCommit = prevCanCommit && thisReady
   }
  
-  // 输出提交信息
   for (i <- 0 until CommitWidth) {
     io.commit.valid(i) := commitValids(i)
     io.commit.bits(i)  := commitCandidates(i)
-
+ 
     io.commitToSq.valid(i) := commitCandidates(i).memWrite && commitValids(i)
-    io.commitToSq.bits(i) := commitCandidates(i)
+    io.commitToSq.bits(i)  := commitCandidates(i)
   }
   io.commit.isWalk := false.B
  
-  // 提交成功后清除表项、前进头指针
   val commitCount = PopCount(commitValids)
   for (i <- 0 until CommitWidth) {
     val idx = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
@@ -232,11 +212,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  7. 重定向输出（检测异常 + 写回标记异常）
-  //
-  //  扫描写回口：如果某条指令写回时带异常/误预测，
-  //  立即发出重定向信号。
-  //  这里只做异常重定向，分支误预测由 BRU 单独发出。
+  //  7. 异常重定向输出（保持原逻辑）
   // ================================================================
   io.redirect.valid    := false.B
   io.redirect.robIdx   := 0.U.asTypeOf(new RobPtr(RobSize))
@@ -245,7 +221,6 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.redirect.excpVec  := 0.U
   io.redirect.isEbreak := false.B
  
-  // 从写回口检测异常
   for (wb <- io.writeback) {
     when(wb.valid && wb.bits.excpVec.orR) {
       io.redirect.valid    := true.B
@@ -257,9 +232,146 @@ class ROB(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  8. 冲刷逻辑（重定向时清空 ROB）
-  //  将指定 robIdx 之后的所有条目置为无效
-  //  并将 enqPtr/deqPtr 恢复
+  //  8. 重定向冲刷逻辑（学习香山 redirectBegin/redirectEnd 方式）
+  //
+  //  【核心思想】
+  //    当 BRU 发出误预测信号时，不立即遍历所有 entry 清除，
+  //    而是记录冲刷范围 [redirectBegin, redirectEnd)，
+  //    在下一周期逐条判断每个 entry 是否落入该范围。
+  //    这样将组合逻辑从"当周期全部比较"拆分为"寄存+逐条比较"，
+  //    时序更友好。
+  //
+  //  【分支误预测的冲刷范围】
+  //    误预测指令自身不刷（它在正确路径上，只是后续走错了）：
+  //      redirectBegin = robIdx.value   （不含自身，开区间起点）
+  //      redirectEnd   = enqPtr.value   （当前入队位置，开区间终点）
+  //    范围 (begin, end) 内的条目被清除。
+  //
+  //  【环形区间判断】
+  //    若 end > begin：正常区间，i > begin && i < end
+  //    若 end <= begin：环绕区间，i > begin || i < end
+  //    特殊情况 redirectAll：begin 与 end 重合且环绕（整个 ROB 都要刷）
+  // ================================================================
+ 
+  // 8-1. 寄存冲刷范围（香山风格：当周期锁存，下一周期执行清除）
+  val redirectValidReg = RegInit(false.B)
+  val redirectBegin    = Reg(UInt(log2Ceil(RobSize).W))
+  val redirectEnd      = Reg(UInt(log2Ceil(RobSize).W))
+  val redirectAll      = RegInit(false.B)
+ 
+  // 8-2. 当 BRU 发出误预测重定向时，锁存冲刷范围
+  //
+  //  分支误预测：不刷自己（flushSelf = false）
+  //    begin = robIdx.value  （保留误预测指令自身）
+  //    end   = enqPtr.value  （当前尾指针位置）
+  //
+  //  特殊情况 redirectAll：
+  //    当 robIdx == enqPtr 且 flag 不同时，说明误预测指令是 ROB 中
+  //    唯一的指令，但它之后没有其他条目需要刷，所以 redirectAll = false。
+  //    实际上分支误预测不会出现全刷的场景（至少误预测指令自身在 ROB 中）。
+  val doRedirect = io.bruInfo.bits.doRedirect && io.bruInfo.valid
+  val doRedirectSelf = false.B
+  val RedirectRobIdx = io.bruInfo.bits.robIdx
+
+  when(doRedirect) {
+    // 分支误预测：不刷自己
+    // begin = robIdx.value，表示从 robIdx 之后开始刷
+    redirectBegin := RedirectRobIdx.value
+    redirectEnd   := enqPtr.value
+    // 对于分支误预测，这不会发生，但防御性处理
+    redirectAll :=  doRedirectSelf && (RedirectRobIdx.value === enqPtr.value) && (RedirectRobIdx.flag ^ enqPtr.flag)
+
+    //redirectValidReg := true.B
+  }
+ 
+  // 8-3. 更新每个 entry 的 valid 位
+  //
+  //  优先级（从高到低）：
+  //    ① 全局冲刷（io.flush）：全部清零
+  //    ② 入队写入：置 true（但重定向当周期禁止入队）
+  //    ③ 提交清除：置 false
+  //    ④ 重定向范围清除：落入 (begin, end) 区间的置 false
+  //
+  //  香山的写法中，重定向当周期 (io.redirect.valid) 禁止入队，
+  //  避免新入队的条目在同一周期被误刷。
+  for (i <- 0 until RobSize) {
+    // 入队命中：该条目在本周期被新写入
+    val validPrefixSum = Wire(Vec(CtrlBlockWidth + 1, UInt(log2Ceil(CtrlBlockWidth + 1).W)))
+    validPrefixSum(0) := 0.U
+    for (j <- 0 until CtrlBlockWidth) {
+      validPrefixSum(j + 1) := validPrefixSum(j) + io.enq.valid(j).asUInt
+    }
+
+    // 然后在循环内，enqOH 改为：
+    val enqOH = VecInit(
+      (0 until CtrlBlockWidth).map(j => {
+        val allocPtr = (enqPtr.value + validPrefixSum(j))(log2Ceil(RobSize) - 1, 0)
+        io.enq.valid(j) && io.enq.canEnq && allocPtr === i.U
+      })
+    )
+ 
+    // 提交命中
+    val commitCond = commitValids.zipWithIndex.map { case (v, j) =>
+      v && ((deqPtr.value + j.U)(log2Ceil(RobSize) - 1, 0) === i.U)
+    }.reduce(_ || _)
+ 
+    // 重定向范围命中：entry i 落入 (redirectBegin, redirectEnd) 区间
+    val needFlush = redirectValidReg && (
+      redirectAll ||                           // 全刷
+      Mux(redirectEnd > redirectBegin,         // 正常区间
+        i.U > redirectBegin && i.U < redirectEnd,
+        i.U > redirectBegin || i.U < redirectEnd  // 环绕区间
+      )
+    )
+ 
+    // 状态转移
+    when(io.flush) {
+      // ① 全局冲刷
+      entries(i).valid := false.B
+    }.elsewhen(enqOH.asUInt.orR && !doRedirect) {
+      // ② 入队写入（重定向当周期禁止入队，防止新条目被误刷）
+      entries(i).valid := true.B
+    }.elsewhen(commitCond) {
+      // ③ 提交清除
+      entries(i).valid := false.B
+    }.elsewhen(needFlush) {
+      // ④ 重定向范围清除
+      entries(i).valid := false.B
+    }
+  }
+ 
+  // 8-4. 重定向后恢复 enqPtr
+  //
+  //  分支误预测：enqPtr 回退到误预测指令的下一个位置
+  //  （robIdx + 1，因为误预测指令自身保留）
+  //
+  //  注意：这里的 enqPtr 恢复必须在当周期完成，
+  //  否则下一周期的入队会写到错误的位置。
+  when(doRedirect) {
+    // 误预测指令自身保留，enqPtr 指向它的下一个位置
+    val newEnqPtr = Wire(new RobPtrInner)
+    when(doRedirectSelf){
+      newEnqPtr := RedirectRobIdx
+    }.otherwise{
+      newEnqPtr := RedirectRobIdx + 1.U
+    }
+    
+    // flag 处理：如果 robIdx.value 是 RobSize-1，则翻转 flag
+    //newEnqPtr.flag := RedirectRobIdx.flag ^
+    //  (RedirectRobIdx.value === (RobSize - 1).U)
+ 
+    enqPtr := newEnqPtr
+ 
+    // 清除 redirectValidReg：新的冲刷范围已锁存
+    // （如果本周期同时有 bruRedirect，上面的 when 会重新置 true）
+    redirectValidReg := true.B
+  }.elsewhen(redirectValidReg) {
+    // 冲刷完成一周期后清除标记
+    redirectValidReg := false.B
+  }
+ 
+  // ================================================================
+  //  9. 全局冲刷（保持原有逻辑，优先级最高）
   // ================================================================
   when(io.flush) {
     for (i <- 0 until RobSize) {
@@ -269,5 +381,6 @@ class ROB(implicit p: Parameters) extends NSModule {
     deqPtr.flag  := false.B
     enqPtr.value := 0.U
     enqPtr.flag  := false.B
+    redirectValidReg := false.B
   }
 }

@@ -23,7 +23,7 @@ class BPU(implicit p: Parameters) extends NSModule {
     // RAS接口 (已弃用，保留以防止顶层连线报错)
     val rasRestore     = Input(Bool())
     val rasRestoreTop  = Input(UInt(log2Ceil(rasSize).W))
-    val flush          = Input(Bool())
+   
   })
 
   // ==================== 辅助计算 ====================

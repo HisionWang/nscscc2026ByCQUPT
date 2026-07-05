@@ -15,10 +15,11 @@ import nscscc.backend.rename.RedirectInfo
 //  单拍组合逻辑完成
 // ═══════════════════════════════════════════════════════════════
 
-class brMispredictRedirect(implicit p: Parameters) extends NSBundle {
- // val valid     = Bool()
-  val robIdx    = new RobPtr(RobSize)   // 误预测指令的 ROB 索引
-  val target = UInt(XLEN.W)                    // 是否冲刷误预测指令本身
+class redirectInfoFromBru(implicit p: Parameters) extends NSBundle {
+  val doRedirect     = Bool() //只有当这个信号支起来的时候才做清空ROb的选项
+  val snptId = UInt(log2Ceil(SnapshotNum).W)
+  val robIdx    = new RobPtr(RobSize)   // 误预测指令的 ROB 索引 利用这个做清空，学习香山的做法，形成两个指针begin end来做刷新
+  val target = UInt(XLEN.W)             // 是否冲刷误预测指令本身
 }
 
 class BRU(implicit p: Parameters) extends NSModule {
@@ -28,7 +29,7 @@ class BRU(implicit p: Parameters) extends NSModule {
     val rs1        = Input(UInt(XLEN.W))
     val rs2        = Input(UInt(XLEN.W))
     val result     = Output(UInt(XLEN.W))       // 写回目标寄存器的值（如 BL 的 PC+4）
-    val brMsRedirect   =ValidIO( new brMispredictRedirect )    // 误预测重定向
+    val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
     val isBranch   = Output(Bool())              // 是否为分支指令（用于分支预测更新）
     val taken      = Output(Bool())              // 分支是否 taken
   })
@@ -80,8 +81,11 @@ class BRU(implicit p: Parameters) extends NSModule {
   io.isBranch := op =/= BruOp.none
   io.taken    := branchTaken
  
-  io.brMsRedirect.valid := io.valid && io.isBranch && branchTaken
-  io.brMsRedirect.bits.robIdx := io.uop.robIdxFull
-  io.brMsRedirect.bits.target := target
+  io.bruInfo.valid := io.valid && io.isBranch && ( !io.uop.pdInfo.isJal)
+  io.bruInfo.bits.doRedirect := io.valid && io.isBranch && branchTaken && ( !io.uop.pdInfo.isJal)
+  io.bruInfo.bits.robIdx := io.uop.robIdxFull
+  io.bruInfo.bits.target := target
+  io.bruInfo.bits.snptId := ( io.uop.snptId.bits ) //( io.valid && io.isBranch && ( !io.uop.pdInfo.isJal) )
+  //io.bruInfo.bits.snptId.bits := ( io.uop.snptId.bits )
   //io.redirect.bits.target := target
 }

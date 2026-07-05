@@ -106,8 +106,11 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
+
+  memory.io.bruInfo <> backend.io.bruInfo
   
   frontend.io.out <> backend.io.in
+  frontend.io.bruInfo <> backend.io.bruInfo
 
 
   dontTouch(backend.io.lsEnq)
@@ -289,20 +292,17 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // 调试信号
   // ================================================================
   // 从前端IBuffer取第一条有效指令作为调试输出
-//  val dbgFirstValid = frontend.io.out(0).fire
-//  when(dbgFirstValid) {
-//    debug0_wb_pc       := frontend.io.out(0).bits.pc
-//    debug0_wb_inst     := frontend.io.out(0).bits.instr(31, 0)
-//    debug0_wb_rf_wen   := false.B    // 后端实现后连接写回使能
-//    debug0_wb_rf_wnum  := 0.U
-//    debug0_wb_rf_wdata := 0.U
-//    ws_valid           := true.B
-//  }.otherwise {
-//    ws_valid := false.B
-//  }
- 
-  // 调试: 寄存器读数据 (暂无寄存器堆)
-//  rf_rdata := 0.U
+  //  val dbgFirstValid = frontend.io.out(0).fire
+  //  when(dbgFirstValid) {
+  //    debug0_wb_pc       := frontend.io.out(0).bits.pc
+  //    debug0_wb_inst     := frontend.io.out(0).bits.instr(31, 0)
+  //    debug0_wb_rf_wen   := false.B    // 后端实现后连接写回使能
+  //    debug0_wb_rf_wnum  := 0.U
+  //    debug0_wb_rf_wdata := 0.U
+  //    ws_valid           := true.B
+  //  }.otherwise {
+  //    ws_valid := false.B
+  //  }
  
   // ================================================================
   // Difftest 协同仿真

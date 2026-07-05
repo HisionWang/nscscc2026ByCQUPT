@@ -63,6 +63,9 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     val redirect = Flipped(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
     }))
+
+    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+
   })
  
   // ================================================================
@@ -70,6 +73,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   val loadQueue  = Module(new LoadQueue)
   val storeQueue = Module(new StoreQueue)
+  storeQueue.io.bruInfo <> io.bruInfo
  
   // ================================================================
   //  Dispatch 入队路由

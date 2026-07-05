@@ -8,6 +8,7 @@ import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.icache._
 import nscscc.axi._
+import nscscc.backend.execute._
  
 class Frontend(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -17,6 +18,10 @@ class Frontend(implicit p: Parameters) extends NSModule {
     // ========== 后端到前端的反馈 ==========
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
+    //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+      val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+
+
 
     //MMU
     val mmu = new MMURead
@@ -41,7 +46,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
   val ibuffer  = Module(new IBF)
   val frontendRedirectValid  = predecoder.io.out.bits.frontendRedirect.valid && predecoder.io.out.valid
   val frontendRedirectTarget = predecoder.io.out.bits.frontendRedirect.target
-  val backendRedirectValid = io.redirect.valid
+  val backendRedirectValid = io.bruInfo.valid && io.bruInfo.bits.doRedirect
   dontTouch(frontendRedirectValid)
   dontTouch(frontendRedirectTarget)
   dontTouch(backendRedirectValid)
@@ -71,7 +76,6 @@ class Frontend(implicit p: Parameters) extends NSModule {
   // 注意: 这里简化了rasTop的传递, 实际应在RedirectIO中增加rasTop字段
   // 或者通过后端redirect的bpuMeta来恢复。当前用rtype字段暂存, 后续需修改。
  
-  bpu.io.flush := backendRedirectValid
   // ==================== IFU ↔ ICache ====================
   // 请求
   icache.io.cpu_req.valid := ifu.io.icache_req.valid
@@ -128,7 +132,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
   
  
   // ==================== 后端反馈 → IFU ====================
-  ifu.io.redirect       <> io.redirect
+  ifu.io.bruInfo       <> io.bruInfo
  
   // ==================== IBuffer flush ====================
   // 前端redirect: 不清空IBuffer (错误指令入队前已截断)
