@@ -129,3 +129,9 @@ Icache的大致流水线都做好了
 2. 连上了difftest，整个核能跑起来了，并且还改了difftest里面的一丢丢东西
 3. BPU相关的东西还暂时有点问题。打开BPU只能过三四个功能测试；关闭BPU前面的ALU指令基本都过了（13个测试），最后倒在了一条ld上（测试第一条）
 > TODO: Dcache的访存逻辑还得优化
+
+## 7月6日
+1. freelist的bug改了
+2. SQ加上了重定向清理
+> TODO: Dcache的访存逻辑还得优化,Dcache有大bug
+> TODO: BPU有大Bug

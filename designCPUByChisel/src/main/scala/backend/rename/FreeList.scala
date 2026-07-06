@@ -45,7 +45,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
     val snptInvalidate = Input(Vec(SnapshotNum, Bool()))
  
     // ── 全局冲刷 ──
-    val flush         = Input(Bool())
+    //val flush         = Input(Bool())
   })
  
   // ================================================================
@@ -63,13 +63,20 @@ class FreeList(implicit p: Parameters) extends NSModule {
   //  3. 迭代 mask 分配候选（组合逻辑，不变）
   // ================================================================
   val selPregs      = Wire(Vec(CtrlBlockWidth, UInt(IntPhyRegs.W)))
+  val selPregsUint      = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(IntPhyRegs).W) )) 
   val selPregsValid = VecInit(selPregs.map(_.orR))
  
   var iterMask = freeList
   for (i <- 0 until CtrlBlockWidth) {
     selPregs(i) := PriorityEncoderOH(iterMask)
+    
     iterMask = iterMask & (~selPregs(i)).asUInt
   }
+
+  for (i <- 0 until CtrlBlockWidth) {
+    selPregsUint(i) := OHToUInt(selPregs(i))
+  }
+  dontTouch(selPregsUint)
  
   // ================================================================
   //  4. 预缓存机制（不变）
@@ -193,10 +200,10 @@ class FreeList(implicit p: Parameters) extends NSModule {
   //    注意：恢复时归还的寄存器通过 deallocMask 加回位图，
   //    预缓存在下一周期会自动从新位图补充候选，无需特殊处理
   // ================================================================
-  when(io.flush) {
-    // 全局冲刷：等待外部根据架构表逐步归还
-    freeList := freeList
-  }.otherwise {
+  //when(io.flush) {
+  //  // 全局冲刷：等待外部根据架构表逐步归还
+  //  freeList := freeList
+  //}.otherwise {
     freeList := ((freeList & (~selMask).asUInt) | deallocMask) & (~1.U(IntPhyRegs.W)).asUInt
-  }
+  //}
 }

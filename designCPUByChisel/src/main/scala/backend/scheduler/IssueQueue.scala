@@ -5,6 +5,7 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.dispatch._
 import nscscc.backend.rename._
+import nscscc.backend.execute._
 import nscscc.config.IQParams   // ← 显式引入 IQParams
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -30,6 +31,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     val wakeupPorts   = Input(Vec(iqParams.numWakeupPorts, Valid(new IssueWakeup)))
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)
+    val bruInfo    = Flipped (ValidIO( new redirectInfoFromBru ))    // 误预测重定向
     val flushPipeline = Input(Bool())
     // ── 反馈给分发阶段 ──
     val freeEntries   = Output(UInt(log2Ceil(iqParams.numEntries + 1).W))
@@ -90,12 +92,35 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     val bVal  = b(b.getWidth - 2, 0)
     Mux(aFlag === bFlag, aVal > bVal, aFlag === 1.U)
   }
- 
-  val killed = Wire(Vec(N, Bool()))
+
+val killed = Wire(Vec(N, Bool()))
+val redirectRobIdx = io.bruInfo.bits.robIdx
   for (i <- 0 until N) {
-    killed(i) := entryValid(i) && io.redirect.valid &&
-                 isRobIdxAfter(entryUops(i).robIdxFull.value, io.redirect.robIdx.value)
+      // 比较 e.robIdxFull 是否比 redirect.robIdx 更新
+      val sameFlag = entryUops(i).robIdxFull.flag === redirectRobIdx.flag
+      // flushSelf=true: >= (包含自身); flushSelf=false: > (不含自身)
+      val isNewer = Mux(sameFlag,
+        Mux(false.B, //io.redirect.flushSelf,
+          entryUops(i).robIdxFull.value >= redirectRobIdx.value,
+          entryUops(i).robIdxFull.value >  redirectRobIdx.value
+        ),
+        Mux(false.B,  //io.redirect.flushSelf,
+          entryUops(i).robIdxFull.value <= redirectRobIdx.value,
+          entryUops(i).robIdxFull.value <  redirectRobIdx.value
+        )
+      )
+      
+      killed(i) := entryValid(i) && io.bruInfo.valid && io.bruInfo.bits.doRedirect && isNewer
+
+    
   }
+
+
+  
+//  for (i <- 0 until N) {
+//    killed(i) := entryValid(i) && io.bruInfo.valid && io.bruInfo.bits.doRedirect
+//                 isRobIdxAfter(entryUops(i).robIdxFull.value, io.bruInfo.robIdx.value)
+//  }
  
   // ================================================================
   //  请求 & 年龄仲裁

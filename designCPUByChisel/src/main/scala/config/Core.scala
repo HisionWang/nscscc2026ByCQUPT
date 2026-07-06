@@ -49,8 +49,11 @@ trait HasCoreParameters {
   val wayBits     = log2Ceil(nWays)
   val blockOffBits = log2Ceil(blockBytes)
   val tagBits     = 32 - idxBits - blockOffBits
-  val icacheAxiMissId : Int = 12
-  val icacheAxiNucacheId : Int = 13
+
+  val nMshrEntries: Int = 4
+  val icacheAxiMissId : Int = nMshrEntries
+  val icacheAxiNucacheId : Int = icacheAxiMissId + 1
+
   val burstNum: Int = 16
 
   val  ibufDepth:  Int = 16  // 必须为2的次方倍
@@ -93,7 +96,7 @@ trait HasCoreParameters {
   val intRegFileWritePorts : Int = 5 
 
 
-  val nMshrEntries: Int = 4
+  //val nMshrEntries: Int = 4
 
   /*---- TLB相关 ----*/
   val nrTlb: Int = p(MmuconfigKeys.TlbNum)

@@ -110,7 +110,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   ))
 
   val doNeedSs = VecInit((0 until CtrlBlockWidth).map(i =>
-    needSs(i) && outFire
+    needSs(i) && outFire  && !doFlush
   ))
 
  
@@ -141,7 +141,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CtrlBlockWidth) {
     freeList.io.allocReqs(i) := needAllocVec(i)
   }
-  freeList.io.doAlloc := outFire
+  freeList.io.doAlloc := outFire && !doFlush
  
   // specWritePorts（不变）
   val specWritePorts = Wire(Vec(CtrlBlockWidth, new RatWritePort))
@@ -175,7 +175,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   freeList.io.doRecover      := snapshotManager.io.doRecover         // ← 修改
   freeList.io.recoverId      := snapshotManager.io.recoverId         // ← 修改
   freeList.io.snptInvalidate := snapshotManager.io.invalidateSlots   // ← 新增
-  freeList.io.flush          := io.flush
+  //freeList.io.flush          :=  io.flush
  
   // FreeList 释放端口（不变）
   for (i <- 0 until CommitWidth) {

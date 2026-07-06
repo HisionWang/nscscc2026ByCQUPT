@@ -204,38 +204,14 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   mmu.io.maint <> 0.U.asTypeOf(new MmuMaintPort)
 
-
-  
- 
-  // ---------- DCache / Uncache (黑盒占位) ----------
-  //val dcache   = Module(new cache_BlackBox)
-  val uncache1 = Module(new cache_BlackBox)
-  val uncache2 = Module(new cache_BlackBox)
- 
-  //dcache.io.cpu_if.req_addr  := 0.U
-  //dcache.io.cpu_if.req_valid := false.B
-  uncache1.io.cpu_if.req_addr  := 0.U
-  uncache1.io.cpu_if.req_valid := false.B
-  uncache2.io.cpu_if.req_addr  := 0.U
-  uncache2.io.cpu_if.req_valid := false.B
- 
   // ---------- AXI3 Crossbar ----------
-  val axi_crossbar = Module(new AXI3Crossbar4to1)
+  val axi_crossbar = Module(new AXI3Crossbar2to1)
  
   // ================================================================
   // AXI3 Crossbar 连接
   // ================================================================
-  // 前端ICache → Crossbar端口0
   axi_crossbar.io.in_icache   <> frontend.io.axi_master
- 
-  // DCache → Crossbar端口1 (黑盒占位)
   axi_crossbar.io.in_dcache   <> memory.io.axi
- 
-  // Uncache1 → Crossbar端口2 (黑盒占位)
-  axi_crossbar.io.in_uncache1 <> uncache1.io.axi_master
- 
-  // Uncache2 → Crossbar端口3 (黑盒占位)
-  axi_crossbar.io.in_uncache2 <> uncache2.io.axi_master
  
   // Crossbar → 顶层AXI3接口
   // AR通道

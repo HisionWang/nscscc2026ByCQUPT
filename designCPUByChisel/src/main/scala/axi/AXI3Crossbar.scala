@@ -1,286 +1,130 @@
 package nscscc.axi
-
+ 
 import chisel3._
 import chisel3.util._
-import chisel3.dontTouch
 import nscscc.config.NSModule
-import nscscc.config.NSBundle
 import nscscc.config.Parameters
-
-// 4转1 AXI3转接桥
-class AXI3Crossbar4to1(implicit p: Parameters) extends NSModule {
+ 
+/**
+  * AXI3 2-to-1 Crossbar（ID 路由方式，支持乱序写）
+  *
+  * 将 icache 和 dcache 两个 Master 的 AXI3 请求汇聚到 1 个 Slave 输出。
+  *
+  * ID 编码规则（由 Parameters 定义）：
+  *   - dcache: ID ∈ [0, nMshrEntries)                        例: 0, 1, 2, 3
+  *   - icache: ID = icacheAxiMissId, icacheAxiNucacheId       例: 4, 5
+  *
+  * 路由策略：
+  *   - 请求通道 (AR / AW / W)：Arbiter 轮询仲裁，ID 原样透传
+  *   - 响应通道 (R / B)      ：依据 rid / bid 路由到对应 Master
+  *
+  * W 通道与 AW 通道独立仲裁，通过 WID 标识事务归属，天然支持乱序写。
+  */
+class AXI3Crossbar2to1(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    // === 修复1：正确方向定义 ===
-    // 4个输入：Crossbar作为Slave，接收来自Master的请求
-    val in_icache   = Flipped(new AXI3MasterIO)  // 从设备接口
-    val in_dcache   = Flipped(new AXI3MasterIO)
-    val in_uncache1 = Flipped(new AXI3MasterIO)
-    val in_uncache2 = Flipped(new AXI3MasterIO)
-    
-    // 1个输出：Crossbar作为Master，向Slave发起请求
-    val out         = new AXI3MasterIO           // 主设备接口
+    val in_icache = Flipped(new AXI3MasterIO)   // 从 icache 接收请求
+    val in_dcache = Flipped(new AXI3MasterIO)   // 从 dcache 接收请求
+    val out       = new AXI3MasterIO            // 向外发出请求
   })
-  
-  // === AR通道仲裁 (Round-Robin) ===
-  
-  // 提取各master的AR请求
-  val ar_icache_valid   = io.in_icache.ar.data.arvalid
-  val ar_dcache_valid   = io.in_dcache.ar.data.arvalid
-  val ar_uncache1_valid = io.in_uncache1.ar.data.arvalid
-  val ar_uncache2_valid = io.in_uncache2.ar.data.arvalid
-  
-  // AR通道仲裁器
-  //对于地址的读请求，会有四个输入端口
-  //每个端口都是一组AXI3ARData，请求传过去地址的数据包
-  val ar_arbiter = Module(new Arbiter(new AXI3ARData, 4))
-  
-  //正向的Valid数据请求信号
-  // 连接各master到仲裁器输入
-  ar_arbiter.io.in(0).valid := ar_icache_valid
-  ar_arbiter.io.in(0).bits  := io.in_icache.ar.data
-  ar_arbiter.io.in(1).valid := ar_dcache_valid
-  ar_arbiter.io.in(1).bits  := io.in_dcache.ar.data
-  ar_arbiter.io.in(2).valid := ar_uncache1_valid
-  ar_arbiter.io.in(2).bits  := io.in_uncache1.ar.data
-  ar_arbiter.io.in(3).valid := ar_uncache2_valid
-  ar_arbiter.io.in(3).bits  := io.in_uncache2.ar.data
-  
-  // 连接仲裁器输出到slave
-  io.out.ar.data <> ar_arbiter.io.out.bits
-  //真正的valid还得赋值到这个valid身上
-  io.out.ar.data.arvalid := ar_arbiter.io.out.valid
-
-  // 反向的Ready回馈信号
-  // 能让arbiter发出数据的条件:
-  ar_arbiter.io.out.ready := io.out.ar.arready  // 第31行附近
-  // 分发arready回各master
-  io.in_icache.ar.arready   := ar_arbiter.io.in(0).ready //&& ar_arbiter.io.chosen === 0.U
-  io.in_dcache.ar.arready   := ar_arbiter.io.in(1).ready //&& ar_arbiter.io.chosen === 1.U
-  io.in_uncache1.ar.arready := ar_arbiter.io.in(2).ready //&& ar_arbiter.io.chosen === 2.U
-  io.in_uncache2.ar.arready := ar_arbiter.io.in(3).ready //&& ar_arbiter.io.chosen === 3.U
-  
-  // === R通道路由 (基于ID) ===
-  
-  // 提取ID用于路由
-  val r_id_route = io.out.r.data.rid //(3, 2)  // 使用ID的高2位路由
-  
-  // === 修复2：R通道完全初始化 ===
-  // 为所有R通道信号提供默认值
-  
-  // 1. 首先为所有R通道信号设置默认值
-  io.in_icache.r.data.rvalid   := false.B
-  io.in_dcache.r.data.rvalid   := false.B
-  io.in_uncache1.r.data.rvalid := false.B
-  io.in_uncache2.r.data.rvalid := false.B
-  
-  // 2. 设置默认的R通道数据（防止出现VOID）
-  io.in_icache.r.data.rid    := 0.U
-  io.in_dcache.r.data.rid    := 0.U
-  io.in_uncache1.r.data.rid  := 0.U
-  io.in_uncache2.r.data.rid  := 0.U
-  
-  io.in_icache.r.data.rdata  := 0.U
-  io.in_dcache.r.data.rdata  := 0.U
-  io.in_uncache1.r.data.rdata := 0.U
-  io.in_uncache2.r.data.rdata := 0.U
-  
-  io.in_icache.r.data.rresp  := 0.U
-  io.in_dcache.r.data.rresp  := 0.U
-  io.in_uncache1.r.data.rresp := 0.U
-  io.in_uncache2.r.data.rresp := 0.U
-  
-  io.in_icache.r.data.rlast  := false.B
-  io.in_dcache.r.data.rlast  := false.B
-  io.in_uncache1.r.data.rlast := false.B
-  io.in_uncache2.r.data.rlast := false.B
-  
-  // 3. 路由R通道数据
-
-
-  when(io.out.r.data.rvalid) {
-    switch(r_id_route) {
-      is(0.U) { 
-        io.in_dcache.r.data := io.out.r.data
-      }
-      is(1.U) { 
-        io.in_dcache.r.data := io.out.r.data
-      }
-      is(2.U) { 
-        io.in_dcache.r.data := io.out.r.data
-      }
-      is(3.U) { 
-        io.in_dcache.r.data := io.out.r.data
-      }
-
-      is(icacheAxiMissId.U) { 
-        io.in_icache.r.data := io.out.r.data
-      }
-      is(icacheAxiNucacheId.U) { 
-        io.in_icache.r.data := io.out.r.data
-      }
-
-
-
-    }
-  }
-  
-  // 4. R通道rready汇聚
-  io.out.r.rready := Mux1H(
-    Seq(
-      (r_id_route === icacheAxiMissId.U || r_id_route === icacheAxiNucacheId.U) -> io.in_icache.r.rready,
-      (r_id_route < icacheAxiNucacheId.U) -> io.in_dcache.r.rready,
-      (r_id_route === 14.U) -> io.in_uncache1.r.rready,
-      (r_id_route === 15.U) -> io.in_uncache2.r.rready
-    )
-  )
-  
-  // === AW通道仲裁 ===
-  
-  val aw_arbiter = Module(new Arbiter(new AXI3AWData, 4))
-  
-  // 正向的Valid数据请求信号
-  // 连接各master到仲裁器输入
-  aw_arbiter.io.in(0).valid := io.in_icache.aw.data.awvalid
-  aw_arbiter.io.in(0).bits  := io.in_icache.aw.data
-  aw_arbiter.io.in(1).valid := io.in_dcache.aw.data.awvalid
-  aw_arbiter.io.in(1).bits  := io.in_dcache.aw.data
-  aw_arbiter.io.in(2).valid := io.in_uncache1.aw.data.awvalid
-  aw_arbiter.io.in(2).bits  := io.in_uncache1.aw.data
-  aw_arbiter.io.in(3).valid := io.in_uncache2.aw.data.awvalid
-  aw_arbiter.io.in(3).bits  := io.in_uncache2.aw.data
-  
-  // 连接仲裁器输出到slave
-  io.out.aw.data <> aw_arbiter.io.out.bits
-  io.out.aw.data.awvalid := aw_arbiter.io.out.valid
-
-  // 反向的Ready回馈信号
-  aw_arbiter.io.out.ready := io.out.aw.awready
-  // 分发awready
-  io.in_icache.aw.awready   := aw_arbiter.io.in(0).ready //&& aw_arbiter.io.chosen === 0.U
-  io.in_dcache.aw.awready   := aw_arbiter.io.in(1).ready //&& aw_arbiter.io.chosen === 1.U
-  io.in_uncache1.aw.awready := aw_arbiter.io.in(2).ready //&& aw_arbiter.io.chosen === 2.U
-  io.in_uncache2.aw.awready := aw_arbiter.io.in(3).ready //&& aw_arbiter.io.chosen === 3.U
-  
-  // === W通道跟随AW ===
-  
-  // 记录当前AW的master，用于W通道路由
-  val aw_master_valid = RegInit(false.B)
-  val aw_master_idx = Reg(UInt(2.W))
-  
-  when(aw_arbiter.io.out.fire) {
-    aw_master_valid := true.B
-    aw_master_idx := aw_arbiter.io.chosen
-  }.elsewhen(io.out.w.data.wlast && io.out.w.data.wvalid && io.out.w.wready) {
-    aw_master_valid := false.B
-  }
-  
-  // === 修复3：W通道完全初始化 ===
-  // 为W通道设置默认值
-  
-  // 1. 设置默认的W通道输出
-  io.out.w.data.wid    := 0.U
-  io.out.w.data.wdata  := 0.U
-  io.out.w.data.wstrb  := 0.U
-  io.out.w.data.wlast  := false.B
-  io.out.w.data.wvalid := false.B
-  
-  // 2. 设置默认的wready
-  io.in_icache.w.wready   := false.B
-  io.in_dcache.w.wready   := false.B
-  io.in_uncache1.w.wready := false.B
-  io.in_uncache2.w.wready := false.B
-  
-  // 3. 路由W通道数据
-  when(aw_master_valid) {
-    switch(aw_master_idx) {
-
-      is(0.U) {
-        io.out.w.data := io.in_dcache.w.data
-        io.in_dcache.w.wready := io.out.w.wready
-      }
-      is(1.U) {
-        io.out.w.data := io.in_dcache.w.data
-        io.in_dcache.w.wready := io.out.w.wready
-      }
-      is(2.U) {
-        io.out.w.data := io.in_dcache.w.data
-        io.in_dcache.w.wready := io.out.w.wready
-      }
-      is(3.U) {
-        io.out.w.data := io.in_dcache.w.data
-        io.in_dcache.w.wready := io.out.w.wready
-      }
-
-      is(icacheAxiMissId.U) { 
-        io.out.w.data := io.in_icache.w.data
-        io.in_icache.w.wready := io.out.w.wready
-      }
-      is(icacheAxiNucacheId.U) { 
-        io.out.w.data := io.in_icache.w.data
-        io.in_icache.w.wready := io.out.w.wready
-      }
-
-
-    }
-  }
-  
-  // === B通道路由 (基于ID) ===
-  
-  val b_id_route = io.out.b.data.bid(3, 2)
-  
-  // === 修复4：B通道完全初始化 ===
-  // 为所有B通道信号提供默认值
-  
-  // 1. 首先为所有B通道信号设置默认值
-  io.in_icache.b.data.bvalid   := false.B
-  io.in_dcache.b.data.bvalid   := false.B
-  io.in_uncache1.b.data.bvalid := false.B
-  io.in_uncache2.b.data.bvalid := false.B
-  
-  // 2. 设置默认的B通道数据
-  io.in_icache.b.data.bid    := 0.U
-  io.in_dcache.b.data.bid    := 0.U
-  io.in_uncache1.b.data.bid  := 0.U
-  io.in_uncache2.b.data.bid  := 0.U
-  
-  io.in_icache.b.data.bresp  := 0.U
-  io.in_dcache.b.data.bresp  := 0.U
-  io.in_uncache1.b.data.bresp := 0.U
-  io.in_uncache2.b.data.bresp := 0.U
-  
-  // 3. 路由B通道数据
-  when(io.out.b.data.bvalid) {
-    switch(b_id_route) {
-      is(0.U) { 
-        io.in_dcache.b.data := io.out.b.data
-      }
-      is(1.U) { 
-        io.in_dcache.b.data := io.out.b.data
-      }
-      is(2.U) { 
-        io.in_dcache.b.data := io.out.b.data
-      }
-      is(3.U) { 
-        io.in_dcache.b.data := io.out.b.data
-      }
-
-      is(icacheAxiMissId.U) { 
-        io.in_icache.b.data := io.out.b.data
-      }
-      is(icacheAxiNucacheId.U) { 
-        io.in_icache.b.data := io.out.b.data
-      }
-    }
-  }
-  
-  // 4. B通道bready汇聚 b_id_route
-  io.out.b.bready := Mux1H(
-    Seq(
-      (b_id_route === icacheAxiMissId.U || b_id_route === icacheAxiNucacheId.U) -> io.in_icache.b.bready,
-      (b_id_route < icacheAxiNucacheId.U) -> io.in_dcache.b.bready,
-      (b_id_route === 14.U) -> io.in_uncache1.b.bready,
-      (b_id_route === 15.U) -> io.in_uncache2.b.bready
-    )
-  )
-
+ 
+  // ── ID 路由判断 ─────────────────────────────────────────────
+  // rid / bid >= nMshrEntries → icache，否则 → dcache
+  private def toIcache(id: UInt): Bool = id >= nMshrEntries.U
+ 
+  // ================================================================
+  //  AR 通道：icache / dcache 轮询仲裁
+  // ================================================================
+  val arArb = Module(new Arbiter(new AXI3ARData, 2))
+ 
+  // 请求接入仲裁器（0 = icache, 1 = dcache）
+  arArb.io.in(0).valid := io.in_icache.ar.data.arvalid
+  arArb.io.in(0).bits  := io.in_icache.ar.data
+  arArb.io.in(1).valid := io.in_dcache.ar.data.arvalid
+  arArb.io.in(1).bits  := io.in_dcache.ar.data
+ 
+  // 仲裁器输出 → 外部 Slave
+  io.out.ar.data <> arArb.io.out.bits
+  io.out.ar.data.arvalid := arArb.io.out.valid
+ 
+  // 外部 Slave 的 arready → 仲裁器 → 胜出的 Master
+  arArb.io.out.ready := io.out.ar.arready
+  io.in_icache.ar.arready := arArb.io.in(0).ready
+  io.in_dcache.ar.arready := arArb.io.in(1).ready
+ 
+  // ================================================================
+  //  R 通道：基于 rid 路由响应
+  // ================================================================
+  val rToIcache = toIcache(io.out.r.data.rid)
+ 
+  // rvalid 只传给 ID 对应的 Master
+  io.in_icache.r.data.rvalid := io.out.r.data.rvalid &&  rToIcache
+  io.in_dcache.r.data.rvalid := io.out.r.data.rvalid && !rToIcache
+ 
+  // 数据字段透传（仅在 rvalid 为真时对端才采信，但始终赋值避免 latch）
+  io.in_icache.r.data.rid   := io.out.r.data.rid
+  io.in_icache.r.data.rdata := io.out.r.data.rdata
+  io.in_icache.r.data.rresp := io.out.r.data.rresp
+  io.in_icache.r.data.rlast := io.out.r.data.rlast
+ 
+  io.in_dcache.r.data.rid   := io.out.r.data.rid
+  io.in_dcache.r.data.rdata := io.out.r.data.rdata
+  io.in_dcache.r.data.rresp := io.out.r.data.rresp
+  io.in_dcache.r.data.rlast := io.out.r.data.rlast
+ 
+  // rready：仅选中 Master 的 rready 传回 Slave
+  io.out.r.rready := Mux(rToIcache, io.in_icache.r.rready, io.in_dcache.r.rready)
+ 
+  // ================================================================
+  //  AW 通道：icache / dcache 轮询仲裁
+  // ================================================================
+  val awArb = Module(new Arbiter(new AXI3AWData, 2))
+ 
+  awArb.io.in(0).valid := io.in_icache.aw.data.awvalid
+  awArb.io.in(0).bits  := io.in_icache.aw.data
+  awArb.io.in(1).valid := io.in_dcache.aw.data.awvalid
+  awArb.io.in(1).bits  := io.in_dcache.aw.data
+ 
+  io.out.aw.data <> awArb.io.out.bits
+  io.out.aw.data.awvalid := awArb.io.out.valid
+ 
+  awArb.io.out.ready := io.out.aw.awready
+  io.in_icache.aw.awready := awArb.io.in(0).ready
+  io.in_dcache.aw.awready := awArb.io.in(1).ready
+ 
+  // ================================================================
+  //  W 通道：icache / dcache 轮询仲裁（ID 透传，支持乱序）
+  //
+  //  与 AW 独立仲裁。Master 在 W 数据中携带 WID 标识事务归属，
+  //  Slave 依据 WID 将 W 数据与对应的 AW 事务匹配。
+  //  不再需要 aw_master_idx 锁定机制。
+  // ================================================================
+  val wArb = Module(new Arbiter(new AXI3WData, 2))
+ 
+  wArb.io.in(0).valid := io.in_icache.w.data.wvalid
+  wArb.io.in(0).bits  := io.in_icache.w.data
+  wArb.io.in(1).valid := io.in_dcache.w.data.wvalid
+  wArb.io.in(1).bits  := io.in_dcache.w.data
+ 
+  io.out.w.data <> wArb.io.out.bits
+  io.out.w.data.wvalid := wArb.io.out.valid
+ 
+  wArb.io.out.ready := io.out.w.wready
+  io.in_icache.w.wready := wArb.io.in(0).ready
+  io.in_dcache.w.wready := wArb.io.in(1).ready
+ 
+  // ================================================================
+  //  B 通道：基于 bid 路由响应
+  // ================================================================
+  val bToIcache = toIcache(io.out.b.data.bid)
+ 
+  io.in_icache.b.data.bvalid := io.out.b.data.bvalid &&  bToIcache
+  io.in_dcache.b.data.bvalid := io.out.b.data.bvalid && !bToIcache
+ 
+  io.in_icache.b.data.bid   := io.out.b.data.bid
+  io.in_icache.b.data.bresp := io.out.b.data.bresp
+ 
+  io.in_dcache.b.data.bid   := io.out.b.data.bid
+  io.in_dcache.b.data.bresp := io.out.b.data.bresp
+ 
+  io.out.b.bready := Mux(bToIcache, io.in_icache.b.bready, io.in_dcache.b.bready)
 }

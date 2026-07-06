@@ -5,6 +5,7 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.dispatch._
 import nscscc.backend.rename._
+import nscscc.backend.execute._
 /**
  * ═══════════════════════════════════════════════════════════════
  *  调度器（Scheduler）
@@ -38,6 +39,7 @@ class Scheduler(implicit p: Parameters) extends NSModule {
  
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)
+    val bruInfo    = Flipped (ValidIO( new redirectInfoFromBru ))    // 误预测重定向
     val flushPipeline = Input(Bool())
  
     // ── 反馈给分发阶段 ──
@@ -85,6 +87,7 @@ class Scheduler(implicit p: Parameters) extends NSModule {
   // ================================================================
   for (iq <- allIQs) {
     iq.io.redirect      <> io.redirect
+    iq.io.bruInfo      <> io.bruInfo
     iq.io.flushPipeline <> io.flushPipeline
   }
  

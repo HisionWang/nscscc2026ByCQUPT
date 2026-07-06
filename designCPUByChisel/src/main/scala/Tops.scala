@@ -47,7 +47,8 @@ object CoreSimu extends App {
     }
   }
 }
-
+/*
+// 我想打完make ss就去玩手机……
 object CoreFpga extends App {
  
   val targetDirPath = "./../chiplab/IP/myCPU/Chisel"
@@ -86,5 +87,5 @@ object CoreFpga extends App {
     }
   }
 }
-
+*/
 
