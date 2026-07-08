@@ -11,7 +11,7 @@ import nscscc.mmu._
 import nscscc.util.CircularQueuePtr
  
 class StoreQueue(implicit p: Parameters) extends NSModule {
- 
+
   // ── 内部环形指针 ──
   class SqPtrInner extends CircularQueuePtr[SqPtrInner](SqSize)
  
@@ -218,7 +218,11 @@ when(doRedirect) {
   when(io.dataWrite.valid) {
     val idx = io.dataWrite.idx
     entries(idx).dataValid := true.B
-    entries(idx).data      := io.dataWrite.data
+        entries(idx).data := MuxLookup(entries(idx).lsuOp, io.dataWrite.data)(Seq(
+        LsuOp.stb -> Cat(0.U(24.W), io.dataWrite.data(7, 0)),
+        LsuOp.sth -> Cat(0.U(16.W), io.dataWrite.data(15, 0)),
+        LsuOp.stw -> io.dataWrite.data
+    ))
   }
  
 
@@ -246,7 +250,14 @@ when(doRedirect) {
   io.outResult.bits.memWrite        := true.B
   io.outResult.bits.memVaddr        := wbEntry.vaddr
   io.outResult.bits.memPaddr        := wbEntry.paddr
-  io.outResult.bits.memStoreData    := wbEntry.data
+
+  val storeByteOff = wbEntry.paddr(1, 0)
+
+  io.outResult.bits.memStoreData    := Mux( wbEntry.lsuOp === LsuOp.stb,
+                                           wbEntry.data << (storeByteOff * 8.U),
+                                           wbEntry.data << (wbEntry.paddr(1) * 16.U) )
+
+
   io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull

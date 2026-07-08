@@ -121,32 +121,136 @@ class DCache(implicit p: Parameters) extends NSModule {
     (hit, hitWay)
   }
  
-  def extractLoadData(data: DCacheArrayReadData, hitWay: UInt, paddr: UInt) = {
-    val lineData = data.ways(hitWay).data
-    val wordOff  = paddr(blockOffBits - 1, 2)
-    val rawWord  = Wire(UInt(XLEN.W)); rawWord := 0.U
-    for (w <- 0 until blockBytes / 4)
-      when(wordOff === w.U) { rawWord := lineData(w * XLEN + XLEN - 1, w * XLEN) }
-    val byteOff = paddr(1, 0)
-    MuxLookup(byteOff, rawWord, Seq(
-      0.U -> rawWord,
-      1.U -> Cat(0.U(8.W),  rawWord(31, 8)),
-      2.U -> Cat(0.U(16.W), rawWord(31, 16)),
-      3.U -> Cat(0.U(24.W), rawWord(31, 24))
-    ))
+def extractLoadData(data: DCacheArrayReadData, hitWay: UInt, paddr: UInt, lsuOp: UInt) = {
+  val lineData = data.ways(hitWay).data
+  val wordOff  = paddr(blockOffBits - 1, 2)
+  val byteOff  = paddr(1, 0)
+ 
+  // 1. 从 cache line 中选出目标字
+  val rawWord = Wire(UInt(XLEN.W))
+  rawWord := 0.U
+  for (w <- 0 until blockBytes / 4)
+    when(wordOff === w.U) { rawWord := lineData(w * XLEN + XLEN - 1, w * XLEN) }
+ 
+  // 2. 从字中选出目标字节/半字
+  val byteData = Wire(UInt(8.W))
+  byteData := 0.U
+  switch(byteOff) {
+    is(0.U) { byteData := rawWord(7, 0) }
+    is(1.U) { byteData := rawWord(15, 8) }
+    is(2.U) { byteData := rawWord(23, 16) }
+    is(3.U) { byteData := rawWord(31, 24) }
   }
  
-  def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
-                     paddr: UInt, storeData: UInt) = {
-    val lineData = data.ways(hitWay).data
-    val wordOff  = paddr(blockOffBits - 1, 2)
-    val merged   = Wire(Vec(blockBytes / 4, UInt(XLEN.W)))
-    for (w <- 0 until blockBytes / 4)
-      merged(w) := lineData(w * XLEN + XLEN - 1, w * XLEN)
-    for (w <- 0 until blockBytes / 4)
-      when(wordOff === w.U) { merged(w) := storeData }
-    Cat(merged.reverse)
+  val halfData = Wire(UInt(16.W))
+  halfData := 0.U
+  switch( byteOff(1).asUInt ) {
+    is(0.U) { halfData := rawWord(15, 0) }
+    is(1.U) { halfData := rawWord(31, 16) }
   }
+ 
+  // 3. 按 lsuOp 做符号/零扩展
+  MuxLookup(lsuOp, rawWord, Seq(
+    LsuOp.ldw  -> rawWord,
+    LsuOp.ldh  -> Cat(Fill(16, halfData(15)), halfData),
+    LsuOp.ldhu -> Cat(0.U(16.W), halfData),
+    LsuOp.ldb  -> Cat(Fill(24, byteData(7)), byteData),
+    LsuOp.ldbu -> Cat(0.U(24.W), byteData)
+  ))
+
+}
+
+
+def extractUncacheLoadData(rawWord: UInt, paddr: UInt, lsuOp: UInt) = {
+  val byteOff  = paddr(1, 0)
+ 
+  val byteData = MuxLookup(byteOff, rawWord(7, 0), Seq(
+    0.U -> rawWord(7, 0),
+    1.U -> rawWord(15, 8),
+    2.U -> rawWord(23, 16),
+    3.U -> rawWord(31, 24)
+  ))
+ 
+  val halfData = Mux(byteOff(1), rawWord(31, 16), rawWord(15, 0))
+ 
+  MuxLookup(lsuOp, rawWord, Seq(
+    LsuOp.ldw  -> rawWord,
+    LsuOp.ldh  -> Cat(Fill(16, halfData(15)), halfData),
+    LsuOp.ldhu -> Cat(0.U(16.W), halfData),
+    LsuOp.ldb  -> Cat(Fill(24, byteData(7)), byteData),
+    LsuOp.ldbu -> Cat(0.U(24.W), byteData)
+  ))
+}
+
+
+def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
+                   paddr: UInt, storeData: UInt, lsuOp: UInt) = {
+  val lineData = data.ways(hitWay).data
+  val wordOff  = paddr(blockOffBits - 1, 2)
+  val byteOff  = paddr(1, 0)
+ 
+  // 1. 把所有字原样复制
+  val merged = Wire(Vec(blockBytes / 4, UInt(XLEN.W)))
+  for (w <- 0 until blockBytes / 4)
+    merged(w) := lineData(w * XLEN + XLEN - 1, w * XLEN)
+ 
+  // 2. 计算目标字应该写入的内容
+  val targetWord = Wire(UInt(XLEN.W))
+  targetWord := 0.U
+  for (w <- 0 until blockBytes / 4)
+      when(wordOff === w.U) { targetWord := lineData(w * XLEN + XLEN - 1, w * XLEN) }
+ 
+  // 3. 根据 lsuOp 和 byteOff 构造字节使能，合并写入
+  val newWord = Wire(UInt(XLEN.W))
+ 
+  // 字节使能：4 bit，每 bit 对应 targetWord 的一个字节
+  val byteEnable = MuxLookup(lsuOp, 0xF.U(4.W), Seq(
+    LsuOp.stb -> UIntToOH(byteOff, 4),
+    LsuOp.sth -> Mux(byteOff(1),
+                 Cat(Fill(2, false.B), Fill(2, true.B)),  // byteOff=2,3 → byte2,3
+                 Cat(Fill(2, false.B), Fill(2, true.B))),  // byteOff=0,1 → byte0,1
+    LsuOp.stw -> 0xF.U(4.W)
+  ))
+ 
+  // 实际上 sb/sh 的 byteEnable 更直观地写：
+  // sb: 只有 byteOff 对应的那一个字节
+  // sh: byteOff(1) 决定高低半字，低半字或高半字
+  // sw: 全部 4 字节
+ 
+  val sbEnable = UIntToOH(byteOff, 4)  // 1-hot，哪一个是目标字节
+  val shEnable = Mux(byteOff(1),
+                     Cat(true.B, true.B, false.B, false.B),  // byte2,3
+                     Cat(false.B, false.B, true.B, true.B))  // byte0,1
+  val swEnable = Cat(true.B, true.B, true.B, true.B)
+ 
+  val finalEnable = MuxLookup(lsuOp, swEnable, Seq(
+    LsuOp.stb -> sbEnable,
+    LsuOp.sth -> shEnable,
+    LsuOp.stw -> swEnable
+  ))
+ 
+  // 4. 构造写入数据（storeData 低位有效，按 byteOff 移位到对应位置）
+  val shiftedStoreData = MuxLookup(lsuOp, storeData, Seq(
+    LsuOp.stb -> (storeData(7, 0) << (byteOff * 8.U)),
+    LsuOp.sth -> (storeData(15, 0) << (Cat(byteOff(1), 0.U(1.W)) * 8.U)),
+    LsuOp.stw -> storeData
+  ))
+ 
+  // 5. 按字节使能合并
+  newWord := Cat(
+    Mux(finalEnable(3), shiftedStoreData(31, 24), targetWord(31, 24)),
+    Mux(finalEnable(2), shiftedStoreData(23, 16), targetWord(23, 16)),
+    Mux(finalEnable(1), shiftedStoreData(15, 8),  targetWord(15, 8)),
+    Mux(finalEnable(0), shiftedStoreData(7, 0),   targetWord(7, 0))
+  )
+ 
+  // 6. 替换目标字
+  for (w <- 0 until blockBytes / 4)
+    when(wordOff === w.U) { merged(w) := newWord }
+ 
+  Cat(merged.reverse)
+}
+
  
   // ================================================================
   //  s_idle 决策：优先级编码
@@ -229,7 +333,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   array.io.write.tag   := Mux(refillWriteActive, refillTag, curPaddr(31, blockOffBits + idxBits))
   array.io.write.dirty := Mux(refillWriteActive, false.B, true.B)
   array.io.write.data  := Mux(refillWriteActive, refillData,
-                         mergeStoreLine(curArrayData, curHitWay, curPaddr, curStoreData))
+                          mergeStoreLine(curArrayData, curHitWay, curPaddr, curStoreData, curLsuOp))
   array.io.write.wen   := true.B
  
   // ---------- Meta 写 ----------
@@ -273,8 +377,10 @@ io.storeReq.ready := (state === s_store_write && !curIsReplay) ||
   // loadResp：s_load_resp 或 s_uc_load
   io.loadResp.valid := (state === s_load_resp || state === s_uc_load)
   io.loadResp.bits.lqIdx := curLqIdx
-  io.loadResp.bits.data  := Mux(state === s_uc_load, curUcData,
-    extractLoadData(curArrayData, curHitWay, curPaddr))
+  io.loadResp.bits.data  := Mux(state === s_uc_load, 
+
+    extractUncacheLoadData(curUcData, curPaddr, curLsuOp),
+    extractLoadData(curArrayData, curHitWay, curPaddr, curLsuOp))
  
   // storeAck：s_store_write 或 s_uc_store
   io.storeAck.valid := (state === s_store_write || state === s_uc_store)
@@ -297,9 +403,12 @@ io.storeReq.ready := (state === s_store_write && !curIsReplay) ||
       }.elsewhen(idle_doUcLoad) {
         curLqIdx    := mshr.io.lsLqIdx
         curLsIdx    := mshr.io.lsIdx
+        curPaddr    := mshr.io.lsPaddr          // ← 补
+        curLsuOp    := mshr.io.lsLsuOp   
         curIsReplay := true.B
         curUcData   := mshr.io.lsUncacheData
         state       := s_uc_load
+
       }.elsewhen(idle_doUcStore) {
         curSqIdx    := mshr.io.lsSqIdx
         curLsIdx    := mshr.io.lsIdx

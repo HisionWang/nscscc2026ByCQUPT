@@ -224,7 +224,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  状态转移
   // ================================================================
-  when(io.flush) {
+  val doFlush = io.flush
+  when(doFlush) {
     for (i <- 0 until CtrlBlockWidth) {
       laneValid(i)  := false.B
       robWritten(i) := false.B
@@ -251,13 +252,13 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val sqHeadPtr = RegInit(0.U.asTypeOf(new SqPtr(SqSize)))
  
   // 解析当前被选中发往 IQ4 的访存指令信息
-  val memDispatchedThisCycle = dispatchFire && q4Selected.asUInt.orR
+  val memDispatchedThisCycle = dispatchFire && q4Selected.asUInt.orR && !doFlush
   val selectedIsLoad  = Mux1H(q4Selected, (0 until CtrlBlockWidth).map(i => stgData(i).ctrl.memRead))
   val selectedIsStore = Mux1H(q4Selected, (0 until CtrlBlockWidth).map(i => stgData(i).ctrl.memWrite))
   val selectedMemInst = Mux1H(q4Selected, stgData)
 
   // 当拍同步触发 LSQ 写入
-  io.lsEnq.req.valid        := memDispatchedThisCycle
+  io.lsEnq.req.valid        := memDispatchedThisCycle //&& !doFlush
   io.lsEnq.req.bits.robIdx  := selectedMemInst.robIdx
   io.lsEnq.req.bits.isLoad  := selectedIsLoad
   io.lsEnq.req.bits.isStore := selectedIsStore
@@ -413,7 +414,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u
   })
   when(q1Final.asUInt.orR && dispatchFire) {
-    io.q1IQEnq(0).valid := true.B
+    io.q1IQEnq(0).valid := true.B && !doFlush
     io.q1IQEnq(0).bits  := Mux1H(q1Final, q1Uops)
   }
  
@@ -424,7 +425,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u
   })
   when(q2Final.asUInt.orR && dispatchFire) {
-    io.q2IQEnq(0).valid := true.B
+    io.q2IQEnq(0).valid := true.B && !doFlush
     io.q2IQEnq(0).bits  := Mux1H(q2Final, q2Uops)
   }
  
@@ -435,19 +436,19 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u
   })
   when(q3Final.asUInt.orR && dispatchFire) {
-    io.q3IQEnq(0).valid := true.B
+    io.q3IQEnq(0).valid := true.B && !doFlush
     io.q3IQEnq(0).bits  := Mux1H(q3Final, q3Uops)
   }
  
   val q4Uops = (0 until CtrlBlockWidth).map(i => Mux(isStoreLane(i), makeStaUop(i), makeLoadUop(i)))
   when(q4Selected.asUInt.orR && dispatchFire) {
-    io.q4IQEnq(0).valid := true.B
+    io.q4IQEnq(0).valid := true.B  && !doFlush
     io.q4IQEnq(0).bits  := Mux1H(q4Selected, q4Uops)
   }
  
   val q5Uops = (0 until CtrlBlockWidth).map(i => makeStdUop(i))
   when(q5Selected.asUInt.orR && dispatchFire) {
-    io.q5IQEnq(0).valid := true.B
+    io.q5IQEnq(0).valid := true.B && !doFlush
     io.q5IQEnq(0).bits  := Mux1H(q5Selected, q5Uops)
   }
   dontTouch(io.q5IQEnq)
@@ -457,7 +458,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   //  ROB 批量写入 (ROB仍然维持进入流水级当拍进行一次性批量分发)
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
-    io.robEnq.valid(i)  := dispatchFire && needRob(i)
+    io.robEnq.valid(i)  := dispatchFire && needRob(i) && !doFlush
     io.robEnq.valids(i) := needRob(i)
     io.robEnq.bits(i).pc       := stgData(i).pc
     io.robEnq.bits(i).inst     := stgData(i).inst

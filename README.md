@@ -135,3 +135,7 @@ Icache的大致流水线都做好了
 2. SQ加上了重定向清理
 > TODO: Dcache的访存逻辑还得优化,Dcache有大bug
 > TODO: BPU有大Bug
+## 7月8日
+1. Dcache用状态机了
+2. 通过46项功能测试
+> TODO: BPU
