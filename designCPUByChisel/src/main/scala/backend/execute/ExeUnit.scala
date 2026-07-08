@@ -57,6 +57,8 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     val outResult  = Decoupled(new ExeResult)
     // 增加全局冲刷信号（因为现在模块内部有状态寄存器了，必须能被冲刷）
     val flush      = Input(Bool()) 
+    
+
     val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
   })
  
@@ -84,6 +86,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   io.inReq.ready := stgReady
 
   // ── 1-5. 严格状态转移 ──
+  val doFlush = io.flush
   when(io.flush) {
     // 冲刷：清空本级，丢弃正在执行或等待执行的数据
     stgValid := false.B

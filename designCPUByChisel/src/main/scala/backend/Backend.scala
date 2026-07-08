@@ -75,6 +75,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   io.bruInfo <> bruInfoFromExe3
   ctrlBlock.io.bruInfo <> bruInfoFromExe3
   scheduler.io.bruInfo <> bruInfoFromExe3
+  regRead.io.bruInfo <> bruInfoFromExe3
  
   val writeback = Module(new Writeback(numExeUnits))
  

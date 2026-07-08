@@ -5,6 +5,7 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.dispatch.DispatchedInst
 import nscscc.backend.rename.RedirectInfo
+import nscscc.backend.execute._
  
 // ═══════════════════════════════════════════════════════════════
 //  执行单元请求：RegRead → ExeUnit
@@ -56,6 +57,9 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
  
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)
+
+    val bruInfo    = Flipped(ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+
     val flushPipeline = Input(Bool())
   })
  
@@ -97,11 +101,16 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     // ──────────────────────────────────────────
     //  Kill 检测
     // ──────────────────────────────────────────
-    val rrd_killed = rrd_valid && io.redirect.valid &&
-                     isRobIdxAfter(rrd_uop.robIdxFull.value, io.redirect.robIdx.value)
-    val out_killed = out_valid && io.redirect.valid &&
-                     isRobIdxAfter(out_uop.robIdxFull.value, io.redirect.robIdx.value)
- 
+    val doRedirect = io.bruInfo.valid && io.bruInfo.bits.doRedirect
+    val redirectRobIdx = io.bruInfo.bits.robIdx
+
+    val rrd_killed = rrd_valid && doRedirect &&
+                     rrd_uop.robIdxFull.isAfter(redirectRobIdx)
+    val out_killed = out_valid && doRedirect &&
+                     out_uop.robIdxFull.isAfter(redirectRobIdx)
+
+    dontTouch(rrd_killed)
+    dontTouch(out_killed)
     // ──────────────────────────────────────────
     //  握手控制信号
     // ──────────────────────────────────────────

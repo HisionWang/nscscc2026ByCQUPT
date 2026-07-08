@@ -52,7 +52,7 @@ class IFU(implicit p: Parameters) extends NSModule {
  
 
   // ==================== 接收预测的结果 ====================
-  val bpuTaken  = false.B// io.predictResp.taken
+  val bpuTaken  = false.B//io.predictResp.taken
   val bpuTarget = io.predictResp.target
   val bpuMeta   = io.predictResp.meta
  
