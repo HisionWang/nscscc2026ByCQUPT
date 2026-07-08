@@ -74,6 +74,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   val loadQueue  = Module(new LoadQueue)
   val storeQueue = Module(new StoreQueue)
   storeQueue.io.bruInfo <> io.bruInfo
+  loadQueue.io.bruInfo <> io.bruInfo
  
   // ================================================================
   //  Dispatch 入队路由

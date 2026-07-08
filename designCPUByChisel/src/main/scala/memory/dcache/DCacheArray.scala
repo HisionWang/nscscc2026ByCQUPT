@@ -23,7 +23,7 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
       val tag   = Input(UInt(tagBits.W))
       val dirty = Input(Bool())
       val data  = Input(UInt(dataWidth.W))
-      val wen   = Input(Bool())   // data 写使能
+      val wen   = Input(Bool())
     }
     val metaWrite = new Bundle {
       val valid     = Input(Bool())

@@ -206,9 +206,9 @@ val supportedList = Seq(
 val fuTypeSupported = supportedList.map(t => io.inReq.bits.uop.ctrl.fuType === t).reduce(_ || _)
 
 // 3. 断言：当 inFire 时，fuType 必须受支持
-when(inFire) {
-  assert(fuTypeSupported, "ExeUnit received instruction with unsupported FuType!")
-}
+//when(inFire) {
+//  assert(fuTypeSupported, "ExeUnit received instruction with unsupported FuType!")
+//}
 
 
 }

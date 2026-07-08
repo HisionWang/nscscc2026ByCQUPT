@@ -9,30 +9,25 @@ import nscscc.axi._
 import nscscc.icache.ICacheReplacer
  
 class DCache(implicit p: Parameters) extends NSModule {
-  val burstBeats = blockBytes / (XLEN / 8)
- 
-  // 反饥饿
-  val enableAntiStarvation = true
-  val storeStarvationThreshold = 8
  
   val io = IO(new Bundle {
     val loadReq  = Flipped(Decoupled(new Bundle {
-      val lqIdx    = UInt(log2Ceil(LqSize).W)
-      val robIdx   = new RobPtr(RobSize)
-      val paddr    = UInt(XLEN.W)
+      val lqIdx     = UInt(log2Ceil(LqSize).W)
+      val robIdx    = new RobPtr(RobSize)
+      val paddr     = UInt(XLEN.W)
       val cacheable = Bool()
-      val lsuOp    = UInt(LsuOp.width.W)
+      val lsuOp     = UInt(LsuOp.width.W)
     }))
     val loadResp = Decoupled(new Bundle {
       val lqIdx = UInt(log2Ceil(LqSize).W)
       val data  = UInt(XLEN.W)
     })
     val storeReq = Flipped(Decoupled(new Bundle {
-      val paddr = UInt(XLEN.W)
-      val data  = UInt(XLEN.W)
-      val lsuOp = UInt(LsuOp.width.W)
+      val paddr     = UInt(XLEN.W)
+      val data      = UInt(XLEN.W)
+      val lsuOp     = UInt(LsuOp.width.W)
       val cacheable = Bool()
-      val sqIdx = UInt(log2Ceil(SqSize).W)
+      val sqIdx     = UInt(log2Ceil(SqSize).W)
     }))
     val storeAck = Decoupled(new Bundle {
       val sqIdx = UInt(log2Ceil(SqSize).W)
@@ -51,11 +46,46 @@ class DCache(implicit p: Parameters) extends NSModule {
   val mshr     = Module(new DCacheMSHRFile)
  
   // ================================================================
-  //  Load / Store 仲裁
+  //  状态机
   // ================================================================
-  val storeWaitCnt = RegInit(0.U(8.W))
-  val storeStarving = if (enableAntiStarvation) storeWaitCnt >= storeStarvationThreshold.U else false.B
+    //   0----------1--------------2--------------3--------------4---------5-----------6------------7
+  val s_idle :: s_tag_read :: s_load_resp :: s_store_write :: s_miss :: s_refill :: s_uc_load :: s_uc_store :: Nil = Enum(8)
+  val state = RegInit(s_idle)
  
+  // ================================================================
+  //  请求锁存寄存器
+  // ================================================================
+  val curPaddr     = Reg(UInt(XLEN.W))
+  val curLqIdx     = Reg(UInt(log2Ceil(LqSize).W))
+  val curSqIdx     = Reg(UInt(log2Ceil(SqSize).W))
+  val curRobIdx    = Reg(new RobPtr(RobSize))
+  val curLsuOp     = Reg(UInt(LsuOp.width.W))
+  val curStoreData = Reg(UInt(XLEN.W))
+  val curIsLoad    = Reg(Bool())
+  val curIsStore   = Reg(Bool())
+  val curCacheable = Reg(Bool())
+  val curIsReplay  = Reg(Bool())
+  val curLsIdx     = Reg(UInt(log2Ceil(4).W))
+  val curArrayData = Reg(new DCacheArrayReadData)
+  val curHitWay    = Reg(UInt(wayBits.W))
+  val curVictimWay = Reg(UInt(wayBits.W))
+  val curUcData    = Reg(UInt(XLEN.W))
+ 
+  // pendingMiss：MSHR 无法接受时暂存请求，回 s_idle 让 MSHR 推进
+  val pendingMiss = RegInit(false.B)
+ 
+  // Refill 锁存
+  val refillIdx    = Reg(UInt(idxBits.W))
+  val refillWay    = Reg(UInt(wayBits.W))
+  val refillTag    = Reg(UInt(tagBits.W))
+  val refillData   = Reg(UInt((blockBytes * 8).W))
+  val refillPrimId = Reg(UInt(1.W))
+ 
+  // ================================================================
+  //  反饥饿仲裁
+  // ================================================================
+  val storeWaitCnt  = RegInit(0.U(8.W))
+  val storeStarving = storeWaitCnt >= 8.U
   when(io.storeReq.valid && !io.loadReq.valid) {
     storeWaitCnt := 0.U
   }.elsewhen(io.storeReq.valid && io.loadReq.valid && !storeStarving) {
@@ -63,362 +93,300 @@ class DCache(implicit p: Parameters) extends NSModule {
   }.otherwise {
     storeWaitCnt := 0.U
   }
- 
   val loadSelected  = io.loadReq.valid && (!io.storeReq.valid || !storeStarving)
   val storeSelected = io.storeReq.valid && (!io.loadReq.valid || storeStarving)
+  val lsuHasReq     = io.loadReq.valid || io.storeReq.valid
  
   // ================================================================
-  //  流水线寄存器
+  //  Store 阻塞：MSHR 中有 store 时，禁止新 LSU 请求进入
   // ================================================================
-  // S0 → S1
-  val s1_valid     = RegInit(false.B)
-  val s1_paddr     = Reg(UInt(XLEN.W))
-  val s1_isLoad    = Reg(Bool())
-  val s1_isReplay  = Reg(Bool())   // 是否为 MSHR replay
-  val s1_lqIdx     = Reg(UInt(log2Ceil(LqSize).W))
-  val s1_sqIdx     = Reg(UInt(log2Ceil(SqSize).W))
-  val s1_robIdx    = Reg(new RobPtr(RobSize))
-  val s1_lsuOp     = Reg(UInt(LsuOp.width.W))
-  val s1_cacheable = Reg(Bool())
-  val s1_storeData = Reg(UInt(XLEN.W))
-  val s1_arrayData = Reg(new DCacheArrayReadData)
- 
-  // S1 → S2
-  val s2_valid      = RegInit(false.B)
-  val s2_paddr      = Reg(UInt(XLEN.W))
-  val s2_isLoad     = Reg(Bool())
-  val s2_isReplay   = Reg(Bool())
-  val s2_lqIdx      = Reg(UInt(log2Ceil(LqSize).W))
-  val s2_sqIdx      = Reg(UInt(log2Ceil(SqSize).W))
-  val s2_robIdx     = Reg(new RobPtr(RobSize))
-  val s2_lsuOp      = Reg(UInt(LsuOp.width.W))
-  val s2_cacheable  = Reg(Bool())
-  val s2_storeData  = Reg(UInt(XLEN.W))
-  val s2_hit        = Reg(Bool())
-  val s2_hitWay     = Reg(UInt(wayBits.W))
-  val s2_victimWay  = Reg(UInt(wayBits.W))
-  val s2_arrayData  = Reg(new DCacheArrayReadData)
-  val s2_isUncache  = Reg(Bool())
-  val s2_mshrBlockMatch     = Reg(Bool())
-  val s2_mshrVictimConflict = Reg(Bool())
+  val storeBlocked = mshr.io.hasStore
  
   // ================================================================
-  //  Flush 逻辑
+  //  Flush 检测
   // ================================================================
-  def shouldFlush(robIdx: RobPtr): Bool = {
+  def shouldFlush(robIdx: RobPtr): Bool =
     io.redirect.valid && robIdx.isAfter(io.redirect.bits.robIdx)
+ 
+  // ================================================================
+  //  Tag 比较与数据提取（纯组合逻辑，直接用 Array 读出数据）
+  // ================================================================
+  def doTagCompare(data: DCacheArrayReadData, paddr: UInt, cacheable: Bool) = {
+    val ptag = paddr(31, blockOffBits + idxBits)
+    val hits = Wire(Vec(nWays, Bool()))
+    for (i <- 0 until nWays)
+      hits(i) := data.ways(i).valid && data.ways(i).tag === ptag
+    val hit    = hits.asUInt.orR && cacheable
+    val hitWay = OHToUInt(hits)
+    (hit, hitWay)
   }
  
-  val s1_flush = s1_valid && !s1_isReplay && shouldFlush(s1_robIdx)
-  val s2_flush = s2_valid && !s2_isReplay && shouldFlush(s2_robIdx)
+  def extractLoadData(data: DCacheArrayReadData, hitWay: UInt, paddr: UInt) = {
+    val lineData = data.ways(hitWay).data
+    val wordOff  = paddr(blockOffBits - 1, 2)
+    val rawWord  = Wire(UInt(XLEN.W)); rawWord := 0.U
+    for (w <- 0 until blockBytes / 4)
+      when(wordOff === w.U) { rawWord := lineData(w * XLEN + XLEN - 1, w * XLEN) }
+    val byteOff = paddr(1, 0)
+    MuxLookup(byteOff, rawWord, Seq(
+      0.U -> rawWord,
+      1.U -> Cat(0.U(8.W),  rawWord(31, 8)),
+      2.U -> Cat(0.U(16.W), rawWord(31, 16)),
+      3.U -> Cat(0.U(24.W), rawWord(31, 24))
+    ))
+  }
  
-  // ================================================================
-  //  S0：接收请求 + 读 Array
-  // ================================================================
-  val s2_ready = Wire(Bool())
-  val s1_ready = Wire(Bool())
-  val s0_ready = Wire(Bool())
- 
-  s0_ready := !s1_valid || s1_ready
- 
-  // MSHR 访问 Array 时阻塞 S0
-  val s0_blocked = mshr.io.mshrAccessing || mshr.io.mshrWriting
- 
-  // Replay 优先于 LSU
-  val s0_replayValid = mshr.io.replay.valid
-  val s0_replayFire  = s0_replayValid && s0_ready && !s0_blocked && !s2_flush
-  val s0_lsuFire     = !s0_replayValid && (loadSelected || storeSelected) &&
-                       s0_ready && !s0_blocked && !s2_flush
- 
-  io.loadReq.ready  := s0_ready && !s0_blocked && loadSelected && !s0_replayValid && !storeStarving
-  io.storeReq.ready := s0_ready && !s0_blocked && storeSelected && !s0_replayValid
-  mshr.io.replay.ready := s0_ready && !s0_blocked && !s2_flush && !(loadSelected || storeSelected)
- 
-  val s0_loadFire  = loadSelected && s0_lsuFire
-  val s0_storeFire = storeSelected && s0_lsuFire
-  val s0_fire = s0_lsuFire || s0_replayFire
- 
-  // 读 Array
-  val s0_paddr = Mux(s0_replayFire, mshr.io.replay.bits.paddr,
-                 Mux(loadSelected, io.loadReq.bits.paddr, io.storeReq.bits.paddr))
-  val s0_setIdx = s0_paddr(blockOffBits + idxBits - 1, blockOffBits)
- 
-  array.io.read.valid := s0_fire
-  array.io.read.idx   := s0_setIdx
- 
-  replacer.io.victim.req := s0_fire && !s0_replayFire
-  replacer.io.victim.idx := s0_setIdx
- 
-  // S0 → S1
-  when(s1_flush) {
-    s1_valid := false.B
-  }.elsewhen(s0_fire) {
-    s1_valid     := true.B
-    s1_paddr     := s0_paddr
-    s1_isLoad    := Mux(s0_replayFire, mshr.io.replay.bits.isLoad, s0_loadFire)
-    s1_isReplay  := s0_replayFire
-    s1_lqIdx     := Mux(s0_replayFire, mshr.io.replay.bits.lqIdx,
-                    Mux(s0_loadFire, io.loadReq.bits.lqIdx, 0.U))
-    s1_sqIdx     := Mux(s0_replayFire, mshr.io.replay.bits.sqIdx,
-                    Mux(s0_storeFire, io.storeReq.bits.sqIdx, 0.U))
-    s1_robIdx    := Mux(s0_replayFire, mshr.io.replay.bits.robIdx,
-                    Mux(s0_loadFire, io.loadReq.bits.robIdx, 0.U.asTypeOf(new RobPtr(RobSize))))
-    s1_lsuOp     := Mux(s0_replayFire, mshr.io.replay.bits.lsuOp,
-                    Mux(s0_loadFire, io.loadReq.bits.lsuOp, io.storeReq.bits.lsuOp))
-    s1_cacheable := Mux(s0_replayFire, true.B,  // replay 必定 cacheable
-                    Mux(s0_loadFire, io.loadReq.bits.cacheable, io.storeReq.bits.cacheable))
-    s1_storeData := Mux(s0_replayFire, mshr.io.replay.bits.storeData,
-                    Mux(s0_storeFire, io.storeReq.bits.data, 0.U))
-  }.elsewhen(s1_ready) {
-    s1_valid := false.B
+  def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
+                     paddr: UInt, storeData: UInt) = {
+    val lineData = data.ways(hitWay).data
+    val wordOff  = paddr(blockOffBits - 1, 2)
+    val merged   = Wire(Vec(blockBytes / 4, UInt(XLEN.W)))
+    for (w <- 0 until blockBytes / 4)
+      merged(w) := lineData(w * XLEN + XLEN - 1, w * XLEN)
+    for (w <- 0 until blockBytes / 4)
+      when(wordOff === w.U) { merged(w) := storeData }
+    Cat(merged.reverse)
   }
  
   // ================================================================
-  //  S1：Tag 比较 + MSHR 探针
+  //  s_idle 决策：优先级编码
   // ================================================================
-  val s1_setIdx = s1_paddr(blockOffBits + idxBits - 1, blockOffBits)
-  val s1_ptag   = s1_paddr(31, blockOffBits + idxBits)
-  val s1_isUncache = !s1_cacheable
+  val idle_doRefill   = mshr.io.refillWriteReq.valid
+  val idle_doUcLoad   = !idle_doRefill  && mshr.io.lsReady && mshr.io.lsIsUncache && mshr.io.lsIsLoad
+  val idle_doUcStore  = !idle_doRefill  && !idle_doUcLoad && mshr.io.lsReady && mshr.io.lsIsUncache && mshr.io.lsIsStore
+  val idle_doReplay   = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && mshr.io.lsReady && !mshr.io.lsIsUncache
+  val idle_doPending  = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay && pendingMiss
+  val idle_doLsu      = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay && !idle_doPending &&
+                        lsuHasReq && !storeBlocked
  
-  // 接收 array 读数据
-  when(array.io.read.validOut) {
-    s1_arrayData := array.io.read.resp
-  }
+  // pendingMiss 重试时如果被 redirect 了，直接丢弃
+  val pendingFlushed = pendingMiss && shouldFlush(curRobIdx)
  
-  // Tag 比较
-  val s1_tagHits = Wire(Vec(nWays, Bool()))
-  for (i <- 0 until nWays) {
-    s1_tagHits(i) := s1_arrayData.ways(i).valid && s1_arrayData.ways(i).tag === s1_ptag
-  }
-  val s1_hit    = s1_tagHits.asUInt.orR && s1_cacheable
-  val s1_hitWay = OHToUInt(s1_tagHits)
- 
-  // MSHR 探针
-  val s1_blockAddr = s1_paddr(31, blockOffBits)
-  mshr.io.probeBlockAddr := s1_blockAddr
-  mshr.io.probeSetIdx    := s1_setIdx
-  mshr.io.probeHitWay    := s1_hitWay
- 
-  val s1_mshrBlockMatch     = mshr.io.probeBlockMatch
-  val s1_mshrVictimConflict = mshr.io.probeVictimConflict
- 
-  // ★ 关键：Store 即使 hit，若 MSHR 中有更老的 store，也视为 miss
-  val s1_storeOrderingBlock = s1_hit && !s1_isLoad &&
-    (mshr.io.hasStore || mshr.io.hasStoreEntering)
- 
-  // 最终 hit 判定
-  // - Victim 冲突 → 视为 miss（不管 tag 是否匹配，因为该 way 即将被覆盖）
-  // - Store 排序 → 视为 miss
-  // - Replay → 必然 hit（数据已 fill）
-  val s1_finalHit = Mux(s1_isReplay, true.B,
-    s1_hit && !s1_mshrVictimConflict && !s1_storeOrderingBlock && !s1_isUncache)
- 
-  val s1_victimWay = replacer.io.victim.resp
- 
-  val s1_canGo = s2_ready
-  s1_ready := !s1_valid || s1_canGo
- 
-  // S1 → S2
-  when(s2_flush) {
-    s2_valid := false.B
-  }.elsewhen(s1_valid && s1_canGo && !s1_flush) {
-    s2_valid      := true.B
-    s2_paddr      := s1_paddr
-    s2_isLoad     := s1_isLoad
-    s2_isReplay   := s1_isReplay
-    s2_lqIdx      := s1_lqIdx
-    s2_sqIdx      := s1_sqIdx
-    s2_robIdx     := s1_robIdx
-    s2_lsuOp      := s1_lsuOp
-    s2_cacheable  := s1_cacheable
-    s2_storeData  := s1_storeData
-    s2_hit        := s1_finalHit
-    s2_hitWay     := Mux(s1_isReplay, OHToUInt(s1_tagHits), s1_hitWay)
-    s2_victimWay  := s1_victimWay
-    s2_arrayData  := s1_arrayData
-    s2_isUncache  := s1_isUncache
-    s2_mshrBlockMatch     := s1_mshrBlockMatch
-    s2_mshrVictimConflict := s1_mshrVictimConflict
-  }.elsewhen(s2_ready) {
-    s2_valid := false.B
-  }
+  // LSU 请求信息（组合信号）
+  val lsuPaddr     = Mux(loadSelected, io.loadReq.bits.paddr, io.storeReq.bits.paddr)
+  val lsuSetIdx    = lsuPaddr(blockOffBits + idxBits - 1, blockOffBits)
+  val lsuIsUncache = Mux(loadSelected, !io.loadReq.bits.cacheable, !io.storeReq.bits.cacheable)
  
   // ================================================================
-  //  S2：执行动作
+  //  s_tag_read 时的 tag 比较结果（直接用 array.io.read.resp）
   // ================================================================
-  val s2_setIdx = s2_paddr(blockOffBits + idxBits - 1, blockOffBits)
-  val s2_ptag   = s2_paddr(31, blockOffBits + idxBits)
-  val s2_miss   = s2_valid && s2_cacheable && !s2_hit && !s2_isUncache
- 
-  // ---- Load Hit / Replay Hit：提取数据 ----
-  val s2_cacheLineData = s2_arrayData.ways(s2_hitWay).data
-  val s2_wordOff = s2_paddr(blockOffBits - 1, 2)
-  val s2_rawWord = Wire(UInt(XLEN.W))
-  s2_rawWord := 0.U
-  for (w <- 0 until blockBytes / 4) {
-    when(s2_wordOff === w.U) {
-      s2_rawWord := s2_cacheLineData(w * XLEN + XLEN - 1, w * XLEN)
-    }
-  }
- 
-  val s2_byteOff = s2_paddr(1, 0)
-  val s2_shiftedData = MuxLookup(s2_byteOff, s2_rawWord, Seq(
-    0.U -> s2_rawWord,
-    1.U -> Cat(0.U(8.W), s2_rawWord(31, 8)),
-    2.U -> Cat(0.U(16.W), s2_rawWord(31, 16)),
-    3.U -> Cat(0.U(24.W), s2_rawWord(31, 24))
-  ))
- 
-  // Pipeline load hit/replay response
-  val pipeLoadHitValid = s2_valid && s2_isLoad && s2_hit && !s2_flush
-  val pipeLoadResp = Wire(Decoupled(new Bundle {
-    val lqIdx = UInt(log2Ceil(LqSize).W)
-    val data  = UInt(XLEN.W)
-  }))
-  pipeLoadResp.valid      := pipeLoadHitValid
-  pipeLoadResp.bits.lqIdx := s2_lqIdx
-  pipeLoadResp.bits.data  := s2_shiftedData
- 
-  // ---- Store Hit / Replay Hit：合并写入 ----
-  val pipeStoreHitValid = s2_valid && !s2_isLoad && s2_hit && !s2_isUncache
-  val s2_mergedWords = Wire(Vec(blockBytes / 4, UInt(XLEN.W)))
-  for (w <- 0 until blockBytes / 4) {
-    s2_mergedWords(w) := s2_cacheLineData(w * XLEN + XLEN - 1, w * XLEN)
-  }
-  for (w <- 0 until blockBytes / 4) {
-    when(s2_wordOff === w.U) {
-      s2_mergedWords(w) := s2_storeData
-    }
-  }
-  val s2_mergedLine = Cat(s2_mergedWords.reverse)
- 
-  val pipeStoreAck = Wire(Decoupled(new Bundle {
-    val sqIdx = UInt(log2Ceil(SqSize).W)
-  }))
-  pipeStoreAck.valid      := pipeStoreHitValid
-  pipeStoreAck.bits.sqIdx := s2_sqIdx
- 
-  // ---- Miss / Uncache：发往 MSHR ----
-  val s2_needMshr = s2_valid && (s2_miss || s2_isUncache) && !s2_isReplay
-  val mshrReq = Wire(new MissReq)
-  mshrReq.paddr       := s2_paddr
-  mshrReq.lqIdx       := s2_lqIdx
-  mshrReq.sqIdx       := s2_sqIdx
-  mshrReq.robIdx      := s2_robIdx
-  mshrReq.lsuOp       := s2_lsuOp
-  mshrReq.storeData   := s2_storeData
-  mshrReq.victimWay   := s2_victimWay
-  mshrReq.isLoad      := s2_isLoad
-  mshrReq.isStore     := !s2_isLoad
-  mshrReq.cacheable   := s2_cacheable
- 
-  mshr.io.req.valid := s2_needMshr && !s2_flush
-  mshr.io.req.bits  := mshrReq
-  mshr.io.redirect  := io.redirect
- 
-  // ---- S2 ready 判断 ----
-  val s2_loadHitDone  = pipeLoadHitValid && pipeLoadResp.fire
-  val s2_storeHitDone = pipeStoreHitValid && pipeStoreAck.fire
-  val s2_mshrAccepted = s2_needMshr && mshr.io.req.fire
-  val s2_flushed      = s2_flush
- 
-  s2_ready := s2_loadHitDone || s2_storeHitDone || s2_mshrAccepted || s2_flushed || !s2_valid
- 
-  when(s2_flush) { s2_valid := false.B }
+  val (s1Hit, s1HitWay) = doTagCompare(array.io.read.resp, curPaddr, curCacheable)
+  val s1VictimWay = replacer.io.victim.resp
  
   // ================================================================
-  //  响应仲裁：Pipeline hit vs MSHR uncache
+  //  ============ 各信号合并赋值 ============
   // ================================================================
-  // Pipeline hit 优先
-  io.loadResp.valid       := pipeLoadResp.valid || mshr.io.uncacheLoadResp.valid
-  io.loadResp.bits.lqIdx  := Mux(pipeLoadResp.valid, pipeLoadResp.bits.lqIdx, mshr.io.uncacheLoadResp.bits.lqIdx)
-  io.loadResp.bits.data   := Mux(pipeLoadResp.valid, pipeLoadResp.bits.data, mshr.io.uncacheLoadResp.bits.data)
-  pipeLoadResp.ready          := io.loadResp.ready
-  mshr.io.uncacheLoadResp.ready := io.loadResp.ready && !pipeLoadResp.valid
  
-  io.storeAck.valid       := pipeStoreAck.valid || mshr.io.uncacheStoreAck.valid
-  io.storeAck.bits.sqIdx  := Mux(pipeStoreAck.valid, pipeStoreAck.bits.sqIdx, mshr.io.uncacheStoreAck.bits.sqIdx)
-  pipeStoreAck.ready          := io.storeAck.ready
-  mshr.io.uncacheStoreAck.ready := io.storeAck.ready && !pipeStoreAck.valid
+  // ---------- MSHR 连接 ----------
+  mshr.io.redirect := io.redirect
+  mshr.io.axi <> io.axi
  
-  // ================================================================
-  //  Array 写入仲裁：Pipeline store hit vs MSHR refill/metaWrite
-  // ================================================================
-  array.io.write.valid := false.B
-  array.io.write.idx   := 0.U
-  array.io.write.way   := 0.U
-  array.io.write.tag   := 0.U
-  array.io.write.dirty := 0.U
-  array.io.write.data  := 0.U
-  array.io.write.wen   := false.B
+  // probeBlockAddr：始终从寄存器驱动，无组合环
+  mshr.io.probeBlockAddr := curPaddr(31, blockOffBits)
  
-  array.io.metaWrite.valid     := false.B
-  array.io.metaWrite.idx       := 0.U
-  array.io.metaWrite.way       := 0.U
+  // missReq：bits 始终从寄存器驱动（断环），valid 仅 s_miss
+  mshr.io.missReq.valid       := state === s_miss
+  mshr.io.missReq.bits.paddr       := curPaddr
+  mshr.io.missReq.bits.lqIdx       := curLqIdx
+  mshr.io.missReq.bits.sqIdx       := curSqIdx
+  mshr.io.missReq.bits.robIdx      := curRobIdx
+  mshr.io.missReq.bits.lsuOp       := curLsuOp
+  mshr.io.missReq.bits.storeData   := curStoreData
+  mshr.io.missReq.bits.isLoad      := curIsLoad
+  mshr.io.missReq.bits.isStore     := curIsStore
+  mshr.io.missReq.bits.cacheable   := curCacheable
+  mshr.io.missReq.bits.victimWay   := curVictimWay
+  mshr.io.missReq.bits.victimDirty := curCacheable && curArrayData.ways(curVictimWay).dirty
+  mshr.io.missReq.bits.victimTag   := Mux(curCacheable, curArrayData.ways(curVictimWay).tag, 0.U)
+  mshr.io.missReq.bits.victimData  := Mux(curCacheable, curArrayData.ways(curVictimWay).data, 0.U)
+ 
+  // refillWriteAck：仅 s_refill 时有效
+  mshr.io.refillWriteAck.valid := state === s_refill
+  mshr.io.refillWriteAck.bits  := refillPrimId
+ 
+  // lsAck：load_resp/store_write/uc_load/uc_store 完成 fire 时
+  mshr.io.lsAck.valid := (state === s_load_resp  && io.loadResp.fire)  ||
+                         (state === s_store_write && io.storeAck.fire)  ||
+                         (state === s_uc_load     && io.loadResp.fire)  ||
+                         (state === s_uc_store    && io.storeAck.fire)
+  mshr.io.lsAck.bits  := curLsIdx
+ 
+  // ---------- Array 读 ----------
+  // s_idle → s_tag_read 时发起读，或 s_idle → s_replay（走 s_tag_read 复用）
+  array.io.read.valid := (state === s_idle && (idle_doPending && curCacheable ||
+                         idle_doLsu && !lsuIsUncache || idle_doReplay))
+  array.io.read.idx   := Mux(idle_doReplay, mshr.io.lsPaddr(blockOffBits + idxBits - 1, blockOffBits),
+                        Mux(idle_doPending, curPaddr(blockOffBits + idxBits - 1, blockOffBits), lsuSetIdx))
+ 
+  // ---------- Array 写 ----------
+  // 条件：s_store_write（store hit 写合并数据）或 s_refill（MSHR 重填）
+  val storeWriteActive = state === s_store_write && io.storeAck.fire
+  val refillWriteActive = state === s_refill
+ 
+  array.io.write.valid := storeWriteActive || refillWriteActive
+  array.io.write.idx   := Mux(refillWriteActive, refillIdx, curPaddr(blockOffBits + idxBits - 1, blockOffBits))
+  array.io.write.way   := Mux(refillWriteActive, refillWay, curHitWay)
+  array.io.write.tag   := Mux(refillWriteActive, refillTag, curPaddr(31, blockOffBits + idxBits))
+  array.io.write.dirty := Mux(refillWriteActive, false.B, true.B)
+  array.io.write.data  := Mux(refillWriteActive, refillData,
+                         mergeStoreLine(curArrayData, curHitWay, curPaddr, curStoreData))
+  array.io.write.wen   := true.B
+ 
+  // ---------- Meta 写 ----------
+  // 仅 s_miss 且首次 miss 且 cacheable 且 MSHR 接受时无效化 victim
+  array.io.metaWrite.valid     := state === s_miss && mshr.io.isFirstMiss && curCacheable && mshr.io.missReq.fire
+  array.io.metaWrite.idx       := curPaddr(blockOffBits + idxBits - 1, blockOffBits)
+  array.io.metaWrite.way       := curVictimWay
   array.io.metaWrite.metaValid := false.B
   array.io.metaWrite.dirty     := false.B
   array.io.metaWrite.tag       := 0.U
  
-  // 优先级：MSHR metaWrite > MSHR refill write > Pipeline store hit
-  when(mshr.io.metaWrite.valid) {
-    array.io.metaWrite := mshr.io.metaWrite
-  }.elsewhen(mshr.io.arrayWrite.valid) {
-    array.io.write := mshr.io.arrayWrite
-  }.elsewhen(pipeStoreHitValid && pipeStoreAck.fire) {
-    array.io.write.valid := true.B
-    array.io.write.idx   := s2_setIdx
-    array.io.write.way   := s2_hitWay
-    array.io.write.tag   := s2_ptag
-    array.io.write.dirty := true.B
-    array.io.write.data  := s2_mergedLine
-    array.io.write.wen   := true.B
-  }
+  // ---------- Replacer ----------
+  replacer.io.victim.req := array.io.read.valid && !idle_doReplay
+  replacer.io.victim.idx := array.io.read.idx
  
-  // ================================================================
-  //  Replacer 更新
-  // ================================================================
+  replacer.io.touch.valid := (state === s_load_resp  && io.loadResp.fire) ||
+                             (state === s_store_write && io.storeAck.fire) ||
+                             refillWriteActive
+  replacer.io.touch.idx   := Mux(refillWriteActive, refillIdx,
+                            curPaddr(blockOffBits + idxBits - 1, blockOffBits))
+  replacer.io.touch.way   := Mux(refillWriteActive, refillWay, curHitWay)
+ 
   replacer.io.flush.valid := false.B
   replacer.io.flush.idx   := 0.U
  
-  when(pipeLoadHitValid && pipeLoadResp.fire) {
-    replacer.io.touch.valid := true.B
-    replacer.io.touch.idx   := s2_setIdx
-    replacer.io.touch.way   := s2_hitWay
-  }.elsewhen(pipeStoreHitValid && pipeStoreAck.fire) {
-    replacer.io.touch.valid := true.B
-    replacer.io.touch.idx   := s2_setIdx
-    replacer.io.touch.way   := s2_hitWay
-  }.elsewhen(mshr.io.replacerTouch.valid) {
-    replacer.io.touch.valid := true.B
-    replacer.io.touch.idx   := mshr.io.replacerTouch.bits.idx
-    replacer.io.touch.way   := mshr.io.replacerTouch.bits.way
-  }.otherwise {
-    replacer.io.touch.valid := false.B
-    replacer.io.touch.idx   := 0.U
-    replacer.io.touch.way   := 0.U
-  }
+  // ---------- LSU 接口 ----------
+  // loadReq.ready：s_miss MSHR 接受 且 是 load 且 不是 replay
+//  io.loadReq.ready  := state === s_idle && loadSelected  //state === s_miss && curIsLoad && !curIsReplay && mshr.io.missReq.fire
+//  // storeReq.ready：s_miss MSHR 接受 且 是 store 且 不是 replay
+//  io.storeReq.ready := state === s_idle && storeSelected  //( state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire )
+  
+  // loadReq.ready：load 命中返回时 / load miss MSHR 接受时
+io.loadReq.ready  := (state === s_load_resp && !curIsReplay) ||
+                     (state === s_miss && curIsLoad && !curIsReplay && mshr.io.missReq.fire)
+ 
+// storeReq.ready：store 命中写完时 / store miss MSHR 接受时
+io.storeReq.ready := (state === s_store_write && !curIsReplay) ||
+                     (state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire)
+
+
+  // loadResp：s_load_resp 或 s_uc_load
+  io.loadResp.valid := (state === s_load_resp || state === s_uc_load)
+  io.loadResp.bits.lqIdx := curLqIdx
+  io.loadResp.bits.data  := Mux(state === s_uc_load, curUcData,
+    extractLoadData(curArrayData, curHitWay, curPaddr))
+ 
+  // storeAck：s_store_write 或 s_uc_store
+  io.storeAck.valid := (state === s_store_write || state === s_uc_store)
+  io.storeAck.bits.sqIdx := curSqIdx
  
   // ================================================================
-  //  MSHR Array 读取连接
+  //  ============ 状态转移 ============
   // ================================================================
-  // 当 MSHR 在 replace_find 时，占用 array read port
-  // 同时阻塞流水线 S0（通过 s0_blocked）
-  when(mshr.io.arrayReadReq.valid) {
-    array.io.read.valid := true.B
-    array.io.read.idx   := mshr.io.arrayReadReq.bits
-  }
-  mshr.io.arrayReadResp      := array.io.read.resp
-  mshr.io.arrayReadRespValid := array.io.read.validOut
+  switch(state) {
+    is(s_idle) {
+      when(pendingFlushed) {
+        pendingMiss := false.B
+      }.elsewhen(idle_doRefill) {
+        refillIdx    := mshr.io.refillWriteReq.bits.idx
+        refillWay    := mshr.io.refillWriteReq.bits.way
+        refillTag    := mshr.io.refillWriteReq.bits.tag
+        refillData   := mshr.io.refillWriteReq.bits.data
+        refillPrimId := mshr.io.refillWritePrimId
+        state        := s_refill
+      }.elsewhen(idle_doUcLoad) {
+        curLqIdx    := mshr.io.lsLqIdx
+        curLsIdx    := mshr.io.lsIdx
+        curIsReplay := true.B
+        curUcData   := mshr.io.lsUncacheData
+        state       := s_uc_load
+      }.elsewhen(idle_doUcStore) {
+        curSqIdx    := mshr.io.lsSqIdx
+        curLsIdx    := mshr.io.lsIdx
+        curIsReplay := true.B
+        state       := s_uc_store
+      }.elsewhen(idle_doReplay) {
+        curPaddr     := mshr.io.lsPaddr
+        curLqIdx     := mshr.io.lsLqIdx
+        curSqIdx     := mshr.io.lsSqIdx
+        curLsuOp     := mshr.io.lsLsuOp
+        curStoreData := mshr.io.lsStoreData
+        curIsLoad    := mshr.io.lsIsLoad
+        curIsStore   := mshr.io.lsIsStore
+        curCacheable := true.B
+        curIsReplay  := true.B
+        curLsIdx     := mshr.io.lsIdx
+        state        := s_tag_read
+      }.elsewhen(idle_doPending) {
+        // pendingMiss 重试：cur* 已有数据，重新读 Array
+        state := s_tag_read
+      }.elsewhen(idle_doLsu) {
+        // 接受新 LSU 请求
+        curPaddr     := lsuPaddr
+        curLqIdx     := Mux(loadSelected, io.loadReq.bits.lqIdx, 0.U)
+        curSqIdx     := Mux(storeSelected, io.storeReq.bits.sqIdx, 0.U)
+        curRobIdx    := Mux(loadSelected, io.loadReq.bits.robIdx, 0.U.asTypeOf(new RobPtr(RobSize)))
+        curLsuOp     := Mux(loadSelected, io.loadReq.bits.lsuOp, io.storeReq.bits.lsuOp)
+        curStoreData := Mux(storeSelected, io.storeReq.bits.data, 0.U)
+        curIsLoad    := loadSelected
+        curIsStore   := storeSelected
+        curCacheable := !lsuIsUncache
+        curIsReplay  := false.B
+        pendingMiss  := false.B
+        state        := Mux(lsuIsUncache, s_miss, s_tag_read)
+      }
+    }
  
-  // ================================================================
-  //  AXI 连接
-  // ================================================================
-  io.axi <> mshr.io.axi
+    is(s_tag_read) {
+      // Array 数据在本周期可用（readLatency=1）
+      curArrayData := array.io.read.resp
+      curVictimWay := s1VictimWay
+      when(s1Hit && curIsLoad) {
+        curHitWay := s1HitWay
+        state     := s_load_resp
+      }.elsewhen(s1Hit && curIsStore ){//&& !mshr.io.hasStore) {
+        curHitWay := s1HitWay
+        state     := s_store_write
+      }.otherwise {
+        state := s_miss
+      }
+    }
+ 
+    is(s_load_resp) {
+      when(io.loadResp.fire) { state := s_idle }
+    }
+ 
+    is(s_store_write) {
+      when(io.storeAck.fire) { state := s_idle }
+    }
+ 
+    is(s_miss) {
+      when(mshr.io.missReq.fire) {
+        pendingMiss := false.B
+        state       := s_idle
+      }.otherwise {
+        // MSHR 暂时无法接受 → 设 pendingMiss 回 idle 让 MSHR 推进
+        pendingMiss := true.B
+        state       := s_idle
+      }
+    }
+ 
+    is(s_refill) {
+      state := s_idle
+    }
+ 
+    is(s_uc_load) {
+      when(io.loadResp.fire) { state := s_idle }
+    }
+ 
+    is(s_uc_store) {
+      when(io.storeAck.fire) { state := s_idle }
+    }
+  }
  
   // ================================================================
   //  调试
   // ================================================================
-  dontTouch(s2_valid)
-  dontTouch(s2_hit)
-  dontTouch(s2_miss)
+  dontTouch(state)
+  dontTouch(pendingMiss)
 }

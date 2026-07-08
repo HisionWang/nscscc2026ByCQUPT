@@ -99,16 +99,17 @@ val redirectRobIdx = io.bruInfo.bits.robIdx
       // 比较 e.robIdxFull 是否比 redirect.robIdx 更新
       val sameFlag = entryUops(i).robIdxFull.flag === redirectRobIdx.flag
       // flushSelf=true: >= (包含自身); flushSelf=false: > (不含自身)
-      val isNewer = Mux(sameFlag,
-        Mux(false.B, //io.redirect.flushSelf,
-          entryUops(i).robIdxFull.value >= redirectRobIdx.value,
-          entryUops(i).robIdxFull.value >  redirectRobIdx.value
-        ),
-        Mux(false.B,  //io.redirect.flushSelf,
-          entryUops(i).robIdxFull.value <= redirectRobIdx.value,
-          entryUops(i).robIdxFull.value <  redirectRobIdx.value
-        )
-      )
+      //val isNewer = Mux(sameFlag,
+      //  Mux(false.B, //io.redirect.flushSelf,
+      //    entryUops(i).robIdxFull.value >= redirectRobIdx.value,
+      //    entryUops(i).robIdxFull.value >  redirectRobIdx.value
+      //  ),
+      //  Mux(false.B,  //io.redirect.flushSelf,
+      //    entryUops(i).robIdxFull.value <= redirectRobIdx.value,
+      //    entryUops(i).robIdxFull.value <  redirectRobIdx.value
+      //  )
+      //)
+      val isNewer = entryUops(i).robIdxFull.isAfter(redirectRobIdx)
       
       killed(i) := entryValid(i) && io.bruInfo.valid && io.bruInfo.bits.doRedirect && isNewer
 

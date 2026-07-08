@@ -8,6 +8,7 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.backend.execute._
 import nscscc.util.CircularQueuePtr
+import os.truncate
  
 class LoadQueue(implicit p: Parameters) extends NSModule {
  
@@ -20,6 +21,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val sqIdx       = UInt(log2Ceil(SqSize).W)
     val valid       = Bool()
     val addrValid   = Bool()   // 执行单元已写入虚拟地址
+    val alreadyFlush     = Bool()
     val issued      = Bool()   // 已向 DCache 发出请求
     val dataValid   = Bool()   // DCache 已返回数据/异常
     val writtenBack = Bool()   // 已向后端写回
@@ -36,6 +38,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   }
  
   val io = IO(new Bundle {
+
+    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+
     // ── 入队（来自 Dispatch） ──
     val enq = new Bundle {
       val valid  = Input(Bool())
@@ -122,6 +127,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).addrValid   := false.B
     entries(idx).issued      := false.B
     entries(idx).dataValid   := false.B
+    entries(idx).alreadyFlush := false.B
     entries(idx).writtenBack := false.B
     entries(idx).vaddr       := 0.U
     entries(idx).paddr       := 0.U
@@ -135,6 +141,23 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).fuType      := io.enq.fuType
     enqPtr := enqPtr + 1.U
   }
+
+    // ================================================================
+    //  重定向：清除比 redirect.robIdx 更新的 LQ表项
+    // ================================================================
+    val doRedirect = io.bruInfo.valid && io.bruInfo.bits.doRedirect
+    val redirectRobIdx = io.bruInfo.bits.robIdx
+    when(doRedirect) {
+      for (i <- 0 until SqSize) {
+        val e = entries(i)
+        when(e.valid) {
+          val isNewer = e.robIdxFull.isAfter(redirectRobIdx)
+          when(isNewer) {
+            e.alreadyFlush := true.B
+          }
+        }
+      }
+    }
  
   // ================================================================
   //  2. 地址写入（执行单元 → LQ）
@@ -157,7 +180,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    issueCandidates(i) := e.valid && e.addrValid && (!e.issued && !e.excpVec.orR)
+    issueCandidates(i) := e.valid && e.addrValid && (!e.issued && !e.excpVec.orR && !e.alreadyFlush)
   }
  
   val hasIssueCandidate = issueCandidates.reduce(_ || _)
@@ -299,7 +322,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  6. 出队：deqPtr 处已写回的表项可释放
   // ================================================================
-  val canDeq = entries(deqPtr.value).valid && entries(deqPtr.value).writtenBack
+  val canDeq = entries(deqPtr.value).valid && ( entries(deqPtr.value).writtenBack || entries(deqPtr.value).alreadyFlush )
   when(canDeq) {
     entries(deqPtr.value).valid := false.B
     deqPtr := deqPtr + 1.U

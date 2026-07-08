@@ -578,7 +578,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 3准备好接收新数据的条件：空闲状态或完成状态且外层已准备好
  
   
-  s3_ready := ((state === s_idle && s3_valid && s3_hit)) || (state === s_idle && !s3_valid) || (state === s_done && cpu_ready)//io.cpu_ready)
+  s3_ready := ((state === s_idle && s3_valid && s3_hit && cpu_ready)) || (state === s_idle && !s3_valid) || (state === s_done && cpu_ready)//io.cpu_ready)
   
   // === 各状态的具体任务 ===
   

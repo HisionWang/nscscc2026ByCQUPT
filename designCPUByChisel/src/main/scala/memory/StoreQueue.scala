@@ -177,21 +177,23 @@ when(doRedirect) {
   for (i <- 0 until SqSize) {
     val e = entries(i)
     when(e.valid) {
+
+      val isNewer = e.robIdxFull.isAfter(redirectRobIdx)
       // 比较 e.robIdxFull 是否比 redirect.robIdx 更新
-      val sameFlag = e.robIdxFull.flag === redirectRobIdx.flag
-      // flushSelf=true: >= (包含自身); flushSelf=false: > (不含自身)
-      val isNewer = Mux(sameFlag,
-        Mux(false.B, //io.redirect.flushSelf,
-          e.robIdxFull.value >= redirectRobIdx.value,
-          e.robIdxFull.value >  redirectRobIdx.value
-        ),
-        Mux(false.B,  //io.redirect.flushSelf,
-          e.robIdxFull.value <= redirectRobIdx.value,
-          e.robIdxFull.value <  redirectRobIdx.value
-        )
-      )
+      //val sameFlag = e.robIdxFull.flag === redirectRobIdx.flag
+      //// flushSelf=true: >= (包含自身); flushSelf=false: > (不含自身)
+      //val isNewer = Mux(sameFlag,
+      //  Mux(false.B, //io.redirect.flushSelf,
+      //    e.robIdxFull.value >= redirectRobIdx.value,
+      //    e.robIdxFull.value >  redirectRobIdx.value
+      //  ),
+      //  Mux(false.B,  //io.redirect.flushSelf,
+      //    e.robIdxFull.value <= redirectRobIdx.value,
+      //    e.robIdxFull.value <  redirectRobIdx.value
+      //  )
+      //)
       when(isNewer) {
-        e.alreadyFlush := false.B
+        e.alreadyFlush := true.B
       }
     }
   }

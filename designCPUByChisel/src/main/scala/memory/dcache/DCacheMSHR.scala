@@ -6,210 +6,263 @@ import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.axi._
-
+ 
 // ================================================================
-//  MSHR 顶层：包含 Primary × 2 + Secondary × 4 + 仲裁逻辑
+//  MSHR 顶层：2 Primary + 4 LoadStore
 // ================================================================
 class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
-  val nPrim  = 2
-  val nSec   = 4
-  val primIdBits = 1
+  val nPrim = 2
+  val nSec  = 4
  
   val io = IO(new Bundle {
-    // 流水线 S2 miss 请求
-    val req = Flipped(Decoupled(new MissReq))
- 
-    // MSHR 探针（流水线 S1 使用）
-    val probeBlockAddr     = Input(UInt((tagBits + idxBits).W))
-    val probeSetIdx        = Input(UInt(idxBits.W))
-    val probeHitWay        = Input(UInt(wayBits.W))
-    val probeBlockMatch    = Output(Bool())     // 同 block 有活跃 primary
-    val probeVictimConflict = Output(Bool())    // hit way 是某 primary 的 victim
-    val hasStore           = Output(Bool())     // 二级表项中有 store
-    val hasStoreEntering   = Output(Bool())     // 同周期有 store 进入
- 
-    // Replay
-    val replay = Decoupled(new ReplayReq)
- 
-    // Array 访问
-    val arrayReadReq       = Output(Valid(UInt(idxBits.W)))
-    val arrayReadResp      = Input(new DCacheArrayReadData)
-    val arrayReadRespValid = Input(Bool())
-    val arrayWrite         = Output(new Bundle {
-      val valid = Bool()
-      val idx   = UInt(idxBits.W)
-      val way   = UInt(wayBits.W)
-      val tag   = UInt(tagBits.W)
-      val dirty = Bool()
-      val data  = UInt((blockBytes * 8).W)
-      val wen   = Bool()
-    })
-    val metaWrite = Output(new Bundle {
-      val valid     = Bool()
-      val idx       = UInt(idxBits.W)
-      val way       = UInt(wayBits.W)
-      val metaValid = Bool()
-      val dirty     = Bool()
-      val tag       = UInt(tagBits.W)
-    })
-    val replacerTouch = Output(Valid(new Bundle {
-      val idx = UInt(idxBits.W)
-      val way = UInt(wayBits.W)
+    val missReq = Flipped(Decoupled(new Bundle {
+      val paddr       = UInt(XLEN.W)
+      val lqIdx       = UInt(log2Ceil(LqSize).W)
+      val sqIdx       = UInt(log2Ceil(SqSize).W)
+      val robIdx      = new RobPtr(RobSize)
+      val lsuOp       = UInt(LsuOp.width.W)
+      val storeData   = UInt(XLEN.W)
+      val isLoad      = Bool()
+      val isStore     = Bool()
+      val cacheable   = Bool()
+      val victimWay   = UInt(wayBits.W)
+      val victimDirty = Bool()
+      val victimTag   = UInt(tagBits.W)
+      val victimData  = UInt((blockBytes * 8).W)
     }))
  
-    val mshrAccessing = Output(Bool())  // replace_find + invalidate
-    val mshrWriting   = Output(Bool())  // refill_write
+    val probeBlockAddr = Input(UInt((tagBits + idxBits).W))
+    val probeMatch     = Output(Bool())
+    val isFirstMiss    = Output(Bool())
+    val matchPrimId    = Output(UInt(1.W))
  
-    // Uncache 响应
-    val uncacheLoadResp = Decoupled(new Bundle {
-      val lqIdx = UInt(log2Ceil(LqSize).W)
-      val data  = UInt(XLEN.W)
-    })
-    val uncacheStoreAck = Decoupled(new Bundle {
-      val sqIdx = UInt(log2Ceil(SqSize).W)
-    })
+    val hasStore = Output(Bool())   // 组合信号，无 RegNext
  
-    // AXI
+    val canAlloc        = Output(Bool())
+    val refillWriteReq  = Output(Valid(new Bundle {
+      val idx  = UInt(idxBits.W)
+      val way  = UInt(wayBits.W)
+      val tag  = UInt(tagBits.W)
+      val data = UInt((blockBytes * 8).W)
+    }))
+    val refillWriteAck    = Input(Valid(UInt(1.W)))
+    val refillWritePrimId = Output(UInt(1.W))
+ 
+    val lsReady       = Output(Bool())
+    val lsIdx         = Output(UInt(log2Ceil(nSec).W))
+    val lsIsUncache   = Output(Bool())
+    val lsUncacheData = Output(UInt(XLEN.W))
+    val lsPaddr       = Output(UInt(XLEN.W))
+    val lsLqIdx       = Output(UInt(log2Ceil(LqSize).W))
+    val lsSqIdx       = Output(UInt(log2Ceil(SqSize).W))
+    val lsLsuOp       = Output(UInt(LsuOp.width.W))
+    val lsStoreData   = Output(UInt(XLEN.W))
+    val lsIsLoad      = Output(Bool())
+    val lsIsStore     = Output(Bool())
+    val lsAck         = Input(Valid(UInt(log2Ceil(nSec).W)))
+ 
     val axi = new AXI3MasterIO
- 
-    // Redirect
     val redirect = Input(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
     }))
- 
-    val full = Output(Bool())
   })
  
-  // ===== 实例化 =====
-  val primaries   = Seq.tabulate(nPrim)(i => Module(new PrimaryMSHREntry))
-  val secondaries = Seq.tabulate(nSec)(i => Module(new SecondaryMSHREntry))
+  // ===== Primary 实例化 =====
+  val primaries = Seq.tabulate(nPrim)(i => Module(new MSHREntry))
  
-  // ===== MSHR 探针 =====
-  // Block 匹配：有 primary 正在处理同一 block
+  // ===== LoadStore 表项 =====
+  val lsValid     = RegInit(VecInit(Seq.fill(nSec)(false.B)))
+  val lsReadyReg  = RegInit(VecInit(Seq.fill(nSec)(false.B)))
+  val lsPaddr     = Reg(Vec(nSec, UInt(XLEN.W)))
+  val lsLqIdx     = Reg(Vec(nSec, UInt(log2Ceil(LqSize).W)))
+  val lsSqIdx     = Reg(Vec(nSec, UInt(log2Ceil(SqSize).W)))
+  val lsRobIdx    = Reg(Vec(nSec, new RobPtr(RobSize)))
+  val lsLsuOp     = Reg(Vec(nSec, UInt(LsuOp.width.W)))
+  val lsStoreData = Reg(Vec(nSec, UInt(XLEN.W)))
+  val lsIsLoad    = Reg(Vec(nSec, Bool()))
+  val lsIsStore   = Reg(Vec(nSec, Bool()))
+  val lsPrimaryId = Reg(Vec(nSec, UInt(1.W)))
+  val lsIsUncache = Reg(Vec(nSec, Bool()))
+  val lsFlushed   = RegInit(VecInit(Seq.fill(nSec)(false.B)))
+ 
+  // ===== 探针（组合逻辑，无环） =====
   val blockMatchVec = primaries.map(p => p.io.busy && p.io.blockAddr === io.probeBlockAddr)
-  io.probeBlockMatch := VecInit(blockMatchVec).asUInt.orR
+  io.probeMatch  := VecInit(blockMatchVec).asUInt.orR
+  io.isFirstMiss := !VecInit(blockMatchVec).asUInt.orR
+  io.matchPrimId := PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
  
-  // Victim 冲突：hit way 等于某 primary 的 victim way（同 set）
-  val victimConflictVec = primaries.map(p =>
-    p.io.busy && p.io.setIdx === io.probeSetIdx && p.io.mshrVictimWay === io.probeHitWay
-  )
-  io.probeVictimConflict := VecInit(victimConflictVec).asUInt.orR
+  // ===== hasStore：组合信号，立即反映 =====
+  io.hasStore := VecInit((0 until nSec).map(i => lsValid(i) && lsIsStore(i) && !lsFlushed(i))).asUInt.orR
  
-  // ===== Store 排序 =====
-  val secHasStore = VecInit(secondaries.map(s => s.io.busy && s.io.isStore)).asUInt.orR
-  io.hasStore := RegNext(secHasStore)
+  // ===== 请求分配逻辑 =====
+  val reqBlockAddr  = io.missReq.bits.paddr(31, blockOffBits)
+  val reqSetIdx     = io.missReq.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
+  val reqIsUncache  = !io.missReq.bits.cacheable
  
-  // ===== 请求分配逻辑（MissArbiter） =====
-  val reqBlockAddr = io.req.bits.paddr(31, blockOffBits)
-  val reqSetIdx    = io.req.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
-  val reqIsStore   = io.req.bits.isStore
-  val reqIsUncache = !io.req.bits.cacheable
+  val isFirstMissReq = !VecInit(blockMatchVec).asUInt.orR
+  val matchPrimIdReq = PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
  
-  // 查找匹配的 primary（同 block）
-  val matchPrimId = PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
-  val isFirstMiss = !VecInit(blockMatchVec).asUInt.orR
- 
-  // 空闲 primary
   val freePrimMask = VecInit(primaries.map(_.io.canAccept)).asUInt
   val hasFreePrim  = freePrimMask.orR
   val allocPrimId  = PriorityEncoder(freePrimMask)
  
-  // 空闲 secondary
-  val freeSecMask = VecInit(secondaries.map(s => !s.io.busy)).asUInt
+  val freeSecMask = VecInit((0 until nSec).map(i => !lsValid(i))).asUInt
   val hasFreeSec  = freeSecMask.orR
   val allocSecIdx = PriorityEncoder(freeSecMask)
  
-  // Set 冲突：有 primary 正在处理同 set（但不同 block）
   val setConflictVec = primaries.map(p =>
     p.io.busy && p.io.setIdx === reqSetIdx && p.io.blockAddr =/= reqBlockAddr
   )
   val setConflict = VecInit(setConflictVec).asUInt.orR
  
-  // Store 排序：MSHR 中已有 store 时拒绝新 store
-  val storeBlocked = io.hasStore && reqIsStore
+  // ★ 不再在此处做 storeBlocked，由 DCache 入口把关
+  val canAllocFirst  = hasFreePrim && hasFreeSec && !setConflict
+  val canAllocMerge  = hasFreeSec
+  val canAllocUncache = hasFreePrim
  
-  // 同周期 store 进入转发
-  val storeEntering = io.req.valid && reqIsStore && !reqIsUncache
-  io.hasStoreEntering := storeEntering
- 
-  // 分配条件
-  // - 首次 miss：需要空闲 primary + 空闲 secondary
-  // - 非首次 miss（合并）：只需空闲 secondary
-  // - Uncache：只需空闲 primary
-  val canAllocFirst    = hasFreePrim && hasFreeSec && !setConflict && !storeBlocked
-  val canAllocMerge    = hasFreeSec && !storeBlocked
-  val canAllocUncache  = hasFreePrim && !storeBlocked
- 
-  val canAlloc = Mux(reqIsUncache, canAllocUncache,
-                Mux(isFirstMiss, canAllocFirst, canAllocMerge))
- 
-  io.req.ready := canAlloc
-  io.full := !hasFreeSec && (!hasFreePrim || !isFirstMiss)
+  val canAllocReq = Mux(reqIsUncache, canAllocUncache,
+                    Mux(isFirstMissReq, canAllocFirst, canAllocMerge))
+  io.canAlloc      := canAllocReq
+  io.missReq.ready := canAllocReq
  
   // ===== Primary 连接 =====
   for ((prim, i) <- primaries.zipWithIndex) {
-    prim.io.id       := i.U
-    prim.io.redirect := io.redirect
+    prim.io.id := i.U
  
-    // 请求：仅首次 miss 或 uncache 分配 primary
-    val allocThisPrim = isFirstMiss && allocPrimId === i.U
+    val lsAllDone = !VecInit((0 until nSec).map(j =>
+      lsValid(j) && lsPrimaryId(j) === i.U && !lsFlushed(j)
+    )).asUInt.orR
+    prim.io.release := prim.io.done && lsAllDone
+ 
+    prim.io.refillWriteAck := io.refillWriteAck.valid && io.refillWriteAck.bits === i.U
+ 
+    val allocThisPrim = isFirstMissReq && allocPrimId === i.U
     val allocUncacheThis = reqIsUncache && allocPrimId === i.U
-    prim.io.req.valid := io.req.valid && (allocThisPrim || allocUncacheThis) && canAlloc
-    prim.io.req.bits.paddr     := io.req.bits.paddr
-    prim.io.req.bits.victimWay := io.req.bits.victimWay
-    prim.io.req.bits.reqType   := Mux(reqIsUncache,
-      Mux(io.req.bits.isLoad, MshrReqType.uncacheRead, MshrReqType.uncacheWrite),
-      Mux(io.req.bits.isLoad, MshrReqType.refillLoad, MshrReqType.refillStore)
-    )
- 
-    // Array 读取
-    prim.io.arrayReadResp      := io.arrayReadResp
-    prim.io.arrayReadRespValid := io.arrayReadRespValid
-    prim.io.victimWayIn        := prim.io.mshrVictimWay
- 
-    // Uncache 响应信息
-    prim.io.uncacheLqIdx     := io.req.bits.lqIdx
-    prim.io.uncacheSqIdx     := io.req.bits.sqIdx
-    prim.io.uncacheStoreData := io.req.bits.storeData
-    prim.io.uncacheLsuOp     := io.req.bits.lsuOp
+    prim.io.req.valid := io.missReq.fire && (allocThisPrim || allocUncacheThis)
+    prim.io.req.bits.paddr       := io.missReq.bits.paddr
+    prim.io.req.bits.reqType     := Mux(reqIsUncache,
+      Mux(io.missReq.bits.isLoad, MshrReqType.uncacheRead, MshrReqType.uncacheWrite),
+      MshrReqType.cacheable)
+    prim.io.req.bits.victimWay   := io.missReq.bits.victimWay
+    prim.io.req.bits.victimDirty := io.missReq.bits.victimDirty
+    prim.io.req.bits.victimTag   := io.missReq.bits.victimTag
+    prim.io.req.bits.victimData  := io.missReq.bits.victimData
+    prim.io.req.bits.storeData   := io.missReq.bits.storeData
+    prim.io.req.bits.lsuOp       := io.missReq.bits.lsuOp
   }
  
-  // ===== Secondary 连接 =====
-  for ((sec, j) <- secondaries.zipWithIndex) {
-    sec.io.redirect := io.redirect
+  // ===== LS 表项分配 =====
+  when(io.missReq.fire) {
+    val idx = allocSecIdx
+    lsValid(idx)     := true.B
+    lsReadyReg(idx)  := false.B
+    lsPaddr(idx)     := io.missReq.bits.paddr
+    lsLqIdx(idx)     := io.missReq.bits.lqIdx
+    lsSqIdx(idx)     := io.missReq.bits.sqIdx
+    lsRobIdx(idx)    := io.missReq.bits.robIdx
+    lsLsuOp(idx)     := io.missReq.bits.lsuOp
+    lsStoreData(idx) := io.missReq.bits.storeData
+    lsIsLoad(idx)    := io.missReq.bits.isLoad
+    lsIsStore(idx)   := io.missReq.bits.isStore
+    lsIsUncache(idx) := reqIsUncache
+    lsFlushed(idx)   := false.B
  
-    // 请求：所有 miss（包括首次 miss 也分配一个 secondary）
-    val allocThisSec = allocSecIdx === j.U
-    val needSec = !reqIsUncache  // uncache 不需要 secondary
-    sec.io.req.valid := io.req.valid && allocThisSec && canAlloc && needSec
-    sec.io.req.bits.replayReq.paddr     := io.req.bits.paddr
-    sec.io.req.bits.replayReq.lqIdx     := io.req.bits.lqIdx
-    sec.io.req.bits.replayReq.sqIdx     := io.req.bits.sqIdx
-    sec.io.req.bits.replayReq.robIdx    := io.req.bits.robIdx
-    sec.io.req.bits.replayReq.lsuOp     := io.req.bits.lsuOp
-    sec.io.req.bits.replayReq.storeData := io.req.bits.storeData
-    sec.io.req.bits.replayReq.isLoad    := io.req.bits.isLoad
-    sec.io.req.bits.replayReq.isStore   := io.req.bits.isStore
-    sec.io.req.bits.primaryId := Mux(isFirstMiss, allocPrimId, matchPrimId)
+    val primId = Mux(isFirstMissReq, allocPrimId, matchPrimIdReq)
+    lsPrimaryId(idx) := primId
  
-    // 唤醒
-    val fetchDoneVec = primaries.map(p => p.io.fetchDone && p.io.fetchDoneBlockAddr === sec.io.blockAddr)
-    sec.io.wakeup.valid     := VecInit(fetchDoneVec).asUInt.orR
-    sec.io.wakeup.bits      := PriorityMux(fetchDoneVec.zipWithIndex.map { case (v, i) => v -> i.U })
- 
-    // 快速唤醒：分配同周期 primary 完成
-    val fastDoneVec = primaries.map(p =>
-      p.io.fetchDone && p.io.fetchDoneBlockAddr === io.req.bits.paddr(31, blockOffBits)
-    )
-    sec.io.fastWakeup.valid := VecInit(fastDoneVec).asUInt.orR
-    sec.io.fastWakeup.bits  := PriorityMux(fastDoneVec.zipWithIndex.map { case (v, i) => v -> i.U })
+    // 快速唤醒：分配时 primary 已 done
+    val fastDone = VecInit(primaries.zipWithIndex.map { case (p, pi) =>
+      p.io.done && pi.U === primId
+    }).asUInt.orR
+    when(fastDone) { lsReadyReg(idx) := true.B }
   }
+ 
+  // ===== Wakeup：Primary done 上升沿唤醒 LS 表项 =====
+  for (i <- 0 until nPrim) {
+    val prevDone = RegNext(primaries(i).io.done, false.B)
+    when(primaries(i).io.done && !prevDone) {
+      for (j <- 0 until nSec) {
+        when(lsValid(j) && lsPrimaryId(j) === i.U && !lsFlushed(j)) {
+          lsReadyReg(j) := true.B
+        }
+      }
+    }
+  }
+ 
+  // ===== Redirect：仅 flush Load，Store 不可被 flush =====
+  when(io.redirect.valid) {
+    for (j <- 0 until nSec) {
+      when(lsValid(j) && lsIsLoad(j) && !lsIsStore(j) && !lsFlushed(j)) {
+        when(lsRobIdx(j).isAfter(io.redirect.bits.robIdx)) {
+          lsFlushed(j) := true.B
+        }
+      }
+    }
+  }
+ 
+  // 释放 flushed 表项
+  for (j <- 0 until nSec) {
+    when(lsValid(j) && lsFlushed(j)) {
+      lsValid(j)    := false.B
+      lsReadyReg(j) := false.B
+      lsFlushed(j)  := false.B
+    }
+  }
+ 
+  // ===== LS Ack =====
+  when(io.lsAck.valid) {
+    val idx = io.lsAck.bits
+    lsValid(idx)    := false.B
+    lsReadyReg(idx) := false.B
+  }
+ 
+  // ===== LS Ready 选择（Store 优先） =====
+  val readyStores = Wire(Vec(nSec, Bool()))
+  val readyLoads  = Wire(Vec(nSec, Bool()))
+  for (j <- 0 until nSec) {
+    readyStores(j) := lsValid(j) && lsReadyReg(j) && lsIsStore(j) && !lsFlushed(j)
+    readyLoads(j)  := lsValid(j) && lsReadyReg(j) && !lsIsStore(j) && !lsFlushed(j)
+  }
+  val hasReadyStore = readyStores.asUInt.orR
+  val hasReadyLs    = VecInit((0 until nSec).map(j =>
+    lsValid(j) && lsReadyReg(j) && !lsFlushed(j)
+  )).asUInt.orR
+  val selectedLsIdx = Mux(hasReadyStore, PriorityEncoder(readyStores), PriorityEncoder(readyLoads))
+ 
+  io.lsReady       := hasReadyLs
+  io.lsIdx         := selectedLsIdx
+  io.lsIsUncache   := lsIsUncache(selectedLsIdx)
+  io.lsUncacheData := VecInit(primaries.map(_.io.uncacheData))(lsPrimaryId(selectedLsIdx))
+  io.lsPaddr       := lsPaddr(selectedLsIdx)
+  io.lsLqIdx       := lsLqIdx(selectedLsIdx)
+  io.lsSqIdx       := lsSqIdx(selectedLsIdx)
+  io.lsLsuOp       := lsLsuOp(selectedLsIdx)
+  io.lsStoreData   := lsStoreData(selectedLsIdx)
+  io.lsIsLoad      := lsIsLoad(selectedLsIdx)
+  io.lsIsStore     := lsIsStore(selectedLsIdx)
+ 
+  // ===== Refill Write =====
+  val refillWritePrimVec = VecInit(primaries.map(_.io.refillWriteReq))
+  val hasRefillWrite     = refillWritePrimVec.asUInt.orR
+  val refillWritePrimSel = PriorityEncoder(refillWritePrimVec)
+ 
+  val primSetIdxVec    = VecInit(primaries.map(_.io.setIdx))
+  val primVictimWayVec = VecInit(primaries.map(_.io.mshrVictimWay))
+  val primRefillTagVec = VecInit(primaries.map(_.io.refillTag))
+  val primRefillDataVec = VecInit(primaries.map(_.io.refillData))
+ 
+  io.refillWriteReq.valid := hasRefillWrite
+  io.refillWriteReq.bits.idx  := primSetIdxVec(refillWritePrimSel)
+  io.refillWriteReq.bits.way  := primVictimWayVec(refillWritePrimSel)
+  io.refillWriteReq.bits.tag  := primRefillTagVec(refillWritePrimSel)
+  io.refillWriteReq.bits.data := primRefillDataVec(refillWritePrimSel)
+  io.refillWritePrimId := refillWritePrimSel
  
   // ===== AXI AR 仲裁 =====
   val arValids = VecInit(primaries.map(_.io.ar.valid))
-  val arSelOH  = PriorityMux(arValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nPrim) })
-  val arHasValid = arValids.asUInt.orR
- 
+  val arSelOH  = PriorityMux(arValids.zipWithIndex.map { case (v, i) =>
+    v -> UIntToOH(i.U, nPrim)
+  })
   io.axi.ar.data.arid    := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arid))
   io.axi.ar.data.araddr  := Mux1H(arSelOH, primaries.map(_.io.ar.bits.araddr))
   io.axi.ar.data.arlen   := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arlen))
@@ -218,12 +271,12 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   io.axi.ar.data.arlock  := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arlock))
   io.axi.ar.data.arcache := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arcache))
   io.axi.ar.data.arprot  := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arprot))
-  io.axi.ar.data.arvalid := arHasValid
+  io.axi.ar.data.arvalid := arValids.asUInt.orR
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.ar.ready := io.axi.ar.arready && arSelOH(i)
   }
  
-  // ===== AXI R 路由（按 ID） =====
+  // ===== AXI R 路由 =====
   val rId   = io.axi.r.data.rid(0)
   val rIdOH = UIntToOH(rId, nPrim)
   for ((prim, i) <- primaries.zipWithIndex) {
@@ -234,9 +287,9 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
  
   // ===== AXI AW 仲裁 =====
   val awValids = VecInit(primaries.map(_.io.aw.valid))
-  val awSelOH  = PriorityMux(awValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nPrim) })
-  val awHasValid = awValids.asUInt.orR
- 
+  val awSelOH  = PriorityMux(awValids.zipWithIndex.map { case (v, i) =>
+    v -> UIntToOH(i.U, nPrim)
+  })
   io.axi.aw.data.awid    := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awid))
   io.axi.aw.data.awaddr  := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awaddr))
   io.axi.aw.data.awlen   := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awlen))
@@ -245,21 +298,21 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   io.axi.aw.data.awlock  := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awlock))
   io.axi.aw.data.awcache := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awcache))
   io.axi.aw.data.awprot  := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awprot))
-  io.axi.aw.data.awvalid := awHasValid
+  io.axi.aw.data.awvalid := awValids.asUInt.orR
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.aw.ready := io.axi.aw.awready && awSelOH(i)
   }
  
   // ===== AXI W 仲裁 =====
   val wValids = VecInit(primaries.map(_.io.w.valid))
-  val wSelOH  = PriorityMux(wValids.zipWithIndex.map { case (v, i) => v -> UIntToOH(i.U, nPrim) })
-  val wHasValid = wValids.asUInt.orR
- 
+  val wSelOH  = PriorityMux(wValids.zipWithIndex.map { case (v, i) =>
+    v -> UIntToOH(i.U, nPrim)
+  })
   io.axi.w.data.wid    := Mux1H(wSelOH, primaries.map(_.io.w.bits.wid))
   io.axi.w.data.wdata  := Mux1H(wSelOH, primaries.map(_.io.w.bits.wdata))
   io.axi.w.data.wstrb  := Mux1H(wSelOH, primaries.map(_.io.w.bits.wstrb))
   io.axi.w.data.wlast  := Mux1H(wSelOH, primaries.map(_.io.w.bits.wlast))
-  io.axi.w.data.wvalid := wHasValid
+  io.axi.w.data.wvalid := wValids.asUInt.orR
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.w.ready := io.axi.w.wready && wSelOH(i)
   }
@@ -272,100 +325,4 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     prim.io.b.bits  := io.axi.b.data
   }
   io.axi.b.bready := Mux1H(bIdOH, primaries.map(_.io.b.ready))
- 
-  // ===== Replay 仲裁 =====
-  val replayValids = VecInit(secondaries.map(_.io.replay.valid))
-  val replaySelOH = PriorityMux(replayValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nSec)
-  })
-  val replayHasValid = replayValids.asUInt.orR
- 
-  io.replay.valid := replayHasValid
-  io.replay.bits  := Mux1H(replaySelOH, secondaries.map(_.io.replay.bits))
-  for ((sec, i) <- secondaries.zipWithIndex) {
-    sec.io.replay.ready := io.replay.ready && replaySelOH(i)
-  }
- 
-  // ===== Array Read 仲裁 =====
-  // 同一时间最多一个 primary 在 replace_find
-  val primReadValids = VecInit(primaries.map(_.io.arrayReadReq.valid))
-  val primReadSelOH  = PriorityMux(primReadValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nPrim)
-  })
-  io.arrayReadReq.valid := 	primReadValids.asUInt.orR
-  io.arrayReadReq.bits  := Mux1H(primReadSelOH, primaries.map(_.io.arrayReadReq.bits))
- 
-  // Array Read Response：路由到对应 primary
-  // 用 Reg 记录是哪个 primary 发起的读
-  val readPrimId = RegInit(0.U(1.W))
-  when(	primReadValids.asUInt.orR) {
-    readPrimId := OHToUInt(primReadSelOH)
-  }
-  for ((prim, i) <- primaries.zipWithIndex) {
-    prim.io.arrayReadResp      := io.arrayReadResp
-    prim.io.arrayReadRespValid := io.arrayReadRespValid && readPrimId === i.U
-  }
- 
-  // ===== Array Write 仲裁 =====
-  // 同一时间最多一个 primary 在 refill_write
-  val primWriteValids = VecInit(primaries.map(p => p.io.arrayWrite.valid))
-  val primWriteSelOH  = PriorityMux(primWriteValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nPrim)
-  })
-  val primWriteHasValid = primWriteValids.asUInt.orR
- 
-  io.arrayWrite.valid := primWriteHasValid
-  io.arrayWrite.idx   := Mux1H(primWriteSelOH, primaries.map(_.io.arrayWrite.idx))
-  io.arrayWrite.way   := Mux1H(primWriteSelOH, primaries.map(_.io.arrayWrite.way))
-  io.arrayWrite.tag   := Mux1H(primWriteSelOH, primaries.map(_.io.arrayWrite.tag))
-  io.arrayWrite.dirty := Mux1H(primWriteSelOH, primaries.map(_.io.arrayWrite.dirty))
-  io.arrayWrite.data  := Mux1H(primWriteSelOH, primaries.map(_.io.arrayWrite.data))
-  io.arrayWrite.wen   := Mux1H(primWriteSelOH, primaries.map(_.io.arrayWrite.wen))
- 
-  // ===== Meta Write 仲裁 =====
-  val primMetaValids = VecInit(primaries.map(p => p.io.metaWrite.valid))
-  val primMetaSelOH  = PriorityMux(primMetaValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nPrim)
-  })
-  io.metaWrite.valid     := 	primMetaValids.asUInt.orR
-  io.metaWrite.idx       := Mux1H(primMetaSelOH, primaries.map(_.io.metaWrite.idx))
-  io.metaWrite.way       := Mux1H(primMetaSelOH, primaries.map(_.io.metaWrite.way))
-  io.metaWrite.metaValid := Mux1H(primMetaSelOH, primaries.map(_.io.metaWrite.metaValid))
-  io.metaWrite.dirty     := Mux1H(primMetaSelOH, primaries.map(_.io.metaWrite.dirty))
-  io.metaWrite.tag       := Mux1H(primMetaSelOH, primaries.map(_.io.metaWrite.tag))
- 
-  // ===== Replacer Touch =====
-  val primTouchValids = VecInit(primaries.map(_.io.replacerTouch.valid))
-  val primTouchSelOH  = PriorityMux(primTouchValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nPrim)
-  })
-  io.replacerTouch.valid := 	primTouchValids.asUInt.orR
-  io.replacerTouch.bits.idx := Mux1H(primTouchSelOH, primaries.map(_.io.replacerTouch.bits.idx))
-  io.replacerTouch.bits.way := Mux1H(primTouchSelOH, primaries.map(_.io.replacerTouch.bits.way))
- 
-  // ===== 状态输出 =====
-  io.mshrAccessing := VecInit(primaries.map(_.io.accessingArray)).asUInt.orR
-  io.mshrWriting   := VecInit(primaries.map(_.io.writingArray)).asUInt.orR
- 
-  // ===== Uncache 响应仲裁 =====
-  val ucLoadValids = VecInit(primaries.map(_.io.uncacheLoadResp.valid))
-  val ucLoadSelOH  = PriorityMux(ucLoadValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nPrim)
-  })
-  io.uncacheLoadResp.valid := ucLoadValids.asUInt.orR
-  io.uncacheLoadResp.bits.lqIdx := Mux1H(ucLoadSelOH, primaries.map(_.io.uncacheLoadResp.bits.lqIdx))
-  io.uncacheLoadResp.bits.data  := Mux1H(ucLoadSelOH, primaries.map(_.io.uncacheLoadResp.bits.data))
-  for ((prim, i) <- primaries.zipWithIndex) {
-    prim.io.uncacheLoadResp.ready := io.uncacheLoadResp.ready && ucLoadSelOH(i)
-  }
- 
-  val ucStoreValids = VecInit(primaries.map(_.io.uncacheStoreAck.valid))
-  val ucStoreSelOH  = PriorityMux(ucStoreValids.zipWithIndex.map {
-    case (v, i) => v -> UIntToOH(i.U, nPrim)
-  })
-  io.uncacheStoreAck.valid := ucStoreValids.asUInt.orR
-  io.uncacheStoreAck.bits.sqIdx := Mux1H(ucStoreSelOH, primaries.map(_.io.uncacheStoreAck.bits.sqIdx))
-  for ((prim, i) <- primaries.zipWithIndex) {
-    prim.io.uncacheStoreAck.ready := io.uncacheStoreAck.ready && ucStoreSelOH(i)
-  }
 }
