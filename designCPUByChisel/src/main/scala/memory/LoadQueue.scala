@@ -251,6 +251,10 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
+  io.outResult.bits.csrWen:= DontCare
+  io.outResult.bits.csrWaddr:= DontCare
+  io.outResult.bits.csrWdata:= DontCare
+
   //io.outResult.bits.brMsRedirect := DontCare
   //io.outResult.bits.redirect.bits.flushSelf := true.B
  
@@ -314,6 +318,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.bpuInfo := DontCare
   wbUop.snptId := DontCare
 
+  //wbUop.ctrl.csrWen:= DontCare
+  //wbUop.ctrl.csrWaddr:= DontCare
+  //wbUop.ctrl.csrWdata:= DontCare
  
   when(io.outResult.fire) {
     entries(wbIdx).writtenBack := true.B

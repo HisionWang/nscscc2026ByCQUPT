@@ -1,3 +1,5 @@
+
+
 package nscscc.backend.execute
  
 import chisel3._
@@ -9,17 +11,21 @@ import nscscc.backend.regread.ExeReq
 import nscscc.backend.rename.RedirectInfo
  
 class ExeResult(implicit p: Parameters) extends NSBundle {
-  val uop      = new DispatchedInst
-  val data     = UInt(XLEN.W)
-  val redirect = Valid(new RedirectInfo)
-
-  val memValid = Bool()// 没有输出这个！
-  val memRead  = Bool()// 没有输出这个！
-  val memWrite = Bool()// 没有输出这个！
-  val memVaddr = UInt(XLEN.W)// 没有输出这个！
-  val memPaddr = UInt(XLEN.W)// 没有输出这个！
-  val memStoreData = UInt(XLEN.W)// 没有输出这个！
-
+  val uop           = new DispatchedInst
+  val data          = UInt(XLEN.W)
+  val redirect      = Valid(new RedirectInfo)
+ 
+  val memValid      = Bool()
+  val memRead       = Bool()
+  val memWrite      = Bool()
+  val memVaddr      = UInt(XLEN.W)
+  val memPaddr      = UInt(XLEN.W)
+  val memStoreData  = UInt(XLEN.W)
+ 
+  // CSR 写回信息（提交时使用）
+  val csrWen        = Bool()
+  val csrWaddr      = UInt(csrAddrLen.W)
+  val csrWdata      = UInt(XLEN.W)
 }
  
 case class ExeUnitParams(
@@ -32,42 +38,20 @@ case class ExeUnitParams(
   hasStd: Boolean = false
 )
  
-/**
- * ═══════════════════════════════════════════════════════════════
- * 执行单元（ExeUnit）—— 含乘除法器集成版
- * ═══════════════════════════════════════════════════════════════
- *
- * 【架构变更】
- * 原设计中 ALU/BRU 互斥共享 stgData，所有指令占用同一流水级。
- * 新增 MUL（流水线）/ DIV（多周期）后，三者可以并行执行：
- *   - 快速通道（ALU/BRU/LSU/CSR）：单周期，使用 stgData 寄存器
- *   - 乘法通道（MUL）：3级流水线，独立握手
- *   - 除法通道（DIV）：多周期，独立握手
- *
- * 【输入路由】
- *   - 快速指令：stgReady 即可接收
- *   - MUL 指令：乘法器 in.ready 即可接收（流水线，通常总是就绪）
- *   - DIV 指令：除法器 in.ready（仅空闲时）才可接收
- *   三类指令互斥（FuType 不同），不存在同一输入同时路由到两个通道的情况
- *
- * 【输出仲裁】
- *   三个通道竞争唯一的 outResult 端口：
- *   优先级：快速通道 > 除法通道 > 乘法通道
- *   - 快速通道阻塞 stgData，必须优先输出
- *   - 除法器多周期阻塞，优先级次之
- *   - 乘法器流水线可吸收延迟，优先级最低
- * ═══════════════════════════════════════════════════════════════
- */
-class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModule {
+class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModule with HasCsrParameters {
   val io = IO(new Bundle {
-    val inReq      = Flipped(Decoupled(new ExeReq))
-    val outResult  = Decoupled(new ExeResult)
-    val flush      = Input(Bool())
+    val inReq        = Flipped(Decoupled(new ExeReq))
+    val outResult    = Decoupled(new ExeResult)
+    val flush        = Input(Bool())
     val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
-
+ 
+    // CSR 寄存器堆读端口（组合逻辑读）
+    val csrRaddr     = Output(UInt(csrAddrLen.W)) 
+    val csrRdata     = Input(UInt(XLEN.W))
   })
+ 
   // ================================================================
-  //  输入路由：判断当前输入指令的目标通道
+  //  输入路由
   // ================================================================
   val incomingFuType = io.inReq.bits.uop.ctrl.fuType
   val isFastPath = incomingFuType === FuType.alu || incomingFuType === FuType.bru ||
@@ -78,25 +62,15 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
  
   // ================================================================
   //  快速通道 Phase 1：流水级寄存器
-  //  仅 ALU/BRU/LSU/CSR/PRIV 使用此寄存器
   // ================================================================
   val stgValid = RegInit(false.B)
   val stgData  = Reg(new ExeReq)
  
-  // ================================================================
-  //  输出仲裁信号（先声明，后面赋值）
-  // ================================================================
-  val fastOutValid = WireDefault(stgValid)  // 快速通道有数据时即可输出
- 
-  // 快速通道的 outFire：stgValid 且下游 ready 且快速通道赢得仲裁
-  // 快速通道优先级最高，只要 stgValid 就一定赢
   val outFire  = stgValid && io.outResult.ready
   val stgReady = !stgValid || outFire
  
-  // 快速通道输入
   val fastInFire = io.inReq.valid && isFastPath && stgReady
  
-  // ── stgValid 状态转移 ──
   when(io.flush) {
     stgValid := false.B
   }.elsewhen(fastInFire) {
@@ -111,7 +85,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   // ================================================================
   val fuType = stgData.uop.ctrl.fuType
  
-  // ── ALU (单周期) ──
+  // ── ALU ──
   val aluValid = if (params.hasAlu) stgValid && fuType === FuType.alu else false.B
   val alu = if (params.hasAlu) Module(new ALU) else null
   if (params.hasAlu) {
@@ -122,7 +96,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   }
   val aluData = if (params.hasAlu) alu.io.result else null
  
-  // ── BRU (单周期) ──
+  // ── BRU ──
   val bruValid = if (params.hasBru) stgValid && fuType === FuType.bru else false.B
   val bru = if (params.hasBru) Module(new BRU) else null
   if (params.hasBru) {
@@ -133,13 +107,30 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   }
   val bruData = if (params.hasBru) bru.io.result else null
  
-  // ── load/store 地址运算 (单周期) ──
-  val memAddrValid = if (params.hasMemAddr) stgValid && fuType === FuType.lsu else false.B
-  val rs1Data = if (params.hasMemAddr) stgData.rs1Data else null
-  val memImm  = if (params.hasMemAddr) stgData.uop.imm else null
-  val memAddr = if (params.hasMemAddr) (rs1Data + memImm) else null
+  // ── CSR ──
+  val csrValid = if (params.hasCsr) stgValid && fuType === FuType.csr else false.B
+  val csrUnit  = if (params.hasCsr) Module(new CSR) else null
+  if (params.hasCsr) {
+    csrUnit.io.valid    := csrValid
+    csrUnit.io.uop      := stgData.uop
+    csrUnit.io.rs1      := stgData.rs1Data    // CSRWR/CSRXCHG: rd 旧值
+    csrUnit.io.rs2      := stgData.rs2Data    // CSRXCHG: rj 掩码
+    csrUnit.io.csrRdata := io.csrRdata        // CSR 寄存器堆读回数据
+  }
+  val csrData   = if (params.hasCsr) csrUnit.io.result   else null
+  val csrWen    = if (params.hasCsr) csrUnit.io.csrWen   else false.B
+  val csrWdata  = if (params.hasCsr) csrUnit.io.csrWdata else 0.U
  
-  // ── std (单周期) ──
+  // CSR 读地址：快速通道有数据时用 stgData 中的地址，否则用 0（无害）
+  io.csrRaddr := Mux(stgValid && fuType === FuType.csr, stgData.uop.csrAddress, 0.U)
+ 
+  // ── load/store 地址运算 ──
+  val memAddrValid = if (params.hasMemAddr) stgValid && fuType === FuType.lsu && !stgData.uop.isStd else false.B
+  val rs1Data      = if (params.hasMemAddr) stgData.rs1Data else null
+  val memImm       = if (params.hasMemAddr) stgData.uop.imm else null
+  val memAddr      = if (params.hasMemAddr) (rs1Data + memImm)(XLEN - 1, 0) else 0.U
+ 
+  // ── std ──
   val stdValid = if (params.hasStd) (stgValid && fuType === FuType.lsu && stgData.uop.isStd) else false.B
   val stdData  = if (params.hasStd) stgData.rs2Data else null
  
@@ -147,18 +138,38 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val subValids = Seq(
     if (params.hasAlu) aluValid else false.B,
     if (params.hasBru) bruValid else false.B,
+    if (params.hasCsr) csrValid else false.B,
     if (params.hasMemAddr) memAddrValid else false.B,
     if (params.hasStd) stdValid else false.B
   )
   val subData = Seq(
     if (params.hasAlu) aluData else 0.U,
     if (params.hasBru) bruData else 0.U,
+    if (params.hasCsr) csrData else 0.U,
     if (params.hasMemAddr) memAddr else 0.U,
     if (params.hasStd) stdData else 0.U
   )
  
   val fastOutData = Mux1H(subValids, subData)
   val fastOutUop  = stgData.uop
+ 
+  // ── 快速通道 mem 信号 ──
+  val fastIsLsu = if (params.hasMemAddr || params.hasStd)
+                    stgValid && fuType === FuType.lsu
+                  else false.B
+ 
+  val fastMemValid     = fastIsLsu
+  val fastMemRead      = fastIsLsu && stgData.uop.ctrl.memRead
+  val fastMemWrite     = fastIsLsu && stgData.uop.ctrl.memWrite
+  val fastMemVaddr     = memAddr    
+  val fastMemPaddr     = 0.U  
+  val fastMemStoreData = stgData.rs2Data
+ 
+  // ── 快速通道 CSR 写信号 ──
+  val fastIsCsr    = if (params.hasCsr) stgValid && fuType === FuType.csr else false.B
+  val fastCsrWen   = if (params.hasCsr) fastIsCsr && csrWen else false.B
+  val fastCsrWaddr = Mux(fastIsCsr, stgData.uop.csrAddress, 0.U)
+  val fastCsrWdata = Mux(fastIsCsr, csrWdata, 0.U)
  
   // ================================================================
   //  乘法器（流水线）
@@ -184,7 +195,6 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
  
   // ================================================================
   //  输入 ready 信号
-  //  根据指令类型路由到对应通道的 ready
   // ================================================================
   val fastReady = stgReady
   val mulReady  = if (params.hasMul) mul.io.in.ready else false.B
@@ -195,30 +205,22 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
                     Mux(isDivInst,  divReady, false.B)))
  
   // ================================================================
-  //  输出仲裁
-  //  优先级：快速通道 > 除法通道 > 乘法通道
+  //  输出仲裁：快速通道 > 除法通道 > 乘法通道
   // ================================================================
-  val fastWins = fastOutValid
-  val divWins  = !fastOutValid && divOutValid
-  val mulWins  = !fastOutValid && !divOutValid && mulOutValid
+  val fastWins = stgValid
+  val divWins  = !stgValid && divOutValid
+  val mulWins  = !stgValid && !divOutValid && mulOutValid
  
-  io.outResult.valid := fastOutValid || mulOutValid || divOutValid
+  io.outResult.valid := stgValid || mulOutValid || divOutValid
  
-  // ── 各通道的 ready 反馈 ──
-  // 快速通道：赢得仲裁且下游 ready 时发射
-  // outFire 已在上面定义 = stgValid && io.outResult.ready
- 
-  // 除法器：赢得仲裁且下游 ready
   if (params.hasDiv) {
     div.io.out.ready := divWins && io.outResult.ready
   }
- 
-  // 乘法器：赢得仲裁且下游 ready
   if (params.hasMul) {
     mul.io.out.ready := mulWins && io.outResult.ready
   }
  
-  // ── 输出数据选择（动态构建 Mux1H 列表，避免引用未实例化的模块）──
+  // ── uop / data 选择 ──
   val outUopSelects = Seq(fastWins -> fastOutUop) ++
     (if (params.hasMul) Seq(mulWins -> mul.io.out.bits.uop) else Seq()) ++
     (if (params.hasDiv) Seq(divWins -> div.io.out.bits.uop) else Seq())
@@ -229,23 +231,45 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
  
   io.outResult.bits.uop  := Mux1H(outUopSelects)
   io.outResult.bits.data := Mux1H(outDataSelects)
-
-  io.outResult.bits.memValid := false.B
-  io.outResult.bits.memRead := false.B
-  io.outResult.bits.memWrite := false.B
-  io.outResult.bits.memVaddr := 0.U
-  io.outResult.bits.memPaddr := 0.U
-  io.outResult.bits.memStoreData := 0.U
-
  
   io.outResult.bits.redirect.valid := false.B
   io.outResult.bits.redirect.bits  := DontCare
  
+  // ── mem 字段 ──
+  io.outResult.bits.memValid      := Mux1H(Seq(fastWins -> fastMemValid) ++
+    (if (params.hasMul) Seq(mulWins -> false.B) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> false.B) else Seq()))
+  io.outResult.bits.memRead       := Mux1H(Seq(fastWins -> fastMemRead) ++
+    (if (params.hasMul) Seq(mulWins -> false.B) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> false.B) else Seq()))
+  io.outResult.bits.memWrite      := Mux1H(Seq(fastWins -> fastMemWrite) ++
+    (if (params.hasMul) Seq(mulWins -> false.B) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> false.B) else Seq()))
+  io.outResult.bits.memVaddr      := Mux1H(Seq(fastWins -> fastMemVaddr) ++
+    (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+  io.outResult.bits.memPaddr      := Mux1H(Seq(fastWins -> fastMemPaddr) ++
+    (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+  io.outResult.bits.memStoreData  := Mux1H(Seq(fastWins -> fastMemStoreData) ++
+    (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+ 
+  // ── CSR 字段 ──
+  io.outResult.bits.csrWen   := Mux1H(Seq(fastWins -> fastCsrWen) ++
+    (if (params.hasMul) Seq(mulWins -> false.B) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> false.B) else Seq()))
+  io.outResult.bits.csrWaddr := Mux1H(Seq(fastWins -> fastCsrWaddr) ++
+    (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+  io.outResult.bits.csrWdata := Mux1H(Seq(fastWins -> fastCsrWdata) ++
+    (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+ 
   // ================================================================
-  //  重定向：BRU 产生的分支误预测
+  //  重定向：BRU
   // ================================================================
   if (params.hasBru) {
-    // 只有在 BRU 有效执行时，才允许向外发出重定向请求
     io.bruInfo.valid := bruValid && bru.io.bruInfo.valid
     io.bruInfo.bits  := bru.io.bruInfo.bits
   } else {
@@ -254,7 +278,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   }
  
   // ================================================================
-  //  断言：进入的指令 FuType 必须为本模块所支持
+  //  断言
   // ================================================================
   val supportedList = Seq(
     (params.hasAlu,   FuType.alu),
@@ -271,4 +295,3 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   //  assert(fuTypeSupported, "ExeUnit received instruction with unsupported FuType!")
   //}
 }
-

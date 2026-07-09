@@ -34,6 +34,8 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── ROB 提交 ──
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
   val commitToSq  = new RobCommitToSq
+      val commitToCsr = new RobCommitToCsr
+
  
   // ── 重定向 ──
   val excpEedirect = Output(new RedirectInfo)
@@ -113,6 +115,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   }
  
   io.commitToSq := rob.io.commitToSq
+  io.commitToCsr := rob.io.commitToCsr
   if (EnableDifftest) {
     for (i <- 0 until CommitWidth) {
       val robCommit = rob.io.commit.bits(i)
@@ -124,10 +127,10 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.instr      := robCommit.inst(31, 0)
       diffCommit.rfWen      := robCommit.rfWen
       diffCommit.wdest      := robCommit.ldst
-      diffCommit.wdata      := robCommit.wrdata
+      diffCommit.wdata      := robCommit.rfdata
       diffCommit.isCntInst  := DifftestUtils.isCntInst(robCommit.inst)
-      diffCommit.csrRstat   := isCsrRead && robCommit.csrAddress === csrAddr.estat.U
-      diffCommit.csrData    := robCommit.wrdata
+      diffCommit.csrRstat   := isCsrRead && robCommit.csrWaddr === csrAddr.estat.U
+      diffCommit.csrData    := robCommit.rfdata
       diffCommit.excpFlush  := robCommit.excpVec.orR
       diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst)
       diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excpVec)

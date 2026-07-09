@@ -1,4 +1,4 @@
-RUN_SOFTWARE=func/func_lab7
+RUN_SOFTWARE=func/func_lab8
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n

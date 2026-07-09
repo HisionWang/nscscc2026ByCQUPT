@@ -182,8 +182,13 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // ---------- CSR ----------
   val csr = Module(new CsrFile)
   csr.io.irqBus <> intrpt
-  csr.io.rReq <> 0.U.asTypeOf(new CsrFileReadReq)
-  csr.io.wReq <> 0.U.asTypeOf(new CsrFileWriteReq)
+  csr.io.rReq <> backend.io.csrReq
+  csr.io.rResp <> backend.io.csrResp
+
+  csr.io.wReq.wen := backend.io.commitToCsr.csrWen
+  csr.io.wReq.addr := backend.io.commitToCsr.csrWaddr
+  csr.io.wReq.data := backend.io.commitToCsr.csrWdata
+  
   csr.io.excpEvent <> 0.U.asTypeOf(new ExcpEvent)
   csr.io.excpInfo <> 0.U.asTypeOf(new ExcpInfo)
 

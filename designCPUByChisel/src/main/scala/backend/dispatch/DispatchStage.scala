@@ -462,18 +462,29 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.valids(i) := needRob(i)
     io.robEnq.bits(i).pc       := stgData(i).pc
     io.robEnq.bits(i).inst     := stgData(i).inst
+    io.robEnq.bits(i).fuType   := stgData(i).ctrl.fuType
     io.robEnq.bits(i).pdst     := stgData(i).pdst
     io.robEnq.bits(i).oldPdst  := stgData(i).oldPdst
     io.robEnq.bits(i).ldst     := stgData(i).ldst
     io.robEnq.bits(i).rfWen    := stgData(i).ctrl.rfWen
+    io.robEnq.bits(i).rfdata      := DontCare
     io.robEnq.bits(i).memRead  := stgData(i).ctrl.memRead
     io.robEnq.bits(i).memWrite := stgData(i).ctrl.memWrite
+    io.robEnq.bits(i).memVaddr  := DontCare
+    io.robEnq.bits(i).memPaddr  := DontCare
+    io.robEnq.bits(i).storeData := DontCare
+    io.robEnq.bits(i).sqIdx := DontCare
     io.robEnq.bits(i).csrWen   := stgData(i).ctrl.csrWen
     io.robEnq.bits(i).csrOp    := stgData(i).ctrl.csrOp
-    io.robEnq.bits(i).csrAddress := stgData(i).csrAddress
+    io.robEnq.bits(i).csrWaddr := stgData(i).csrAddress
+    io.robEnq.bits(i).csrWdata := DontCare
     io.robEnq.bits(i).isPriv   := stgData(i).ctrl.isPriv
-    io.robEnq.bits(i).fuType   := stgData(i).ctrl.fuType
     io.robEnq.bits(i).excpVec  := stgData(i).excpVec
     io.robEnq.bits(i).robIdx   := stgData(i).robIdx
+    io.robEnq.bits(i).writtenBack := DontCare
+    io.robEnq.bits(i).valid       := DontCare
+
+
+
   }
 }

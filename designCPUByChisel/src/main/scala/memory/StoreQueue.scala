@@ -261,6 +261,11 @@ when(doRedirect) {
   io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
+
+  io.outResult.bits.csrWen:= DontCare
+  io.outResult.bits.csrWaddr:= DontCare
+  io.outResult.bits.csrWdata:= DontCare
+
   //io.outResult.bits.redirect.bits.flushSelf := true.B
   //io.outResult.bits.brMsRedirect := DontCare
  

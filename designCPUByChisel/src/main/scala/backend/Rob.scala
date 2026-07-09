@@ -30,6 +30,7 @@ import nscscc.util.CircularQueuePtr
 class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val pc          = UInt(XLEN.W)
   val inst        = UInt(XLEN.W)
+  val fuType      = UInt(FuType.width.W)
   val pdst        = UInt(PhyRegIdxWidth.W)
   val oldPdst     = UInt(PhyRegIdxWidth.W)
   val ldst        = UInt(5.W)
@@ -42,14 +43,37 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val storeData   = UInt(XLEN.W)
   val sqIdx       = new SqPtr(SqSize)
   val csrWen      = Bool()
-  val csrOp       = UInt(CsrOp.width.W)
-  val csrAddress  = UInt(csrAddrLen.W)
+  val csrOp    = UInt(CsrOp.width.W)
+  val csrWaddr    = UInt(csrAddrLen.W)
+  val csrWdata    = UInt(XLEN.W)
   val isPriv      = Bool()
-  val fuType      = UInt(FuType.width.W)
   val excpVec     = UInt(ExceptionCode.width.W)
+  val robIdx   = new RobPtr(RobSize)
   val writtenBack = Bool()
   val valid       = Bool()
+
 }
+
+class RobCommitIO(implicit p: Parameters) extends NSBundle {
+  val valid     = Vec(CommitWidth, Output(Bool()))
+  val bits      = Vec(CommitWidth, Output(new RobEntryInner))
+  val isWalk    = Output(Bool())
+}
+class RobCommitToSq(implicit p: Parameters) extends NSBundle {
+  val valid     = Vec(CommitWidth, Output(Bool()))
+  val bits      = Vec(CommitWidth, Output(new RobEntryInner))
+}
+
+class RobCommitToCsr(implicit p: Parameters) extends NSBundle {
+  
+ // val pc          = UInt(XLEN.W)
+
+  val csrWen      = Bool()
+  val csrWaddr    = UInt(csrAddrLen.W)
+  val csrWdata    = UInt(XLEN.W)
+}
+
+
  
 class ROB(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -57,6 +81,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     val enq        = new RobEnqIO
     val commit     = new RobCommitIO
     val commitToSq = new RobCommitToSq
+    val commitToCsr = new RobCommitToCsr
     val redirect   = new RobRedirectIO
     val writeback  = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
  
@@ -112,8 +137,11 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).memPaddr    := 0.U
       entries(writeIdx).storeData   := 0.U
       entries(writeIdx).csrWen      := io.enq.bits(i).csrWen
+      entries(writeIdx).csrWaddr    := io.enq.bits(i).csrWaddr
+      //entries(writeIdx).csrWdata    := 0.U
       entries(writeIdx).csrOp       := io.enq.bits(i).csrOp
-      entries(writeIdx).csrAddress  := io.enq.bits(i).csrAddress
+
+
       entries(writeIdx).isPriv      := io.enq.bits(i).isPriv
       entries(writeIdx).fuType      := io.enq.bits(i).fuType
       entries(writeIdx).excpVec     := io.enq.bits(i).excpVec
@@ -143,6 +171,9 @@ class ROB(implicit p: Parameters) extends NSModule {
         entries(wb.bits.robIdx.value).storeData := wb.bits.memStoreData
       }
       entries(wb.bits.robIdx.value).sqIdx := wb.bits.sqIdx
+
+      entries(wb.bits.robIdx.value).csrWdata := wb.bits.csrWdata
+      //entries(wb.bits.robIdx.value).sqIdx := wb.bits.sqIdx
       // 如果有异常，更新异常向量
       when(wb.bits.excpVec.orR) {
         entries(wb.bits.robIdx.value).excpVec := wb.bits.excpVec
@@ -153,7 +184,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  6. 提交逻辑（从头部按序提交已写回且无异常的指令）
   // ================================================================
-  val commitCandidates = Wire(Vec(CommitWidth, new RobCommitEntry))
+  val commitCandidates = Wire(Vec(CommitWidth, new RobEntryInner))
   val commitValids     = Wire(Vec(CommitWidth, Bool()))
   var prevCanCommit = true.B
   for (i <- 0 until CommitWidth) {
@@ -171,7 +202,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     commitCandidates(i).rfWen    := entry.rfWen
     commitCandidates(i).pc       := entry.pc
     commitCandidates(i).inst     := entry.inst
-    commitCandidates(i).wrdata   := entry.rfdata
+    commitCandidates(i).rfdata   := entry.rfdata
 
     //SQ的
     commitCandidates(i).sqIdx   := entry.sqIdx
@@ -180,13 +211,20 @@ class ROB(implicit p: Parameters) extends NSModule {
     commitCandidates(i).memVaddr   := entry.memVaddr
     commitCandidates(i).memPaddr   := entry.memPaddr
     commitCandidates(i).storeData  := entry.storeData
+
     commitCandidates(i).csrWen     := entry.csrWen
-    commitCandidates(i).csrOp      := entry.csrOp
-    commitCandidates(i).csrAddress := entry.csrAddress
+    commitCandidates(i).csrOp     := entry.csrOp
+    commitCandidates(i).csrWaddr   := entry.csrWaddr
+    commitCandidates(i).csrWdata := entry.csrWdata
     commitCandidates(i).isPriv     := entry.isPriv
     commitCandidates(i).fuType     := entry.fuType
     commitCandidates(i).excpVec    := entry.excpVec
-   
+
+    commitCandidates(i).robIdx    := DontCare
+    
+    commitCandidates(i).writtenBack    := DontCare
+    commitCandidates(i).valid    := DontCare
+
     // 累积条件：前序都能提交 && 本身就绪（异常也算就绪，但会停止后续）
     prevCanCommit = prevCanCommit && thisReady
   }
@@ -194,11 +232,39 @@ class ROB(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CommitWidth) {
     io.commit.valid(i) := commitValids(i)
     io.commit.bits(i)  := commitCandidates(i)
- 
     io.commitToSq.valid(i) := commitCandidates(i).memWrite && commitValids(i)
     io.commitToSq.bits(i)  := commitCandidates(i)
+
   }
   io.commit.isWalk := false.B
+
+// ================================================================
+//  CSR 提交输出
+// ================================================================
+io.commitToCsr.csrWen   := false.B
+io.commitToCsr.csrWaddr := 0.U
+io.commitToCsr.csrWdata := 0.U
+ 
+var hasPrevCsrWrite = false.B
+var csrHasPrevExcp = false.B
+
+for (i <- 0 until CommitWidth) {
+
+  val isCsrCommit = commitValids(i) && commitCandidates(i).csrWen
+ 
+  // 本条是 CSR 写 且 前面没有 CSR 写 → 这是第一条 CSR 写
+  val isFirstCsrWrite = isCsrCommit && !hasPrevCsrWrite  && !csrHasPrevExcp
+ 
+  when(isFirstCsrWrite) {
+    io.commitToCsr.csrWen   := true.B
+    io.commitToCsr.csrWaddr := commitCandidates(i).csrWaddr
+    io.commitToCsr.csrWdata := commitCandidates(i).csrWdata
+  }
+ 
+  hasPrevCsrWrite = hasPrevCsrWrite || isCsrCommit
+  csrHasPrevExcp     = csrHasPrevExcp || (commitValids(i) && commitCandidates(i).excpVec.orR)
+}
+
  
   val commitCount = PopCount(commitValids)
   for (i <- 0 until CommitWidth) {

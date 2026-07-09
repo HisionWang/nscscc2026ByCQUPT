@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
+import nscscc.backend.rob._
 import nscscc.backend.rename._
 import nscscc.frontend.PredecodeInfo
 import nscscc.util.CircularQueuePtr
@@ -122,67 +123,63 @@ class BusyTableIO(implicit p: Parameters) extends NSBundle {
 class RobEnqIO(implicit p: Parameters) extends NSBundle {
   val valid = Vec(CtrlBlockWidth, Input(Bool()))
   val valids = Vec(CtrlBlockWidth, Input(Bool()))
-  val bits  = Vec(CtrlBlockWidth, Input(new RobEntry))
+  val bits  = Vec(CtrlBlockWidth, Input(new RobEntryInner))
   val canEnq = Output(Bool())  // ROB 是否能容纳本批指令
 }
- 
+
 // ================================================================
 //  ROB 表项
 // ================================================================
-class RobEntry(implicit p: Parameters) extends NSBundle {
-  val pc       = UInt(XLEN.W)
-  val inst     = UInt(XLEN.W)
-  val pdst     = UInt(PhyRegIdxWidth.W)
-  val oldPdst  = UInt(PhyRegIdxWidth.W)
-  val ldst     = UInt(5.W)
-  val rfWen    = Bool()
-  val memRead  = Bool()
-  val memWrite = Bool()
-  val csrWen   = Bool()
-  val csrOp    = UInt(CsrOp.width.W)
-  val csrAddress = UInt(csrAddrLen.W)
-  val isPriv   = Bool()
-  val excpVec  = UInt(ExceptionCode.width.W)
-  val fuType   = UInt(FuType.width.W)
-  val robIdx   = new RobPtr(RobSize)
-}
+//class enqRobEntry(implicit p: Parameters) extends NSBundle {
+//  val pc       = UInt(XLEN.W)
+//  val inst     = UInt(XLEN.W)
+//  val pdst     = UInt(PhyRegIdxWidth.W)
+//  val oldPdst  = UInt(PhyRegIdxWidth.W)
+//  val ldst     = UInt(5.W)
+//  val rfWen    = Bool()
+//  val memRead  = Bool()
+//  val memWrite = Bool()
+//  val csrWen   = Bool()
+//  val csrOp    = UInt(CsrOp.width.W)
+//  val csrWaddr = UInt(csrAddrLen.W)
+//  val isPriv   = Bool()
+//  val excpVec  = UInt(ExceptionCode.width.W)
+//  val fuType   = UInt(FuType.width.W)
+//  val robIdx   = new RobPtr(RobSize)
+//}
  
 // ================================================================
 //  ROB 提交 IO
 // ================================================================
-class RobCommitIO(implicit p: Parameters) extends NSBundle {
-  val valid     = Vec(CommitWidth, Output(Bool()))
-  val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
-  val isWalk    = Output(Bool())
-}
-class RobCommitEntry(implicit p: Parameters) extends NSBundle {
-  val pdst     = UInt(PhyRegIdxWidth.W)
-  val pc     = UInt(XLEN.W)
-  val inst        = UInt(XLEN.W)
-  val wrdata     = UInt(XLEN.W)
-  val oldPdst  = UInt(PhyRegIdxWidth.W)
-  val ldst     = UInt(5.W)
-  val rfWen    = Bool()
 
-  val sqIdx    = new SqPtr(SqSize)
-  val memWrite    = Bool()
-  val memRead     = Bool()
-  val memVaddr    = UInt(XLEN.W)
-  val memPaddr    = UInt(XLEN.W)
-  val storeData   = UInt(XLEN.W)
-  val csrWen      = Bool()
-  val csrOp       = UInt(CsrOp.width.W)
-  val csrAddress  = UInt(csrAddrLen.W)
-  val isPriv      = Bool()
-  val fuType      = UInt(FuType.width.W)
-  val excpVec     = UInt(ExceptionCode.width.W)
-}
+//class RobCommitEntry(implicit p: Parameters) extends NSBundle {
+//  val pdst     = UInt(PhyRegIdxWidth.W)
+//  val pc     = UInt(XLEN.W)
+//  val inst        = UInt(XLEN.W)
+//  val rfdata     = UInt(XLEN.W)
+//  val oldPdst  = UInt(PhyRegIdxWidth.W)
+//  val ldst     = UInt(5.W)
+//  val rfWen    = Bool()
+//
+//  val sqIdx    = new SqPtr(SqSize)
+//  val memWrite    = Bool()
+//  val memRead     = Bool()
+//  val memVaddr    = UInt(XLEN.W)
+//  val memPaddr    = UInt(XLEN.W)
+//  val storeData   = UInt(XLEN.W)
+//
+//  val csrWen      = Bool()
+//  val csrOp    = UInt(CsrOp.width.W)
+//  val csrWaddr    = UInt(csrAddrLen.W)
+//  val csrWdata    = UInt(XLEN.W)
+//
+//  val isPriv      = Bool()
+//  val fuType      = UInt(FuType.width.W)
+//  val excpVec     = UInt(ExceptionCode.width.W)
+//}
 
 
-class RobCommitToSq(implicit p: Parameters) extends NSBundle {
-  val valid     = Vec(CommitWidth, Output(Bool()))
-  val bits      = Vec(CommitWidth, Output(new RobCommitEntry))
-}
+
  
 
  
@@ -219,6 +216,10 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
   val memPaddr  = UInt(XLEN.W)
   val memStoreData  = UInt(XLEN.W)
   val rfdata  = UInt(XLEN.W)
+
+  val csrWen      = Bool()
+  val csrWaddr    = UInt(csrAddrLen.W)
+  val csrWdata    = UInt(XLEN.W)
 
   val excpVec = UInt(ExceptionCode.width.W)
   val isBypass = Bool()  // 异常/误预测标记

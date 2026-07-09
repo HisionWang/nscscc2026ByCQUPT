@@ -114,6 +114,10 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
     io.toRObResults(w).bits.memPaddr     := res.memPaddr
     io.toRObResults(w).bits.memStoreData := res.memStoreData
 
+      io.toRObResults(w).bits.csrWen   :=  res.csrWen 
+      io.toRObResults(w).bits.csrWaddr :=res.csrWaddr
+      io.toRObResults(w).bits.csrWdata :=res.csrWdata
+
   }
  
   // 多余的写端口暂置无效

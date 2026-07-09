@@ -14,11 +14,16 @@ import nscscc.backend.execute._
 import nscscc.backend.writeback._
 import nscscc.mem._
 import nscscc.difftest._
+import nscscc.csr._
+import nscscc.backend.rob._
  
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
   val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
+
+  val csrReq  = Output(new CsrFileReadReq)
+  val csrResp = Input(new CsrFileReadResp)
 
   val flush    = Input(Bool())
   val extInt   = Input(Bool())
@@ -26,6 +31,7 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val toMemResult  = Vec(2, Decoupled(new ExeResult) )
   val fromMemResult  = Flipped (Vec(2, Decoupled(new ExeResult) ))
   val commitToSq  = new RobCommitToSq
+  val commitToCsr  = new RobCommitToCsr
 }
 
 class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
@@ -38,6 +44,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val ctrlBlock   = Module(new CtrlBlock)
 
   io.commitToSq <> ctrlBlock.io.commitToSq
+  io.commitToCsr <> ctrlBlock.io.commitToCsr
 
   io.lsEnq <> ctrlBlock.io.lsEnq
   val scheduler   = Module(new Scheduler)
@@ -69,6 +76,13 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
     Module(new ExeUnit(ExeUnitParams(hasStd = true)))
   )
   val numExeUnits = exeUnits.length  // 3
+  exeUnits(0).io.csrRdata :=  io.csrResp.data
+  io.csrReq.addr := exeUnits(0).io.csrRaddr
+  exeUnits(1).io.csrRdata :=  DontCare
+  exeUnits(2).io.csrRdata :=  DontCare
+  exeUnits(3).io.csrRdata :=  DontCare
+  exeUnits(4).io.csrRdata :=  DontCare
+
 
   val bruInfoFromExe3 =  exeUnits(2).io.bruInfo
   dontTouch(bruInfoFromExe3)

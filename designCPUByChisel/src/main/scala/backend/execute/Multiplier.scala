@@ -37,6 +37,10 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   io.out.bits.memVaddr := 0.U
   io.out.bits.memPaddr := 0.U
   io.out.bits.memStoreData := 0.U
+  io.out.bits.csrWen := false.B
+  io.out.bits.csrWaddr := 0.U
+  io.out.bits.csrWdata := 0.U
+
  
   // ================================================================
   //  S1 寄存器：锁存输入 + 计算64位乘积

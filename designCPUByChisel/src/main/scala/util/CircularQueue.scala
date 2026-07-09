@@ -253,7 +253,7 @@ class CircularQueue[T <: Data](
     // }
     
     // 调试输出
-    printf(p"[CircularQueue] Flush activated. Queue cleared.\n")
+    //printf(p"[CircularQueue] Flush activated. Queue cleared.\n")
   }
 
 
