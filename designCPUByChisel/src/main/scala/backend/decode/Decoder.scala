@@ -2,10 +2,10 @@ package nscscc.backend.decode
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.{NSModule, Parameters}
+import nscscc.config.{NSBundle, NSModule, Parameters, ExceptionBundle}
 import nscscc.frontend.CtrlFlowIO
 import firrtl.PrimOps.Div
-
+import nscscc.config.ExcType._
 object DecodeTable {
   private val y = 1.U(1.W)
   private val n = 0.U(1.W)
@@ -112,7 +112,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
 
   val inst = io.inData.instr
   val pc   = io.inData.pc
-  val excp = io.inData.exception
+  
 
   // ===========================================================
   // 1. 基础字段提取
@@ -168,19 +168,64 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   val isIllegal = isIllegalBase && !isSys && !isBrk && !isErtn
   
-  val currentExcpVec = Cat(
-    isIllegal,          // [9] INE
-    excp.excpAdef,      // [8] ADEF
-    isBrk,              // [7] BRK
-    isSys,              // [6] SYS
-    excp.excpTlbPpi,    // [5] PPI
-    false.B,            // [4] PME
-    excp.excpTlbPif,    // [3] PIF
-    false.B,            // [2] PIS
-    excp.excpTlbRefill, // [1] PIL
-    io.extInt           // [0] INT
+//  val currentExcpVec = Cat(
+//    isIllegal,          // [9] INE
+//    excp.excpAdef,      // [8] ADEF
+//    isBrk,              // [7] BRK
+//    isSys,              // [6] SYS
+//    excp.excpTlbPpi,    // [5] PPI
+//    false.B,            // [4] PME
+//    excp.excpTlbPif,    // [3] PIF
+//    false.B,            // [2] PIS
+//    excp.excpTlbRefill, // [1] PIL
+//    io.extInt           // [0] INT
+//  )
+  val excpIn = io.inData.exception
+  //val excp = Wire(new ExceptionBundle)
+
+  val excp = Wire(new ExceptionBundle)
+  excp := 0.U.asTypeOf(new ExceptionBundle)
+
+  val excpI = Wire(new ExceptionBundle)
+  excpI := 0.U.asTypeOf(new ExceptionBundle)
+
+  excp.excpVec := excp.mergeMany(
+    base = excpI.excpVec,
+    isIllegal             -> INE,
+    excpIn.excpAdef       -> ADEF,
+    isBrk                 -> BRK,
+    isSys                 -> SYS,
+    excpIn.excpTlbPpi     -> PPI_I,
+    excpIn.excpTlbPif     -> PIF,
+    excpIn.excpTlbRefill  -> TLBR_I,
+    //isSys             -> INT,
+    io.extInt             -> INT,
   )
 
+//  when(isIllegal) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, INE)
+//  }
+//  when(excpIn.excpAdef) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, ADEF)
+//  }
+//  when(isBrk) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, BRK)
+//  }
+//  when(isSys) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, SYS)
+//  }
+//  when(excpIn.excpTlbPpi) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, PPI_I)
+//  }
+//  when(excpIn.excpTlbPif) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, PIF)
+//  }
+//  when(excpIn.excpTlbRefill) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, TLBR_I)
+//  }
+//  when(io.extInt) {
+//    excp.excpVec := excp.setOn(excpI.excpVec, INT)
+//  }
   // ===========================================================
   // 6. 输出一次性全覆盖赋值
   // ===========================================================
@@ -217,7 +262,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.ctrl.isJump   := isJump
   io.out.ctrl.isPriv   := isPriv
   
-  io.out.excpVec := currentExcpVec
+  io.out.excp     := excp
   io.out.pdInfo  := io.inData.pdInfo
   io.out.bpuInfo  := io.inData.bpuInfo
 }

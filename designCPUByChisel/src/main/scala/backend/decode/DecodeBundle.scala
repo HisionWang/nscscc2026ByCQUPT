@@ -2,7 +2,7 @@ package nscscc.backend.decode
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.{NSBundle, Parameters}
+import nscscc.config.{NSBundle, Parameters, ExceptionBundle}
 import nscscc.frontend.{PredecodeInfo, CtrlFlowIO, bpuInfoBundle}
 import nscscc.mmu.{MmuTransError}
 
@@ -85,7 +85,7 @@ class DecodedInst(implicit p: Parameters) extends NSBundle {
   val imm        = UInt(XLEN.W)
   
   val ctrl       = new DecodeCtrl
-  val excpVec    = UInt(ExceptionCode.width.W)
+  val excp       = new ExceptionBundle
   val pdInfo     = new PredecodeInfo
   val bpuInfo    = new bpuInfoBundle
 }

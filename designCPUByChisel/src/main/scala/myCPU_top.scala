@@ -107,10 +107,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
 
-  memory.io.bruInfo <> backend.io.bruInfo
+  memory.io.redirectInfo <> backend.io.redirectInfo
   
   frontend.io.out <> backend.io.in
-  frontend.io.bruInfo <> backend.io.bruInfo
+  frontend.io.redirectInfo <> backend.io.redirectInfo
 
 
   dontTouch(backend.io.lsEnq)

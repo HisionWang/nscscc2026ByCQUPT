@@ -36,6 +36,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     
     val robEnq  = Flipped(new RobEnqIO)
     val flush   = Input(Bool())
+    val stall = Input(Bool())
     //val redirect = Input(new RedirectInfo)
 
     val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
@@ -210,7 +211,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val hasIqDispatch = iqDispatchMask.zip(needIq).map { case (d, n) => d && n }.reduce(_ || _)
 
   // 由于 LSQ 检查已融入 q4Cand，此处不再需要 lsqBatchReady
-  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob)
+  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob) && !io.stall
 
   val AllWillFire = VecInit((0 until CtrlBlockWidth).map(i => (needIq(i) && iqDispatchMask(i)) || !needIq(i)  )).reduce(_ && _)
   val canAcceptNew = !stgValid || ( dispatchFire && AllWillFire )
@@ -334,7 +335,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.pc         := stgData(i).pc
     u.inst       := stgData(i).inst
     u.ctrl       := stgData(i).ctrl
-    u.excpVec    := stgData(i).excpVec
+    u.excp       := stgData(i).excp
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
     u.pdInfo     := stgData(i).pdInfo
@@ -479,7 +480,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).csrWaddr := stgData(i).csrAddress
     io.robEnq.bits(i).csrWdata := DontCare
     io.robEnq.bits(i).isPriv   := stgData(i).ctrl.isPriv
-    io.robEnq.bits(i).excpVec  := stgData(i).excpVec
+    io.robEnq.bits(i).excp  := stgData(i).excp
     io.robEnq.bits(i).robIdx   := stgData(i).robIdx
     io.robEnq.bits(i).writtenBack := DontCare
     io.robEnq.bits(i).valid       := DontCare

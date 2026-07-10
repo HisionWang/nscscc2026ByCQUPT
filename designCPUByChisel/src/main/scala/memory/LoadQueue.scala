@@ -29,7 +29,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val paddr       = UInt(XLEN.W)
     val cacheable       = Bool()
     val data        = UInt(XLEN.W)
-    val excpVec     = UInt(ExceptionCode.width.W)
+    val excp        = new ExceptionBundle
     val lsuOp       = UInt(LsuOp.width.W)
     val pc          = UInt(XLEN.W)
     val pdst        = UInt(PhyRegIdxWidth.W)
@@ -39,7 +39,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
 
-    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
 
     // ── 入队（来自 Dispatch） ──
     val enq = new Bundle {
@@ -51,6 +51,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       val rfWen  = Input(Bool())
       val lsuOp  = Input(UInt(LsuOp.width.W))
       val fuType = Input(UInt(FuType.width.W))
+      //val excp       = new ExceptionBundle
     }
  
     // ── 地址写入（来自执行单元地址通道） ──
@@ -60,7 +61,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       val vaddr = Input(UInt(XLEN.W))
       val paddr = Input( UInt(XLEN.W))
       val cacheable       = Input( Bool())
-      val excpVec     = Input( UInt(ExceptionCode.width.W))
+      val excp       = Input(new ExceptionBundle)
     }
  
     // ── SQ 排序信息 ──
@@ -133,7 +134,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).paddr       := 0.U
     entries(idx).cacheable    := false.B
     entries(idx).data        := 0.U
-    entries(idx).excpVec     := 0.U
+    entries(idx).excp        := 0.U.asTypeOf(new ExceptionBundle)
     entries(idx).lsuOp       := io.enq.lsuOp
     entries(idx).pc          := io.enq.pc
     entries(idx).pdst        := io.enq.pdst
@@ -145,8 +146,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     // ================================================================
     //  重定向：清除比 redirect.robIdx 更新的 LQ表项
     // ================================================================
-    val doRedirect = io.bruInfo.valid && io.bruInfo.bits.doRedirect
-    val redirectRobIdx = io.bruInfo.bits.robIdx
+    val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+    val redirectRobIdx = io.redirectInfo.bits.robIdx
     when(doRedirect) {
       for (i <- 0 until SqSize) {
         val e = entries(i)
@@ -167,7 +168,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).addrValid := true.B
     entries(idx).vaddr     := io.addrWrite.vaddr
     entries(idx).paddr     := io.addrWrite.paddr
-    entries(idx).excpVec   := io.addrWrite.excpVec
+    entries(idx).excp      := io.addrWrite.excp
     entries(idx).cacheable   := io.addrWrite.cacheable
   }
  
@@ -180,7 +181,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    issueCandidates(i) := e.valid && e.addrValid && (!e.issued && !e.excpVec.orR && !e.alreadyFlush)
+    issueCandidates(i) := e.valid && e.addrValid && (!e.issued && !e.excp.hasException && !e.alreadyFlush)
   }
  
   val hasIssueCandidate = issueCandidates.reduce(_ || _)
@@ -222,7 +223,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    wbCandidates(i) := e.valid && ( e.dataValid || e.excpVec.orR )&& !e.writtenBack
+    wbCandidates(i) := e.valid && ( e.dataValid || e.excp.hasException )&& !e.writtenBack
   }
  
   val hasWbCandidate = wbCandidates.reduce(_ || _)
@@ -248,9 +249,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.memVaddr        := wbEntry.vaddr
   io.outResult.bits.memPaddr        := wbEntry.paddr
   io.outResult.bits.memStoreData    := 0.U
-  io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
-  io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
-  io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
+  io.outResult.bits.redirect.valid  := DontCare
+  io.outResult.bits.redirect.bits.valid     := DontCare
+  io.outResult.bits.redirect.bits.robIdx    := DontCare
   io.outResult.bits.csrWen:= DontCare
   io.outResult.bits.csrWaddr:= DontCare
   io.outResult.bits.csrWdata:= DontCare
@@ -262,7 +263,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
   wbUop.inst       := 0.U
-  wbUop.excpVec    := wbEntry.excpVec
+  wbUop.excp    := wbEntry.excp
   wbUop.imm        := 0.U
   wbUop.csrAddress := 0.U
   wbUop.ldst       := 0.U

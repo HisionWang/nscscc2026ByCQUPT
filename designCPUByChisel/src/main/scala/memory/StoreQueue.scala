@@ -32,7 +32,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val vaddr        = UInt(XLEN.W)
     val paddr        = UInt(XLEN.W)
     val data         = UInt(XLEN.W)
-    val excpVec      = UInt(ExceptionCode.width.W)
+    val excp       = new ExceptionBundle
     val cacheable    = Bool()    // MMU 返回的可缓存标志
     val lsuOp        = UInt(LsuOp.width.W)
     val pc           = UInt(XLEN.W)
@@ -43,7 +43,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
 
-    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
 
     // ── 入队（来自 Dispatch） ──
     val enq = new Bundle {
@@ -63,7 +63,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val idx   = Input(UInt(log2Ceil(SqSize).W))
       val vaddr = Input(UInt(XLEN.W))
       val paddr = Input(UInt(XLEN.W))
-      val excpVec      = Input(UInt(ExceptionCode.width.W))
+      val excp       = Input(new ExceptionBundle)
       val cacheable    = Input(Bool() )   // MMU 返回的可缓存标志
       
     }
@@ -158,7 +158,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).vaddr        := 0.U
     entries(idx).paddr        := 0.U
     entries(idx).data         := 0.U
-    entries(idx).excpVec      := 0.U
+    entries(idx).excp      := 0.U.asTypeOf(new ExceptionBundle)
     entries(idx).cacheable    := false.B
     entries(idx).lsuOp        := io.enq.lsuOp
     entries(idx).pc           := io.enq.pc
@@ -171,8 +171,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   // ================================================================
 //  重定向：清除比 redirect.robIdx 更新的 SQ 表项
 // ================================================================
-val doRedirect = io.bruInfo.valid && io.bruInfo.bits.doRedirect
-val redirectRobIdx = io.bruInfo.bits.robIdx
+val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+val redirectRobIdx = io.redirectInfo.bits.robIdx
 when(doRedirect) {
   for (i <- 0 until SqSize) {
     val e = entries(i)
@@ -208,7 +208,7 @@ when(doRedirect) {
     entries(idx).addrValid := true.B
     entries(idx).vaddr     := io.addrWrite.vaddr
     entries(idx).paddr     := io.addrWrite.paddr
-    entries(idx).excpVec     := io.addrWrite.excpVec
+    entries(idx).excp     := io.addrWrite.excp
     entries(idx).cacheable     := io.addrWrite.cacheable
   }
  
@@ -218,7 +218,7 @@ when(doRedirect) {
   when(io.dataWrite.valid) {
     val idx = io.dataWrite.idx
     entries(idx).dataValid := true.B
-        entries(idx).data := MuxLookup(entries(idx).lsuOp, io.dataWrite.data)(Seq(
+    entries(idx).data := MuxLookup(entries(idx).lsuOp, io.dataWrite.data)(Seq(
         LsuOp.stb -> Cat(0.U(24.W), io.dataWrite.data(7, 0)),
         LsuOp.sth -> Cat(0.U(16.W), io.dataWrite.data(15, 0)),
         LsuOp.stw -> io.dataWrite.data
@@ -258,8 +258,8 @@ when(doRedirect) {
                                            wbEntry.data << (wbEntry.paddr(1) * 16.U) )
 
 
-  io.outResult.bits.redirect.valid  := wbEntry.excpVec.orR
-  io.outResult.bits.redirect.bits.valid     := wbEntry.excpVec.orR
+  io.outResult.bits.redirect.valid  := DontCare
+  io.outResult.bits.redirect.bits.valid     := DontCare
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
 
   io.outResult.bits.csrWen:= DontCare
@@ -272,7 +272,7 @@ when(doRedirect) {
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
   wbUop.inst       := 0.U
-  wbUop.excpVec    := wbEntry.excpVec
+  wbUop.excp    := wbEntry.excp
   wbUop.imm        := 0.U
   wbUop.csrAddress := 0.U
   wbUop.ldst       := 0.U
@@ -349,7 +349,7 @@ when(doRedirect) {
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    dcacheCandidates(i) := e.valid && e.committed && !e.excpVec.orR && !e.dcacheIssued && !e.alreadyFlush
+    dcacheCandidates(i) := e.valid && e.committed && !e.excp.hasException && !e.dcacheIssued && !e.alreadyFlush
   }
  
   val hasDcacheCandidate = dcacheCandidates.reduce(_ || _)
@@ -384,7 +384,7 @@ when(doRedirect) {
   // ================================================================
   val canDeqNormal = entries(deqPtr.value).valid && ( entries(deqPtr.value).Memwritten ||  entries(deqPtr.value).alreadyFlush)
   val canDeqExcp   = entries(deqPtr.value).valid && entries(deqPtr.value).writtenBack &&
-                     entries(deqPtr.value).excpVec.orR
+                     entries(deqPtr.value).excp.hasException
   val canDeq = canDeqNormal || canDeqExcp
  
   when(canDeq) {

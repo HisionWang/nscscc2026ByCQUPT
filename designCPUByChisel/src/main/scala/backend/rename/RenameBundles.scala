@@ -28,7 +28,7 @@ class RenamedInst(implicit p: Parameters) extends NSBundle {
   val pc         = UInt(XLEN.W)
   val inst       = UInt(XLEN.W)
   val ctrl       = new DecodeCtrl
-  val excpVec    = UInt(ExceptionCode.width.W)
+  val excp       = new ExceptionBundle
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
   val pdInfo     = new PredecodeInfo

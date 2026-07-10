@@ -31,7 +31,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     val wakeupPorts   = Input(Vec(iqParams.numWakeupPorts, Valid(new IssueWakeup)))
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)
-    val bruInfo    = Flipped (ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+    val redirectInfo    = Flipped (ValidIO( new redirectInfoToModule ))    // 误预测重定向
     val flushPipeline = Input(Bool())
     // ── 反馈给分发阶段 ──
     val freeEntries   = Output(UInt(log2Ceil(iqParams.numEntries + 1).W))
@@ -94,7 +94,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   }
 
 val killed = Wire(Vec(N, Bool()))
-val redirectRobIdx = io.bruInfo.bits.robIdx
+val redirectRobIdx = io.redirectInfo.bits.robIdx
   for (i <- 0 until N) {
       // 比较 e.robIdxFull 是否比 redirect.robIdx 更新
       val sameFlag = entryUops(i).robIdxFull.flag === redirectRobIdx.flag
@@ -111,7 +111,7 @@ val redirectRobIdx = io.bruInfo.bits.robIdx
       //)
       val isNewer = entryUops(i).robIdxFull.isAfter(redirectRobIdx)
       
-      killed(i) := entryValid(i) && io.bruInfo.valid && io.bruInfo.bits.doRedirect && isNewer
+      killed(i) := entryValid(i) && io.redirectInfo.valid && io.redirectInfo.bits.doRedirect && isNewer
 
     
   }

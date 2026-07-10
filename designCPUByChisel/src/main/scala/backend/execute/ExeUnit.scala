@@ -44,11 +44,16 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     val outResult    = Decoupled(new ExeResult)
     val flush        = Input(Bool())
     val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
+
+    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
  
     // CSR 寄存器堆读端口（组合逻辑读）
     val csrRaddr     = Output(UInt(csrAddrLen.W)) 
     val csrRdata     = Input(UInt(XLEN.W))
   })
+
+
+
  
   // ================================================================
   //  输入路由
@@ -70,8 +75,13 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val stgReady = !stgValid || outFire
  
   val fastInFire = io.inReq.valid && isFastPath && stgReady
- 
-  when(io.flush) {
+
+  val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val redirectRobIdx = io.redirectInfo.bits.robIdx
+  val needFlush = stgValid && doRedirect &&
+                     stgData.uop.robIdxFull.isAfter(redirectRobIdx)
+
+  when(needFlush) {
     stgValid := false.B
   }.elsewhen(fastInFire) {
     stgValid := true.B
@@ -109,7 +119,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
  
   // ── CSR ──
   val csrValid = if (params.hasCsr) stgValid && fuType === FuType.csr else false.B
-  val csrUnit  = if (params.hasCsr) Module(new CSR) else null
+  val csrUnit  = if (params.hasCsr) Module(new CSRUnit) else null
   if (params.hasCsr) {
     csrUnit.io.valid    := csrValid
     csrUnit.io.uop      := stgData.uop
@@ -270,7 +280,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   //  重定向：BRU
   // ================================================================
   if (params.hasBru) {
-    io.bruInfo.valid := bruValid && bru.io.bruInfo.valid
+    io.bruInfo.valid := bruValid && bru.io.bruInfo.valid && !needFlush
     io.bruInfo.bits  := bru.io.bruInfo.bits
   } else {
     io.bruInfo.valid := false.B

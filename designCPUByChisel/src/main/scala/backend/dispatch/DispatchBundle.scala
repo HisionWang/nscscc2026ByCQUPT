@@ -35,7 +35,7 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val pc         = UInt(XLEN.W)
   val inst       = UInt(XLEN.W)
   val ctrl       = new DecodeCtrl
-  val excpVec    = UInt(ExceptionCode.width.W)
+  val excp       = new ExceptionBundle
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
   val pdInfo     = new PredecodeInfo
@@ -191,7 +191,7 @@ class RobRedirectIO(implicit p: Parameters) extends NSBundle {
   val robIdx   = new RobPtr(RobSize)
   val flushSelf = Output(Bool())
   val pc       = Output(UInt(XLEN.W))
-  val excpVec  = Output(UInt(ExceptionCode.width.W))
+  val excp       = new ExceptionBundle
   val isEbreak = Output(Bool())
 }
  
@@ -221,7 +221,7 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
   val csrWaddr    = UInt(csrAddrLen.W)
   val csrWdata    = UInt(XLEN.W)
 
-  val excpVec = UInt(ExceptionCode.width.W)
+  val excp       = new ExceptionBundle
   val isBypass = Bool()  // 异常/误预测标记
 }
  

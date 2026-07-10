@@ -14,7 +14,7 @@ class IFU(implicit p: Parameters) extends NSModule {
     // 前后端后端重定向输入
     //val redirect = Flipped(new RedirectIO)
     val frontendRedirect = Input(new FrontendRedirect)
-    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
 
 
     
@@ -59,8 +59,8 @@ class IFU(implicit p: Parameters) extends NSModule {
   // 前端重定向
   val frontendRedirect =  io.frontendRedirect
   // 后端重定向
-  val backendRedirectValid  = io.bruInfo.valid && io.bruInfo.bits.doRedirect
-  val backendRedirectTarget = io.bruInfo.bits.target
+  val backendRedirectValid  = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val backendRedirectTarget = io.redirectInfo.bits.target
  
   // 下一拍PC选择 (优先级: 后端redirect > 前端redirect > BPU预测 > 顺序)
   val nextPC = Mux(  backendRedirectValid   ,  backendRedirectTarget   ,

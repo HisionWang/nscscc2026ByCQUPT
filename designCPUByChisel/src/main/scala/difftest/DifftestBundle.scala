@@ -90,16 +90,17 @@ object DifftestUtils {
   def isErtn(inst: UInt): Bool = inst === "h06483800".U
   def isTrap(inst: UInt): Bool = inst === "h002a0000".U
 
-  def excpVecToEcode(excpVec: UInt): UInt = MuxCase(0.U(6.W), Seq(
-    excpVec(ExceptionCode.INT)  -> 0x00.U,
-    excpVec(ExceptionCode.PIL)  -> 0x01.U,
-    excpVec(ExceptionCode.PIS)  -> 0x02.U,
-    excpVec(ExceptionCode.PIF)  -> 0x03.U,
-    excpVec(ExceptionCode.PME)  -> 0x04.U,
-    excpVec(ExceptionCode.PPI)  -> 0x07.U,
-    excpVec(ExceptionCode.ADEF) -> 0x08.U,
-    excpVec(ExceptionCode.SYS)  -> 0x0b.U,
-    excpVec(ExceptionCode.BRK)  -> 0x0c.U,
-    excpVec(ExceptionCode.INE)  -> 0x0d.U
-  ))
+//  def excpVecToEcode(excpVec: UInt): UInt = MuxCase(0.U(6.W), Seq(
+//    excpVec(ExceptionCode.INT)  -> 0x00.U,
+//    excpVec(ExceptionCode.PIL)  -> 0x01.U,
+//    excpVec(ExceptionCode.PIS)  -> 0x02.U,
+//    excpVec(ExceptionCode.PIF)  -> 0x03.U,
+//    excpVec(ExceptionCode.PME)  -> 0x04.U,
+//    excpVec(ExceptionCode.PPI)  -> 0x07.U,
+//    excpVec(ExceptionCode.ADEF) -> 0x08.U,
+//    excpVec(ExceptionCode.SYS)  -> 0x0b.U,
+//    excpVec(ExceptionCode.BRK)  -> 0x0c.U,
+//    excpVec(ExceptionCode.INE)  -> 0x0d.U
+//  ))
+  def excpVecToEcode(excp: ExceptionBundle): UInt = excp.ecode
 }

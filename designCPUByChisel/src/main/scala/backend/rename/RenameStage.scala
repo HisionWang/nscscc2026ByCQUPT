@@ -5,6 +5,7 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.execute._
+import nscscc.backend.rob._
 import nscscc.util.CircularQueuePtr
 
 // designCPUByChisel/src/main/scala/backend/rename/RenameStage.scala
@@ -19,10 +20,12 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // ── 向 Dispatch 输出 ──
     val out     = Vec(CtrlBlockWidth, Decoupled(new RenamedInst))
     // ── ROB 提交回传 ──
-    val commit  = Input(Vec(CommitWidth, new RobCommitInfo))
+    val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
     // ── 重定向 ──
     //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
-      val bruInfo    =Flipped ( ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+    
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule ))
+    val stall = Input(Bool())
 
     // ── 快照解析（来自后端 BRU）──        ← 新增
 
@@ -34,9 +37,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val resolve = Wire(Valid(new SnapshotResolveInfo))
 
 
-  resolve.valid := io.bruInfo.valid
-  resolve.bits.snptId := io.bruInfo.bits.snptId
-  resolve.bits.isMispredict := io.bruInfo.bits.doRedirect
+  resolve.valid := io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  resolve.bits.snptId := io.redirectInfo.bits.snptId
+  resolve.bits.isMispredict := io.redirectInfo.bits.doRedirect && io.redirectInfo.bits.fromBru
 
   // ================================================================
   //  ROB 指针类型（复用 CircularQueuePtr）在Bundles中使用
@@ -75,7 +78,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   val canFireThisCycle = freeList.io.canAlloc && snapshotManager.io.allocOk  // ← 修改
  
-  val outFire = stgValid && outReadyAll && canFireThisCycle
+  val outFire = stgValid && outReadyAll && canFireThisCycle && !io.stall
 
 
   val stgReady = !stgValid || outFire
@@ -86,7 +89,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     io.in(i).ready := stgReady
   }
  
-  val doFlush = io.bruInfo.valid && io.bruInfo.bits.doRedirect
+  val doFlush = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   when(doFlush) {
     stgValid := false.B
     for (i <- 0 until CtrlBlockWidth) { laneValid(i) := false.B }
@@ -154,9 +157,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
  
   // 架构表写端口（不变）
   for (i <- 0 until CommitWidth) {
-    rat.io.archWritePorts(i).wen  := io.commit(i).valid && io.commit(i).rfWen
-    rat.io.archWritePorts(i).addr := io.commit(i).ldst
-    rat.io.archWritePorts(i).data := io.commit(i).pdst
+    rat.io.archWritePorts(i).wen  := io.archCommit(i).valid && io.archCommit(i).rfWen && !io.archCommit(i).isWalk
+    rat.io.archWritePorts(i).addr := io.archCommit(i).ldst
+    rat.io.archWritePorts(i).data := io.archCommit(i).pdst
   }
  
   // ================================================================
@@ -179,9 +182,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
  
   // FreeList 释放端口（不变）
   for (i <- 0 until CommitWidth) {
-    rat.io.archReadPorts(i).laddr    := io.commit(i).ldst
-    freeList.io.deallocReqs(i).valid := io.commit(i).valid && io.commit(i).rfWen
-    freeList.io.deallocReqs(i).bits  := rat.io.archReadPorts(i).pdata
+    rat.io.archReadPorts(i).laddr    := io.archCommit(i).ldst
+    freeList.io.deallocReqs(i).valid := io.archCommit(i).valid && io.archCommit(i).rfWen
+    freeList.io.deallocReqs(i).bits  := Mux( io.archCommit(i).isWalk , io.archCommit(i).pdst, rat.io.archReadPorts(i).pdata)
   }
  
   // ================================================================
@@ -223,7 +226,13 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val robIdxHeadNext = Wire(new RobPtr(RobSize))
   robIdxHeadNext := robIdxHead
   when(doFlush) {
-    robIdxHeadNext := io.bruInfo.bits.robIdx + 1.U
+    
+    when(io.redirectInfo.bits.flushSelf){
+      robIdxHeadNext := io.redirectInfo.bits.robIdx
+    }.otherwise{
+      robIdxHeadNext := io.redirectInfo.bits.robIdx + 1.U
+    }
+    
     //robIdxHeadNext.flag  := false.B
   }.elsewhen(outFire) {
     robIdxHeadNext := robIdxHead + validCount
@@ -246,7 +255,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     u.pc         := stgData(i).pc
     u.inst       := stgData(i).inst
     u.ctrl       := stgData(i).ctrl
-    u.excpVec    := stgData(i).excpVec
+    u.excp       := stgData(i).excp
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
     u.pdInfo     := stgData(i).pdInfo

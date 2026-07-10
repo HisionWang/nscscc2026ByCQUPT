@@ -102,7 +102,7 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
 
     // 送到 ROB 提交通知 (带有执行单元的数据和标志)
     io.toRObResults(w).valid := valid
-    io.toRObResults(w).bits.excpVec  := 0.U
+    io.toRObResults(w).bits.excp  := res.uop.excp
     io.toRObResults(w).bits.isBypass  := false.B
     io.toRObResults(w).bits.robIdx   := res.uop.robIdx
     io.toRObResults(w).bits.rfdata   := res.data

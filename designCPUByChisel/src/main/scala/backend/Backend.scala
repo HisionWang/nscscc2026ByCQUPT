@@ -20,7 +20,7 @@ import nscscc.backend.rob._
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
-  val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
+  val redirectInfo    = ValidIO( new redirectInfoToModule )    // 误预测重定向
 
   val csrReq  = Output(new CsrFileReadReq)
   val csrResp = Input(new CsrFileReadResp)
@@ -86,10 +86,13 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
 
   val bruInfoFromExe3 =  exeUnits(2).io.bruInfo
   dontTouch(bruInfoFromExe3)
-  io.bruInfo <> bruInfoFromExe3
+
   ctrlBlock.io.bruInfo <> bruInfoFromExe3
-  scheduler.io.bruInfo <> bruInfoFromExe3
-  regRead.io.bruInfo <> bruInfoFromExe3
+  
+  //ctrlBlock输出的重定向信息
+  io.redirectInfo <> ctrlBlock.io.redirectInfo
+  scheduler.io.redirectInfo <> ctrlBlock.io.redirectInfo
+  regRead.io.redirectInfo <> ctrlBlock.io.redirectInfo
  
   val writeback = Module(new Writeback(numExeUnits))
  
@@ -179,8 +182,8 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   }
   */
   
-  writeback.io.flush := io.flush
-  exeUnits.foreach(_.io.flush := io.flush)
+  writeback.io.flush := bruInfoFromExe3.valid && bruInfoFromExe3.bits.doRedirect
+  exeUnits.foreach(_.io.flush := bruInfoFromExe3.valid && bruInfoFromExe3.bits.doRedirect)
  
   // ══════════════════════════════════════════════════════════════
   //  Writeback → RegFile：写端口

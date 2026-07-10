@@ -19,7 +19,7 @@ import nscscc.backend.dispatch.DispatchedInst
 //  LoongArch 规定：
 //  - 访问未定义/未实现的CSR：读返回全0，写不修改任何状态
 // ═══════════════════════════════════════════════════════════════
-class CSR(implicit p: Parameters) extends NSModule with HasCsrParameters {
+class CSRUnit(implicit p: Parameters) extends NSModule with HasCsrParameters {
   val io = IO(new Bundle {
     val valid    = Input(Bool())
     val uop      = Input(new DispatchedInst)

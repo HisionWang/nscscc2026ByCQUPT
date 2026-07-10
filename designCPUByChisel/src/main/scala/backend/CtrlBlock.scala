@@ -11,6 +11,7 @@ import nscscc.backend.rob._
 import nscscc.backend.issue._
 import nscscc.difftest._
 import nscscc.backend.execute._
+import nscscc.backend.redirect._
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
@@ -39,8 +40,12 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
  
   // ── 重定向 ──
   val excpEedirect = Output(new RedirectInfo)
-  //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
-  val bruInfo    = Flipped (ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+  // brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
+  // 错误预测信息
+  val bruInfo    = Flipped( ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+
+  // 输出重定向
+  val redirectInfo    = (ValidIO( new redirectInfoToModule )) 
 
 
  
@@ -55,24 +60,29 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val io = IO(new CtrlBlockIO)
   val difftest = if (EnableDifftest) Some(IO(Output(new CtrlBlockDifftestBundle))) else None
 
-  val brMsFlush = io.bruInfo.valid && io.bruInfo.bits.doRedirect
+
+  io.redirectInfo := 0.U.asTypeOf(new redirectInfoToModule)
+  val doFlush = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   // ================================================================
   //  译码级
   // ================================================================
   val decodeStage = Module(new DecodeStage)
   decodeStage.io.in    <> io.in
   decodeStage.io.extInt := io.extInt
-  decodeStage.io.flush  := brMsFlush || io.excpEedirect.valid
+  decodeStage.io.flush  := doFlush
  
   // ================================================================
   //  重命名级
   // ================================================================
   val renameStage = Module(new RenameStage)
+  val redirectController = Module(new RedirectController)
   renameStage.io.in      <> decodeStage.io.out
   renameStage.io.ratRead <> decodeStage.io.ratRead
-  renameStage.io.flush    := brMsFlush
+  renameStage.io.flush    := doFlush
   //renameStage.io.redirect := io.excpEedirect
-  renameStage.io.bruInfo := io.bruInfo
+  renameStage.io.redirectInfo := io.redirectInfo
+
+  renameStage.io.stall := redirectController.io.robRedirectPause
   
 
   if (EnableDifftest) {
@@ -84,8 +94,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   val dispatchStage = Module(new DispatchStage)
   dispatchStage.io.in       <> renameStage.io.out
-  dispatchStage.io.flush    := brMsFlush
- 
+  dispatchStage.io.flush    := doFlush
+  dispatchStage.io.stall := redirectController.io.robRedirectPause
   // ── IQ 入队端口 ──
   dispatchStage.io.q1IQEnq     <> io.q1IQEnq
   dispatchStage.io.q2IQEnq     <> io.q2IQEnq
@@ -106,7 +116,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
   // ROB 提交信息 → 重命名级（释放旧物理寄存器 + 更新架构表）
   for (i <- 0 until CommitWidth) {
-    renameStage.io.commit(i).valid   := rob.io.commit.valid(i)
+    renameStage.io.commit(i).valid   := rob.io.commit.valid(i) && !rob.io.commit.isExcpCommit(i)
     renameStage.io.commit(i).pdst    := rob.io.commit.bits(i).pdst
     renameStage.io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
     renameStage.io.commit(i).ldst    := rob.io.commit.bits(i).ldst
@@ -131,9 +141,9 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.isCntInst  := DifftestUtils.isCntInst(robCommit.inst)
       diffCommit.csrRstat   := isCsrRead && robCommit.csrWaddr === csrAddr.estat.U
       diffCommit.csrData    := robCommit.rfdata
-      diffCommit.excpFlush  := robCommit.excpVec.orR
+      diffCommit.excpFlush  := robCommit.excp.hasException
       diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst)
-      diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excpVec)
+      diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excp)
       diffCommit.tlbfillEn  := false.B
       diffCommit.randIndex  := 0.U
       diffCommit.trap       := DifftestUtils.isTrap(robCommit.inst)
@@ -150,7 +160,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
   // ROB 重定向
   rob.io.flush := false.B//brMsFlush || io.excpEedirect.valid
-  rob.io.bruInfo := io.bruInfo
+  rob.io.redirectInfo := io.redirectInfo
 
   rob.io.writeback <> io.writeback
   dispatchStage.io.wakeupPorts <> io.wakeupPorts
@@ -162,5 +172,5 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  重定向信号
   // ================================================================
-  io.excpEedirect := rob.io.redirect
+  io.excpEedirect := 0.U.asTypeOf(new RedirectInfo)
 }

@@ -58,7 +58,7 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)
 
-    val bruInfo    = Flipped(ValidIO( new redirectInfoFromBru ))    // 误预测重定向
+    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
 
     val flushPipeline = Input(Bool())
   })
@@ -101,8 +101,8 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     // ──────────────────────────────────────────
     //  Kill 检测
     // ──────────────────────────────────────────
-    val doRedirect = io.bruInfo.valid && io.bruInfo.bits.doRedirect
-    val redirectRobIdx = io.bruInfo.bits.robIdx
+    val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+    val redirectRobIdx = io.redirectInfo.bits.robIdx
 
     val rrd_killed = rrd_valid && doRedirect &&
                      rrd_uop.robIdxFull.isAfter(redirectRobIdx)

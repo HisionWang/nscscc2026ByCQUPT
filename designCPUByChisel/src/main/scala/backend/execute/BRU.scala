@@ -22,6 +22,24 @@ class redirectInfoFromBru(implicit p: Parameters) extends NSBundle {
   val target = UInt(XLEN.W)             // 是否冲刷误预测指令本身
 }
 
+class redirectInfoToModule(implicit p: Parameters) extends NSBundle {
+  val doRedirect     = Bool() 
+  val flushSelf     = Bool() 
+
+  //如果是来自于BRU的重定向:
+  val fromBru = Bool()
+  val snptId = UInt(log2Ceil(SnapshotNum).W)
+  val robIdx    = new RobPtr(RobSize) // 清理比他更新的所有指令
+  // Rob中有用
+  // SQ LQ中有用
+              
+  //如果是来自于Rob的重定向:
+  val fromRob = Bool()
+
+  //重定向目标
+  val target = UInt(XLEN.W) //重定向目标 {跳转地址、更改CSR后的紧接、异常进入/退出}
+}
+
 class BRU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val valid      = Input(Bool())

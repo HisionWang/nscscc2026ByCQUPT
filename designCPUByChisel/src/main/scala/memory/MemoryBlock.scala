@@ -3,6 +3,7 @@ package nscscc.mem
 import chisel3._
 import chisel3.util._
 import nscscc.config._
+import nscscc.config.ExcType._
 import nscscc.backend.dispatch._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
@@ -12,7 +13,7 @@ import nscscc.mem.dcache.DCache
 import nscscc.axi._
 class ExeMmuResult(implicit p: Parameters) extends NSBundle {
   val exeRes      = new ExeResult
-  val mmuRes     =Flipped( new MmuToSqResp )
+  val mmuRes      = Flipped( new MmuToSqResp )
 }
  
 
@@ -64,7 +65,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
       val robIdx = new RobPtr(RobSize)
     }))
 
-    val bruInfo    = Flipped ( ValidIO( new redirectInfoFromBru )   ) // 误预测重定向
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
 
   })
  
@@ -73,8 +74,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   val loadQueue  = Module(new LoadQueue)
   val storeQueue = Module(new StoreQueue)
-  storeQueue.io.bruInfo <> io.bruInfo
-  loadQueue.io.bruInfo <> io.bruInfo
+  storeQueue.io.redirectInfo <> io.redirectInfo
+  loadQueue.io.redirectInfo <> io.redirectInfo
  
   // ================================================================
   //  Dispatch 入队路由
@@ -118,14 +119,25 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   val dataChannel = io.fromExeResult
   val dataFire    = dataChannel.fire
   val dataUop     = dataChannel.bits.uop
- 
+
+  val mmuError     = addrChannel.bits.mmuRes.error
+  val excpIn =  addrChannel.bits.exeRes.uop.excp
+  val excp = Wire(new ExceptionBundle)
+
+  excp.excpVec := excp.mergeMany(
+    base = excpIn.excpVec,
+    mmuError.excpAdef         -> ADEF,
+    mmuError.excpTlbPpi       -> PPI_D,
+    mmuError.excpTlbRefill    -> TLBR_D,
+  )
+
   // LQ 地址写入
   loadQueue.io.addrWrite.valid := addrFire && addrUop.ctrl.memRead
   loadQueue.io.addrWrite.idx   := addrUop.lqIdx.value
   loadQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
   loadQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   loadQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
-  loadQueue.io.addrWrite.excpVec := 0.U //addrChannel.bits.mmuRes.excpVec
+  loadQueue.io.addrWrite.excp := excp
  
   // SQ 地址写入（STA）
   storeQueue.io.addrWrite.valid := addrFire && addrUop.isSta
@@ -133,7 +145,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
   storeQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   storeQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
-  storeQueue.io.addrWrite.excpVec := 0.U //addrChannel.bits.mmuRes.excpVec
+  storeQueue.io.addrWrite.excp := excp
  
   // SQ 数据写入（STD）
   storeQueue.io.dataWrite.valid := dataFire && dataUop.isStd
