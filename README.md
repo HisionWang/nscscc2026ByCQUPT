@@ -135,9 +135,15 @@ Icache的大致流水线都做好了
 2. SQ加上了重定向清理
 > TODO: Dcache的访存逻辑还得优化,Dcache有大bug
 > TODO: BPU有大Bug
+
 ## 7月8日
 1. Dcache用状态机了
 2. 通过46项功能测试
 > TODO: BPU
 ## 7月10日
 ### 回滚的时候需要释放快照
+
+## 7月11日
+1. 完成了所有的重定向的汇集与控制内容、包括分支、异常、写CSR等
+2. 重点完成了Rob中关于异常、写CSR的重定向
+3. 通过48项func(syscall break)
