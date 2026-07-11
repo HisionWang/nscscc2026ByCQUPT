@@ -88,6 +88,20 @@ class CircularQueuePtr[T <: CircularQueuePtr[T]](val entries: Int) extends Bundl
     newPtr.flag  := Mux(wrap, !this.flag, this.flag)
     newPtr.asInstanceOf[T]
   }
+
+  def -(inc: UInt): T = {
+    val newPtr = Wire(this.asInstanceOf[T].cloneType.asInstanceOf[T])
+    val newIncValue = this.value +& inc
+    // 判断是否跨过了队列末尾（即是否发生了绕回）
+    // newIncValue >= entries.U 意味着至少绕了一圈
+    val wrap = newIncValue >= entries.U
+    newPtr.value := newIncValue(log2Ceil(entries) - 1, 0)
+    newPtr.flag  := Mux(wrap, !this.flag, this.flag)
+    newPtr.asInstanceOf[T]
+  }
+
+
+
  
   /** 前进1步的简便写法 */
   def +(): T = this + 1.U

@@ -189,8 +189,9 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.wReq.addr := backend.io.commitToCsr.csrWaddr
   csr.io.wReq.data := backend.io.commitToCsr.csrWdata
   
-  csr.io.excpEvent <> 0.U.asTypeOf(new ExcpEvent)
-  csr.io.excpInfo <> 0.U.asTypeOf(new ExcpInfo)
+  csr.io.excpEvent <> backend.io.excpEvent
+  csr.io.excpInfo <> backend.io.excpInfo
+  csr.io.redirectAddr <> backend.io.redirectAddrFromCsr
 
   csr.io.tlbCmd :=  0.U.asTypeOf(new TlbCmd)
   csr.io.fromTlb := 0.U.asTypeOf(new TlbToCsr)

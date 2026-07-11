@@ -24,6 +24,7 @@ object ExcType extends Enumeration {
   val PPI_D  = Value(13)  // MEM: 数据特权级违规
   val PIS    = Value(14)  // MEM: 存储页失效
   val PIL    = Value(15)  // MEM: 加载页失效
+  val ERTN    = Value(16)  
  
   /** 位号 → ECODE 映射（纯 Scala Int，对应 LA32 手册 / la500 csr.h） */
   def ecodeInt(exc: ExcType): Int = exc match {
@@ -43,7 +44,29 @@ object ExcType extends Enumeration {
     case IPE    => 0x0e
     case TLBR_D => 0x3f //TLB 重填例外
     case RESV   => 0x00
+    case ERTN   => 0x00
   }
+
+  def esubcodeInt(exc: ExcType): Int = exc match {
+    case INT    => 0x0 //中断。
+    case PIL    => 0x0 //load操作页无效例外
+    case PIS    => 0x0 // store操作页无效例外
+    case PIF    => 0x0 //取指操作页无效例外
+    case PME    => 0x0 //页修改例外
+    case TLBR_I => 0x0 // TLB 重填例外
+    case PPI_I  => 0x0 //页特权等级不合规例外
+    case PPI_D  => 0x0 //页特权等级不合规例外
+    case ADEF   => 0x1 //取指地址错例外
+    case ALE    => 0x0 //地址非对齐例外
+    case SYS    => 0x0
+    case BRK    => 0x0
+    case INE    => 0x0
+    case IPE    => 0x0
+    case TLBR_D => 0x0 //TLB 重填例外
+    case RESV   => 0x00
+    case ERTN   => 0x00
+  }
+
  
   /** 哪些异常需要写入 BADV（纯 Scala Boolean） */
   def needsBadv(exc: ExcType): Boolean = exc match {
@@ -64,10 +87,12 @@ object ExcType extends Enumeration {
 import ExcType._
 
 class ExceptionBundle extends Bundle {
-  val excpVec = UInt(16.W)
+  val excpVec = UInt(17.W)
  
   /** 是否有任何异常 */
   def hasException: Bool = excpVec =/= 0.U
+
+  def isEret: Bool = excpVec(16).asBool
  
   /** 按枚举名查询某位 */
   def has(exc: ExcType): Bool = excpVec(exc.id)
@@ -101,6 +126,14 @@ class ExceptionBundle extends Bundle {
       exc.id.U -> ExcType.ecodeInt(exc).U(6.W)
     })
   }
+
+  def esubcode: UInt = {
+    val pri = highestPriority
+    MuxLookup(pri, 0.U, ExcType.values.toSeq.map { exc =>
+      exc.id.U -> ExcType.esubcodeInt(exc).U(6.W)
+    })
+  }
+
  
   /** 是否为 TLB 重填异常 */
   def isTlbRefill: Bool = has(TLBR_I) || has(TLBR_D)

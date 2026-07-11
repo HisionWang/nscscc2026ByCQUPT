@@ -12,6 +12,8 @@ import nscscc.backend.issue._
 import nscscc.difftest._
 import nscscc.backend.execute._
 import nscscc.backend.redirect._
+import nscscc.csr._
+
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
@@ -47,6 +49,10 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // 输出重定向
   val redirectInfo    = (ValidIO( new redirectInfoToModule )) 
 
+  val excpEvent           = Output(new ExcpEvent)
+  val excpInfo            = Output(new ExcpInfo)
+  val redirectAddrFromCsr = Input(new RedirectEntry)
+
 
  
   // ── 冲刷与外部中断 ──
@@ -61,21 +67,35 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val difftest = if (EnableDifftest) Some(IO(Output(new CtrlBlockDifftestBundle))) else None
 
 
-  io.redirectInfo := 0.U.asTypeOf(new redirectInfoToModule)
+
   val doFlush = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   // ================================================================
   //  译码级
-  // ================================================================
+// ================================================================
   val decodeStage = Module(new DecodeStage)
+  val renameStage = Module(new RenameStage)
+  val redirectController = Module(new RedirectController)
+  val dispatchStage = Module(new DispatchStage)
+  val rob = Module(new ROB)
+
+  redirectController.io.excpEvent <> io.excpEvent
+  redirectController.io.excpInfo <> io.excpInfo
+  redirectController.io.redirectAddrFromCsr <> io.redirectAddrFromCsr
+
+  io.redirectInfo := redirectController.io.redirectInfo
+
+  redirectController.io.bruRedirect := io.bruInfo
+  redirectController.io.eentry     := 0.U
+  redirectController.io.tlbrentry  := 0.U
+
   decodeStage.io.in    <> io.in
   decodeStage.io.extInt := io.extInt
-  decodeStage.io.flush  := doFlush
+  decodeStage.io.flush  := doFlush                  
  
   // ================================================================
   //  重命名级
   // ================================================================
-  val renameStage = Module(new RenameStage)
-  val redirectController = Module(new RedirectController)
+
   renameStage.io.in      <> decodeStage.io.out
   renameStage.io.ratRead <> decodeStage.io.ratRead
   renameStage.io.flush    := doFlush
@@ -92,7 +112,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  分发级
   // ================================================================
-  val dispatchStage = Module(new DispatchStage)
+  
   dispatchStage.io.in       <> renameStage.io.out
   dispatchStage.io.flush    := doFlush
   dispatchStage.io.stall := redirectController.io.robRedirectPause
@@ -112,17 +132,34 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  ROB
   // ================================================================
-  val rob = Module(new ROB)
+  //rob的重定向
+  rob.io.redirectInfo :=  io.redirectInfo
+
+  //rob接受暂停
+  rob.io.robPause := redirectController.io.robRedirectPause
+
+  //异常 、CSr相关重定向信号
+  redirectController.io.robRedirect := rob.io.robRedirect
+
+  //回滚控制
+  rob.io.robNeedRollback := redirectController.io.robNeedRollback
+  //回滚目标
+  rob.io.robRollbackTarget := redirectController.io.robRollbackTarget
+  //回滚响应
+  redirectController.io.robRollbackDone := rob.io.robRollbackDone
+
+
  
   // ROB 提交信息 → 重命名级（释放旧物理寄存器 + 更新架构表）
-  for (i <- 0 until CommitWidth) {
-    renameStage.io.commit(i).valid   := rob.io.commit.valid(i) && !rob.io.commit.isExcpCommit(i)
-    renameStage.io.commit(i).pdst    := rob.io.commit.bits(i).pdst
-    renameStage.io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
-    renameStage.io.commit(i).ldst    := rob.io.commit.bits(i).ldst
-    renameStage.io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
-    renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
-  }
+  //for (i <- 0 until CommitWidth) {
+  //  renameStage.io.commit(i).valid   := rob.io.commit.valid(i) && !rob.io.commit.isExcpCommit(i)
+  //  renameStage.io.commit(i).pdst    := rob.io.commit.bits(i).pdst
+  //  renameStage.io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
+  //  renameStage.io.commit(i).ldst    := rob.io.commit.bits(i).ldst
+  //  renameStage.io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
+  //  renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
+  //}
+  renameStage.io.archCommit <> rob.io.archCommit
  
   io.commitToSq := rob.io.commitToSq
   io.commitToCsr := rob.io.commitToCsr
@@ -132,7 +169,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       val diffCommit = difftest.get.commit(i)
       val isCsrRead = robCommit.fuType === FuType.csr && robCommit.csrOp === CsrOp.read
 
-      diffCommit.valid      := rob.io.commit.valid(i)
+      //ROB提交窗口中时包含着异常的，也就是在rob视角异常也会提交（用这种方式清除他），但肯定不会改架构
+      diffCommit.valid      := rob.io.commit.valid(i) //&& !rob.io.commit.isExcpCommit(i)
       diffCommit.pc         := robCommit.pc
       diffCommit.instr      := robCommit.inst(31, 0)
       diffCommit.rfWen      := robCommit.rfWen

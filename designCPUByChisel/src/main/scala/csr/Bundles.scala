@@ -95,7 +95,7 @@ class CsrFileIo(implicit p: Parameters) extends CsrFileBundleSkel {
   val wReq = Input(new CsrFileWriteReq)
   val excpEvent = Input(new ExcpEvent)
   val excpInfo = Input(new ExcpInfo)
-  val redirect = Output(new RedirectEntry)
+  val redirectAddr = Output(new RedirectEntry)
   val timerInfo = Output(new TimerBundle)
   val tlbCmd= Input(new TlbCmd)
   val priv = Output(new PrivCtrl)

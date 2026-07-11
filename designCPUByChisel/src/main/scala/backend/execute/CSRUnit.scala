@@ -42,7 +42,7 @@ class CSRUnit(implicit p: Parameters) extends NSModule with HasCsrParameters {
   //          即掩码为1的位取rd值，掩码为0的位保持CSR原值
   val csrNew = MuxLookup(op, csrOld, Seq(
     CsrOp.write -> io.rs2,
-    CsrOp.xchg  -> ((io.rs1 & io.rs2) | (csrOld & ~io.rs2))
+    CsrOp.xchg  -> ((io.rs1 & io.rs2) | (csrOld & ~io.rs1))
   ))
  
   // ── 结果：CSR 旧值写入 rd ──

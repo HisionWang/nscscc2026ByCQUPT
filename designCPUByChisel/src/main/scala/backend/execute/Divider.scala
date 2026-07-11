@@ -27,7 +27,9 @@ class Divider(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val in    = Flipped(Decoupled(new ExeReq))
     val out   = Decoupled(new ExeResult)
-    val flush = Input(Bool())
+   // val flush = Input(Bool())
+        val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
+
   })
   
   io.out.bits.memValid := false.B
@@ -81,7 +83,17 @@ class Divider(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  状态转移
   // ================================================================
-  when(io.flush) {
+
+  val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val redirectRobIdx = io.redirectInfo.bits.robIdx
+
+ //重定向后，防止该被刷的指令污染Rob
+ //只有除法&mem要做这个
+ //因为只有他们延迟高，可能会发生到有新入Rob队的指令后进行污染
+  val divDoFlush = (!io.in.ready && doRedirect &&  uop.robIdxFull.isAfter(redirectRobIdx)) || 
+   (io.in.fire && doRedirect && io.in.bits.uop.robIdxFull.isAfter(redirectRobIdx))
+ 
+  when(divDoFlush) {
     state := s_idle
   }.otherwise {
     switch(state) {
@@ -160,7 +172,7 @@ class Divider(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  输出
   // ================================================================
-  io.out.valid              := (state === s_done)
+  io.out.valid              := (state === s_done) && !divDoFlush
   io.out.bits.uop           := uop
   io.out.bits.data          := result
   io.out.bits.redirect.valid := false.B

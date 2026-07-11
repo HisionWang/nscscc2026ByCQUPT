@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.dispatch._
-import nscscc.backend.execute.ExeResult
+import nscscc.backend.execute._
 import nscscc.backend.issue.IssueWakeup
 import nscscc.backend.regfile.PRFWritePortIO
 import nscscc.backend.rename.RedirectInfo
@@ -44,6 +44,9 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
 
     // ── 增加：全局冲刷信号 ──
     val flush        = Input(Bool())
+    //    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
+
+
   })
  
   // ================================================================
@@ -55,6 +58,10 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
   val stgData  = Reg(Vec(numExeUnits, new ExeResult))
   dontTouch(stgData)
 
+  //val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  //val redirectRobIdx = io.redirectInfo.bits.robIdx
+
+
   for (i <- 0 until numExeUnits) {
     // 因为下游是 PRF 和 ROB（不反压），本级数据只要有效，下个周期必定能发走
     val outFire = stgValid(i) 
@@ -64,11 +71,13 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
     
     val inFire = io.InExeResults(i).valid && stgReady
 
+    //val inDoFlush = doRedirect &&  inFire &&  io.InExeResults(i).bits.uop.robIdxFull.isAfter(redirectRobIdx)
+
     // 将 ready 信号反馈给对应的执行单元
     io.InExeResults(i).ready := stgReady
 
     // 严格状态转移
-    when(io.flush) {
+    when(false.B ){ //inDoFlush) {
       stgValid(i) := false.B
     }.elsewhen(inFire) {
       stgValid(i) := true.B

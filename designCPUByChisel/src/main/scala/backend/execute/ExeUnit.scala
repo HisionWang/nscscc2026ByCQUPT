@@ -42,7 +42,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val io = IO(new Bundle {
     val inReq        = Flipped(Decoupled(new ExeReq))
     val outResult    = Decoupled(new ExeResult)
-    val flush        = Input(Bool())
+    //val flush        = Input(Bool())
     val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
 
     val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
@@ -78,10 +78,15 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
 
   val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   val redirectRobIdx = io.redirectInfo.bits.robIdx
-  val needFlush = stgValid && doRedirect &&
-                     stgData.uop.robIdxFull.isAfter(redirectRobIdx)
+  //其实这个除了除法要刷，其他的都没有什么必要
+  val inDoFlush = doRedirect && (
+                                (fastInFire &&  io.inReq.bits.uop.robIdxFull.isAfter(redirectRobIdx))
+                                // || (!outFire && stgValid && stgData.uop.robIdxFull.isAfter(redirectRobIdx))
 
-  when(needFlush) {
+                                //理论上讲这里outfire是不可能无效的
+                                )
+
+  when( false.B ){//inDoFlush ) {
     stgValid := false.B
   }.elsewhen(fastInFire) {
     stgValid := true.B
@@ -188,7 +193,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   if (params.hasMul) {
     mul.io.in.valid := io.inReq.valid && isMulInst
     mul.io.in.bits  := io.inReq.bits
-    mul.io.flush    := io.flush
+    mul.io.redirectInfo    := io.redirectInfo //io.flush
   }
   val mulOutValid = if (params.hasMul) mul.io.out.valid else false.B
  
@@ -199,7 +204,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   if (params.hasDiv) {
     div.io.in.valid := io.inReq.valid && isDivInst
     div.io.in.bits  := io.inReq.bits
-    div.io.flush    := io.flush
+    div.io.redirectInfo    := io.redirectInfo //io.flush
   }
   val divOutValid = if (params.hasDiv) div.io.out.valid else false.B
  
@@ -279,8 +284,12 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   // ================================================================
   //  重定向：BRU
   // ================================================================
+  //val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  //val redirectRobIdx = io.redirectInfo.bits.robIdx
+  val stopNewRedirect = stgValid && doRedirect &&
+                     stgData.uop.robIdxFull.isAfter(redirectRobIdx)
   if (params.hasBru) {
-    io.bruInfo.valid := bruValid && bru.io.bruInfo.valid && !needFlush
+    io.bruInfo.valid := bruValid && bru.io.bruInfo.valid && !stopNewRedirect
     io.bruInfo.bits  := bru.io.bruInfo.bits
   } else {
     io.bruInfo.valid := false.B

@@ -20,7 +20,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // ── 向 Dispatch 输出 ──
     val out     = Vec(CtrlBlockWidth, Decoupled(new RenamedInst))
     // ── ROB 提交回传 ──
-    val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
+    val archCommit       = Vec(CommitWidth, Input(new ArchCommitInfo))
     // ── 重定向 ──
     //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
     
@@ -37,9 +37,10 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val resolve = Wire(Valid(new SnapshotResolveInfo))
 
 
-  resolve.valid := io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  //快照的释放
+  resolve.valid := io.redirectInfo.valid && io.redirectInfo.bits.fromBru //io.redirectInfo.bits.doRedirect
   resolve.bits.snptId := io.redirectInfo.bits.snptId
-  resolve.bits.isMispredict := io.redirectInfo.bits.doRedirect && io.redirectInfo.bits.fromBru
+  resolve.bits.isMispredict := io.redirectInfo.bits.doRedirect
 
   // ================================================================
   //  ROB 指针类型（复用 CircularQueuePtr）在Bundles中使用
@@ -52,6 +53,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val rat             = Module(new RenameTable)
   val freeList        = Module(new FreeList)
   val snapshotManager = Module(new SnapshotManager)   // ← 新增
+  //异常情况释放所有的快照槽位
+  snapshotManager.io.resolveAllSs := io.redirectInfo.valid && io.redirectInfo.bits.doRedirect && io.redirectInfo.bits.fromRob
+
  
   if (EnableDifftest) {
     difftest.get := rat.difftest.get
@@ -226,12 +230,13 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val robIdxHeadNext = Wire(new RobPtr(RobSize))
   robIdxHeadNext := robIdxHead
   when(doFlush) {
-    
-    when(io.redirectInfo.bits.flushSelf){
-      robIdxHeadNext := io.redirectInfo.bits.robIdx
-    }.otherwise{
-      robIdxHeadNext := io.redirectInfo.bits.robIdx + 1.U
-    }
+    //异常在ROb中的行为实际上是和普通的出队一样的操作的，所以这里的指针也应该是这样的变化
+    robIdxHeadNext := io.redirectInfo.bits.robIdx + 1.U
+    //when(io.redirectInfo.bits.flushSelf){
+    //  robIdxHeadNext := io.redirectInfo.bits.robIdx
+    //}.otherwise{
+    //  robIdxHeadNext := io.redirectInfo.bits.robIdx + 1.U
+    //}
     
     //robIdxHeadNext.flag  := false.B
   }.elsewhen(outFire) {

@@ -29,7 +29,9 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val in    = Flipped(Decoupled(new ExeReq))
     val out   = Decoupled(new ExeResult)
-    val flush = Input(Bool())
+    //val flush = Input(Bool())
+    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
+
   })
   io.out.bits.memValid := false.B
   io.out.bits.memRead := false.B
@@ -108,7 +110,12 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  S1 更新
   // ================================================================
-  when(io.flush) {
+  val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val redirectRobIdx = io.redirectInfo.bits.robIdx
+  val s1DoFlush = in_fire && doRedirect &&
+                     io.in.bits.uop.robIdxFull.isAfter(redirectRobIdx)
+
+  when(s1DoFlush) {
     s1_valid := false.B
   }.elsewhen(in_fire) {
     s1_valid  := true.B
@@ -123,7 +130,9 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  S2 更新
   // ================================================================
-  when(io.flush) {
+  val s2DoFlush = in_fire && doRedirect &&
+                     s1_uop.robIdxFull.isAfter(redirectRobIdx)
+  when(s2DoFlush) {
     s2_valid := false.B
   }.elsewhen(s1_fire) {
     s2_valid  := true.B
@@ -146,7 +155,9 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  S3 更新
   // ================================================================
-  when(io.flush) {
+      val s3DoFlush = in_fire && doRedirect &&
+                     s2_uop.robIdxFull.isAfter(redirectRobIdx)
+  when(s3DoFlush) {
     s3_valid := false.B
   }.elsewhen(s2_fire) {
     s3_valid := true.B

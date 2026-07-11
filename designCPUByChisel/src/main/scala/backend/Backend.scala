@@ -32,6 +32,11 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val fromMemResult  = Flipped (Vec(2, Decoupled(new ExeResult) ))
   val commitToSq  = new RobCommitToSq
   val commitToCsr  = new RobCommitToCsr
+
+  val excpEvent           = Output(new ExcpEvent)
+  val excpInfo            = Output(new ExcpInfo)
+  val redirectAddrFromCsr = Input(new RedirectEntry)
+
 }
 
 class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
@@ -42,6 +47,9 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
+  io.excpEvent <> ctrlBlock.io.excpEvent
+  io.excpInfo <> ctrlBlock.io.excpInfo
+  io.redirectAddrFromCsr <> ctrlBlock.io.redirectAddrFromCsr
 
   io.commitToSq <> ctrlBlock.io.commitToSq
   io.commitToCsr <> ctrlBlock.io.commitToCsr
@@ -182,8 +190,10 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   }
   */
   
-  writeback.io.flush := bruInfoFromExe3.valid && bruInfoFromExe3.bits.doRedirect
-  exeUnits.foreach(_.io.flush := bruInfoFromExe3.valid && bruInfoFromExe3.bits.doRedirect)
+  writeback.io.flush := false.B
+  //exeUnits.foreach(_.io.flush := bruInfoFromExe3.valid && bruInfoFromExe3.bits.//doRedirect)
+
+  exeUnits.foreach(_.io.redirectInfo := ctrlBlock.io.redirectInfo)
  
   // ══════════════════════════════════════════════════════════════
   //  Writeback → RegFile：写端口

@@ -1,5 +1,5 @@
 package nscscc.backend.rob
- 
+
 import chisel3._
 import chisel3.util._
 import nscscc.config._
@@ -37,7 +37,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val robIdx      = new RobPtr(RobSize)
   val writtenBack = Bool()
   val valid       = Bool()
-  val needsRollback = Bool()   // 标记需要回滚的指令（回滚时需要返还pdst）
+  val needsRollback = Bool()   // 保留以维持接口兼容性，内部已通过状态机指针化简
 }
  
 class RobCommitIO(implicit p: Parameters) extends NSBundle {
@@ -67,22 +67,9 @@ class ArchCommitInfo(implicit p: Parameters) extends NSBundle {
   val rfWen   = Bool()
 }
 
- 
 // ═══════════════════════════════════════════════════════════════
-//  重排序缓冲区（ROB）
-//
-//  【提交策略】
-//    · 正常指令：commit + archCommit（更新架构RAT + 释放oldPdst）
-//    · 异常指令：不提交，留在ROB，回滚时返还pdst
-//    · CSR写指令：commit + archCommit，触发重定向，后续指令回滚
-//    · CSR写之后的指令：不提交，回滚时返还pdst
-//
-//  【BRU重定向冲刷】
-//    香山风格：redirectBegin/redirectEnd 范围清除
-//
-//  【ROB回滚】
-//    先归还dispatch未入队的pdst，再从enqPtr向deqPtr逐条扫描归还
-// ================================================================
+//  重排序缓冲区 (ROB) 
+// ═══════════════════════════════════════════════════════════════
 class ROB(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
@@ -93,24 +80,18 @@ class ROB(implicit p: Parameters) extends NSModule {
     val commitToCsr      = new RobCommitToCsr
     val writeback        = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
  
-    // 架构提交（给 Rename/FreeList）
     val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
- 
-    // ROB 发起的重定向请求
     val robRedirect      = Output(new RobRedirectReq)
- 
-    // 统一重定向输入
     val redirectInfo     = Flipped(ValidIO(new redirectInfoToModule))
  
-    // 回滚控制
     val robPause         = Input(Bool())
     val robNeedRollback  = Input(Bool())
-    val robRollbackTarget = Input(new RobPtr(RobSize))
+    val robRollbackTarget= Input(new RobPtr(RobSize))
     val robRollbackDone  = Output(Bool())
   })
  
   // ================================================================
-  //  0. 指针类型与辅助
+  //  0. 指针类型与辅助函数
   // ================================================================
   class RobPtrInner extends CircularQueuePtr[RobPtrInner](RobSize)
  
@@ -129,43 +110,35 @@ class ROB(implicit p: Parameters) extends NSModule {
   def ptrEq(a: RobPtrInner, b: RobPtrInner): Bool =
     a.value === b.value && a.flag === b.flag
  
-  def isInRange(idx: UInt, begin: UInt, end: UInt): Bool =
-    Mux(end > begin,
-      idx >= begin && idx < end,
-      idx >= begin || idx < end
-    )
- 
   // ================================================================
   //  1. 存储体 + 头尾指针
   // ================================================================
   val entries = Reg(Vec(RobSize, new RobEntryInner))
   dontTouch(entries)
  
-  val deqPtr = RegInit({
-    val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p
-  })
-  val enqPtr = RegInit({
-    val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p
-  })
+  val deqPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })
+  val enqPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })
  
-  val empty = ptrEq(deqPtr, enqPtr)
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
   val count = enqPtr.distanceTo(deqPtr)
  
   // ================================================================
-  //  2. 入队逻辑
+  //  2. 入队逻辑 (Enqueue)
   // ================================================================
   val enqValidCount = PopCount(io.enq.valids)
   io.enq.canEnq := !full && (count +& enqValidCount <= RobSize.U)
  
   val enqPrefixSum = Wire(Vec(CtrlBlockWidth + 1, UInt(log2Ceil(RobSize).W)))
   enqPrefixSum(0) := 0.U
-  for (j <- 0 until CtrlBlockWidth)
+  for (j <- 0 until CtrlBlockWidth) {
     enqPrefixSum(j + 1) := enqPrefixSum(j) + io.enq.valid(j).asUInt
+  }
  
+  val bruArrived = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect && io.redirectInfo.bits.fromBru
+  
   for (i <- 0 until CtrlBlockWidth) {
     val writeIdx = (enqPtr.value + enqPrefixSum(i))(log2Ceil(RobSize) - 1, 0)
-    when(io.enq.valid(i) && io.enq.canEnq) {
+    when(io.enq.valid(i) && io.enq.canEnq && !io.robPause) {
       entries(writeIdx).pc           := io.enq.bits(i).pc
       entries(writeIdx).inst         := io.enq.bits(i).inst
       entries(writeIdx).pdst         := io.enq.bits(i).pdst
@@ -184,20 +157,18 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).fuType       := io.enq.bits(i).fuType
       entries(writeIdx).excp         := io.enq.bits(i).excp
       entries(writeIdx).writtenBack  := false.B
-      entries(writeIdx).valid        := true.B
-      entries(writeIdx).needsRollback := false.B
+      entries(writeIdx).needsRollback:= false.B
       entries(writeIdx).robIdx.value := writeIdx
-      entries(writeIdx).robIdx.flag  := enqPtr.flag ^
-        (enqPtr.value +& enqPrefixSum(i) >= RobSize.U)
+      entries(writeIdx).robIdx.flag  := enqPtr.flag ^ (enqPtr.value +& enqPrefixSum(i) >= RobSize.U)
     }
   }
  
-  when(io.enq.canEnq && enqValidCount.orR && io.enq.valid(0)) {
+  when(io.enq.canEnq && enqValidCount.orR && io.enq.valid(0) && !io.robPause ) {
     enqPtr := enqPtr + enqValidCount
   }
  
   // ================================================================
-  //  3. 写回逻辑
+  //  3. 写回逻辑 (Writeback)
   // ================================================================
   for (wb <- io.writeback) {
     when(wb.valid) {
@@ -220,266 +191,178 @@ class ROB(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  4. 提交逻辑
-  //
-  //  扫描 CommitWidth 条：
-  //    · 正常指令：commitValids=true
-  //    · 异常指令：不提交，触发 robRedirect，停止扫描
-  //    · CSR写指令：提交，触发 robRedirect，停止后续提交
-  //    · robPause 期间不提交
+  //  4. 提交逻辑 (Commit) - 完全修复组合逻辑链
   // ================================================================
-  val commitCandidates = Wire(Vec(CommitWidth, new RobEntryInner))
   val commitValids     = Wire(Vec(CommitWidth, Bool()))
- 
-  io.commitToCsr.csrWen   := false.B
-  io.commitToCsr.csrWaddr := 0.U
-  io.commitToCsr.csrWdata := 0.U
- 
-  io.robRedirect.valid := false.B
-  io.robRedirect  := 0.U.asTypeOf(new RobRedirectReq)
- 
-  var prevCanCommit = true.B
-  var foundExcp     = false.B
-  var foundCsrWrite = false.B
- 
+  val commitCandidates = Wire(Vec(CommitWidth, new RobEntryInner))
+  
+  val canConsider = Wire(Vec(CommitWidth, Bool()))
+  val isExcpSlot  = Wire(Vec(CommitWidth, Bool()))
+  val isCsrSlot   = Wire(Vec(CommitWidth, Bool()))
+  val blockNext   = Wire(Vec(CommitWidth, Bool())) // 标记当前槽位是否会阻断后续槽位
+  val inFlushRange = Wire(Vec(RobSize, Bool()))
   for (i <- 0 until CommitWidth) {
     val idx       = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
     val entry     = entries(idx)
-    val thisReady = entry.valid && entry.writtenBack
+    val thisReady = entry.valid && entry.writtenBack  && !inFlushRange(idx)
     val hasExcp   = entry.excp.hasException
     val isCsrW    = entry.csrWen && !hasExcp
- 
-    val canConsider = prevCanCommit && thisReady && !io.robPause
- 
-    // 异常槽：第一条异常指令
-    val isExcpSlot = canConsider && hasExcp && !foundExcp
-    // CSR写槽：第一条CSR写指令
-    val isCsrSlot  = canConsider && isCsrW && !foundCsrWrite && !foundExcp
- 
-    // 正常提交：非异常、非已遇CSR写/异常
-    commitValids(i)      := canConsider && !hasExcp && !foundExcp && !foundCsrWrite
-    commitCandidates(i)  := entry
-    commitCandidates(i).valid        := DontCare
-    commitCandidates(i).writtenBack  := DontCare
-    commitCandidates(i).needsRollback := DontCare
- 
-    // ── 异常处理 ──
-    when(isExcpSlot) {
-      foundExcp := true.B
-      io.robRedirect.valid             := true.B
-      io.robRedirect.isException  := true.B
-      io.robRedirect.robIdx       := entry.robIdx
-      io.robRedirect.excp      := entry.excp
-      io.robRedirect.pc           := entry.pc
+
+    // 构建严格的依赖链，代替存在 BUG 的 Scala var 循环赋值
+    if (i == 0) {
+      canConsider(0) := thisReady && !io.robPause 
+    } else {
+      canConsider(i) := canConsider(i-1) && !blockNext(i-1) && thisReady
     }
- 
-    // ── CSR写处理 ──
-    when(isCsrSlot) {
-      foundCsrWrite := true.B
-      io.robRedirect.valid             := true.B
-      io.robRedirect.isException  := false.B
-      io.robRedirect.robIdx       := entry.robIdx
-      io.robRedirect.excp     := 0.U.asTypeOf(new ExceptionBundle)
-      io.robRedirect.pc           := entry.pc
-      io.commitToCsr.csrWen   := true.B
-      io.commitToCsr.csrWaddr := entry.csrWaddr
-      io.commitToCsr.csrWdata := entry.csrWdata
-    }
- 
-    prevCanCommit = prevCanCommit && thisReady
+
+    isExcpSlot(i)       := canConsider(i) && hasExcp
+    isCsrSlot(i)        := canConsider(i) && isCsrW
+    commitValids(i)     := canConsider(i) //&& !hasExcp // 正常提交（异常指令不提交） 
+    commitCandidates(i) := entry
+
+    // 如果当前未 Ready，或者是异常、或者是CSR，都会切断后续指令的提交资格
+    blockNext(i) := !canConsider(i) || isExcpSlot(i) || isCsrSlot(i)
   }
- 
-  // ── 提交输出 ──
+
+  // 提取首个导致 Redirect 的槽位信息
+  val redirectValid = isExcpSlot.asUInt.orR || isCsrSlot.asUInt.orR
+  val redirectIdx   = PriorityEncoder(isExcpSlot.asUInt | isCsrSlot.asUInt)
+  val redirectEntry = commitCandidates(redirectIdx)
+
+  io.robRedirect.valid       := redirectValid
+  io.robRedirect.isException := isExcpSlot(redirectIdx)
+  io.robRedirect.robIdx      := redirectEntry.robIdx
+  io.robRedirect.excp        := redirectEntry.excp
+  io.robRedirect.pc          := redirectEntry.pc
+
+  io.commitToCsr.csrWen      := isCsrSlot.asUInt.orR
+  io.commitToCsr.csrWaddr    := redirectEntry.csrWaddr
+  io.commitToCsr.csrWdata    := redirectEntry.csrWdata
+  
+  // 输出正常 Commit 信号
   for (i <- 0 until CommitWidth) {
     io.commit.valid(i)        := commitValids(i)
     io.commit.bits(i)         := commitCandidates(i)
-    io.commit.isExcpCommit(i) := false.B
+    io.commit.isExcpCommit(i) := commitCandidates(i).excp.hasException
+    
     io.commitToSq.valid(i)    := commitValids(i) && commitCandidates(i).memWrite
     io.commitToSq.bits(i)     := commitCandidates(i)
+    
+    io.archCommit(i).valid    := commitValids(i) && commitCandidates(i).rfWen && commitCandidates(i).ldst =/= 0.U && !commitCandidates(i).excp.hasException
+    io.archCommit(i).isWalk   := false.B
+    io.archCommit(i).ldst     := commitCandidates(i).ldst
+    io.archCommit(i).pdst     := commitCandidates(i).pdst
+    io.archCommit(i).oldPdst  := commitCandidates(i).oldPdst
+    io.archCommit(i).rfWen    := commitValids(i) && commitCandidates(i).rfWen
   }
   io.commit.isWalk := false.B
- 
-  // ── 正常 archCommit ──
-  for (i <- 0 until CommitWidth) {
-    io.archCommit(i).valid   := commitValids(i) && commitCandidates(i).rfWen &&
-                                commitCandidates(i).ldst =/= 0.U
-    io.archCommit(i).isWalk  := false.B
-    io.archCommit(i).ldst    := commitCandidates(i).ldst
-    io.archCommit(i).pdst    := commitCandidates(i).pdst
-    io.archCommit(i).oldPdst := commitCandidates(i).oldPdst
-    io.archCommit(i).rfWen   := commitValids(i) && commitCandidates(i).rfWen
-  }
- 
-  // ── 提交后清除表项 + 前进 deqPtr ──
+
   val commitCount = PopCount(commitValids)
-  for (i <- 0 until CommitWidth) {
-    val idx = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
-    when(commitValids(i)) {
-      entries(idx).valid := false.B
-    }
-  }
   when(commitCount.orR) {
     deqPtr := deqPtr + commitCount
   }
  
   // ================================================================
-  //  5. BRU 重定向冲刷（香山风格：redirectBegin / redirectEnd）
+  //  5. BRU 重定向冲刷 (Redirect Flush)
   // ================================================================
-  val redirectValidReg = RegInit(false.B)
-  val redirectBegin    = Reg(UInt(log2Ceil(RobSize).W))
-  val redirectEnd      = Reg(UInt(log2Ceil(RobSize).W))
+  val redirectValidReg  = RegInit(false.B)
+  val redirectBegin     = Reg(UInt(log2Ceil(RobSize).W))
+  val redirectEnd       = Reg(UInt(log2Ceil(RobSize).W))
   val redirectFlushSelf = RegInit(false.B)
- 
-  val bruArrived   = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect &&
-                     io.redirectInfo.bits.fromBru && !isRollingBack
-  val bruRobIdx    = io.redirectInfo.bits.robIdx
-  val bruFlushSelf = io.redirectInfo.bits.flushSelf
+  val redirectAll      = RegInit(false.B)
  
   when(bruArrived) {
     redirectValidReg  := true.B
-    redirectBegin     := bruRobIdx.value
+    redirectBegin     := io.redirectInfo.bits.robIdx.value
     redirectEnd       := enqPtr.value
-    redirectFlushSelf := bruFlushSelf
-    // 恢复 enqPtr
-    enqPtr := Mux(bruFlushSelf, bruRobIdx, bruRobIdx + 1.U)
+    redirectFlushSelf := io.redirectInfo.bits.flushSelf
+    redirectAll :=  redirectFlushSelf && (io.redirectInfo.bits.robIdx.value === enqPtr.value) && (io.redirectInfo.bits.robIdx.flag ^ enqPtr.flag)
+
+    enqPtr            := Mux(io.redirectInfo.bits.flushSelf, io.redirectInfo.bits.robIdx, io.redirectInfo.bits.robIdx + 1.U)
+  }
+  when(redirectValidReg) {
+    redirectValidReg := false.B
   }
  
   // ================================================================
-  //  6. 回滚逻辑
-  //
-  //  两个阶段：
-  //    rb_disp: 归还 dispatch 未入队的 pdst
-  //    rb_rob  : 从 enqPtr 向 deqPtr 逐条扫描归还 pdst
+  //  6. ROB 回滚逻辑 (Rollback FSM)
   // ================================================================
   val rb_idle :: rb_disp :: rb_rob :: Nil = Enum(3)
   val rollbackState = RegInit(rb_idle)
   val isRollingBack = rollbackState =/= rb_idle
  
-  // ── 锁存 dispatch 入队数据（异常/CSR写检测周期锁存）──
-  val latchCanEnq   = Reg(Bool())
-  val latchEnqValid = Reg(Vec(CtrlBlockWidth, Bool()))
+  // ── 锁存未能入队的 Dispatch 寄存器信息，防止物理寄存器泄漏 ──
+  val latchCanEnq   = RegInit(true.B)
+  val latchEnqValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val latchEnqPdst  = Reg(Vec(CtrlBlockWidth, UInt(PhyRegIdxWidth.W)))
   val latchEnqRfWen = Reg(Vec(CtrlBlockWidth, Bool()))
  
   when(io.robRedirect.valid) {
     latchCanEnq := io.enq.canEnq
     for (i <- 0 until CtrlBlockWidth) {
-      latchEnqValid(i) := io.enq.valid(i) && !io.enq.canEnq &&
-                          io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
+      latchEnqValid(i) := io.enq.valid(i) && !io.enq.canEnq && io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
       latchEnqPdst(i)  := io.enq.bits(i).pdst
       latchEnqRfWen(i) := io.enq.bits(i).rfWen
     }
   }
  
-  // ── dispatch 回滚索引 ──
-  val dispIdx = RegInit(0.U(log2Ceil(CtrlBlockWidth + 1).W))
+  val dispIdx     = RegInit(0.U(log2Ceil(CtrlBlockWidth + 1).W))
+  val rollbackPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })
+  val rollbackAtDeq = ptrEq(rollbackPtr, deqPtr)
  
-  // ── ROB 回滚指针 ──
-  val rollbackPtr = RegInit({
-    val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p
-  })
- 
-  // ── 设置 needsRollback 标志 ──
-  val rollbackBeginVal = Reg(UInt(log2Ceil(RobSize).W))
-  val rollbackEndVal   = Reg(UInt(log2Ceil(RobSize).W))
-  val rollbackRangeSet = RegInit(false.B)
- 
-  // ── 启动回滚 ──
-  when(io.robNeedRollback && !isRollingBack) {
-    rollbackBeginVal := deqPtr.value
-    rollbackEndVal   := enqPtr.value
-    rollbackRangeSet := true.B
-    // 设置 needsRollback 标志
-    for (i <- 0 until RobSize) {
-      when(entries(i).valid && isInRange(i.U, deqPtr.value, enqPtr.value)) {
-        entries(i).needsRollback := true.B
-      }
-    }
-    // 判断是否需要 dispatch 回滚
-    when(latchCanEnq || !latchEnqValid.asUInt.orR ) {
-      // canEnq=true：所有dispatch条目已入队，无需单独归还
-      // 或没有有效的dispatch条目
+  // ── 启动回滚与状态转移 ──
+  when(io.robNeedRollback && rollbackState === rb_idle) {
+    when(!latchCanEnq || !latchEnqValid.asUInt.orR) {
+      // Dispatch 无遗漏，直接进入 ROB 扫描阶段
       rollbackState := rb_rob
-      rollbackPtr   := decPtr(enqPtr)
+      rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr))
     }.otherwise {
       rollbackState := rb_disp
       dispIdx       := 0.U
     }
   }
  
-  // ── dispatch 回滚阶段 ──
-  when(rollbackState === rb_disp) {
-    when(dispIdx >= CtrlBlockWidth.U) {
-      rollbackState := rb_rob
-      rollbackPtr   := decPtr(enqPtr)
-    }.otherwise {
-      dispIdx := dispIdx + 1.U
+  switch(rollbackState) {
+    is(rb_disp) {
+      when(dispIdx >= CtrlBlockWidth.U) {
+        rollbackState := rb_rob
+        rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr)) // 安全起见检查 ROB 是否已空
+      }.otherwise {
+        dispIdx := dispIdx + 1.U
+      }
+    }
+    is(rb_rob) {
+      when(rollbackAtDeq) {
+        rollbackState := rb_idle
+        enqPtr        := deqPtr // 回滚彻底完成，清空游标
+      }.otherwise {
+        rollbackPtr   := decPtr(rollbackPtr)
+      }
     }
   }
+
+  // 完美对接 Controller 的时序：在回滚扫到 deqPtr 的当拍发出 done
+  io.robRollbackDone := (rollbackState === rb_rob) && rollbackAtDeq
  
-  // ── ROB 回滚阶段 ──
-  val rollbackAtDeq = ptrEq(rollbackPtr, deqPtr)
-  val robIsEmpty    = ptrEq(enqPtr, deqPtr)
+  // ── 覆盖输出：回滚时强制通过 ArchCommit 接口进行 pdst 释放 ──
+  val rollbackEntry    = entries(rollbackPtr.value)
+  val rollbackNeedFree = rollbackEntry.valid && rollbackEntry.rfWen && rollbackEntry.ldst =/= 0.U
+  val dispNeedFree     = latchEnqValid(dispIdx)
  
-  when(rollbackState === rb_rob) {
-    when(rollbackAtDeq) {
-      // 到达 deqPtr，处理该条目后完成
-      rollbackState   := rb_idle
-      rollbackRangeSet := false.B
-      enqPtr           := deqPtr
-    }.otherwise {
-      rollbackPtr := decPtr(rollbackPtr)
-    }
-  }
- 
-  // ── 回滚完成信号 ──
-  io.robRollbackDone := (io.robNeedRollback && !isRollingBack && robIsEmpty) ||
-                        (rollbackState === rb_rob && rollbackAtDeq) ||
-                        (rollbackState === rb_disp && dispIdx >= CtrlBlockWidth.U && robIsEmpty &&
-                         !VecInit((0 until RobSize).map(i => entries(i).valid && entries(i).needsRollback)).asUInt.orR)
- 
-  // 简化：当 rollbackState 回到 rb_idle 时表示完成
-  // 需要一个寄存器来延迟一拍发出 done
-  val rollbackDoneReg = RegInit(false.B)
-  rollbackDoneReg := isRollingBack && (
-    (rollbackState === rb_rob && rollbackAtDeq) ||
-    (io.robNeedRollback && !isRollingBack && robIsEmpty)
-  )
-  io.robRollbackDone := rollbackDoneReg
- 
-  // ── 回滚期间的 archCommit 输出 ──
-  val rollbackEntry     = entries(rollbackPtr.value)
-  val rollbackNeedFree  = rollbackEntry.valid && rollbackEntry.needsRollback &&
-                          rollbackEntry.rfWen && rollbackEntry.ldst =/= 0.U
-  val dispNeedFree      = latchEnqValid(dispIdx)
- 
-  // 回滚时清除表项和标志
-  when(rollbackState === rb_rob && !rollbackAtDeq && rollbackEntry.valid) {
-    entries(rollbackPtr.value).valid        := false.B
-    entries(rollbackPtr.value).needsRollback := false.B
-  }
-  when(rollbackState === rb_rob && rollbackAtDeq && rollbackEntry.valid && rollbackEntry.needsRollback) {
-    entries(rollbackPtr.value).valid        := false.B
-    entries(rollbackPtr.value).needsRollback := false.B
-  }
- 
-  // ================================================================
-  //  7. 回滚期间的 archCommit 覆盖
-  //     正常提交被 robPause 阻断，archCommit 由回滚逻辑驱动
-  // ================================================================
   when(isRollingBack) {
     for (i <- 1 until CommitWidth) {
-      io.archCommit(i).valid := false.B
+      io.archCommit(i).valid  := false.B
       io.archCommit(i).isWalk := true.B
     }
-    // slot 0 由回滚逻辑驱动
+    
+    // 第 0 槽位专门用于逐条归还物理寄存器
     when(rollbackState === rb_disp && dispIdx < CtrlBlockWidth.U && dispNeedFree) {
       io.archCommit(0).valid   := true.B
       io.archCommit(0).isWalk  := true.B
       io.archCommit(0).pdst    := latchEnqPdst(dispIdx)
       io.archCommit(0).ldst    := 0.U
       io.archCommit(0).oldPdst := 0.U
-      io.archCommit(0).rfWen   := true.B
+      io.archCommit(0).rfWen   := latchEnqRfWen(dispIdx)
     }.elsewhen(rollbackState === rb_rob && rollbackNeedFree) {
       io.archCommit(0).valid   := true.B
       io.archCommit(0).isWalk  := true.B
@@ -488,44 +371,50 @@ class ROB(implicit p: Parameters) extends NSModule {
       io.archCommit(0).oldPdst := 0.U
       io.archCommit(0).rfWen   := true.B
     }.otherwise {
-      io.archCommit(0).valid  := false.B
-      io.archCommit(0).isWalk := true.B
+      io.archCommit(0).valid   := false.B
+      io.archCommit(0).isWalk  := true.B
     }
-    // 回滚期间阻断 commit 输出
-    for (i <- 0 until CommitWidth) {
-      io.commit.valid(i)        := false.B
-      io.commit.isExcpCommit(i) := false.B
-      io.commitToSq.valid(i)    := false.B
-    }
-    io.commit.isWalk := true.B
-    io.commitToCsr.csrWen := false.B
+    
+    // 强制关闭正常的 Commit，防止干扰
+    // for (i <- 0 until CommitWidth) {
+    //   io.commit.valid(i)        := false.B
+    //   io.commit.isExcpCommit(i) := false.B
+    //   io.commitToSq.valid(i)    := false.B
+    // }
+    // io.commit.isWalk := true.B
+    // io.commitToCsr.csrWen := false.B
   }
  
   // ================================================================
-  //  8. 每个 entry 的 valid 位更新
-  //     优先级：flush > enq > commit > redirect flush > rollback clear
+  //  7. 全局 Valid 位统一控制 (优先级仲裁)
   // ================================================================
+  
+
   for (i <- 0 until RobSize) {
-    val enqHit = VecInit(
-      (0 until CtrlBlockWidth).map(j => {
-        val allocPtr = (enqPtr.value + enqPrefixSum(j))(log2Ceil(RobSize) - 1, 0)
-        io.enq.valid(j) && io.enq.canEnq && allocPtr === i.U
-      })
-    ).asUInt.orR && !bruArrived
+    // A. 判断入队命中
+    val enqHit = VecInit((0 until CtrlBlockWidth).map(j => {
+      val allocPtr = (enqPtr.value + enqPrefixSum(j))(log2Ceil(RobSize) - 1, 0)
+      io.enq.valid(j) && io.enq.canEnq && allocPtr === i.U
+    })).asUInt.orR && !bruArrived
  
-    val commitHit = commitValids.zipWithIndex.map { case (v, j) =>
+    // B. 判断 Commit 命中
+    val commitHit = VecInit(commitValids.zipWithIndex.map { case (v, j) =>
       v && ((deqPtr.value + j.U)(log2Ceil(RobSize) - 1, 0) === i.U)
-    }.reduce(_ || _)
+    }).asUInt.orR
  
-    val inFlushRange = redirectValidReg && (
-      Mux(redirectEnd > redirectBegin,
-        i.U > redirectBegin && i.U < redirectEnd,
-        i.U > redirectBegin || i.U < redirectEnd
-      )
-    )
+    // C. 判断 BRU 重定向冲刷命中
+    inFlushRange(i) := redirectValidReg &&( Mux(redirectEnd > redirectBegin,
+      i.U > redirectBegin && i.U < redirectEnd,
+      i.U > redirectBegin || i.U < redirectEnd
+    ) || redirectAll )
+
     val flushSelfHit = redirectValidReg && redirectFlushSelf && i.U === redirectBegin
-    val redirectFlushHit = inFlushRange || flushSelfHit
+    val redirectFlushHit = inFlushRange(i) || flushSelfHit
  
+    // D. 判断 Rollback 回滚擦除命中
+    val rollbackHit = (rollbackState === rb_rob) && (rollbackPtr.value === i.U)
+ 
+    // 严格按照硬件优先级写入，防止互相覆盖
     when(io.flush) {
       entries(i).valid := false.B
     }.elsewhen(enqHit) {
@@ -534,28 +423,20 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(i).valid := false.B
     }.elsewhen(redirectFlushHit) {
       entries(i).valid := false.B
+    }.elsewhen(rollbackHit) {
+      entries(i).valid := false.B
     }
-    // rollback 的清除在上面 rollbackState 逻辑中处理
-  }
- 
-  // ── redirectValidReg 清除 ──
-  when(redirectValidReg) {
-    redirectValidReg := false.B
   }
  
   // ================================================================
-  //  9. 全局冲刷
+  //  8. 全局复位 (Global Flush)
   // ================================================================
   when(io.flush) {
-    for (i <- 0 until RobSize) {
-      entries(i).valid := false.B
-      entries(i).needsRollback := false.B
-    }
-    deqPtr.value := 0.U; deqPtr.flag := false.B
-    enqPtr.value := 0.U; enqPtr.flag := false.B
+    deqPtr.value      := 0.U
+    deqPtr.flag       := false.B
+    enqPtr.value      := 0.U
+    enqPtr.flag       := false.B
     redirectValidReg  := false.B
     rollbackState     := rb_idle
-    rollbackRangeSet  := false.B
-    rollbackDoneReg   := false.B
   }
 }

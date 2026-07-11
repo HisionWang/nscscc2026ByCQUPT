@@ -485,6 +485,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).writtenBack := DontCare
     io.robEnq.bits(i).valid       := DontCare
 
+    io.robEnq.bits(i).needsRollback := DontCare
+
 
 
   }

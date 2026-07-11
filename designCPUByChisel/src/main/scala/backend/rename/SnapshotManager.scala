@@ -40,6 +40,8 @@ class SnapshotManager(implicit p: Parameters) extends NSModule with HasCoreParam
  
     // ── 分支解析（来自后端 BRU/ROB）──
     val resolve     = Flipped(Valid(new SnapshotResolveInfo))
+    // 异常重定向时清完
+    val resolveAllSs = Input(Bool())
  
     // ── 恢复/无效化信号（输出到 RAT 和 FreeList）──
     val doRecover       = Output(Bool())                     // 误预测恢复
@@ -110,16 +112,18 @@ class SnapshotManager(implicit p: Parameters) extends NSModule with HasCoreParam
  
   val shouldInvalidate = Wire(Vec(SnapshotNum, Bool()))
   for (i <- 0 until SnapshotNum) {
-    shouldInvalidate(i) := resolveValid && resolveSlotValid && (
-      // 误预测：释放自己 + 所有更年轻的槽位
-      (resolveMis && (i.U === resolveId || younger(resolveId)(i))) ||
-      // 正确预测：仅释放自己
-      (!resolveMis && i.U === resolveId)
-    )
+    shouldInvalidate(i) :=  (resolveSlotValid && resolveValid &&  
+          // 误预测：释放自己 + 所有更年轻的槽位
+          ((resolveMis && (i.U === resolveId || younger(resolveId)(i))) ||
+          // 正确预测：仅释放自己
+           (!resolveMis && i.U === resolveId))) || io.resolveAllSs
+        
+
+    
   }
  
   io.invalidateSlots := shouldInvalidate
-  io.doRecover       := resolveValid && resolveMis && resolveSlotValid
+  io.doRecover       := resolveValid && resolveMis && resolveSlotValid //这是恢复物理寄存器的
   io.recoverId       := resolveId
  
   // ================================================================

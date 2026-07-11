@@ -7,6 +7,8 @@ import nscscc.backend.decode._
 import nscscc.backend.execute._
 import nscscc.backend.rename._
 import firrtl.flattenType
+import nscscc.csr._
+import nscscc.config.ExcType._
 
 
 
@@ -43,16 +45,23 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
     val recoverSnptId  = Output(UInt(log2Ceil(SnapshotNum).W))
  
     // ── CSR 异常写入 ──
-    val csrExcpValid   = Output(Bool())
-    val csrExcpVec     = Output(new ExceptionBundle)
-    val csrExcpPc      = Output(UInt(XLEN.W))
+    //val csrExcpValid   = Output(Bool())
+    //val csrExcpVec     = Output(new ExceptionBundle)
+    //val csrExcpPc      = Output(UInt(XLEN.W))
+
+
+    val excpEvent           = Output(new ExcpEvent)
+    val excpInfo            = Output(new ExcpInfo)
+    val redirectAddrFromCsr = Input(new RedirectEntry)
+
+
   })
  
   // ================================================================
   //  输入寄存（打1拍改善时序）
   // ================================================================
   val bruReg = RegNext(io.bruRedirect)
-  val robReq = RegNext(io.robRedirect)
+  val robReq = (io.robRedirect)
  
   // ================================================================
   //  状态机
@@ -77,12 +86,22 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
         robInfoExcpVec      := robReq.excp
         robInfoPc           := robReq.pc
         robInfoRobIdx       := robReq.robIdx
-      }.elsewhen(bruReg.valid) {
+      }.elsewhen(io.bruRedirect.valid ){//就算没有重定向也要发去释放快照//&& io.bruRedirect.bits.doRedirect) {
         state := s_bru_redirect
       }
     }
     is(s_bru_redirect) {
-      state := s_idle
+      when(robReq.valid) {
+        state               := s_rob_rollback
+        robInfoIsException  := robReq.isException
+        robInfoExcpVec      := robReq.excp
+        robInfoPc           := robReq.pc
+        robInfoRobIdx       := robReq.robIdx
+      }.elsewhen(io.bruRedirect.valid ){
+        state := s_bru_redirect
+      }.otherwise{
+        state := s_idle
+      }
     }
     is(s_rob_rollback) {
       when(io.robRollbackDone) {
@@ -98,7 +117,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   val isRollingBack  = (state === s_rob_rollback)
   val rollbackDone   = isRollingBack && io.robRollbackDone
  
-  io.robRedirectPause   := isRollingBack && !rollbackDone
+  io.robRedirectPause   := isRollingBack //&& !rollbackDone
 
  
   // ================================================================
@@ -113,10 +132,24 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   val isTlbExcp = false.B //robInfoExcpVec(5) || robInfoExcpVec(4) ||
                   //robInfoExcpVec(3) || robInfoExcpVec(2) ||
                   //robInfoExcpVec(1)
-  val robTarget = Mux(robInfoIsException,
-    Mux(isTlbExcp, io.tlbrentry, io.eentry),
-    robInfoPc + 4.U
+  val isNormalExcp = robInfoIsException && !robInfoExcpVec.has(ERTN)
+  val isErtnExcp = robInfoIsException &&  robInfoExcpVec.has(ERTN)
+
+//  val robTarget = Mux(robInfoIsException,
+//    Mux(isTlbExcp, io.tlbrentry, io.eentry),
+//    robInfoPc + 4.U
+//  )
+
+  // 2. 多路地址选择 (自上而下具有优先级，默认分支为 CSR 写指令的 PC + 4)
+  val robTarget = MuxCase(
+    robInfoPc + 4.U,  //默认分支为 CSR 写指令的 PC + 4
+    Seq(
+      isTlbExcp    -> io.redirectAddrFromCsr.tlbrentry, // TLB重填异常入口
+      isNormalExcp -> io.redirectAddrFromCsr.eentry,    // 普通异常入口
+      isErtnExcp   -> io.redirectAddrFromCsr.era     // ERTN返回入口 
+    )
   )
+
  
   // ================================================================
   //  统一重定向输出
@@ -127,7 +160,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   val robRedirecting = rollbackDone
  
   io.redirectInfo.valid               := bruRedirecting || robRedirecting
-  io.redirectInfo.bits.doRedirect     := true.B
+  io.redirectInfo.bits.doRedirect     := Mux(bruRedirecting, bruReg.bits.doRedirect, robRedirecting)
   io.redirectInfo.bits.flushSelf      := Mux(bruRedirecting, false.B, robInfoIsException)
   io.redirectInfo.bits.fromBru        := bruRedirecting
   io.redirectInfo.bits.snptId         := bruReg.bits.snptId
@@ -144,7 +177,20 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   // ================================================================
   //  CSR 异常写入
   // ================================================================
-  io.csrExcpValid := robRedirecting && robInfoIsException
-  io.csrExcpVec   := Mux(robRedirecting && robInfoIsException, robInfoExcpVec, 0.U)
-  io.csrExcpPc    := Mux(robRedirecting && robInfoIsException, robInfoPc, 0.U)
+  io.excpEvent.excp := io.robRedirect.valid && io.robRedirect.isException && !io.robRedirect.excp.has(ERTN)
+  io.excpEvent.ertn := io.robRedirect.valid && io.robRedirect.isException &&  io.robRedirect.excp.has(ERTN)
+  io.excpEvent.vppnCaptrue := false.B
+  io.excpEvent.tlbrefill := false.B
+
+// io.csrExcpVec   := io.robRedirect.excp
+// io.csrExcpPc    := io.robRedirect.pc
+
+  io.excpInfo.vaddrError := false.B
+  io.excpInfo.era := io.robRedirect.pc
+  io.excpInfo.ecode := io.robRedirect.excp.ecode
+  io.excpInfo.esubcode := io.robRedirect.excp.esubcode
+  io.excpInfo.badVaddr := 0.U
+  io.excpInfo.vppn     := 0.U
+
+
 }

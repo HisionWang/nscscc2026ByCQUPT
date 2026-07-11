@@ -88,7 +88,7 @@ class CoreDifftestBundle(implicit p: Parameters) extends NSBundle {
 object DifftestUtils {
   def isCntInst(inst: UInt): Bool = inst(31, 10) === "b0000000000000000011000".U(22.W)
   def isErtn(inst: UInt): Bool = inst === "h06483800".U
-  def isTrap(inst: UInt): Bool = inst === "h002a0000".U
+  def isTrap(inst: UInt): Bool = inst === "h002b0000".U
 
 //  def excpVecToEcode(excpVec: UInt): UInt = MuxCase(0.U(6.W), Seq(
 //    excpVec(ExceptionCode.INT)  -> 0x00.U,

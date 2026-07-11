@@ -180,7 +180,9 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestInstrCommit.io.clock := clock
     difftestInstrCommit.io.coreid := 0.U
     difftestInstrCommit.io.index := i.U
-    difftestInstrCommit.io.valid := commit.valid
+
+    //在difftest模块分支时才阻断
+    difftestInstrCommit.io.valid := commit.valid && ( !cmt(i).excpFlush || cmt(i).ertnFlush )
     difftestInstrCommit.io.pc := zeroExt64(commit.pc)
     difftestInstrCommit.io.instr := commit.instr
     difftestInstrCommit.io.skip := false.B
@@ -212,7 +214,7 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestLoadEvent.io.vaddr := zeroExt64(commit.load.vaddr)
   }
 
-  val excpValids = VecInit(cmt.map(c => c.valid && (c.excpFlush || c.ertnFlush)))
+  val excpValids = VecInit(cmt.map( c => c.valid && (c.excpFlush || c.ertnFlush)))
   val excpCommit = PriorityMux(excpValids, cmt)
   val difftestExcpEvent = Module(new DifftestExcpEvent)
   difftestExcpEvent.io.clock := clock

@@ -352,9 +352,9 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   // -------------------------
   io.hasIrq := (ecfg.lie & estat.is).orR && crmd.ie.asBool
 
-  io.redirect.eentry    := eentry.toUInt
-  io.redirect.tlbrentry := tlbrentry.toUInt
-  io.redirect.era       := era.toUInt
+  io.redirectAddr.eentry    := eentry.toUInt
+  io.redirectAddr.tlbrentry := tlbrentry.toUInt
+  io.redirectAddr.era       := era.toUInt
 
   io.timerInfo.tid   := tid.toUInt
   io.timerInfo.timer := timer64

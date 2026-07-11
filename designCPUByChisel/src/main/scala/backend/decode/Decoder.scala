@@ -93,9 +93,9 @@ object DecodeTable {
     BitPat("b011010??????????????????????????") -> ctrl(FuType.bru, bruOp = BruOp.bltu, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
     BitPat("b011011??????????????????????????") -> ctrl(FuType.bru, bruOp = BruOp.bgeu, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
 
-    BitPat("b00000100??????????????00000?????") -> ctrl(FuType.csr, csrOp = CsrOp.read, src1Type = SrcType.zero, src2Type = SrcType.none), //CSR RD
-    BitPat("b00000100??????????????00001?????") -> ctrl(FuType.csr, csrOp = CsrOp.write, src1Type = SrcType.reg, src2Type = SrcType.none, csrWen = y), // CSR WR
-    BitPat("b00000100????????????????????????") -> ctrl(FuType.csr, csrOp = CsrOp.xchg, src1Type = SrcType.reg, src2Type = SrcType.reg, csrWen = y),// CSR CHANGE
+    BitPat("b00000100??????????????00000?????") -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.read, src1Type = SrcType.zero, src2Type = SrcType.none, csrWen = n), //CSR RD
+    BitPat("b00000100??????????????00001?????") -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.write, src1Type = SrcType.reg, src2Type = SrcType.none, csrWen = y), // CSR WR
+    BitPat("b00000100????????????????????????") -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.xchg, src1Type = SrcType.reg, src2Type = SrcType.reg, csrWen = y),// CSR CHANGE
 
     BitPat("b00000000001010100???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     BitPat("b00000000001010110???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
@@ -125,8 +125,8 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 2. 特权级/系统异常指令识别
   // ===========================================================
-  val isSys  = inst === "h002b0000".U
-  val isBrk  = inst === "h002a0000".U
+  val isSys  = inst(31,15) === "h56".U
+  val isBrk  = inst(31,15) === "h54".U
   val isErtn = inst === "h06483800".U
 
   // ===========================================================
@@ -200,6 +200,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
     excpIn.excpTlbRefill  -> TLBR_I,
     //isSys             -> INT,
     io.extInt             -> INT,
+    isErtn                -> ERTN
   )
 
 //  when(isIllegal) {
