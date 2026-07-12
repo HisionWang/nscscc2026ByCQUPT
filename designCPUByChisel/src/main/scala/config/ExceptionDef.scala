@@ -56,15 +56,16 @@ object ExcType extends Enumeration {
     case TLBR_I => 0x0 // TLB 重填例外
     case PPI_I  => 0x0 //页特权等级不合规例外
     case PPI_D  => 0x0 //页特权等级不合规例外
-    case ADEF   => 0x1 //取指地址错例外
+    case ADEF   => 0x0 //取指地址错例外
+
     case ALE    => 0x0 //地址非对齐例外
     case SYS    => 0x0
     case BRK    => 0x0
     case INE    => 0x0
     case IPE    => 0x0
     case TLBR_D => 0x0 //TLB 重填例外
-    case RESV   => 0x00
-    case ERTN   => 0x00
+    case RESV   => 0x0
+    case ERTN   => 0x0
   }
 
  
@@ -87,7 +88,8 @@ object ExcType extends Enumeration {
 import ExcType._
 
 class ExceptionBundle extends Bundle {
-  val excpVec = UInt(17.W)
+  val excpnum = 17
+  val excpVec = UInt(excpnum.W)
  
   /** 是否有任何异常 */
   def hasException: Bool = excpVec =/= 0.U
@@ -114,7 +116,7 @@ class ExceptionBundle extends Bundle {
  
   /** 优先级编码：返回最高优先级异常的位号（0 = 最高） */
   def highestPriority: UInt = {
-    MuxCase(0.U, (0 until 16).reverse.map { i =>
+    MuxCase(0.U, (0 until excpnum).map { i =>
       excpVec(i) -> i.U
     })
   }
@@ -122,17 +124,19 @@ class ExceptionBundle extends Bundle {
   /** 直接输出最高优先级异常的 ECODE */
   def ecode: UInt = {
     val pri = highestPriority
-    MuxLookup(pri, 0.U, ExcType.values.toSeq.map { exc =>
+    MuxLookup(pri, 0.U)(ExcType.values.toSeq.map { exc =>
       exc.id.U -> ExcType.ecodeInt(exc).U(6.W)
     })
   }
 
   def esubcode: UInt = {
     val pri = highestPriority
-    MuxLookup(pri, 0.U, ExcType.values.toSeq.map { exc =>
+    MuxLookup(pri, 0.U)(ExcType.values.toSeq.map { exc =>
       exc.id.U -> ExcType.esubcodeInt(exc).U(6.W)
     })
   }
+
+  def isVaddrError: Bool = highestPriority === ExcType.ADEF.id.U || highestPriority === ExcType.ALE.id.U
 
  
   /** 是否为 TLB 重填异常 */
@@ -141,7 +145,7 @@ class ExceptionBundle extends Bundle {
   /** 取最高优先级异常对应的 BADV 写入值 */
   def badvSelect(pc: UInt, badv: UInt): UInt = {
     val pri = highestPriority
-    Mux(pri >= ExcType.TLBR_D.id.U, badv, pc)
+    Mux(pri >= ExcType.ALE.id.U, badv, pc)
   }
  
   /** 取最高优先级异常的 VPPN */

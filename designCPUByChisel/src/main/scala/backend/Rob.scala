@@ -216,7 +216,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     }
 
     isExcpSlot(i)       := canConsider(i) && hasExcp
-    isCsrSlot(i)        := canConsider(i) && isCsrW
+    isCsrSlot(i)        := canConsider(i) && isCsrW  && !hasExcp
     commitValids(i)     := canConsider(i) //&& !hasExcp // 正常提交（异常指令不提交） 
     commitCandidates(i) := entry
 
@@ -234,6 +234,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.robRedirect.robIdx      := redirectEntry.robIdx
   io.robRedirect.excp        := redirectEntry.excp
   io.robRedirect.pc          := redirectEntry.pc
+  io.robRedirect.excpVaddr   := redirectEntry.memVaddr
 
   io.commitToCsr.csrWen      := isCsrSlot.asUInt.orR
   io.commitToCsr.csrWaddr    := redirectEntry.csrWaddr
@@ -271,6 +272,11 @@ class ROB(implicit p: Parameters) extends NSModule {
   val redirectFlushSelf = RegInit(false.B)
   val redirectAll      = RegInit(false.B)
  
+
+  when(redirectValidReg) { 
+    redirectValidReg := false.B
+  }
+  //顺序不能换//正确处理两条bru连续到来的情况
   when(bruArrived) {
     redirectValidReg  := true.B
     redirectBegin     := io.redirectInfo.bits.robIdx.value
@@ -280,9 +286,7 @@ class ROB(implicit p: Parameters) extends NSModule {
 
     enqPtr            := Mux(io.redirectInfo.bits.flushSelf, io.redirectInfo.bits.robIdx, io.redirectInfo.bits.robIdx + 1.U)
   }
-  when(redirectValidReg) {
-    redirectValidReg := false.B
-  }
+
  
   // ================================================================
   //  6. ROB 回滚逻辑 (Rollback FSM)

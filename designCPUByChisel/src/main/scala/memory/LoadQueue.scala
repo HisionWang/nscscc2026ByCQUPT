@@ -263,7 +263,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
   wbUop.inst       := 0.U
-  wbUop.excp    := wbEntry.excp
+  wbUop.excp       := wbEntry.excp
   wbUop.imm        := 0.U
   wbUop.csrAddress := 0.U
   wbUop.ldst       := 0.U

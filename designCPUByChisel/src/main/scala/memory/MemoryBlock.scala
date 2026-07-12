@@ -126,7 +126,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
 
   excp.excpVec := excp.mergeMany(
     base = excpIn.excpVec,
-    mmuError.excpAdef         -> ADEF,
+    mmuError.excpAle         -> ALE,
     mmuError.excpTlbPpi       -> PPI_D,
     mmuError.excpTlbRefill    -> TLBR_D,
   )

@@ -50,6 +50,8 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   // 对 MMU 发起请求：只在满足发射条件时拉高 valid
   io.mmuReq.valid      := s1_valid && s2_ready
   io.mmuReq.bits.vaddr := s1_data.data      // 虚拟地址
+  io.mmuReq.bits.lsuOp  := s1_data.uop.ctrl.lsuOp // LSU 操作类型
+
   //io.mmuReq.bits.sqIdx := s1_data.uop.sqIdx // 携带 Sq 编号，MMU 会原样送回
   // 如果 SqToMmuReq 还有其他字段(如 isLoad/isStore)，可在这里基于 s1_data.uop 补充赋值
 

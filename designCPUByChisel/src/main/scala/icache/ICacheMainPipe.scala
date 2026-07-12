@@ -284,44 +284,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
   s3_ptag := s3_paddr(31, blockOffBits + idxBits)
   s3_pidx := s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
- 
-  // === Stuation1：Hit时 ===
-  // Task1：在s3_cacheLine_data这个一整个CacheLine中提取最多fetchWidth条指令出来（如何跨Cache行了不够则能取多少取多少）
-  // Task2：更新Replacer替换算法
-  // 更新接口如下：
-  // io.replacer_touch.valid := s3_hit
-  // io.replacer_touch.idx   := s3_pidx
-  // io.replacer_touch.way   := s3_hit_way
-  // 
-  // === Stuation2：Miss时 ===
-  // Task1：向外发起AXI访问（发起大小是一个Cacha行大小，并且要处理突发传输）
-  // 接口为：
-  //  AXI3 Master完整IO接口
-  //  class AXI3MasterIO(implicit p: Parameters) extends NSBundle {
-  //    val ar = new AXI3ARChannel
-  //    val aw = new AXI3AWChannel
-  //    val w  = new AXI3WChannel
-  //    val r  = new AXI3RChannel
-  //    val b  = new AXI3BChannel
-  //  }
-  // Task2：通过对数据和Tag进行更新，这里不需要处理替换算法，外层自行处理
-  // 接口为：
-  //     val write = Flipped(new Bundle {
-  //       val valid = Bool()
-  //       val idx   = UInt(idxBits.W)
-  //       val tag   = UInt(tagBits.W)     // 要写入的标签
-  //       val data  = UInt(dataBits.W)    // 要写入的数据
-  //     })
-  // Task3：拿到数据后提取最多fetchWidth条指令出来（如何跨Cache行了不够则能取多少取多少）
- 
-  // === Stuation3：Uncache时 ===
-  // Task1：向外发起AXI访问（发起大小是一个字大小）
-  // Task2：拿到数据后结束并向后给
- 
-  // === Stuation3：mmu_error时 ===
-  // Task1：暂定，暂认为不会出现此错误，保留处理的接口即可
- 
-  // === 状态机定义 ===
+
  
   // 状态转移逻辑
   switch(state) {
@@ -429,10 +392,12 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // 如果AR已经握手完成（响应必然到来），必须进入drain状态排空响应
   // 如果AR尚未握手完成（还在s_miss_req/s_uncache_req且arready未到来），可以安全回到idle
   // 对于已在drain中的状态，即使flush持续多个周期也保持在drain
-  when(s3_flush) {
-    when(state === s_miss_wait || state === s_drain_miss || (state === s_miss_req && io.axi.ar.data.arvalid && io.axi.ar.arready)) {
+  val readAxiFire = io.axi.r.data.rvalid && io.axi.r.rready && (io.axi.r.data.rid === icacheAxiMissId.U || io.axi.r.data.rid === icacheAxiNucacheId.U) && io.axi.r.data.rlast
+
+  when(s3_flush) {                 //flush这个周期可能也是响应事务结束的那个周期，所以要优先判断事务结束
+    when( (state === s_miss_wait && !readAxiFire)  || (state === s_drain_miss && !readAxiFire) || (state === s_miss_req && io.axi.ar.data.arvalid && io.axi.ar.arready)) {
       state := s_drain_miss
-    }.elsewhen(state === s_uncache_wait || state === s_drain_uncache || (state === s_uncache_req && io.axi.ar.data.arvalid && io.axi.ar.arready)) {
+    }.elsewhen( (state === s_uncache_wait  && !readAxiFire ) || (state === s_drain_uncache && !readAxiFire) || (state === s_uncache_req && io.axi.ar.data.arvalid && io.axi.ar.arready)) {
       state := s_drain_uncache
     }.otherwise {
       state := s_idle
@@ -552,6 +517,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     is(s_mmu_error_state) {
       output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
       output_valid := true.B
+      output_instvalids(0) := true.B
+      output_instvalids(1) := false.B
+      output_instvalids(2) := false.B
+      output_instvalids(3) := false.B
+      
       output_miss := false.B
       output_uncached := false.B
       output_mmu_error := s3_mmu_error

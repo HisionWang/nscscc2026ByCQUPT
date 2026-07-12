@@ -75,9 +75,13 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
   // TODO: uncomment
   //directResp.cacheable := isDirect && isCacheable(io.fromCsr.datf)
+  val directError = 0.U.asTypeOf(new MmuTransError)
+  when(reqVaddr(1,0) =/= 0.U) {
+    directError.excpAdef := true.B
+  }
   directResp.cacheable := true.B
-  directResp.error     := emptyError()
-  directResp.hasError  := false.B
+  directResp.error     := directError
+  directResp.hasError  := directError.getAnyError
 
   val dmwResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
   dmwResp.paddr  := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),

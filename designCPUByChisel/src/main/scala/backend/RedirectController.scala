@@ -18,6 +18,7 @@ class RobRedirectReq(implicit p: Parameters) extends NSBundle {
   val isException = Bool()                        // true=异常, false=CSR写
   val excp = new ExceptionBundle
   val pc          = UInt(XLEN.W)                  // 异常指令PC / CSR写指令PC
+  val excpVaddr          = UInt(XLEN.W)                  // 异常指令PC / CSR写指令PC
 }
 
  
@@ -185,11 +186,11 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
 // io.csrExcpVec   := io.robRedirect.excp
 // io.csrExcpPc    := io.robRedirect.pc
 
-  io.excpInfo.vaddrError := false.B
+  io.excpInfo.vaddrError := io.robRedirect.excp.isVaddrError && io.robRedirect.valid && io.robRedirect.isException
   io.excpInfo.era := io.robRedirect.pc
   io.excpInfo.ecode := io.robRedirect.excp.ecode
   io.excpInfo.esubcode := io.robRedirect.excp.esubcode
-  io.excpInfo.badVaddr := 0.U
+  io.excpInfo.badVaddr := io.robRedirect.excp.badvSelect(io.robRedirect.pc, io.robRedirect.excpVaddr)
   io.excpInfo.vppn     := 0.U
 
 

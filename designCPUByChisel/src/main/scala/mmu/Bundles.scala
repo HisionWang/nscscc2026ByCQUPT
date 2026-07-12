@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 
 import nscscc.config._
+import nscscc.icache._
 import nscscc.backend.decode._
 
 class TlbEntry(implicit p: Parameters) extends NSBundle {
@@ -111,6 +112,8 @@ class MmuToIcache(implicit p: Parameters) extends NSBundle {
 }
 
 class SqToMmuReq(implicit p: Parameters) extends NSBundle {
+  //val lsuType = UInt(3.W)
+  val lsuOp    = UInt(LsuOp.width.W)
   val vaddr = UInt(XLEN.W)
   //val sqIdx = UInt(log2Ceil(SqSize).W)
 }
@@ -119,7 +122,7 @@ class MmuToSqResp(implicit p: Parameters) extends NSBundle {
   val paddr     = UInt(XLEN.W)
   val cacheable = Bool()
   val hasError  = Bool()
-  val error     = new MmuTransError
+  val error     = new DcacheMmuTransError
   //val excpVec     = UInt(ExceptionCode.width.W)
   //val sqIdx     = UInt(log2Ceil(SqSize).W)
 }

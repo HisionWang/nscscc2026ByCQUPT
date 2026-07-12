@@ -10,14 +10,15 @@ object DecodeTable {
   private val y = 1.U(1.W)
   private val n = 0.U(1.W)
 
-  val default: List[UInt] = List(
-    n, FuType.none, AluOp.add, BruOp.none, LsuOp.none, CsrOp.none, MulOp.none, DivOp.none,
+  val default: List[UInt] = List( 
+    n, FuType.none,  //非法指令默认走CSR单元
+    AluOp.add, BruOp.none, LsuOp.none, CsrOp.none, MulOp.none, DivOp.none,
     SrcType.none, SrcType.none, ImmType.none,
     n, n, n, n, n, n, n, y
   )
 
   private def ctrl(
-    fuType: UInt,
+    fuType: UInt = FuType.none, //异常非法指令默认走CSR单元
     aluOp: UInt = AluOp.add,
     bruOp: UInt = BruOp.none,
     lsuOp: UInt = LsuOp.none,
@@ -244,7 +245,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.csrAddress := csrAddress
   io.out.imm        := ImmGen(inst, immType)
   
-  io.out.ctrl.fuType   := fuType
+  io.out.ctrl.fuType   := Mux(isIllegal, FuType.csr, fuType)
   io.out.ctrl.aluOp    := aluOp
   io.out.ctrl.bruOp    := bruOp
   io.out.ctrl.lsuOp    := lsuOp

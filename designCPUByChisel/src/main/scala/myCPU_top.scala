@@ -147,7 +147,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   memory.io.redirect.bits.robIdx.flag := true.B
   
   backend.io.flush := false.B
-  backend.io.extInt := intrpt =/= 0.U
+  //intrpt =/= 0.U
 
 
 
@@ -184,6 +184,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.irqBus <> intrpt
   csr.io.rReq <> backend.io.csrReq
   csr.io.rResp <> backend.io.csrResp
+  
+  backend.io.extInt :=  csr.io.hasIrq
 
   csr.io.wReq.wen := backend.io.commitToCsr.csrWen
   csr.io.wReq.addr := backend.io.commitToCsr.csrWaddr
