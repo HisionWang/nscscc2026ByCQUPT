@@ -1,4 +1,4 @@
-RUN_SOFTWARE=func/func_lab9
+RUN_SOFTWARE=coremark
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n
