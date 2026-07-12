@@ -181,10 +181,11 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // ---------- CSR ----------
   val csr = Module(new CsrFile)
+  csr.io.timerInfo <> backend.io.timerInfo
   csr.io.irqBus <> intrpt
   csr.io.rReq <> backend.io.csrReq
   csr.io.rResp <> backend.io.csrResp
-  
+
   backend.io.extInt :=  csr.io.hasIrq
 
   csr.io.wReq.wen := backend.io.commitToCsr.csrWen

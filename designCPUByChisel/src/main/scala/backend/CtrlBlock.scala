@@ -52,6 +52,7 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   val excpEvent           = Output(new ExcpEvent)
   val excpInfo            = Output(new ExcpInfo)
   val redirectAddrFromCsr = Input(new RedirectEntry)
+  
 
 
  
@@ -179,6 +180,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.isCntInst  := DifftestUtils.isCntInst(robCommit.inst)
       diffCommit.csrRstat   := isCsrRead && robCommit.csrWaddr === csrAddr.estat.U
       diffCommit.csrData    := robCommit.rfdata
+      diffCommit.csrTimer   := robCommit.csrTimer
       diffCommit.excpFlush  := robCommit.excp.hasException
       diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst)
       diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excp)

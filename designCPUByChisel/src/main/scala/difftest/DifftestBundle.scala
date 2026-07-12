@@ -28,6 +28,7 @@ class DifftestCommitInfo(implicit p: Parameters) extends NSBundle {
   val isCntInst  = Bool()
   val csrRstat   = Bool()
   val csrData    = UInt(XLEN.W)
+  val csrTimer   = UInt(64.W)
   val excpFlush  = Bool()
   val ertnFlush  = Bool()
   val csrEcode   = UInt(6.W)
@@ -86,7 +87,7 @@ class CoreDifftestBundle(implicit p: Parameters) extends NSBundle {
 }
 
 object DifftestUtils {
-  def isCntInst(inst: UInt): Bool = inst(31, 10) === "b0000000000000000011000".U(22.W)
+  def isCntInst(inst: UInt): Bool = inst(31, 10) === "b0000000000000000011000".U(22.W) || inst(31, 10) === "b0000000000000000011001".U(22.W)
   def isErtn(inst: UInt): Bool = inst === "h06483800".U
   def isTrap(inst: UInt): Bool = inst === "h002b0000".U
 

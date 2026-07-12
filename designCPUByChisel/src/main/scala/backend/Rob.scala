@@ -9,6 +9,7 @@ import nscscc.backend.decode._
 import nscscc.backend.execute._
 import nscscc.util.CircularQueuePtr
 import nscscc.backend.redirect._
+import nscscc.csr._
  
 // ═══════════════════════════════════════════════════════════════
 //  ROB 内部表项
@@ -32,6 +33,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val csrOp       = UInt(CsrOp.width.W)
   val csrWaddr    = UInt(csrAddrLen.W)
   val csrWdata    = UInt(XLEN.W)
+  val csrTimer    = UInt(64.W)
   val isPriv      = Bool()
   val excp        = new ExceptionBundle
   val robIdx      = new RobPtr(RobSize)
@@ -88,6 +90,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     val robNeedRollback  = Input(Bool())
     val robRollbackTarget= Input(new RobPtr(RobSize))
     val robRollbackDone  = Output(Bool())
+    
   })
  
   // ================================================================
@@ -184,6 +187,7 @@ class ROB(implicit p: Parameters) extends NSModule {
         entries(idx).storeData  := wb.bits.memStoreData
       }
       entries(idx).csrWdata := wb.bits.csrWdata
+      entries(idx).csrTimer := wb.bits.csrTimer
       when(wb.bits.excp.hasException) {
         entries(idx).excp := wb.bits.excp
       }

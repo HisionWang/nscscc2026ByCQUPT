@@ -42,6 +42,7 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   io.out.bits.csrWen := false.B
   io.out.bits.csrWaddr := 0.U
   io.out.bits.csrWdata := 0.U
+  io.out.bits.csrTimer := 0.U
 
  
   // ================================================================

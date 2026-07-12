@@ -265,6 +265,7 @@ when(doRedirect) {
   io.outResult.bits.csrWen:= DontCare
   io.outResult.bits.csrWaddr:= DontCare
   io.outResult.bits.csrWdata:= DontCare
+   io.outResult.bits.csrTimer:= DontCare
 
   //io.outResult.bits.redirect.bits.flushSelf := true.B
   //io.outResult.bits.brMsRedirect := DontCare

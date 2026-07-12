@@ -6,6 +6,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
+import nscscc.csr._
 import nscscc.backend.dispatch.DispatchedInst
 import nscscc.backend.regread.ExeReq
 import nscscc.backend.rename.RedirectInfo
@@ -26,6 +27,8 @@ class ExeResult(implicit p: Parameters) extends NSBundle {
   val csrWen        = Bool()
   val csrWaddr      = UInt(csrAddrLen.W)
   val csrWdata      = UInt(XLEN.W)
+
+  val csrTimer    = UInt(64.W)
 }
  
 case class ExeUnitParams(
@@ -50,6 +53,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     // CSR 寄存器堆读端口（组合逻辑读）
     val csrRaddr     = Output(UInt(csrAddrLen.W)) 
     val csrRdata     = Input(UInt(XLEN.W))
+    val timerInfo =        Input(new TimerBundle)
   })
 
 
@@ -131,10 +135,12 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     csrUnit.io.rs1      := stgData.rs1Data    // CSRWR/CSRXCHG: rd 旧值
     csrUnit.io.rs2      := stgData.rs2Data    // CSRXCHG: rj 掩码
     csrUnit.io.csrRdata := io.csrRdata        // CSR 寄存器堆读回数据
+    csrUnit.io.timerInfo := io.timerInfo
   }
   val csrData   = if (params.hasCsr) csrUnit.io.result   else null
   val csrWen    = if (params.hasCsr) csrUnit.io.csrWen   else false.B
   val csrWdata  = if (params.hasCsr) csrUnit.io.csrWdata else 0.U
+  val csrTimer  = if (params.hasCsr) csrUnit.io.timerInfo.timer else 0.U
  
   // CSR 读地址：快速通道有数据时用 stgData 中的地址，否则用 0（无害）
   io.csrRaddr := Mux(stgValid && fuType === FuType.csr, stgData.uop.csrAddress, 0.U)
@@ -185,6 +191,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val fastCsrWen   = if (params.hasCsr) fastIsCsr && csrWen else false.B
   val fastCsrWaddr = Mux(fastIsCsr, stgData.uop.csrAddress, 0.U)
   val fastCsrWdata = Mux(fastIsCsr, csrWdata, 0.U)
+  val fastCsrTimer = Mux(fastIsCsr, csrTimer, 0.U)
  
   // ================================================================
   //  乘法器（流水线）
@@ -278,6 +285,9 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
     (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
   io.outResult.bits.csrWdata := Mux1H(Seq(fastWins -> fastCsrWdata) ++
+    (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
+    (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+  io.outResult.bits.csrTimer := Mux1H(Seq(fastWins -> fastCsrTimer) ++
     (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
     (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
  

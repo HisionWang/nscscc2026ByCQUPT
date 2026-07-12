@@ -189,7 +189,7 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestInstrCommit.io.is_TLBFILL := commit.tlbfillEn
     difftestInstrCommit.io.TLBFILL_index := commit.randIndex
     difftestInstrCommit.io.is_CNTinst := commit.isCntInst
-    difftestInstrCommit.io.timer_64_value := cmtTimer64
+    difftestInstrCommit.io.timer_64_value := commit.csrTimer 
     difftestInstrCommit.io.wen := commit.valid && commit.rfWen
     difftestInstrCommit.io.wdest := Cat(0.U(3.W), commit.wdest)
     difftestInstrCommit.io.wdata := zeroExt64(commit.wdata)

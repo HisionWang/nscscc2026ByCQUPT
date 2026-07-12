@@ -36,6 +36,7 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val excpEvent           = Output(new ExcpEvent)
   val excpInfo            = Output(new ExcpInfo)
   val redirectAddrFromCsr = Input(new RedirectEntry)
+  val timerInfo =        Input(new TimerBundle)
 
 }
 
@@ -50,6 +51,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   io.excpEvent <> ctrlBlock.io.excpEvent
   io.excpInfo <> ctrlBlock.io.excpInfo
   io.redirectAddrFromCsr <> ctrlBlock.io.redirectAddrFromCsr
+  
 
   io.commitToSq <> ctrlBlock.io.commitToSq
   io.commitToCsr <> ctrlBlock.io.commitToCsr
@@ -90,6 +92,12 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   exeUnits(2).io.csrRdata :=  DontCare
   exeUnits(3).io.csrRdata :=  DontCare
   exeUnits(4).io.csrRdata :=  DontCare
+
+  exeUnits(0).io.timerInfo :=  io.timerInfo
+  exeUnits(1).io.timerInfo :=  DontCare
+  exeUnits(2).io.timerInfo :=  DontCare
+  exeUnits(3).io.timerInfo :=  DontCare
+  exeUnits(4).io.timerInfo :=  DontCare
 
 
   val bruInfoFromExe3 =  exeUnits(2).io.bruInfo

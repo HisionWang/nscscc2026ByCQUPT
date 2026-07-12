@@ -97,6 +97,17 @@ object DecodeTable {
     BitPat("b00000100??????????????00000?????") -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.read, src1Type = SrcType.zero, src2Type = SrcType.none, csrWen = n), //CSR RD
     BitPat("b00000100??????????????00001?????") -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.write, src1Type = SrcType.reg, src2Type = SrcType.none, csrWen = y), // CSR WR
     BitPat("b00000100????????????????????????") -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.xchg, src1Type = SrcType.reg, src2Type = SrcType.reg, csrWen = y),// CSR CHANGE
+    // RDCNTVL.W rd：指令编码 0x00000060 | rd
+    BitPat("b000000000000000001100000000?????") -> 
+      ctrl(FuType.csr, csrOp = CsrOp.rdcntvl, src1Type = SrcType.zero, src2Type = SrcType.none),
+ 
+    // RDCNTVH.W rd：指令编码 0x00000080 | rd
+    BitPat("b000000000000000001100100000?????") -> 
+      ctrl(FuType.csr, csrOp = CsrOp.rdcntvh, src1Type = SrcType.zero, src2Type = SrcType.none),
+     
+    // RDCNTID rj：指令编码 0x00000062 | (rj << 5)
+    BitPat("b0000000000000000011000?????00000") ->
+      ctrl(FuType.csr, csrOp = CsrOp.rdcntid, src1Type = SrcType.zero, src2Type = SrcType.none, rfWen = y),
 
     BitPat("b00000000001010100???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     BitPat("b00000000001010110???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
@@ -234,7 +245,8 @@ class Decoder(implicit p: Parameters) extends NSModule {
   
   io.out.pc         := pc
   io.out.inst       := inst
-  io.out.rd         := Mux( bruOp === BruOp.bl, 1.U , rd)
+  io.out.rd         := Mux( bruOp === BruOp.bl, 1.U ,
+                          Mux( fuType === FuType.csr && csrOp === CsrOp.rdcntid, rj, rd ))
   io.out.rj         := rj
   io.out.rk         := rk
   io.out.rs1        := rj

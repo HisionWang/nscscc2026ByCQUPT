@@ -98,6 +98,10 @@ object CsrOp {
   val read   = 1.U(width.W)
   val write  = 2.U(width.W)
   val xchg   = 3.U(width.W)
+  
+  val rdcntvl  = 4.U(width.W)  // 新增
+  val rdcntvh  = 5.U(width.W)  // 新增
+  val rdcntid  = 6.U(width.W)  // 新增
 }
 
 object MulOp {

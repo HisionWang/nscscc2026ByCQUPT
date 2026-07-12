@@ -255,6 +255,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.csrWen:= DontCare
   io.outResult.bits.csrWaddr:= DontCare
   io.outResult.bits.csrWdata:= DontCare
+  io.outResult.bits.csrTimer:= DontCare
 
   //io.outResult.bits.brMsRedirect := DontCare
   //io.outResult.bits.redirect.bits.flushSelf := true.B
