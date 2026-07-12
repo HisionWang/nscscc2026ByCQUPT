@@ -287,7 +287,7 @@ void Difftest::do_instr_commit(int i) {
 
     /* rdcntv{L/H}.w */
     if (dut.commit[i].is_CNTinst) {
-        // printf("rdcntv / rdcntid indt from dut, copy result to nemu: %d\n",dut.commit[i].wdata);
+        printf("rdcntv / rdcntid indt from dut, copy result to nemu: %d\n",dut.commit[i].wdata);
         uint32_t timer_low, timer_high;
         timer_low = (uint32_t)((dut.commit[i].timer_64_value) & 0x00000000ffffffff);
         timer_high = (uint32_t)(((dut.commit[i].timer_64_value) & 0xffffffff00000000)>>32);
@@ -296,7 +296,7 @@ void Difftest::do_instr_commit(int i) {
         timer.stable_counter_l = timer_low;
         timer.stable_counter_h = timer_high;
         timer.time_val = dut.csr.tval;
-        // printf("timer64: 0x%lx, low: 0x%x, high: 0x%x\n",dut.commit[i].timer_64_value,timer_low,timer_high);
+        printf("timer64: 0x%lx, low: 0x%x, high: 0x%x\n",dut.commit[i].timer_64_value,timer_low,timer_high);
         proxy->timercpy(&timer);
     }
 
