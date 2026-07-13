@@ -106,6 +106,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
+  val mmu = Module(new Mmu)
 
   memory.io.redirectInfo <> backend.io.redirectInfo
   
@@ -128,9 +129,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   memaddrtrans.io.flush := false.B
   memaddrtrans.io.in <> backend.io.toMemResult(0)
   memory.io.fromExeMmuResult <> memaddrtrans.io.out
-  val simMMU = Module(new SimpleMMU)
-  memaddrtrans.io.mmuReq <> simMMU.io.mmuReq
-  memaddrtrans.io.mmuResp <> simMMU.io.mmuResp
+  memaddrtrans.io.mmuReq <> mmu.io.fromMem
+  memaddrtrans.io.mmuResp <> mmu.io.toMem
 
 
   memory.io.toWbResult <> backend.io.fromMemResult
@@ -168,9 +168,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
  
   // ---------- MMU / TLB ----------
-  val mmu = Module(new Mmu)
- 
-
   frontend.io.mmu.toMmu <> mmu.io.fromIcache
   frontend.io.mmu.fromMmu <> mmu.io.toIcache
 
@@ -210,6 +207,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   mmu.io.fromCsr.asid := csr.io.toTlb.asid
 
   mmu.io.fromIcacheFlush := false.B
+  mmu.io.fromMemFlush := false.B
 
   mmu.io.maint <> 0.U.asTypeOf(new MmuMaintPort)
 

@@ -101,7 +101,8 @@ class MmuTransError(implicit p: Parameters) extends NSBundle {
   val excpTlbPif    = Bool()
   val excpTlbPpi    = Bool()
   val excpAdef      = Bool()
-  def getAnyError: Bool = excpTlbRefill || excpTlbPif || excpTlbPpi || excpAdef
+  val excpAle       = Bool()
+  def getAnyError: Bool = excpTlbRefill || excpTlbPif || excpTlbPpi || excpAdef || excpAle
 }
 
 class MmuToIcache(implicit p: Parameters) extends NSBundle {
@@ -113,8 +114,8 @@ class MmuToIcache(implicit p: Parameters) extends NSBundle {
 
 class SqToMmuReq(implicit p: Parameters) extends NSBundle {
   //val lsuType = UInt(3.W)
-  val lsuOp    = UInt(LsuOp.width.W)
   val vaddr = UInt(XLEN.W)
+  val lsuOp = UInt(LsuOp.width.W)
   //val sqIdx = UInt(log2Ceil(SqSize).W)
 }
 
@@ -153,6 +154,10 @@ class MmuIoBundle(implicit p: Parameters) extends NSBundle {
   val toIcache   = Decoupled(new MmuToIcache)
 
   val fromIcacheFlush = Input(Bool())
+
+  val fromMem = Flipped(Decoupled(new SqToMmuReq))
+  val toMem   = Decoupled(new MmuToSqResp)
+  val fromMemFlush = Input(Bool())
 
   val maint = new MmuMaintPort
 }
