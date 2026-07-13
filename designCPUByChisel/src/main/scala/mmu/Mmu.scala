@@ -77,7 +77,6 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val nextNeedTlb = isPaging && !(nextDmw0Hit || nextDmw1Hit)
     val nextAddrMisaligned = nextVaddr(1, 0) =/= 0.U
     val nextNeedSearch = nextNeedTlb && !nextAddrMisaligned
-    val validNextNeedSearch = io.fromIcache.valid && nextNeedSearch
 
     val directResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
     directResp.paddr := reqVaddr
@@ -108,13 +107,13 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val respFire     = io.toIcache.fire
     val canAcceptReq = (isIdle || respFire) && !io.fromIcacheFlush
 
-    tlbReq.valid        := canAcceptReq && validNextNeedSearch
+    tlbReq.valid        := canAcceptReq && io.fromIcache.valid && nextNeedSearch
     tlbReq.bits.vppn    := nextVaddr(31, 13)
     tlbReq.bits.vaBit12 := nextVaddr(12)
     tlbReq.bits.offset  := nextVaddr(21,  0)
     tlbReq.bits.asid    := io.fromCsr.asid
 
-    io.fromIcache.ready := canAcceptReq && (!validNextNeedSearch || tlbReq.ready)
+    io.fromIcache.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
 
     tlbResp.ready := isBusy && io.toIcache.ready && !io.fromIcacheFlush
     tlb.io.search(0).flush := io.fromIcacheFlush
@@ -195,7 +194,6 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val nextNeedTlb = isPaging && !(nextDmw0Hit || nextDmw1Hit)
     val nextAddrMisaligned = memAddrMisaligned(nextVaddr, nextLsuOp)
     val nextNeedSearch = nextNeedTlb && !nextAddrMisaligned
-    val validNextNeedSearch = io.fromMem.valid && nextNeedSearch
 
     val directResp = WireDefault(0.U.asTypeOf(new MmuToSqResp))
     directResp.paddr := reqVaddr
@@ -223,13 +221,13 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val respFire     = io.toMem.fire
     val canAcceptReq = (isIdle || respFire) && !io.fromMemFlush
 
-    tlbReq.valid        := canAcceptReq && validNextNeedSearch
+    tlbReq.valid        := canAcceptReq && io.fromMem.valid && nextNeedSearch
     tlbReq.bits.vppn    := nextVaddr(31, 13)
     tlbReq.bits.vaBit12 := nextVaddr(12)
     tlbReq.bits.offset  := nextVaddr(21, 0)
     tlbReq.bits.asid    := io.fromCsr.asid
 
-    io.fromMem.ready := canAcceptReq && (!validNextNeedSearch || tlbReq.ready)
+    io.fromMem.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
 
     tlbResp.ready := isBusy && io.toMem.ready && !io.fromMemFlush
     tlb.io.search(1).flush := io.fromMemFlush
