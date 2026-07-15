@@ -125,6 +125,7 @@ class RobEnqIO(implicit p: Parameters) extends NSBundle {
   val valids = Vec(CtrlBlockWidth, Input(Bool()))
   val bits  = Vec(CtrlBlockWidth, Input(new RobEntryInner))
   val canEnq = Output(Bool())  // ROB 是否能容纳本批指令
+  val full = Output(Bool())
 }
 
 // ================================================================

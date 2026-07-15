@@ -366,12 +366,15 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
 //  io.storeReq.ready := state === s_idle && storeSelected  //( state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire )
   
   // loadReq.ready：load 命中返回时 / load miss MSHR 接受时
-io.loadReq.ready  := (state === s_load_resp && !curIsReplay) ||
-                     (state === s_miss && curIsLoad && !curIsReplay && mshr.io.missReq.fire)
- 
-// storeReq.ready：store 命中写完时 / store miss MSHR 接受时
-io.storeReq.ready := (state === s_store_write && !curIsReplay) ||
+//io.loadReq.ready  := (state === s_load_resp && !curIsReplay) ||
+//                     (state === s_miss && curIsLoad && !curIsReplay && mshr.io.missReq.fire)
+// 
+//// storeReq.ready：store 命中写完时 / store miss MSHR 接受时
+//io.storeReq.ready := (state === s_store_write && !curIsReplay) ||
                      (state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire)
+
+  io.loadReq.ready  := state === s_idle && idle_doLsu && loadSelected
+io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
 
 
   // loadResp：s_load_resp 或 s_uc_load

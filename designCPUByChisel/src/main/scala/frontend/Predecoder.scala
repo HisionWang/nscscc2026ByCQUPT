@@ -175,7 +175,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   ))
  
   val feRedirect = Wire(new FrontendRedirect)
-  feRedirect.valid  := s_valid && needRedirect
+  feRedirect.valid  := outFire && needRedirect //必须要outfire的时候才能发起重定向，不然如果ibf满了的话，自己这周期的有效指令就被刷了
   feRedirect.target := redirectTarget
  
   // ---- Step 6: BPU 更新 ----

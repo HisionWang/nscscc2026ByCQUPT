@@ -127,14 +127,35 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.full   := full
   io.empty  := empty
   io.enqPtr := enqPtr.value
-  io.sqEmpty := empty
+
+//  io.sqEmpty := empty
  
-  // ── oldestRobIdx ──
-  val oldestValid = entries(deqPtr.value).valid
-  val oldestRob   = entries(deqPtr.value).robIdxFull
-  io.oldestRobIdx := Mux(oldestValid, oldestRob, {
-    val p = Wire(new RobPtr(RobSize)); p.value := 0.U; p.flag := false.B; p
-  })
+//  // ── oldestRobIdx ──
+//  val oldestValid = entries(deqPtr.value).valid
+//  val oldestRob   = entries(deqPtr.value).robIdxFull
+//  io.oldestRobIdx := Mux(oldestValid, oldestRob, {
+//    val p = Wire(new RobPtr(RobSize)); p.value := 0.U; p.flag := false.B; p
+//  })
+
+  // ✅ 新代码：从 deqPtr 开始扫描，找到最老的、未被 flush 的活跃 store
+val activeCandidates = Wire(Vec(SqSize, Bool()))
+for (i <- 0 until SqSize) {
+  val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
+  val e = entries(idx)
+  activeCandidates(i) := e.valid && !e.alreadyFlush
+}
+ 
+val hasActiveStore = activeCandidates.reduce(_ || _)
+val activeOffset   = PriorityEncoder(activeCandidates)
+val activeIdx      = (deqPtr.value + activeOffset)(log2Ceil(SqSize) - 1, 0)
+ 
+val defaultRobIdx = Wire(new RobPtr(RobSize))
+defaultRobIdx.value := 0.U
+defaultRobIdx.flag  := false.B
+ 
+io.oldestRobIdx := Mux(hasActiveStore, entries(activeIdx).robIdxFull, defaultRobIdx)
+io.sqEmpty      := !hasActiveStore   // 排序语义：没有活跃 store 才算"空"
+
  
   // ================================================================
   //  1. 入队
