@@ -51,14 +51,14 @@ class BPU(implicit p: Parameters) extends NSModule {
   val readBlockIdx = io.predictReq.nextPC(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
 
   // 4个BRAM共享同一个读使能和读地址
-  btbMem0.io.rd_en   := io.predictReq.pc_fire
+  btbMem0.io.rd_en   := io.predictReq.rdBpu
   btbMem0.io.rd_addr := readBlockIdx
-  phtMem0.io.rd_en   := io.predictReq.pc_fire
+  phtMem0.io.rd_en   := io.predictReq.rdBpu
   phtMem0.io.rd_addr := readBlockIdx
 
-  btbMem1.io.rd_en   := io.predictReq.pc_fire
+  btbMem1.io.rd_en   := io.predictReq.rdBpu
   btbMem1.io.rd_addr := readBlockIdx
-  phtMem1.io.rd_en   := io.predictReq.pc_fire
+  phtMem1.io.rd_en   := io.predictReq.rdBpu
   phtMem1.io.rd_addr := readBlockIdx
 
   // ==================== 预测命中与优先级逻辑 (当前周期使用 pc 校验) ====================
@@ -83,7 +83,8 @@ class BPU(implicit p: Parameters) extends NSModule {
   val phtCounter1= phtMem1.io.rd_data
   val phtTaken1  = phtCounter1(1)
   // 命中条件1：Entry有效，Tag匹配，且分支位于下一块的开头，且在当前 fetchWidth 覆盖范围内
-  val btbHit1    = btbEntry1.valid && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset)
+  // 并且不跨Cache行
+  val btbHit1    = btbEntry1.valid && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset) && !io.predictReq.crossLine
   val predTaken1 = btbHit1 && (btbEntry1.isJalr || btbEntry1.isJal || phtTaken1)
 
   // ==================== 仲裁与输出生成 ====================
@@ -99,12 +100,15 @@ class BPU(implicit p: Parameters) extends NSModule {
   
   val finalOffset = Mux(predTaken0, offset0_out, offset1_out)
 
+  
+
   io.predictResp.taken       := finalTaken
   io.predictResp.takenOffset := finalOffset
   io.predictResp.target      := finalTarget
 
   // 组装 Meta 信息（反馈给更新逻辑使用）
   io.predictResp.meta.btbHit     := btbHit0 || btbHit1
+  io.predictResp.meta.valid  := Mux(predTaken0, btbEntry0.valid, btbEntry1.valid)
   io.predictResp.meta.btbIsJalr  := Mux(predTaken0, btbEntry0.isJalr, btbEntry1.isJalr)
   io.predictResp.meta.btbIsJal   := Mux(predTaken0, btbEntry0.isJal, btbEntry1.isJal)
   io.predictResp.meta.btbIsCall  := Mux(predTaken0, btbEntry0.isCall, btbEntry1.isCall)
@@ -132,7 +136,7 @@ class BPU(implicit p: Parameters) extends NSModule {
 
     // 新的 BTB 条目
     val newEntry = Wire(new BTBEntry)
-    newEntry.valid  := true.B
+    newEntry.valid  := update.validEntry
     newEntry.tag    := updateTag
     newEntry.target := update.target
     newEntry.isJalr := update.isJalr
@@ -144,7 +148,9 @@ class BPU(implicit p: Parameters) extends NSModule {
     // 更新 PHT 计数器
     val oldCounter  = update.oldPhtCounter 
     val nextCounter = WireDefault(oldCounter)
-    when(update.taken && oldCounter =/= 3.U) {
+    when(!update.validEntry){
+      nextCounter := 2.U
+    }.elsewhen(update.taken && oldCounter =/= 3.U) {
       nextCounter := oldCounter + 1.U
     }.elsewhen(!update.taken && oldCounter =/= 0.U) {
       nextCounter := oldCounter - 1.U

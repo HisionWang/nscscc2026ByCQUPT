@@ -130,6 +130,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   val enqValidCount = PopCount(io.enq.valids)
   io.enq.canEnq := !full && (count +& enqValidCount <= RobSize.U)
+  io.enq.full := count  > RobSize.U - 6.U //真没招了
  
   val enqPrefixSum = Wire(Vec(CtrlBlockWidth + 1, UInt(log2Ceil(RobSize).W)))
   enqPrefixSum(0) := 0.U
@@ -286,10 +287,13 @@ class ROB(implicit p: Parameters) extends NSModule {
     redirectBegin     := io.redirectInfo.bits.robIdx.value
     redirectEnd       := enqPtr.value
     redirectFlushSelf := io.redirectInfo.bits.flushSelf
-    redirectAll :=  redirectFlushSelf && (io.redirectInfo.bits.robIdx.value === enqPtr.value) && (io.redirectInfo.bits.robIdx.flag ^ enqPtr.flag)
-
-    enqPtr            := Mux(io.redirectInfo.bits.flushSelf, io.redirectInfo.bits.robIdx, io.redirectInfo.bits.robIdx + 1.U)
+    redirectAll :=   (io.redirectInfo.bits.robIdx.value === enqPtr.value) && (io.redirectInfo.bits.robIdx.flag ^ enqPtr.flag)
+    enqPtr            := io.redirectInfo.bits.robIdx + 1.U
+    
   }
+// when(redirectValidReg){
+//   
+// }
 
  
   // ================================================================

@@ -61,6 +61,7 @@ class BTBEntry(implicit p: Parameters) extends NSBundle {
  
 // ==================== BPU 元信息 ====================
 class BpuMeta(implicit p: Parameters) extends NSBundle {
+  val valid      = Bool()
   val btbHit      = Bool()
   val btbIsJalr   = Bool()
   val btbIsJal    = Bool()
@@ -75,9 +76,14 @@ class BpuMeta(implicit p: Parameters) extends NSBundle {
  
 // ==================== BPU 预测请求/响应 ====================
 class BpuPredictReq(implicit p: Parameters) extends NSBundle {
+  //读的
   val nextPC = UInt(32.W)
+  val rdBpu = Bool()
+
+  //对比的
   val pc = UInt(32.W)
-  val pc_fire = Bool()
+  val crossLine = Bool()
+  
 }
  
 class BpuPredictResp(implicit p: Parameters) extends NSBundle {
@@ -90,6 +96,7 @@ class BpuPredictResp(implicit p: Parameters) extends NSBundle {
 // ==================== BPU 更新请求 ====================
 class BpuUpdateReq(implicit p: Parameters) extends NSBundle {
   val valid    = Bool()
+  val validEntry    = Bool()
   val pc       = UInt(32.W)
   val taken    = Bool()       // 实际是否跳转
   val target   = UInt(32.W)   // 实际跳转目标

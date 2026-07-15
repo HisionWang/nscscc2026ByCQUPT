@@ -10,7 +10,8 @@ import nscscc.csr._
 import nscscc.backend.dispatch.DispatchedInst
 import nscscc.backend.regread.ExeReq
 import nscscc.backend.rename.RedirectInfo
- 
+import nscscc.frontend.BpuUpdateReq
+
 class ExeResult(implicit p: Parameters) extends NSBundle {
   val uop           = new DispatchedInst
   val data          = UInt(XLEN.W)
@@ -47,6 +48,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     val outResult    = Decoupled(new ExeResult)
     //val flush        = Input(Bool())
     val bruInfo    = ValidIO( new redirectInfoFromBru )    // 误预测重定向
+    val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
 
     val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
  
@@ -301,9 +303,11 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   if (params.hasBru) {
     io.bruInfo.valid := bruValid && bru.io.bruInfo.valid && !stopNewRedirect
     io.bruInfo.bits  := bru.io.bruInfo.bits
+    io.bpuUpdate := bru.io.bpuUpdate
   } else {
     io.bruInfo.valid := false.B
     io.bruInfo.bits  := DontCare
+    io.bpuUpdate := DontCare
   }
  
   // ================================================================

@@ -7,6 +7,7 @@ import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.backend.regfile._
 import nscscc.backend.issue._
+import nscscc.backend.execute._
 import nscscc.util.CircularQueuePtr
  
 /**
@@ -35,8 +36,11 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     val lsEnq   = new LsEnqIO 
     
     val robEnq  = Flipped(new RobEnqIO)
+
     val flush   = Input(Bool())
+    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule )) 
     val stall = Input(Bool())
+
     //val redirect = Input(new RedirectInfo)
 
     val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
@@ -211,13 +215,14 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val hasIqDispatch = iqDispatchMask.zip(needIq).map { case (d, n) => d && n }.reduce(_ || _)
 
   // 由于 LSQ 检查已融入 q4Cand，此处不再需要 lsqBatchReady
-  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob) && !io.stall
+  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob) && !io.flush && !io.stall //flush是指flush的时候不做任何fire，因为下面那个寄存器不能阻断flush
+                                                                                                    // stall就是回滚的stall
 
   val AllWillFire = VecInit((0 until CtrlBlockWidth).map(i => (needIq(i) && iqDispatchMask(i)) || !needIq(i)  )).reduce(_ && _)
-  val canAcceptNew = !stgValid || ( dispatchFire && AllWillFire )
+  val canAcceptNew =( !stgValid || ( dispatchFire && AllWillFire ) ) && !io.robEnq.full
  
   val inValid = io.in.map(_.valid).reduce(_ || _)
-  val inFire  = inValid && canAcceptNew
+  val inFire  = inValid && canAcceptNew && !io.flush //dispatch阶段的flush性质变了，下面那个寄存器中的flush不能阻断inFire
   for (i <- 0 until CtrlBlockWidth) {
     io.in(i).ready := canAcceptNew 
   }
@@ -225,12 +230,22 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  状态转移
   // ================================================================
-  val doFlush = io.flush
-  when(doFlush) {
+  val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val redirectRobIdx = io.redirectInfo.bits.robIdx
+
+  //val doFlush.asUInt.orR = doRedirect && ( (  io.inReq.bits.uop.robIdxFull.isAfter(redirectRobIdx)))
+  val doFlush = Wire(Vec(CtrlBlockWidth, Bool()))
+  for (i <- 0 until CtrlBlockWidth) {
+    doFlush(i) := doRedirect && laneValid(i) && stgData(i).robIdx.isAfter(redirectRobIdx)
+  }
+  
+  when(doFlush.asUInt.orR) {
     for (i <- 0 until CtrlBlockWidth) {
-      laneValid(i)  := false.B
-      robWritten(i) := false.B
-      iqSent(i)     := false.B
+      when(doFlush(i)){
+        laneValid(i)  := false.B
+        robWritten(i) := false.B
+        iqSent(i)     := false.B
+      }
     }
   }.elsewhen(inFire) {
     for (i <- 0 until CtrlBlockWidth) {
@@ -253,13 +268,13 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val sqHeadPtr = RegInit(0.U.asTypeOf(new SqPtr(SqSize)))
  
   // 解析当前被选中发往 IQ4 的访存指令信息
-  val memDispatchedThisCycle = dispatchFire && q4Selected.asUInt.orR && !doFlush
+  val memDispatchedThisCycle = dispatchFire && q4Selected.asUInt.orR && !io.flush
   val selectedIsLoad  = Mux1H(q4Selected, (0 until CtrlBlockWidth).map(i => stgData(i).ctrl.memRead))
   val selectedIsStore = Mux1H(q4Selected, (0 until CtrlBlockWidth).map(i => stgData(i).ctrl.memWrite))
   val selectedMemInst = Mux1H(q4Selected, stgData)
 
   // 当拍同步触发 LSQ 写入
-  io.lsEnq.req.valid        := memDispatchedThisCycle //&& !doFlush
+  io.lsEnq.req.valid        := memDispatchedThisCycle
   io.lsEnq.req.bits.robIdx  := selectedMemInst.robIdx
   io.lsEnq.req.bits.isLoad  := selectedIsLoad
   io.lsEnq.req.bits.isStore := selectedIsStore
@@ -415,7 +430,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u
   })
   when(q1Final.asUInt.orR && dispatchFire) {
-    io.q1IQEnq(0).valid := true.B && !doFlush
+    io.q1IQEnq(0).valid := true.B && !io.flush
     io.q1IQEnq(0).bits  := Mux1H(q1Final, q1Uops)
   }
  
@@ -426,7 +441,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u
   })
   when(q2Final.asUInt.orR && dispatchFire) {
-    io.q2IQEnq(0).valid := true.B && !doFlush
+    io.q2IQEnq(0).valid := true.B && !io.flush
     io.q2IQEnq(0).bits  := Mux1H(q2Final, q2Uops)
   }
  
@@ -437,19 +452,19 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u
   })
   when(q3Final.asUInt.orR && dispatchFire) {
-    io.q3IQEnq(0).valid := true.B && !doFlush
+    io.q3IQEnq(0).valid := true.B && !io.flush
     io.q3IQEnq(0).bits  := Mux1H(q3Final, q3Uops)
   }
  
   val q4Uops = (0 until CtrlBlockWidth).map(i => Mux(isStoreLane(i), makeStaUop(i), makeLoadUop(i)))
   when(q4Selected.asUInt.orR && dispatchFire) {
-    io.q4IQEnq(0).valid := true.B  && !doFlush
+    io.q4IQEnq(0).valid := true.B  && !io.flush
     io.q4IQEnq(0).bits  := Mux1H(q4Selected, q4Uops)
   }
  
   val q5Uops = (0 until CtrlBlockWidth).map(i => makeStdUop(i))
   when(q5Selected.asUInt.orR && dispatchFire) {
-    io.q5IQEnq(0).valid := true.B && !doFlush
+    io.q5IQEnq(0).valid := true.B && !io.flush
     io.q5IQEnq(0).bits  := Mux1H(q5Selected, q5Uops)
   }
   dontTouch(io.q5IQEnq)
@@ -459,7 +474,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   //  ROB 批量写入 (ROB仍然维持进入流水级当拍进行一次性批量分发)
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
-    io.robEnq.valid(i)  := dispatchFire && needRob(i) && !doFlush
+    io.robEnq.valid(i)  := dispatchFire && needRob(i) && !io.flush
     io.robEnq.valids(i) := needRob(i)
     io.robEnq.bits(i).pc       := stgData(i).pc
     io.robEnq.bits(i).inst     := stgData(i).inst
@@ -468,13 +483,13 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).oldPdst  := stgData(i).oldPdst
     io.robEnq.bits(i).ldst     := stgData(i).ldst
     io.robEnq.bits(i).rfWen    := stgData(i).ctrl.rfWen
-    io.robEnq.bits(i).rfdata      := DontCare
+    io.robEnq.bits(i).rfdata   := DontCare
     io.robEnq.bits(i).memRead  := stgData(i).ctrl.memRead
     io.robEnq.bits(i).memWrite := stgData(i).ctrl.memWrite
     io.robEnq.bits(i).memVaddr  := DontCare
     io.robEnq.bits(i).memPaddr  := DontCare
     io.robEnq.bits(i).storeData := DontCare
-    io.robEnq.bits(i).sqIdx := DontCare
+    io.robEnq.bits(i).sqIdx     := DontCare
     io.robEnq.bits(i).csrWen   := stgData(i).ctrl.csrWen
     io.robEnq.bits(i).csrOp    := stgData(i).ctrl.csrOp
     io.robEnq.bits(i).csrWaddr := stgData(i).csrAddress

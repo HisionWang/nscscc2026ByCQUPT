@@ -116,6 +116,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   
   dispatchStage.io.in       <> renameStage.io.out
   dispatchStage.io.flush    := doFlush
+  dispatchStage.io.redirectInfo := io.redirectInfo
   dispatchStage.io.stall := redirectController.io.robRedirectPause
   // ── IQ 入队端口 ──
   dispatchStage.io.q1IQEnq     <> io.q1IQEnq

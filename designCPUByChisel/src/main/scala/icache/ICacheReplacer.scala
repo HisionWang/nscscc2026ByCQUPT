@@ -38,13 +38,13 @@ class ICacheReplacer(implicit p: Parameters) extends NSModule {
     // 将 way 转换为 UInt(2.W) 进行匹配
     switch(way) {
       is(0.U) {
-        newPLRU := Cat(1.U(1.W), 1.U(1.W), oldPLRU(2))
+        newPLRU := Cat(oldPLRU(2),1.U(1.W), 1.U(1.W) )
       }
       is(1.U) {
-        newPLRU := Cat(1.U(1.W), 0.U(1.W), oldPLRU(2))
+        newPLRU := Cat(oldPLRU(2), 0.U(1.W), 1.U(1.W))
       }
       is(2.U) {
-        newPLRU := Cat(0.U(1.W), oldPLRU(1), 1.U(1.W))
+        newPLRU := Cat(1.U(1.W), oldPLRU(1), 0.U(1.W))
       }
       is(3.U) {
         newPLRU := Cat(0.U(1.W), oldPLRU(1), 0.U(1.W))
