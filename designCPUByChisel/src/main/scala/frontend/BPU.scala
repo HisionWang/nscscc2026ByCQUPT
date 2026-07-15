@@ -100,12 +100,15 @@ class BPU(implicit p: Parameters) extends NSModule {
   
   val finalOffset = Mux(predTaken0, offset0_out, offset1_out)
 
+  
+
   io.predictResp.taken       := finalTaken
   io.predictResp.takenOffset := finalOffset
   io.predictResp.target      := finalTarget
 
   // 组装 Meta 信息（反馈给更新逻辑使用）
   io.predictResp.meta.btbHit     := btbHit0 || btbHit1
+  io.predictResp.meta.valid  := Mux(predTaken0, btbEntry0.valid, btbEntry1.valid)
   io.predictResp.meta.btbIsJalr  := Mux(predTaken0, btbEntry0.isJalr, btbEntry1.isJalr)
   io.predictResp.meta.btbIsJal   := Mux(predTaken0, btbEntry0.isJal, btbEntry1.isJal)
   io.predictResp.meta.btbIsCall  := Mux(predTaken0, btbEntry0.isCall, btbEntry1.isCall)
@@ -133,7 +136,7 @@ class BPU(implicit p: Parameters) extends NSModule {
 
     // 新的 BTB 条目
     val newEntry = Wire(new BTBEntry)
-    newEntry.valid  := true.B
+    newEntry.valid  := update.validEntry
     newEntry.tag    := updateTag
     newEntry.target := update.target
     newEntry.isJalr := update.isJalr
@@ -145,7 +148,9 @@ class BPU(implicit p: Parameters) extends NSModule {
     // 更新 PHT 计数器
     val oldCounter  = update.oldPhtCounter 
     val nextCounter = WireDefault(oldCounter)
-    when(update.taken && oldCounter =/= 3.U) {
+    when(!update.validEntry){
+      nextCounter := 2.U
+    }.elsewhen(update.taken && oldCounter =/= 3.U) {
       nextCounter := oldCounter + 1.U
     }.elsewhen(!update.taken && oldCounter =/= 0.U) {
       nextCounter := oldCounter - 1.U

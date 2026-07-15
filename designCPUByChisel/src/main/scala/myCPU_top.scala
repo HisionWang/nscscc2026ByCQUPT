@@ -156,13 +156,13 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   //  backend.io.out(i).ready := true.B
   //}
 
-    // 后端重定向: 暂无后端, 置为无效
+    // laji
   frontend.io.redirect.valid  := false.B
   frontend.io.redirect.target := 0.U
   frontend.io.redirect.rtype  := 0.U
-  // 后端BPU更新: 暂无后端, 置为无效
-  frontend.io.bpuUpdateBr.valid  := false.B
-  frontend.io.bpuUpdateBr        := DontCare
+  // 后端BPU更新
+
+  frontend.io.bpuUpdateBr        <> backend.io.bpuUpdate
 
   dontTouch(frontend.io.out)
 

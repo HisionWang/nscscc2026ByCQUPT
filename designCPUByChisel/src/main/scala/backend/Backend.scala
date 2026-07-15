@@ -16,7 +16,7 @@ import nscscc.mem._
 import nscscc.difftest._
 import nscscc.csr._
 import nscscc.backend.rob._
- 
+import nscscc.frontend.BpuUpdateReq
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
@@ -37,6 +37,8 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val excpInfo            = Output(new ExcpInfo)
   val redirectAddrFromCsr = Input(new RedirectEntry)
   val timerInfo =        Input(new TimerBundle)
+
+  val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
 
 }
 
@@ -99,7 +101,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   exeUnits(3).io.timerInfo :=  DontCare
   exeUnits(4).io.timerInfo :=  DontCare
 
-
+  io.bpuUpdate := exeUnits(2).io.bpuUpdate
   val bruInfoFromExe3 =  exeUnits(2).io.bruInfo
   dontTouch(bruInfoFromExe3)
 
