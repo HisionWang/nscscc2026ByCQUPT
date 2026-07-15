@@ -75,9 +75,14 @@ class BpuMeta(implicit p: Parameters) extends NSBundle {
  
 // ==================== BPU 预测请求/响应 ====================
 class BpuPredictReq(implicit p: Parameters) extends NSBundle {
+  //读的
   val nextPC = UInt(32.W)
+  val rdBpu = Bool()
+
+  //对比的
   val pc = UInt(32.W)
-  val pc_fire = Bool()
+  val crossLine = Bool()
+  
 }
  
 class BpuPredictResp(implicit p: Parameters) extends NSBundle {

@@ -217,7 +217,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
  
   when(anyFault) {
     for (i <- 0 until fetchWidth) {
-      when(i.U > firstFaultIdx) { enqMask(i) := false.B }
+      when(i.U > firstFaultIdx ) { enqMask(i) := false.B }
     }
     feRedirect.valid  := true.B && s_pd_valid
     feRedirect.target := firstFaultTarget

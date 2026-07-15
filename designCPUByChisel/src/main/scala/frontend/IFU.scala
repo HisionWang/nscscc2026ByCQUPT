@@ -73,8 +73,10 @@ class IFU(implicit p: Parameters) extends NSModule {
  
   // ==================== 发起BPU的预测请求 ====================
   io.predictReq.nextPC := nextPC
+  io.predictReq.crossLine := crossLine //如果当前的PC是横跨了Cache行的，那就不能使用bup的第二个mem的结果了
   io.predictReq.pc := pcReg
-  io.predictReq.pc_fire := pc_fire
+  io.predictReq.rdBpu := pc_fire || frontendRedirect.valid || backendRedirectValid
+  //                   阻塞时保持原值                 重定向时必读
 
   // 通知BPU预测结果被使用
   // RAS相关

@@ -51,14 +51,14 @@ class BPU(implicit p: Parameters) extends NSModule {
   val readBlockIdx = io.predictReq.nextPC(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
 
   // 4个BRAM共享同一个读使能和读地址
-  btbMem0.io.rd_en   := io.predictReq.pc_fire
+  btbMem0.io.rd_en   := io.predictReq.rdBpu
   btbMem0.io.rd_addr := readBlockIdx
-  phtMem0.io.rd_en   := io.predictReq.pc_fire
+  phtMem0.io.rd_en   := io.predictReq.rdBpu
   phtMem0.io.rd_addr := readBlockIdx
 
-  btbMem1.io.rd_en   := io.predictReq.pc_fire
+  btbMem1.io.rd_en   := io.predictReq.rdBpu
   btbMem1.io.rd_addr := readBlockIdx
-  phtMem1.io.rd_en   := io.predictReq.pc_fire
+  phtMem1.io.rd_en   := io.predictReq.rdBpu
   phtMem1.io.rd_addr := readBlockIdx
 
   // ==================== 预测命中与优先级逻辑 (当前周期使用 pc 校验) ====================
@@ -83,7 +83,8 @@ class BPU(implicit p: Parameters) extends NSModule {
   val phtCounter1= phtMem1.io.rd_data
   val phtTaken1  = phtCounter1(1)
   // 命中条件1：Entry有效，Tag匹配，且分支位于下一块的开头，且在当前 fetchWidth 覆盖范围内
-  val btbHit1    = btbEntry1.valid && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset)
+  // 并且不跨Cache行
+  val btbHit1    = btbEntry1.valid && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset) && !io.predictReq.crossLine
   val predTaken1 = btbHit1 && (btbEntry1.isJalr || btbEntry1.isJal || phtTaken1)
 
   // ==================== 仲裁与输出生成 ====================
