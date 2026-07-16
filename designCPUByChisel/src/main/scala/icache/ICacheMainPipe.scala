@@ -214,7 +214,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s2_mmu_error := Mux(s1_mmu_received, s1_mmu_received_data.error, io.mmu.fromMmu.bits.error)
  
     s2_bypass_data_from_s1 := s1_bypass_data
-    s2_can_bypass_from_s1 := s1_can_bypass
+    s2_can_bypass_from_s1 := s1_can_bypass && !Mux(s1_mmu_received, !s1_mmu_received_data.cacheable, !io.mmu.fromMmu.bits.cacheable)
     s2_hit_way_from_s1 := s1_bypass_hit_way
  
   }.elsewhen(s2_fire) {
@@ -253,7 +253,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_fire =((s3_valid && s3_hit) || state === s_done )&& cpu_ready
  
  
-  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !(s3_mmu_error.getAnyError))
+  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s2_uncached && !(s3_mmu_error.getAnyError))
   val s2_bypass_data = miss_data_buffer
   when(s3_flush) {
     s3_valid := false.B

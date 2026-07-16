@@ -197,7 +197,7 @@ val redirectRobIdx = io.redirectInfo.bits.robIdx
 when(doRedirect) {
   for (i <- 0 until SqSize) {
     val e = entries(i)
-    when(e.valid) {
+    when(e.valid && !e.committed) {
 
       val isNewer = e.robIdxFull.isAfter(redirectRobIdx)
       // 比较 e.robIdxFull 是否比 redirect.robIdx 更新

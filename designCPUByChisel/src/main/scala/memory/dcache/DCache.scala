@@ -309,10 +309,10 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
   mshr.io.refillWriteAck.bits  := refillPrimId
  
   // lsAck：load_resp/store_write/uc_load/uc_store 完成 fire 时
-  mshr.io.lsAck.valid := (state === s_load_resp  && io.loadResp.fire)  ||
+  mshr.io.lsAck.valid := curIsReplay && ((state === s_load_resp  && io.loadResp.fire)  ||
                          (state === s_store_write && io.storeAck.fire)  ||
                          (state === s_uc_load     && io.loadResp.fire)  ||
-                         (state === s_uc_store    && io.storeAck.fire)
+                         (state === s_uc_store    && io.storeAck.fire))
   mshr.io.lsAck.bits  := curLsIdx
  
   // ---------- Array 读 ----------
@@ -371,7 +371,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
 // 
 //// storeReq.ready：store 命中写完时 / store miss MSHR 接受时
 //io.storeReq.ready := (state === s_store_write && !curIsReplay) ||
-                     (state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire)
+//                     (state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire)
 
   io.loadReq.ready  := state === s_idle && idle_doLsu && loadSelected
 io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
@@ -445,6 +445,7 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
         curCacheable := !lsuIsUncache
         curIsReplay  := false.B
         pendingMiss  := false.B
+        curLsIdx     := mshr.io.lsIdx
         state        := Mux(lsuIsUncache, s_miss, s_tag_read)
       }
     }

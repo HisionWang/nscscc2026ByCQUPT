@@ -53,7 +53,8 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
     val canAccept     = Output(Bool())
     val isWriteback   = Output(Bool())
   })
- 
+
+  //     0         1          2         3             4          5                 6              7        8         9          10         11      12          13
   val s_idle :: s_wb_aw :: s_wb_w :: s_wb_b :: s_refill_ar :: s_refill_r :: s_refill_write :: s_done :: s_uc_ar :: s_uc_r :: s_uc_aw :: s_uc_w :: s_uc_b :: s_uc_done :: Nil = Enum(14)
  
   val state = RegInit(s_idle)
@@ -109,7 +110,15 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
   io.aw.bits.awid    := io.id
   io.aw.bits.awaddr  := Mux(state === s_uc_aw, reqPaddr, wbAddr)
   io.aw.bits.awlen   := Mux(state === s_uc_aw, 0.U, (burstBeats - 1).U)
-  io.aw.bits.awsize  := 2.U
+  io.aw.bits.awsize := Mux(state === s_uc_aw,
+    MuxLookup(reqLsuOp, 2.U)(Seq(
+      LsuOp.stb -> 0.U,   // 1 byte  → size=0
+      LsuOp.sth -> 1.U,   // 2 bytes → size=1
+      LsuOp.stw -> 2.U    // 4 bytes → size=2
+    )),
+    2.U  // writeback 始终 4B/beat
+  )
+
   io.aw.bits.awburst := Mux(state === s_uc_aw, 0.U, 1.U)
   io.aw.bits.awlock  := 0.U
   io.aw.bits.awcache := 0.U
@@ -121,12 +130,27 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
   // ===== AXI W =====
   val wbDataVec = VecInit((0 until burstBeats).map(i =>
     reqVictimData(i * XLEN + XLEN - 1, i * XLEN)))
+//  val ucWstrb = MuxLookup(reqLsuOp, 0xF.U(4.W))(Seq(
+//    LsuOp.stb -> 1.U(4.W), LsuOp.sth -> 3.U(4.W), LsuOp.stw -> 0xF.U(4.W)
+//  ))
+  val byteOff = reqPaddr(1, 0)
   val ucWstrb = MuxLookup(reqLsuOp, 0xF.U(4.W))(Seq(
-    LsuOp.stb -> 1.U(4.W), LsuOp.sth -> 3.U(4.W), LsuOp.stw -> 0xF.U(4.W)
+      LsuOp.stb -> UIntToOH(byteOff, 4),    // 地址0→0001, 1→0010, 2→0100, 3→1000
+      LsuOp.sth -> Mux(byteOff(1),
+                    "b1100".U(4.W),          // 地址2,3→写高半字
+                    "b0011".U(4.W)),         // 地址0,1→写低半字
+      LsuOp.stw -> 0xF.U(4.W)
   ))
+  val ucWdata = MuxLookup(reqLsuOp, reqStoreData)(Seq(
+    LsuOp.stb -> (reqStoreData(7, 0) << (byteOff * 8.U)),
+    LsuOp.sth -> (reqStoreData(15, 0) << (Cat(byteOff(1), 0.U(1.W)) * 8.U)),
+    LsuOp.stw -> reqStoreData
+  ))
+
+
   io.w.valid := state === s_wb_w || state === s_uc_w
   io.w.bits.wid    := io.id
-  io.w.bits.wdata  := Mux(state === s_uc_w, reqStoreData, wbDataVec(beatCnt))
+  io.w.bits.wdata  := Mux(state === s_uc_w, ucWdata, wbDataVec(beatCnt))
   io.w.bits.wstrb  := Mux(state === s_uc_w, ucWstrb, 0xF.U(4.W))
   io.w.bits.wlast  := Mux(state === s_uc_w, true.B, beatCnt === (burstBeats - 1).U)
   io.w.bits.wvalid := io.w.valid

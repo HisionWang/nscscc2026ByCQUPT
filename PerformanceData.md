@@ -136,3 +136,58 @@ verilator eval time     is 28.709057 s
 ==============================================================
 
 ```
+
+
+
+# **Version 3.0** 
+日期： 7-16
+## 🧠 一、CPU 此时是什么样子 / 架构？
+
+
+```
+第一个通过coremark性能测试的版本
+加上了取指和访存的地址翻译、缓存一致性
+```
+
+
+## 🔬 二、跑了什么测试？
+
+
+```
+用例：coremark（cache=0）
+
+环境：difftest仿真性能
+```
+
+
+## 📊 三、运行结果如何？
+
+**iFuCore Total ticks : 269219**
+**My Total ticks : 716919**
+```
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 716919
+Total time (secs): 0.007169
+Iterations/Sec   : 139.485772
+Iterations       : 1
+Compiler version : GCC8.3.0
+Compiler flags   : -O3 -funroll-all-loops -finline-limit=200 -ftree-dominator-opts -fno-if-conversion2 -fselective-scheduling -fno-code-hoisting -fno-common -falign-functions=4 -falign-jumps=4 -falign-loops=4
+Memory location  : STACK
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0xe714
+Correct operation validated. See README.md for run and reporting rules.
+CoreMark 1.0 : 139.485772 / GCC8.3.0 -O3 -funroll-all-loops -finline-limit=200 -ftree-dominator-opts -fno-if-conversion2 -fselective-scheduling -fno-code-hoisting -fno-common -falign-functions=4 -falign-jumps=4 -falign-loops=4 / STACK
+
+
+Print Personal Added Addtional Info to Easy Visual Analysis
+
+ (*) Assume the core running at 33 MHz
+     So the CoreMark/MHz can be caculated by: 
+     (Iterations*1000000/total_ticks) = 1.394858 CoreMark/MHz
+
+```

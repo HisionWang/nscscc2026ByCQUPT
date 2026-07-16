@@ -82,8 +82,8 @@ class Mmu(implicit p: Parameters) extends NSModule {
     directResp.paddr := reqVaddr
 
     // TODO: uncomment
-    //directResp.cacheable := isDirect && isCacheable(io.fromCsr.datf)
-    directResp.cacheable := true.B
+    directResp.cacheable := isDirect && isCacheable(io.fromCsr.datf)
+    //directResp.cacheable := true.B
     directResp.error     := emptyError()
     directResp.error.excpAdef := addrMisaligned
     directResp.hasError  := directResp.error.asUInt.orR
@@ -93,9 +93,8 @@ class Mmu(implicit p: Parameters) extends NSModule {
                       Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), 0.U(XLEN.W)))
 
     // TODO: uncomment
-    //dmwResp.cacheable := (dmw0Hit && isCacheable(io.fromCsr.dmw0(5, 4)))
-    //                  || (dmw1Hit && isCacheable(io.fromCsr.dmw1(5, 4)))
-    dmwResp.cacheable := true.B
+    dmwResp.cacheable := (dmw0Hit && isCacheable(io.fromCsr.dmw0(5, 4))) || (dmw1Hit && isCacheable(io.fromCsr.dmw1(5, 4)))
+    //dmwResp.cacheable := true.B
     dmwResp.error     := emptyError()
     dmwResp.error.excpAdef := addrMisaligned
     dmwResp.hasError  := dmwResp.error.asUInt.orR

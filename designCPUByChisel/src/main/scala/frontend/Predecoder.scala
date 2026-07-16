@@ -166,9 +166,12 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   // ---- Step 5: 前端重定向 ----
  
   val needRedirect = scenario === 1.U || scenario === 2.U ||
-                     scenario === 4.U || scenario === 6.U
+                     scenario === 4.U || scenario === 6.U || ( s_uncached && s_valid )
  
   val redirectTarget = MuxCase(0.U, Seq(
+    ( s_uncached && s_valid && !isFirstJal(0)) -> (s_addr + 4.U),
+    ( s_uncached && s_valid && isFirstJal(0)) -> firstJalTarget,
+
     (scenario === 1.U || scenario === 2.U) -> firstJalTarget,
     (scenario === 4.U)                     -> predJalTarget,
     (scenario === 6.U)                     -> (predPC + 4.U)
