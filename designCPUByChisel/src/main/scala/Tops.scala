@@ -47,11 +47,11 @@ object CoreSimu extends App {
     }
   }
 }
-/*
+
 // 我想打完make ss就去玩手机……
 object CoreFpga extends App {
  
-  val targetDirPath = "./../chiplab/IP/myCPU/Chisel"
+  val targetDirPath = "./../chiplab/IP/myCPU/FPGA"
   val targetDir = new File(targetDirPath)
  
   if (targetDir.exists() && targetDir.isDirectory) {
@@ -87,5 +87,5 @@ object CoreFpga extends App {
     }
   }
 }
-*/
+
 
