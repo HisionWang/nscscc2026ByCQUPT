@@ -111,7 +111,12 @@ object DecodeTable {
 
     BitPat("b00000000001010100???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     BitPat("b00000000001010110???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
-    BitPat("b00000110010010000011100000000000") -> ctrl(FuType.priv, rfWen = n, isPriv = y)
+    BitPat("b00000110010010000011100000000000") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+
+    BitPat("b0000000000000000011011??????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    BitPat("b0000011000??????????????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y)
+            //0000011000
+             //0000000000000000011011
   )
 }
 // 纯组合逻辑解码器模块
