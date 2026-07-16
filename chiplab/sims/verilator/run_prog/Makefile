@@ -62,9 +62,9 @@ link:
 include ../../../chip/config-generator.mak 
 
 ifeq ('${MYCPU}', 'y') 
-VERILATOR_INCLUDE += -y ${MYCPU_SRC} 
+#VERILATOR_INCLUDE += -y ${MYCPU_SRC} 
 VERILATOR_INCLUDE += -y ${MYCPU_SRC}/Chisel
-VERILATOR_SRC += ${MYCPU_SRC}/*.v
+#VERILATOR_SRC += ${MYCPU_SRC}/*.v
 VERILATOR_SRC += ${MYCPU_SRC}/Chisel/*.v
 endif
 
