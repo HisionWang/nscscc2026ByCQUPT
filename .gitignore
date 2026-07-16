@@ -3,6 +3,7 @@ package-lock.json
 software/random_res
 chiplab/sims/verilator/run_prog/single.log
 chiplab/IP/myCPU/Chisel/**/*
+chiplab/IP/myCPU/FPGA/**/*
 chiplab/chip/soc_demo/nscscc-team/xilinx_ip/*/gen
 chiplab/fpga/nscscc-team/run_vivado/*.dmp
 chiplab/fpga/nscscc-team/run_vivado/*.log
