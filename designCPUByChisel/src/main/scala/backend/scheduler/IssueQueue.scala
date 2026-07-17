@@ -44,7 +44,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   // ================================================================
   val entryValid   = RegInit(VecInit(Seq.fill(N)(false.B)))
   
-  val entryUops    = Reg(Vec(N, new DispatchedInst))
+  val entryUops = RegInit(VecInit(Seq.fill(N)(0.U.asTypeOf(new DispatchedInst))))
   val entryP1Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
   val entryP2Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
  

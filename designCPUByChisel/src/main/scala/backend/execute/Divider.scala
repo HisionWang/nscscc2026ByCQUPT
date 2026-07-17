@@ -53,15 +53,15 @@ class Divider(implicit p: Parameters) extends NSModule {
   //  除法寄存器
   // ================================================================
   val count     = RegInit(0.U(6.W))         // 迭代计数器 0..32
-  val remainder = Reg(UInt(33.W))            // 33位余数（额外1位用于减法溢出检测）
-  val quotient  = Reg(UInt(XLEN.W))          // 商寄存器（初始存被除数绝对值）
-  val absDiv    = Reg(UInt(XLEN.W))          // 除数绝对值
-  val uop       = Reg(new DispatchedInst)
-  val signA     = Reg(Bool())                // 原始被除数是否为负
-  val signB     = Reg(Bool())                // 原始除数是否为负
-  val isMod     = Reg(Bool())                // 是否为取模操作
-  val isSigned  = Reg(Bool())                // 是否为有符号操作
-  val divByZero = Reg(Bool())                // 除数为零标志
+  val remainder = RegInit(0.U(33.W))
+  val quotient  = RegInit(0.U(XLEN.W))
+  val absDiv    = RegInit(0.U(XLEN.W))
+  val uop       = RegInit(0.U.asTypeOf(new DispatchedInst))
+  val signA     = RegInit(false.B)
+  val signB     = RegInit(false.B)
+  val isMod     = RegInit(false.B)
+  val isSigned  = RegInit(false.B)
+  val divByZero = RegInit(false.B)
  
   // ================================================================
   //  输入握手：仅在空闲时可以接收

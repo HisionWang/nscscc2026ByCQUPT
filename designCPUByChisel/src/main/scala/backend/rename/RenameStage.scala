@@ -65,7 +65,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   val stgValid  = RegInit(false.B)
   val laneValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
-  val stgData   = Reg(Vec(CtrlBlockWidth, new DecodedInst))
+  val stgData = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U.asTypeOf(new DecodedInst))))
  
   val outReadyAll = (0 until CtrlBlockWidth).map(i =>
     !laneValid(i) || io.out(i).ready

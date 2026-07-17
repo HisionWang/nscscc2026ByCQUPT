@@ -43,12 +43,12 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   // ================================================================
  
   val s_valid    = RegInit(false.B)
-  val s_instrs   = Reg(Vec(fetchWidth, UInt(32.W)))
-  val s_valids   = Reg(Vec(fetchWidth, Bool()))
-  val s_addr     = Reg(UInt(32.W))
-  val s_uncached = Reg(Bool())
-  val s_mmuError = Reg(new MmuTransError)
-  val s_bpu      = Reg(new bpuInfoBundle)
+  val s_instrs   = RegInit(VecInit(Seq.fill(fetchWidth)(0.U(32.W))))
+  val s_valids   = RegInit(VecInit(Seq.fill(fetchWidth)(false.B)))
+  val s_addr     = RegInit(0.U(32.W))
+  val s_uncached = RegInit(false.B)
+  val s_mmuError = RegInit(0.U.asTypeOf(new MmuTransError))
+  val s_bpu      = RegInit(0.U.asTypeOf(new bpuInfoBundle))
  
   val inFire  = io.icacheResp.valid && io.icacheResp.ready && io.bpuInfoValid
   val outFire = io.out.valid && io.out.ready
@@ -260,7 +260,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
  
     outBpuInfo(i).pc          := pc(i)
     outBpuInfo(i).fallThrough := pc(i) + 4.U
-    outBpuInfo(i).taken       := isSpecial
+    outBpuInfo(i).taken       := isSpecial && !s_uncached
     outBpuInfo(i).takenOffset := i.U
     outBpuInfo(i).target      := Mux(isSpecialJal, firstJalTarget,
                              Mux(isSpecialPred,

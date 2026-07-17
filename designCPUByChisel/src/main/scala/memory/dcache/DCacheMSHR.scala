@@ -73,20 +73,22 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   // ===== LoadStore 表项 =====
   val lsValid     = RegInit(VecInit(Seq.fill(nSec)(false.B)))
   val lsReadyReg  = RegInit(VecInit(Seq.fill(nSec)(false.B)))
-  val lsPaddr     = Reg(Vec(nSec, UInt(XLEN.W)))
-  val lsLqIdx     = Reg(Vec(nSec, UInt(log2Ceil(LqSize).W)))
-  val lsSqIdx     = Reg(Vec(nSec, UInt(log2Ceil(SqSize).W)))
-  val lsRobIdx    = Reg(Vec(nSec, new RobPtr(RobSize)))
-  val lsLsuOp     = Reg(Vec(nSec, UInt(LsuOp.width.W)))
-  val lsStoreData = Reg(Vec(nSec, UInt(XLEN.W)))
-  val lsIsLoad    = Reg(Vec(nSec, Bool()))
-  val lsIsStore   = Reg(Vec(nSec, Bool()))
-  val lsPrimaryId = Reg(Vec(nSec, UInt(1.W)))
-  val lsIsUncache = Reg(Vec(nSec, Bool()))
+  val lsPaddr     = RegInit(VecInit(Seq.fill(nSec)(0.U(XLEN.W))))
+  val lsLqIdx     = RegInit(VecInit(Seq.fill(nSec)(0.U(log2Ceil(LqSize).W))))
+  val lsSqIdx     = RegInit(VecInit(Seq.fill(nSec)(0.U(log2Ceil(SqSize).W))))
+  val lsRobIdx    = RegInit(VecInit(Seq.fill(nSec)(0.U.asTypeOf(new RobPtr(RobSize)))))
+  val lsLsuOp     = RegInit(VecInit(Seq.fill(nSec)(0.U(LsuOp.width.W))))
+  val lsStoreData = RegInit(VecInit(Seq.fill(nSec)(0.U(XLEN.W))))
+  val lsIsLoad    = RegInit(VecInit(Seq.fill(nSec)(false.B)))
+  val lsIsStore   = RegInit(VecInit(Seq.fill(nSec)(false.B)))
+  val lsPrimaryId = RegInit(VecInit(Seq.fill(nSec)(0.U(1.W))))
+  val lsIsUncache = RegInit(VecInit(Seq.fill(nSec)(false.B)))
   val lsFlushed   = RegInit(VecInit(Seq.fill(nSec)(false.B)))
  
   // ===== 探针（组合逻辑，无环） =====
-  val blockMatchVec = primaries.map(p => p.io.busy && p.io.blockAddr === io.probeBlockAddr)
+  val reqIsUncache  = !io.missReq.bits.cacheable
+  
+  val blockMatchVec = primaries.map(p => p.io.busy && !p.io.isUncache && p.io.blockAddr === io.probeBlockAddr && !reqIsUncache)
   io.probeMatch  := VecInit(blockMatchVec).asUInt.orR
   io.isFirstMiss := !VecInit(blockMatchVec).asUInt.orR
   io.matchPrimId := PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
@@ -97,7 +99,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   // ===== 请求分配逻辑 =====
   val reqBlockAddr  = io.missReq.bits.paddr(31, blockOffBits)
   val reqSetIdx     = io.missReq.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
-  val reqIsUncache  = !io.missReq.bits.cacheable
+  
  
   val isFirstMissReq = !VecInit(blockMatchVec).asUInt.orR
   val matchPrimIdReq = PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })

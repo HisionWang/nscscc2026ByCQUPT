@@ -98,7 +98,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  存储体 + 指针
   // ================================================================
-  val entries = Reg(Vec(LqSize, new LqEntry))
+  val entries = RegInit(VecInit(Seq.fill(LqSize)(0.U.asTypeOf(new LqEntry))))
   dontTouch(entries)
  
   val enqPtr = RegInit({

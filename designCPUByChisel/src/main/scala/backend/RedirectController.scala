@@ -74,10 +74,10 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   val state = RegInit(s_idle)
  
   // ROB 重定向信息（在回滚期间保持稳定）
-  val robInfoIsException = Reg(Bool())
-  val robInfoExcpVec     = Reg(new ExceptionBundle)
-  val robInfoPc          = Reg(UInt(XLEN.W))
-  val robInfoRobIdx      = Reg(new RobPtr(RobSize))
+  val robInfoIsException = RegInit(false.B)
+  val robInfoExcpVec     = RegInit(0.U.asTypeOf(new ExceptionBundle))
+  val robInfoPc          = RegInit(0.U(XLEN.W))
+  val robInfoRobIdx      = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
  
   switch(state) {
     is(s_idle) {

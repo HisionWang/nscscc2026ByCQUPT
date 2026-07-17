@@ -65,9 +65,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   // === Stage 0: 发出Cached的SRAM读取请求，向MMU发起地址转换 ===
   
-  val s0_vaddr = Reg(UInt(32.W))  // 虚拟地址
-  val s0_vidx  = Reg(UInt(idxBits.W))  // 虚拟索引
-  val s0_vtag  = Reg(UInt(tagBits.W))  // 虚拟标签
+  val s0_vaddr = RegInit(0.U(32.W))
+  val s0_vidx  = RegInit(0.U(idxBits.W))
+  val s0_vtag  = RegInit(0.U(tagBits.W))
  
   val io_fire = s0_ready && io.cpu_req.valid
  
@@ -96,9 +96,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   // === Stage 1: 接收接收双方的请求，并判断是否为uncahe ===
   val s1_valid = RegInit(false.B)
-  val s1_vaddr = Reg(UInt(32.W))
-  val s1_vidx  = Reg(UInt(idxBits.W))
-  val s1_vtag  = Reg(UInt(tagBits.W))
+  val s1_vaddr = RegInit(0.U(32.W))
+  val s1_vidx  = RegInit(0.U(idxBits.W))
+  val s1_vtag  = RegInit(0.U(tagBits.W))
  
   val s1_fire  = Wire(Bool())
   val s2_ready = Wire(Bool())
@@ -130,8 +130,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   s1_cango := (s1_array_received || array_resp_fire) &&
               (s1_mmu_received || mmu_resp_fire)
  
-  val s1_array_received_data = Reg(new arrayReadData)
-  val s1_mmu_received_data = Reg(new MmuToIcache)
+  val s1_array_received_data = RegInit(0.U.asTypeOf(new arrayReadData))
+  val s1_mmu_received_data   = RegInit(0.U.asTypeOf(new MmuToIcache))
     // 记录响应接收状态
   when(s1_fire || s1_flush) {
     s1_array_received := false.B
@@ -148,16 +148,15 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
   // === Stage 2: 标签比较和命中判断 ===
   val s2_valid = RegInit(false.B)
-  val s2_vaddr = Reg(UInt(32.W))  // 虚拟地址
-  val s2_paddr = Reg(UInt(32.W))  // 物理地址
-  val s2_uncached = Reg(Bool())   // 是否为uncached访问
-  val s2_mmu_error = Reg(new MmuTransError)  // MMU转换错误
-  val s2_vidx  = Reg(UInt(idxBits.W))
-  val s2_vtag  = Reg(UInt(tagBits.W))
-  val s2_pidx  = Reg(UInt(idxBits.W))  // 物理索引
-  val s2_ptag  = Reg(UInt(tagBits.W))  // 物理标签
- 
-  val s2_array_data = Reg(new arrayReadData)
+  val s2_vaddr     = RegInit(0.U(32.W))
+  val s2_paddr     = RegInit(0.U(32.W))
+  val s2_uncached  = RegInit(false.B)
+  val s2_mmu_error = RegInit(0.U.asTypeOf(new MmuTransError))
+  val s2_vidx      = RegInit(0.U(idxBits.W))
+  val s2_vtag      = RegInit(0.U(tagBits.W))
+  val s2_pidx      = RegInit(0.U(idxBits.W))
+  val s2_ptag      = RegInit(0.U(tagBits.W))
+  val s2_array_data = RegInit(0.U.asTypeOf(new arrayReadData))
   
   val s3_ready = Wire(Bool())
   val s2_fire = ( s2_valid && s3_ready)
@@ -176,24 +175,21 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   val miss_data_valid = RegInit(false.B)
   val s3_valid = RegInit(false.B)
-  val s3_vaddr = Reg(UInt(32.W))
-  val s3_paddr = Reg(UInt(32.W))
-  val s3_uncached = Reg(Bool())
-  val s3_mmu_error = Reg(new MmuTransError)
-  val s3_hit    = Reg(Bool())
- 
-  val s3_miss   = Reg(Bool())
-  
-  val s3_hit_way    = Reg(UInt(wayBits.W))
-  val miss_data_buffer = Reg(UInt((blockBytes * 8).W))
+  val s3_vaddr         = RegInit(0.U(32.W))
+  val s3_paddr         = RegInit(0.U(32.W))
+  val s3_uncached      = RegInit(false.B)
+  val s3_mmu_error     = RegInit(0.U.asTypeOf(new MmuTransError))
+  val s3_hit           = RegInit(false.B)
+  val s3_miss          = RegInit(false.B)
+  val s3_hit_way       = RegInit(0.U(wayBits.W))
+  val miss_data_buffer = RegInit(0.U((blockBytes * 8).W))
   val s1_bypass_data = miss_data_buffer
   val s1_can_bypass = (s1_ptag === s3_ptag && s1_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !(s3_mmu_error.getAnyError))
   val s1_bypass_hit_way    = io.victim_read.resp
  
-  val s2_bypass_data_from_s1 = Reg(UInt((blockBytes * 8).W))
-  
-  val s2_can_bypass_from_s1 = RegInit(false.B)
-  val s2_hit_way_from_s1    = Reg(UInt(wayBits.W))
+  val s2_bypass_data_from_s1 = RegInit(0.U((blockBytes * 8).W))
+  val s2_can_bypass_from_s1  = RegInit(false.B)
+  val s2_hit_way_from_s1     = RegInit(0.U(wayBits.W))
   
   //miss_data_buffer
  
@@ -236,7 +232,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   
   // === Stage 3: 处理hit、miss以及uncache（mmu异常） ===
  
-  val s3_cacheLine_data  = Reg(UInt((blockBytes * 8).W))
+  val s3_cacheLine_data = RegInit(0.U((blockBytes * 8).W))
  
   //TODO：请根据写的状态机正确处理s3_ready
   //处理miss、非缓存及命中
@@ -436,7 +432,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
   
   // 3. 非缓存处理
-  val uncache_data_buffer = Reg(UInt(32.W))
+  val uncache_data_buffer = RegInit(0.U(32.W))
   val uncache_data_valid = RegInit(false.B)
   val uncache_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
   uncache_instrs(0) := uncache_data_buffer

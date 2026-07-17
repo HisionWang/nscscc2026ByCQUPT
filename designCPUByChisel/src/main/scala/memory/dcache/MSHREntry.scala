@@ -52,6 +52,8 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
     val mshrVictimWay = Output(UInt(wayBits.W))
     val canAccept     = Output(Bool())
     val isWriteback   = Output(Bool())
+    val isUncache = Output(Bool())
+
   })
 
   //     0         1          2         3             4          5                 6              7        8         9          10         11      12          13
@@ -59,17 +61,18 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
  
   val state = RegInit(s_idle)
  
-  val reqPaddr       = Reg(UInt(XLEN.W))
-  val reqType        = Reg(UInt(MshrReqType.width.W))
-  val reqVictimWay   = Reg(UInt(wayBits.W))
-  val reqVictimDirty = Reg(Bool())
-  val reqVictimTag   = Reg(UInt(tagBits.W))
-  val reqVictimData  = Reg(UInt((blockBytes * 8).W))
-  val reqStoreData   = Reg(UInt(XLEN.W))
-  val reqLsuOp       = Reg(UInt(LsuOp.width.W))
+  val reqPaddr       = RegInit(0.U(XLEN.W))
+  val reqType        = RegInit(0.U(MshrReqType.width.W))
+  io.isUncache := reqType =/= MshrReqType.cacheable
+  val reqVictimWay   = RegInit(0.U(wayBits.W))
+  val reqVictimDirty = RegInit(false.B)
+  val reqVictimTag   = RegInit(0.U(tagBits.W))
+  val reqVictimData  = RegInit(0.U((blockBytes * 8).W))
+  val reqStoreData   = RegInit(0.U(XLEN.W))
+  val reqLsuOp       = RegInit(0.U(LsuOp.width.W))
   val beatCnt        = RegInit(0.U(log2Ceil(burstBeats + 1).W))
-  val refillBuf      = Reg(Vec(burstBeats, UInt(XLEN.W)))
-  val ucDataReg      = Reg(UInt(XLEN.W))
+  val refillBuf      = RegInit(VecInit(Seq.fill(burstBeats)(0.U(XLEN.W))))
+  val ucDataReg      = RegInit(0.U(XLEN.W))
  
   val setIdx    = reqPaddr(blockOffBits + idxBits - 1, blockOffBits)
   val refillTag = reqPaddr(31, blockOffBits + idxBits)

@@ -80,8 +80,8 @@ class SimpleBlockRAM(
         RegInit(VecInit(Seq.fill(depth)(0.U(width.W))))
     }
  
-    val rdPipeline = Reg(Vec(readLatency, Bool()))
-    val dataPipeline = Reg(Vec(readLatency, UInt(width.W)))
+    val rdPipeline   = RegInit(VecInit(Seq.fill(readLatency)(false.B)))
+    val dataPipeline = RegInit(VecInit(Seq.fill(readLatency)(0.U(width.W))))
  
     when(io.rd_en) {
       dataPipeline(0) := mem(io.rd_addr)

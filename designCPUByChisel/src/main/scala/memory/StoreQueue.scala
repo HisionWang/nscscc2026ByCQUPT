@@ -111,7 +111,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  存储体 + 指针
   // ================================================================
-  val entries = Reg(Vec(SqSize, new SqEntry))
+  val entries = RegInit(VecInit(Seq.fill(SqSize)(0.U.asTypeOf(new SqEntry))))
   dontTouch(entries)
  
   val enqPtr = RegInit({

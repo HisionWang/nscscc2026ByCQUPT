@@ -88,15 +88,12 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     //  rrd 级寄存器：锁存 IQ 发来的 uop
     // ──────────────────────────────────────────
     val rrd_valid = RegInit(false.B)
-    val rrd_uop   = Reg(new DispatchedInst)
- 
-    // ──────────────────────────────────────────
-    //  out 级寄存器：PRF 数据就绪，对执行单元可见
-    // ──────────────────────────────────────────
+    val rrd_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
+    
     val out_valid = RegInit(false.B)
-    val out_uop   = Reg(new DispatchedInst)
-    val out_rs1   = Reg(UInt(XLEN.W))
-    val out_rs2   = Reg(UInt(XLEN.W))
+    val out_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
+    val out_rs1   = RegInit(0.U(XLEN.W))
+    val out_rs2   = RegInit(0.U(XLEN.W))
  
     // ──────────────────────────────────────────
     //  Kill 检测

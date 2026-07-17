@@ -49,26 +49,26 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   //  S1 寄存器：锁存输入 + 计算64位乘积
   // ================================================================
   val s1_valid   = RegInit(false.B)
-  val s1_uop     = Reg(new DispatchedInst)
-  val s1_prod    = Reg(UInt((2 * XLEN).W))   // 64位乘积
-  val s1_isMul   = Reg(Bool())                // MUL 取低32位
-  val s1_isMulh  = Reg(Bool())                // MULH 取高32位
+  val s1_uop    = RegInit(0.U.asTypeOf(new DispatchedInst))
+  val s1_prod   = RegInit(0.U((2 * XLEN).W))
+  val s1_isMul  = RegInit(false.B)
+  val s1_isMulh = RegInit(false.B)
  
   // ================================================================
   //  S2 寄存器：流水缓冲
   // ================================================================
-  val s2_valid   = RegInit(false.B)
-  val s2_uop     = Reg(new DispatchedInst)
-  val s2_prod    = Reg(UInt((2 * XLEN).W))
-  val s2_isMul   = Reg(Bool())
-  val s2_isMulh  = Reg(Bool())
+  val s2_valid  = RegInit(false.B)
+  val s2_uop    = RegInit(0.U.asTypeOf(new DispatchedInst))
+  val s2_prod   = RegInit(0.U((2 * XLEN).W))
+  val s2_isMul  = RegInit(false.B)
+  val s2_isMulh = RegInit(false.B)
  
   // ================================================================
   //  S3 寄存器：结果选择 + 输出
   // ================================================================
   val s3_valid   = RegInit(false.B)
-  val s3_uop     = Reg(new DispatchedInst)
-  val s3_data    = Reg(UInt(XLEN.W))
+  val s3_uop  = RegInit(0.U.asTypeOf(new DispatchedInst))
+  val s3_data = RegInit(0.U(XLEN.W))
  
   // ================================================================
   //  流水线反压控制

@@ -91,17 +91,16 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   debug0_wb_inst     := 0.U
   ws_valid           := false.B
   rf_rdata           := 0.U
+  // ---- 复位同步：打一拍 ----
+  val sync_reset = Wire(Bool())
+  withClockAndReset(aclk, ~aresetn) {   // 这个寄存器本身用原始异步复位
+    val rst_d1 = RegInit(true.B)        // 复位时保持1（复位有效）
+    rst_d1 := false.B                    // 复位释放后，下一拍拉低
+    sync_reset := rst_d1
+  }
+
  
-  withClockAndReset(aclk, ~aresetn) {
- 
-  // ================================================================
-  // 模块实例化
-  // ================================================================
- 
-    // ================================================================
-  // 前端 ↔ 后端 接口连接
-  // ================================================================
- 
+  withClockAndReset(aclk, sync_reset ) {
 
   val frontend = Module(new Frontend)
   val backend = Module(new Backend)
@@ -116,9 +115,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   dontTouch(backend.io.lsEnq)
   backend.io.lsEnq <> memory.io.lsEnq
-  //val simMMU = Module(new SimpleMMU)
-  // simMMU.io.mmuReq <> memory.io.mmu.toMmu
-  // simMMU.io.mmuResp <> memory.io.mmu.fromMmu
 
   dontTouch(backend.io.toMemResult(0)) //load+store的地址
   dontTouch(backend.io.toMemResult(1)) //store的数据
@@ -147,14 +143,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   memory.io.redirect.bits.robIdx.flag := true.B
   
   backend.io.flush := false.B
-  //intrpt =/= 0.U
 
-
-
-
-  //for (i <- 0 until 4) {
-  //  backend.io.out(i).ready := true.B
-  //}
 
     // laji
   frontend.io.redirect.valid  := false.B
@@ -226,10 +215,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   araddr  := axi_crossbar.io.out.ar.data.araddr
   arlen   := axi_crossbar.io.out.ar.data.arlen
   arsize  := axi_crossbar.io.out.ar.data.arsize
-  arburst := axi_crossbar.io.out.ar.data.arburst
-  arlock  := axi_crossbar.io.out.ar.data.arlock
-  arcache := axi_crossbar.io.out.ar.data.arcache
-  arprot  := axi_crossbar.io.out.ar.data.arprot
+  arburst := 1.U //axi_crossbar.io.out.ar.data.arburst
+  arlock  := 0.U //axi_crossbar.io.out.ar.data.arlock
+  arcache := 0.U //axi_crossbar.io.out.ar.data.arcache
+  arprot  := 0.U //axi_crossbar.io.out.ar.data.arprot
   arvalid := axi_crossbar.io.out.ar.data.arvalid
   axi_crossbar.io.out.ar.arready := arready
  
@@ -248,10 +237,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   awaddr  := axi_crossbar.io.out.aw.data.awaddr
   awlen   := axi_crossbar.io.out.aw.data.awlen
   awsize  := axi_crossbar.io.out.aw.data.awsize
-  awburst := axi_crossbar.io.out.aw.data.awburst
-  awlock  := axi_crossbar.io.out.aw.data.awlock
-  awcache := axi_crossbar.io.out.aw.data.awcache
-  awprot  := axi_crossbar.io.out.aw.data.awprot
+  awburst := 1.U //axi_crossbar.io.out.aw.data.awburst
+  awlock  := 0.U //axi_crossbar.io.out.aw.data.awlock
+  awcache := 0.U //axi_crossbar.io.out.aw.data.awcache
+  awprot  := 0.U //axi_crossbar.io.out.aw.data.awprot
   awvalid := axi_crossbar.io.out.aw.data.awvalid
   axi_crossbar.io.out.aw.awready := awready
  

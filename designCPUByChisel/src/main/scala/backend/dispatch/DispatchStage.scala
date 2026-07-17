@@ -60,7 +60,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val laneValid   = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val robWritten  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val iqSent      = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
-  val stgData     = Reg(Vec(CtrlBlockWidth, new RenamedInst))
+  val stgData = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U.asTypeOf(new RenamedInst))))
  
   // ── 需求掩码 ──
   val needRob = VecInit((0 until CtrlBlockWidth).map(i => laneValid(i) && !robWritten(i)))

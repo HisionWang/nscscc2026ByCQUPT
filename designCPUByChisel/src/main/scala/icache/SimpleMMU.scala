@@ -30,13 +30,13 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   
   // 内部寄存器：延迟2个周期
   val stage1_valid = RegInit(false.B)
-  val stage1_vaddr = Reg(UInt(32.W))
-  val stage1_sq = Reg(UInt(log2Ceil(SqSize).W))
-  val stage1_lsuOp    = Reg(UInt(LsuOp.width.W))
+  val stage1_vaddr = RegInit(0.U(32.W))
+  val stage1_sq    = RegInit(0.U(log2Ceil(SqSize).W))
+  val stage1_lsuOp = RegInit(0.U(LsuOp.width.W))
   val stage2_valid = RegInit(false.B)
-  val stage2_vaddr = Reg(UInt(32.W))
-   val stage2_lsuOp    = Reg(UInt(LsuOp.width.W))
-  val stage2_sq = Reg(UInt(log2Ceil(SqSize).W))
+  val stage2_vaddr = RegInit(0.U(32.W))
+  val stage2_lsuOp = RegInit(0.U(LsuOp.width.W))
+  val stage2_sq    = RegInit(0.U(log2Ceil(SqSize).W))
 
   
   // 请求处理

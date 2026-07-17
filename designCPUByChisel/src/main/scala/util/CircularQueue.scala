@@ -115,7 +115,7 @@ class CircularQueue[T <: Data](
    * - Mem: 只能单/双端口读写，适合大队列（省面积）
    * 这里用Reg是为了简单和灵活，您可以根据需求改为Mem
    */
-  val data = Reg(Vec(entries, gen))
+  val data = RegInit(VecInit(Seq.fill(entries)(0.U.asTypeOf(gen))))
  
   // =====================================================================
   // 4. 空满判断

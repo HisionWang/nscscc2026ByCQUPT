@@ -82,7 +82,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
   //  4. 预缓存机制（不变）
   // ================================================================
   val regValid   = Seq.fill(CtrlBlockWidth)(RegInit(false.B))
-  val regIndices = Seq.fill(CtrlBlockWidth)(Reg(UInt(PhyRegIdxWidth.W)))
+  val regIndices = Seq.fill(CtrlBlockWidth)(RegInit(0.U(PhyRegIdxWidth.W)))
  
   val selPregFire = VecInit(
     (selPregsValid zip regValid zip io.allocReqs).map {

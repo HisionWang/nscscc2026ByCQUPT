@@ -38,12 +38,12 @@ class Tlb(implicit p: Parameters) extends NSModule {
     val flush = io.search(idx).flush
 
     val s1Valid = RegInit(false.B)
-    val s1Req   = Reg(new TlbSearchReq)
-    val s1Found = Reg(Bool())
-    val s1Index = Reg(UInt(tlbIdxLen.W))
-
+    val s1Req   = RegInit(0.U.asTypeOf(new TlbSearchReq))
+    val s1Found = RegInit(false.B)
+    val s1Index = RegInit(0.U(tlbIdxLen.W))
+    
     val s2Valid = RegInit(false.B)
-    val s2Resp  = Reg(new TlbSearchResp)
+    val s2Resp  = RegInit(0.U.asTypeOf(new TlbSearchResp))
 
     val s2Ready = !s2Valid || resp.ready
     val s1Ready = !s1Valid || s2Ready

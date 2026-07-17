@@ -55,31 +55,44 @@ class DCache(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  请求锁存寄存器
   // ================================================================
-  val curPaddr     = Reg(UInt(XLEN.W))
-  val curLqIdx     = Reg(UInt(log2Ceil(LqSize).W))
-  val curSqIdx     = Reg(UInt(log2Ceil(SqSize).W))
-  val curRobIdx    = Reg(new RobPtr(RobSize))
-  val curLsuOp     = Reg(UInt(LsuOp.width.W))
-  val curStoreData = Reg(UInt(XLEN.W))
-  val curIsLoad    = Reg(Bool())
-  val curIsStore   = Reg(Bool())
-  val curCacheable = Reg(Bool())
-  val curIsReplay  = Reg(Bool())
-  val curLsIdx     = Reg(UInt(log2Ceil(4).W))
-  val curArrayData = Reg(new DCacheArrayReadData)
-  val curHitWay    = Reg(UInt(wayBits.W))
-  val curVictimWay = Reg(UInt(wayBits.W))
-  val curUcData    = Reg(UInt(XLEN.W))
+  val curPaddr     = RegInit(0.U(XLEN.W))
+  val curLqIdx     = RegInit(0.U(log2Ceil(LqSize).W))
+  val curSqIdx     = RegInit(0.U(log2Ceil(SqSize).W))
+  val curRobIdx    = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
+  val curLsuOp     = RegInit(0.U(LsuOp.width.W))
+  val curStoreData = RegInit(0.U(XLEN.W))
+  val curIsLoad    = RegInit(false.B)
+  val curIsStore   = RegInit(false.B)
+  val curCacheable = RegInit(false.B)
+  val curIsReplay  = RegInit(false.B)
+  val curLsIdx     = RegInit(0.U(log2Ceil(4).W))
+  val curArrayData = RegInit(0.U.asTypeOf(new DCacheArrayReadData))
+  val curHitWay    = RegInit(0.U(wayBits.W))
+  val curVictimWay = RegInit(0.U(wayBits.W))
+  val curUcData    = RegInit(0.U(XLEN.W))
+
+
+  // 新增：pending miss 专用寄存器
+val pendPaddr     = RegInit(0.U(XLEN.W))
+val pendLqIdx     = RegInit(0.U(log2Ceil(LqSize).W))
+val pendSqIdx     = RegInit(0.U(log2Ceil(SqSize).W))
+val pendRobIdx    = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
+val pendLsuOp     = RegInit(0.U(LsuOp.width.W))
+val pendStoreData = RegInit(0.U(XLEN.W))
+val pendIsLoad    = RegInit(false.B)
+val pendIsStore   = RegInit(false.B)
+val pendCacheable = RegInit(false.B)
+
  
   // pendingMiss：MSHR 无法接受时暂存请求，回 s_idle 让 MSHR 推进
   val pendingMiss = RegInit(false.B)
  
   // Refill 锁存
-  val refillIdx    = Reg(UInt(idxBits.W))
-  val refillWay    = Reg(UInt(wayBits.W))
-  val refillTag    = Reg(UInt(tagBits.W))
-  val refillData   = Reg(UInt((blockBytes * 8).W))
-  val refillPrimId = Reg(UInt(1.W))
+  val refillIdx    = RegInit(0.U(idxBits.W))
+  val refillWay    = RegInit(0.U(wayBits.W))
+  val refillTag    = RegInit(0.U(tagBits.W))
+  val refillData   = RegInit(0.U((blockBytes * 8).W))
+  val refillPrimId = RegInit(0.U(1.W))
  
   // ================================================================
   //  反饥饿仲裁
@@ -432,6 +445,18 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
       }.elsewhen(idle_doPending) {
         // pendingMiss 重试：cur* 已有数据，重新读 Array
         state := s_tag_read
+
+        curPaddr     := pendPaddr
+        curLqIdx     := pendLqIdx
+        curSqIdx     := pendSqIdx
+        curRobIdx    := pendRobIdx
+        curLsuOp     := pendLsuOp
+        curStoreData := pendStoreData
+        curIsLoad    := pendIsLoad
+        curIsStore   := pendIsStore
+        curCacheable := pendCacheable
+        curIsReplay  := false.B
+
       }.elsewhen(idle_doLsu) {
         // 接受新 LSU 请求
         curPaddr     := lsuPaddr
@@ -479,8 +504,18 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
         state       := s_idle
       }.otherwise {
         // MSHR 暂时无法接受 → 设 pendingMiss 回 idle 让 MSHR 推进
-        pendingMiss := true.B
-        state       := s_idle
+        pendingMiss     := true.B
+        pendPaddr       := curPaddr
+        pendLqIdx       := curLqIdx
+        pendSqIdx       := curSqIdx
+        pendRobIdx      := curRobIdx
+        pendLsuOp       := curLsuOp
+        pendStoreData   := curStoreData
+        pendIsLoad      := curIsLoad
+        pendIsStore     := curIsStore
+        pendCacheable   := curCacheable
+
+        state           := s_idle
       }
     }
  

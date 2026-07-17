@@ -116,7 +116,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  1. 存储体 + 头尾指针
   // ================================================================
-  val entries = Reg(Vec(RobSize, new RobEntryInner))
+  val entries = RegInit(VecInit(Seq.fill(RobSize)(0.U.asTypeOf(new RobEntryInner))))
   dontTouch(entries)
  
   val deqPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })
@@ -272,8 +272,8 @@ class ROB(implicit p: Parameters) extends NSModule {
   //  5. BRU 重定向冲刷 (Redirect Flush)
   // ================================================================
   val redirectValidReg  = RegInit(false.B)
-  val redirectBegin     = Reg(UInt(log2Ceil(RobSize).W))
-  val redirectEnd       = Reg(UInt(log2Ceil(RobSize).W))
+  val redirectBegin = RegInit(0.U(log2Ceil(RobSize).W))
+  val redirectEnd   = RegInit(0.U(log2Ceil(RobSize).W))
   val redirectFlushSelf = RegInit(false.B)
   val redirectAll      = RegInit(false.B)
  
@@ -306,8 +306,8 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ── 锁存未能入队的 Dispatch 寄存器信息，防止物理寄存器泄漏 ──
   val latchCanEnq   = RegInit(true.B)
   val latchEnqValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
-  val latchEnqPdst  = Reg(Vec(CtrlBlockWidth, UInt(PhyRegIdxWidth.W)))
-  val latchEnqRfWen = Reg(Vec(CtrlBlockWidth, Bool()))
+  val latchEnqPdst  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U(PhyRegIdxWidth.W))))
+  val latchEnqRfWen = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
  
   when(io.robRedirect.valid) {
     latchCanEnq := io.enq.canEnq

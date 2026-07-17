@@ -21,7 +21,7 @@ class DecodeStage(implicit p: Parameters) extends NSModule {
   // ===========================================================
   val stgValid  = RegInit(false.B) // 标识整个流水级当前是否有指令块
   val laneValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B))) // 标识每一路是否实际装载了有效指令
-  val stgData   = Reg(Vec(CtrlBlockWidth, new CtrlFlowIO))
+  val stgData = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U.asTypeOf(new CtrlFlowIO))))
 
   // 1. 判定后端是否对"所有有效指令"都准备就绪
   // 核心逻辑：对于每一路，如果它是空的(!laneValid)，或者后端已经ready，就算这一路没卡顿。

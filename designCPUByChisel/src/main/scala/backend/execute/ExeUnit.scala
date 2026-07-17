@@ -75,7 +75,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   //  快速通道 Phase 1：流水级寄存器
   // ================================================================
   val stgValid = RegInit(false.B)
-  val stgData  = Reg(new ExeReq)
+  val stgData = RegInit(0.U.asTypeOf(new ExeReq))
  
   val outFire  = stgValid && io.outResult.ready
   val stgReady = !stgValid || outFire

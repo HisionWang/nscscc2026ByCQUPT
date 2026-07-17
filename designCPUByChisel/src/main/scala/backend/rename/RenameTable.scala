@@ -80,7 +80,7 @@ class RenameTable(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  2. 快照存储
   // ================================================================
-  val snapshots  = Reg(Vec(SnapshotNum, Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W))))
+  val snapshots = RegInit(VecInit(Seq.fill(SnapshotNum)(VecInit(Seq.fill(IntLogicRegs)(0.U(PhyRegIdxWidth.W))))))
   val snptValids = RegInit(VecInit.fill(SnapshotNum)(false.B))
  
   // ================================================================

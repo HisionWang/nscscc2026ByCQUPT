@@ -26,7 +26,7 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   //  Stage 1: 锁存 Exe 结果，并向 MMU 发起地址翻译请求
   // ================================================================
   val s1_valid = RegInit(false.B)
-  val s1_data  = Reg(new ExeResult)
+  val s1_data = RegInit(0.U.asTypeOf(new ExeResult))
 
   // 预留 Stage 2 的准备好信号
   val s2_ready = Wire(Bool())
@@ -60,12 +60,12 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   //  Stage 2: 等待并接收 MMU 响应，打包发往 Memory 级
   // ================================================================
   val s2_valid    = RegInit(false.B)
-  val s2_exe_data = Reg(new ExeResult) // 用于暂存伴随 MMU 请求的元数据
-
+  val s2_exe_data = RegInit(0.U.asTypeOf(new ExeResult))
+  
   // [关键缓冲器]：应对 SimpleMMU 没有内部停顿逻辑（不支持反压）的问题
   // 如果当前指令的 MMU 结果回来了，但下游(out)堵住了发不出去，必须把它死死锁住
   val s2_mmu_done = RegInit(false.B)
-  val s2_mmu_resp = Reg(new MmuToSqResp)
+  val s2_mmu_resp = RegInit(0.U.asTypeOf(new MmuToSqResp))
 
   // Stage 2 向外发送的条件：有元数据，且(MMU已缓冲完毕 OR MMU本拍刚好响应)，且外端准备好
   val s2_fire = s2_valid && (s2_mmu_done || io.mmuResp.valid) && io.out.ready
