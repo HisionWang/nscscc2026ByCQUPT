@@ -166,7 +166,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   dcache.io.storeReq <> storeQueue.io.dcacheReq
   dcache.io.storeAck <> storeQueue.io.storeAck
   dcache.io.axi <> io.axi
-  dcache.io.redirect <> io.redirect
+  dcache.io.redirectInfo <> io.redirectInfo
 
   
 

@@ -5,6 +5,7 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
+import nscscc.backend.execute._
 import nscscc.axi._
  
 // ================================================================
@@ -62,9 +63,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     val lsAck         = Input(Valid(UInt(log2Ceil(nSec).W)))
  
     val axi = new AXI3MasterIO
-    val redirect = Input(Valid(new Bundle {
-      val robIdx = new RobPtr(RobSize)
-    }))
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
   })
  
   // ===== Primary 实例化 =====
@@ -192,10 +191,10 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   }
  
   // ===== Redirect：仅 flush Load，Store 不可被 flush =====
-  when(io.redirect.valid) {
+  when(io.redirectInfo.valid && io.redirectInfo.bits.doRedirect) {
     for (j <- 0 until nSec) {
       when(lsValid(j) && lsIsLoad(j) && !lsIsStore(j) && !lsFlushed(j)) {
-        when(lsRobIdx(j).isAfter(io.redirect.bits.robIdx)) {
+        when(lsRobIdx(j).isAfter(io.redirectInfo.bits.robIdx)) {
           lsFlushed(j) := true.B
         }
       }

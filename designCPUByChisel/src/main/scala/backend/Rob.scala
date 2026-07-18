@@ -275,7 +275,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   val redirectBegin = RegInit(0.U(log2Ceil(RobSize).W))
   val redirectEnd   = RegInit(0.U(log2Ceil(RobSize).W))
   val redirectFlushSelf = RegInit(false.B)
-  val redirectAll      = RegInit(false.B)
+  //val redirectAll      = RegInit(false.B)
  
 
   when(redirectValidReg) { 
@@ -287,7 +287,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     redirectBegin     := io.redirectInfo.bits.robIdx.value
     redirectEnd       := enqPtr.value
     redirectFlushSelf := io.redirectInfo.bits.flushSelf
-    redirectAll :=   (io.redirectInfo.bits.robIdx.value === enqPtr.value) && (io.redirectInfo.bits.robIdx.flag ^ enqPtr.flag)
+    //redirectAll :=   (io.redirectInfo.bits.robIdx.value === enqPtr.value) && (io.redirectInfo.bits.robIdx.flag ^ enqPtr.flag)
     enqPtr            := io.redirectInfo.bits.robIdx + 1.U
     
   }
@@ -415,10 +415,10 @@ class ROB(implicit p: Parameters) extends NSModule {
     }).asUInt.orR
  
     // C. 判断 BRU 重定向冲刷命中
-    inFlushRange(i) := redirectValidReg &&( Mux(redirectEnd > redirectBegin,
+    inFlushRange(i) := redirectValidReg && Mux(redirectEnd > redirectBegin,
       i.U > redirectBegin && i.U < redirectEnd,
       i.U > redirectBegin || i.U < redirectEnd
-    ) || redirectAll )
+    ) //|| redirectAll )
 
     val flushSelfHit = redirectValidReg && redirectFlushSelf && i.U === redirectBegin
     val redirectFlushHit = inFlushRange(i) || flushSelfHit

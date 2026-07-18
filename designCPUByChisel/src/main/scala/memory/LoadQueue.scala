@@ -148,17 +148,19 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     // ================================================================
     val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
     val redirectRobIdx = io.redirectInfo.bits.robIdx
-    when(doRedirect) {
-      for (i <- 0 until SqSize) {
-        val e = entries(i)
-        when(e.valid) {
-          val isNewer = e.robIdxFull.isAfter(redirectRobIdx)
-          when(isNewer) {
-            e.alreadyFlush := true.B
-          }
-        }
+    val isNewer = Wire(Vec(LqSize, Bool()))
+
+
+    for (i <- 0 until LqSize) {
+      val e = entries(i)
+      
+      isNewer(i) := e.robIdxFull.isAfter(redirectRobIdx) && doRedirect && e.valid
+      when(isNewer(i)) {
+        e.alreadyFlush := true.B
       }
+      
     }
+    
  
   // ================================================================
   //  2. 地址写入（执行单元 → LQ）
@@ -192,7 +194,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   // 排序检查：该 Load 必须不晚于 SQ 中最老的 Store
   val orderingOk = io.sqEmpty || !issueEntry.robIdxFull.isAfter(io.sqOldestRobIdx)
  
-  io.dcacheReq.valid       := hasIssueCandidate && orderingOk
+  io.dcacheReq.valid       := hasIssueCandidate && orderingOk && !isNewer(issueIdx)
   io.dcacheReq.bits.lqIdx  := issueIdx
   io.dcacheReq.bits.paddr  := issueEntry.paddr
   io.dcacheReq.bits.cacheable  := issueEntry.cacheable

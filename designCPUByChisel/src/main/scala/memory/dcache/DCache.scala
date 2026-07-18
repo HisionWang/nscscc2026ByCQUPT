@@ -8,6 +8,7 @@ import nscscc.backend.rename._
 import nscscc.axi._
 import nscscc.icache.ICacheReplacer
  
+import nscscc.backend.execute._
 class DCache(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
@@ -33,9 +34,9 @@ class DCache(implicit p: Parameters) extends NSModule {
       val sqIdx = UInt(log2Ceil(SqSize).W)
     })
     val axi      = new AXI3MasterIO
-    val redirect = Flipped(Valid(new Bundle {
-      val robIdx = new RobPtr(RobSize)
-    }))
+
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
+
   })
  
   // ================================================================
@@ -73,15 +74,15 @@ class DCache(implicit p: Parameters) extends NSModule {
 
 
   // 新增：pending miss 专用寄存器
-val pendPaddr     = RegInit(0.U(XLEN.W))
-val pendLqIdx     = RegInit(0.U(log2Ceil(LqSize).W))
-val pendSqIdx     = RegInit(0.U(log2Ceil(SqSize).W))
-val pendRobIdx    = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
-val pendLsuOp     = RegInit(0.U(LsuOp.width.W))
-val pendStoreData = RegInit(0.U(XLEN.W))
-val pendIsLoad    = RegInit(false.B)
-val pendIsStore   = RegInit(false.B)
-val pendCacheable = RegInit(false.B)
+  val pendPaddr     = RegInit(0.U(XLEN.W))
+  val pendLqIdx     = RegInit(0.U(log2Ceil(LqSize).W))
+  val pendSqIdx     = RegInit(0.U(log2Ceil(SqSize).W))
+  val pendRobIdx    = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
+  val pendLsuOp     = RegInit(0.U(LsuOp.width.W))
+  val pendStoreData = RegInit(0.U(XLEN.W))
+  val pendIsLoad    = RegInit(false.B)
+  val pendIsStore   = RegInit(false.B)
+  val pendCacheable = RegInit(false.B)
 
  
   // pendingMiss：MSHR 无法接受时暂存请求，回 s_idle 让 MSHR 推进
@@ -119,7 +120,7 @@ val pendCacheable = RegInit(false.B)
   //  Flush 检测
   // ================================================================
   def shouldFlush(robIdx: RobPtr): Bool =
-    io.redirect.valid && robIdx.isAfter(io.redirect.bits.robIdx)
+     robIdx.isAfter(io.redirectInfo.bits.robIdx) && io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
  
   // ================================================================
   //  Tag 比较与数据提取（纯组合逻辑，直接用 Array 读出数据）
@@ -277,7 +278,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
                         lsuHasReq && !storeBlocked
  
   // pendingMiss 重试时如果被 redirect 了，直接丢弃
-  val pendingFlushed = pendingMiss && shouldFlush(curRobIdx)
+  val pendingFlushed = pendingMiss && shouldFlush(pendRobIdx) 
  
   // LSU 请求信息（组合信号）
   val lsuPaddr     = Mux(loadSelected, io.loadReq.bits.paddr, io.storeReq.bits.paddr)
@@ -295,14 +296,14 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
   // ================================================================
  
   // ---------- MSHR 连接 ----------
-  mshr.io.redirect := io.redirect
+  mshr.io.redirectInfo := io.redirectInfo
   mshr.io.axi <> io.axi
  
   // probeBlockAddr：始终从寄存器驱动，无组合环
   mshr.io.probeBlockAddr := curPaddr(31, blockOffBits)
  
   // missReq：bits 始终从寄存器驱动（断环），valid 仅 s_miss
-  mshr.io.missReq.valid       := state === s_miss
+  mshr.io.missReq.valid       := state === s_miss && !shouldFlush(curRobIdx) 
   mshr.io.missReq.bits.paddr       := curPaddr
   mshr.io.missReq.bits.lqIdx       := curLqIdx
   mshr.io.missReq.bits.sqIdx       := curSqIdx
@@ -479,6 +480,27 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
       // Array 数据在本周期可用（readLatency=1）
       curArrayData := array.io.read.resp
       curVictimWay := s1VictimWay
+      when(shouldFlush(curRobIdx)  && curIsLoad && !curIsStore) {
+        state := s_idle
+        pendingMiss  := false.B
+      }.elsewhen(!curCacheable) {
+        state := s_miss
+      }.elsewhen(s1Hit && !curIsLoad && !curIsStore) {
+        // 读到的指令不是 load/store，直接回 idle
+        state := s_idle
+      }.elsewhen(s1Hit && curIsLoad && curIsStore) {
+        // 同时是 load 和 store，优先 load
+        curHitWay := s1HitWay
+        state     := s_load_resp
+      }.elsewhen(s1Hit && curIsLoad) {
+        curHitWay := s1HitWay
+        state     := s_load_resp
+      }.elsewhen(s1Hit && curIsStore ){//&& !mshr.io.hasStore) {
+        curHitWay := s1HitWay
+        state     := s_store_write
+      }.otherwise {
+        state := s_miss
+      }
       when(s1Hit && curIsLoad) {
         curHitWay := s1HitWay
         state     := s_load_resp
@@ -491,15 +513,24 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
     }
  
     is(s_load_resp) {
+      when(pendLqIdx === curLqIdx){
+        pendingMiss     := false.B
+      }
       when(io.loadResp.fire) { state := s_idle }
     }
  
     is(s_store_write) {
+      when(pendSqIdx === curSqIdx){
+        pendingMiss     := false.B
+      }
       when(io.storeAck.fire) { state := s_idle }
     }
  
     is(s_miss) {
-      when(mshr.io.missReq.fire) {
+      when(shouldFlush(curRobIdx) && curIsLoad && !curIsStore) {
+        state := s_idle
+        pendingMiss := false.B
+      }.elsewhen(mshr.io.missReq.fire) {
         pendingMiss := false.B
         state       := s_idle
       }.otherwise {
@@ -528,6 +559,7 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
     }
  
     is(s_uc_store) {
+      
       when(io.storeAck.fire) { state := s_idle }
     }
   }

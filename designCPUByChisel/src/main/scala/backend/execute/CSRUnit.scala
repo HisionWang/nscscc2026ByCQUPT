@@ -37,6 +37,11 @@ class CSRUnit(implicit p: Parameters) extends NSModule with HasCsrParameters {
   val op     = io.uop.ctrl.csrOp
   val csrOld = io.csrRdata
 
+  val cpuCfg = Module(new CpuCfg)
+  cpuCfg.io.addr := io.rs1  // rs1 = rj 的值（配置字号）
+  val cpucfgResult = cpuCfg.io.rdata
+
+
    // CsrOp.rdcntvl -> io.timerInfo.timer(31,0),
    // CsrOp.rdcntvh  -> io.timerInfo.timer(63,32),
    // CsrOp.rdcntid  -> io.timerInfo.tid,
@@ -58,7 +63,8 @@ class CSRUnit(implicit p: Parameters) extends NSModule with HasCsrParameters {
   io.result := MuxLookup(op, csrOld)(Seq(
     CsrOp.rdcntvl -> io.timerInfo.timer(31, 0),
     CsrOp.rdcntvh -> io.timerInfo.timer(63, 32),
-    CsrOp.rdcntid -> io.timerInfo.tid
+    CsrOp.rdcntid -> io.timerInfo.tid,
+    CsrOp.cpucfg  -> cpucfgResult
   ))
 
   io.csrWen  := io.uop.ctrl.csrWen //(op === CsrOp.write) || (op === CsrOp.xchg)

@@ -102,6 +102,8 @@ object CsrOp {
   val rdcntvl  = 4.U(width.W)  // 新增
   val rdcntvh  = 5.U(width.W)  // 新增
   val rdcntid  = 6.U(width.W)  // 新增
+
+  val cpucfg  = 7.U(width.W)   // ← 新增
 }
 
 object MulOp {

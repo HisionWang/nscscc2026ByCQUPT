@@ -5,7 +5,7 @@ export CROSS_COMPILE ?= loongarch32r-linux-gnusf-
 
 COMMON_DIR = ../../bsp
 GCC_DIR=../../../toolchains/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0
-PICOLIBC_DIR=../../../toolchains/picolibc
+PICOLIBC_DIR=../../../toolchains/newlib
 LINKER_SCRIPT := $(COMMON_DIR)/env/separate.lds
 
 #若使用 newlib , 将下面的 -lsemihost 替换为 -lgloss

@@ -108,15 +108,23 @@ object DecodeTable {
     // RDCNTID rj：指令编码 0x00000062 | (rj << 5)
     BitPat("b0000000000000000011000?????00000") ->
       ctrl(FuType.csr, csrOp = CsrOp.rdcntid, src1Type = SrcType.zero, src2Type = SrcType.none, rfWen = y),
-
+    //BREAK
     BitPat("b00000000001010100???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    // SYS
     BitPat("b00000000001010110???????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    // Ertn
     BitPat("b00000110010010000011100000000000") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
 
-    BitPat("b0000000000000000011011??????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    // CPUCFG
+    BitPat("b0000000000000000011011??????????") -> ctrl(FuType.csr, csrOp = CsrOp.cpucfg,
+       src1Type = SrcType.reg,   // rj → rs1，提供配置字号
+       src2Type = SrcType.none,
+       rfWen = y, csrWen = n),   // 只读，不写CSR
+    
+    //BitPat("b0000000000000000011011??????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     BitPat("b0000011000??????????????????????") -> ctrl(FuType.priv, rfWen = n, isPriv = y)
-            //0000011000
-             //0000000000000000011011
+           //0000011000
+           //0000000000000000011011
   )
 }
 // 纯组合逻辑解码器模块
