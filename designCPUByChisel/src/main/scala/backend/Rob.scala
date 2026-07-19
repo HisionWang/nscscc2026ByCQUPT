@@ -222,7 +222,7 @@ class ROB(implicit p: Parameters) extends NSModule {
 
     isExcpSlot(i)       := canConsider(i) && hasExcp
     isCsrSlot(i)        := canConsider(i) && isCsrW  && !hasExcp
-    commitValids(i)     := canConsider(i) //&& !hasExcp // 正常提交（异常指令不提交） 
+    commitValids(i)     := canConsider(i) //&& !hasExcp // 正常提交（异常指令也走提交的方式来消失） 
     commitCandidates(i) := entry
 
     // 如果当前未 Ready，或者是异常、或者是CSR，都会切断后续指令的提交资格
@@ -254,8 +254,9 @@ class ROB(implicit p: Parameters) extends NSModule {
     io.commitToSq.valid(i)    := commitValids(i) && commitCandidates(i).memWrite
     io.commitToSq.bits(i)     := commitCandidates(i)
     
-    io.archCommit(i).valid    := commitValids(i) && commitCandidates(i).rfWen && commitCandidates(i).ldst =/= 0.U && !commitCandidates(i).excp.hasException
-    io.archCommit(i).isWalk   := false.B
+    //异常也是必须要提交架构，但他并不是“提交架构”，而是复用这个端口来归还“物理寄存器”
+    io.archCommit(i).valid    := commitValids(i) && commitCandidates(i).rfWen && commitCandidates(i).ldst =/= 0.U  //&& !commitCandidates(i).excp.hasException
+    io.archCommit(i).isWalk   := Mux(commitCandidates(i).excp.hasException, true.B, false.B)
     io.archCommit(i).ldst     := commitCandidates(i).ldst
     io.archCommit(i).pdst     := commitCandidates(i).pdst
     io.archCommit(i).oldPdst  := commitCandidates(i).oldPdst
