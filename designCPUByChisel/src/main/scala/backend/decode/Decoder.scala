@@ -193,18 +193,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   val isIllegal = isIllegalBase && !isSys && !isBrk && !isErtn
   
-//  val currentExcpVec = Cat(
-//    isIllegal,          // [9] INE
-//    excp.excpAdef,      // [8] ADEF
-//    isBrk,              // [7] BRK
-//    isSys,              // [6] SYS
-//    excp.excpTlbPpi,    // [5] PPI
-//    false.B,            // [4] PME
-//    excp.excpTlbPif,    // [3] PIF
-//    false.B,            // [2] PIS
-//    excp.excpTlbRefill, // [1] PIL
-//    io.extInt           // [0] INT
-//  )
+
   val excpIn = io.inData.exception
   //val excp = Wire(new ExceptionBundle)
 
@@ -228,30 +217,6 @@ class Decoder(implicit p: Parameters) extends NSModule {
     isErtn                -> ERTN
   )
 
-//  when(isIllegal) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, INE)
-//  }
-//  when(excpIn.excpAdef) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, ADEF)
-//  }
-//  when(isBrk) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, BRK)
-//  }
-//  when(isSys) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, SYS)
-//  }
-//  when(excpIn.excpTlbPpi) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, PPI_I)
-//  }
-//  when(excpIn.excpTlbPif) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, PIF)
-//  }
-//  when(excpIn.excpTlbRefill) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, TLBR_I)
-//  }
-//  when(io.extInt) {
-//    excp.excpVec := excp.setOn(excpI.excpVec, INT)
-//  }
   // ===========================================================
   // 6. 输出一次性全覆盖赋值
   // ===========================================================
