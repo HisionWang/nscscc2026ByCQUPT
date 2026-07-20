@@ -213,7 +213,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
 
   val excpI = Wire(new ExceptionBundle)
   excpI := 0.U.asTypeOf(new ExceptionBundle)
-
+  val hasInt = io.extInt && !csrWen
   excp.excpVec := excp.mergeMany(
     base = excpI.excpVec,
     isIllegal             -> INE,
@@ -224,7 +224,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
     excpIn.excpTlbPif     -> PIF,
     excpIn.excpTlbRefill  -> TLBR_I,
     //isSys             -> INT,
-    io.extInt             -> INT,
+    hasInt             -> INT,
     isErtn                -> ERTN
   )
 
