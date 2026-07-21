@@ -5,32 +5,46 @@ import chisel3.util._
 import config._
 import java.io.File
 import scala.sys.process._
- 
+
 // ================================================================
-// Verilog 生成入口
+// 统一 Verilog 生成入口
 // ================================================================
-object CoreSimu extends App {
- 
-  val targetDirPath = "./../chiplab/IP/myCPU/Chisel"
-  val targetDir = new File(targetDirPath)
- 
-  if (targetDir.exists() && targetDir.isDirectory) {
-    def deleteRecursively(file: File): Unit = {
-      if (file.isDirectory) {
-        file.listFiles().foreach(deleteRecursively)
+object CoreGen extends App {
+
+  // 提取公共删除函数
+  def cleanAndMkdir(dirPath: String): File = {
+    val dir = new File(dirPath)
+    if (dir.exists() && dir.isDirectory) {
+      def deleteRecursively(f: File): Unit = {
+        if (f.isDirectory) f.listFiles().foreach(deleteRecursively)
+        if (f.exists && !f.delete())
+          throw new Exception(s"Exception DeleFail: ${f.getAbsolutePath}")
       }
-      if (file.exists && !file.delete()) {
-        throw new Exception(s"Exception DeleFail: ${file.getAbsolutePath}")
-      }
+      deleteRecursively(dir)
     }
-    deleteRecursively(targetDir)
+    dir.mkdirs()
+    dir
   }
-  targetDir.mkdirs()
- 
+
+  // 读取第一个参数，默认 simu
+  val mode = args.headOption.getOrElse("simu").toLowerCase match {
+    case "fpga" => "fpga"
+    case _      => "simu"
+  }
+
+  val targetDirPath = mode match {
+    case "simu" => "./../chiplab/IP/myCPU/Chisel"
+    case "fpga" => "./../chiplab/IP/myCPU/FPGA"
+  }
+
+  val enableDifftest = mode == "simu"  // simu 开启 difftest，fpga 关闭
+
+  cleanAndMkdir(targetDirPath)
+
   implicit val config: Parameters = new Parameters(Map(
-    DebugConfigKeys.EnableDifftest -> true
+    DebugConfigKeys.EnableDifftest -> enableDifftest
   ))
- 
+
   emitVerilog(
     new core_top,
     Array(
@@ -38,54 +52,13 @@ object CoreSimu extends App {
       "--emit-modules", "verilog"
     )
   )
- 
+
+  // 清理多余文件
   val filesToDelete = List("core_top.anno.json", "core_top.fir")
   filesToDelete.foreach { filename =>
-    val fileToDelete = new File(targetDir, filename)
-    if (fileToDelete.exists()) {
-      fileToDelete.delete()
-    }
+    val fileToDelete = new File(targetDirPath, filename)
+    if (fileToDelete.exists()) fileToDelete.delete()
   }
+
+  println(s"[CoreGen] Generated $mode version in $targetDirPath")
 }
-
-// 我想打完make ss就去玩手机……
-object CoreFpga extends App {
- 
-  val targetDirPath = "./../chiplab/IP/myCPU/FPGA"
-  val targetDir = new File(targetDirPath)
- 
-  if (targetDir.exists() && targetDir.isDirectory) {
-    def deleteRecursively(file: File): Unit = {
-      if (file.isDirectory) {
-        file.listFiles().foreach(deleteRecursively)
-      }
-      if (file.exists && !file.delete()) {
-        throw new Exception(s"Exception DeleFail: ${file.getAbsolutePath}")
-      }
-    }
-    deleteRecursively(targetDir)
-  }
-  targetDir.mkdirs()
- 
-  implicit val config: Parameters = new Parameters(Map(
-    DebugConfigKeys.EnableDifftest -> false
-  ))
- 
-  emitVerilog(
-    new core_top,
-    Array(
-      "--target-dir", targetDirPath,
-      "--emit-modules", "verilog"
-    )
-  )
- 
-  val filesToDelete = List("core_top.anno.json", "core_top.fir")
-  filesToDelete.foreach { filename =>
-    val fileToDelete = new File(targetDir, filename)
-    if (fileToDelete.exists()) {
-      fileToDelete.delete()
-    }
-  }
-}
-
-

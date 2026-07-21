@@ -100,7 +100,7 @@ vivado 2023.2 可以直接安装在windows上
 
 ```
 # 终端运行
-export CHIPLAB_HOME="/home/hision/nscscc2026ByCQUPT/chiplab"
+export CHIPLAB_HOME="your own chiplab pwd address"
 ```
 #### 4.1.2 替换myCPU
 `IP/myCPU`中存放的是处理器核代码，对外的接口和核顶层模块名称固定。该环境默认处理器核已实现`AXI`总线。

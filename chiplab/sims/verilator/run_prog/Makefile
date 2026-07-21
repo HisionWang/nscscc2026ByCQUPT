@@ -292,7 +292,6 @@ ifeq ('${TRACE_COMP}', 'y')
 	touch ./tmp/ram.dat;\
 	cat ./tmp/rom.vlog > ./tmp/ram.dat;	\
 	make simulation_run_prog -C ./tmp -f ../Makefile_run || exit "$$?";	\
-	mkdir -p ./log/$${soft}_log;	\
 	mv ./tmp/simu_trace.txt* ./log/$${soft}_log/;	\
 	mv ./tmp/uart_output.txt ./log/$${soft}_log/;	\
 	mv ./tmp/uart_output.txt.real ./log/$${soft}_log/;	\

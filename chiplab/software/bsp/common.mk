@@ -20,11 +20,11 @@ CFLAGS += -DCLOCKS_PER_SEC=CORE_CLOCKS_PER_SEC -D_CLOCKS_PER_SEC_=CORE_CLOCKS_PE
 #若使用 newlib , 将下面的 -lsemihost 替换为 -lgloss
 LDFLAGS +=  	-T $(LINKER_SCRIPT) \
 				-Wl,--gc-sections -Wl,--check-sections \
-				-lc -lm -lg -lgloss -lgcc -L$(PICOLIBC_DIR)/lib
+				-lc -lm -lg -lsemihost -lgcc -L$(PICOLIBC_DIR)/lib
 
 QEMU_LDFLAGS +=	-T $(QEMU_LINKER_SCRIPT) \
 				-Wl,--gc-sections -Wl,--check-sections \
-				-lc -lm -lg -lgloss -lgcc -L$(PICOLIBC_DIR)/lib
+				-lc -lm -lg -lsemihost -lgcc -L$(PICOLIBC_DIR)/lib
 
 LINKER_SCRIPT := $(COMMON_DIR)/env/separate.lds
 QEMU_LINKER_SCRIPT := $(COMMON_DIR)/env/qemu.lds
@@ -58,8 +58,8 @@ $(TARGET): $(LINK_OBJS) $(LINK_DEPS) convert Makefile
 	rm -f $(OBJDIR)/convert
 
 $(ASM_OBJS): %.o: %.S
-	$(LA32R_GCC) $(CFLAGS) $(INCLUDES)  -c -o $@ $<
-# 
+	$(LA32R_GCC) $(CFLAGS) $(INCLUDES) -c -o $@ $< 
+
 $(C_OBJS): %.o: %.c
 	$(LA32R_GCC) $(CFLAGS) $(INCLUDES) -c -o $@ $< 
 

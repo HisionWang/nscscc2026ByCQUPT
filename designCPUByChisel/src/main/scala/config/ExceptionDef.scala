@@ -3,7 +3,7 @@ import chisel3._
 import chisel3.util._
 import nscscc.config.Parameters
 import nscscc.config.NSBundle
- import nscscc.CoreSimu.config
+// import nscscc.CoreSimu.config
  
 object ExcType extends Enumeration {
   type ExcType = Value

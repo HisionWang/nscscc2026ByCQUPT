@@ -35,10 +35,12 @@ sim:
 	source env.sh && \
 	cd $(MAKE_DIR) && $(MAKE) 
 ss:
-	sbt run &&\
+	sbt "runMain nscscc.CoreGen simu" &&\
 	cd $(ENV_SCRIPT) && \
 	source env.sh && \
 	cd $(MAKE_DIR) && $(MAKE) 
+ff:
+	sbt "runMain nscscc.CoreGen fpga"
 
 clean:
 	cd $(SBT_DIR) && sbt clean
