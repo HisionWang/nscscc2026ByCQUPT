@@ -1,155 +1,171 @@
-# 项目进度
+# 做测试前请确保你的分支是我指定的分支
+## 1\. 切换到指定分支（核心操作）
 
-此文件就那啥，记录一下你们各自在这个项目里都干了啥，日期名字那种信息写好让其他俩人清楚你干了什么
-也可以写好点的格式，后面记录的人就抄那个人的格式
+### 1\.1 本地已存在目标分支，直接切换
 
-Chiplab的环境变量：
-
-```
-source env.sh
+```shell
+git checkout 目标分支名
 ```
 
-有什么笔记的话写好放在doc里面
+示例：切换到 Test_721 分支
 
-## 4月5日
+```shell
+git checkout Test_721
+```
 
-我这边chiplab那些工具链（toolchains）应该都是搭建好了的，应该可以正常用
+### 1\.2 本地无目标分支，从远程分支拉取并切换
 
-现目前的阶段就是搭建好了一个大致的项目框架，我们还还是用git来操作开发
-然后，我打算还是用chisel来写代码，建议你们也用，chisel对写代码的人效率是真的高
-但如果你们还是不习惯的话，就还是用v嘛，我chisel里面可以留黑盒，接口对的上就行
+```shell
+git checkout -b 目标分支名 origin/目标分支名
+```
 
-目前我的chisel框架大致搭建好了，就在designCPUbyChisel里面，现在是一坨AI生成的代码
-但是可以成功转换成v，有可行性，里面也有黑盒，你们可以去看一下
+## 2\. 校验当前分支是否为指定分支（必做）
 
-## 4月7日
+切换分支后，必须校验分支是否切换成功，避免操作失误：
 
-把chisel中的difftest模块加上了
+```shell
+git status
+```
 
-## 4月13日
+输出中会明确显示 `On branch xxx`，确认分支无误。
 
-1. 把香山/Rocket的传参的方法加进去了（nscscc2026ByCQUPT/designCPUByChisel/src/main/scala/config）
-    后面参数的传递应该就很方便了，直接可以在designCPUByChisel/src/main/scala/config/NSCore.scala或者designCPUByChisel/src/main/scala/config/Arch.scala  
-    中可以直接写入相关的宏定义，然后实例化带这些参数的模块，在具体的模块里就能直接用这些参数  
-2. 生成v时可以支持拆分成多个文件了，问了ai问了半天怎么拆分都不对，后面琢磨着直接一个help命令让他打印出直接哪些参数就行，哎哟真服了  
-    然后稍微把生成verilog那边的逻辑整得稍微感觉一点了  
 
-**修改之后sbt、仿真未见错误**
 
-## 4月15日
-注意写代码的时候，各种变量名不要和Parameters里面的定义的东西一样！！这个报错很难找到是这样，这样搞不会很明显得报错  
-然后把Icache的流水架构稍微用AI仿照香山的Icache架构写了一下，虽然逻辑是依托  
-但代码里应该还存在问题，非语法错误，但属于Verilog中的连线错误。  
-（verilog的连线错误只有在编译时才看得出来，但是对于语法错误：写chisel的时候一定要配metals，百分之99.99的语法错误可以在写的时候解决，不像verilog编译的时候才检测得出语法错误）  
-并且还把AXI的AXI3MasterIO和AXI3SlaveIO整理清晰了
 
-## 4月16日
-解决了目前模块中所有的连线错误，稍微跑出来的一点波形，Icache的逻辑还没看，不过AXI桥的逻辑应该对的（也没对完）  
-学到了：
-1. Chisel库中自带的Arbiter使用方法
-2. Decoupled方法可以自带valid和ready握手信号，然后传输的数据用bits分割开（我就说香山中怎么信号都是囊括在bits里的）
 
-> 为了方便Chisel在IP/myCPU生成新代码同时不影响其他verilog写出的代码
-> 在Chisel生成的代码将保存在myCPU/Chisel文件夹中
-> 但这样的话，用VERILATOR仿真的话，就得在makefile里面的VERILATOR_INCLUDE和VERILATOR_SRC加上/Chisel文件夹了
+# Chisel 代码转 Verilog \+ FPGA 上板验证实操教程（仅上板验证，无difftest仿真）
 
-## 4月底
-Icache的大致流水线都做好了
-核心代码在CachePipe流水线中
-分成了很多级的流水线，每一级干不同的事情，并且还有bypass路径，每一级干不同的事情
-在Icache中uncahe访问和miss访问用同一个通道，用同一个状态机控制
-在目前的开发阶段而言效果已经已经达到了理想状态
-## 5月
-？玩了一个月？
-不是玩，没空
+## 一、安装 sbt 环境
 
-## 6月1日这周：
-这周最大的成就就是
-创建好了环形队列~
+### 1\. 安装地址
 
-## 截至6月中旬（6月15日）
-6月前两周的进度还是挺快
-### 1.前端（第一周）
-- 整体流水线通路顺利打通，包括BPU-IFU-ICache & bpuQ-predecode-IBF，功能正确
-- BPU的读数据换成了BlockMemory式的读（下一周期出数据）
-- 初步的mmu接入，有小性能问题但功能完好
-### 2.后端顺序部分ctrlBlock（第二周）
-- 整体流水线打通 decode-rename-dispatch
-- 重要组件包括 freelist、Rat、Rob等
-- 发射队列有五个，目前只接好了接口
-- 重点优化了dispatch的分发到各个端口的逻辑
+官方下载地址：[https://www\.scala\-sbt\.org/download/](https://www.scala-sbt.org/download/)
 
-## 6月16日
-加上了IQ，未检查逻辑，目前看能正常运行
-> TODO:访存相关的源操作数等等需要设置好
-> RAT的bypass路径应该还是问题，待解决
+参考文档：`doc/自用教程/chisel安装与初探索wh.md`
 
-## 6月17日
-1. 访存的源操作数相关梳理一下，初步解决：在译码的时候就做好rs1和rs2，不传rk，rj
-2. 粗略加上了读寄存器BY AI
-3. RAT的读Bypass路径梳理好了，更新了hold信号保持
-4. FreeList的分配逻辑梳理了一下代码，解决了连续重复分配的问题
-> TODO：oldpest的读取删了，在提交时由架构表读就行 
->
-## 6月21日
-1. 整个ALU流水线差不多可以顺利运行了，ALU的指令可以跑通整个流水线不出错
-2. oldpdst逻辑已改、BusyTable逻辑已改
+### 2\. 环境验证
 
-## 6月23日
-1. 加上了执行模块里访存相关的内容
-2. 初步加上了LSQ,dispatch入队和更新地址数据暂时正常
+终端输入以下命令，有正常版本输出即为安装成功：
 
-## 6月24日
-1. LSQ初步功能写好了，接收新入队的、接收地址数据的功能基本没问题
-2. LSQ与WB的连接弄好了，SQ与Rob的交互OK了
+```shell
+sbt -v
+```
 
-> TODO:有些连线太乱了，整体大致弄好后需要大扫除一下
+## 二、Chisel 代码转换为 Verilog 代码
 
-## 6月25日
-- LQ和SQ分开读mmu的形式太抓马了，后面Cache流水线也不太好对齐
-1. 于是：访存读mmu的时间点放在了执行的addr之后马上读
-> TODO:
-> 访存读mmu的流水级
-> Dcache中庞大的逻辑……
+### 1\. 进入工程目录
 
-## 6月29日
-1. axi桥的仲裁逻辑丑陋地改了，因为要支持乱序访存，那么id的情况将是复杂多变的
-2. axi桥改了之后，AI写的Dcache编译成功了，但运行下来还是有问题
-> TODO:
-> 一点一点检查Dcache的逻辑
-> axi桥中关于id的仲裁改漂亮点
+```shell
+cd nscscc2026ByCQUPT/designCPUByChisel
+```
 
-## 7月2日
-1. Dcache改了一些眼睛看出来的问题
-2. difftest用起来了，一直到使用bru需要跳转的地方都没问题
-> TODO:bru和整个核的刷新网络
+### 2\. 执行转换命令
 
-## 7月5日
-1. 跳转的刷新写了；快照的保存改了
-2. 连上了difftest，整个核能跑起来了，并且还改了difftest里面的一丢丢东西
-3. BPU相关的东西还暂时有点问题。打开BPU只能过三四个功能测试；关闭BPU前面的ALU指令基本都过了（13个测试），最后倒在了一条ld上（测试第一条）
-> TODO: Dcache的访存逻辑还得优化
+```shell
+make ff
+```
 
-## 7月6日
-1. freelist的bug改了
-2. SQ加上了重定向清理
-> TODO: Dcache的访存逻辑还得优化,Dcache有大bug
-> TODO: BPU有大Bug
+### 3\. 生成文件路径
 
-## 7月8日
-1. Dcache用状态机了
-2. 通过46项功能测试
-> TODO: BPU
-## 7月10日
-### 回滚的时候需要释放快照
+转换成功后，生成的 Verilog 代码存放路径：`chiplab/IP/myCPU/FPGA`，可进入目录核对文件。
 
-## 7月11日
-1. 完成了所有的重定向的汇集与控制内容、包括分支、异常、写CSR等
-2. 重点完成了Rob中关于异常、写CSR的重定向
-3. 通过48项func(syscall break)
+## 三、项目创建、比特流与 LTX 文件生成（简略）
 
-## 7月12日
-1. 58项功能测试全部通过
-2. 累shi我了
+详细流程参考项目配套文档，此处仅标注**关键避坑要点**：
 
-> TODO:依旧还是改BPU, 还没开始动
+**生成bit前-重要检查事项**：每次重新生成 bit 流前，必须在 Vivado TCL 终端执行以下命令，或**删除项目重新创建**，避免缓存问题导致编译、上板异常： 
+
+```tcl
+reset_project
+```
+**生成bit前-重要检查事项**：一定要确保生成bit流的模式是对的！！功能测试要用功能测试的、性能测试要用性能测试的，不得混用，以免引起不必要的错误
+## 四、FPGA 上板自动测试（VIO 自动测试）
+
+新版 ChipLab 支持 VIO 自动上板测试，无需手动拨码记录（官方 README 未标注用法），直接通过 `vio.tcl` 脚本完成自动测试、结果输出。
+
+### 1\. 前置准备
+
+无需提前连接开发板、无需打开HardWare连接工具，直接在 Vivado TCL 控制台执行脚本即可。
+
+### 2\. TCL 执行脚本
+
+```tcl
+# 切换到当前工程目录
+cd [get_property DIRECTORY [current_project]]
+
+# 传入参数：bit文件、ltx文件、测试模式（func功能测试/perf性能测试）
+# 如果用服务器跑bit，你的电脑连板子，一定要确认bit流不要传错了！！！！！！下面的bit地址一定要对，以免引起不必要的测试错误
+set argv [list \
+  ./loongson.runs/impl_1/soc_top.bit \
+  ./loongson.runs/impl_1/soc_top.ltx \
+  perf \ 
+]
+set argc 3
+
+# 执行自动测试脚本
+source ../vio.tcl
+```
+
+### 3\. 关键参数说明
+
+第三个参数为测试模式，二选一：
+
+- `func`：功能测试模式
+
+- `perf`：性能测试模式
+
+详细规则参考脚本：`chiplab/fpga/nscscc-team/run_vivado/vio.tcl`
+
+### 4\. 测试结果校验
+
+脚本执行完成后，终端会打印测试日志，同时自动生成 CSV 测试报表，需核对报表数据与日志结果正常、无报错。
+
+
+
+# 学校服务器端 Vivado 运行方案（解决本地电脑编译卡顿问题）
+
+本项目工程体量较大，个人电脑生成 bit 流速度缓慢，推荐使用服务器 Docker 环境运行 Vivado 2023\.2。  
+以下是我个人的启动命令，我也不是很熟悉docker，详细问思贤，我这下面仅供参考。  
+
+### 1\. 远程连接服务器
+首先要配置好传图像界面的X11等等玩意儿,问AI,推荐用MobaXterm这软件  
+带图形界面加速连接（优化远程界面卡顿问题）：  
+连接服务器：  
+```shell
+ssh -YC -c aes128-gcm@openssh.com,chacha20-poly1305@openssh.com -o CompressionLevel=1 你的用户名@10.147.17.133
+```
+
+### 2\. 启动 Docker 容器
+
+核心说明：tcl中，你的项目在 `/workspace` 下，home 中找不到
+
+```shell
+docker run -it --rm \
+  --net=host \
+  -e DISPLAY=$DISPLAY \
+  -e QT_X11_NO_MITSHM=1 \
+  -e QT_GRAPHICSSYSTEM=raster \
+  -e QT_AUTO_SCREEN_SCALE_FACTOR=0 \
+  -e QT_SCALE_FACT=1 \
+  -e _JAVA_OPTIONS="-Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -Dswing.aatext=false" \
+  -e XLIB_SKIP_ARGB_VISUALS=1 \
+  -v $HOME/.Xauthority:/root/.Xauthority:ro \
+  -v $HOME:/workspace \
+  vivado:v2023.2 \
+bash
+```
+
+### 3\. 修复 Docker 环境 Bug（必做）
+
+那个Docker 镜像默认缺失 GCC 环境，每次进入容器需手动安装：
+
+```shell
+apt-get update && apt-get install -y build-essential
+```
+
+### 4\. 启动 Vivado 软件
+
+```shell
+/opt/Xilinx/Vivado/2023.2/bin/vivado
+```
+
