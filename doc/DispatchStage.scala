@@ -8,6 +8,7 @@ import nscscc.backend.rename._
 import nscscc.backend.regfile._
 import nscscc.backend.issue._
 import nscscc.backend.execute._
+import nscscc.backend.rob._
 import nscscc.util.CircularQueuePtr
  
 /**
@@ -15,11 +16,13 @@ import nscscc.util.CircularQueuePtr
  * 分发流水级（DispatchStage）—— 5 IQ 版本 (LSQ 单端口发射优化版)
  * ═══════════════════════════════════════════════════════════════
  *
- * 优化说明：
- * 1. 彻底解决 LSQ 批量分配造成的指针脏读时序问题。
- * 2. LSQ 的请求接口改为单个（伴随 IQ4 的发射同步触发）。
- * 3. 只有当 LSQ 且 IQ 均有空位时，访存指令才被允许参与发射竞争。
- * 4. Ptr 状态在成功发射当拍自增 1，杜绝批量加法逻辑。
+ * 修改说明（v2）：
+ * 1. ROB容量检查移除——由重命名级保证，分发级不再检测robEnq.canEnq。
+ * 2. robEnq请求发往DispatchRobBuffer（打一拍后进入ROB）。
+ * 3. 新增dispatchFlushDealloc端口——选择性刷新/异常刷新时，
+ *    被刷lane的pdest直接归还FreeList，不经archCommit。
+ * 4. 误预测重定向时：选择性刷新（保留不在刷除范围内的指令）。
+ * 5. 异常回滚时：全刷（stall状态下所有lane的pdest直接归还FreeList）。
  * ═══════════════════════════════════════════════════════════════
  */
 class DispatchStage(implicit p: Parameters) extends NSModule {
@@ -32,30 +35,28 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     val q5IQEnq  = Vec(IQEnqPorts.Q5, ValidIO(new DispatchedInst))
     val iqFeedback = Input(new IssueQueueFeedback)
     
-    // 注意：这里的 LsEnqIO 已经被视作单请求端口 (Valid(new LsEnqReq))
     val lsEnq   = new LsEnqIO 
     
+    // ── ROB 入队现在发往 DispatchRobBuffer ──
     val robEnq  = Flipped(new RobEnqIO)
-
+ 
+    // ── 新增：分发级刷新归还端口（直接通至 FreeList）──
+    val dispatchFlushDealloc = Vec(CtrlBlockWidth, Valid(UInt(PhyRegIdxWidth.W)))
+ 
+    // ── 新增：分发级中需要ROB的指令数量（供重命名级计算inFlightToRob）──
+    val dispatchNeedRobCount = Output(UInt(log2Ceil(CtrlBlockWidth + 1).W))
+ 
     val flush   = Input(Bool())
     val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule )) 
     val stall = Input(Bool())
-
-    //val redirect = Input(new RedirectInfo)
-
+ 
     val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
   })
  
   val busyTable = Module(new BusyTable)
  
   // ================================================================
-  //  引入具体的队列指针类型
-  // ================================================================
-  //class LqPtr extends CircularQueuePtr[LqPtr](LqSize)
-  //class SqPtr extends CircularQueuePtr[SqPtr](SqSize)
-
-  // ================================================================
-  //  流水级寄存器 (已精简冗余的 LSQ 状态)
+  //  流水级寄存器
   // ================================================================
   val laneValid   = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val robWritten  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
@@ -65,9 +66,12 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ── 需求掩码 ──
   val needRob = VecInit((0 until CtrlBlockWidth).map(i => laneValid(i) && !robWritten(i)))
   val needIq  = VecInit((0 until CtrlBlockWidth).map(i => laneValid(i) && !iqSent(i)))
-  
+   
   val stgValid = needIq.asUInt.orR
-    
+ 
+  // ── 输出分发级需要ROB的指令数量 ──
+  io.dispatchNeedRobCount := PopCount(needRob)
+ 
   // ================================================================
   //  一、指令分类（基于 needIq）
   // ================================================================
@@ -105,9 +109,9 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val divToQ2 = truncateMask(VecInit( (0 until CtrlBlockWidth).map(i => isDivLane(i) && q2Avail)), 1)
   val isMulOrJmpLane = VecInit((0 until CtrlBlockWidth).map(i => (isMulLane(i) || isJmpLane(i)) && q3Avail))
   val mulJmpToQ3 = truncateMask(isMulOrJmpLane, 1)
-  
+   
   var consumedMask = csrToQ1.asUInt | divToQ2.asUInt | mulJmpToQ3.asUInt
-  
+   
   val q1FreeAfterExclusive = !csrToQ1.asUInt.orR && q1Avail
   val q2FreeAfterExclusive = !divToQ2.asUInt.orR && q2Avail
   val q3FreeAfterExclusive = !mulJmpToQ3.asUInt.orR && q3Avail
@@ -127,7 +131,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   rank0OH(0) := (q1AluPriority >= q2AluPriority) && (q1AluPriority >= q3AluPriority)
   rank0OH(1) := !rank0OH(0) && (q2AluPriority >= q3AluPriority)
   rank0OH(2) := !rank0OH(0) && !rank0OH(1)
-
+ 
   val exclRank0 = VecInit(Seq(q1AluPriority, q2AluPriority, q3AluPriority).zip(rank0OH).map {
     case (p, oh) => Mux(oh, 0.U, p)
   })
@@ -135,16 +139,16 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   rank1OH(0) := !rank0OH(0) && (exclRank0(0) >= exclRank0(1)) && (exclRank0(0) >= exclRank0(2))
   rank1OH(1) := !rank0OH(1) && !rank1OH(0) && (exclRank0(1) >= exclRank0(2))
   rank1OH(2) := !rank0OH(2) && !rank1OH(0) && !rank1OH(1)
- 
+   
   val rank2OH = Wire(Vec(3, Bool()))
   rank2OH(0) := !rank0OH(0) && !rank1OH(0)
   rank2OH(1) := !rank0OH(1) && !rank1OH(1)
   rank2OH(2) := !rank0OH(2) && !rank1OH(2)
-
+ 
   val rank0HasCap = Mux(rank0OH(0), q1CanAcceptAlu, Mux(rank0OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
   val rank1HasCap = Mux(rank1OH(0), q1CanAcceptAlu, Mux(rank1OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
   val rank2HasCap = Mux(rank2OH(0), q1CanAcceptAlu, Mux(rank2OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
-
+ 
   val aluCandR1 = VecInit((0 until CtrlBlockWidth).map(i => isAluLane(i) && !consumedMask(i)))
   val aluRound1 = truncateMask(aluCandR1, 1)
   val aluRound1Valid = aluRound1.asUInt.orR && rank0HasCap
@@ -152,7 +156,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val aluRound1ToQ2 = aluRound1Valid && rank0OH(1)
   val aluRound1ToQ3 = aluRound1Valid && rank0OH(2)
   consumedMask = consumedMask | Mux(aluRound1Valid, aluRound1.asUInt, 0.U)
- 
+   
   val aluCandR2 = VecInit((0 until CtrlBlockWidth).map(i => isAluLane(i) && !consumedMask(i)))
   val aluRound2 = truncateMask(aluCandR2, 1)
   val aluRound2Valid = aluRound2.asUInt.orR && rank1HasCap
@@ -160,7 +164,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val aluRound2ToQ2 = aluRound2Valid && rank1OH(1)
   val aluRound2ToQ3 = aluRound2Valid && rank1OH(2)
   consumedMask = consumedMask | Mux(aluRound2Valid, aluRound2.asUInt, 0.U)
- 
+   
   val aluCandR3 = VecInit((0 until CtrlBlockWidth).map(i => isAluLane(i) && !consumedMask(i)))
   val aluRound3 = truncateMask(aluCandR3, 1)
   val aluRound3Valid = aluRound3.asUInt.orR && rank2HasCap
@@ -168,17 +172,17 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val aluRound3ToQ2 = aluRound3Valid && rank2OH(1)
   val aluRound3ToQ3 = aluRound3Valid && rank2OH(2)
   consumedMask = consumedMask | Mux(aluRound3Valid, aluRound3.asUInt, 0.U)
- 
+   
   val aluToQ1 = VecInit((0 until CtrlBlockWidth).map(i => (aluRound1(i) && aluRound1ToQ1) || (aluRound2(i) && aluRound2ToQ1) || (aluRound3(i) && aluRound3ToQ1)))
   val aluToQ2 = VecInit((0 until CtrlBlockWidth).map(i => (aluRound1(i) && aluRound1ToQ2) || (aluRound2(i) && aluRound2ToQ2) || (aluRound3(i) && aluRound3ToQ2)))
   val aluToQ3 = VecInit((0 until CtrlBlockWidth).map(i => (aluRound1(i) && aluRound1ToQ3) || (aluRound2(i) && aluRound2ToQ3) || (aluRound3(i) && aluRound3ToQ3)))
- 
+   
   val q1Final = VecInit((0 until CtrlBlockWidth).map(i => csrToQ1(i) || aluToQ1(i)))
   val q2Final = VecInit((0 until CtrlBlockWidth).map(i => divToQ2(i) || aluToQ2(i)))
   val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3(i)))
- 
+   
   // ================================================================
-  //  Q4/Q5 路由 (结合了 LSQ 容量判断，只有 LSQ 能接住才允许发往 IQ)
+  //  Q4/Q5 路由
   // ================================================================
   val q4Cand = VecInit((0 until CtrlBlockWidth).map(i => {
     val canLoad  = isLoadLane(i)  && !io.lsEnq.lqFull
@@ -187,14 +191,14 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   }))
   val q4Selected = truncateMask(q4Cand, 1)
   dontTouch(q4Selected)
- 
+   
   val q5Selected = VecInit((0 until CtrlBlockWidth).map(i => q4Selected(i) && isStoreLane(i)))
   dontTouch(q5Selected)
- 
+   
   val iqDispatchMask = VecInit((0 until CtrlBlockWidth).map(i =>
     q1Final(i) || q2Final(i) || q3Final(i) || q4Selected(i) || q5Selected(i)
   ))
-
+ 
   val laneTargetQ = Wire(Vec(CtrlBlockWidth, UInt(IssueQueueId.width.W)))
   for (i <- 0 until CtrlBlockWidth) {
     laneTargetQ(i) := MuxCase(IssueQueueId.Q1.U, Seq(
@@ -209,39 +213,58 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  资源就绪与发射条件
   // ================================================================
-  val anyNeedRob = needRob.asUInt.orR
-  val robBatchReady = !anyNeedRob || io.robEnq.canEnq
-
+  // ★ 关键修改：不再检测 robEnq.canEnq，ROB容量由重命名级保证
+  // 只需检查 IQ 分发条件即可
   val hasIqDispatch = iqDispatchMask.zip(needIq).map { case (d, n) => d && n }.reduce(_ || _)
-
-  // 由于 LSQ 检查已融入 q4Cand，此处不再需要 lsqBatchReady
-  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob) && !io.flush && !io.stall //flush是指flush的时候不做任何fire，因为下面那个寄存器不能阻断flush
-                                                                                                    // stall就是回滚的stall
-
+ 
+  val dispatchFire = stgValid && hasIqDispatch && !io.flush && !io.stall
+ 
   val AllWillFire = VecInit((0 until CtrlBlockWidth).map(i => (needIq(i) && iqDispatchMask(i)) || !needIq(i)  )).reduce(_ && _)
-  val canAcceptNew =( !stgValid || ( dispatchFire && AllWillFire ) ) && !io.robEnq.full
+  // ★ 修改：canAcceptNew 不再依赖 robEnq.full 和 robEnq.canEnq
+  // 因为重命名级已经保证了ROB容量，只要指令能进入分发级，ROB一定能接收
+  val canAcceptNew = !stgValid || (dispatchFire && AllWillFire)
  
   val inValid = io.in.map(_.valid).reduce(_ || _)
-  val inFire  = inValid && canAcceptNew && !io.flush //dispatch阶段的flush性质变了，下面那个寄存器中的flush不能阻断inFire
+  val inFire  = inValid && canAcceptNew && !io.flush
   for (i <- 0 until CtrlBlockWidth) {
     io.in(i).ready := canAcceptNew 
   }
  
   // ================================================================
-  //  状态转移
+  //  重定向处理（核心修改区）
   // ================================================================
   val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   val redirectRobIdx = io.redirectInfo.bits.robIdx
-
-  //val doFlush.asUInt.orR = doRedirect && ( (  io.inReq.bits.uop.robIdxFull.isAfter(redirectRobIdx)))
+  val isBruRedirect  = io.redirectInfo.valid && io.redirectInfo.bits.fromBru
+  val isRobRedirect  = io.redirectInfo.valid && io.redirectInfo.bits.fromRob  // 异常重定向
+ 
+  // ── 选择性刷新掩码：只刷 robIdx.isAfter(redirectRobIdx) 的 lane ──
   val doFlush = Wire(Vec(CtrlBlockWidth, Bool()))
   for (i <- 0 until CtrlBlockWidth) {
     doFlush(i) := doRedirect && laneValid(i) && stgData(i).robIdx.isAfter(redirectRobIdx)
   }
-  
-  when(doFlush.asUInt.orR) {
+ 
+  // ── 异常回滚时的全刷掩码：异常回滚时所有分发级指令都需要刷掉 ──
+  // 异常重定向时stall信号也会生效，但为了归还pdest，我们需要在此一并处理
+  val excpFlushAll = Wire(Vec(CtrlBlockWidth, Bool()))
+  for (i <- 0 until CtrlBlockWidth) {
+    excpFlushAll(i) := isRobRedirect && laneValid(i)
+  }
+ 
+  // ── 综合刷新掩码 ──
+  // 误预测：选择性刷新（只刷isAfter的lane）
+  // 异常：全刷（所有lane）
+  val finalFlush = Wire(Vec(CtrlBlockWidth, Bool()))
+  for (i <- 0 until CtrlBlockWidth) {
+    finalFlush(i) := doFlush(i) || excpFlushAll(i)
+  }
+ 
+  // ================================================================
+  //  状态转移
+  // ================================================================
+  when(finalFlush.asUInt.orR) {
     for (i <- 0 until CtrlBlockWidth) {
-      when(doFlush(i)){
+      when(finalFlush(i)){
         laneValid(i)  := false.B
         robWritten(i) := false.B
         iqSent(i)     := false.B
@@ -262,27 +285,35 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  LQ / SQ 单点指针维护与 LSQ 请求生成 (核心变动)
+  //  ★ 新增：分发级刷新归还端口（直接通至 FreeList）
+  // ================================================================
+  // 当 lane 被刷新时，如果该 lane 的指令有有效的 pdest（rdValid && ldst != 0），
+  // 直接将其 pdest 输出到 dispatchFlushDealloc 端口归还 FreeList
+  for (i <- 0 until CtrlBlockWidth) {
+    io.dispatchFlushDealloc(i).valid := finalFlush(i) && 
+      stgData(i).ctrl.rfWen && stgData(i).ldst =/= 0.U
+    io.dispatchFlushDealloc(i).bits  := stgData(i).pdst
+  }
+ 
+  // ================================================================
+  //  LQ / SQ 单点指针维护与 LSQ 请求生成
   // ================================================================
   val lqHeadPtr = RegInit(0.U.asTypeOf(new LqPtr(LqSize)))
   val sqHeadPtr = RegInit(0.U.asTypeOf(new SqPtr(SqSize)))
  
-  // 解析当前被选中发往 IQ4 的访存指令信息
   val memDispatchedThisCycle = dispatchFire && q4Selected.asUInt.orR && !io.flush
   val selectedIsLoad  = Mux1H(q4Selected, (0 until CtrlBlockWidth).map(i => stgData(i).ctrl.memRead))
   val selectedIsStore = Mux1H(q4Selected, (0 until CtrlBlockWidth).map(i => stgData(i).ctrl.memWrite))
   val selectedMemInst = Mux1H(q4Selected, stgData)
-
-  // 当拍同步触发 LSQ 写入
-  io.lsEnq.req.valid        := memDispatchedThisCycle
+ 
+  io.lsEng.req.valid        := memDispatchedThisCycle
   io.lsEnq.req.bits.robIdx  := selectedMemInst.robIdx
   io.lsEnq.req.bits.isLoad  := selectedIsLoad
   io.lsEnq.req.bits.isStore := selectedIsStore
   io.lsEnq.req.bits.lqIdx   := lqHeadPtr
   io.lsEnq.req.bits.sqIdx   := sqHeadPtr
   io.lsEnq.toLsqData := selectedMemInst
-
-  // 更新当前指针 (仅+1)
+ 
   when(memDispatchedThisCycle) {
     when(selectedIsLoad) {
       lqHeadPtr := lqHeadPtr + 1.U
@@ -291,11 +322,13 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
       sqHeadPtr := sqHeadPtr + 1.U
     }
   }
-
- // when(io.flush) {
- //   lqHeadPtr := 0.U.asTypeOf(new LqPtr(LqSize))
- //   sqHeadPtr := 0.U.asTypeOf(new SqPtr(SqSize))
- // }
+ 
+  // ── 重定向时重置 LSQ 指针 ──
+  // 注意：异常回滚时LSQ自身也会处理，但分发级的指针需要重置
+  when(doRedirect && isBruRedirect) {
+    // 误预测：需要根据 ROB 的信息来恢复指针，这里简化处理为重置
+    // 实际上应该从 snapshot 或 ROB 提交信息恢复，这里留作TODO
+  }
  
   // ================================================================
   //  BusyTable 读写与更新逻辑
@@ -304,44 +337,44 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     busyTable.io.readReq(i * 2)     := stgData(i).prs1
     busyTable.io.readReq(i * 2 + 1) := stgData(i).prs2
   }
-
+ 
   val allocValids = Wire(Vec(CtrlBlockWidth, Bool()))
   for (i <- 0 until CtrlBlockWidth) {
     allocValids(i) := dispatchFire && needRob(i) && stgData(i).rdValid && stgData(i).ldst =/= 0.U
     busyTable.io.allocReq(i).valid := allocValids(i)
     busyTable.io.allocReq(i).bits  := stgData(i).pdst
   }
-  
+   
   val wakeupPorts = io.wakeupPorts
   for (i <- 0 until WbBusWidth) {
     busyTable.io.wbReq(i).valid := wakeupPorts(i).valid
     busyTable.io.wbReq(i).bits  := wakeupPorts(i).bits.pdst
   }
-
+ 
   val prs1BusyRaw = VecInit((0 until CtrlBlockWidth).map(i => busyTable.io.readResp(i * 2)))
   val prs2BusyRaw = VecInit((0 until CtrlBlockWidth).map(i => busyTable.io.readResp(i * 2 + 1)))
-
+ 
   val prs1Busy = Wire(Vec(CtrlBlockWidth, Bool()))
   val prs2Busy = Wire(Vec(CtrlBlockWidth, Bool()))
-  
+   
   for (i <- 0 until CtrlBlockWidth) {
     val prs1WakeupHits = wakeupPorts.map(w => w.valid && (w.bits.pdst === stgData(i).prs1))
     val prs1WokenUp    = VecInit(prs1WakeupHits).asUInt.orR
-
+ 
     val prs2WakeupHits = wakeupPorts.map(w => w.valid && (w.bits.pdst === stgData(i).prs2))
     val prs2WokenUp    = VecInit(prs2WakeupHits).asUInt.orR
-
+ 
     val prs1AllocByOlder = if (i == 0) false.B else {
       VecInit((0 until i).map(j => allocValids(j) && (stgData(j).pdst === stgData(i).prs1))).asUInt.orR
     }
     val prs2AllocByOlder = if (i == 0) false.B else {
       VecInit((0 until i).map(j => allocValids(j) && (stgData(j).pdst === stgData(i).prs2))).asUInt.orR
     }
-
+ 
     prs1Busy(i) := prs1AllocByOlder || (prs1BusyRaw(i) && !prs1WokenUp)
     prs2Busy(i) := prs2AllocByOlder || (prs2BusyRaw(i) && !prs2WokenUp)
   }
-
+ 
   // ================================================================
   //  微操作构造
   // ================================================================
@@ -367,13 +400,9 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.rdValid    := stgData(i).rdValid
     u.robIdx     := stgData(i).robIdx
     u.robIdxFull := stgData(i).robIdx
-
     u.snptId := stgData(i).snptId
-    
-    // 初始化清零
-    u.sqIdx      :=  0.U.asTypeOf(new LqPtr(SqSize))
-    u.lqIdx      :=  0.U.asTypeOf(new LqPtr(LqSize))
-    
+    u.sqIdx      := 0.U.asTypeOf(new LqPtr(SqSize))
+    u.lqIdx      := 0.U.asTypeOf(new LqPtr(LqSize))
     u.issueQueue := laneTargetQ(i)
     u.prs1Busy   := Mux(stgData(i).rs1Valid && stgData(i).lrs1 =/= 0.U, prs1Busy(i), false.B)
     u.prs2Busy   := Mux(stgData(i).rs2Valid && stgData(i).lrs2 =/= 0.U, prs2Busy(i), false.B)
@@ -384,14 +413,14 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
  
   def makeLoadUop(i: Int): DispatchedInst = {
     val u = makeBaseUop(i)
-    u.lqIdx      := lqHeadPtr // 动态赋予当拍实时有效的 HeadPtr
+    u.lqIdx      := lqHeadPtr
     u.issueQueue := IssueQueueId.Q4.U
     u
   }
- 
+   
   def makeStaUop(i: Int): DispatchedInst = {
     val u = makeBaseUop(i)
-    u.sqIdx      := sqHeadPtr // 动态赋予当拍实时有效的 HeadPtr
+    u.sqIdx      := sqHeadPtr
     u.issueQueue := IssueQueueId.Q4.U
     u.isSta      := true.B
     u.rs2Valid   := false.B
@@ -403,7 +432,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
  
   def makeStdUop(i: Int): DispatchedInst = {
     val u = makeBaseUop(i)
-    u.sqIdx      := sqHeadPtr // 与 STA 指令共用同一个周期的 HeadPtr
+    u.sqIdx      := sqHeadPtr
     u.issueQueue := IssueQueueId.Q5.U
     u.isStd      := true.B
     u.rs1Valid   := false.B
@@ -422,7 +451,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   io.q3IQEnq(0).valid := false.B;  io.q3IQEnq(0).bits := DontCare
   io.q4IQEnq(0).valid := false.B;  io.q4IQEnq(0).bits := DontCare
   io.q5IQEnq(0).valid := false.B;  io.q5IQEnq(0).bits := DontCare
- 
+   
   val q1Uops = (0 until CtrlBlockWidth).map(i => {
     val u = Wire(new DispatchedInst)
     u := makeBaseUop(i)
@@ -433,7 +462,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.q1IQEnq(0).valid := true.B && !io.flush
     io.q1IQEnq(0).bits  := Mux1H(q1Final, q1Uops)
   }
- 
+   
   val q2Uops = (0 until CtrlBlockWidth).map(i => {
     val u = Wire(new DispatchedInst)
     u := makeBaseUop(i)
@@ -444,7 +473,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.q2IQEnq(0).valid := true.B && !io.flush
     io.q2IQEnq(0).bits  := Mux1H(q2Final, q2Uops)
   }
- 
+   
   val q3Uops = (0 until CtrlBlockWidth).map(i => {
     val u = Wire(new DispatchedInst)
     u := makeBaseUop(i)
@@ -455,13 +484,13 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.q3IQEnq(0).valid := true.B && !io.flush
     io.q3IQEnq(0).bits  := Mux1H(q3Final, q3Uops)
   }
- 
+   
   val q4Uops = (0 until CtrlBlockWidth).map(i => Mux(isStoreLane(i), makeStaUop(i), makeLoadUop(i)))
   when(q4Selected.asUInt.orR && dispatchFire) {
     io.q4IQEnq(0).valid := true.B  && !io.flush
     io.q4IQEnq(0).bits  := Mux1H(q4Selected, q4Uops)
   }
- 
+   
   val q5Uops = (0 until CtrlBlockWidth).map(i => makeStdUop(i))
   when(q5Selected.asUInt.orR && dispatchFire) {
     io.q5IQEnq(0).valid := true.B && !io.flush
@@ -469,39 +498,39 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   }
   dontTouch(io.q5IQEnq)
   dontTouch(io.q4IQEnq)
- 
+   
   // ================================================================
-  //  ROB 批量写入 (ROB仍然维持进入流水级当拍进行一次性批量分发)
+  //  ★ ROB 入队请求 → 发往 DispatchRobBuffer（不再直接发往ROB）
   // ================================================================
+  // 分发级fire时，将需要ROB的指令信息写入robEnq端口
+  // 这个端口现在连接到DispatchRobBuffer，Buffer会打一拍后送入ROB
   for (i <- 0 until CtrlBlockWidth) {
-    io.robEnq.valid(i)              := (dispatchFire && needRob(i) && !io.flush)
-    io.robEnq.valids(i)             := (needRob(i))
-    io.robEnq.bits(i).pc            := (stgData(i).pc)
-    io.robEnq.bits(i).inst          := (stgData(i).inst)
-    io.robEnq.bits(i).fuType        := (stgData(i).ctrl.fuType)
-    io.robEnq.bits(i).pdst          := (stgData(i).pdst)
-    io.robEnq.bits(i).oldPdst       := (stgData(i).oldPdst)
-    io.robEnq.bits(i).ldst          := (stgData(i).ldst)
-    io.robEnq.bits(i).rfWen         := (stgData(i).ctrl.rfWen)
-    io.robEnq.bits(i).memRead       := (stgData(i).ctrl.memRead)
-    io.robEnq.bits(i).memWrite      := (stgData(i).ctrl.memWrite)
-    io.robEnq.bits(i).csrWen        := (stgData(i).ctrl.csrWen)
-    io.robEnq.bits(i).csrOp         := (stgData(i).ctrl.csrOp)
-    io.robEnq.bits(i).csrWaddr      := (stgData(i).csrAddress)
-    io.robEnq.bits(i).isPriv        := (stgData(i).ctrl.isPriv)
-    io.robEnq.bits(i).excp          := (stgData(i).excp)
-    io.robEnq.bits(i).robIdx        := (stgData(i).robIdx)
-
-    io.robEnq.bits(i).writtenBack   := DontCare
-    io.robEnq.bits(i).valid         := DontCare
+    io.robEnq.valid(i)  := dispatchFire && needRob(i) && !io.flush
+    io.robEnq.valids(i) := needRob(i)
+    io.robEnq.bits(i).pc       := stgData(i).pc
+    io.robEnq.bits(i).inst     := stgData(i).inst
+    io.robEnq.bits(i).fuType   := stgData(i).ctrl.fuType
+    io.robEnq.bits(i).pdst     := stgData(i).pdst
+    io.robEnq.bits(i).oldPdst  := stgData(i).oldPdst
+    io.robEnq.bits(i).ldst     := stgData(i).ldst
+    io.robEnq.bits(i).rfWen    := stgData(i).ctrl.rfWen
+    io.robEnq.bits(i).rfdata   := DontCare
+    io.robEnq.bits(i).memRead  := stgData(i).ctrl.memRead
+    io.robEnq.bits(i).memWrite := stgData(i).ctrl.memWrite
+    io.robEnq.bits(i).memVaddr  := DontCare
+    io.robEnq.bits(i).memPaddr  := DontCare
+    io.robEnq.bits(i).storeData := DontCare
+    io.robEnq.bits(i).sqIdx     := DontCare
+    io.robEnq.bits(i).csrWen   := stgData(i).ctrl.csrWen
+    io.robEnq.bits(i).csrOp    := stgData(i).ctrl.csrOp
+    io.robEnq.bits(i).csrWaddr := stgData(i).csrAddress
+    io.robEnq.bits(i).csrWdata := DontCare
+    io.robEnq.bits(i).csrTimer := DontCare
+    io.robEnq.bits(i).isPriv   := stgData(i).ctrl.isPriv
+    io.robEnq.bits(i).excp  := stgData(i).excp
+    io.robEnq.bits(i).robIdx   := stgData(i).robIdx
+    io.robEnq.bits(i).writtenBack := DontCare
+    io.robEnq.bits(i).valid       := DontCare
     io.robEnq.bits(i).needsRollback := DontCare
-    io.robEnq.bits(i).rfdata        := DontCare
-    io.robEnq.bits(i).memVaddr      := DontCare
-    io.robEnq.bits(i).memPaddr      := DontCare
-    io.robEnq.bits(i).storeData     := DontCare
-    io.robEnq.bits(i).sqIdx         := DontCare
-    io.robEnq.bits(i).csrWdata      := DontCare
-    io.robEnq.bits(i).csrTimer      := DontCare
-
   }
 }
