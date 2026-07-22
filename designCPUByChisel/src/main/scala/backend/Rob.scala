@@ -85,11 +85,13 @@ class ROB(implicit p: Parameters) extends NSModule {
     val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
     val robRedirect      = Output(new RobRedirectReq)
     val redirectInfo     = Flipped(ValidIO(new redirectInfoToModule))
- 
     val robPause         = Input(Bool())
     val robNeedRollback  = Input(Bool())
     val robRollbackTarget= Input(new RobPtr(RobSize))
     val robRollbackDone  = Output(Bool())
+
+    val robFreeSpace     = Output(UInt(log2Ceil(RobSize + 1).W))
+    val enqFromDispatch  = new RobEnqIO
     
   })
  
@@ -124,13 +126,15 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
   val count = enqPtr.distanceTo(deqPtr)
+  io.robFreeSpace := RobSize.U - count
  
   // ================================================================
   //  2. 入队逻辑 (Enqueue)
   // ================================================================
-  val enqValidCount = PopCount(io.enq.valids)
-  io.enq.canEnq := !full && (count +& enqValidCount <= RobSize.U)
-  io.enq.full := count  > RobSize.U - 6.U //真没招了
+  val enqValidCount = PopCount(io.enq.valid)
+  //io.enq.canEnq := !full 
+  //&& (count +& enqValidCount <= RobSize.U)
+  //io.enq.full := count  > RobSize.U - 6.U //真没招了
  
   val enqPrefixSum = Wire(Vec(CtrlBlockWidth + 1, UInt(log2Ceil(RobSize).W)))
   enqPrefixSum(0) := 0.U
@@ -142,7 +146,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   
   for (i <- 0 until CtrlBlockWidth) {
     val writeIdx = (enqPtr.value + enqPrefixSum(i))(log2Ceil(RobSize) - 1, 0)
-    when(io.enq.valid(i) && io.enq.canEnq && !io.robPause) {
+    when(io.enq.valid(i) /* && io.enq.canEnq */ && !io.robPause) {
       entries(writeIdx).pc           := io.enq.bits(i).pc
       entries(writeIdx).inst         := io.enq.bits(i).inst
       entries(writeIdx).pdst         := io.enq.bits(i).pdst
@@ -167,7 +171,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     }
   }
  
-  when(io.enq.canEnq && enqValidCount.orR && io.enq.valid(0) && !io.robPause ) {
+  when(/* io.enq.canEnq && */ enqValidCount.orR && io.enq.valid(0) && !io.robPause ) {
     enqPtr := enqPtr + enqValidCount
   }
  
@@ -300,23 +304,37 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  6. ROB 回滚逻辑 (Rollback FSM)
   // ================================================================
-  val rb_idle :: rb_disp :: rb_rob :: Nil = Enum(3)
+  val rb_idle :: rb_buffer :: rb_disp ::rb_rob :: Nil = Enum(4)
   val rollbackState = RegInit(rb_idle)
   val isRollingBack = rollbackState =/= rb_idle
  
   // ── 锁存未能入队的 Dispatch 寄存器信息，防止物理寄存器泄漏 ──
-  val latchCanEnq   = RegInit(true.B)
+  //val latchCanEnq   = RegInit(true.B)
   val latchEnqValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val latchEnqPdst  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U(PhyRegIdxWidth.W))))
   val latchEnqRfWen = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+
+  //val dispatchCanEnq   = RegInit(true.B)
+  val dispatchValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+  val dispatchPdst  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U(PhyRegIdxWidth.W))))
+  val dispatchRfWen = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
  
   when(io.robRedirect.valid) {
-    latchCanEnq := io.enq.canEnq
+    //latchCanEnq := io.enq.canEnq
     for (i <- 0 until CtrlBlockWidth) {
-      latchEnqValid(i) := io.enq.valid(i) && !io.enq.canEnq && io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
+      latchEnqValid(i) := io.enq.valid(i) && /*io.enq.canEnq && */ io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
       latchEnqPdst(i)  := io.enq.bits(i).pdst
       latchEnqRfWen(i) := io.enq.bits(i).rfWen
     }
+
+    //dispatchCanEnq := io.enqFromDispatch.canEnq
+    for (i <- 0 until CtrlBlockWidth) {
+      dispatchValid(i) := io.enqFromDispatch.valid(i) && /*!io.enqFromDispatch.canEnq && */ io.enqFromDispatch.bits(i).rfWen && io.enqFromDispatch.bits(i).ldst =/= 0.U
+      dispatchPdst(i)  := io.enqFromDispatch.bits(i).pdst
+      dispatchRfWen(i) := io.enqFromDispatch.bits(i).rfWen
+    }
+
+
   }
  
   val dispIdx     = RegInit(0.U(log2Ceil(CtrlBlockWidth + 1).W))
@@ -325,25 +343,37 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   // ── 启动回滚与状态转移 ──
   when(io.robNeedRollback && rollbackState === rb_idle) {
-    when(!latchCanEnq || !latchEnqValid.asUInt.orR) {
+    when((/* !latchCanEnq || */ !latchEnqValid.asUInt.orR) && ( /* !dispatchCanEnq || */ !dispatchValid.asUInt.orR)) {
       // Dispatch 无遗漏，直接进入 ROB 扫描阶段
       rollbackState := rb_rob
       rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr))
     }.otherwise {
-      rollbackState := rb_disp
+      rollbackState := rb_buffer
       dispIdx       := 0.U
     }
   }
  
   switch(rollbackState) {
-    is(rb_disp) {
+    is(rb_buffer) {
       when(dispIdx >= CtrlBlockWidth.U) {
+        //rollbackState := rb_rob
+        //rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr)) // 安全起见检查 ROB 是否已空
+        rollbackState := rb_disp
+        dispIdx       := 0.U
+      }.otherwise {
+        dispIdx := dispIdx + 1.U
+      }
+    }
+
+    is(rb_disp) {
+      when(dispIdx >=  CtrlBlockWidth.U) {
         rollbackState := rb_rob
         rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr)) // 安全起见检查 ROB 是否已空
       }.otherwise {
         dispIdx := dispIdx + 1.U
       }
     }
+
     is(rb_rob) {
       when(rollbackAtDeq) {
         rollbackState := rb_idle
@@ -360,42 +390,42 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ── 覆盖输出：回滚时强制通过 ArchCommit 接口进行 pdst 释放 ──
   val rollbackEntry    = entries(rollbackPtr.value)
   val rollbackNeedFree = rollbackEntry.valid && rollbackEntry.rfWen && rollbackEntry.ldst =/= 0.U
-  val dispNeedFree     = latchEnqValid(dispIdx)
+  val bufferNeedFree     = latchEnqValid(dispIdx)
+
+  val dispNeedFree     = dispatchValid(dispIdx)
  
   when(isRollingBack) {
-    for (i <- 1 until CommitWidth) {
+
+    for (i <- 0 until CommitWidth) {
       io.archCommit(i).valid  := false.B
-      io.archCommit(i).isWalk := true.B
+      io.archCommit(i).isWalk := false.B
     }
+
     
     // 第 0 槽位专门用于逐条归还物理寄存器
-    when(rollbackState === rb_disp && dispIdx < CtrlBlockWidth.U && dispNeedFree) {
+    when(rollbackState === rb_buffer && dispIdx < CtrlBlockWidth.U && bufferNeedFree) {
       io.archCommit(0).valid   := true.B
       io.archCommit(0).isWalk  := true.B
       io.archCommit(0).pdst    := latchEnqPdst(dispIdx)
       io.archCommit(0).ldst    := 0.U
       io.archCommit(0).oldPdst := 0.U
       io.archCommit(0).rfWen   := latchEnqRfWen(dispIdx)
+    }.elsewhen(rollbackState === rb_disp && dispIdx < CtrlBlockWidth.U && dispNeedFree) {
+      io.archCommit(1).valid   := true.B
+      io.archCommit(1).isWalk  := true.B
+      io.archCommit(1).pdst    := dispatchPdst(dispIdx)
+      io.archCommit(1).ldst    := 0.U
+      io.archCommit(1).oldPdst := 0.U
+      io.archCommit(1).rfWen   := dispatchRfWen(dispIdx)
     }.elsewhen(rollbackState === rb_rob && rollbackNeedFree) {
-      io.archCommit(0).valid   := true.B
-      io.archCommit(0).isWalk  := true.B
-      io.archCommit(0).pdst    := rollbackEntry.pdst
-      io.archCommit(0).ldst    := 0.U
-      io.archCommit(0).oldPdst := 0.U
-      io.archCommit(0).rfWen   := true.B
-    }.otherwise {
-      io.archCommit(0).valid   := false.B
-      io.archCommit(0).isWalk  := true.B
+      io.archCommit(2).valid   := true.B
+      io.archCommit(2).isWalk  := true.B
+      io.archCommit(2).pdst    := rollbackEntry.pdst
+      io.archCommit(2).ldst    := 0.U
+      io.archCommit(2).oldPdst := 0.U
+      io.archCommit(2).rfWen   := true.B
     }
     
-    // 强制关闭正常的 Commit，防止干扰
-    // for (i <- 0 until CommitWidth) {
-    //   io.commit.valid(i)        := false.B
-    //   io.commit.isExcpCommit(i) := false.B
-    //   io.commitToSq.valid(i)    := false.B
-    // }
-    // io.commit.isWalk := true.B
-    // io.commitToCsr.csrWen := false.B
   }
  
   // ================================================================
@@ -407,7 +437,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     // A. 判断入队命中
     val enqHit = VecInit((0 until CtrlBlockWidth).map(j => {
       val allocPtr = (enqPtr.value + enqPrefixSum(j))(log2Ceil(RobSize) - 1, 0)
-      io.enq.valid(j) && io.enq.canEnq && allocPtr === i.U
+      io.enq.valid(j) /* && io.enq.canEnq */ && allocPtr === i.U
     })).asUInt.orR && !bruArrived
  
     // B. 判断 Commit 命中

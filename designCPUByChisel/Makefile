@@ -42,6 +42,14 @@ ss:
 ff:
 	sbt "runMain nscscc.CoreGen fpga"
 
+func:
+	cd $(ENV_SCRIPT) && \
+	cd $(MAKE_DIR) && ./configure.sh --run func/func_lab9
+
+perf:
+	cd $(ENV_SCRIPT) && \
+	cd $(MAKE_DIR) && ./configure.sh --run coremark
+
 clean:
 	cd $(SBT_DIR) && sbt clean
 	cd ../$(MAKE_DIR) && $(MAKE) clean

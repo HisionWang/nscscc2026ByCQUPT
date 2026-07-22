@@ -209,17 +209,17 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  资源就绪与发射条件
   // ================================================================
-  val anyNeedRob = needRob.asUInt.orR
-  val robBatchReady = !anyNeedRob || io.robEnq.canEnq
+  //val anyNeedRob = needRob.asUInt.orR
+  //val robBatchReady = !anyNeedRob // || io.robEnq.canEnq
 
   val hasIqDispatch = iqDispatchMask.zip(needIq).map { case (d, n) => d && n }.reduce(_ || _)
 
   // 由于 LSQ 检查已融入 q4Cand，此处不再需要 lsqBatchReady
-  val dispatchFire = stgValid && hasIqDispatch && (robBatchReady || !anyNeedRob) && !io.flush && !io.stall //flush是指flush的时候不做任何fire，因为下面那个寄存器不能阻断flush
+  val dispatchFire = stgValid && hasIqDispatch && /*(robBatchReady || !anyNeedRob) && */ !io.flush && !io.stall //flush是指flush的时候不做任何fire，因为下面那个寄存器不能阻断flush
                                                                                                     // stall就是回滚的stall
 
   val AllWillFire = VecInit((0 until CtrlBlockWidth).map(i => (needIq(i) && iqDispatchMask(i)) || !needIq(i)  )).reduce(_ && _)
-  val canAcceptNew =( !stgValid || ( dispatchFire && AllWillFire ) ) && !io.robEnq.full
+  val canAcceptNew =( !stgValid || ( dispatchFire && AllWillFire ) )  //&& !io.robEnq.full
  
   val inValid = io.in.map(_.valid).reduce(_ || _)
   val inFire  = inValid && canAcceptNew && !io.flush //dispatch阶段的flush性质变了，下面那个寄存器中的flush不能阻断inFire
@@ -475,7 +475,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
     io.robEnq.valid(i)              := (dispatchFire && needRob(i) && !io.flush)
-    io.robEnq.valids(i)             := (needRob(i))
+    //io.robEnq.valids(i)             := (needRob(i))
     io.robEnq.bits(i).pc            := (stgData(i).pc)
     io.robEnq.bits(i).inst          := (stgData(i).inst)
     io.robEnq.bits(i).fuType        := (stgData(i).ctrl.fuType)

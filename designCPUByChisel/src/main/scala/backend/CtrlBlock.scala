@@ -77,6 +77,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val renameStage = Module(new RenameStage)
   val redirectController = Module(new RedirectController)
   val dispatchStage = Module(new DispatchStage)
+  val disp2Rob = Module(new DispatchRobBuffer)
   val rob = Module(new ROB)
 
   redirectController.io.excpEvent <> io.excpEvent
@@ -100,7 +101,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.in      <> decodeStage.io.out
   renameStage.io.ratRead <> decodeStage.io.ratRead
   renameStage.io.flush    := doFlush
-  //renameStage.io.redirect := io.excpEedirect
+  renameStage.io.robFreeSpace := rob.io.robFreeSpace
+  renameStage.io.inFlightToRename := disp2Rob.io.inFlightToRename
   renameStage.io.redirectInfo := io.redirectInfo
 
   renameStage.io.stall := redirectController.io.robRedirectPause
@@ -130,6 +132,15 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
   // ── LSQ ──
   dispatchStage.io.lsEnq <> io.lsEnq
+
+  // ================================================================
+  //  Rob请求打一拍
+  // ================================================================
+
+  disp2Rob.io.enq <> dispatchStage.io.robEnq
+  disp2Rob.io.flush := doFlush
+  disp2Rob.io.pause := redirectController.io.robRedirectPause
+
  
   // ================================================================
   //  ROB
@@ -208,7 +219,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
 
  
   // ROB 入队连接（从 Dispatch 级发起）
-  rob.io.enq <> dispatchStage.io.robEnq
+  rob.io.enq <> disp2Rob.io.deq
+  rob.io.enqFromDispatch <> disp2Rob.io.deqDisp2Rob
  
   // ================================================================
   //  重定向信号

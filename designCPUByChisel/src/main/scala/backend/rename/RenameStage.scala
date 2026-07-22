@@ -21,9 +21,12 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     val out     = Vec(CtrlBlockWidth, Decoupled(new RenamedInst))
     // ── ROB 提交回传 ──
     val archCommit       = Vec(CommitWidth, Input(new ArchCommitInfo))
-    // ── 重定向 ──
-    //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
-    
+    // ── ★ 新增：ROB 容量信息 ──
+    val robFreeSpace     = Input(UInt(log2Ceil(RobSize + 1).W))   // ROB剩余可入队容量
+    val inFlightToRename    = Input(UInt(log2Ceil(CtrlBlockWidth * 2 + 1).W))  // 在途指令数(分发级+Buffer)
+
+
+
     val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule ))
     val stall = Input(Bool())
 
@@ -74,13 +77,22 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val needAllocVec = VecInit((0 until CtrlBlockWidth).map(i =>
     stgValid && laneValid(i) && stgData(i).rdValid && stgData(i).rd =/= 0.U
   ))
+
+  val needRobAllocCount = PopCount(VecInit((0 until CtrlBlockWidth).map(i =>
+    stgValid && laneValid(i)  // 每条有效指令都需要一个ROB条目
+  )))
+ 
+  // 判断ROB是否能接收：剩余空间 - 在途指令数 >= 当前需要分配数
+  // robFreeSpace 由 ROB 提供（ROB.count的补数或直接提供）
+  // inFlightToRob = dispatchNeedRobCount + bufferValidCount
+  val canRobAccept = (io.robFreeSpace - io.inFlightToRename) >= needRobAllocCount
  
 
  
   // ================================================================
   //  【修改】发射条件：增加快照容量检查
   // ================================================================
-  val canFireThisCycle = freeList.io.canAlloc && snapshotManager.io.allocOk  // ← 修改
+  val canFireThisCycle = freeList.io.canAlloc && snapshotManager.io.allocOk && canRobAccept  // ← 修改
  
   val outFire = stgValid && outReadyAll && canFireThisCycle && !io.stall
 
