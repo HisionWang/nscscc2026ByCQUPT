@@ -7,7 +7,7 @@ import nscscc.config._
 import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
-import nscscc.icache._
+import nscscc.frontend.icache._
  /*
  1.检测当前携带过来的bpu信息中预测结果是否为跳转。
    1.1 如果预测不跳转：那就检测有效指令中是否有B和Bl两类强跳转：进行判断

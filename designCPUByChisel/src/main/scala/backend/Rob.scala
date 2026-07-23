@@ -76,7 +76,7 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
     val flush            = Input(Bool())
-    val enq              = new RobEnqIO
+    val enq              = Flipped(new RobEnqIO)
     val commit           = new RobCommitIO
     val commitToSq       = new RobCommitToSq
     val commitToCsr      = new RobCommitToCsr
@@ -90,8 +90,8 @@ class ROB(implicit p: Parameters) extends NSModule {
     val robRollbackTarget= Input(new RobPtr(RobSize))
     val robRollbackDone  = Output(Bool())
 
-    val robFreeSpace     = Output(UInt(log2Ceil(RobSize + 1).W))
-    val enqFromDispatch  = new RobEnqIO
+    val robCount     = Output(UInt(log2Ceil(RobSize + 1).W))
+    val enqFromDispatch  = Flipped(new RobEnqIO)
     
   })
  
@@ -100,21 +100,21 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   class RobPtrInner extends CircularQueuePtr[RobPtrInner](RobSize)
  
-  def decPtr(ptr: RobPtrInner): RobPtrInner = {
-    val next = Wire(new RobPtrInner)
-    when(ptr.value === 0.U) {
-      next.value := (RobSize - 1).U
-      next.flag  := !ptr.flag
-    }.otherwise {
-      next.value := ptr.value - 1.U
-      next.flag  := ptr.flag
-    }
-    next
-  }
+  //def decPtr(ptr: RobPtrInner): RobPtrInner = {
+  //  val next = Wire(new RobPtrInner)
+  //  when(ptr.value === 0.U) {
+  //    next.value := (RobSize - 1).U
+  //    next.flag  := !ptr.flag
+  //  }.otherwise {
+  //    next.value := ptr.value - 1.U
+  //    next.flag  := ptr.flag
+  //  }
+  //  next
+  //}
  
-  def ptrEq(a: RobPtrInner, b: RobPtrInner): Bool =
-    a.value === b.value && a.flag === b.flag
- 
+  //def ptrEq(a: RobPtrInner, b: RobPtrInner): Bool =
+  //  a.value === b.value && a.flag === b.flag
+
   // ================================================================
   //  1. 存储体 + 头尾指针
   // ================================================================
@@ -126,7 +126,7 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
   val count = enqPtr.distanceTo(deqPtr)
-  io.robFreeSpace := RobSize.U - count
+  io.robCount := count
  
   // ================================================================
   //  2. 入队逻辑 (Enqueue)
@@ -339,14 +339,15 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   val dispIdx     = RegInit(0.U(log2Ceil(CtrlBlockWidth + 1).W))
   val rollbackPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })
-  val rollbackAtDeq = ptrEq(rollbackPtr, deqPtr)
+  //val rollbackAtDeq = ptrEq(rollbackPtr, deqPtr)
+  val rollbackAtDeq = rollbackPtr === deqPtr
  
   // ── 启动回滚与状态转移 ──
   when(io.robNeedRollback && rollbackState === rb_idle) {
     when((/* !latchCanEnq || */ !latchEnqValid.asUInt.orR) && ( /* !dispatchCanEnq || */ !dispatchValid.asUInt.orR)) {
       // Dispatch 无遗漏，直接进入 ROB 扫描阶段
       rollbackState := rb_rob
-      rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr))
+      rollbackPtr   := Mux(enqPtr === deqPtr , deqPtr, enqPtr-1.U )
     }.otherwise {
       rollbackState := rb_buffer
       dispIdx       := 0.U
@@ -368,7 +369,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     is(rb_disp) {
       when(dispIdx >=  CtrlBlockWidth.U) {
         rollbackState := rb_rob
-        rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr)) // 安全起见检查 ROB 是否已空
+        rollbackPtr   := Mux(enqPtr === deqPtr, deqPtr, enqPtr - 1.U) // 安全起见检查 ROB 是否已空
       }.otherwise {
         dispIdx := dispIdx + 1.U
       }
@@ -379,7 +380,8 @@ class ROB(implicit p: Parameters) extends NSModule {
         rollbackState := rb_idle
         enqPtr        := deqPtr // 回滚彻底完成，清空游标
       }.otherwise {
-        rollbackPtr   := decPtr(rollbackPtr)
+       // rollbackPtr   := decPtr(rollbackPtr)
+        rollbackPtr   := rollbackPtr - 1.U
       }
     }
   }

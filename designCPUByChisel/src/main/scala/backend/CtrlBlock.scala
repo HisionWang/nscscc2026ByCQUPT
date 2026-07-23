@@ -37,7 +37,7 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── ROB 提交 ──
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
   val commitToSq  = new RobCommitToSq
-      val commitToCsr = new RobCommitToCsr
+  val commitToCsr = new RobCommitToCsr
 
  
   // ── 重定向 ──
@@ -79,6 +79,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val dispatchStage = Module(new DispatchStage)
   val disp2Rob = Module(new DispatchRobBuffer)
   val rob = Module(new ROB)
+  val disp2Lsq = Module(new DispatchLsqBuffer)
 
   redirectController.io.excpEvent <> io.excpEvent
   redirectController.io.excpInfo <> io.excpInfo
@@ -101,7 +102,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.in      <> decodeStage.io.out
   renameStage.io.ratRead <> decodeStage.io.ratRead
   renameStage.io.flush    := doFlush
-  renameStage.io.robFreeSpace := rob.io.robFreeSpace
+  renameStage.io.robCount := rob.io.robCount
   renameStage.io.inFlightToRename := disp2Rob.io.inFlightToRename
   renameStage.io.redirectInfo := io.redirectInfo
 
@@ -131,7 +132,16 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   dispatchStage.io.iqFeedback <> io.iqFeedback
  
   // ── LSQ ──
-  dispatchStage.io.lsEnq <> io.lsEnq
+  //dispatchStage.io.lsEnq <> io.lsEnq
+  dispatchStage.io.lsEnq <> disp2Lsq.io.enqReq
+  io.lsEnq <> disp2Lsq.io.deqReq
+
+  disp2Lsq.io.redirectInfo := io.redirectInfo
+  dispatchStage.io.dispatchLqFull := disp2Lsq.io.dispatchLqFull
+  dispatchStage.io.dispatchSqFull := disp2Lsq.io.dispatchSqFull
+
+  dispatchStage.io.bufHasPendingLoadNeedFlush := disp2Lsq.io.bufHasPendingLoadNeedFlush
+  dispatchStage.io.bufHasPendingStoreNeedFlush := disp2Lsq.io.bufHasPendingStoreNeedFlush
 
   // ================================================================
   //  Rob请求打一拍

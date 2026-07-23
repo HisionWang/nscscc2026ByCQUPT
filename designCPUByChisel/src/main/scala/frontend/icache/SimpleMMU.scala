@@ -1,4 +1,4 @@
-package nscscc.icache
+package nscscc.frontend.icache
 
 import chisel3._
 import chisel3.util._
@@ -55,7 +55,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   stage2_vaddr := stage1_vaddr
   stage2_lsuOp := stage1_lsuOp
 
-  val DcacheMmuError = WireDefault(0.U.asTypeOf(new DcacheMmuTransError))
+  
   //根据stage1_lsuOp和stage1_vaddr判断是否有异常
   //其中stage1_lsuOp的样子是：
   /*
@@ -84,6 +84,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   val unalignedWord = isWord     && stage1_vaddr(1, 0) =/= 0.U
 
   // 3. 赋值异常信号（必须确保当前流水级是 valid 的，否则会产生伪异常）
+  val DcacheMmuError = WireDefault(0.U.asTypeOf(new DcacheMmuTransError))
   DcacheMmuError.excpAle := (unalignedHalf || unalignedWord) && stage1_valid
 
 
@@ -94,6 +95,7 @@ class SimpleMMU(implicit p: Parameters) extends NSModule {
   io.mmuResp.bits.paddr := stage1_vaddr  // 恒等映射
   //io.mmuResp.bits.sqIdx := stage1_sq  // 恒等映射
   io.mmuResp.bits.cacheable := stage1_vaddr(31,16) =/= 0xbfaf.U    //true.B   // 默认cached
-  io.mmuResp.bits.hasError := false.B   // 默认cached
+  io.mmuResp.bits.hasError := false.B
+  
   io.mmuResp.bits.error := DcacheMmuError      // 默认无错误
 }

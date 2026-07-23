@@ -6,7 +6,7 @@ import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.axi._
-import nscscc.icache.ICacheReplacer
+import nscscc.frontend.icache.ICacheReplacer
  
 import nscscc.backend.execute._
 class DCache(implicit p: Parameters) extends NSModule {

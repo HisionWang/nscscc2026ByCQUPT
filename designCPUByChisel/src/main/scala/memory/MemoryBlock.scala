@@ -26,8 +26,9 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     val lsEnq = new Bundle {
       val req       = Flipped(Valid(new LsEnqEntry))
       val toLsqData = Flipped(new RenamedInst)
-      val lqFull    = Output(Bool())
-      val sqFull    = Output(Bool())
+
+      val lqHasEntries = Output(UInt(log2Ceil(LqSize + 1).W))
+      val sqHasEntries = Output(UInt(log2Ceil(SqSize + 1).W))
     }
  
     // ══════════════════════════════════════════
@@ -98,8 +99,9 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.enq.lsuOp  := io.lsEnq.toLsqData.ctrl.lsuOp
   storeQueue.io.enq.fuType := io.lsEnq.toLsqData.ctrl.fuType
  
-  io.lsEnq.lqFull := loadQueue.io.full
-  io.lsEnq.sqFull := storeQueue.io.full
+  io.lsEnq.lqHasEntries := loadQueue.io.lqHasEntries
+  io.lsEnq.sqHasEntries := storeQueue.io.sqHasEntries
+  
   io.lqEnqPtr     := loadQueue.io.enqPtr
   io.sqEnqPtr     := storeQueue.io.enqPtr
  

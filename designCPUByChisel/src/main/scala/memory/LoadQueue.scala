@@ -93,6 +93,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val full   = Output(Bool())
     val empty  = Output(Bool())
     val enqPtr = Output(UInt(log2Ceil(LqSize).W))
+    val lqHasEntries = Output(UInt(log2Ceil(LqSize + 1).W))
   })
  
   // ================================================================
@@ -114,6 +115,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.full   := full
   io.empty  := empty
   io.enqPtr := enqPtr.value
+  val count = enqPtr.distanceTo(deqPtr)
+
+  io.lqHasEntries := count
  
   // ================================================================
   //  1. 入队

@@ -91,12 +91,16 @@ class CircularQueuePtr[T <: CircularQueuePtr[T]](val entries: Int) extends Bundl
 
   def -(inc: UInt): T = {
     val newPtr = Wire(this.asInstanceOf[T].cloneType.asInstanceOf[T])
-    val newIncValue = this.value +& inc
-    // 判断是否跨过了队列末尾（即是否发生了绕回）
-    // newIncValue >= entries.U 意味着至少绕了一圈
-    val wrap = newIncValue >= entries.U
-    newPtr.value := newIncValue(log2Ceil(entries) - 1, 0)
-    newPtr.flag  := Mux(wrap, !this.flag, this.flag)
+    // ★ 核心思路：(value - inc) mod entries = (value + entries - inc) mod entries
+    // 用 +& 做加法防止溢出截断，再用减法就不会下溢（因为 value+entries >= inc）
+    val compensated = this.value +& entries.U    // value + entries，全宽度
+    val newDecValue = compensated - inc           // 安全的减法，不会下溢
+   
+    // ── 检测反向绕回：inc > this.value 时，指针从0反向跨过了队列起点 ──
+    val wrap = inc > this.value
+   
+    newPtr.value := newDecValue(log2Ceil(entries) - 1, 0)  // 取低位 = mod entries
+    newPtr.flag  := Mux(wrap, !this.flag, this.flag)        // 绕回一次翻转flag
     newPtr.asInstanceOf[T]
   }
 

@@ -9,7 +9,6 @@ import nscscc.config.NSBundle
 import nscscc.config.Parameters
  
 import nscscc.axi._
-import nscscc.icache._
 import nscscc.frontend._
 import nscscc.mmu._
 import nscscc.csr._

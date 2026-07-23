@@ -23,14 +23,14 @@ import nscscc.backend.rename._
 class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     // ── 从 DispatchStage 接收 ──
-    val enq = (new RobEnqIO)
+    val enq = Flipped(new RobEnqIO)
     // ── 向 ROB 发送 ──
-    val deq = Flipped(new RobEnqIO)
-    val deqDisp2Rob = Flipped(new RobEnqIO)
+    val deq = new RobEnqIO
+    val deqDisp2Rob = new RobEnqIO
     // ── Buffer 刷新归还端口（误预测时直接归还FreeList）──
     //val bufferFlushDealloc = Vec(CtrlBlockWidth, Valid(UInt(PhyRegIdxWidth.W)))
     // ── 状态 ──
-    val inFlightToRename = Output(UInt(log2Ceil(CtrlBlockWidth + 1).W))
+    val inFlightToRename = Output(UInt(log2Ceil(2 * CtrlBlockWidth + 1).W))
     // ── 控制 ──
     val flush       = Input(Bool())   // 误预测重定向全刷
     val pause       = Input(Bool())   // 异常回滚暂停（不向ROB发送）
@@ -86,8 +86,11 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  validCount 输出（供重命名级计算 inFlightToRob）
   // ================================================================
-   // val enqValidCount = PopCount(io.enq.valid)
-  io.inFlightToRename := PopCount(bufValid) + PopCount(io.enq.valid)
+  val enqValidCount = PopCount(io.enq.valid)
+  val bufValidCount = PopCount(bufValid)
+  dontTouch(enqValidCount)
+  dontTouch(bufValidCount)
+  io.inFlightToRename := enqValidCount +& bufValidCount
  
   // ================================================================
   //  误预测刷新时的 pdest 归还端口

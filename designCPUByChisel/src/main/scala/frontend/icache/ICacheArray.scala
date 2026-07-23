@@ -1,4 +1,4 @@
-package nscscc.icache
+package nscscc.frontend.icache
 
 import chisel3._
 import chisel3.util._

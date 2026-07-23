@@ -22,7 +22,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     // ── ROB 提交回传 ──
     val archCommit       = Vec(CommitWidth, Input(new ArchCommitInfo))
     // ── ★ 新增：ROB 容量信息 ──
-    val robFreeSpace     = Input(UInt(log2Ceil(RobSize + 1).W))   // ROB剩余可入队容量
+    val robCount     = Input(UInt(log2Ceil(RobSize + 1).W))   // ROB剩余可入队容量
     val inFlightToRename    = Input(UInt(log2Ceil(CtrlBlockWidth * 2 + 1).W))  // 在途指令数(分发级+Buffer)
 
 
@@ -85,7 +85,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // 判断ROB是否能接收：剩余空间 - 在途指令数 >= 当前需要分配数
   // robFreeSpace 由 ROB 提供（ROB.count的补数或直接提供）
   // inFlightToRob = dispatchNeedRobCount + bufferValidCount
-  val canRobAccept = (io.robFreeSpace - io.inFlightToRename) >= needRobAllocCount
+  val canRobAccept = RobSize.U >= needRobAllocCount +& io.inFlightToRename +& io.robCount
  
 
  

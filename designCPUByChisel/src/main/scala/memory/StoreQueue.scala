@@ -105,6 +105,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val full   = Output(Bool())
     val empty  = Output(Bool())
     val enqPtr = Output(UInt(log2Ceil(SqSize).W))
+    val sqHasEntries = Output(UInt(log2Ceil(SqSize + 1).W))
   })
   
  
@@ -127,6 +128,10 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.full   := full
   io.empty  := empty
   io.enqPtr := enqPtr.value
+
+  val count = enqPtr.distanceTo(deqPtr)   // 当前LQ占用数
+  io.sqHasEntries := count
+
 
 //  io.sqEmpty := empty
  

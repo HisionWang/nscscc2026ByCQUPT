@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 
 import nscscc.config._
-import nscscc.icache._
+import nscscc.frontend.icache._
 import nscscc.backend.decode._
 
 class TlbEntry(implicit p: Parameters) extends NSBundle {

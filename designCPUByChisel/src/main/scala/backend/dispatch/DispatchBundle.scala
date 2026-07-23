@@ -98,8 +98,10 @@ class LsEnqEntry(implicit p: Parameters) extends NSBundle {
 class LsEnqIO(implicit p: Parameters) extends NSBundle {
   val req    = Valid(new LsEnqEntry)
   val toLsqData = new RenamedInst
-  val lqFull = Input(Bool())
-  val sqFull = Input(Bool())
+
+  val lqHasEntries = Input(UInt(log2Ceil(LqSize + 1).W))
+  val sqHasEntries = Input(UInt(log2Ceil(SqSize + 1).W))
+    
 }
  
 // ================================================================
@@ -121,9 +123,9 @@ class BusyTableIO(implicit p: Parameters) extends NSBundle {
 //  ROB 入队 IO
 // ================================================================
 class RobEnqIO(implicit p: Parameters) extends NSBundle {
-  val valid = Vec(CtrlBlockWidth, Input(Bool()))
+  val valid = Vec(CtrlBlockWidth, Bool())
   //val valids = Vec(CtrlBlockWidth, Input(Bool()))
-  val bits  = Vec(CtrlBlockWidth, Input(new RobEntryInner))
+  val bits  = Vec(CtrlBlockWidth, new RobEntryInner)
   //val canEnq = Output(Bool())  // ROB 是否能容纳本批指令
   //val full = Output(Bool())
 }

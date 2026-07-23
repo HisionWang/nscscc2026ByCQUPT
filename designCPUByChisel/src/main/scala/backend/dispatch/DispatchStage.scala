@@ -34,8 +34,17 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     
     // 注意：这里的 LsEnqIO 已经被视作单请求端口 (Valid(new LsEnqReq))
     val lsEnq   = new LsEnqIO 
+
+    val dispatchLqFull = Input(Bool())
+    val dispatchSqFull = Input(Bool())
+    // ── 状态 ──
+    val bufHasPendingLoadNeedFlush  = Input(Bool())
+    val bufHasPendingStoreNeedFlush = Input(Bool())
+
+    //val bufHassqIdx   = Flipped( new SqPtr(SqSize) )
+    //val bufHaslqIdx   = Flipped( new LqPtr(LqSize) )
     
-    val robEnq  = Flipped(new RobEnqIO)
+    val robEnq  = new RobEnqIO
 
     val flush   = Input(Bool())
     val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule )) 
@@ -82,11 +91,11 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  二、计算IQ 可用性
   // ================================================================
-  val q1Avail = io.iqFeedback.q1FreeEntries > 0.U
-  val q2Avail = io.iqFeedback.q2FreeEntries > 0.U
-  val q3Avail = io.iqFeedback.q3FreeEntries > 0.U
-  val q4Avail = io.iqFeedback.q4FreeEntries > 0.U
-  val q5Avail = io.iqFeedback.q5FreeEntries > 0.U
+  val q1Avail = io.iqFeedback.q1FreeEntries =/= 0.U
+  val q2Avail = io.iqFeedback.q2FreeEntries =/= 0.U
+  val q3Avail = io.iqFeedback.q3FreeEntries =/= 0.U
+  val q4Avail = io.iqFeedback.q4FreeEntries =/= 0.U
+  val q5Avail = io.iqFeedback.q5FreeEntries =/= 0.U
  
   def truncateMask(isMatch: Vec[Bool], maxPorts: Int): Vec[Bool] = {
     val result = Wire(Vec(CtrlBlockWidth, Bool()))
@@ -181,8 +190,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   //  Q4/Q5 路由 (结合了 LSQ 容量判断，只有 LSQ 能接住才允许发往 IQ)
   // ================================================================
   val q4Cand = VecInit((0 until CtrlBlockWidth).map(i => {
-    val canLoad  = isLoadLane(i)  && !io.lsEnq.lqFull
-    val canStore = isStoreLane(i) && !io.lsEnq.sqFull && q5Avail
+    val canLoad  = isLoadLane(i)  && !io.dispatchLqFull
+    val canStore = isStoreLane(i) && !io.dispatchSqFull && q5Avail
     (canLoad || canStore) && q4Avail
   }))
   val q4Selected = truncateMask(q4Cand, 1)
@@ -274,16 +283,21 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val selectedMemInst = Mux1H(q4Selected, stgData)
 
   // 当拍同步触发 LSQ 写入
-  io.lsEnq.req.valid        := memDispatchedThisCycle
-  io.lsEnq.req.bits.robIdx  := selectedMemInst.robIdx
-  io.lsEnq.req.bits.isLoad  := selectedIsLoad
-  io.lsEnq.req.bits.isStore := selectedIsStore
-  io.lsEnq.req.bits.lqIdx   := lqHeadPtr
-  io.lsEnq.req.bits.sqIdx   := sqHeadPtr
-  io.lsEnq.toLsqData := selectedMemInst
+  io.lsEnq.req.valid        :=  memDispatchedThisCycle
+  io.lsEnq.req.bits.robIdx  :=  selectedMemInst.robIdx
+  io.lsEnq.req.bits.isLoad  :=  selectedIsLoad
+  io.lsEnq.req.bits.isStore :=  selectedIsStore
+  io.lsEnq.req.bits.lqIdx   :=  lqHeadPtr
+  io.lsEnq.req.bits.sqIdx   :=  sqHeadPtr
+  io.lsEnq.toLsqData        :=  selectedMemInst
 
   // 更新当前指针 (仅+1)
-  when(memDispatchedThisCycle) {
+  when(io.flush){
+    lqHeadPtr := Mux(io.bufHasPendingLoadNeedFlush, lqHeadPtr - 1.U, lqHeadPtr)
+    sqHeadPtr := Mux(io.bufHasPendingStoreNeedFlush, sqHeadPtr - 1.U, sqHeadPtr)
+
+  }.elsewhen(memDispatchedThisCycle){
+
     when(selectedIsLoad) {
       lqHeadPtr := lqHeadPtr + 1.U
     }
@@ -474,23 +488,23 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   //  ROB 批量写入 (ROB仍然维持进入流水级当拍进行一次性批量分发)
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
-    io.robEnq.valid(i)              := (dispatchFire && needRob(i) && !io.flush)
-    //io.robEnq.valids(i)             := (needRob(i))
-    io.robEnq.bits(i).pc            := (stgData(i).pc)
-    io.robEnq.bits(i).inst          := (stgData(i).inst)
-    io.robEnq.bits(i).fuType        := (stgData(i).ctrl.fuType)
-    io.robEnq.bits(i).pdst          := (stgData(i).pdst)
-    io.robEnq.bits(i).oldPdst       := (stgData(i).oldPdst)
-    io.robEnq.bits(i).ldst          := (stgData(i).ldst)
-    io.robEnq.bits(i).rfWen         := (stgData(i).ctrl.rfWen)
-    io.robEnq.bits(i).memRead       := (stgData(i).ctrl.memRead)
-    io.robEnq.bits(i).memWrite      := (stgData(i).ctrl.memWrite)
-    io.robEnq.bits(i).csrWen        := (stgData(i).ctrl.csrWen)
-    io.robEnq.bits(i).csrOp         := (stgData(i).ctrl.csrOp)
-    io.robEnq.bits(i).csrWaddr      := (stgData(i).csrAddress)
-    io.robEnq.bits(i).isPriv        := (stgData(i).ctrl.isPriv)
-    io.robEnq.bits(i).excp          := (stgData(i).excp)
-    io.robEnq.bits(i).robIdx        := (stgData(i).robIdx)
+    io.robEnq.valid(i)              := dispatchFire && needRob(i) && !io.flush
+    //io.robEnq.valids(i)           := needRob(i)
+    io.robEnq.bits(i).pc            := stgData(i).pc
+    io.robEnq.bits(i).inst          := stgData(i).inst
+    io.robEnq.bits(i).fuType        := stgData(i).ctrl.fuType
+    io.robEnq.bits(i).pdst          := stgData(i).pdst
+    io.robEnq.bits(i).oldPdst       := stgData(i).oldPdst
+    io.robEnq.bits(i).ldst          := stgData(i).ldst
+    io.robEnq.bits(i).rfWen         := stgData(i).ctrl.rfWen
+    io.robEnq.bits(i).memRead       := stgData(i).ctrl.memRead
+    io.robEnq.bits(i).memWrite      := stgData(i).ctrl.memWrite
+    io.robEnq.bits(i).csrWen        := stgData(i).ctrl.csrWen
+    io.robEnq.bits(i).csrOp         := stgData(i).ctrl.csrOp
+    io.robEnq.bits(i).csrWaddr      := stgData(i).csrAddress
+    io.robEnq.bits(i).isPriv        := stgData(i).ctrl.isPriv
+    io.robEnq.bits(i).excp          := stgData(i).excp
+    io.robEnq.bits(i).robIdx        := stgData(i).robIdx
 
     io.robEnq.bits(i).writtenBack   := DontCare
     io.robEnq.bits(i).valid         := DontCare

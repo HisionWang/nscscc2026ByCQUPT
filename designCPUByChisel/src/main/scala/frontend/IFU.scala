@@ -6,7 +6,7 @@ import nscscc.config.Parameters
 import nscscc.config._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
-import nscscc.icache._
+import nscscc.frontend.icache._
 import nscscc.backend.execute._
  
 class IFU(implicit p: Parameters) extends NSModule {
