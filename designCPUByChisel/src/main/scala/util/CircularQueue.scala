@@ -127,8 +127,8 @@ class CircularQueue[T <: Data](
    */
   val empty = deqPtr === enqPtr   // value相同 且 flag相同
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
-  dontTouch(full)
-  dontTouch(empty)
+  //diffDontTouch(full)
+  //diffDontTouch(empty)
   io.empty := empty
   io.full  := full
  

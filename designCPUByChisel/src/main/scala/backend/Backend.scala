@@ -103,7 +103,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
 
   io.bpuUpdate := exeUnits(2).io.bpuUpdate
   val bruInfoFromExe3 =  exeUnits(2).io.bruInfo
-  dontTouch(bruInfoFromExe3)
+  diffDontTouch(bruInfoFromExe3)
 
   ctrlBlock.io.bruInfo <> bruInfoFromExe3
   
@@ -177,8 +177,8 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //发往ISQ的数据
   exeUnits(3).io.outResult <> io.toMemResult(0)
   exeUnits(4).io.outResult <> io.toMemResult(1)
-  dontTouch( exeUnits(3).io.outResult )
-  dontTouch( exeUnits(4).io.outResult )
+  diffDontTouch( exeUnits(3).io.outResult )
+  diffDontTouch( exeUnits(4).io.outResult )
 //  writeback.io.InExeResults(3).bits.uop <> 0.U.asTypeOf((new DispatchedInst))
 //  writeback.io.InExeResults(3).bits.data <> 0.U
 //  writeback.io.InExeResults(3).valid <> false.B
@@ -209,7 +209,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  Writeback → RegFile：写端口
   // ══════════════════════════════════════════════════════════════
   writeback.io.rfWritePorts <> regFile.io.writePorts
-  dontTouch(writeback.io.rfWritePorts)
+  diffDontTouch(writeback.io.rfWritePorts)
  
   // ══════════════════════════════════════════════════════════════
   //  Writeback → Scheduler：唤醒广播
@@ -237,9 +237,9 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   // ══════════════════════════════════════════════════════════════
   //  ROB 提交：暂不实现，dontTouch 保留可见性
   // ══════════════════════════════════════════════════════════════
-  dontTouch(writeback.io.toRObResults)
+  diffDontTouch(writeback.io.toRObResults)
   ctrlBlock.io.writeback <> writeback.io.toRObResults
 
 
-  dontTouch(ctrlBlock.io.lsEnq.req)
+  diffDontTouch(ctrlBlock.io.lsEnq.req)
 }

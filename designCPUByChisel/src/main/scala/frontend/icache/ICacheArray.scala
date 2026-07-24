@@ -95,11 +95,11 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   // === 写入逻辑 ===
   // 写使能解码
   val writeWayOneHot = UIntToOH(io.write.way)
-  dontTouch(writeWayOneHot)
+  diffDontTouch(writeWayOneHot)
   
   for (way <- 0 until nWays) {
     val waySel = writeWayOneHot(way)
-    dontTouch(waySel)
+    diffDontTouch(waySel)
     
     // 标签写入：构造 meta 数据 (valid + tag)
     val metaWriteData = Cat(true.B, io.write.tag)  // 写入时总是设置 valid = true

@@ -37,7 +37,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   val pcReg    = RegInit(0x1BFFFFFC.U(32.W))
   val pcValid  = RegInit(false.B)
   pcValid := RegNext(true.B)
-  dontTouch(pcValid)
+  diffDontTouch(pcValid)
   
  
   // ==================== 计算下一个PC ====================
@@ -106,7 +106,7 @@ class IFU(implicit p: Parameters) extends NSModule {
   currentPredInfo.target      := bpuTarget
   currentPredInfo.takenOffset := io.predictResp.takenOffset
   currentPredInfo.meta        := bpuMeta
-  dontTouch(currentPredInfo)
+  diffDontTouch(currentPredInfo)
   // ==================== bpuInfoQueue请求 ====================
   io.bpuInfoQueuEnq.valid := pc_fire && pcReg =/= 0x1BFFFFFC.U
   io.bpuInfoQueuEnq.bits  := currentPredInfo

@@ -19,7 +19,7 @@ class IBF(implicit p: Parameters) extends NSModule {
     val flush = Input(Bool())  // 后端redirect时清空(延迟一拍)
   })
   
-  dontTouch(io.out)
+  diffDontTouch(io.out)
   
   // ==================== 使用CircularQueue重构 ====================
   

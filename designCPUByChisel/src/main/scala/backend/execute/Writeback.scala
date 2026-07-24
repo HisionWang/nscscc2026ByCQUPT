@@ -56,7 +56,7 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
   // 各通道独立的有效位和数据寄存器
   val stgValid = RegInit(VecInit(Seq.fill(numExeUnits)(false.B)))
   val stgData = RegInit(VecInit(Seq.fill(numExeUnits)(0.U.asTypeOf(new ExeResult))))
-  dontTouch(stgData)
+  diffDontTouch(stgData)
 
   //val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   //val redirectRobIdx = io.redirectInfo.bits.robIdx

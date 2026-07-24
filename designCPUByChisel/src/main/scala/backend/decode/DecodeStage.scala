@@ -13,7 +13,7 @@ class DecodeStage(implicit p: Parameters) extends NSModule {
     val extInt  = Input(Bool())
     val flush   = Input(Bool())
   })
-  dontTouch(io.out)
+  diffDontTouch(io.out)
 
   // ===========================================================
   // Phase 1: 严格的流水级数据保持 (Input -> Register)

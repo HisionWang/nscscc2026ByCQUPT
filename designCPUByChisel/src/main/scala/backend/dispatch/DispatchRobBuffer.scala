@@ -88,8 +88,8 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
   // ================================================================
   val enqValidCount = PopCount(io.enq.valid)
   val bufValidCount = PopCount(bufValid)
-  dontTouch(enqValidCount)
-  dontTouch(bufValidCount)
+  diffDontTouch(enqValidCount)
+  diffDontTouch(bufValidCount)
   io.inFlightToRename := enqValidCount +& bufValidCount
  
   // ================================================================

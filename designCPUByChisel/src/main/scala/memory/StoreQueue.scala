@@ -113,7 +113,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   //  存储体 + 指针
   // ================================================================
   val entries = RegInit(VecInit(Seq.fill(SqSize)(0.U.asTypeOf(new SqEntry))))
-  dontTouch(entries)
+  diffDontTouch(entries)
  
   val enqPtr = RegInit({
     val p = Wire(new SqPtrInner); p.value := 0.U; p.flag := false.B; p

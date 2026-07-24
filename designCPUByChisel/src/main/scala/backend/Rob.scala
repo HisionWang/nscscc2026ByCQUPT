@@ -119,7 +119,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   //  1. 存储体 + 头尾指针
   // ================================================================
   val entries = RegInit(VecInit(Seq.fill(RobSize)(0.U.asTypeOf(new RobEntryInner))))
-  dontTouch(entries)
+  diffDontTouch(entries)
  
   val deqPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })
   val enqPtr = RegInit({ val p = Wire(new RobPtrInner); p.value := 0.U; p.flag := false.B; p })

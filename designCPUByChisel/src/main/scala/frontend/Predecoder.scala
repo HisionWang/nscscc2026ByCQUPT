@@ -34,9 +34,9 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     val bpuInfoValid  = Input(Bool())
     val out           = Decoupled(new PredecodeResp)
   })
-  dontTouch(io.bpuInfo)
-  dontTouch(io.bpuInfoValid)
-  dontTouch(io.out)
+  diffDontTouch(io.bpuInfo)
+  diffDontTouch(io.bpuInfoValid)
+  diffDontTouch(io.out)
  
   // ================================================================
   // 第一部分：输入流水线寄存器 —— 只存原始数据，不计算

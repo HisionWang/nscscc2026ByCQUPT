@@ -77,7 +77,7 @@ class SnapshotManager(implicit p: Parameters) extends NSModule with HasCoreParam
   //  4. 空闲槽位查找（优先编码，为每个可能的分配序号预计算）
   // ================================================================
   val snapFreeMask = VecInit((0 until SnapshotNum).map(i => !valids(i))).asUInt
-  dontTouch(snapFreeMask)
+  diffDontTouch(snapFreeMask)
   // allocSlotId(k) = 第 k 个空闲槽位的编号
   val allocSlotId = Wire(Vec(CtrlBlockWidth, UInt(log2Ceil(SnapshotNum).W)))
   var search = snapFreeMask

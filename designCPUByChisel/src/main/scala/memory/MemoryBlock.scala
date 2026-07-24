@@ -172,8 +172,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
 
   
 
-  dontTouch(loadQueue.io.dcacheReq)
-  dontTouch(storeQueue.io.dcacheReq)
+  diffDontTouch(loadQueue.io.dcacheReq)
+  diffDontTouch(storeQueue.io.dcacheReq)
 
  
   // ================================================================
