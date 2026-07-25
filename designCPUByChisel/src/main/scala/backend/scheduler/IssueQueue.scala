@@ -6,7 +6,8 @@ import nscscc.config._
 import nscscc.backend.dispatch._
 import nscscc.backend.rename._
 import nscscc.backend.execute._
-import nscscc.config.IQParams   // ← 显式引入 IQParams
+import nscscc.config.IQParams
+ 
 /**
  * ═══════════════════════════════════════════════════════════════
  *  发射队列（IssueQueue）
@@ -15,6 +16,7 @@ import nscscc.config.IQParams   // ← 显式引入 IQParams
  *    - 空闲位图管理出入队
  *    - 年龄矩阵择优发射（最老就绪优先）
  *    - 组合逻辑唤醒（写回广播 pdst，同拍生效）
+ *    - freeEntriesReg 寄存器替代 PopCount，切断跨模块关键路径
  *
  *  不包含：
  *    - 投机 Load 唤醒
@@ -31,25 +33,31 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     val wakeupPorts   = Input(Vec(iqParams.numWakeupPorts, Valid(new IssueWakeup)))
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)
-    val redirectInfo    = Flipped (ValidIO( new redirectInfoToModule ))    // 误预测重定向
+    val redirectInfo  = Flipped(ValidIO(new redirectInfoToModule))
     val flushPipeline = Input(Bool())
     // ── 反馈给分发阶段 ──
     val freeEntries   = Output(UInt(log2Ceil(iqParams.numEntries + 1).W))
   })
  
   val N = iqParams.numEntries
+  val freeEntriesWidth = log2Ceil(N + 1)
  
   // ================================================================
   //  表项存储
   // ================================================================
   val entryValid   = RegInit(VecInit(Seq.fill(N)(false.B)))
-  
-  val entryUops = RegInit(VecInit(Seq.fill(N)(0.U.asTypeOf(new DispatchedInst))))
+  val entryUops    = RegInit(VecInit(Seq.fill(N)(0.U.asTypeOf(new DispatchedInst))))
   val entryP1Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
   val entryP2Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
  
   // ================================================================
-  //  年龄矩阵 age[i][j]=1 表示 entry[i] 比 entry[j] 更老 这算法还牛的 
+  //  ★ 空闲表项计数寄存器（替代 PopCount 组合逻辑，切断关键路径）
+  //     初始化为 N（全部空闲），每周期增量更新
+  // ================================================================
+  val freeEntriesReg = RegInit(N.U(freeEntriesWidth.W))
+ 
+  // ================================================================
+  //  年龄矩阵 age[i][j]=1 表示 entry[i] 比 entry[j] 更老
   // ================================================================
   val age = RegInit(VecInit(Seq.fill(N)(VecInit(Seq.fill(N)(false.B)))))
  
@@ -82,8 +90,6 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
  
   // ================================================================
   //  重定向 Kill 逻辑
-  //  robIdxFull 的 MSB 为环绕位，低 bit 为索引
-  //  比较规则：同 flag 比大小，不同 flag 则 flag=1 的更晚
   // ================================================================
   def isRobIdxAfter(a: UInt, b: UInt): Bool = {
     val aFlag = a(a.getWidth - 1)
@@ -92,36 +98,13 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     val bVal  = b(b.getWidth - 2, 0)
     Mux(aFlag === bFlag, aVal > bVal, aFlag === 1.U)
   }
-
-val killed = Wire(Vec(N, Bool()))
-val redirectRobIdx = io.redirectInfo.bits.robIdx
+ 
+  val killed = Wire(Vec(N, Bool()))
+  val redirectRobIdx = io.redirectInfo.bits.robIdx
   for (i <- 0 until N) {
-      // 比较 e.robIdxFull 是否比 redirect.robIdx 更新
-      val sameFlag = entryUops(i).robIdxFull.flag === redirectRobIdx.flag
-      // flushSelf=true: >= (包含自身); flushSelf=false: > (不含自身)
-      //val isNewer = Mux(sameFlag,
-      //  Mux(false.B, //io.redirect.flushSelf,
-      //    entryUops(i).robIdxFull.value >= redirectRobIdx.value,
-      //    entryUops(i).robIdxFull.value >  redirectRobIdx.value
-      //  ),
-      //  Mux(false.B,  //io.redirect.flushSelf,
-      //    entryUops(i).robIdxFull.value <= redirectRobIdx.value,
-      //    entryUops(i).robIdxFull.value <  redirectRobIdx.value
-      //  )
-      //)
-      val isNewer = entryUops(i).robIdxFull.isAfter(redirectRobIdx)
-      
-      killed(i) := entryValid(i) && io.redirectInfo.valid && io.redirectInfo.bits.doRedirect && isNewer
-
-    
+    val isNewer = entryUops(i).robIdxFull.isAfter(redirectRobIdx)
+    killed(i) := entryValid(i) && io.redirectInfo.valid && io.redirectInfo.bits.doRedirect && isNewer
   }
-
-
-  
-//  for (i <- 0 until N) {
-//    killed(i) := entryValid(i) && io.bruInfo.valid && io.bruInfo.bits.doRedirect
-//                 isRobIdxAfter(entryUops(i).robIdxFull.value, io.bruInfo.robIdx.value)
-//  }
  
   // ================================================================
   //  请求 & 年龄仲裁
@@ -131,15 +114,6 @@ val redirectRobIdx = io.redirectInfo.bits.robIdx
     request(i) := entryValid(i) && p1Eff(i) && p2Eff(i) && !killed(i)
   }
  
-  // oldest[i] = request[i] && 不存在比 i 更老的请求者
-  //  val oldest = Wire(Vec(N, Bool()))
-  //  for (i <- 0 until N) {
-  //    val hasOlder = (0 until N).map(j => j != i).map(j =>
-  //      request(j) && !age(i)(j)   // age[i][j]=0 意味着 j 比 i 老
-  //    ).reduce(_ || _)
-  //    oldest(i) := request(i) && !hasOlder
-  //  }
-
   val oldest = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
     var hasOlder = false.B
@@ -148,24 +122,27 @@ val redirectRobIdx = io.redirectInfo.bits.robIdx
     }
     oldest(i) := request(i) && !hasOlder
   }
-
  
   val grant = oldest   // 单发射端口，grant = oldest
  
   // ================================================================
-  //  发射输出（Decoupled 握手）
+  //  ★ 发射输出（Decoupled 握手）—— flush 时禁止发射
+  //     原代码未检查 flushPipeline，flush 期间仍可能发射，
+  //     导致：①错误指令送入执行单元 ②freeEntriesReg 统计出错
   // ================================================================
-  io.issue.valid := grant.reduce(_ || _)
+  io.issue.valid := grant.reduce(_ || _) //&& !io.flushPipeline   // ← 新增 flush 截断
   io.issue.bits  := Mux1H(grant, entryUops)
  
   val issueFire = io.issue.valid && io.issue.ready
  
   // ================================================================
   //  入队逻辑（空闲位图 + 优先编码器）
+  //  freeMask / PriorityEncoder 保留（局部逻辑，用于定位入队槽位）
+  //  hasFree 改为读寄存器，切断组合路径
   // ================================================================
   val freeMask = VecInit((0 until N).map(i => !entryValid(i)))
   val enqIdx   = PriorityEncoder(freeMask)
-  val hasFree  = freeMask.asUInt.orR
+  val hasFree  = freeEntriesReg > 0.U     // ← 改为寄存器判断，替代 freeMask.asUInt.orR
   val enqFire  = io.enq.valid && hasFree
  
   // ── Kill/Grant 后的有效掩码（用于年龄矩阵入队更新） ──
@@ -227,7 +204,29 @@ val redirectRobIdx = io.redirectInfo.bits.robIdx
   }
  
   // ================================================================
-  //  反馈信号
+  //  ★ 空闲表项计数寄存器更新（核心修改）
+  //
+  //  规则：
+  //    flushPipeline → 重置为 N（全空，最高优先级）
+  //    否则 → 当前值 + 出队释放数 - 入队占用数 + 重定向淘汰数
+  //
+  //  说明：
+  //    - issueFire（出队）：一个有效表项变空闲 → +1
+  //    - enqFire  （入队）：一个空闲表项变占用 → -1
+  //    - PopCount(killed) ：被重定向淘汰的有效表项变空闲 → +killCount
+  //      ↑ 这是 IQ 内部局部组合逻辑，不跨越模块边界，
+  //        不出现在 IQ→Dispatch→Rename→Snapshot 关键路径上
   // ================================================================
-  io.freeEntries := PopCount(freeMask)
+  val killedCount = PopCount(killed)
+ 
+  when(io.flushPipeline) {
+    freeEntriesReg := N.U(freeEntriesWidth.W)
+  }.otherwise {
+    freeEntriesReg := freeEntriesReg +& issueFire.asUInt  +& killedCount -& enqFire.asUInt
+  }
+ 
+  // ================================================================
+  //  ★ 反馈信号 —— 寄存器输出，切断跨模块组合关键路径
+  // ================================================================
+  io.freeEntries := freeEntriesReg
 }

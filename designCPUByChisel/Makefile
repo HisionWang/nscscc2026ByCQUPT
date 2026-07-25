@@ -26,10 +26,6 @@ ENV_SCRIPT   := ..
 SBT_DIR      := .
 MAKE_DIR     := chiplab/sims/verilator/run_prog/
 
-sbt:
-	cd $(SBT_DIR) && \
-	sbt run
-
 sim:
 	cd $(ENV_SCRIPT) && \
 	source env.sh && \
@@ -48,9 +44,13 @@ func:
 	cd $(ENV_SCRIPT) && \
 	cd $(MAKE_DIR) && ./configure.sh --run func/func_lab9
 
-perf:
+perf0:
 	cd $(ENV_SCRIPT) && \
 	cd $(MAKE_DIR) && ./configure.sh --run coremark
+
+perf1:
+	cd $(ENV_SCRIPT) && \
+	cd $(MAKE_DIR) && ./configure.sh --run dhrystone
 
 clean:
 	cd $(SBT_DIR) && sbt clean

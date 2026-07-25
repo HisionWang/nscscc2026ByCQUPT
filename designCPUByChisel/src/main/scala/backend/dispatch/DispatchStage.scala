@@ -91,11 +91,11 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  二、计算IQ 可用性
   // ================================================================
-  val q1Avail = io.iqFeedback.q1FreeEntries =/= 0.U
-  val q2Avail = io.iqFeedback.q2FreeEntries =/= 0.U
-  val q3Avail = io.iqFeedback.q3FreeEntries =/= 0.U
-  val q4Avail = io.iqFeedback.q4FreeEntries =/= 0.U
-  val q5Avail = io.iqFeedback.q5FreeEntries =/= 0.U
+  val q1Avail = io.iqFeedback.q1FreeEntries.asUInt.orR
+  val q2Avail = io.iqFeedback.q2FreeEntries.asUInt.orR
+  val q3Avail = io.iqFeedback.q3FreeEntries.asUInt.orR
+  val q4Avail = io.iqFeedback.q4FreeEntries.asUInt.orR
+  val q5Avail = io.iqFeedback.q5FreeEntries.asUInt.orR
  
   def truncateMask(isMatch: Vec[Bool], maxPorts: Int): Vec[Bool] = {
     val result = Wire(Vec(CtrlBlockWidth, Bool()))
@@ -122,37 +122,49 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val q3FreeAfterExclusive = !mulJmpToQ3.asUInt.orR && q3Avail
  
   // ================================================================
-  //  Phase 2: ALU 动态负载均衡分配
+  //  Phase 2: ALU 动态负载均衡分配 (基于历史状态的轮询 RR 优化版)
   // ================================================================
   val q1CanAcceptAlu = q1FreeAfterExclusive
   val q2CanAcceptAlu = q2FreeAfterExclusive
   val q3CanAcceptAlu = q3FreeAfterExclusive
  
-  val q1AluPriority = Mux(q1CanAcceptAlu, io.iqFeedback.q1FreeEntries, 0.U(IQ1Width.W))
-  val q2AluPriority = Mux(q2CanAcceptAlu, io.iqFeedback.q2FreeEntries, 0.U(IQ2Width.W))
-  val q3AluPriority = Mux(q3CanAcceptAlu, io.iqFeedback.q3FreeEntries, 0.U(IQ3Width.W))
+  // 1. 维护轮询状态机 (0:优先Q1, 1:优先Q2, 2:优先Q3)
+  val aluRrState = RegInit(0.U(2.W))
  
-  val rank0OH = Wire(Vec(3, Bool()))
-  rank0OH(0) := (q1AluPriority >= q2AluPriority) && (q1AluPriority >= q3AluPriority)
-  rank0OH(1) := !rank0OH(0) && (q2AluPriority >= q3AluPriority)
-  rank0OH(2) := !rank0OH(0) && !rank0OH(1)
-
-  val exclRank0 = VecInit(Seq(q1AluPriority, q2AluPriority, q3AluPriority).zip(rank0OH).map {
-    case (p, oh) => Mux(oh, 0.U, p)
-  })
-  val rank1OH = Wire(Vec(3, Bool()))
-  rank1OH(0) := !rank0OH(0) && (exclRank0(0) >= exclRank0(1)) && (exclRank0(0) >= exclRank0(2))
-  rank1OH(1) := !rank0OH(1) && !rank1OH(0) && (exclRank0(1) >= exclRank0(2))
-  rank1OH(2) := !rank0OH(2) && !rank1OH(0) && !rank1OH(1)
+  // 2. 根据状态机生成三档优先级排序 (One-Hot表示: bit0=Q1, bit1=Q2, bit2=Q3)
+  val Q1_OH = "b001".U(3.W)
+  val Q2_OH = "b010".U(3.W)
+  val Q3_OH = "b100".U(3.W)
  
-  val rank2OH = Wire(Vec(3, Bool()))
-  rank2OH(0) := !rank0OH(0) && !rank1OH(0)
-  rank2OH(1) := !rank0OH(1) && !rank1OH(1)
-  rank2OH(2) := !rank0OH(2) && !rank1OH(2)
-
-  val rank0HasCap = Mux(rank0OH(0), q1CanAcceptAlu, Mux(rank0OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
-  val rank1HasCap = Mux(rank1OH(0), q1CanAcceptAlu, Mux(rank1OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
-  val rank2HasCap = Mux(rank2OH(0), q1CanAcceptAlu, Mux(rank2OH(1), q2CanAcceptAlu, q3CanAcceptAlu))
+  val p0_OH = Mux(aluRrState === 0.U, Q1_OH, Mux(aluRrState === 1.U, Q2_OH, Q3_OH))
+  val p1_OH = Mux(aluRrState === 0.U, Q2_OH, Mux(aluRrState === 1.U, Q3_OH, Q1_OH))
+  val p2_OH = Mux(aluRrState === 0.U, Q3_OH, Mux(aluRrState === 1.U, Q1_OH, Q2_OH))
+ 
+  // 3. 结合当前实际是否有空位，过滤出真实可用的队列
+  val availMask = Cat(q3CanAcceptAlu, q2CanAcceptAlu, q1CanAcceptAlu)
+  
+  val p0_avail = (p0_OH & availMask).orR
+  val p1_avail = (p1_OH & availMask).orR
+  val p2_avail = (p2_OH & availMask).orR
+ 
+  // 4. 依次提取第1可用、第2可用、第3可用的队列 (仅使用与或逻辑)
+  val rank0OH_uint = Mux(p0_avail, p0_OH, Mux(p1_avail, p1_OH, Mux(p2_avail, p2_OH, 0.U)))
+  val rank1OH_uint = Mux(p0_avail && p1_avail, p1_OH, Mux((p0_avail || p1_avail) && p2_avail, p2_OH, 0.U))
+  val rank2OH_uint = Mux(p0_avail && p1_avail && p2_avail, p2_OH, 0.U)
+ 
+  val rank0OH = Wire(Vec(CtrlBlockWidth, Bool()))
+  val rank1OH = Wire(Vec(CtrlBlockWidth, Bool()))
+  val rank2OH = Wire(Vec(CtrlBlockWidth, Bool()))
+  for (i <- 0 until CtrlBlockWidth) {
+    rank0OH(i) := rank0OH_uint(i)
+    rank1OH(i) := rank1OH_uint(i)
+    rank2OH(i) := rank2OH_uint(i)
+  }
+ 
+  // 5. 容量判断极大简化：因为 rankXOH 已经使用 availMask 过滤，只要非零即代表有容量
+  val rank0HasCap = rank0OH_uint.orR
+  val rank1HasCap = rank1OH_uint.orR
+  val rank2HasCap = rank2OH_uint.orR
 
   val aluCandR1 = VecInit((0 until CtrlBlockWidth).map(i => isAluLane(i) && !consumedMask(i)))
   val aluRound1 = truncateMask(aluCandR1, 1)
@@ -234,6 +246,18 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val inFire  = inValid && canAcceptNew && !io.flush //dispatch阶段的flush性质变了，下面那个寄存器中的flush不能阻断inFire
   for (i <- 0 until CtrlBlockWidth) {
     io.in(i).ready := canAcceptNew 
+  }
+
+  // ================================================================
+  //  新增：轮询状态机更新逻辑
+  // ================================================================
+  // 计算当拍到底分配出去了几条 ALU 指令
+  val aluDispatchedCnt = aluRound1Valid.asUInt + aluRound2Valid.asUInt + aluRound3Valid.asUInt
+  
+  when(dispatchFire) {
+    // 每次成功发射，将优先权轮转。采用加法后处理避免模运算开销
+    val nextStateSum = aluRrState + aluDispatchedCnt
+    aluRrState := Mux(nextStateSum >= 3.U, nextStateSum - 3.U, nextStateSum)
   }
  
   // ================================================================

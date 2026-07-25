@@ -30,7 +30,7 @@ class ICache(implicit p: Parameters) extends NSModule {
   
   val mainPipe = Module(new ICacheMainPipe)
   val array = Module(new ICacheArray)
-  val replacer = Module(new ICacheReplacer)
+  val replacer = Module(new CacheReplacer)
   //val simMMU = Module(new SimpleMMU)
   
   

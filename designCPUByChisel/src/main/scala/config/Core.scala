@@ -41,10 +41,17 @@ trait HasCoreParameters {
   val btbTagBits: Int = 32 - fetchBlockBits - btbIndexBits
   val fetchOffsetBits: Int = log2Ceil(fetchWidth)
 
-  /*---- ICache相关 ----*/
+  /*---- Cache相关 ----*/
+  // 64KB 4路组相联
   val  nSets:      Int = 256
   val  nWays:      Int = 4
   val  blockBytes: Int = 64
+
+  // 8KB 2路组相联
+  //val  nSets:      Int = 64
+  //val  nWays:      Int = 2
+  //val  blockBytes: Int = 64
+
   val idxBits     = log2Ceil(nSets)
   val wayBits     = log2Ceil(nWays)
   val blockOffBits = log2Ceil(blockBytes)
