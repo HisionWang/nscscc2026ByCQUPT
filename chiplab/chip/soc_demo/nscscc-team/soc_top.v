@@ -99,6 +99,7 @@ wire [7:0] switch_vio;
 wire [7:0] switch;
 wire [1:0] btn_step_vio;
 wire [1:0] btn_step;
+wire [2:0] ddr_status_vio;
 reg        virtual_flag;
 
 assign resetn = resetn_fpga & resetn_vio;
@@ -119,7 +120,8 @@ vio_0 vio (
         .probe_in0 (led),
         .probe_in1 (num_data),
         .probe_in2 (led_rg0 ),
-        .probe_in3 (led_rg1 )
+        .probe_in3 (led_rg1 ),
+        .probe_in4 (ddr_status_vio)
     );
 
 //debug signals
@@ -135,13 +137,41 @@ wire cpu_clk;
 wire sys_clk;
 wire ddr_clk_ref;
 wire core_rst_n;
+wire test_core_reset_source_n;
+wire test_core_rst_n;
 wire pll_locked;
 wire cpu_resetn;
 wire sys_resetn;
 wire confreg_resetn;
 wire jtag_axi_resetn;
 wire ddr_aresetn;
+wire ddr_calib_complete;
 wire ddr_data_init;
+(* ASYNC_REG = "TRUE" *) reg [1:0] clock_pll_locked_vio_sync;
+(* ASYNC_REG = "TRUE" *) reg [1:0] ddr_calib_vio_sync;
+(* ASYNC_REG = "TRUE" *) reg [1:0] sys_resetn_vio_sync;
+
+// VIO runs from the 100 MHz board clock. Synchronize the three readiness
+// indicators into that domain before the hardware-manager script samples them.
+always @(posedge clk or negedge resetn_fpga) begin
+    if (!resetn_fpga) begin
+        clock_pll_locked_vio_sync <= 2'b00;
+        ddr_calib_vio_sync        <= 2'b00;
+        sys_resetn_vio_sync       <= 2'b00;
+    end
+    else begin
+        clock_pll_locked_vio_sync <= {clock_pll_locked_vio_sync[0],
+                                      pll_locked};
+        ddr_calib_vio_sync        <= {ddr_calib_vio_sync[0],
+                                      ddr_calib_complete};
+        sys_resetn_vio_sync       <= {sys_resetn_vio_sync[0],
+                                      sys_resetn};
+    end
+end
+
+assign ddr_status_vio = {sys_resetn_vio_sync[1],
+                         ddr_calib_vio_sync[1],
+                         clock_pll_locked_vio_sync[1]};
 
 generate if(SIMULATION && `SIMU_USE_PLL==0) begin: sim_clk
     //simulation clk.
@@ -155,6 +185,7 @@ generate if(SIMULATION && `SIMU_USE_PLL==0) begin: sim_clk
     assign cpu_clk = clk_91m;
     assign sys_clk = clk;
     assign ddr_clk_ref = clk_200m;
+    assign pll_locked = 1'b1;
     rst_sync u_rst_sys(
         .clk(sys_clk),
         .rst_n_in(resetn & ddr_data_init),
@@ -204,13 +235,24 @@ else begin: fpga_pll
         .rst_n_in(pll_locked & ddr_aresetn),
         .rst_n_out(sys_resetn)
     );
+    // In VIO test mode btn_step_vio[0] is also the CPU/confreg run control.
+    // The test driver drives it low before resetting and initializing DDR, so
+    // the CPU cannot execute stale DDR contents before the JTAG download has
+    // completed. Physical front-panel mode bypasses this additional reset.
+    assign test_core_reset_source_n = core_rst_n
+                                    & (~virtual_flag | btn_step_vio[0]);
+    rst_sync u_rst_test_core(
+        .clk(sys_clk),
+        .rst_n_in(test_core_reset_source_n),
+        .rst_n_out(test_core_rst_n)
+    );
     rst_sync u_rst_cpu(
         .clk(cpu_clk),
-        .rst_n_in(core_rst_n),
+        .rst_n_in(test_core_rst_n),
         .rst_n_out(cpu_resetn)
     );
     assign jtag_axi_resetn = sys_resetn;
-    assign confreg_resetn    = core_rst_n;
+    assign confreg_resetn    = test_core_rst_n;
 end
 endgenerate
 
@@ -861,6 +903,8 @@ axi_crossbar_2x3 u_axi_crossbar_2x3 (
 );
 
 generate if(SIMULATION && `SIMU_USE_DDR==0) begin: sim_ram
+assign ddr_aresetn = 1'b1;
+assign ddr_calib_complete = 1'b1;
 //axi ram
 axi_wrap_ram u_axi_ram
 (
@@ -919,6 +963,7 @@ axi_wrap_ddr  u_axi_wrap_ddr (
     .xtal_clk                ( clk               ),
     .button_resetn           ( resetn            ),
     .ddr_clk_ref             ( ddr_clk_ref       ),
+    .clock_pll_locked        ( pll_locked        ),
     .axi_arid                ( ram_arid          ),
     .axi_araddr              ( ram_araddr        ),
     .axi_arlen               ( ram_arlen         ),
@@ -946,6 +991,7 @@ axi_wrap_ddr  u_axi_wrap_ddr (
     .ram_random_mask         ( ram_random_mask   ),
 
     .ddr_aresetn             ( ddr_aresetn       ),
+    .ddr_calib_complete      ( ddr_calib_complete),
     .axi_arready             ( ram_arready       ),
     .axi_rid                 ( ram_rid           ),
     .axi_rdata               ( ram_rdata         ),
@@ -1107,4 +1153,3 @@ axi2apb_misc APB_DEV
 );
 
 endmodule
-

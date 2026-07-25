@@ -38,7 +38,9 @@ module axi_wrap_ddr(
     input         xtal_clk,
     input         button_resetn,
     input         ddr_clk_ref,
+    input         clock_pll_locked,
     output reg    ddr_aresetn,
+    output        ddr_calib_complete,
 
     //ar
     input  [3 :0] axi_arid   ,
@@ -620,6 +622,23 @@ wire        mig_bready ;
 wire ui_clk;
 wire ui_clk_sync_rst;
 wire init_calib_complete;
+wire mig_reset_source_n;
+wire mig_resetn;
+(* ASYNC_REG = "TRUE" *) reg [3:0] mig_reset_sync;
+
+// Assert MIG reset immediately when the board reset is active or the shared
+// platform PLL loses lock. Release it synchronously in the 100 MHz board-clock
+// domain only after the PLL and its 200 MHz DDR reference output are stable.
+assign mig_reset_source_n = button_resetn & clock_pll_locked;
+always @(posedge xtal_clk or negedge mig_reset_source_n) begin
+    if (!mig_reset_source_n)
+        mig_reset_sync <= 4'b0000;
+    else
+        mig_reset_sync <= {mig_reset_sync[2:0], 1'b1};
+end
+
+assign mig_resetn = mig_reset_sync[3];
+assign ddr_calib_complete = init_calib_complete;
 
 Axi_CDC  u_Axi_CDC (
     .axiInClk                ( aclk                 ),
@@ -727,7 +746,7 @@ mig_axi_32 mig_axi (
     .ui_clk_sync_rst     (ui_clk_sync_rst ),
  
     .sys_clk_i           (xtal_clk        ),
-    .sys_rst             (button_resetn   ),                        
+    .sys_rst             (mig_resetn      ),
     .init_calib_complete (init_calib_complete),
     .clk_ref_i           (ddr_clk_ref     ),
     .mmcm_locked         (                ),

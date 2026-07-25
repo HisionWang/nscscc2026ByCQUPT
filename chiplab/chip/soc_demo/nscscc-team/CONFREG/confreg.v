@@ -455,18 +455,38 @@ assign led_r_n = ~switch_led;
 reg [22:0] pseudo_random_23;
 reg        no_mask;     //if led_r_n[7:0] is all 1, no mask 
 reg        short_delay; //memory short delay
+reg        aresetn_d;
+wire [22:0] random_seed = simu_flag[0] ? `RANDOM_SEED
+                                         : {7'b1010101,led_r_n};
+wire        random_seed_load = aresetn & ~aresetn_d;
 always @ (posedge aclk)
 begin
    if (!sys_resetn)
-       pseudo_random_23 <= simu_flag[0] ? `RANDOM_SEED : {7'b1010101,led_r_n};
+   begin
+       aresetn_d        <= 1'b0;
+       pseudo_random_23 <= random_seed;
+       no_mask          <= random_seed[15:0]==16'h00FF;
+       short_delay      <= random_seed[7:0]==8'hFF;
+   end
    else
-       pseudo_random_23 <= {pseudo_random_23[21:0],pseudo_random_23[22] ^ pseudo_random_23[17]};
-
-   if(!sys_resetn)
-       no_mask <= pseudo_random_23[15:0]==16'h00FF;
-
-   if(!sys_resetn)
-       short_delay <= pseudo_random_23[7:0]==8'hFF;
+   begin
+       aresetn_d <= aresetn;
+       if (random_seed_load)
+       begin
+           // Reload the switch-selected AXI delay sequence exactly when the
+           // local CPU/confreg reset is released. Do not hold the LFSR in
+           // reset while aresetn is low: JTAG still uses the DDR AXI path
+           // during that interval and needs the random mask to keep moving.
+           pseudo_random_23 <= random_seed;
+           no_mask          <= random_seed[15:0]==16'h00FF;
+           short_delay      <= random_seed[7:0]==8'hFF;
+       end
+       else
+       begin
+           pseudo_random_23 <= {pseudo_random_23[21:0],
+                                pseudo_random_23[22] ^ pseudo_random_23[17]};
+       end
+   end
 end
 assign ram_random_mask[0] = (pseudo_random_23[10]&pseudo_random_23[20]) & (short_delay|(pseudo_random_23[11]^pseudo_random_23[5]))
                           | no_mask;
