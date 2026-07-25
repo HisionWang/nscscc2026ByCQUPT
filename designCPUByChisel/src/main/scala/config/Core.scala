@@ -43,14 +43,14 @@ trait HasCoreParameters {
 
   /*---- Cache相关 ----*/
   // 64KB 4路组相联
-  val  nSets:      Int = 256
-  val  nWays:      Int = 4
-  val  blockBytes: Int = 64
+  //val  nSets:      Int = 256
+  //val  nWays:      Int = 4
+  //val  blockBytes: Int = 64
 
   // 8KB 2路组相联
-  //val  nSets:      Int = 64
-  //val  nWays:      Int = 2
-  //val  blockBytes: Int = 64
+  val  nSets:      Int = 64
+  val  nWays:      Int = 2  //替换算法只写了2和4，所以这里只能是2和4
+  val  blockBytes: Int = 64
 
   val idxBits     = log2Ceil(nSets)
   val wayBits     = log2Ceil(nWays)
