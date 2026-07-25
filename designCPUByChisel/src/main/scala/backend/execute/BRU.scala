@@ -57,7 +57,7 @@ class BRU(implicit p: Parameters) extends NSModule {
     val taken     = Output(Bool())                               // 分支是否 taken
     val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
   })
-  dontTouch(io.uop)
+  diffDontTouch(io.uop)
  
   val op   = io.uop.ctrl.bruOp
   val src1 = io.rs1

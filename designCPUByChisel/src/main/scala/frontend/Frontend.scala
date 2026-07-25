@@ -19,10 +19,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
     //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
-      val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
-
-
-
+    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
     //MMU
     val mmu = new MMURead
  
@@ -47,9 +44,9 @@ class Frontend(implicit p: Parameters) extends NSModule {
   val frontendRedirectValid  = predecoder.io.out.bits.frontendRedirect.valid && predecoder.io.out.valid
   val frontendRedirectTarget = predecoder.io.out.bits.frontendRedirect.target
   val backendRedirectValid = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
-  dontTouch(frontendRedirectValid)
-  dontTouch(frontendRedirectTarget)
-  dontTouch(backendRedirectValid)
+  diffDontTouch(frontendRedirectValid)
+  diffDontTouch(frontendRedirectTarget)
+  diffDontTouch(backendRedirectValid)
 
   ifu.io.frontendRedirect.valid := frontendRedirectValid
   ifu.io.frontendRedirect.target := frontendRedirectTarget

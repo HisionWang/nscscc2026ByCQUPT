@@ -76,7 +76,7 @@ class FreeList(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CtrlBlockWidth) {
     selPregsUint(i) := OHToUInt(selPregs(i))
   }
-  dontTouch(selPregsUint)
+  diffDontTouch(selPregsUint)
  
   // ================================================================
   //  4. 预缓存机制（不变）

@@ -103,6 +103,9 @@ trait HasCoreParameters {
   val nrSearchPort: Int = p(MmuconfigKeys.TlbSearchPortNum)
   val tlbIdxLen: Int = log2Ceil(nrTlb)
 
+  def diffDontTouch[T <: Data](data: T): T = {
+    if (EnableDifftest) dontTouch(data) else data
+  }
 
 
  

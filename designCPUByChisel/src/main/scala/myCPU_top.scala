@@ -112,11 +112,11 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   frontend.io.redirectInfo <> backend.io.redirectInfo
 
 
-  dontTouch(backend.io.lsEnq)
+  diffDontTouch(backend.io.lsEnq)
   backend.io.lsEnq <> memory.io.lsEnq
 
-  dontTouch(backend.io.toMemResult(0)) //load+store的地址
-  dontTouch(backend.io.toMemResult(1)) //store的数据
+  diffDontTouch(backend.io.toMemResult(0)) //load+store的地址
+  diffDontTouch(backend.io.toMemResult(1)) //store的数据
   // 1.后端传给Memory的数据信息OK
   backend.io.toMemResult(1) <> memory.io.fromExeResult
   // 2.后端传给memory的地址信息处理
@@ -152,7 +152,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   frontend.io.bpuUpdateBr        <> backend.io.bpuUpdate
 
-  dontTouch(frontend.io.out)
+  diffDontTouch(frontend.io.out)
 
  
   // ---------- MMU / TLB ----------

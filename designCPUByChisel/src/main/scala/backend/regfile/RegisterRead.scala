@@ -106,8 +106,8 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     val out_killed = out_valid && doRedirect &&
                      out_uop.robIdxFull.isAfter(redirectRobIdx)
 
-    dontTouch(rrd_killed)
-    dontTouch(out_killed)
+    diffDontTouch(rrd_killed)
+    diffDontTouch(out_killed)
     // ──────────────────────────────────────────
     //  握手控制信号
     // ──────────────────────────────────────────

@@ -139,12 +139,12 @@ class Mmu(implicit p: Parameters) extends NSModule {
     io.toIcache.bits  := Mux(isDirect, directResp,
                          Mux(dmwHit, dmwResp, tlbOut))
 
-    dontTouch(dmwHit)
-    dontTouch(isPaging)
-    dontTouch(isDirect)
-    dontTouch(directResp)
-    dontTouch(io.toIcache)
-    dontTouch(io.fromIcache)
+    diffDontTouch(dmwHit)
+    diffDontTouch(isPaging)
+    diffDontTouch(isDirect)
+    diffDontTouch(directResp)
+    diffDontTouch(io.toIcache)
+    diffDontTouch(io.fromIcache)
   }
 
   // Mem Port
@@ -252,9 +252,9 @@ class Mmu(implicit p: Parameters) extends NSModule {
     io.toMem.bits := Mux(isDirect, directResp,
                      Mux(dmwHit, dmwResp, tlbOut))
 
-    dontTouch(dmwHit)
-    dontTouch(io.toMem)
-    dontTouch(io.fromMem)
+    diffDontTouch(dmwHit)
+    diffDontTouch(io.toMem)
+    diffDontTouch(io.fromMem)
   }
 
   for (i <- 2 until nrSearchPort) {

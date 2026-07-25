@@ -195,10 +195,10 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     (canLoad || canStore) && q4Avail
   }))
   val q4Selected = truncateMask(q4Cand, 1)
-  dontTouch(q4Selected)
+  diffDontTouch(q4Selected)
  
   val q5Selected = VecInit((0 until CtrlBlockWidth).map(i => q4Selected(i) && isStoreLane(i)))
-  dontTouch(q5Selected)
+  diffDontTouch(q5Selected)
  
   val iqDispatchMask = VecInit((0 until CtrlBlockWidth).map(i =>
     q1Final(i) || q2Final(i) || q3Final(i) || q4Selected(i) || q5Selected(i)
@@ -481,8 +481,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.q5IQEnq(0).valid := true.B && !io.flush
     io.q5IQEnq(0).bits  := Mux1H(q5Selected, q5Uops)
   }
-  dontTouch(io.q5IQEnq)
-  dontTouch(io.q4IQEnq)
+  diffDontTouch(io.q5IQEnq)
+  diffDontTouch(io.q4IQEnq)
  
   // ================================================================
   //  ROB 批量写入 (ROB仍然维持进入流水级当拍进行一次性批量分发)

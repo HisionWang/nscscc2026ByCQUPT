@@ -208,8 +208,8 @@ class FlushableQueue[T <: Data](gen: T, entries: Int)(implicit p: Parameters) ex
   val tail   = RegInit(0.U(log2Ceil(entries).W))
   val count  = RegInit(0.U(log2Ceil(entries + 1).W))
 
-  dontTouch(data)
-  dontTouch(io.deq)
+  diffDontTouch(data)
+  diffDontTouch(io.deq)
  
   val full  = count === entries.U
   val empty = count === 0.U

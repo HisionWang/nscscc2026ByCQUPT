@@ -567,6 +567,6 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
   // ================================================================
   //  调试
   // ================================================================
-  dontTouch(state)
-  dontTouch(pendingMiss)
+  diffDontTouch(state)
+  diffDontTouch(pendingMiss)
 }
