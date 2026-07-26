@@ -8,11 +8,12 @@ import nscscc.config._
 import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
+ 
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val redirect = Input(Bool())
     // CPU接口
-    val cpu_req = Flipped( Decoupled(new Bundle {
+    val cpu_req = Flipped(Decoupled(new Bundle {
       val addr  = (UInt(32.W))   // 虚拟地址
     }))
  
@@ -42,11 +43,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_flush = s3_flush      || false.B
   val s1_flush = s2_flush      || false.B
   val s0_flush = s1_flush      || false.B
-   
-   
     
-   
-   
+    
+    
   // === 重构的4级流水线 ===
  
  
@@ -55,7 +54,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // Stage 2: 使用物理地址进行标签比较，判断命中/缺失
   val s0_valid = RegInit(false.B)
   val s1_ready = Wire(Bool())
-  val s0_cango = io.mmu.toMmu.ready //true.B// TODO：什么时候才能流向下一级
+  val s0_cango = io.mmu.toMmu.ready
   val s0_fire = ( s0_valid  && s1_ready ) && s0_cango
   val s0_ready = s0_fire || !s0_valid
   io.cpu_req.ready := s0_ready
@@ -64,7 +63,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val curr_vtag = io.cpu_req.bits.addr(31, blockOffBits + idxBits)
  
   // === Stage 0: 发出Cached的SRAM读取请求，向MMU发起地址转换 ===
-  
+   
   val s0_vaddr = RegInit(0.U(32.W))
   val s0_vidx  = RegInit(0.U(idxBits.W))
   val s0_vtag  = RegInit(0.U(tagBits.W))
@@ -75,7 +74,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s0_valid  := false.B
     
   }.elsewhen(io_fire && !s0_flush){
-    s0_valid := io.cpu_req.bits.addr =/=  0x1BFFFFFC.U  //true.B //或者：io.cpu_req.valid
+    s0_valid := io.cpu_req.bits.addr =/=  0x1BFFFFFC.U
     s0_vaddr := io.cpu_req.bits.addr
     s0_vidx  := curr_vidx
     s0_vtag  := curr_vtag
@@ -83,7 +82,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     s0_valid  := false.B
   }
   
- 
   //= Stage0时需要干的：发送请求 =
   //读Tag and Data
   io.arrays_read.req.valid  := s0_fire && !s0_flush
@@ -107,11 +105,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   s1_fire  := ( s1_valid  && s2_ready ) && s1_cango
   s1_ready := s1_fire || !s1_valid
   
- 
   when(s1_flush) {
     s1_valid  := false.B
   }.elsewhen(s0_fire && !s0_flush){
-    s1_valid := true.B //或者：s0_valid
+    s1_valid := true.B
     s1_vaddr := s0_vaddr
     s1_vidx  := s0_vidx
     s1_vtag  := s0_vtag
@@ -121,8 +118,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   io.mmu.fromMmu.ready := true.B
   val mmu_resp_fire = io.mmu.fromMmu.valid
   val array_resp_fire = io.arrays_read.resp.valid
- 
- 
  
   val s1_responses_ready = RegInit(false.B)
   val s1_mmu_received = RegInit(false.B)
@@ -157,21 +152,18 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_pidx      = RegInit(0.U(idxBits.W))
   val s2_ptag      = RegInit(0.U(tagBits.W))
   val s2_array_data = RegInit(0.U.asTypeOf(new arrayReadData))
-  
+   
   val s3_ready = Wire(Bool())
   val s2_fire = ( s2_valid && s3_ready)
   val s2_is_uncached_access = s2_mmu_error.getAnyError || s2_uncached
   s2_ready := s2_fire || !s2_valid
-      // 从物理地址计算索引和标签
  
   val s1_ptag = Mux(s1_mmu_received, s1_mmu_received_data.paddr(31, blockOffBits + idxBits), io.mmu.fromMmu.bits.paddr(31, blockOffBits + idxBits))
   val s1_array_data_read = Mux(s1_array_received, s1_array_received_data, io.arrays_read.resp.data)
   val s1_paddr = Mux(s1_mmu_received, s1_mmu_received_data.paddr, io.mmu.fromMmu.bits.paddr)
-  // s1_vidx has
  
   val s3_ptag    = Wire(UInt(tagBits.W))
   val s3_pidx    = Wire(UInt(idxBits.W))
-  //val s3_array_data = Wire(new arrayReadData)
  
   val miss_data_valid = RegInit(false.B)
   val s3_valid = RegInit(false.B)
@@ -190,8 +182,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_bypass_data_from_s1 = RegInit(0.U((blockBytes * 8).W))
   val s2_can_bypass_from_s1  = RegInit(false.B)
   val s2_hit_way_from_s1     = RegInit(0.U(wayBits.W))
-  
-  //miss_data_buffer
  
   when(s2_flush) {
     s2_valid := false.B
@@ -234,17 +224,13 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   val s3_cacheLine_data = RegInit(0.U((blockBytes * 8).W))
  
-  //TODO：请根据写的状态机正确处理s3_ready
-  //处理miss、非缓存及命中
-  //三种情况满足一种即可ready
-  //s3_ready := false.B //TODO
- 
-  // 【修改点1】状态枚举从9扩展为11，新增s_drain_miss和s_drain_uncache
-  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: s_drain_miss :: s_drain_uncache :: Nil = Enum(11)
+  val cpu_ready = io.icache_resp.ready
+
+  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: s_drain_miss :: s_drain_uncache :: s_drain_miss_req :: s_drain_uncache_req :: Nil = Enum(13)
   
   val state = RegInit(s_idle)
   val next_state = WireInit(s_idle)
-  val cpu_ready = io.icache_resp.ready
+
  
   val s3_fire =((s3_valid && s3_hit) || state === s_done )&& cpu_ready
  
@@ -280,13 +266,22 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
   s3_ptag := s3_paddr(31, blockOffBits + idxBits)
   s3_pidx := s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
-
  
+ 
+  // ══════════════════════════════════════════════════════════════
+  //  状态机：13 状态
+  //
+  //  新增 s_drain_miss_req / s_drain_uncache_req：
+  //    当 flush 来袭时，如果 ARVALID 已拉高但 ARREADY 尚未到来，
+  //    不能撤 ARVALID（AXI 协规要求），必须进入这两个状态
+  //    继续保持 ARVALID，等 ARREADY 到后才转入 drain_wait 排空响应。
+  // ══════════════════════════════════════════════════════════════
+
+  
   // 状态转移逻辑
   switch(state) {
     is(s_idle) {
       when(s3_valid && !s3_flush && !s3_hit) {
-        // 根据Stage 2的结果选择下一个状态
         when(s3_mmu_error.getAnyError) {
           next_state := s_mmu_error_state
         }.elsewhen(s3_uncached) {
@@ -296,7 +291,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         }.elsewhen(s3_hit) {
           next_state := s_hit
         }.otherwise {
-          // 理论上不应该到这里
           next_state := s_idle
         }
       }.otherwise {
@@ -305,12 +299,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
     
     is(s_hit) {
-      // 命中处理在一个周期内完成
       next_state := s_done
     }
     
     is(s_miss_req) {
-      // 发起AXI读请求后等待
       when(io.axi.ar.arready) {
         next_state := s_miss_wait
       }.otherwise {
@@ -319,7 +311,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
     
     is(s_miss_wait) {
-      // 等待AXI响应
       when(io.axi.r.data.rvalid && io.axi.r.data.rlast && io.axi.r.data.rid === icacheAxiMissId.U) {
         next_state := s_miss_write
       }.otherwise {
@@ -328,12 +319,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
     
     is(s_miss_write) {
-      // 写入Cache阵列
       next_state := s_done
     }
     
     is(s_uncache_req) {
-      // 发起非缓存读请求
       when(io.axi.ar.arready) {
         next_state := s_uncache_wait
       }.otherwise {
@@ -342,7 +331,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
     
     is(s_uncache_wait) {
-      // 等待非缓存响应
       when(io.axi.r.data.rvalid && io.axi.r.data.rlast && io.axi.r.data.rid === icacheAxiNucacheId.U) {
         next_state := s_done
       }.otherwise {
@@ -351,12 +339,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
     
     is(s_mmu_error_state) {
-      // MMU错误，直接完成
       next_state := s_done
     }
     
     is(s_done) {
-      // 完成状态，等待外层ready
       when(cpu_ready) {
         next_state := s_idle
       }.otherwise {
@@ -364,9 +350,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
       }
     }
     
-    // 【修改点2】新增drain状态：flush时排空已发出的AXI响应
     is(s_drain_miss) {
-      // 排空miss响应：保持rready接收并丢弃数据，等待rlast后回到idle
       when(io.axi.r.data.rvalid && io.axi.r.data.rlast && io.axi.r.data.rid === icacheAxiMissId.U) {
         next_state := s_idle
       }.otherwise {
@@ -375,27 +359,89 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
     
     is(s_drain_uncache) {
-      // 排空uncache响应：保持rready接收并丢弃数据，等待rlast后回到idle
       when(io.axi.r.data.rvalid && io.axi.r.data.rlast && io.axi.r.data.rid === icacheAxiNucacheId.U) {
         next_state := s_idle
       }.otherwise {
         next_state := s_drain_uncache
       }
     }
+    
+    // ── 新增：flush 时 ARVALID 已拉高但 ARREADY 未到的守卫状态 ──
+    // 保持 ARVALID 不撤，等 ARREADY 到后转入 drain 排空响应
+    is(s_drain_miss_req) {
+      when(io.axi.ar.arready) {
+        // AR 握手完成，响应必然到来，转入排空
+        next_state := s_drain_miss
+      }.otherwise {
+        // ARREADY 未到，必须保持 ARVALID（AXI 协规要求）
+        next_state := s_drain_miss_req
+      }
+    }
+    
+    is(s_drain_uncache_req) {
+      when(io.axi.ar.arready) {
+        next_state := s_drain_uncache
+      }.otherwise {
+        next_state := s_drain_uncache_req
+      }
+    }
   }
   
-  // 【修改点3】flush时根据AXI事务状态决定转移目标
-  // 如果AR已经握手完成（响应必然到来），必须进入drain状态排空响应
-  // 如果AR尚未握手完成（还在s_miss_req/s_uncache_req且arready未到来），可以安全回到idle
-  // 对于已在drain中的状态，即使flush持续多个周期也保持在drain
-  val readAxiFire = io.axi.r.data.rvalid && io.axi.r.rready && (io.axi.r.data.rid === icacheAxiMissId.U || io.axi.r.data.rid === icacheAxiNucacheId.U) && io.axi.r.data.rlast
-
-  when(s3_flush) {                 //flush这个周期可能也是响应事务结束的那个周期，所以要优先判断事务结束
-    when( (state === s_miss_wait && !readAxiFire)  || (state === s_drain_miss && !readAxiFire) || (state === s_miss_req && io.axi.ar.data.arvalid && io.axi.ar.arready)) {
+  // ══════════════════════════════════════════════════════════════
+  //  flush 时状态覆盖逻辑（修正版）
+  //
+  //  核心原则：ARVALID 一旦拉高，在 ARREADY 到来之前绝不能撤！
+  //
+  //  分类处理：
+  //    1. AR 已握手完成（s_miss_wait / s_uncache_wait / drain）：
+  //       响应必然到来 → 进入 drain 排空
+  //    2. AR 已握手完成（本拍 arready 刚到）：
+  //       响应必然到来 → 进入 drain 排空
+  //    3. ARVALID 已拉高但 ARREADY 还没到（s_miss_req / s_uncache_req）：
+  //       **不能撤 ARVALID** → 进入 s_drain_miss_req / s_drain_uncache_req
+  //       继续保持 ARVALID，等 ARREADY 到后转入 drain 排空
+  //    4. 其他状态（idle / hit / done / mmu_error / miss_write）：
+  //       无 AXI 事务在途 → 安全回到 idle
+  // ══════════════════════════════════════════════════════════════
+  val readAxiFire = io.axi.r.data.rvalid && io.axi.r.rready && 
+                    (io.axi.r.data.rid === icacheAxiMissId.U || io.axi.r.data.rid === icacheAxiNucacheId.U) && 
+                    io.axi.r.data.rlast
+ 
+  when(s3_flush) {
+    // ── miss 路径 ──
+    when(state === s_miss_wait && !readAxiFire) {
+      // AR 已完成，R 响应还在路上 → 排空
       state := s_drain_miss
-    }.elsewhen( (state === s_uncache_wait  && !readAxiFire ) || (state === s_drain_uncache && !readAxiFire) || (state === s_uncache_req && io.axi.ar.data.arvalid && io.axi.ar.arready)) {
+    }.elsewhen(state === s_drain_miss && !readAxiFire) {
+      // 已在排空，继续
+      state := s_drain_miss
+    }.elsewhen(state === s_miss_req && io.axi.ar.arready) {
+      // AR 握手本拍刚好完成，响应必然到来 → 排空
+      state := s_drain_miss
+    }.elsewhen(state === s_miss_req && !io.axi.ar.arready) {
+      state := s_drain_miss_req
+    }.elsewhen(state === s_drain_miss_req && io.axi.ar.arready) {
+      state := s_drain_miss
+    }.elsewhen(state === s_drain_miss_req  && !io.axi.ar.arready) {
+      state := s_drain_miss_req
+    }
+    // ── uncache 路径 ──
+    .elsewhen(state === s_uncache_wait && !readAxiFire) {
       state := s_drain_uncache
-    }.otherwise {
+    }.elsewhen(state === s_drain_uncache && !readAxiFire) {
+      state := s_drain_uncache
+    }.elsewhen(state === s_uncache_req && io.axi.ar.arready) {
+      state := s_drain_uncache
+    }.elsewhen(state === s_uncache_req && !io.axi.ar.arready) {
+      state := s_drain_uncache_req
+    }.elsewhen(state === s_drain_uncache_req && io.axi.ar.arready ) {
+      state := s_drain_uncache
+    }.elsewhen(state === s_drain_uncache_req && !io.axi.ar.arready ) {
+      state := s_drain_uncache_req
+    }
+ 
+    // ── 其他状态：无 AXI 事务在途 → 安全回到 idle ──
+    .otherwise {
       state := s_idle
     }
   }.otherwise {
@@ -407,25 +453,21 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val hit_valids = Wire(Vec(fetchWidth, Bool()))
   val word_offset = Wire(UInt(5.W))
     
-  word_offset :=  s3_vaddr(blockOffBits-1, 2)  // 摄取低两位，计算字偏移
+  word_offset :=  s3_vaddr(blockOffBits-1, 2)
   
   for (i <- 0 until fetchWidth) {
-    val word_offset_i = (word_offset + i.U)// % (blockBytes/4).U
+    val word_offset_i = (word_offset + i.U)
     val bit_offset = word_offset_i * 32.U
     hit_instrs(i) := (s3_cacheLine_data >> bit_offset)(31, 0)
     hit_valids(i) := Mux( word_offset_i < (blockBytes/4).U, true.B, false.B )
   }
  
   // 2. 缺失处理
- 
- 
- 
   val miss_instrs = Wire(Vec(fetchWidth, UInt(32.W)))
   val miss_valids = Wire(Vec(fetchWidth, Bool()))
-  //val word_offset = s3_vaddr(blockOffBits-1, 2)  // 摄取低两位，计算字偏移
   
   for (i <- 0 until fetchWidth) {
-    val word_offset_i = (word_offset + i.U)// % (blockBytes/4).U
+    val word_offset_i = (word_offset + i.U)
     val bit_offset = word_offset_i * 32.U
     miss_instrs(i) := (miss_data_buffer >> bit_offset)(31, 0)
     miss_valids(i) := Mux( word_offset_i < (blockBytes/4).U, true.B, false.B )
@@ -461,7 +503,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   io.icache_resp.bits.addr := s3_vaddr
  
-  //io.icache_resp.bits.miss := output_miss
   io.icache_resp.bits.uncached := output_uncached
   io.icache_resp.bits.mmu_error := output_mmu_error
   
@@ -522,35 +563,15 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
       output_uncached := false.B
       output_mmu_error := s3_mmu_error
     }
-    
-    //default {
-    //  output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
-    //  output_valid := false.B
-    //  output_miss := false.B
-    //  output_uncached := false.B
-    //  output_mmu_error := false.B
-    //}
   }
   
-  // 输出到接口
-  //io.s3_valid := output_valid
-  //io.s3_vaddr := s3_vaddr
-  //io.s3_instrs := output_instrs
-  //io.s3_miss := output_miss
-  //io.s3_uncached := output_uncached
-  //io.s3_mmu_error := output_mmu_error
-  
   // === Stage 3 ready信号 ===
-  // Stage 3准备好接收新数据的条件：空闲状态或完成状态且外层已准备好
- 
-  
-  s3_ready := ((state === s_idle && s3_valid && s3_hit && cpu_ready)) || (state === s_idle && !s3_valid) || (state === s_done && cpu_ready)//io.cpu_ready)
+  s3_ready := ((state === s_idle && s3_valid && s3_hit && cpu_ready)) || (state === s_idle && !s3_valid) || (state === s_done && cpu_ready)
   
   // === 各状态的具体任务 ===
   
   // 1. 命中状态
   when(s3_hit) {
-    // 更新替换算法
     io.replacer_touch.valid := true.B
     io.replacer_touch.idx   := s3_pidx
     io.replacer_touch.way   := s3_hit_way
@@ -564,30 +585,33 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   io.axi.aw <> WireDefault(0.U.asTypeOf(new AXI3AWChannel))
   io.axi.w  <> WireDefault(0.U.asTypeOf(new AXI3WChannel))
   io.axi.b  <> WireDefault(0.U.asTypeOf(new AXI3BChannel))
-  
-  // 2. 缺失状态 - 发起AXI请求
-  val axi_burst_length = (blockBytes / 4 - 1).U  // 突发长度，以字为单位
+   
+  // ══════════════════════════════════════════════════════════════
+  //  AR 通道驱动（关键修改）
+  //
+  //  s_drain_miss_req / s_drain_uncache_req 也必须保持 ARVALID 高，
+  //  信号内容与 s_miss_req / s_uncache_req 完全一致，
+  //  因为 AXI 要求 VALID 拉高后地址等信号也不能变。
+  // ══════════════════════════════════════════════════════════════
+  val axi_burst_length = (blockBytes / 4 - 1).U
   
   io.axi.ar.data.arlock  := 0.U
   io.axi.ar.data.arcache := 0.U
   io.axi.ar.data.arprot  := 0.U
-  when(state === s_miss_req) {
-    // 发起Cache行读取
+  when(state === s_miss_req || state === s_drain_miss_req) {
     io.axi.ar.data.arid    := icacheAxiMissId.U
     io.axi.ar.data.araddr  := Cat(s3_ptag, s3_pidx, 0.U(blockOffBits.W))
     io.axi.ar.data.arlen   := axi_burst_length
-    io.axi.ar.data.arsize  := 2.U  // 4字节
-    io.axi.ar.data.arburst := 1.U  // 递增突发
+    io.axi.ar.data.arsize  := 2.U
+    io.axi.ar.data.arburst := 1.U
     io.axi.ar.data.arvalid := true.B
-  }.elsewhen(state === s_uncache_req) {
-    // 发起非缓存读取（单字）
+  }.elsewhen(state === s_uncache_req || state === s_drain_uncache_req) {
     io.axi.ar.data.arid    := icacheAxiNucacheId.U
     io.axi.ar.data.araddr  := s3_paddr
     io.axi.ar.data.arlen   := 0.U
-    io.axi.ar.data.arsize  := 2.U  // 4字节
-    io.axi.ar.data.arburst := 1.U  // 递增突发
+    io.axi.ar.data.arsize  := 2.U
+    io.axi.ar.data.arburst := 1.U
     io.axi.ar.data.arvalid := true.B
- 
   }.otherwise {
     io.axi.ar.data.arid    := 0.U
     io.axi.ar.data.arvalid := false.B
@@ -596,22 +620,22 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.axi.ar.data.arsize  := 0.U
     io.axi.ar.data.arburst := 0.U
   }
-  
-  // 连接其他AXI信号（简化）
+ 
+  // 连接其他AXI信号
   io.axi.aw.data.awvalid := false.B
   io.axi.w.data.wvalid   := false.B
-  // 【修改点4】drain状态也保持rready，以接收并丢弃旧响应
-  io.axi.r.rready   := (state === s_miss_wait) || (state === s_uncache_wait) || (state === s_drain_miss) || (state === s_drain_uncache)
-  io.axi.b.bready   := false.B
+  // rready：drain_req 状态也需要保持 rready，
+  // 因为如果本拍 arready 到了转入 drain，可能紧接着 rvalid 就来
+  io.axi.r.rready := (state === s_miss_wait) || (state === s_uncache_wait) || 
+                     (state === s_drain_miss) || (state === s_drain_uncache) ||
+                     (state === s_drain_miss_req) || (state === s_drain_uncache_req)
+  io.axi.b.bready := false.B
   
-  // 【修改点5】将beat_counter移到when块外部，以便drain状态可以重置它
   val beat_counter = RegInit(0.U(4.W))
   
   // 3. 缺失状态 - 收集数据
   when(state === s_miss_wait && io.axi.r.data.rvalid && io.axi.r.data.rid === icacheAxiMissId.U) {
-    // 收集突发传输的数据
     when(io.axi.r.data.rvalid) {
-      // 将数据拼接到缓冲区
       val beat = beat_counter
       val data_offset = beat * 32.U
       miss_data_buffer := miss_data_buffer | (io.axi.r.data.rdata << data_offset)
@@ -624,7 +648,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
   }
  
-  // 【修改点6】drain_miss状态时重置beat_counter（当收到rlast时确保beat_counter归零）
+  // drain_miss 状态排空时重置 beat_counter
   when(state === s_drain_miss && io.axi.r.data.rvalid && io.axi.r.data.rid === icacheAxiMissId.U && io.axi.r.data.rlast) {
     beat_counter := 0.U
   }
@@ -632,14 +656,13 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   when (s3_fire){
     miss_data_buffer := 0.U
   }
-  
+   
   // 4. 缺失状态 - 写入data
   when(state === s_miss_write && miss_data_valid && cpu_ready) {
     io.array_write.valid := true.B
     io.array_write.idx   := s3_pidx
     io.array_write.tag   := s3_ptag
     io.array_write.data  := miss_data_buffer
-    // way由替换算法决定，这里暂时使用s3_hit_way（实际应该从替换算法获取）
     io.victim_read.req := true.B
     io.victim_read.idx := s3_pidx
     io.array_write.way   := io.victim_read.resp
@@ -648,7 +671,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.replacer_touch.idx := s3_pidx
     io.replacer_touch.way := io.victim_read.resp
     
- 
   }.otherwise {
     io.array_write.valid := false.B
     io.array_write.idx   := 0.U
@@ -662,48 +684,39 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.replacer_touch.valid := false.B
     io.replacer_touch.idx := s3_pidx
     io.replacer_touch.way := io.victim_read.resp
- 
   }
- 
- 
   
   // 5. 非缓存状态 - 收集数据
   when(state === s_uncache_wait && io.axi.r.data.rvalid && io.axi.r.data.rid === icacheAxiNucacheId.U) {
     uncache_data_buffer := io.axi.r.data.rdata
     uncache_data_valid := true.B
   }
-  
+   
   // 6. MMU错误状态
   when(state === s_mmu_error_state) {
-    // 可以记录错误信息或触发异常
-    // 这里暂时不处理
+    // 不处理
   }
  
   // 清除缓冲区
   when(state === s_done && cpu_ready){
-  
     miss_data_valid := false.B
- 
     uncache_data_valid := false.B
- 
   }
-  
-  // 【修改点7】flush时清除缓冲区有效信号、miss_data_buffer和beat_counter
-  // 防止残留数据被后续请求的bypass逻辑误用，或miss_data_buffer的OR操作污染新数据
-  // 此when块放在最后，确保flush具有最高优先级，覆盖同周期内其他when块对同一寄存器的写入
+   
+  // flush 时清除缓冲区有效信号（最高优先级）
   when(s3_flush) {
     miss_data_valid   := false.B
     uncache_data_valid := false.B
     miss_data_buffer  := 0.U
     beat_counter      := 0.U
   }
-  
+   
   // === 性能计数器 ===
   val perf_hit = RegInit(0.U(32.W))
   val perf_miss = RegInit(0.U(32.W))
   val perf_uncached = RegInit(0.U(32.W))
   val perf_mmu_error = RegInit(0.U(32.W))
-  
+   
   when(state === s_hit && next_state === s_done) {
     perf_hit := perf_hit + 1.U
   }
@@ -716,9 +729,4 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   when(state === s_mmu_error_state) {
     perf_mmu_error := perf_mmu_error + 1.U
   }
-  
-//  println("ICache Stage 3 State Machine instantiated:")
-//  println(s"  States: Idle, Hit, Miss_Req, Miss_Wait, Miss_Write, Uncache_Req, Uncache_Wait, Done, MMU_Error")
-//  println(s"  Fetch Width: $fetchWidth, Block Size: $blockBytes bytes")
-  
 }
