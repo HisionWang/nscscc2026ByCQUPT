@@ -167,7 +167,7 @@ int Difftest::step(vluint64_t &main_time) {
         }else if(dut.csr.estat & 3){
             return STATE_RUNNING;
         }else{
-            printf("warning: INT exception with no interrupt detected\n");
+            //printf("warning: INT exception with no interrupt detected\n");
             // fprintf(trace_out,"warning: INT exception with no interrupt detected\n");
         }
     }
@@ -202,13 +202,13 @@ int Difftest::step(vluint64_t &main_time) {
 
     if (dut.excp.excp_valid) {
         if (dut.excp.exception != 0) {     // not hard interrupt, nemu can detect itself
-            printf("receive exception 0x%x at pc 0x%x\n", dut.excp.exception, dut.excp.exceptionPC);
+            //printf("receive exception 0x%x at pc 0x%x\n", dut.excp.exception, dut.excp.exceptionPC);
             // fprintf(trace_out,"receive exception 0x%x at pc 0x%x\n", dut.excp.exception, dut.excp.exceptionPC);
             proxy->exec(1);
         } else {    // hard interrupt, dut copy intr code to nemu
-               printf("excp pc : 0x%x\n", dut.excp.exceptionPC);
-               printf("cpu pc : 0x%x\n", dut.csr.this_pc);
-               printf("interrupt : 0x%x\n", dut.excp.interrupt);
+               //printf("excp pc : 0x%x\n", dut.excp.exceptionPC);
+               //printf("cpu pc : 0x%x\n", dut.csr.this_pc);
+               //printf("interrupt : 0x%x\n", dut.excp.interrupt);
             if (dut.excp.interrupt != 0) {
                 proxy->raise_intr(dut.excp.interrupt);
             }
@@ -225,7 +225,7 @@ int Difftest::step(vluint64_t &main_time) {
     }
     bool ecode_error = false;
     if((dut.csr.estat | 0x00001fff) != (ref.csr.estat | 0x00001fff)){
-        printf("warning: ecode error, dut = %x, ref = %x\n", dut.csr.estat, ref.csr.estat);
+        //printf("warning: ecode error, dut = %x, ref = %x\n", dut.csr.estat, ref.csr.estat);
         #ifdef SIMU_TRACE
         fprintf(trace_out,"warning: ecode error, dut = %x, ref = %x\n", dut.csr.estat, ref.csr.estat);
         #endif
@@ -287,7 +287,7 @@ void Difftest::do_instr_commit(int i) {
 
     /* rdcntv{L/H}.w */
     if (dut.commit[i].is_CNTinst) {
-        printf("rdcntv / rdcntid indt from dut, copy result to nemu: %d\n",dut.commit[i].wdata);
+        //printf("rdcntv / rdcntid indt from dut, copy result to nemu: %d\n",dut.commit[i].wdata);
         uint32_t timer_low, timer_high;
         timer_low = (uint32_t)((dut.commit[i].timer_64_value) & 0x00000000ffffffff);
         timer_high = (uint32_t)(((dut.commit[i].timer_64_value) & 0xffffffff00000000)>>32);
@@ -296,7 +296,7 @@ void Difftest::do_instr_commit(int i) {
         timer.stable_counter_l = timer_low;
         timer.stable_counter_h = timer_high;
         timer.time_val = dut.csr.tval;
-        printf("timer64: 0x%lx, low: 0x%x, high: 0x%x\n",dut.commit[i].timer_64_value,timer_low,timer_high);
+        //printf("timer64: 0x%lx, low: 0x%x, high: 0x%x\n",dut.commit[i].timer_64_value,timer_low,timer_high);
         proxy->timercpy(&timer);
     }
 
