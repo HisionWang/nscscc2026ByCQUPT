@@ -8,7 +8,7 @@ import nscscc.backend.rename.RedirectInfo
 import nscscc.backend.execute._
  
 // ═══════════════════════════════════════════════════════════════
-//  执行单元请求：RegRead → ExeUnit
+//  执行单元请求：datapath → ExeUnit
 // ═══════════════════════════════════════════════════════════════
 class ExeReq(implicit p: Parameters) extends NSBundle {
   val uop     = new DispatchedInst
@@ -17,7 +17,7 @@ class ExeReq(implicit p: Parameters) extends NSBundle {
 }
  
 // ═══════════════════════════════════════════════════════════════
-//  读寄存器级（RegisterRead）
+//  读寄存器级（RegisterRead）—— 单级 datapath 流水线
 //
 //  5 个通道对应 5 个 IQ：
 //    Q1 (ALU+CSR)      : 2 读端口 (prs1, prs2)
@@ -27,13 +27,16 @@ class ExeReq(implicit p: Parameters) extends NSBundle {
 //    Q5 (STD)          : 1 读端口 (prs2)
 //
 //  流水线结构（每通道独立）：
-//    rrd 级：锁存 IQ 发来的 uop，发送 PRF 读地址
-//    out 级：PRF 数据就绪，输出到执行单元
+//    datapath 级：锁存 IQ 发来的 uop，PRF 数据就绪后直接输出到执行单元
 //
-//  总延迟：IQ 发射 → 执行单元可见 = 2 拍
+//  总延迟：IQ 发射 → 执行单元可见 = 1 拍
 //    T+0: IQ fire → 锁存 uop，发 PRF 地址
-//    T+1: PRF 数据返回 → 锁存到 out 级
-//    T+2: out 级对执行单元可见
+//    T+1: PRF 数据返回（同步读）→ datapath 级直接输出到执行单元
+//
+//  重定向处理：
+//    仅使用 redirectInfo 信号，不再设 flushPipeline
+//    当 redirectInfo 指示需要冲刷时，杀掉 datapath 级中的指令
+//    并阻断其进入后续流水级（exeReq.valid = false）
 // ═══════════════════════════════════════════════════════════════
 class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParameters {
  
@@ -55,24 +58,10 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     // ── 发往执行单元 ──
     val exeReqs      = Vec(numChannels, Decoupled(new ExeReq))
  
-    // ── 重定向 / 冲刷 ──
-    val redirect      = Input(new RedirectInfo)
-
-    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
-
-    val flushPipeline = Input(Bool())
+    // ── 重定向（唯一刷新信号，不再设 flushPipeline） ──
+    val redirectInfo  = Flipped(ValidIO(new redirectInfoToModule))
   })
  
-  // ══════════════════════════════════════════════════════════════
-  //  robIdx 比较工具（与 IssueQueue 中一致）
-  // ══════════════════════════════════════════════════════════════
-  def isRobIdxAfter(a: UInt, b: UInt): Bool = {
-    val aFlag = a(a.getWidth - 1)
-    val bFlag = b(b.getWidth - 1)
-    val aVal  = a(a.getWidth - 2, 0)
-    val bVal  = b(b.getWidth - 2, 0)
-    Mux(aFlag === bFlag, aVal > bVal, aFlag === 1.U)
-  }
  
   // ══════════════════════════════════════════════════════════════
   //  逐通道构建流水线
@@ -85,114 +74,100 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     val basePort     = portOffset
  
     // ──────────────────────────────────────────
-    //  rrd 级寄存器：锁存 IQ 发来的 uop
+    //  datapath 级寄存器：锁存 IQ 发来的 uop
     // ──────────────────────────────────────────
-    val rrd_valid = RegInit(false.B)
-    val rrd_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
-    
-    val out_valid = RegInit(false.B)
-    val out_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
-    val out_rs1   = RegInit(0.U(XLEN.W))
-    val out_rs2   = RegInit(0.U(XLEN.W))
+    val dp_valid = RegInit(false.B)
+    val dp_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
  
     // ──────────────────────────────────────────
     //  Kill 检测
+    //  当 redirectInfo 有效且指示需要重定向时，
+    //  如果 datapath 级中指令的 robIdx 在重定向点之后，则杀掉该指令
     // ──────────────────────────────────────────
-    val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
-    val redirectRobIdx = io.redirectInfo.bits.robIdx
-
-    val rrd_killed = rrd_valid && doRedirect &&
-                     rrd_uop.robIdxFull.isAfter(redirectRobIdx)
-    val out_killed = out_valid && doRedirect &&
-                     out_uop.robIdxFull.isAfter(redirectRobIdx)
-
-    diffDontTouch(rrd_killed)
-    diffDontTouch(out_killed)
+    val doRedirect      = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+    val redirectRobIdx  = io.redirectInfo.bits.robIdx
+ 
+    val dp_killed = dp_valid && doRedirect &&
+                    dp_uop.robIdxFull.isAfter(redirectRobIdx)
+ 
+    diffDontTouch(dp_killed)
+ 
     // ──────────────────────────────────────────
     //  握手控制信号
     // ──────────────────────────────────────────
-    val out_fire   = out_valid && !out_killed && io.exeReqs(ch).ready
-    val rrd_to_out = rrd_valid && !rrd_killed && (!out_valid || out_fire)
-    val rrd_ready  = !rrd_valid || rrd_to_out
-    val iq_fire    = io.iqIssues(ch).valid && rrd_ready
+    // datapath 级输出握手：指令未被杀掉且执行单元就绪时可以发出
+    val dp_fire   = dp_valid && !dp_killed && io.exeReqs(ch).ready
+    // datapath 级可以接收新指令：空 或 当前指令正在发出
+    val dp_ready  = !dp_valid || dp_fire
+    // IQ 发射
+    val iq_fire   = io.iqIssues(ch).valid && dp_ready
  
     // IQ 握手
-    io.iqIssues(ch).ready := rrd_ready
+    io.iqIssues(ch).ready := dp_ready
  
     // ──────────────────────────────────────────
     //  PRF 读地址
-    //  IQ fire 时发新地址；否则维持 rrd_uop 的地址
-    //  rrd 空时发 0（无害，PRF 地址 0 恒返回 0）
+    //  IQ fire 时发新地址；否则维持 dp_uop 的地址
+    //  datapath 空时发 0（无害，PRF 地址 0 恒返回 0）
     // ──────────────────────────────────────────
     if (numPorts == 2) {
       io.rfReadAddrs(basePort)     := Mux(iq_fire, io.iqIssues(ch).bits.prs1,
-                                      Mux(rrd_valid, rrd_uop.prs1, 0.U))
+                                      Mux(dp_valid, dp_uop.prs1, 0.U))
       io.rfReadAddrs(basePort + 1) := Mux(iq_fire, io.iqIssues(ch).bits.prs2,
-                                      Mux(rrd_valid, rrd_uop.prs2, 0.U))
+                                      Mux(dp_valid, dp_uop.prs2, 0.U))
     } else {
       // 单端口：Q4 读 prs1，Q5 读 prs2
       val readSrc = Mux(readsPrs2.asBool,
-        Mux(iq_fire, io.iqIssues(ch).bits.prs2, Mux(rrd_valid, rrd_uop.prs2, 0.U)),
-        Mux(iq_fire, io.iqIssues(ch).bits.prs1, Mux(rrd_valid, rrd_uop.prs1, 0.U))
+        Mux(iq_fire, io.iqIssues(ch).bits.prs2, Mux(dp_valid, dp_uop.prs2, 0.U)),
+        Mux(iq_fire, io.iqIssues(ch).bits.prs1, Mux(dp_valid, dp_uop.prs1, 0.U))
       )
       io.rfReadAddrs(basePort) := readSrc
     }
  
     // ──────────────────────────────────────────
-    //  PRF 读数据（1 拍后可用）+ x0 处理 + 未使用源置零
+    //  PRF 读数据 + x0 处理 + 未使用源置零
+    //  数据直接来自 rfReadData，不再锁存到 out 级寄存器
     // ──────────────────────────────────────────
     val rfRs1 = io.rfReadData(basePort)
     val rfRs2 = if (numPorts == 2) io.rfReadData(basePort + 1) else 0.U
  
-    val rs1Data = Mux(!rrd_uop.rs1Valid, 0.U,
-                  Mux(rrd_uop.prs1 === 0.U, 0.U, rfRs1))
+    val rs1Data = Mux(!dp_uop.rs1Valid, 0.U,
+                  Mux(dp_uop.prs1 === 0.U, 0.U, rfRs1))
     val rs2Data = if (numPorts == 2) {
-      Mux(!rrd_uop.rs2Valid, 0.U,
-      Mux(rrd_uop.prs2 === 0.U, 0.U, rfRs2))
+      Mux(!dp_uop.rs2Valid, 0.U,
+      Mux(dp_uop.prs2 === 0.U, 0.U, rfRs2))
     } else {
       // 单端口通道：Q4 不需要 rs2，Q5 不需要 rs1
-      Mux(!rrd_uop.rs2Valid, 0.U,
-      Mux(rrd_uop.prs2 === 0.U, 0.U, rfRs1))  // Q5: 单端口数据给 rs2
+      Mux(!dp_uop.rs2Valid, 0.U,
+      Mux(dp_uop.prs2 === 0.U, 0.U, rfRs1))  // Q5: 单端口数据给 rs2
     }
  
     // ──────────────────────────────────────────
     //  寄存器更新
-    //  优先级：flush > kill > 正常流水
+    //  优先级：kill > 正常流水
+    //  当 redirectInfo 杀掉指令时，清空 datapath 并阻断后续输出
     // ──────────────────────────────────────────
-    when(io.flushPipeline) {
-      rrd_valid := false.B
-      out_valid := false.B
-    }.otherwise {
-      // ── rrd 级 ──
-      when(rrd_killed) {
-        rrd_valid := false.B
-      }.elsewhen(iq_fire) {
-        rrd_valid := true.B
-        rrd_uop   := io.iqIssues(ch).bits
-      }.elsewhen(rrd_to_out) {
-        rrd_valid := false.B
-      }
- 
-      // ── out 级 ──
-      when(out_killed) {
-        out_valid := false.B
-      }.elsewhen(rrd_to_out) {
-        out_valid := true.B
-        out_uop   := rrd_uop
-        out_rs1   := rs1Data
-        out_rs2   := rs2Data
-      }.elsewhen(out_fire) {
-        out_valid := false.B
-      }
+    when(dp_killed) {
+      // 重定向冲刷：杀掉 datapath 级中的指令
+      dp_valid := false.B
+    }.elsewhen(iq_fire) {
+      // IQ 发射：新指令进入 datapath
+      dp_valid := true.B
+      dp_uop   := io.iqIssues(ch).bits
+    }.elsewhen(dp_fire) {
+      // 指令发出到执行单元：datapath 级变空
+      dp_valid := false.B
     }
  
     // ──────────────────────────────────────────
     //  输出到执行单元
+    //  关键：dp_killed 时 exeReq.valid = false，阻断被杀指令进入后续流水级
+    //  数据直接来自 PRF（不经过 out 级锁存），减少 1 拍延迟
     // ──────────────────────────────────────────
-    io.exeReqs(ch).valid         := out_valid && !out_killed
-    io.exeReqs(ch).bits.uop      := out_uop
-    io.exeReqs(ch).bits.rs1Data  := out_rs1
-    io.exeReqs(ch).bits.rs2Data  := out_rs2
+    io.exeReqs(ch).valid         := dp_valid && !dp_killed
+    io.exeReqs(ch).bits.uop      := dp_uop
+    io.exeReqs(ch).bits.rs1Data  := rs1Data
+    io.exeReqs(ch).bits.rs2Data  := rs2Data
  
     portOffset += numPorts
   }

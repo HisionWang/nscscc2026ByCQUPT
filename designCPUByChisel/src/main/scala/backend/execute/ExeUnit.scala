@@ -91,6 +91,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
 
                                 //理论上讲这里outfire是不可能无效的
                                 )
+  //不需要去关心访存要不要刷，因为是直接在LSQ刷的，这里访存在不在无所谓，因为LSQ的表项已经被刷了
 
   when( false.B ){//inDoFlush ) {
     stgValid := false.B

@@ -230,10 +230,6 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //scheduler.io.redirect.robIdx := finalRedirect.robIdx
   scheduler.io.flushPipeline       := false.B //o.flush
  
-  regRead.io.redirect      := 0.U.asTypeOf(new RedirectInfo) //wbRedirect.valid || ctrlRedirect.valid
-  //regRead.io.redirect.robIdx := finalRedirect.robIdx
-  regRead.io.flushPipeline       := false.B //io.flush
- 
   // ══════════════════════════════════════════════════════════════
   //  ROB 提交：暂不实现，dontTouch 保留可见性
   // ══════════════════════════════════════════════════════════════
