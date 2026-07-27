@@ -1,4 +1,4 @@
-RUN_SOFTWARE=c_prg/memcmp 
+RUN_SOFTWARE=coremark
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n

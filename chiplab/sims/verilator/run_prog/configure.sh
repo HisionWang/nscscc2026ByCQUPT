@@ -21,7 +21,7 @@ echo "  --run software        	set software list(use ',' select multiple softwar
                                 coremark 
                                 linux 
                                 rtthread
-                                c_prg/memcmp 
+                                c_prg/memcmp  OK
                                 c_prg/inner_product 
                                 c_prg/lookup_table
                                 c_prg/loop_induction 
