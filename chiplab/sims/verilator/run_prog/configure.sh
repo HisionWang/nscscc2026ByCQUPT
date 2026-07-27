@@ -426,7 +426,7 @@ do
         dhrystone) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -435,7 +435,7 @@ do
         coremark) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
