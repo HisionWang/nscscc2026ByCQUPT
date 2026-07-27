@@ -37,7 +37,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     val isFirstMiss    = Output(Bool())
     val matchPrimId    = Output(UInt(1.W))
  
-    val hasStore = Output(Bool())   // 组合信号，无 RegNext
+    val hasStore = Output(Bool())
  
     val canAlloc        = Output(Bool())
     val refillWriteReq  = Output(Valid(new Bundle {
@@ -63,7 +63,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     val lsAck         = Input(Valid(UInt(log2Ceil(nSec).W)))
  
     val axi = new AXI3MasterIO
-    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
+    val redirectInfo    = Flipped(ValidIO(new redirectInfoToModule))
   })
  
   // ===== Primary 实例化 =====
@@ -84,21 +84,19 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   val lsIsUncache = RegInit(VecInit(Seq.fill(nSec)(false.B)))
   val lsFlushed   = RegInit(VecInit(Seq.fill(nSec)(false.B)))
  
-  // ===== 探针（组合逻辑，无环） =====
+  // ===== 探针 =====
   val reqIsUncache  = !io.missReq.bits.cacheable
-  
+ 
   val blockMatchVec = primaries.map(p => p.io.busy && !p.io.isUncache && p.io.blockAddr === io.probeBlockAddr && !reqIsUncache)
   io.probeMatch  := VecInit(blockMatchVec).asUInt.orR
   io.isFirstMiss := !VecInit(blockMatchVec).asUInt.orR
   io.matchPrimId := PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
  
-  // ===== hasStore：组合信号，立即反映 =====
   io.hasStore := VecInit((0 until nSec).map(i => lsValid(i) && lsIsStore(i) && !lsFlushed(i))).asUInt.orR
  
   // ===== 请求分配逻辑 =====
   val reqBlockAddr  = io.missReq.bits.paddr(31, blockOffBits)
   val reqSetIdx     = io.missReq.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
-  
  
   val isFirstMissReq = !VecInit(blockMatchVec).asUInt.orR
   val matchPrimIdReq = PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
@@ -116,7 +114,6 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   )
   val setConflict = VecInit(setConflictVec).asUInt.orR
  
-  // ★ 不再在此处做 storeBlocked，由 DCache 入口把关
   val canAllocFirst  = hasFreePrim && hasFreeSec && !setConflict
   val canAllocMerge  = hasFreeSec
   val canAllocUncache = hasFreePrim
@@ -171,14 +168,13 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     val primId = Mux(isFirstMissReq, allocPrimId, matchPrimIdReq)
     lsPrimaryId(idx) := primId
  
-    // 快速唤醒：分配时 primary 已 done
     val fastDone = VecInit(primaries.zipWithIndex.map { case (p, pi) =>
       p.io.done && pi.U === primId
     }).asUInt.orR
     when(fastDone) { lsReadyReg(idx) := true.B }
   }
  
-  // ===== Wakeup：Primary done 上升沿唤醒 LS 表项 =====
+  // ===== Wakeup =====
   for (i <- 0 until nPrim) {
     val prevDone = RegNext(primaries(i).io.done, false.B)
     when(primaries(i).io.done && !prevDone) {
@@ -190,7 +186,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     }
   }
  
-  // ===== Redirect：仅 flush Load，Store 不可被 flush =====
+  // ===== Redirect =====
   when(io.redirectInfo.valid && io.redirectInfo.bits.doRedirect) {
     for (j <- 0 until nSec) {
       when(lsValid(j) && lsIsLoad(j) && !lsIsStore(j) && !lsFlushed(j)) {
@@ -259,11 +255,43 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   io.refillWriteReq.bits.data := primRefillDataVec(refillWritePrimSel)
   io.refillWritePrimId := refillWritePrimSel
  
-  // ===== AXI AR 仲裁 =====
+  // ══════════════════════════════════════════════════════════════
+  //  AXI AR 通道：锁定仲裁
+  //
+  //  一旦某个 Primary 获得通道权，锁定直到握手完成或该 Primary 撤下 valid。
+  //  优先级：Primary0 > Primary1（与原 PriorityMux 一致）
+  //  防止高优先级请求抢占正在等待 arready 的低优先级请求。
+  // ══════════════════════════════════════════════════════════════
+  val arLocked = RegInit(false.B)
+  val arWinner = RegInit(0.U(1.W))   // 0=Primary0, 1=Primary1
+ 
   val arValids = VecInit(primaries.map(_.io.ar.valid))
-  val arSelOH  = PriorityMux(arValids.zipWithIndex.map { case (v, i) =>
-    v -> UIntToOH(i.U, nPrim)
-  })
+  val arAnyValid = arValids.asUInt.orR
+ 
+  // 当前选择：锁定时用寄存器，未锁定时按优先级仲裁（P0 > P1）
+  val arSel = Mux(arLocked, arWinner,
+               Mux(arValids(0), 0.U, Mux(arValids(1), 1.U, 0.U)))
+  val arSelOH = UIntToOH(arSel, nPrim)
+ 
+  // 输出 valid：选中 Primary 的 valid
+  val arOutValid = arValids(arSel)
+ 
+  // 握手检测
+  val arHandshake = arOutValid && io.axi.ar.arready
+ 
+  // 锁定管理
+  when(!arLocked) {
+    when(arAnyValid && !arHandshake) {
+      arLocked := true.B
+      arWinner := arSel
+    }
+  }.otherwise {
+    when(arHandshake){ //} || !arOutValid) {
+      arLocked := false.B
+    }
+  }
+ 
+  // AR 通道输出路由
   io.axi.ar.data.arid    := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arid))
   io.axi.ar.data.araddr  := Mux1H(arSelOH, primaries.map(_.io.ar.bits.araddr))
   io.axi.ar.data.arlen   := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arlen))
@@ -272,7 +300,9 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   io.axi.ar.data.arlock  := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arlock))
   io.axi.ar.data.arcache := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arcache))
   io.axi.ar.data.arprot  := Mux1H(arSelOH, primaries.map(_.io.ar.bits.arprot))
-  io.axi.ar.data.arvalid := arValids.asUInt.orR
+  io.axi.ar.data.arvalid := arOutValid
+ 
+  // arready 只传给胜者
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.ar.ready := io.axi.ar.arready && arSelOH(i)
   }
@@ -286,11 +316,33 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   }
   io.axi.r.rready := Mux1H(rIdOH, primaries.map(_.io.r.ready))
  
-  // ===== AXI AW 仲裁 =====
+  // ══════════════════════════════════════════════════════════════
+  //  AXI AW 通道：锁定仲裁（同 AR）
+  // ══════════════════════════════════════════════════════════════
+  val awLocked = RegInit(false.B)
+  val awWinner = RegInit(0.U(1.W))
+ 
   val awValids = VecInit(primaries.map(_.io.aw.valid))
-  val awSelOH  = PriorityMux(awValids.zipWithIndex.map { case (v, i) =>
-    v -> UIntToOH(i.U, nPrim)
-  })
+  val awAnyValid = awValids.asUInt.orR
+ 
+  val awSel = Mux(awLocked, awWinner,
+               Mux(awValids(0), 0.U, Mux(awValids(1), 1.U, 0.U)))
+  val awSelOH = UIntToOH(awSel, nPrim)
+ 
+  val awOutValid = awValids(awSel)
+  val awHandshake = awOutValid && io.axi.aw.awready
+ 
+  when(!awLocked) {
+    when(awAnyValid && !awHandshake) {
+      awLocked := true.B
+      awWinner := awSel
+    }
+  }.otherwise {
+    when(awHandshake) {// || !awOutValid) {
+      awLocked := false.B
+    }
+  }
+ 
   io.axi.aw.data.awid    := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awid))
   io.axi.aw.data.awaddr  := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awaddr))
   io.axi.aw.data.awlen   := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awlen))
@@ -299,21 +351,49 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   io.axi.aw.data.awlock  := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awlock))
   io.axi.aw.data.awcache := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awcache))
   io.axi.aw.data.awprot  := Mux1H(awSelOH, primaries.map(_.io.aw.bits.awprot))
-  io.axi.aw.data.awvalid := awValids.asUInt.orR
+  io.axi.aw.data.awvalid := awOutValid
+ 
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.aw.ready := io.axi.aw.awready && awSelOH(i)
   }
  
-  // ===== AXI W 仲裁 =====
+  // ══════════════════════════════════════════════════════════════
+  //  AXI W 通道：Burst 级锁定仲裁
+  //
+  //  W burst 必须连续输出，中途不可切换到其他 Primary。
+  //  锁定持续到 wlast 握手完成或该 Primary 撤下 wvalid。
+  // ══════════════════════════════════════════════════════════════
+  val wLocked = RegInit(false.B)
+  val wWinner = RegInit(0.U(1.W))
+ 
   val wValids = VecInit(primaries.map(_.io.w.valid))
-  val wSelOH  = PriorityMux(wValids.zipWithIndex.map { case (v, i) =>
-    v -> UIntToOH(i.U, nPrim)
-  })
+  val wAnyValid = wValids.asUInt.orR
+ 
+  val wSel = Mux(wLocked, wWinner,
+              Mux(wValids(0), 0.U, Mux(wValids(1), 1.U, 0.U)))
+  val wSelOH = UIntToOH(wSel, nPrim)
+ 
+  val wOutValid = wValids(wSel)
+  val wHandshake     = wOutValid && io.axi.w.wready
+  val wLastHandshake = wHandshake && Mux1H(wSelOH, primaries.map(_.io.w.bits.wlast))
+ 
+  when(!wLocked) {
+    when(wAnyValid && !wLastHandshake) {
+      wLocked := true.B
+      wWinner := wSel
+    }
+  }.otherwise {
+    when(wLastHandshake ){ //|| !wOutValid) {
+      wLocked := false.B
+    }
+  }
+ 
   io.axi.w.data.wid    := Mux1H(wSelOH, primaries.map(_.io.w.bits.wid))
   io.axi.w.data.wdata  := Mux1H(wSelOH, primaries.map(_.io.w.bits.wdata))
   io.axi.w.data.wstrb  := Mux1H(wSelOH, primaries.map(_.io.w.bits.wstrb))
   io.axi.w.data.wlast  := Mux1H(wSelOH, primaries.map(_.io.w.bits.wlast))
-  io.axi.w.data.wvalid := wValids.asUInt.orR
+  io.axi.w.data.wvalid := wOutValid
+ 
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.w.ready := io.axi.w.wready && wSelOH(i)
   }

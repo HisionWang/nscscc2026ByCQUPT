@@ -79,7 +79,7 @@ class AXI3Crossbar2to1(implicit p: Parameters) extends NSModule {
     }
   }.otherwise {
     // 释放条件：握手完成 或 被锁定 Master 撤下 valid
-    when(arHandshake || !arOutValid) {
+    when(arHandshake ){ //|| !arOutValid) {
       arLocked := false.B
     }
   }
@@ -114,7 +114,7 @@ class AXI3Crossbar2to1(implicit p: Parameters) extends NSModule {
       awWinner := awSel
     }
   }.otherwise {
-    when(awHandshake || !awOutValid) {
+    when(awHandshake){// || !awOutValid) {
       awLocked := false.B
     }
   }
@@ -162,7 +162,7 @@ class AXI3Crossbar2to1(implicit p: Parameters) extends NSModule {
     }
   }.otherwise {
     // 释放条件：burst 完成 或 被锁定 Master 撤下 wvalid
-    when(wLastHandshake || !wOutValid) {
+    when(wLastHandshake ){ //|| !wOutValid) {
       wLocked := false.B
     }
   }

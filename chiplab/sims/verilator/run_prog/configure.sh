@@ -9,10 +9,24 @@ echo "  --run software        	set software list(use ',' select multiple softwar
                         	Available software: func/func_lab3 func/func_lab4 
                         	func/func_lab6 func/func_lab7 func/func_lab8 func/func_lab9 
                         	func/func_lab14 func/func_lab15 func/func_lab19 func/func_advance
-                                fireye/A0 fireye/B2 fireye/C0 fireye/D1 fireye/I2
-                                my_program memset dhrystone coremark linux rtthread
-                                c_prg/memcmp c_prg/inner_product c_prg/lookup_table
-                                c_prg/loop_induction c_prg/minmax_sequence c_prg/product_sequence
+
+                                fireye/A0  OK
+                                fireye/B2  OK
+                                fireye/C0  OK
+                                fireye/D1  OK
+                                fireye/I2  OK
+                                my_program 
+                                memset 
+                                dhrystone  OK
+                                coremark 
+                                linux 
+                                rtthread
+                                c_prg/memcmp 
+                                c_prg/inner_product 
+                                c_prg/lookup_table
+                                c_prg/loop_induction 
+                                c_prg/minmax_sequence 
+                                c_prg/product_sequence
 
 
      " 
@@ -416,6 +430,16 @@ do
             mkdir -p ./obj/
             mkdir -p ./log/
             ;;
+        my_program/bench/fireye_A0)
+            RUN_FUNC=n 
+            RUN_C=y
+            DEAD_CLOCK_EN=n
+            OUTPUT_PC_INFO=n
+            OUTPUT_UART_INFO=y
+            mkdir -p ./obj/
+            mkdir -p ./log/
+            ;;
+
         memset)
             RUN_FUNC=n 
             RUN_C=y

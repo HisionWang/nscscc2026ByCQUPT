@@ -1,4 +1,4 @@
-RUN_SOFTWARE=c_prg/minmax_sequence
+RUN_SOFTWARE=c_prg/memcmp 
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n
