@@ -6,14 +6,19 @@ import nscscc.config._
 import nscscc.backend.dispatch.DispatchedInst
 import nscscc.backend.rename.RedirectInfo
 import nscscc.backend.execute._
+import nscscc.backend.issue._
  
 // ═══════════════════════════════════════════════════════════════
 //  执行单元请求：datapath → ExeUnit
 // ═══════════════════════════════════════════════════════════════
 class ExeReq(implicit p: Parameters) extends NSBundle {
-  val uop     = new DispatchedInst
-  val rs1Data = UInt(XLEN.W)
-  val rs2Data = UInt(XLEN.W)
+  val uop            = new DispatchedInst
+  val rs1Data        = UInt(XLEN.W)
+  val rs2Data        = UInt(XLEN.W)
+  val src1DataSource = UInt(DataSource.width.W)   // ← 新增
+  val src2DataSource = UInt(DataSource.width.W)   // ← 新增
+  val src1ExeSource  = UInt(log2Ceil(IQNum).W)    // ← 新增
+  val src2ExeSource  = UInt(log2Ceil(IQNum).W)    // ← 新增
 }
  
 // ═══════════════════════════════════════════════════════════════
@@ -49,7 +54,7 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
  
   val io = IO(new Bundle {
     // ── 从 IQ 接收 ──
-    val iqIssues     = Vec(numChannels, Flipped(Decoupled(new DispatchedInst)))
+    val iqIssues     = Vec(numChannels, Flipped(Decoupled(new RegReadIssue)))
  
     // ── 连接 PRF ──
     val rfReadAddrs  = Output(Vec(totalReadPorts, UInt(PhyRegIdxWidth.W)))
@@ -77,7 +82,7 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     //  datapath 级寄存器：锁存 IQ 发来的 uop
     // ──────────────────────────────────────────
     val dp_valid = RegInit(false.B)
-    val dp_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
+    val dp_uop   = RegInit(0.U.asTypeOf(new RegReadIssue))
  
     // ──────────────────────────────────────────
     //  Kill 检测
@@ -88,7 +93,7 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     val redirectRobIdx  = io.redirectInfo.bits.robIdx
  
     val dp_killed = dp_valid && doRedirect &&
-                    dp_uop.robIdxFull.isAfter(redirectRobIdx)
+                    dp_uop.uop.robIdxFull.isAfter(redirectRobIdx)
  
     diffDontTouch(dp_killed)
  
@@ -111,15 +116,15 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     //  datapath 空时发 0（无害，PRF 地址 0 恒返回 0）
     // ──────────────────────────────────────────
     if (numPorts == 2) {
-      io.rfReadAddrs(basePort)     := Mux(iq_fire, io.iqIssues(ch).bits.prs1,
-                                      Mux(dp_valid, dp_uop.prs1, 0.U))
-      io.rfReadAddrs(basePort + 1) := Mux(iq_fire, io.iqIssues(ch).bits.prs2,
-                                      Mux(dp_valid, dp_uop.prs2, 0.U))
+      io.rfReadAddrs(basePort)     := Mux(iq_fire, io.iqIssues(ch).bits.uop.prs1,
+                                      Mux(dp_valid, dp_uop.uop.prs1, 0.U))
+      io.rfReadAddrs(basePort + 1) := Mux(iq_fire, io.iqIssues(ch).bits.uop.prs2,
+                                      Mux(dp_valid, dp_uop.uop.prs2, 0.U))
     } else {
       // 单端口：Q4 读 prs1，Q5 读 prs2
       val readSrc = Mux(readsPrs2.asBool,
-        Mux(iq_fire, io.iqIssues(ch).bits.prs2, Mux(dp_valid, dp_uop.prs2, 0.U)),
-        Mux(iq_fire, io.iqIssues(ch).bits.prs1, Mux(dp_valid, dp_uop.prs1, 0.U))
+        Mux(iq_fire, io.iqIssues(ch).bits.uop.prs2, Mux(dp_valid, dp_uop.uop.prs2, 0.U)),
+        Mux(iq_fire, io.iqIssues(ch).bits.uop.prs1, Mux(dp_valid, dp_uop.uop.prs1, 0.U))
       )
       io.rfReadAddrs(basePort) := readSrc
     }
@@ -131,15 +136,15 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     val rfRs1 = io.rfReadData(basePort)
     val rfRs2 = if (numPorts == 2) io.rfReadData(basePort + 1) else 0.U
  
-    val rs1Data = Mux(!dp_uop.rs1Valid, 0.U,
-                  Mux(dp_uop.prs1 === 0.U, 0.U, rfRs1))
+    val rs1Data = Mux(!dp_uop.uop.rs1Valid, 0.U,
+                  Mux(dp_uop.uop.prs1 === 0.U, 0.U, rfRs1))
     val rs2Data = if (numPorts == 2) {
-      Mux(!dp_uop.rs2Valid, 0.U,
-      Mux(dp_uop.prs2 === 0.U, 0.U, rfRs2))
+      Mux(!dp_uop.uop.rs2Valid, 0.U,
+      Mux(dp_uop.uop.prs2 === 0.U, 0.U, rfRs2))
     } else {
       // 单端口通道：Q4 不需要 rs2，Q5 不需要 rs1
-      Mux(!dp_uop.rs2Valid, 0.U,
-      Mux(dp_uop.prs2 === 0.U, 0.U, rfRs1))  // Q5: 单端口数据给 rs2
+      Mux(!dp_uop.uop.rs2Valid, 0.U,
+      Mux(dp_uop.uop.prs2 === 0.U, 0.U, rfRs1))  // Q5: 单端口数据给 rs2
     }
  
     // ──────────────────────────────────────────
@@ -165,9 +170,13 @@ class RegisterRead(implicit p: Parameters) extends NSModule with HasCoreParamete
     //  数据直接来自 PRF（不经过 out 级锁存），减少 1 拍延迟
     // ──────────────────────────────────────────
     io.exeReqs(ch).valid         := dp_valid && !dp_killed
-    io.exeReqs(ch).bits.uop      := dp_uop
+    io.exeReqs(ch).bits.uop      := dp_uop.uop
     io.exeReqs(ch).bits.rs1Data  := rs1Data
     io.exeReqs(ch).bits.rs2Data  := rs2Data
+    io.exeReqs(ch).bits.src1DataSource := dp_uop.src1DataSource
+    io.exeReqs(ch).bits.src2DataSource := dp_uop.src2DataSource
+    io.exeReqs(ch).bits.src1ExeSource  := dp_uop.src1ExeSource
+    io.exeReqs(ch).bits.src2ExeSource  := dp_uop.src2ExeSource
  
     portOffset += numPorts
   }

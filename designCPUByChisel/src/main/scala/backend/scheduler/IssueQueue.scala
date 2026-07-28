@@ -3,6 +3,7 @@ package nscscc.backend.issue
 import chisel3._
 import chisel3.util._
 import nscscc.config._
+import nscscc.backend.decode._
 import nscscc.backend.dispatch._
 import nscscc.backend.rename._
 import nscscc.backend.execute._
@@ -10,29 +11,37 @@ import nscscc.config.IQParams
  
 /**
  * ═══════════════════════════════════════════════════════════════
- *  发射队列（IssueQueue）
+ *  发射队列（IssueQueue）—— 含快速唤醒 + dataSource 机制
  *
  *  数据结构：
  *    - 空闲位图管理出入队
  *    - 年龄矩阵择优发射（最老就绪优先）
- *    - 组合逻辑唤醒（写回广播 pdst，同拍生效）
- *    - freeEntriesReg 寄存器替代 PopCount，切断跨模块关键路径
+ *    - 写回唤醒广播（pdst 匹配，同拍生效，dataSource = regFile）
+ *    - 快速唤醒广播（IQ fire 时发出，dataSource = exeUnit）
+ *
+ *  dataSource 变换规则：
+ *    - wakeup 生效拍：dataSource = exeUnit（ExeUnit Phase2 旁路）
+ *    - 1 拍后未 fire：exeUnit → regFile（ExeUnit 旁路已过期，数据在 PRF）
+ *    - 新 wakeup 覆盖旧 dataSource（"最后唤醒获胜"）
  *
  *  不包含：
  *    - 投机 Load 唤醒
- *    - blocked 位（下游反压时重新仲裁）
+ *    - blocked 位
  * ═══════════════════════════════════════════════════════════════
  */
-class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModule {
+class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModule with HasCoreParameters {
   val io = IO(new Bundle {
     // ── 从分发阶段入队 ──
     val enq           = Flipped(ValidIO(new DispatchedInst))
-    // ── 发射到读寄存器级 ──
-    val issue         = Decoupled(new DispatchedInst)
-    // ── 写回唤醒广播 ──
+    // ── 发射到 RegisterRead（携带 dataSource / exeSource） ──
+    val issue         = Decoupled(new RegReadIssue)
+    // ── 写回唤醒广播（原有，dataSource=regFile） ──
     val wakeupPorts   = Input(Vec(iqParams.numWakeupPorts, Valid(new IssueWakeup)))
+    // ── 快速唤醒广播（IQ fire 时发出，dataSource=exeUnit） ──
+    val fastWakeup    = Input(Vec(IQNum - 2, new WakeupSignal))
+    // ── 本 IQ 发出的快速唤醒信号 ──
+    val wakeupOut     = Output(new WakeupSignal)
     // ── 重定向 / 冲刷 ──
-    val redirect      = Input(new RedirectInfo)
     val redirectInfo  = Flipped(ValidIO(new redirectInfoToModule))
     val flushPipeline = Input(Bool())
     // ── 反馈给分发阶段 ──
@@ -40,65 +49,99 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   })
  
   val N = iqParams.numEntries
-  val freeEntriesWidth = log2Ceil(N + 1)
  
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   //  表项存储
-  // ================================================================
-  val entryValid   = RegInit(VecInit(Seq.fill(N)(false.B)))
-  val entryUops    = RegInit(VecInit(Seq.fill(N)(0.U.asTypeOf(new DispatchedInst))))
-  val entryP1Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
-  val entryP2Ready = RegInit(VecInit(Seq.fill(N)(false.B)))
+  // ══════════════════════════════════════════════════════════════
+  val entryValid       = RegInit(VecInit(Seq.fill(N)(false.B)))
+  val entryUops        = RegInit(VecInit(Seq.fill(N)(0.U.asTypeOf(new DispatchedInst))))
+  val entryP1Ready     = RegInit(VecInit(Seq.fill(N)(false.B)))
+  val entryP2Ready     = RegInit(VecInit(Seq.fill(N)(false.B)))
+  val entrySrc1DS      = RegInit(VecInit(Seq.fill(N)(DataSource.regFile)))  // ★ dataSource
+  val entrySrc2DS      = RegInit(VecInit(Seq.fill(N)(DataSource.regFile)))
+  val entrySrc1ExeSrc  = RegInit(VecInit(Seq.fill(N)(0.U(log2Ceil(IQNum).W)))) // ★ exeSource
+  val entrySrc2ExeSrc  = RegInit(VecInit(Seq.fill(N)(0.U(log2Ceil(IQNum).W))))
  
-  // ================================================================
-  //  ★ 空闲表项计数寄存器（替代 PopCount 组合逻辑，切断关键路径）
-  //     初始化为 N（全部空闲），每周期增量更新
-  // ================================================================
-  val freeEntriesReg = RegInit(N.U(freeEntriesWidth.W))
- 
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   //  年龄矩阵 age[i][j]=1 表示 entry[i] 比 entry[j] 更老
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   val age = RegInit(VecInit(Seq.fill(N)(VecInit(Seq.fill(N)(false.B)))))
  
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   //  唤醒逻辑（组合逻辑，同拍生效）
-  // ================================================================
-  val p1Wakeup = Wire(Vec(N, Bool()))
-  val p2Wakeup = Wire(Vec(N, Bool()))
+  //
+  //  两类唤醒：
+  //    1. wakeupPorts（写回广播）：pdst 匹配 → operand ready，dataSource = regFile
+  //    2. fastWakeup（IQ fire 快速唤醒）：pdst 匹配 → operand ready，
+  //       dataSource = exeUnit，exeSource = 指定 ExeUnit 端口
+  //
+  //  Chisel when 优先级：后写的覆盖前写的 → fastWakeup 在 wakeupPorts 之后处理，
+  //  保证"最后唤醒获胜"。
+  // ══════════════════════════════════════════════════════════════
+  val p1WakeupWB  = Wire(Vec(N, Bool()))  // 写回唤醒 p1
+  val p2WakeupWB  = Wire(Vec(N, Bool()))  // 写回唤醒 p2
+  val p1WakeupFast = Wire(Vec(N, Bool())) // 快速唤醒 p1
+  val p2WakeupFast = Wire(Vec(N, Bool())) // 快速唤醒 p2
+  val p1FastExeSrc = Wire(Vec(N, UInt(log2Ceil(IQNum - 2).W))) // 快速唤醒 p1 的 exeSource
+  val p2FastExeSrc = Wire(Vec(N, UInt(log2Ceil(IQNum - 2).W))) // 快速唤醒 p2 的 exeSource
+  dontTouch(p1FastExeSrc)
+  dontTouch(p2FastExeSrc)
  
   for (i <- 0 until N) {
-    var p1Match = false.B
-    var p2Match = false.B
+    // ── 写回唤醒 ──
+    val wbP1Matches = Wire(Vec(iqParams.numWakeupPorts, Bool()))
+    val wbP2Matches = Wire(Vec(iqParams.numWakeupPorts, Bool()))
     for (w <- 0 until iqParams.numWakeupPorts) {
-      val pdst = io.wakeupPorts(w).bits.pdst
+      val pdst   = io.wakeupPorts(w).bits.pdst
       val wValid = io.wakeupPorts(w).valid && entryValid(i)
-      p1Match = p1Match || (wValid && entryUops(i).rs1Valid && entryUops(i).prs1 === pdst)
-      p2Match = p2Match || (wValid && entryUops(i).rs2Valid && entryUops(i).prs2 === pdst)
+      wbP1Matches(w) := wValid && entryUops(i).rs1Valid && entryUops(i).prs1 === pdst && pdst =/= 0.U
+      wbP2Matches(w) := wValid && entryUops(i).rs2Valid && entryUops(i).prs2 === pdst && pdst =/= 0.U
     }
-    p1Wakeup(i) := p1Match
-    p2Wakeup(i) := p2Match
+    p1WakeupWB(i) := wbP1Matches.asUInt.orR
+    p2WakeupWB(i) := wbP2Matches.asUInt.orR
+ 
+    // ── 快速唤醒 ──
+    val fastP1Matches = Wire(Vec(IQNum - 2, Bool()))
+    val fastP2Matches = Wire(Vec(IQNum - 2, Bool()))
+    for (w <- 0 until IQNum - 2) {
+      val fw      = io.fastWakeup(w)
+      val fwValid = fw.valid && entryValid(i)
+      val pdst    = fw.pdst
+      fastP1Matches(w) := fwValid && entryUops(i).rs1Valid && entryUops(i).prs1 === pdst && pdst =/= 0.U
+      fastP2Matches(w) := fwValid && entryUops(i).rs2Valid && entryUops(i).prs2 === pdst && pdst =/= 0.U
+    }
+    p1WakeupFast(i) := fastP1Matches.asUInt.orR
+    p2WakeupFast(i) := fastP2Matches.asUInt.orR
+ 
+    // exeSource：PriorityMux 从匹配端口选 exeSource
+    // 同拍同一操作数最多 1 个 pdst 匹配（rename 保证唯一），PriorityMux 结果唯一确定
+    p1FastExeSrc(i) := Mux(p1WakeupFast(i),
+      PriorityMux(fastP1Matches.zipWithIndex.map { case (m, w) => m -> io.fastWakeup(w).exeSource }),
+      0.U(log2Ceil(IQNum - 2).W))
+    p2FastExeSrc(i) := Mux(p2WakeupFast(i),
+      PriorityMux(fastP2Matches.zipWithIndex.map { case (m, w) => m -> io.fastWakeup(w).exeSource }),
+      0.U(log2Ceil(IQNum - 2).W))
   }
  
-  // 有效就绪位 = 寄存器值 ∨ 本拍唤醒
+  // ── 合后的唤醒信号（写回 OR 快速） ──
+  val p1Wakeup = Wire(Vec(N, Bool()))
+  val p2Wakeup = Wire(Vec(N, Bool()))
+  for (i <- 0 until N) {
+    p1Wakeup(i) := p1WakeupWB(i) || p1WakeupFast(i)
+    p2Wakeup(i) := p2WakeupWB(i) || p2WakeupFast(i)
+  }
+ 
+  // ── 有效就绪位 = 寄存器值 ∨ 本拍唤醒 ──
   val p1Eff = Wire(Vec(N, Bool()))
   val p2Eff = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
-    p1Eff(i) := entryP1Ready(i) || p1Wakeup(i)
-    p2Eff(i) := entryP2Ready(i) || p2Wakeup(i)
+    p1Eff(i) := entryP1Ready(i) || p1WakeupWB(i)
+    p2Eff(i) := entryP2Ready(i) || p2WakeupWB(i)
   }
  
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   //  重定向 Kill 逻辑
-  // ================================================================
-  def isRobIdxAfter(a: UInt, b: UInt): Bool = {
-    val aFlag = a(a.getWidth - 1)
-    val bFlag = b(b.getWidth - 1)
-    val aVal  = a(a.getWidth - 2, 0)
-    val bVal  = b(b.getWidth - 2, 0)
-    Mux(aFlag === bFlag, aVal > bVal, aFlag === 1.U)
-  }
- 
+  // ══════════════════════════════════════════════════════════════
   val killed = Wire(Vec(N, Bool()))
   val redirectRobIdx = io.redirectInfo.bits.robIdx
   for (i <- 0 until N) {
@@ -106,9 +149,9 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     killed(i) := entryValid(i) && io.redirectInfo.valid && io.redirectInfo.bits.doRedirect && isNewer
   }
  
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   //  请求 & 年龄仲裁
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   val request = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
     request(i) := entryValid(i) && p1Eff(i) && p2Eff(i) && !killed(i)
@@ -123,38 +166,64 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     oldest(i) := request(i) && !hasOlder
   }
  
-  val grant = oldest   // 单发射端口，grant = oldest
+  val grant = oldest
  
-  // ================================================================
-  //  ★ 发射输出（Decoupled 握手）—— flush 时禁止发射
-  //     原代码未检查 flushPipeline，flush 期间仍可能发射，
-  //     导致：①错误指令送入执行单元 ②freeEntriesReg 统计出错
-  // ================================================================
-  io.issue.valid := grant.reduce(_ || _) //&& !io.flushPipeline   // ← 新增 flush 截断
-  io.issue.bits  := Mux1H(grant, entryUops)
+  // ══════════════════════════════════════════════════════════════
+  //  发射输出（Decoupled 握手）
+  //  输出 RegReadIssue = DispatchedInst + dataSource + exeSource
+  // ══════════════════════════════════════════════════════════════
+  val grantUop    = Mux1H(grant, entryUops)
+  val grantSrc1DS = Mux1H(grant, entrySrc1DS)
+  val grantSrc2DS = Mux1H(grant, entrySrc2DS)
+  val grantSrc1ES = Mux1H(grant, entrySrc1ExeSrc)
+  val grantSrc2ES = Mux1H(grant, entrySrc2ExeSrc)
+ 
+  io.issue.valid            := grant.reduce(_ || _)
+  io.issue.bits.uop         := grantUop
+  io.issue.bits.src1DataSource := grantSrc1DS
+  io.issue.bits.src2DataSource := grantSrc2DS
+  io.issue.bits.src1ExeSource  := grantSrc1ES
+  io.issue.bits.src2ExeSource  := grantSrc2ES
  
   val issueFire = io.issue.valid && io.issue.ready
  
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
+  //  本 IQ 发出的快速唤醒信号
+  //  仅 ALU / BRU / CSR（确定延迟指令）在 fire 时发出
+  // ══════════════════════════════════════════════════════════════
+  val grantFuType = grantUop.ctrl.fuType
+  val isFastWakeup = issueFire && 
+    (grantFuType === FuType.alu || grantFuType === FuType.bru || grantFuType === FuType.csr)
+ 
+  io.wakeupOut.valid     := isFastWakeup
+  io.wakeupOut.exeSource := iqParams.exeSource.U   // ★ IQ 编号 = ExeUnit 端口编号
+  diffDontTouch(io.wakeupOut.exeSource)
+  io.wakeupOut.pdst      := grantUop.pdst
+ 
+  // ══════════════════════════════════════════════════════════════
   //  入队逻辑（空闲位图 + 优先编码器）
-  //  freeMask / PriorityEncoder 保留（局部逻辑，用于定位入队槽位）
-  //  hasFree 改为读寄存器，切断组合路径
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   val freeMask = VecInit((0 until N).map(i => !entryValid(i)))
   val enqIdx   = PriorityEncoder(freeMask)
-  val hasFree  = freeEntriesReg > 0.U     // ← 改为寄存器判断，替代 freeMask.asUInt.orR
+  val hasFree  = freeMask.asUInt.orR
   val enqFire  = io.enq.valid && hasFree
  
-  // ── Kill/Grant 后的有效掩码（用于年龄矩阵入队更新） ──
   val validAfterKillGrant = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
     validAfterKillGrant(i) := entryValid(i) && !killed(i) && !(grant(i) && issueFire)
   }
  
-  // ================================================================
+  // ══════════════════════════════════════════════════════════════
   //  状态更新
-  //  优先级：flush > kill > grant > enqueue > wakeup(hold)
-  // ================================================================
+  //  优先级：flush > kill > grant > enq > dataSource变换 > wakeup
+  //
+  //  dataSource 变换规则：
+  //    当 dataSource = exeUnit 且本拍未 fire → exeUnit → regFile
+  //    （ExeUnit Phase2 旁路只在唤醒生效后 1 拍有效）
+  //
+  //  wakeup 写入在 dataSource 变换之后处理 → Chisel when 后写覆盖前写
+  //  保证新 fastWakeup 的 exeUnit 覆盖变换后的 regFile（"最后唤醒获胜"）
+  // ══════════════════════════════════════════════════════════════
   for (i <- 0 until N) {
  
     // ── valid ──
@@ -168,7 +237,7 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
       entryValid(i) := true.B
     }
  
-    // ── entryP1Ready / entryP2Ready ──
+    // ── P1Ready / P2Ready ──
     when(io.flushPipeline || killed(i) || (grant(i) && issueFire)) {
       entryP1Ready(i) := false.B
       entryP2Ready(i) := false.B
@@ -180,53 +249,80 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
       entryP2Ready(i) := entryP2Ready(i) || p2Wakeup(i)
     }
  
+    // ── dataSource 变换（★ 新增） ──
+    //  规则：exeUnit → regFile，仅当表项存活且本拍未 fire
+    //  变换发生在 wakeup 写入之前，后续 wakeup 会覆盖
+    when(entryValid(i) && !killed(i) && !(grant(i) && issueFire)) {
+      when(entrySrc1DS(i) === DataSource.exeUnit) {
+        entrySrc1DS(i) := DataSource.regFile
+      }
+      when(entrySrc2DS(i) === DataSource.exeUnit) {
+        entrySrc2DS(i) := DataSource.regFile
+      }
+    }
+ 
+    // ── dataSource / exeSource wakeup 写入（★ 新增） ──
+    //  写回唤醒：dataSource = regFile（数据已在 PRF）
+    //  快速唤醒：dataSource = exeUnit，exeSource = 指定端口
+    //  Chisel when 优先级：后写覆盖前写 → fastWakeup 在 wakeupPorts 之后
+ 
+    // (a) 写回唤醒 → dataSource = regFile
+    when(p1WakeupWB(i) && entryValid(i) && !killed(i) && !(grant(i) && issueFire)) {
+      entrySrc1DS(i) := DataSource.regFile
+    }
+    when(p2WakeupWB(i) && entryValid(i) && !killed(i) && !(grant(i) && issueFire)) {
+      entrySrc2DS(i) := DataSource.regFile
+    }
+ 
+    // (b) 快速唤醒 → dataSource = exeUnit, exeSource = 指定端口
+    //     后写覆盖前写 → 覆盖上面的 regFile 和变换后的 regFile ✓
+    when(p1WakeupFast(i) && entryValid(i) && !killed(i) && !(grant(i) && issueFire)) {
+      entrySrc1DS(i)     := DataSource.exeUnit
+      entrySrc1ExeSrc(i) := p1FastExeSrc(i)
+    }
+    when(p2WakeupFast(i) && entryValid(i) && !killed(i) && !(grant(i) && issueFire)) {
+      entrySrc2DS(i)     := DataSource.exeUnit
+      entrySrc2ExeSrc(i) := p2FastExeSrc(i)
+    }
+ 
+    // ── 入队时初始化 dataSource / exeSource ──
+    when(enqFire && enqIdx === i.U) {
+      entrySrc1DS(i)     := DataSource.regFile  // 入队时数据来自 PRF
+      entrySrc2DS(i)     := DataSource.regFile
+      entrySrc1ExeSrc(i) := 0.U
+      entrySrc2ExeSrc(i) := 0.U
+    }
+ 
+    // ── flush / kill / grant 清除 dataSource ──
+    when(io.flushPipeline || killed(i) || (grant(i) && issueFire)) {
+      entrySrc1DS(i)     := DataSource.regFile
+      entrySrc2DS(i)     := DataSource.regFile
+      entrySrc1ExeSrc(i) := 0.U
+      entrySrc2ExeSrc(i) := 0.U
+    }
+ 
     // ── uop ──
     when(enqFire && enqIdx === i.U) {
       entryUops(i) := io.enq.bits
     }
  
     // ── 年龄矩阵 ──
-    age(i)(i) := false.B   // 对角线恒 0
+    age(i)(i) := false.B
     for (j <- 0 until N if j != i) {
       when(io.flushPipeline) {
         age(i)(j) := false.B
       }.elsewhen(killed(i) || killed(j) || (grant(i) && issueFire) || (grant(j) && issueFire)) {
         age(i)(j) := false.B
       }.elsewhen(enqFire && enqIdx === j.U) {
-        // 新 entry 在 j 位置是最新（最年轻），所有仍然有效的 entry 都比它老
         age(i)(j) := validAfterKillGrant(i)
       }.elsewhen(enqFire && enqIdx === i.U) {
-        // 新 entry 在 i 位置，不比任何人老
         age(i)(j) := false.B
       }
-      // 其他情况：age(i)(j) 保持原值
     }
   }
  
-  // ================================================================
-  //  ★ 空闲表项计数寄存器更新（核心修改）
-  //
-  //  规则：
-  //    flushPipeline → 重置为 N（全空，最高优先级）
-  //    否则 → 当前值 + 出队释放数 - 入队占用数 + 重定向淘汰数
-  //
-  //  说明：
-  //    - issueFire（出队）：一个有效表项变空闲 → +1
-  //    - enqFire  （入队）：一个空闲表项变占用 → -1
-  //    - PopCount(killed) ：被重定向淘汰的有效表项变空闲 → +killCount
-  //      ↑ 这是 IQ 内部局部组合逻辑，不跨越模块边界，
-  //        不出现在 IQ→Dispatch→Rename→Snapshot 关键路径上
-  // ================================================================
-  val killedCount = PopCount(killed)
- 
-  when(io.flushPipeline) {
-    freeEntriesReg := N.U(freeEntriesWidth.W)
-  }.otherwise {
-    freeEntriesReg := freeEntriesReg +& issueFire.asUInt  +& killedCount -& enqFire.asUInt
-  }
- 
-  // ================================================================
-  //  ★ 反馈信号 —— 寄存器输出，切断跨模块组合关键路径
-  // ================================================================
-  io.freeEntries := freeEntriesReg
+  // ══════════════════════════════════════════════════════════════
+  //  反馈信号
+  // ══════════════════════════════════════════════════════════════
+  io.freeEntries := PopCount(freeMask)
 }

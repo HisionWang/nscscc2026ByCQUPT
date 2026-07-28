@@ -10,6 +10,7 @@ import nscscc.backend.dispatch._
 import nscscc.backend.issue._
 import nscscc.backend.regfile._
 import nscscc.backend.regread._
+import nscscc.backend.bypass._
 import nscscc.backend.execute._
 import nscscc.backend.writeback._
 import nscscc.mem._
@@ -72,6 +73,10 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
       difftest.get.regs(i) := phyState(archState(i))
     }
   }
+
+  val bypassNet = Module(new BypassNetwork)
+
+
 
 
  
@@ -150,22 +155,30 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   }
  
   // ══════════════════════════════════════════════════════════════
-  //  RegisterRead → ExeUnits：执行请求
-  //
-  //  通道映射：
-  //    ch0 (Q1: ALU+CSR)  → eu0
-  //    ch1 (Q2: ALU+DIV)  → eu1
-  //    ch2 (Q3: ALU+MUL+BRU) → eu2
-  //    ch3 (Q4: LOAD+STA) → 暂不连接（LSU 未实现）
-  //    ch4 (Q5: STD)      → 暂不连接（LSU 未实现）
+  //  RegisterRead → bypassNet
   // ══════════════════════════════════════════════════════════════
-  for ((eu, ch) <- exeUnits.zipWithIndex) {
-    eu.io.inReq <> regRead.io.exeReqs(ch)
+    bypassNet.io.inReqs <> regRead.io.exeReqs
+
+
+  // ══════════════════════════════════════════════════════════════
+  //  bypassNet and ExeUnits
+  // ══════════════════════════════════════════════════════════════
+  for (i <- 0 until IQNum) {
+    exeUnits(i).io.inReq <> bypassNet.io.outReqs(i)
   }
- 
-  // Q4, Q5 暂不接收（LSU 未实现）
- // regRead.io.exeReqs(3).ready := false.B
- // regRead.io.exeReqs(4).ready := false.B
+  for (i <- 0 until IQNum) {
+    bypassNet.io.bypassResults(i).valid := exeUnits(i).io.outResult.valid &&
+      (exeUnits(i).io.outResult.bits.uop.ctrl.fuType === FuType.alu ||
+       exeUnits(i).io.outResult.bits.uop.ctrl.fuType === FuType.bru ||
+       exeUnits(i).io.outResult.bits.uop.ctrl.fuType === FuType.csr)
+    bypassNet.io.bypassResults(i).data  := exeUnits(i).io.outResult.bits.data
+    bypassNet.io.bypassResults(i).pdst  := exeUnits(i).io.outResult.bits.uop.pdst
+  }
+
+
+
+
+
  
   // ══════════════════════════════════════════════════════════════
   //  ExeUnits → Writeback：执行结果

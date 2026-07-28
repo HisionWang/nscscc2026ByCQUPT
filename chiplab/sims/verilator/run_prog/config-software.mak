@@ -1,4 +1,4 @@
-RUN_SOFTWARE=coremark
+RUN_SOFTWARE=dhrystone
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n

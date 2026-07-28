@@ -16,6 +16,7 @@ object DebugConfigKeys {
 case class IQParams(
   numEntries: Int,
   numWakeupPorts: Int,
+  exeSource: Int,     // ★ 新增：IQ 编号 / ExeUnit 端口编号
 )
  
 // 4. 定义"参数特质" - 通过CPUConfigKeys对象访问参数键
@@ -87,11 +88,11 @@ trait HasCoreParameters {
   val IQNum : Int = 5 
   val EnableDifftest: Boolean = p(DebugConfigKeys.EnableDifftest)
   
-  val IQ1Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts))) //ALU_CSR
-  val IQ2Params = p(new Field[IQParams](IQParams(12, IQNumWakeupPorts))) //ALU_DIV
-  val IQ3Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts))) //ALU_MUL_JMP
-  val IQ4Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts))) //LOAD_STA
-  val IQ5Params = p(new Field[IQParams](IQParams(8,  IQNumWakeupPorts))) //STD
+  val IQ1Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 0))) //ALU_CSR
+  val IQ2Params = p(new Field[IQParams](IQParams(12, IQNumWakeupPorts, exeSource = 1))) //ALU_DIV
+  val IQ3Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 2))) //ALU_MUL_JMP
+  val IQ4Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 3))) //LOAD_STA
+  val IQ5Params = p(new Field[IQParams](IQParams(8,  IQNumWakeupPorts, exeSource = 4))) //STD
 
   val IQ1Width = log2Ceil(IQ1Params.numEntries + 1)
   val IQ2Width = log2Ceil(IQ2Params.numEntries + 1)

@@ -28,11 +28,11 @@ class Scheduler(implicit p: Parameters) extends NSModule {
     val q5IQEnq       = Flipped(ValidIO(new DispatchedInst))
  
     // ── 发射到读寄存器级（每个 IQ 1 个端口） ──
-    val q1Issue       = Decoupled(new DispatchedInst)
-    val q2Issue       = Decoupled(new DispatchedInst)
-    val q3Issue       = Decoupled(new DispatchedInst)
-    val q4Issue       = Decoupled(new DispatchedInst)
-    val q5Issue       = Decoupled(new DispatchedInst)
+    val q1Issue       = Decoupled(new RegReadIssue)
+    val q2Issue       = Decoupled(new RegReadIssue)
+    val q3Issue       = Decoupled(new RegReadIssue)
+    val q4Issue       = Decoupled(new RegReadIssue)
+    val q5Issue       = Decoupled(new RegReadIssue)
  
     // ── 写回唤醒广播（全局广播到所有 IQ） ──
     val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
@@ -81,12 +81,19 @@ class Scheduler(implicit p: Parameters) extends NSModule {
   for (iq <- allIQs) {
     iq.io.wakeupPorts <> io.wakeupPorts
   }
+
+  val fastIQs = Seq(q1, q2, q3)
+  // ── 快速唤醒收集与广播 ──
+  val fastWakeupVec = VecInit(fastIQs.map(_.io.wakeupOut))
+  for (iq <- allIQs) {
+    iq.io.fastWakeup := fastWakeupVec
+  }
+ 
  
   // ================================================================
   //  重定向 / 冲刷（广播到所有 IQ）
   // ================================================================
   for (iq <- allIQs) {
-    iq.io.redirect      <> io.redirect
     iq.io.redirectInfo      <> io.redirectInfo
     iq.io.flushPipeline <> io.flushPipeline
   }

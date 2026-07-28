@@ -4,24 +4,56 @@ import chisel3._
 import chisel3.util._
 import nscscc.config._
 import nscscc.backend.dispatch._
-// ═══════════════════════════════════════════════════════════════
-//  写回唤醒广播信号
-// ═══════════════════════════════════════════════════════════════
+import nscscc.backend.rename._
+ 
+// ════════════════════════════════════════════════════════════════
+//  DataSource 编码：bypass 数据来源（2 值，Option A）
+// ════════════════════════════════════════════════════════════════
+object DataSource {
+  val exeUnit = 0.U  // 从 ExeUnit Phase2 结果旁路
+  val regFile = 1.U  // 从 PRF 读数据（含写前推）
+  val width   = 1
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  写回唤醒广播信号（原有，不变）
+// ════════════════════════════════════════════════════════════════
 class IssueWakeup(implicit p: Parameters) extends NSBundle {
   val pdst = UInt(PhyRegIdxWidth.W)
 }
  
-// ═══════════════════════════════════════════════════════════════
-//  重定向信息（带环绕位的 robIdx）
-// ═══════════════════════════════════════════════════════════════
-//class RedirectInfo(implicit p: Parameters) extends NSBundle {
-//  val valid      = Bool()
-//  val robIdxFull = UInt((log2Ceil(RobSize) + 1).W)
-//}
+// ════════════════════════════════════════════════════════════════
+//  快速唤醒信号：IQ fire 时发出（仅 ALU/BRU/CSR）
+// ════════════════════════════════════════════════════════════════
+class WakeupSignal(implicit p: Parameters) extends NSBundle {
+  val valid     = Bool()
+  val exeSource = UInt(log2Ceil(IQNum).W)  // 产生结果的 ExeUnit 端口编号
+  val pdst      = UInt(PhyRegIdxWidth.W)   // 写入的物理目的寄存器
+}
  
-// ═══════════════════════════════════════════════════════════════
-//  IQ 类型标识
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+//  IQ → RegisterRead 接口（携带 dataSource / exeSource）
+// ════════════════════════════════════════════════════════════════
+class RegReadIssue(implicit p: Parameters) extends NSBundle {
+  val uop            = new DispatchedInst
+  val src1DataSource = UInt(DataSource.width.W)
+  val src2DataSource = UInt(DataSource.width.W)
+  val src1ExeSource  = UInt(log2Ceil(IQNum).W)
+  val src2ExeSource  = UInt(log2Ceil(IQNum).W)
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  ExeUnit 旁路结果：供 BypassNetwork 使用
+// ════════════════════════════════════════════════════════════════
+class BypassResult(implicit p: Parameters) extends NSBundle {
+  val valid = Bool()
+  val data  = UInt(XLEN.W)
+  val pdst  = UInt(PhyRegIdxWidth.W)
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  IQ 类型标识（不变）
+// ════════════════════════════════════════════════════════════════
 object IQType {
   val ALU_CSR     = 0
   val ALU_DIV     = 1
@@ -30,22 +62,3 @@ object IQType {
   val STD         = 4
 }
  
-// ═══════════════════════════════════════════════════════════════
-//  IQ 参数
-// ═══════════════════════════════════════════════════════════════
-// case class IQParams(
-//   numEntries: Int,
-//   numWakeupPorts: Int,
-//   iqType: Int
-// )
-//  
-// object IQConfigs {
-//   // 全局写回端口数：ALU×3 + MUL + DIV + BRU + CSR + LOAD×2 = 9
-//   val numWakeupPorts = 5
-//  
-//   val Q1 = IQParams(numEntries = 16, numWakeupPorts = numWakeupPorts, iqType = IQType.ALU_CSR)
-//   val Q2 = IQParams(numEntries = 12, numWakeupPorts = numWakeupPorts, iqType = IQType.ALU_DIV)
-//   val Q3 = IQParams(numEntries = 16, numWakeupPorts = numWakeupPorts, iqType = IQType.ALU_MUL_JMP)
-//   val Q4 = IQParams(numEntries = 16, numWakeupPorts = numWakeupPorts, iqType = IQType.LOAD_STA)
-//   val Q5 = IQParams(numEntries = 8,  numWakeupPorts = numWakeupPorts, iqType = IQType.STD)
-// }
