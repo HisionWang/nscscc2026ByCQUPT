@@ -1,4 +1,4 @@
-RUN_SOFTWARE=dhrystone
+RUN_SOFTWARE=c_prg/minmax_sequence
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n

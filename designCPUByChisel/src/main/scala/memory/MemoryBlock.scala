@@ -11,31 +11,25 @@ import nscscc.backend.execute._
 import nscscc.mmu._
 import nscscc.mem.dcache.DCache
 import nscscc.axi._
+ 
 class ExeMmuResult(implicit p: Parameters) extends NSBundle {
-  val exeRes      = new ExeResult
-  val mmuRes      = Flipped( new MmuToSqResp )
+  val exeRes = new ExeResult
+  val mmuRes = Flipped(new MmuToSqResp)
 }
  
-
 class MemoryBlock(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
     // ══════════════════════════════════════════
     //  Dispatch 入队
     // ══════════════════════════════════════════
-    val lsEnq = new Bundle {
-      val req       = Flipped(Valid(new LsEnqEntry))
-      val toLsqData = Flipped(new RenamedInst)
-
-      val lqHasEntries = Output(UInt(log2Ceil(LqSize + 1).W))
-      val sqHasEntries = Output(UInt(log2Ceil(SqSize + 1).W))
-    }
+    val lsEnq = Flipped(new LsEnqIO)
  
     // ══════════════════════════════════════════
     //  执行单元写回
     // ══════════════════════════════════════════
     val fromExeMmuResult = Flipped(Decoupled(new ExeMmuResult))
-    val fromExeResult = Flipped(Decoupled(new ExeResult))
+    val fromExeResult    = Flipped(Decoupled(new ExeResult))
  
     // ══════════════════════════════════════════
     //  后端写回输出
@@ -47,27 +41,25 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     // ══════════════════════════════════════════
     val lqEnqPtr = Output(UInt(log2Ceil(LqSize).W))
     val sqEnqPtr = Output(UInt(log2Ceil(SqSize).W))
-
  
     // ══════════════════════════════════════════
     //  ROB 提交接口
     // ══════════════════════════════════════════
-    val robCommit = Vec(CommitWidth ,new Bundle {
+    val robCommit = Vec(CommitWidth, new Bundle {
       val valid = Input(Bool())
       val sqIdx = Input(UInt(log2Ceil(SqSize).W))
     })
-
+ 
     val axi = new AXI3MasterIO
  
     // ══════════════════════════════════════════
-    //  重定向接口（预留）
+    //  重定向接口
     // ══════════════════════════════════════════
     val redirect = Flipped(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
     }))
-
-    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
-
+ 
+    val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
   })
  
   // ================================================================
@@ -76,7 +68,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   val loadQueue  = Module(new LoadQueue)
   val storeQueue = Module(new StoreQueue)
   storeQueue.io.redirectInfo <> io.redirectInfo
-  loadQueue.io.redirectInfo <> io.redirectInfo
+  loadQueue.io.redirectInfo  <> io.redirectInfo
  
   // ================================================================
   //  Dispatch 入队路由
@@ -101,15 +93,15 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
  
   io.lsEnq.lqHasEntries := loadQueue.io.lqHasEntries
   io.lsEnq.sqHasEntries := storeQueue.io.sqHasEntries
-  
   io.lqEnqPtr     := loadQueue.io.enqPtr
   io.sqEnqPtr     := storeQueue.io.enqPtr
  
   // ================================================================
-  //  SQ → LQ 排序信息
+  //  SQ → LQ 前递广播（替代旧的 sqOldestRobIdx + sqEmpty）
+  //  ★ 关键改动：从单索引串行传递改为全表项并行广播
+  //    打断了 SQ 扫描→LQ 比对的串行关键路径
   // ================================================================
-  loadQueue.io.sqOldestRobIdx := storeQueue.io.oldestRobIdx
-  loadQueue.io.sqEmpty        := storeQueue.io.sqEmpty
+  loadQueue.io.sqForward <> storeQueue.io.sqForward
  
   // ================================================================
   //  执行单元地址/数据通道路由
@@ -121,25 +113,25 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   val dataChannel = io.fromExeResult
   val dataFire    = dataChannel.fire
   val dataUop     = dataChannel.bits.uop
-
-  val mmuError     = addrChannel.bits.mmuRes.error
-  val excpIn =  addrChannel.bits.exeRes.uop.excp
-  val excp = Wire(new ExceptionBundle)
-
+ 
+  val mmuError = addrChannel.bits.mmuRes.error
+  val excpIn   = addrChannel.bits.exeRes.uop.excp
+  val excp     = Wire(new ExceptionBundle)
+ 
   excp.excpVec := excp.mergeMany(
     base = excpIn.excpVec,
     mmuError.excpAle          -> ALE,
     mmuError.excpTlbPpi       -> PPI_D,
     mmuError.excpTlbRefill    -> TLBR_D,
   )
-
+ 
   // LQ 地址写入
   loadQueue.io.addrWrite.valid := addrFire && addrUop.ctrl.memRead
   loadQueue.io.addrWrite.idx   := addrUop.lqIdx.value
   loadQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
   loadQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   loadQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
-  loadQueue.io.addrWrite.excp := excp
+  loadQueue.io.addrWrite.excp  := excp
  
   // SQ 地址写入（STA）
   storeQueue.io.addrWrite.valid := addrFire && addrUop.isSta
@@ -147,34 +139,31 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
   storeQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   storeQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
-  storeQueue.io.addrWrite.excp := excp
+  storeQueue.io.addrWrite.excp  := excp
  
   // SQ 数据写入（STD）
   storeQueue.io.dataWrite.valid := dataFire && dataUop.isStd
   storeQueue.io.dataWrite.idx   := dataUop.sqIdx.value
   storeQueue.io.dataWrite.data  := dataChannel.bits.data
  
-  io.fromExeResult.ready := true.B
+  io.fromExeResult.ready    := true.B
   io.fromExeMmuResult.ready := true.B
  
   // ================================================================
   //  DCache 接口直连
   // ================================================================
   val dcache = Module(new DCache)
-
-  dcache.io.loadReq <> loadQueue.io.dcacheReq
+ 
+  dcache.io.loadReq  <> loadQueue.io.dcacheReq
   dcache.io.loadResp <> loadQueue.io.dcacheResp
-
+ 
   dcache.io.storeReq <> storeQueue.io.dcacheReq
   dcache.io.storeAck <> storeQueue.io.storeAck
-  dcache.io.axi <> io.axi
+  dcache.io.axi      <> io.axi
   dcache.io.redirectInfo <> io.redirectInfo
-
-  
-
-  diffDontTouch(loadQueue.io.dcacheReq)
-  diffDontTouch(storeQueue.io.dcacheReq)
-
+ 
+  dontTouch(loadQueue.io.dcacheReq)
+  dontTouch(storeQueue.io.dcacheReq)
  
   // ================================================================
   //  ROB 提交直连
