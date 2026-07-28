@@ -12,21 +12,19 @@ import nscscc.util.CircularQueuePtr
  
 class StoreQueue(implicit p: Parameters) extends NSModule {
  
-  // ── 内部环形指针 ──
   class SqPtrInner extends CircularQueuePtr[SqPtrInner](SqSize)
  
-  // ── 内部表项 ──
   class SqEntry(implicit p: Parameters) extends NSBundle {
     val robIdxFull   = new RobPtr(RobSize)
     val lqIdx        = UInt(log2Ceil(LqSize).W)
     val valid        = Bool()
-    val addrValid    = Bool()    // STA 已写入地址
-    val dataValid    = Bool()    // STD 已写入数据
-    val committed    = Bool()    // ROB 已提交
-    val writtenBack  = Bool()    // 已向后端写回
-    val Memwritten   = Bool()    // 已向 DCache 写入完成
+    val addrValid    = Bool()
+    val dataValid    = Bool()
+    val committed    = Bool()
+    val writtenBack  = Bool()
+    val Memwritten   = Bool()
     val alreadyFlush = Bool()
-    val dcacheIssued = Bool()    // 已向 DCache 发出写请求
+    val dcacheIssued = Bool()
     val vaddr        = UInt(XLEN.W)
     val paddr        = UInt(XLEN.W)
     val data         = UInt(XLEN.W)
@@ -41,9 +39,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
  
-    val redirectInfo    = Flipped(ValidIO(new redirectInfoToModule))
+    val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
  
-    // ── 入队（来自 Dispatch） ──
     val enq = new Bundle {
       val valid  = Input(Bool())
       val robIdx = Input(new RobPtr(RobSize))
@@ -55,7 +52,6 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val fuType = Input(UInt(FuType.width.W))
     }
  
-    // ── 地址写入（来自 STA 执行单元） ──
     val addrWrite = new Bundle {
       val valid = Input(Bool())
       val idx   = Input(UInt(log2Ceil(SqSize).W))
@@ -65,7 +61,6 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val cacheable = Input(Bool())
     }
  
-    // ── 数据写入（来自 STD 执行单元） ──
     val dataWrite = new Bundle {
       val valid = Input(Bool())
       val idx   = Input(UInt(log2Ceil(SqSize).W))
@@ -77,7 +72,6 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val sqIdx = Input(UInt(log2Ceil(SqSize).W))
     })
  
-    // ── DCache Store 写请求 ──
     val dcacheReq = Decoupled(new Bundle {
       val sqIdx = UInt(log2Ceil(SqSize).W)
       val paddr = UInt(XLEN.W)
@@ -90,22 +84,14 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val sqIdx = UInt(log2Ceil(SqSize).W)
     }))
  
-    // ── 后端写回 ──
     val outResult = Decoupled(new ExeResult)
  
-    // ── SQ → LQ 前递广播（替代旧的 oldestRobIdx + sqEmpty） ──
     val sqForward = Output(Vec(SqSize, new SqForwardEntry))
  
-    // ── 状态 ──
-    val full   = Output(Bool())
-    val empty  = Output(Bool())
-    val enqPtr = Output(UInt(log2Ceil(SqSize).W))
-    val sqHasEntries = Output(UInt(log2Ceil(SqSize + 1).W))
+    val hasEntries = Output(UInt(log2Ceil(SqSize + 1).W))
+    val enqPtr     = Output(UInt(log2Ceil(SqSize).W))
   })
  
-  // ================================================================
-  //  存储体 + 指针
-  // ================================================================
   val entries = RegInit(VecInit(Seq.fill(SqSize)(0.U.asTypeOf(new SqEntry))))
   dontTouch(entries)
  
@@ -119,16 +105,12 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   val empty = deqPtr === enqPtr
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
  
-  io.full   := full
-  io.empty  := empty
-  io.enqPtr := enqPtr.value
-    val count = enqPtr.distanceTo(deqPtr)   // 当前LQ占用数
-  io.sqHasEntries := count
+  val count = enqPtr.distanceTo(deqPtr)
+  io.hasEntries := count
+  io.enqPtr     := enqPtr.value
  
   // ================================================================
-  //  SQ → LQ 前递广播：每周期将所有表项状态直连输出
-  //  ★ 替代旧的 activeCandidates 扫描 + oldestRobIdx 计算
-  //    纯组合逻辑（寄存器输出直连线），无优先编码器串行路径
+  //  SQ → LQ 前递广播
   // ================================================================
   for (i <- 0 until SqSize) {
     val e = entries(i)
@@ -139,6 +121,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     io.sqForward(i).paddr       := e.paddr
     io.sqForward(i).data        := e.data
     io.sqForward(i).lsuOp       := e.lsuOp
+    io.sqForward(i).cacheable   := e.cacheable
     io.sqForward(i).alreadyFlush := e.alreadyFlush
   }
  
@@ -173,7 +156,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  2. 重定向：清除比 redirect.robIdx 更新的 SQ 表项
+  //  2. 重定向
   // ================================================================
   val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   val redirectRobIdx = io.redirectInfo.bits.robIdx
@@ -215,8 +198,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  5. 向后端写回
-  //     条件：addrValid + dataValid + !writtenBack
+  //  5. 写回
   // ================================================================
   val wbCandidates = Wire(Vec(SqSize, Bool()))
   for (i <- 0 until SqSize) {
@@ -239,15 +221,13 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.memPaddr        := wbEntry.paddr
  
   val storeByteOff = wbEntry.paddr(1, 0)
- 
-  io.outResult.bits.memStoreData    := Mux(wbEntry.lsuOp === LsuOp.stb,
-                                            wbEntry.data << (storeByteOff * 8.U),
-                                            wbEntry.data << (wbEntry.paddr(1) * 16.U))
+  io.outResult.bits.memStoreData := Mux(wbEntry.lsuOp === LsuOp.stb,
+    wbEntry.data << (storeByteOff * 8.U),
+    wbEntry.data << (wbEntry.paddr(1) * 16.U))
  
   io.outResult.bits.redirect.valid  := DontCare
   io.outResult.bits.redirect.bits.valid     := DontCare
   io.outResult.bits.redirect.bits.robIdx    := wbEntry.robIdxFull
- 
   io.outResult.bits.csrWen   := DontCare
   io.outResult.bits.csrWaddr := DontCare
   io.outResult.bits.csrWdata := DontCare
@@ -313,7 +293,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  6. 接收 ROB 提交，标记 committed
+  //  6. ROB 提交
   // ================================================================
   for (i <- 0 until CommitWidth) {
     when(io.robCommit(i).valid) {
@@ -323,8 +303,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   }
  
   // ================================================================
-  //  7. 向 DCache 发出 Store 写请求
-  //     条件：committed + 无异常 + !dcacheIssued + !alreadyFlush
+  //  7. DCache Store 写请求
   // ================================================================
   val dcacheCandidates = Wire(Vec(SqSize, Bool()))
   for (i <- 0 until SqSize) {

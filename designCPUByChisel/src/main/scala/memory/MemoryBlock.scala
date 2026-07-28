@@ -20,31 +20,16 @@ class ExeMmuResult(implicit p: Parameters) extends NSBundle {
 class MemoryBlock(implicit p: Parameters) extends NSModule {
  
   val io = IO(new Bundle {
-    // ══════════════════════════════════════════
-    //  Dispatch 入队
-    // ══════════════════════════════════════════
     val lsEnq = Flipped(new LsEnqIO)
  
-    // ══════════════════════════════════════════
-    //  执行单元写回
-    // ══════════════════════════════════════════
     val fromExeMmuResult = Flipped(Decoupled(new ExeMmuResult))
     val fromExeResult    = Flipped(Decoupled(new ExeResult))
  
-    // ══════════════════════════════════════════
-    //  后端写回输出
-    // ══════════════════════════════════════════
     val toWbResult = Vec(2, Decoupled(new ExeResult))
  
-    // ══════════════════════════════════════════
-    //  EnqPtr 输出
-    // ══════════════════════════════════════════
     val lqEnqPtr = Output(UInt(log2Ceil(LqSize).W))
     val sqEnqPtr = Output(UInt(log2Ceil(SqSize).W))
  
-    // ══════════════════════════════════════════
-    //  ROB 提交接口
-    // ══════════════════════════════════════════
     val robCommit = Vec(CommitWidth, new Bundle {
       val valid = Input(Bool())
       val sqIdx = Input(UInt(log2Ceil(SqSize).W))
@@ -52,9 +37,6 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
  
     val axi = new AXI3MasterIO
  
-    // ══════════════════════════════════════════
-    //  重定向接口
-    // ══════════════════════════════════════════
     val redirect = Flipped(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
     }))
@@ -62,9 +44,6 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
   })
  
-  // ================================================================
-  //  实例化 LQ 和 SQ
-  // ================================================================
   val loadQueue  = Module(new LoadQueue)
   val storeQueue = Module(new StoreQueue)
   storeQueue.io.redirectInfo <> io.redirectInfo
@@ -91,15 +70,13 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.enq.lsuOp  := io.lsEnq.toLsqData.ctrl.lsuOp
   storeQueue.io.enq.fuType := io.lsEnq.toLsqData.ctrl.fuType
  
-  io.lsEnq.lqHasEntries := loadQueue.io.lqHasEntries
-  io.lsEnq.sqHasEntries := storeQueue.io.sqHasEntries
-  io.lqEnqPtr     := loadQueue.io.enqPtr
-  io.sqEnqPtr     := storeQueue.io.enqPtr
+  io.lsEnq.lqHasEntries := loadQueue.io.hasEntries
+  io.lsEnq.sqHasEntries := storeQueue.io.hasEntries
+  io.lqEnqPtr           := loadQueue.io.enqPtr
+  io.sqEnqPtr           := storeQueue.io.enqPtr
  
   // ================================================================
-  //  SQ → LQ 前递广播（替代旧的 sqOldestRobIdx + sqEmpty）
-  //  ★ 关键改动：从单索引串行传递改为全表项并行广播
-  //    打断了 SQ 扫描→LQ 比对的串行关键路径
+  //  SQ → LQ 前递广播
   // ================================================================
   loadQueue.io.sqForward <> storeQueue.io.sqForward
  
@@ -125,7 +102,6 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     mmuError.excpTlbRefill    -> TLBR_D,
   )
  
-  // LQ 地址写入
   loadQueue.io.addrWrite.valid := addrFire && addrUop.ctrl.memRead
   loadQueue.io.addrWrite.idx   := addrUop.lqIdx.value
   loadQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
@@ -133,7 +109,6 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   loadQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
   loadQueue.io.addrWrite.excp  := excp
  
-  // SQ 地址写入（STA）
   storeQueue.io.addrWrite.valid := addrFire && addrUop.isSta
   storeQueue.io.addrWrite.idx   := addrUop.sqIdx.value
   storeQueue.io.addrWrite.vaddr := addrChannel.bits.exeRes.data
@@ -141,7 +116,6 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
   storeQueue.io.addrWrite.excp  := excp
  
-  // SQ 数据写入（STD）
   storeQueue.io.dataWrite.valid := dataFire && dataUop.isStd
   storeQueue.io.dataWrite.idx   := dataUop.sqIdx.value
   storeQueue.io.dataWrite.data  := dataChannel.bits.data
