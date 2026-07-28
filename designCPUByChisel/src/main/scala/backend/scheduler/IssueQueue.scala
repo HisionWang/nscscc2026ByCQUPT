@@ -49,6 +49,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   })
  
   val N = iqParams.numEntries
+  val freeEntriesWidth = log2Ceil(N + 1)
+
  
   // ══════════════════════════════════════════════════════════════
   //  表项存储
@@ -324,5 +326,20 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   // ══════════════════════════════════════════════════════════════
   //  反馈信号
   // ══════════════════════════════════════════════════════════════
-  io.freeEntries := PopCount(freeMask)
+  //io.freeEntries := PopCount(freeMask)
+  val freeEntriesReg = RegInit(N.U(freeEntriesWidth.W))
+  val killedCount = PopCount(killed)
+ 
+  when(io.flushPipeline) {
+    freeEntriesReg := N.U(freeEntriesWidth.W)
+  }.otherwise {
+    freeEntriesReg := freeEntriesReg +& issueFire.asUInt  +& killedCount -& enqFire.asUInt
+  }
+ 
+  // ================================================================
+  //  ★ 反馈信号 —— 寄存器输出，切断跨模块组合关键路径
+  // ================================================================
+  io.freeEntries := freeEntriesReg
+
+
 }
