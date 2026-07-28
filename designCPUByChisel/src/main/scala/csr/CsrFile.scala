@@ -360,14 +360,16 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   io.timerInfo.timer := timer64
 
   // pg/da 按照tlbrefill例外特殊处理
-  val pgOut: UInt = Mux(excpFlush && io.excpEvent.tlbrefill, 0.U,
-              Mux(ertnTlbrefill, 1.U, crmd.pg))
-  val daOut: UInt = Mux(excpFlush && io.excpEvent.tlbrefill, 1.U,
-              Mux(ertnTlbrefill, 0.U, crmd.da))
+  val pgOut: UInt = crmd.pg
+  //Mux(excpFlush && io.excpEvent.tlbrefill, 0.U,
+  //            Mux(ertnTlbrefill, 1.U, crmd.pg))
+  val daOut: UInt = crmd.da
+  //Mux(excpFlush && io.excpEvent.tlbrefill, 1.U,
+  //            Mux(ertnTlbrefill, 0.U, crmd.da))
   io.tlbCtrl.pgda := Cat(pgOut, daOut)
 
-  io.tlbCtrl.dmw0 := Mux(swWen(csrAddr.dmw0), wdata, dmw0.toUInt)
-  io.tlbCtrl.dmw1 := Mux(swWen(csrAddr.dmw1), wdata, dmw1.toUInt)
+  io.tlbCtrl.dmw0 := dmw0.toUInt //Mux(swWen(csrAddr.dmw0), wdata, dmw0.toUInt)
+  io.tlbCtrl.dmw1 := dmw1.toUInt //Mux(swWen(csrAddr.dmw1), wdata, dmw1.toUInt)
 
   // IO[UInt<>]触发不了类型转换，算了吧
   io.priv.plv := crmd.plv.bits
