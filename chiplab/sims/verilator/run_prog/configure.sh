@@ -325,7 +325,7 @@ do
         fireye/A0)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -334,7 +334,7 @@ do
         fireye/B2)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -343,7 +343,7 @@ do
         fireye/C0)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -352,7 +352,7 @@ do
         fireye/D1)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -361,7 +361,7 @@ do
         fireye/I2)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -370,7 +370,7 @@ do
         c_prg/memcmp)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -379,7 +379,7 @@ do
         c_prg/inner_product)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -388,7 +388,7 @@ do
         c_prg/lookup_table)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -397,7 +397,7 @@ do
         c_prg/loop_induction)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -406,7 +406,7 @@ do
         c_prg/minmax_sequence)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -415,7 +415,7 @@ do
         c_prg/product_sequence)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n            
+            DEAD_CLOCK_EN=y            
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -424,7 +424,7 @@ do
         my_program)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -433,7 +433,7 @@ do
         my_program/bench/fireye_A0)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -443,14 +443,14 @@ do
         memset)
             RUN_FUNC=n 
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             mkdir -p ./obj/
             mkdir -p ./log/
             ;;
         dhrystone) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -459,7 +459,7 @@ do
         coremark) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -468,7 +468,7 @@ do
         hello_world) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -477,7 +477,7 @@ do
         linux) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -486,7 +486,7 @@ do
         rtthread)
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -495,7 +495,7 @@ do
         lacc)
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=n
+            DEAD_CLOCK_EN=y
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             mkdir -p ./obj/
@@ -541,7 +541,7 @@ echo "TAIL_WAVEFORM=$TAIL_WAVEFORM" >> $CONFIG_SOFT
 echo "WAVEFORM_TAIL_SIZE=$WAVEFORM_TAIL_SIZE" >> $CONFIG_SOFT
 echo "TAIL_SIMU_TRACE=$TAIL_SIMU_TRACE" >> $CONFIG_SOFT
 echo "TRACE_TAIL_SIZE=$TRACE_TAIL_SIZE" >> $CONFIG_SOFT
-echo "DEAD_CLOCK_EN=$DEAD_CLOCK_EN" >> $CONFIG_SOFT
+echo "DEAD_CLOCK_EN=yDEAD_CLOCK_EN"y>> $CONFIG_SOFT
 echo "DEAD_CLOCK_SIZE=$DEAD_CLOCK_SIZE" >> $CONFIG_SOFT
 echo "FORK_INTERVAL=$FORK_INTERVAL" >> $CONFIG_SOFT
 echo "SLOT_SIZE=$SLOT_SIZE" >> $CONFIG_SOFT
