@@ -314,7 +314,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
   mshr.io.missReq.bits.isStore     := curIsStore
   mshr.io.missReq.bits.cacheable   := curCacheable
   mshr.io.missReq.bits.victimWay   := curVictimWay
-  mshr.io.missReq.bits.victimDirty := curCacheable && curArrayData.ways(curVictimWay).dirty
+  mshr.io.missReq.bits.victimDirty := curCacheable && curArrayData.ways(curVictimWay).dirty && curArrayData.ways(curVictimWay).valid
   mshr.io.missReq.bits.victimTag   := Mux(curCacheable, curArrayData.ways(curVictimWay).tag, 0.U)
   mshr.io.missReq.bits.victimData  := Mux(curCacheable, curArrayData.ways(curVictimWay).data, 0.U)
  
