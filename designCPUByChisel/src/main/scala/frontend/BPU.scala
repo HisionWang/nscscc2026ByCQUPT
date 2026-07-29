@@ -30,19 +30,22 @@ class BPU(implicit p: Parameters) extends NSModule {
   // 块内字节数位宽，例如 fetchWidth=4 时，块大小为16字节，位宽为4
   val fetchBlockBitsValue = log2Ceil(fetchWidth) + 2
 
-  val btbEntryWidth = 0.U.asTypeOf(new BTBEntry).getWidth
+  val btbEntryNoValidWidth = 0.U.asTypeOf(new BTBEntryNoValid).getWidth
   val rnd = new Random()
-  val randomBtbInit = Seq.fill(btbSize)(BigInt(btbEntryWidth, rnd))
+  val randomBtbInit = Seq.fill(btbSize)(BigInt(btbEntryNoValidWidth, rnd))
 
   // ==================== 实例化双体 BRAM ====================
   // Bank0: 存储当前对齐块 (Block N) 的预测信息
-  val btbMem0 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryWidth, readLatency = 1
+  // ==================== valid 用寄存器存储，复位清零 ====================
+  val validArray0 = RegInit(VecInit(Seq.fill(btbSize)(false.B)))
+  val btbMem0 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1
                                           //  ,initVals = Some(randomBtbInit)
                                           ))
   val phtMem0 = Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1))
 
+  val validArray1 = RegInit(VecInit(Seq.fill(btbSize)(false.B)))
   // Bank1: 存储下一个对齐块 (Block N+1) 的预测信息
-  val btbMem1 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryWidth, readLatency = 1
+  val btbMem1 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1
                                           // ,initVals = Some(randomBtbInit)
                                           ))
   val phtMem1 = Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1))
@@ -71,20 +74,22 @@ class BPU(implicit p: Parameters) extends NSModule {
   val tag1 = nextBlockBase(31, btbIndexBits + fetchBlockBitsValue)
 
   // 解析 Bank0 (当前块) 数据
-  val btbEntry0  = btbMem0.io.rd_data.asTypeOf(new BTBEntry)
+  val readIdxReg = RegEnable(readBlockIdx, 0.U(btbIndexBits.W), io.predictReq.rdBpu)
+
+  val btbEntry0  = btbMem0.io.rd_data.asTypeOf(new BTBEntryNoValid)
   val phtCounter0= phtMem0.io.rd_data
   val phtTaken0  = phtCounter0(1)
   // 命中条件0：Entry有效，Tag匹配，且分支位于取指起始偏移之后 (或刚好对齐)
-  val btbHit0    = btbEntry0.valid && (btbEntry0.tag === tag0) && (btbEntry0.offset >= fetchOffset)
+  val btbHit0    = validArray0(readIdxReg) && (btbEntry0.tag === tag0) && (btbEntry0.offset >= fetchOffset)
   val predTaken0 = btbHit0 && (btbEntry0.isJalr || btbEntry0.isJal || phtTaken0)
 
   // 解析 Bank1 (下一块) 数据
-  val btbEntry1  = btbMem1.io.rd_data.asTypeOf(new BTBEntry)
+  val btbEntry1  = btbMem1.io.rd_data.asTypeOf(new BTBEntryNoValid)
   val phtCounter1= phtMem1.io.rd_data
   val phtTaken1  = phtCounter1(1)
   // 命中条件1：Entry有效，Tag匹配，且分支位于下一块的开头，且在当前 fetchWidth 覆盖范围内
   // 并且不跨Cache行
-  val btbHit1    = btbEntry1.valid && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset) && !io.predictReq.crossLine
+  val btbHit1    = validArray1(readIdxReg) && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset) && !io.predictReq.crossLine
   val predTaken1 = btbHit1 && (btbEntry1.isJalr || btbEntry1.isJal || phtTaken1)
 
   // ==================== 仲裁与输出生成 ====================
@@ -108,7 +113,7 @@ class BPU(implicit p: Parameters) extends NSModule {
 
   // 组装 Meta 信息（反馈给更新逻辑使用）
   io.predictResp.meta.btbHit     := btbHit0 || btbHit1
-  io.predictResp.meta.valid  := Mux(predTaken0, btbEntry0.valid, btbEntry1.valid)
+  io.predictResp.meta.valid := Mux(predTaken0, validArray0(readIdxReg), validArray1(readIdxReg))
   io.predictResp.meta.btbIsJalr  := Mux(predTaken0, btbEntry0.isJalr, btbEntry1.isJalr)
   io.predictResp.meta.btbIsJal   := Mux(predTaken0, btbEntry0.isJal, btbEntry1.isJal)
   io.predictResp.meta.btbIsCall  := Mux(predTaken0, btbEntry0.isCall, btbEntry1.isCall)
@@ -135,8 +140,8 @@ class BPU(implicit p: Parameters) extends NSModule {
     val updateTag      = update.pc(31, btbIndexBits + fetchBlockBitsValue)
 
     // 新的 BTB 条目
-    val newEntry = Wire(new BTBEntry)
-    newEntry.valid  := update.validEntry
+    val newEntry = Wire(new BTBEntryNoValid)
+    // newEntry.valid  := update.validEntry
     newEntry.tag    := updateTag
     newEntry.target := update.target
     newEntry.isJalr := update.isJalr
@@ -144,6 +149,10 @@ class BPU(implicit p: Parameters) extends NSModule {
     newEntry.isCall := update.isCall
     newEntry.isRet  := update.isRet
     newEntry.offset := update.offset 
+    
+    
+    
+
     
     // 更新 PHT 计数器
     val oldCounter  = update.oldPhtCounter 
@@ -161,6 +170,7 @@ class BPU(implicit p: Parameters) extends NSModule {
     btbMem0.io.wr_en   := true.B
     btbMem0.io.wr_addr := updateBlockIdx
     btbMem0.io.wr_data := newEntry.asUInt
+    validArray0(updateBlockIdx) := update.validEntry
 
     phtMem0.io.wr_en   := true.B
     phtMem0.io.wr_addr := updateBlockIdx
@@ -173,6 +183,7 @@ class BPU(implicit p: Parameters) extends NSModule {
     btbMem1.io.wr_en   := true.B
     btbMem1.io.wr_addr := updateBlockIdx_minus_1
     btbMem1.io.wr_data := newEntry.asUInt
+    validArray1(updateBlockIdx_minus_1) := update.validEntry
 
     phtMem1.io.wr_en   := true.B
     phtMem1.io.wr_addr := updateBlockIdx_minus_1

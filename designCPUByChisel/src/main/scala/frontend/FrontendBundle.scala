@@ -58,6 +58,18 @@ class BTBEntry(implicit p: Parameters) extends NSBundle {
   val isRet  = Bool()   // 函数返回 (jirl r0, r1, 0)
   val offset = UInt(log2Ceil(fetchWidth).W)  // 分支在fetch块内的指令偏移
 }
+
+// 在 BTBEntry 定义旁边添加
+class BTBEntryNoValid(implicit p: Parameters) extends NSBundle {
+  val tag    = UInt(btbTagBits.W)
+  val target = UInt(32.W)
+  val isJalr = Bool()
+  val isJal  = Bool()
+  val isCall = Bool()
+  val isRet  = Bool()
+  val offset = UInt(log2Ceil(fetchWidth).W)
+}
+
  
 // ==================== BPU 元信息 ====================
 class BpuMeta(implicit p: Parameters) extends NSBundle {

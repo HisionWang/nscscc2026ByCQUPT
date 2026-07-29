@@ -26,7 +26,7 @@ class MetaEntry(implicit p: Parameters) extends NSBundle {
 class ICacheArray(implicit p: Parameters) extends NSModule {
 
   val dataBits: Int = blockBytes * 8
-  val metaWidth: Int = tagBits + 1  // 1位valid + tagBits位标签
+  val metaWidth: Int = tagBits // + 1  // 1位valid + tagBits位标签
   
   val io = IO(new Bundle {
     // 读取端口
@@ -43,6 +43,8 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   
   // === 创建 BlockRAM 阵列 ===
   // 每个 way 有自己的 meta 和 data BlockRAM
+  // === valid 位用寄存器存储，复位时自动清零 ===
+  val validArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
 
   val metaBRAMs = VecInit(Seq.fill(nWays)(
     Module(new SimpleBlockRAM(
@@ -51,6 +53,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
       readLatency = 1
     )).io
   ))
+
   
   val dataBRAMs = VecInit(Seq.fill(nWays)(
     Module(new SimpleBlockRAM(
@@ -73,14 +76,18 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   // 注意：BlockRAM 的 rd_valid 信号在读取使能后的第2个周期变高
   val readRespValid = WireDefault(false.B)
   val readRespData = Wire(new arrayReadData)
-  
+
+  //val readIdxReg = RegEnable(io.read.req.idx, io.read.req.valid)
+  val readIdxReg = RegEnable(io.read.req.idx, 0.U(idxBits.W), io.read.req.valid)
   // 组合 BlockRAM 的输出
   for (way <- 0 until nWays) {
     // 从 BlockRAM 输出转换为数据格式
     val metaUInt = metaBRAMs(way).rd_data
     val dataUInt = dataBRAMs(way).rd_data
     
-    readRespData.cacheLine(way).has  := metaUInt(tagBits)
+    //readRespData.cacheLine(way).has  := metaUInt(tagBits)
+    readRespData.cacheLine(way).has  := validArray(way)(readIdxReg)  // 从寄存器读 valid
+
     readRespData.cacheLine(way).tag  := metaUInt(tagBits-1, 0)
     readRespData.cacheLine(way).data := dataUInt
   }
@@ -102,11 +109,15 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
     diffDontTouch(waySel)
     
     // 标签写入：构造 meta 数据 (valid + tag)
-    val metaWriteData = Cat(true.B, io.write.tag)  // 写入时总是设置 valid = true
+    // val metaWriteData = Cat(true.B, io.write.tag)  // 写入时总是设置 valid = true
     
     metaBRAMs(way).wr_en   := io.write.valid && waySel
     metaBRAMs(way).wr_addr := io.write.idx
-    metaBRAMs(way).wr_data := metaWriteData
+    metaBRAMs(way).wr_data := io.write.tag //metaWriteData
+
+    when(io.write.valid && waySel) {
+      validArray(way) := validArray(way).bitSet(io.write.idx, true.B)
+    }
     
     // 数据写入
     dataBRAMs(way).wr_en   := io.write.valid && waySel
@@ -126,6 +137,8 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   for (way <- 0 until nWays) {
     // flush 时写入 meta 为 0 (valid = false, tag = 0)
     when(io.flush.valid){
+      validArray(way) := validArray(way).bitSet(io.flush.idx, false.B)
+
       metaBRAMs(way).wr_en   := io.flush.valid
       metaBRAMs(way).wr_addr := io.flush.idx
       metaBRAMs(way).wr_data := 0.U
