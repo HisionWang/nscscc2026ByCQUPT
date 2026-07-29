@@ -34,6 +34,7 @@ class SimpleBlockRAMBlackBox(
       val io = IO(new Bundle {
     val clka   = Input(Clock())
     val wea    = Input(Bool())
+    val ena    = Input(Bool())
     val addra  = Input(UInt(addrWidth.W))
     val dina   = Input(UInt(width.W))
 
@@ -107,6 +108,7 @@ class SimpleBlockRAM(
 
     blackbox.io.clka    := clock
     blackbox.io.wea     := io.wr_en
+    blackbox.io.ena     := io.wr_en
     blackbox.io.addra   := io.wr_addr
     blackbox.io.dina    := io.wr_data
     blackbox.io.clkb    := clock
