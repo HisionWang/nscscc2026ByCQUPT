@@ -59,7 +59,8 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
     val readIdxReg = RegEnable(io.read.idx, 0.U(idxBits.W), io.read.valid)
 
     readRespData.ways(way).valid := validArray(way)(readIdxReg)  //metaUInt(tagBits + 1)
-    readRespData.ways(way).dirty := metaUInt(tagBits)
+    //readRespData.ways(way).dirty := metaUInt(tagBits)
+    readRespData.ways(way).dirty := metaUInt(tagBits) && validArray(way)(readIdxReg)
     readRespData.ways(way).tag   := metaUInt(tagBits - 1, 0)
     readRespData.ways(way).data  := dataBRAMs(way).rd_data
   }
