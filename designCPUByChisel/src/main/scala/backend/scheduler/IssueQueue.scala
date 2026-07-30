@@ -109,8 +109,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
       val fw      = io.fastWakeup(w)
       val fwValid = fw.valid && entryValid(i)
       val pdst    = fw.pdst
-      fastP1Matches(w) := fwValid && entryUops(i).rs1Valid && entryUops(i).prs1 === pdst && pdst =/= 0.U
-      fastP2Matches(w) := fwValid && entryUops(i).rs2Valid && entryUops(i).prs2 === pdst && pdst =/= 0.U
+      fastP1Matches(w) := fwValid && entryUops(i).rs1Valid && entryUops(i).prs1 === pdst && pdst =/= 0.U && entryUops(i).ctrl.fuType =/= FuType.div
+      fastP2Matches(w) := fwValid && entryUops(i).rs2Valid && entryUops(i).prs2 === pdst && pdst =/= 0.U && entryUops(i).ctrl.fuType =/= FuType.div
     }
     p1WakeupFast(i) := fastP1Matches.asUInt.orR
     p2WakeupFast(i) := fastP2Matches.asUInt.orR
