@@ -12,22 +12,20 @@ import os.truncate
  
 class LoadQueue(implicit p: Parameters) extends NSModule {
  
-  // ── 内部环形指针 ──
   class LqPtrInner extends CircularQueuePtr[LqPtrInner](LqSize)
  
-  // ── 内部表项 ──
   class LqEntry(implicit p: Parameters) extends NSBundle {
     val robIdxFull  = new RobPtr(RobSize)
     val sqIdx       = UInt(log2Ceil(SqSize).W)
     val valid       = Bool()
-    val addrValid   = Bool()   // 执行单元已写入虚拟地址
-    val alreadyFlush     = Bool()
-    val issued      = Bool()   // 已向 DCache 发出请求
-    val dataValid   = Bool()   // DCache 已返回数据/异常
-    val writtenBack = Bool()   // 已向后端写回
+    val addrValid   = Bool()
+    val alreadyFlush = Bool()
+    val issued      = Bool()
+    val dataValid   = Bool()
+    val writtenBack = Bool()
     val vaddr       = UInt(XLEN.W)
     val paddr       = UInt(XLEN.W)
-    val cacheable       = Bool()
+    val cacheable   = Bool()
     val data        = UInt(XLEN.W)
     val excp        = new ExceptionBundle
     val lsuOp       = UInt(LsuOp.width.W)
@@ -38,10 +36,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   }
  
   val io = IO(new Bundle {
-
-    val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
-
-    // ── 入队（来自 Dispatch） ──
+ 
+    val redirectInfo    = Flipped(ValidIO(new redirectInfoToModule))
+ 
     val enq = new Bundle {
       val valid  = Input(Bool())
       val robIdx = Input(new RobPtr(RobSize))
@@ -51,49 +48,43 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       val rfWen  = Input(Bool())
       val lsuOp  = Input(UInt(LsuOp.width.W))
       val fuType = Input(UInt(FuType.width.W))
-      //val excp       = new ExceptionBundle
     }
  
-    // ── 地址写入（来自执行单元地址通道） ──
     val addrWrite = new Bundle {
-      val valid = Input(Bool())
-      val idx   = Input(UInt(log2Ceil(LqSize).W))
-      val vaddr = Input(UInt(XLEN.W))
-      val paddr = Input( UInt(XLEN.W))
-      val cacheable       = Input( Bool())
-      val excp       = Input(new ExceptionBundle)
+      val valid     = Input(Bool())
+      val idx       = Input(UInt(log2Ceil(LqSize).W))
+      val vaddr     = Input(UInt(XLEN.W))
+      val paddr     = Input(UInt(XLEN.W))
+      val cacheable = Input(Bool())
+      val excp      = Input(new ExceptionBundle)
     }
  
-    // ── SQ 排序信息 ──
+    // ★ 新增：SQ 转发信息向量（替代原来的 sqOldestRobIdx + sqEmpty）
+    val sqForwardInfo = Input(Vec(SqSize, new SqForwardInfoBundle))
+ 
+    // 保留：用于 uncache load 的保守判断
     val sqOldestRobIdx = Input(new RobPtr(RobSize))
     val sqEmpty        = Input(Bool())
  
-    // ── DCache Load 请求 ──
     val dcacheReq = Decoupled(new Bundle {
-      val lqIdx = UInt(log2Ceil(LqSize).W)
-      val robIdx = new RobPtr(RobSize)
-      //val vaddr = UInt(XLEN.W)
-      val paddr       = UInt(XLEN.W)
-      val cacheable       = Bool()
-      val lsuOp        = UInt(LsuOp.width.W)
-
+      val lqIdx     = UInt(log2Ceil(LqSize).W)
+      val robIdx    = new RobPtr(RobSize)
+      val paddr     = UInt(XLEN.W)
+      val cacheable = Bool()
+      val lsuOp     = UInt(LsuOp.width.W)
     })
  
-    // ── DCache Load 响应（乱序返回，携带 lqIdx） ──
     val dcacheResp = Flipped(Decoupled(new Bundle {
-      val lqIdx   = UInt(log2Ceil(LqSize).W)
-      val data    = UInt(XLEN.W)
-
+      val lqIdx = UInt(log2Ceil(LqSize).W)
+      val data  = UInt(XLEN.W)
     }))
  
-    // ── 后端写回 ──
     val outResult = Decoupled(new ExeResult)
  
-    // ── 状态 ──
-    val full   = Output(Bool())
-    val empty  = Output(Bool())
-    val enqPtr = Output(UInt(log2Ceil(LqSize).W))
-    val lqHasEntries = Output(UInt(log2Ceil(LqSize + 1).W))
+    val full          = Output(Bool())
+    val empty         = Output(Bool())
+    val enqPtr        = Output(UInt(log2Ceil(LqSize).W))
+    val lqHasEntries  = Output(UInt(log2Ceil(LqSize + 1).W))
   })
  
   // ================================================================
@@ -116,7 +107,6 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.empty  := empty
   io.enqPtr := enqPtr.value
   val count = enqPtr.distanceTo(deqPtr)
-
   io.lqHasEntries := count
  
   // ================================================================
@@ -136,7 +126,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).writtenBack := false.B
     entries(idx).vaddr       := 0.U
     entries(idx).paddr       := 0.U
-    entries(idx).cacheable    := false.B
+    entries(idx).cacheable   := false.B
     entries(idx).data        := 0.U
     entries(idx).excp        := 0.U.asTypeOf(new ExceptionBundle)
     entries(idx).lsuOp       := io.enq.lsuOp
@@ -146,28 +136,24 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).fuType      := io.enq.fuType
     enqPtr := enqPtr + 1.U
   }
-
-    // ================================================================
-    //  重定向：清除比 redirect.robIdx 更新的 LQ表项
-    // ================================================================
-    val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
-    val redirectRobIdx = io.redirectInfo.bits.robIdx
-    val isNewer = Wire(Vec(LqSize, Bool()))
-
-
-    for (i <- 0 until LqSize) {
-      val e = entries(i)
-      
-      isNewer(i) := e.robIdxFull.isAfter(redirectRobIdx) && doRedirect && e.valid
-      when(isNewer(i)) {
-        e.alreadyFlush := true.B
-      }
-      
-    }
-    
  
   // ================================================================
-  //  2. 地址写入（执行单元 → LQ）
+  //  重定向
+  // ================================================================
+  val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val redirectRobIdx = io.redirectInfo.bits.robIdx
+  val isNewer = Wire(Vec(LqSize, Bool()))
+ 
+  for (i <- 0 until LqSize) {
+    val e = entries(i)
+    isNewer(i) := e.robIdxFull.isAfter(redirectRobIdx) && doRedirect && e.valid
+    when(isNewer(i)) {
+      e.alreadyFlush := true.B
+    }
+  }
+ 
+  // ================================================================
+  //  2. 地址写入
   // ================================================================
   when(io.addrWrite.valid) {
     val idx = io.addrWrite.idx
@@ -175,19 +161,33 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).vaddr     := io.addrWrite.vaddr
     entries(idx).paddr     := io.addrWrite.paddr
     entries(idx).excp      := io.addrWrite.excp
-    entries(idx).cacheable   := io.addrWrite.cacheable
+    entries(idx).cacheable := io.addrWrite.cacheable
   }
  
   // ================================================================
-  //  3. 向 DCache 发出 Load 请求
-  //     扫描从 deqPtr 开始最老的 addrValid && !issued 表项
-  //     且必须比 SQ 中最老的 Store 更老（或 SQ 为空）
+  //  3. 向 DCache 发出 Load 请求（★ 地址比对优化版 ★）
+  //
+  //  核心改变：不再依赖 sqOldestRobIdx 做粗粒度序号判断，
+  //  而是将候选 load 的 paddr[31:2] 与 SQ 中所有更老 store
+  //  逐项比对，仅真正地址冲突时才阻塞。
+  //
+  //  判定逻辑：
+  //    Cacheable Load:
+  //      - 有更老 store 且 addrValid=未知 → 等待（保守安全）
+  //      - 有更老 store 且地址冲突 且 全部可转发(stw+dataValid) → 转发最年轻者
+  //      - 有更老 store 且地址冲突 且 存在不可转发者 → 等待
+  //      - 无冲突且无未知地址 → 直接发射 DCache
+  //    Uncache Load:
+  //      - 有更老 store → 等待
+  //      - 无更老 store → 发射 DCache（坚决不转发）
   // ================================================================
+ 
+  // ── 3a. 选择最老的、已就绪的 LQ 表项 ──
   val issueCandidates = Wire(Vec(LqSize, Bool()))
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    issueCandidates(i) := e.valid && e.addrValid && (!e.issued && !e.excp.hasException && !e.alreadyFlush)
+    issueCandidates(i) := e.valid && e.addrValid && !e.issued && !e.excp.hasException && !e.alreadyFlush
   }
  
   val hasIssueCandidate = issueCandidates.reduce(_ || _)
@@ -195,41 +195,117 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val issueIdx          = (deqPtr.value + issueOffset)(log2Ceil(LqSize) - 1, 0)
   val issueEntry        = entries(issueIdx)
  
-  // 排序检查：该 Load 必须不晚于 SQ 中最老的 Store
-  val orderingOk = io.sqEmpty || !issueEntry.robIdxFull.isAfter(io.sqOldestRobIdx)
+  // ── 3b. 地址比对：检查该 Load 与 SQ 中更老 store 的关系 ──
+  //  以 word 为最小单位：忽略 paddr 低 2 位
+  val loadPaddrWord = issueEntry.paddr(31, 2)
  
-  io.dcacheReq.valid       := hasIssueCandidate && orderingOk && !isNewer(issueIdx)
+  // 对每个 SQ 表项，计算三类信号
+  val sqConflict      = Wire(Vec(SqSize, Bool())) // 地址冲突（更老 + addrValid + 地址匹配）
+  val sqForwardable   = Wire(Vec(SqSize, Bool())) // 可转发（冲突 + dataValid + stw）
+  val sqUnknown       = Wire(Vec(SqSize, Bool())) // 未知地址（更老 + !addrValid）
+  val sqOlderActive   = Wire(Vec(SqSize, Bool())) // 更老的活跃 store（用于 uncache 判断）
+ 
+  for (i <- 0 until SqSize) {
+    val sq = io.sqForwardInfo(i)
+    // load 比 store 更新 → store 是更老的
+    val isOlder   = issueEntry.robIdxFull.isAfter(sq.robIdxFull)
+    // 活跃条件：有效 + 未冲刷 + 无异常
+    val isActive  = sq.valid && !sq.alreadyFlush && !sq.hasException
+    // 地址匹配：word 对齐比较，忽略低 2 位
+    val addrMatch = sq.addrValid && (sq.paddr(31, 2) === loadPaddrWord)
+ 
+    sqOlderActive(i) := isActive && isOlder
+    sqConflict(i)    := isActive && isOlder && addrMatch
+    sqForwardable(i) := sqConflict(i) && sq.dataValid && (sq.lsuOp === LsuOp.stw)
+    sqUnknown(i)     := isActive && isOlder && !sq.addrValid
+  }
+ 
+  val hasConflict    = sqConflict.reduce(_ || _)
+  val canForward    = sqForwardable.reduce(_ || _)
+  val hasUnknown    = sqUnknown.reduce(_ || _)
+  val hasOlderStore = sqOlderActive.reduce(_ || _)
+ 
+  // 不可转发的冲突：存在冲突但非 stw 或无 dataValid
+  val nonForwardableConflict = Wire(Vec(SqSize, Bool()))
+  for (i <- 0 until SqSize) {
+    nonForwardableConflict(i) := sqConflict(i) && !sqForwardable(i)
+  }
+  val hasNonForwardableConflict = nonForwardableConflict.reduce(_ || _)
+ 
+  // ── 3c. 找到最年轻的可转发 store（robIdx 最大的 forwardable） ──
+  //  使用 O(n²) 逐项比较，对 SqSize=16 可接受
+  val isYoungestForward = Wire(Vec(SqSize, Bool()))
+  for (i <- 0 until SqSize) {
+    // 检查没有比 i 更年轻的 forwardable store
+    val noYounger = Wire(Vec(SqSize, Bool()))
+    for (j <- 0 until SqSize) {
+      noYounger(j) := !(sqForwardable(j) &&
+        io.sqForwardInfo(j).robIdxFull.isAfter(io.sqForwardInfo(i).robIdxFull))
+    }
+    isYoungestForward(i) := sqForwardable(i) && noYounger.reduce(_ && _)
+  }
+ 
+  val forwardIdx  = PriorityEncoder(isYoungestForward)
+  val forwardData = io.sqForwardInfo(forwardIdx).data
+ 
+  // ── 3d. 发射条件判定 ──
+  val isUncache = !issueEntry.cacheable
+ 
+  // Cacheable load：无未知地址 + 无不可转发冲突
+  //   - !hasUnknown：所有更老 store 的地址都已知
+  //   - !hasNonForwardableConflict：冲突的 store 都可转发
+  //   若 hasConflict && canForward → 转发
+  //   若 !hasConflict → 直接发 DCache
+  val cacheableIssueOk = !hasUnknown && !hasNonForwardableConflict
+ 
+  // Uncache load：无更老 store 时才可发射
+  val uncacheIssueOk = !hasOlderStore
+ 
+  val issueOk = Mux(isUncache, uncacheIssueOk, cacheableIssueOk)
+ 
+  // 是否执行转发（仅 cacheable + 有冲突 + 可转发）
+  val doForward = !isUncache && hasConflict && canForward && issueOk
+ 
+  // 是否发射 DCache（无冲突 或 uncache 可发射）
+  val doDcacheIssue = issueOk && !doForward
+ 
+  // ── 3e. 输出 DCache 请求 ──
+  io.dcacheReq.valid       := hasIssueCandidate && doDcacheIssue && !isNewer(issueIdx)
   io.dcacheReq.bits.lqIdx  := issueIdx
   io.dcacheReq.bits.paddr  := issueEntry.paddr
-  io.dcacheReq.bits.cacheable  := issueEntry.cacheable
+  io.dcacheReq.bits.cacheable := issueEntry.cacheable
   io.dcacheReq.bits.lsuOp  := issueEntry.lsuOp
-  io.dcacheReq.bits.robIdx  := issueEntry.robIdxFull
+  io.dcacheReq.bits.robIdx := issueEntry.robIdxFull
  
   when(io.dcacheReq.fire) {
     entries(issueIdx).issued := true.B
   }
  
+  // ── 3f. 转发写入：直接标记 issued + dataValid ──
+  when(hasIssueCandidate && doForward && !isNewer(issueIdx)) {
+    entries(issueIdx).issued    := true.B
+    entries(issueIdx).dataValid := true.B
+    entries(issueIdx).data      := forwardData
+  }
+ 
   // ================================================================
-  //  4. 接收 DCache 响应（乱序，用 lqIdx 索引）
+  //  4. 接收 DCache 响应
   // ================================================================
   io.dcacheResp.ready := true.B
   when(io.dcacheResp.fire) {
     val idx = io.dcacheResp.bits.lqIdx
     entries(idx).dataValid := true.B
     entries(idx).data      := io.dcacheResp.bits.data
-    // entries(idx).paddr     := io.dcacheResp.bits.paddr
-    // entries(idx).excpVec   := io.dcacheResp.bits.excpVec
   }
  
   // ================================================================
   //  5. 向后端写回
-  //     扫描从 deqPtr 开始最老的 dataValid && !writtenBack 表项
   // ================================================================
   val wbCandidates = Wire(Vec(LqSize, Bool()))
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    wbCandidates(i) := e.valid && ( e.dataValid || e.excp.hasException )&& !e.writtenBack
+    wbCandidates(i) := e.valid && (e.dataValid || e.excp.hasException) && !e.writtenBack
   }
  
   val hasWbCandidate = wbCandidates.reduce(_ || _)
@@ -237,18 +313,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val wbIdx          = (deqPtr.value + wbOffset)(log2Ceil(LqSize) - 1, 0)
   val wbEntry        = entries(wbIdx)
  
-  // 按 lsuOp 做符号/零扩展
-  // val loadData = MuxLookup(wbEntry.lsuOp, wbEntry.data, Seq(
-  //   LsuOp.ldb  -> SignExt(wbEntry.data(7, 0), XLEN),
-  //   LsuOp.ldh  -> SignExt(wbEntry.data(15, 0), XLEN),
-  //   LsuOp.ldw  -> wbEntry.data,
-  //   LsuOp.ldbu -> ZeroExt(wbEntry.data(7, 0), XLEN),
-  //   LsuOp.ldhu -> ZeroExt(wbEntry.data(15, 0), XLEN)
-  // ))
- 
-  // 构造 ExeResult
   io.outResult.valid                := hasWbCandidate
-  io.outResult.bits.data            := wbEntry.data //loadData
+  io.outResult.bits.data            := wbEntry.data
   io.outResult.bits.memValid        := true.B
   io.outResult.bits.memRead         := true.B
   io.outResult.bits.memWrite        := false.B
@@ -258,15 +324,11 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.redirect.valid  := DontCare
   io.outResult.bits.redirect.bits.valid     := DontCare
   io.outResult.bits.redirect.bits.robIdx    := DontCare
-  io.outResult.bits.csrWen:= DontCare
-  io.outResult.bits.csrWaddr:= DontCare
-  io.outResult.bits.csrWdata:= DontCare
-  io.outResult.bits.csrTimer:= DontCare
-
-  //io.outResult.bits.brMsRedirect := DontCare
-  //io.outResult.bits.redirect.bits.flushSelf := true.B
+  io.outResult.bits.csrWen   := DontCare
+  io.outResult.bits.csrWaddr := DontCare
+  io.outResult.bits.csrWdata := DontCare
+  io.outResult.bits.csrTimer := DontCare
  
-  // 构造 DispatchedInst（必要字段严格按层级，非必要置零）
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
   wbUop.inst       := 0.U
@@ -291,7 +353,6 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.isSta      := false.B
   wbUop.isStd      := false.B
  
-  // lqIdx / sqIdx 严格按 DispatchedInst 定义的类型构造
   val wbLqIdx = Wire(new SqPtr(SqSize))
   wbLqIdx.value := wbIdx
   wbLqIdx.flag  := false.B
@@ -302,7 +363,6 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbSqIdx.flag  := false.B
   wbUop.sqIdx   := wbSqIdx
  
-  // DecodeCtrl
   wbUop.ctrl.fuType   := wbEntry.fuType
   wbUop.ctrl.lsuOp    := wbEntry.lsuOp
   wbUop.ctrl.rfWen    := wbEntry.rfWen
@@ -321,23 +381,18 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.isJump   := false.B
   wbUop.ctrl.isPriv   := false.B
  
-  // pdInfo 置零
-  wbUop.pdInfo := DontCare
+  wbUop.pdInfo  := DontCare
   wbUop.bpuInfo := DontCare
-  wbUop.snptId := DontCare
-
-  //wbUop.ctrl.csrWen:= DontCare
-  //wbUop.ctrl.csrWaddr:= DontCare
-  //wbUop.ctrl.csrWdata:= DontCare
+  wbUop.snptId  := DontCare
  
   when(io.outResult.fire) {
     entries(wbIdx).writtenBack := true.B
   }
  
   // ================================================================
-  //  6. 出队：deqPtr 处已写回的表项可释放
+  //  6. 出队
   // ================================================================
-  val canDeq = entries(deqPtr.value).valid && ( entries(deqPtr.value).writtenBack || entries(deqPtr.value).alreadyFlush )
+  val canDeq = entries(deqPtr.value).valid && (entries(deqPtr.value).writtenBack || entries(deqPtr.value).alreadyFlush)
   when(canDeq) {
     entries(deqPtr.value).valid := false.B
     deqPtr := deqPtr + 1.U
