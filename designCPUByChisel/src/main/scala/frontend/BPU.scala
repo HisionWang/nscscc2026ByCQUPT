@@ -114,13 +114,13 @@ class BPU(implicit p: Parameters) extends NSModule {
 
   // 组装 Meta 信息（反馈给更新逻辑使用）
   io.predictResp.meta.btbHit     := btbHit0 || btbHit1
-  io.predictResp.meta.valid := Mux(predTaken0, validArray0(readIdxReg), validArray1(readIdxReg))
-  io.predictResp.meta.btbIsJalr  := Mux(predTaken0, btbEntry0.isJalr, btbEntry1.isJalr)
-  io.predictResp.meta.btbIsJal   := Mux(predTaken0, btbEntry0.isJal, btbEntry1.isJal)
-  io.predictResp.meta.btbIsCall  := Mux(predTaken0, btbEntry0.isCall, btbEntry1.isCall)
-  io.predictResp.meta.btbIsRet   := Mux(predTaken0, btbEntry0.isRet, btbEntry1.isRet)
-  io.predictResp.meta.btbOffset  := Mux(predTaken0, btbEntry0.offset, btbEntry1.offset) // 真实块内offset
-  io.predictResp.meta.phtCounter := Mux(predTaken0, phtCounter0, phtCounter1)
+  io.predictResp.meta.valid      := Mux(btbHit1 , validArray1(readIdxReg)  , validArray0(readIdxReg) )
+  io.predictResp.meta.btbIsJalr  := Mux(btbHit1 , btbEntry1.isJalr         , btbEntry0.isJalr        )
+  io.predictResp.meta.btbIsJal   := Mux(btbHit1 , btbEntry1.isJal          , btbEntry0.isJal         )
+  io.predictResp.meta.btbIsCall  := Mux(btbHit1 , btbEntry1.isCall         , btbEntry0.isCall        )
+  io.predictResp.meta.btbIsRet   := Mux(btbHit1 , btbEntry1.isRet          , btbEntry0.isRet         )
+  io.predictResp.meta.btbOffset  := Mux(btbHit1 , btbEntry1.offset         , btbEntry0.offset        ) // 真实块内offset
+  io.predictResp.meta.phtCounter := Mux(btbHit1 , phtCounter1              , phtCounter0             )
   io.predictResp.meta.rasTop     := 0.U 
   io.predictResp.meta.predTaken  := finalTaken
   io.predictResp.meta.predTarget := finalTarget

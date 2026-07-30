@@ -58,7 +58,7 @@ class BRU(implicit p: Parameters) extends NSModule {
     val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
   })
   diffDontTouch(io.uop)
- 
+
   val op   = io.uop.ctrl.bruOp
   val src1 = io.rs1
   val src2 = io.rs2
@@ -125,7 +125,17 @@ class BRU(implicit p: Parameters) extends NSModule {
  
   // 重定向目标：实际跳转 → target，实际不跳转 → PC+4
   val redirectTarget = Mux(branchTaken, target, pc + 4.U)
- 
+//
+//  // Branch statistics
+//  val fetchBlockBitsValue = log2Ceil(fetchWidth) + 2
+//  val branchCnt  = RegInit(0.U(64.W))
+//  val redirectCnt = RegInit(0.U(64.W))
+//  val btbReadIdx = io.uop.pc(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+//  val branchEvent = io.valid && io.isBranch
+//  val redirectEvent = needRedirect
+//  val nextBranchCnt = branchCnt + branchEvent.asUInt
+//  val nextRedirectCnt = redirectCnt + redirectEvent.asUInt
+// 
   // ── 重定向输出 ──
   io.bruInfo.valid           := isBranch
   io.bruInfo.bits.doRedirect := needRedirect
@@ -154,4 +164,13 @@ class BRU(implicit p: Parameters) extends NSModule {
   io.bpuUpdate.isRet         := false.B                       // 已剔除
   io.bpuUpdate.offset        := pc(fetchOffsetBits + 1, 2)    // 指令在取指块内的偏移
   io.bpuUpdate.rasTop        := io.uop.bpuInfo.meta.rasTop
+//
+//  when(branchEvent) {
+//    branchCnt := nextBranchCnt
+//    when(redirectEvent) {
+//      redirectCnt := nextRedirectCnt
+//    }
+//    DebugPrint.debugPrint(true.B, "[BRU] pc=0x%x btbIdx=0x%x branches=%d redirects=%d\n",
+//      pc, btbReadIdx, nextBranchCnt, nextRedirectCnt)
+//  }
 }
