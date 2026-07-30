@@ -280,13 +280,44 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   when(io.dcacheReq.fire) {
     entries(issueIdx).issued := true.B
   }
- 
-  // ── 3f. 转发写入：直接标记 issued + dataValid ──
+
+  // ★ 修复：按 load 的 lsuOp + paddr 提取字节/半字，与 DCache 行为一致
+  val forwardDataRaw = forwardData  // store 的原始 word（stw 的完整 32 位数据）
+   
+  // 从 word 中按 load 的 paddr 低 2 位提取字节/半字
+  val loadByteOff = issueEntry.paddr(1, 0)
+   
+  val byteData = MuxLookup(loadByteOff, forwardDataRaw(7, 0), Seq(
+    0.U -> forwardDataRaw(7, 0),
+    1.U -> forwardDataRaw(15, 8),
+    2.U -> forwardDataRaw(23, 16),
+    3.U -> forwardDataRaw(31, 24)
+  ))
+   
+  val halfData = Mux(loadByteOff(1), forwardDataRaw(31, 16), forwardDataRaw(15, 0))
+   
+  // 与 DCache 的 extractLoadData / extractUncacheLoadData 完全对齐
+  val forwardDataExtracted = MuxLookup(issueEntry.lsuOp, forwardDataRaw, Seq(
+    LsuOp.ldw  -> forwardDataRaw,
+    LsuOp.ldh  -> Cat(Fill(16, halfData(15)), halfData),
+    LsuOp.ldhu -> Cat(0.U(16.W), halfData),
+    LsuOp.ldb  -> Cat(Fill(24, byteData(7)), byteData),
+    LsuOp.ldbu -> Cat(0.U(24.W), byteData)
+  ))
+   
   when(hasIssueCandidate && doForward && !isNewer(issueIdx)) {
     entries(issueIdx).issued    := true.B
     entries(issueIdx).dataValid := true.B
-    entries(issueIdx).data      := forwardData
+    entries(issueIdx).data      := forwardDataExtracted  // ★ 写入提取后的数据
   }
+
+ 
+  // ── 3f. 转发写入：直接标记 issued + dataValid ──
+//  when(hasIssueCandidate && doForward && !isNewer(issueIdx)) {
+//    entries(issueIdx).issued    := true.B
+//    entries(issueIdx).dataValid := true.B
+//    entries(issueIdx).data      := forwardData
+//  }
  
   // ================================================================
   //  4. 接收 DCache 响应
