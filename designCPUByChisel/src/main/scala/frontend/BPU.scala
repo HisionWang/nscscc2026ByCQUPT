@@ -52,17 +52,18 @@ class BPU(implicit p: Parameters) extends NSModule {
 
   // ==================== 读请求逻辑 (提前一拍使用 nextPC 索引) ====================
   val readBlockIdx = io.predictReq.nextPC(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+  val readPhtIdx   = io.predictReq.nextPC(phtIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
 
   // 4个BRAM共享同一个读使能和读地址
   btbMem0.io.rd_en   := io.predictReq.rdBpu
   btbMem0.io.rd_addr := readBlockIdx
   phtMem0.io.rd_en   := io.predictReq.rdBpu
-  phtMem0.io.rd_addr := readBlockIdx
+  phtMem0.io.rd_addr := readPhtIdx
 
   btbMem1.io.rd_en   := io.predictReq.rdBpu
   btbMem1.io.rd_addr := readBlockIdx
   phtMem1.io.rd_en   := io.predictReq.rdBpu
-  phtMem1.io.rd_addr := readBlockIdx
+  phtMem1.io.rd_addr := readPhtIdx
 
   // ==================== 预测命中与优先级逻辑 (当前周期使用 pc 校验) ====================
   val fetchOffset = io.predictReq.pc(fetchBlockBitsValue - 1, 2)
@@ -137,6 +138,7 @@ class BPU(implicit p: Parameters) extends NSModule {
   when(doUpdate) {
     // 提取需要更新的目标块索引和 Tag
     val updateBlockIdx = update.pc(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+    val updatePhtIdx = update.pc(phtIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
     val updateTag      = update.pc(31, btbIndexBits + fetchBlockBitsValue)
 
     // 新的 BTB 条目
@@ -173,12 +175,13 @@ class BPU(implicit p: Parameters) extends NSModule {
     validArray0(updateBlockIdx) := update.validEntry
 
     phtMem0.io.wr_en   := true.B
-    phtMem0.io.wr_addr := updateBlockIdx
+    phtMem0.io.wr_addr := updatePhtIdx
     phtMem0.io.wr_data := nextCounter
 
     // 2. 写入 Bank1: 地址是 目标块索引减 1 (自然溢出回卷是正常的)
     // 因为 Bank1 的索引 N 里面存的是 N+1 块的数据，所以要写 X 块的数据，就要写在索引 X-1 处
     val updateBlockIdx_minus_1 = updateBlockIdx - 1.U
+    val updatePhtIdx_minus_1 = updatePhtIdx - 1.U
 
     btbMem1.io.wr_en   := true.B
     btbMem1.io.wr_addr := updateBlockIdx_minus_1
@@ -186,7 +189,7 @@ class BPU(implicit p: Parameters) extends NSModule {
     validArray1(updateBlockIdx_minus_1) := update.validEntry
 
     phtMem1.io.wr_en   := true.B
-    phtMem1.io.wr_addr := updateBlockIdx_minus_1
+    phtMem1.io.wr_addr := updatePhtIdx_minus_1
     phtMem1.io.wr_data := nextCounter
   }
 }

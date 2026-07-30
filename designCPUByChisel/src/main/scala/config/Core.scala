@@ -32,8 +32,8 @@ trait HasCoreParameters {
   val  CtrlBlockWidth : Int = 3
 
   // --- 基本容量 ---
-  val btbSize:  Int = 16
-  val phtSize:  Int = 64
+  val btbSize:  Int = 256
+  val phtSize:  Int = 1024
   val rasSize:  Int = 8 
 
   val fetchBlockBits: Int = log2Ceil(fetchWidth * 4)
