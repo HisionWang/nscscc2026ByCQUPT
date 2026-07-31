@@ -15,10 +15,9 @@ import nscscc.backend.rename.RedirectInfo
 //            MULH (有符号 × 有符号，高32位)
 //            MULHU(无符号 × 无符号，高32位)
 //
-//  3级流水线：
-//    S1: 接收输入，计算64位乘积
-//    S2: 流水缓冲级（改善时序）
-//    S3: 结果选择 + 输出握手
+//  2级流水线：
+//    S1: 锁存原始输入（切断旁路网络与乘法器的组合耦合）
+//    S2: 乘法运算 + 结果选择 + 输出握手
 //
 //  设计参考：
 //    - open-la500 的 Booth 编码 + Wallace 树思想
@@ -29,151 +28,114 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val in    = Flipped(Decoupled(new ExeReq))
     val out   = Decoupled(new ExeResult)
-    //val flush = Input(Bool())
-    val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule ))    // 误预测重定向
-
+    val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
   })
-  io.out.bits.memValid := false.B
-  io.out.bits.memRead := false.B
-  io.out.bits.memWrite := false.B
-  io.out.bits.memVaddr := 0.U
-  io.out.bits.memPaddr := 0.U
-  io.out.bits.memStoreData := 0.U
-  io.out.bits.csrWen := false.B
-  io.out.bits.csrWaddr := 0.U
-  io.out.bits.csrWdata := 0.U
-  io.out.bits.csrTimer := 0.U
-
+ 
+  io.out.bits.memValid      := false.B
+  io.out.bits.memRead       := false.B
+  io.out.bits.memWrite      := false.B
+  io.out.bits.memVaddr      := 0.U
+  io.out.bits.memPaddr      := 0.U
+  io.out.bits.memStoreData  := 0.U
+  io.out.bits.csrWen        := false.B
+  io.out.bits.csrWaddr      := 0.U
+  io.out.bits.csrWdata      := 0.U
+  io.out.bits.csrTimer      := 0.U
  
   // ================================================================
-  //  S1 寄存器：锁存输入 + 计算64位乘积
+  //  S1 寄存器：锁存原始输入（不计算）
   // ================================================================
-  val s1_valid   = RegInit(false.B)
-  val s1_uop    = RegInit(0.U.asTypeOf(new DispatchedInst))
-  val s1_prod   = RegInit(0.U((2 * XLEN).W))
-  val s1_isMul  = RegInit(false.B)
-  val s1_isMulh = RegInit(false.B)
+  val s1_valid    = RegInit(false.B)
+  val s1_a        = RegInit(0.U(XLEN.W))
+  val s1_b        = RegInit(0.U(XLEN.W))
+  val s1_uop      = RegInit(0.U.asTypeOf(new DispatchedInst))
+  val s1_isSigned = RegInit(false.B)
+  val s1_isMul    = RegInit(false.B)
  
   // ================================================================
-  //  S2 寄存器：流水缓冲
+  //  S2 寄存器：锁存乘法结果 + 输出
   // ================================================================
-  val s2_valid  = RegInit(false.B)
-  val s2_uop    = RegInit(0.U.asTypeOf(new DispatchedInst))
-  val s2_prod   = RegInit(0.U((2 * XLEN).W))
-  val s2_isMul  = RegInit(false.B)
-  val s2_isMulh = RegInit(false.B)
- 
-  // ================================================================
-  //  S3 寄存器：结果选择 + 输出
-  // ================================================================
-  val s3_valid   = RegInit(false.B)
-  val s3_uop  = RegInit(0.U.asTypeOf(new DispatchedInst))
-  val s3_data = RegInit(0.U(XLEN.W))
+  val s2_valid = RegInit(false.B)
+  val s2_uop   = RegInit(0.U.asTypeOf(new DispatchedInst))
+  val s2_data  = RegInit(0.U(XLEN.W))
  
   // ================================================================
   //  流水线反压控制
-  //  S3 输出 → S2 推进 → S1 推进 → 输入接收
   // ================================================================
-  val s3_fire = s3_valid && io.out.ready
-  val s2_fire = s2_valid && (!s3_valid || s3_fire)
+  val s2_fire = s2_valid && io.out.ready
   val s1_fire = s1_valid && (!s2_valid || s2_fire)
   val in_fire = io.in.valid && (!s1_valid || s1_fire)
  
   io.in.ready := !s1_valid || s1_fire
  
   // ================================================================
-  //  输入级：计算64位乘积
-  //
-  //  策略（结合 open-la500 Booth 与香山符号修正的优点）：
-  //  1. 先计算无符号乘积 a * b（综合工具映射为 DSP 或优化逻辑）
-  //  2. 有符号乘积通过符号修正从无符号乘积推导：
-  //     signed = unsigned - a[31]*b*2^32 - b[31]*a*2^32
-  //     这样只需一次乘法 + 两次加法，节省硬件资源
-  //  3. MUL 的低32位在有无符号下结果一致，无需区分
+  //  重定向
   // ================================================================
-  val a     = io.in.bits.rs1Data
-  val b     = io.in.bits.rs2Data
-  val mulOp = io.in.bits.uop.ctrl.mulOp
- 
-  val isSignedOp = (mulOp === MulOp.mul) || (mulOp === MulOp.mulh)
- 
-  // 无符号乘积
-  val prodUnsigned = a * b   // 64位
- 
-  // 符号修正：signed_prod = unsigned_prod - a[31]*b<<32 - b[31]*a<<32
-  val signCorrection = Mux(a(XLEN - 1), Cat(b, 0.U(XLEN.W)), 0.U((2 * XLEN).W)) +
-                       Mux(b(XLEN - 1), Cat(a, 0.U(XLEN.W)), 0.U((2 * XLEN).W))
-  val prodSigned = prodUnsigned - signCorrection
- 
-  // 根据操作类型选择乘积
-  val prod = Mux(isSignedOp, prodSigned, prodUnsigned)
- 
-  // ================================================================
-  //  S1 更新
-  // ================================================================
-  val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  val doRedirect     = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   val redirectRobIdx = io.redirectInfo.bits.robIdx
-  val s1DoFlush = in_fire && doRedirect &&
-                     io.in.bits.uop.robIdxFull.isAfter(redirectRobIdx)
-
-  when(s1DoFlush) {
+ 
+  val inDoFlush = doRedirect && io.in.bits.uop.robIdxFull.isAfter(redirectRobIdx)
+ 
+  // ================================================================
+  //  S1 更新：只锁存输入
+  // ================================================================
+  val s1DoFlush = doRedirect && s1_valid && s1_uop.robIdxFull.isAfter(redirectRobIdx)
+ 
+  when(inDoFlush) {
     s1_valid := false.B
   }.elsewhen(in_fire) {
-    s1_valid  := true.B
-    s1_uop    := io.in.bits.uop
-    s1_prod   := prod
-    s1_isMul  := (mulOp === MulOp.mul)
-    s1_isMulh := (mulOp === MulOp.mulh)
+    s1_valid    := !inDoFlush
+    s1_a        := io.in.bits.rs1Data
+    s1_b        := io.in.bits.rs2Data
+    s1_uop      := io.in.bits.uop
+    s1_isSigned := (io.in.bits.uop.ctrl.mulOp === MulOp.mul) ||
+                   (io.in.bits.uop.ctrl.mulOp === MulOp.mulh)
+    s1_isMul    := (io.in.bits.uop.ctrl.mulOp === MulOp.mul)
   }.elsewhen(s1_fire) {
     s1_valid := false.B
   }
  
   // ================================================================
-  //  S2 更新
+  //  S1→S2：乘法运算（在两个寄存器级之间）
+  //
+  //  策略：
+  //  1. 先计算无符号乘积 s1_a * s1_b
+  //  2. 有符号乘积通过符号修正推导：
+  //     signed = unsigned - a[31]*b*2^32 - b[31]*a*2^32
+  //  3. MUL 低32位在有无符号下结果一致，无需区分
   // ================================================================
-  val s2DoFlush = in_fire && doRedirect &&
-                     s1_uop.robIdxFull.isAfter(redirectRobIdx)
-  when(s2DoFlush) {
+  val prodUnsigned = s1_a * s1_b
+ 
+  val signCorrection = Mux(s1_a(XLEN - 1), Cat(s1_b, 0.U(XLEN.W)), 0.U((2 * XLEN).W)) +
+                       Mux(s1_b(XLEN - 1), Cat(s1_a, 0.U(XLEN.W)), 0.U((2 * XLEN).W))
+  val prodSigned = prodUnsigned - signCorrection
+ 
+  val prod = Mux(s1_isSigned, prodSigned, prodUnsigned)
+ 
+  // 结果选择：MUL→低32位，MULH/MULHU→高32位
+  val s1_result = Mux(s1_isMul, prod(XLEN - 1, 0), prod(2 * XLEN - 1, XLEN))
+ 
+  // ================================================================
+  //  S2 更新：锁存乘法结果
+  // ================================================================
+  val s2DoFlush = doRedirect && s1_valid && s1_uop.robIdxFull.isAfter(redirectRobIdx)
+ 
+  when(s1DoFlush) {
     s2_valid := false.B
   }.elsewhen(s1_fire) {
-    s2_valid  := true.B
-    s2_uop    := s1_uop
-    s2_prod   := s1_prod
-    s2_isMul  := s1_isMul
-    s2_isMulh := s1_isMulh
+    s2_valid := true.B
+    s2_uop   := s1_uop
+    s2_data  := s1_result
   }.elsewhen(s2_fire) {
     s2_valid := false.B
-  }
- 
-  // ================================================================
-  //  S2 → S3：结果选择
-  //  MUL   → prod[31:0]
-  //  MULH  → prod[63:32]
-  //  MULHU → prod[63:32]
-  // ================================================================
-  val s2_result = Mux(s2_isMul, s2_prod(XLEN - 1, 0), s2_prod(2 * XLEN - 1, XLEN))
- 
-  // ================================================================
-  //  S3 更新
-  // ================================================================
-      val s3DoFlush = in_fire && doRedirect &&
-                     s2_uop.robIdxFull.isAfter(redirectRobIdx)
-  when(s3DoFlush) {
-    s3_valid := false.B
-  }.elsewhen(s2_fire) {
-    s3_valid := true.B
-    s3_uop   := s2_uop
-    s3_data  := s2_result
-  }.elsewhen(s3_fire) {
-    s3_valid := false.B
   }
  
   // ================================================================
   //  输出
   // ================================================================
-  io.out.valid              := s3_valid
-  io.out.bits.uop           := s3_uop
-  io.out.bits.data          := s3_data
+  io.out.valid               := s2_valid
+  io.out.bits.uop            := s2_uop
+  io.out.bits.data           := s2_data
   io.out.bits.redirect.valid := false.B
   io.out.bits.redirect.bits  := DontCare
 }

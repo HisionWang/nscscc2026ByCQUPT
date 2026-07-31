@@ -64,7 +64,7 @@ trait HasCoreParameters {
 
   val burstNum: Int = 16
 
-  val  ibufDepth:  Int = 16  // 必须为2的次方倍
+  val  ibufDepth:  Int = 8  // 必须为2的次方倍
 
 
 
@@ -73,14 +73,14 @@ trait HasCoreParameters {
   // ============================================================
 
   val IntLogicRegs  = 32           // 逻辑寄存器数量
-  val IntPhyRegs    = 128           // 物理寄存器数量（可调整）
+  val IntPhyRegs    = 70           // 物理寄存器数量（可调整）
   val PhyRegIdxWidth = log2Ceil(IntPhyRegs)
-  val RobSize       = 64           // ROB 深度
+  val RobSize       = 32           // ROB 深度
   val SnapshotNum   = 8            // 快照数量
   val CommitWidth   =  CtrlBlockWidth  // 提交宽度（通常等于译码宽度）
 
-  val LqSize       : Int = 16      // Load Queue 深度（2的幂）
-  val SqSize       : Int = 16      // Store Queue 深度（2的幂）
+  val LqSize       : Int = 8      // Load Queue 深度（2的幂）
+  val SqSize       : Int = 8      // Store Queue 深度（2的幂）
   val WbBusWidth   : Int = 5       // 写回总线宽度（执行单元回写端口数）
 
   // ── IssueQueue 参数 ──
@@ -88,9 +88,9 @@ trait HasCoreParameters {
   val IQNum : Int = 5 
   val EnableDifftest: Boolean = p(DebugConfigKeys.EnableDifftest)
   
-  val IQ1Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 0))) //ALU_CSR
-  val IQ2Params = p(new Field[IQParams](IQParams(12, IQNumWakeupPorts, exeSource = 1))) //ALU_DIV
-  val IQ3Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 2))) //ALU_MUL_JMP
+  val IQ1Params = p(new Field[IQParams](IQParams(8, IQNumWakeupPorts, exeSource = 0))) //ALU_CSR
+  val IQ2Params = p(new Field[IQParams](IQParams(8, IQNumWakeupPorts, exeSource = 1))) //ALU_DIV
+  val IQ3Params = p(new Field[IQParams](IQParams(8, IQNumWakeupPorts, exeSource = 2))) //ALU_MUL_JMP
   val IQ4Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 3))) //LOAD_STA
   val IQ5Params = p(new Field[IQParams](IQParams(8,  IQNumWakeupPorts, exeSource = 4))) //STD
 
