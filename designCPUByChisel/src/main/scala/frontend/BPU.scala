@@ -96,7 +96,7 @@ class BPU(implicit p: Parameters) extends NSModule {
   // ==================== 仲裁与输出生成 ====================
   // 优先级：Bank0 (靠前) > Bank1 (靠后)
   val finalTaken  = predTaken0 || predTaken1
-  val finalTarget = Mux(btbHit1, btbEntry1.target, btbEntry0.target)
+  val finalTarget = Mux(predTaken0, btbEntry0.target, btbEntry1.target)
 
   // 关键：计算相对当前取指 PC 的相对 takenOffset，供 Predecoder 使用
   // 如果命中 Bank0，偏移量就是：原本在块内的偏移 - 取指起始偏移
@@ -104,7 +104,7 @@ class BPU(implicit p: Parameters) extends NSModule {
   // 如果命中 Bank1，偏移量就是：在下一块的偏移 + 取指块容量 - 取指起始偏移
   val offset1_out = btbEntry1.offset + fetchWidth.U - fetchOffset
   
-  val finalOffset = Mux(btbHit1, offset1_out, offset0_out)
+  val finalOffset = Mux(predTaken0, offset0_out, offset1_out)
 
   
 
