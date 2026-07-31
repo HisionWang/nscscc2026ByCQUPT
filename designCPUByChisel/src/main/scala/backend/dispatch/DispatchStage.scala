@@ -204,7 +204,18 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val q4Cand = VecInit((0 until CtrlBlockWidth).map(i => {
     val canLoad  = isLoadLane(i)  && !io.dispatchLqFull
     val canStore = isStoreLane(i) && !io.dispatchSqFull && q5Avail
-    (canLoad || canStore) && q4Avail
+
+    // 更老的store被阻塞时,新的load不能进队
+    val hasOlderMemBlocked = if (i == 0) false.B else {
+      VecInit((0 until i).map(j =>
+        // 更老的 load 因 LQ 满而阻塞
+        //(isLoadLane(j)  && io.dispatchLqFull) ||
+        // 更老的 store 因 SQ 满或 IQ5 满而阻塞
+        (isStoreLane(j) && (io.dispatchSqFull || !q5Avail))
+      )).asUInt.orR
+    }
+
+    (canLoad || canStore) && !hasOlderMemBlocked && q4Avail
   }))
   val q4Selected = truncateMask(q4Cand, 1)
   diffDontTouch(q4Selected)
