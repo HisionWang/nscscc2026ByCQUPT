@@ -1,4 +1,4 @@
-RUN_SOFTWARE=fireye/A0
+RUN_SOFTWARE=c_prg/inner_product
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n
