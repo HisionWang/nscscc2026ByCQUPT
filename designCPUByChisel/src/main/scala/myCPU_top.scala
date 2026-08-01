@@ -109,6 +109,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   memory.io.redirectInfo <> backend.io.redirectInfo
   backend.io.storeQueueEmpty := memory.io.storeQueueEmpty
+  memory.io.ibarFenceReq := backend.io.ibarFenceReq
+  backend.io.ibarFenceDone := memory.io.ibarFenceDone
   
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
@@ -126,7 +128,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val memaddrtrans = Module(new MemAddrTrans) 
   val backendRedirect = backend.io.redirectInfo.valid &&
     backend.io.redirectInfo.bits.doRedirect
-  memaddrtrans.io.flush := backendRedirect
+  memaddrtrans.io.flush := false.B
   memaddrtrans.io.llbit := llbit
   memaddrtrans.io.in <> backend.io.toMemResult(0)
   memory.io.fromExeMmuResult <> memaddrtrans.io.out
@@ -208,7 +210,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   mmu.io.fromCsr.asid := csr.io.toTlb.asid
 
   mmu.io.fromIcacheFlush := backendRedirect
-  mmu.io.fromMemFlush := backendRedirect
+  mmu.io.fromMemFlush := false.B
 
   // ---------- AXI3 Crossbar ----------
   val axi_crossbar = Module(new AXI3Crossbar2to1)
