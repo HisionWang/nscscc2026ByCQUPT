@@ -413,19 +413,37 @@ class ROB(implicit p: Parameters) extends NSModule {
       io.archCommit(0).oldPdst := 0.U
       io.archCommit(0).rfWen   := latchEnqRfWen(dispIdx)
     }.elsewhen(rollbackState === rb_disp && dispIdx < CtrlBlockWidth.U && dispNeedFree) {
-      io.archCommit(1).valid   := true.B
-      io.archCommit(1).isWalk  := true.B
-      io.archCommit(1).pdst    := dispatchPdst(dispIdx)
-      io.archCommit(1).ldst    := 0.U
-      io.archCommit(1).oldPdst := 0.U
-      io.archCommit(1).rfWen   := dispatchRfWen(dispIdx)
+      if(CommitWidth == 1) {
+        io.archCommit(0).valid   := true.B
+        io.archCommit(0).isWalk  := true.B
+        io.archCommit(0).pdst    := dispatchPdst(dispIdx)
+        io.archCommit(0).ldst    := 0.U
+        io.archCommit(0).oldPdst := 0.U
+        io.archCommit(0).rfWen   := dispatchRfWen(dispIdx)
+      }else{
+        io.archCommit(1).valid   := true.B
+        io.archCommit(1).isWalk  := true.B
+        io.archCommit(1).pdst    := dispatchPdst(dispIdx)
+        io.archCommit(1).ldst    := 0.U
+        io.archCommit(1).oldPdst := 0.U
+        io.archCommit(1).rfWen   := dispatchRfWen(dispIdx)
+      }
     }.elsewhen(rollbackState === rb_rob && rollbackNeedFree) {
-      io.archCommit(2).valid   := true.B
-      io.archCommit(2).isWalk  := true.B
-      io.archCommit(2).pdst    := rollbackEntry.pdst
-      io.archCommit(2).ldst    := 0.U
-      io.archCommit(2).oldPdst := 0.U
-      io.archCommit(2).rfWen   := true.B
+      if(CommitWidth == 1) {
+        io.archCommit(0).valid   := true.B
+        io.archCommit(0).isWalk  := true.B
+        io.archCommit(0).pdst    := rollbackEntry.pdst
+        io.archCommit(0).ldst    := 0.U
+        io.archCommit(0).oldPdst := 0.U
+        io.archCommit(0).rfWen   := true.B
+      }else{
+        io.archCommit(2).valid   := true.B
+        io.archCommit(2).isWalk  := true.B
+        io.archCommit(2).pdst    := rollbackEntry.pdst
+        io.archCommit(2).ldst    := 0.U
+        io.archCommit(2).oldPdst := 0.U
+        io.archCommit(2).rfWen   := true.B
+      }
     }
     
   }

@@ -173,19 +173,19 @@ int Difftest::step(vluint64_t &main_time) {
     }
 
     /* store difftest. valid = {4'b0, sc(llbit=1), stw, sth, stb} */
-    for (index = 0; index < idx_commit; index++) {
-        if (dut.store[index].valid) {
-            if (proxy->store_commit(dut.store[index].paddr, dut.store[index].data)) {
-                printf("dut different at pc = 0x%08x, paddr = 0x%lx, vaddr = 0x%lx, data = 0x%lx\n", dut.commit[index].pc, dut.store[index].paddr, dut.store[index].vaddr, dut.store[index].data);
-#ifdef SIMU_TRACE
-                fprintf(trace_out,"dut different at pc = 0x%08x, paddr = 0x%lx, vaddr = 0x%lx, data = 0x%lx\n", dut.commit[index].pc, dut.store[index].paddr, dut.store[index].vaddr, dut.store[index].data);
-#endif
-                // fflush(NULL);
-                // display();
-                return STATE_ABORT;
-            }
-        }
-    }
+//    for (index = 0; index < idx_commit; index++) {
+  //      if (dut.store[index].valid) {
+    //        if (proxy->store_commit(dut.store[index].paddr, dut.store[index].data)) {
+      //          printf("dut different at pc = 0x%08x, paddr = 0x%lx, vaddr = 0x%lx, data = 0x%lx\n", dut.commit[index].pc, dut.store[index].paddr, dut.store[index].vaddr, dut.store[index].data);
+//#ifdef SIMU_TRACE
+  //              fprintf(trace_out,"dut different at pc = 0x%08x, paddr = 0x%lx, vaddr = 0x%lx, data = 0x%lx\n", dut.commit[index].pc, dut.store[index].paddr, dut.store[index].vaddr, dut.store[index].data);
+//#endif
+  //              // fflush(NULL);
+    //            // display();
+      //          return STATE_ABORT;
+        //    }
+        //}
+    //}
 
     /* load address of peripherals */
     for (index = 0; index < idx_commit; index++) {

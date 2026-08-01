@@ -278,7 +278,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
                         lsuHasReq && !storeBlocked
  
   // pendingMiss 重试时如果被 redirect 了，直接丢弃
-  val pendingFlushed = pendingMiss && shouldFlush(pendRobIdx) 
+  val pendingFlushed = pendingMiss && shouldFlush(pendRobIdx) && pendIsLoad && !pendIsStore
  
   // LSU 请求信息（组合信号）
   val lsuPaddr     = Mux(loadSelected, io.loadReq.bits.paddr, io.storeReq.bits.paddr)
@@ -444,7 +444,7 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
         curLsIdx     := mshr.io.lsIdx
         state        := s_tag_read
       }.elsewhen(idle_doPending) {
-        // pendingMiss 重试：cur* 已有数据，重新读 Array
+
         state := s_tag_read
 
         curPaddr     := pendPaddr
@@ -482,7 +482,10 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
       curVictimWay := s1VictimWay
       when(shouldFlush(curRobIdx)  && curIsLoad && !curIsStore) {
         state := s_idle
-        pendingMiss  := false.B
+        //如果这个load曾经是miss了的，也就是已经把保存在了pendingmiss中的话
+        when(pendIsLoad && pendLqIdx === curLqIdx){
+          pendingMiss  := false.B
+        }
       }.elsewhen(!curCacheable) {
         state := s_miss
       }.elsewhen(s1Hit && !curIsLoad && !curIsStore) {
@@ -513,14 +516,14 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
     }
  
     is(s_load_resp) {
-      when(pendLqIdx === curLqIdx){
+      when(pendLqIdx === curLqIdx && pendIsLoad){
         pendingMiss     := false.B
       }
       when(io.loadResp.fire) { state := s_idle }
     }
  
     is(s_store_write) {
-      when(pendSqIdx === curSqIdx){
+      when(pendSqIdx === curSqIdx && pendIsStore){
         pendingMiss     := false.B
       }
       when(io.storeAck.fire) { state := s_idle }
@@ -529,12 +532,13 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
     is(s_miss) {
       when(shouldFlush(curRobIdx) && curIsLoad && !curIsStore) {
         state := s_idle
-        pendingMiss := false.B
+        when(pendIsLoad && pendLqIdx === curLqIdx){
+          pendingMiss  := false.B
+        }
       }.elsewhen(mshr.io.missReq.fire) {
         pendingMiss := false.B
         state       := s_idle
       }.otherwise {
-        // MSHR 暂时无法接受 → 设 pendingMiss 回 idle 让 MSHR 推进
         pendingMiss     := true.B
         pendPaddr       := curPaddr
         pendLqIdx       := curLqIdx

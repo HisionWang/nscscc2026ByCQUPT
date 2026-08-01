@@ -40,7 +40,8 @@ class RegFile(implicit p: Parameters) extends NSModule with HasCoreParameters {
 //    dontTouch(regfile(i))  // 保持 regfile 可见性，便于后续添加调试功能
 //  }
 
-  val tableInit = VecInit.tabulate(IntPhyRegs)(_.U(XLEN.W))
+  //val tableInit = VecInit.tabulate(IntPhyRegs)(_.U(XLEN.W))
+  val tableInit = VecInit(Seq.fill(IntPhyRegs)(0.U(XLEN.W)))
  
   val regfile     = RegInit(tableInit)
   if (EnableDifftest) {

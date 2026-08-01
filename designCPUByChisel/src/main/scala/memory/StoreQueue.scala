@@ -22,6 +22,8 @@ class SqForwardInfoBundle(implicit p: Parameters) extends NSBundle {
   val hasException = Bool()
   val lsuOp        = UInt(LsuOp.width.W)
   val cacheable    = Bool() 
+  val committed    = Bool()
+
 }
  
 class StoreQueue(implicit p: Parameters) extends NSModule {
@@ -146,6 +148,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     io.sqForwardInfo(i).hasException := e.excp.hasException
     io.sqForwardInfo(i).lsuOp        := e.lsuOp
     io.sqForwardInfo(i).cacheable := e.cacheable
+    io.sqForwardInfo(i).committed := e.committed
   }
  
   // ── oldestRobIdx ──

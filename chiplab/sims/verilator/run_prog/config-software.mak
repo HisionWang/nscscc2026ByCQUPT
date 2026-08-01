@@ -1,4 +1,4 @@
-RUN_SOFTWARE=c_prg/inner_product
+RUN_SOFTWARE=hello_world
 TRACE_COMP=y
 SIMU_TRACE=y
 MEM_TRACE=n

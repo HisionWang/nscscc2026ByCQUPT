@@ -204,7 +204,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
  
       for (sqI <- 0 until SqSize) {
         val sq = io.sqForwardInfo(sqI)
-        val isOlder  = e.robIdxFull.isAfter(sq.robIdxFull)
+        val isOlder  = e.robIdxFull.isAfter(sq.robIdxFull) || sq.committed
         val isActive = sq.valid && !sq.alreadyFlush && !sq.hasException
  
         sqOlderActive(sqI)       := isOlder && isActive

@@ -10,18 +10,18 @@ echo "  --run software        	set software list(use ',' select multiple softwar
                         	func/func_lab6 func/func_lab7 func/func_lab8 func/func_lab9 
                         	func/func_lab14 func/func_lab15 func/func_lab19 func/func_advance
 
-                                fireye/A0  OK
-                                fireye/B2  OK
-                                fireye/C0  OK
-                                fireye/D1  OK
-                                fireye/I2  OK
+                                fireye/A0  
+                                fireye/B2  Pass1
+                                fireye/C0  Pass1
+                                fireye/D1  Pass1
+                                fireye/I2  Pass1
                                 my_program 
                                 memset 
-                                dhrystone  OK
+                                dhrystone  
                                 coremark 
                                 linux 
                                 rtthread
-                                c_prg/memcmp  OK
+                                c_prg/memcmp  
                                 c_prg/inner_product 
                                 c_prg/lookup_table
                                 c_prg/loop_induction 
