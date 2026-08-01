@@ -31,6 +31,7 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
     //val bufferFlushDealloc = Vec(CtrlBlockWidth, Valid(UInt(PhyRegIdxWidth.W)))
     // ── 状态 ──
     val inFlightToRename = Output(UInt(log2Ceil(2 * CtrlBlockWidth + 1).W))
+    val empty       = Output(Bool())
     // ── 控制 ──
     val flush       = Input(Bool())   // 误预测重定向全刷
     val pause       = Input(Bool())   // 异常回滚暂停（不向ROB发送）
@@ -91,6 +92,7 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
   diffDontTouch(enqValidCount)
   diffDontTouch(bufValidCount)
   io.inFlightToRename := enqValidCount +& bufValidCount
+  io.empty := !bufValid.asUInt.orR
  
   // ================================================================
   //  误预测刷新时的 pdest 归还端口

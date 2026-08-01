@@ -105,11 +105,14 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
   val mmu = Module(new Mmu)
+  val llbit = Wire(Bool())
 
   memory.io.redirectInfo <> backend.io.redirectInfo
+  backend.io.storeQueueEmpty := memory.io.storeQueueEmpty
   
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
+  frontend.io.invalidateICache := backend.io.commitToCsr.ibar
 
 
   diffDontTouch(backend.io.lsEnq)
@@ -121,7 +124,10 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   backend.io.toMemResult(1) <> memory.io.fromExeResult
   // 2.后端传给memory的地址信息处理
   val memaddrtrans = Module(new MemAddrTrans) 
-  memaddrtrans.io.flush := false.B
+  val backendRedirect = backend.io.redirectInfo.valid &&
+    backend.io.redirectInfo.bits.doRedirect
+  memaddrtrans.io.flush := backendRedirect
+  memaddrtrans.io.llbit := llbit
   memaddrtrans.io.in <> backend.io.toMemResult(0)
   memory.io.fromExeMmuResult <> memaddrtrans.io.out
   memaddrtrans.io.mmuReq <> mmu.io.fromMem
@@ -166,6 +172,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
  
   // ---------- CSR ----------
   val csr = Module(new CsrFile)
+  llbit := csr.io.llbit
   csr.io.timerInfo <> backend.io.timerInfo
   csr.io.irqBus <> intrpt
   csr.io.rReq <> backend.io.csrReq
@@ -176,13 +183,19 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.wReq.wen := backend.io.commitToCsr.csrWen
   csr.io.wReq.addr := backend.io.commitToCsr.csrWaddr
   csr.io.wReq.data := backend.io.commitToCsr.csrWdata
+  csr.io.llbitSet := backend.io.commitToCsr.llbitSet
+  csr.io.llbitClear := backend.io.commitToCsr.llbitClear
   
   csr.io.excpEvent <> backend.io.excpEvent
   csr.io.excpInfo <> backend.io.excpInfo
   csr.io.redirectAddr <> backend.io.redirectAddrFromCsr
 
-  csr.io.tlbCmd :=  0.U.asTypeOf(new TlbCmd)
-  csr.io.fromTlb := 0.U.asTypeOf(new TlbToCsr)
+  mmu.io.tlb.instr := backend.io.tlbInstr
+  backend.io.tlbFillIdx := mmu.io.tlb.fillIdx
+  mmu.io.tlb.csr := csr.io.toTlb
+  csr.io.tlbCmd := mmu.io.tlb.cmd
+  csr.io.fromTlb := mmu.io.tlb.read
+  backend.io.currentPlv := csr.io.priv.plv
 
   mmu.io.fromCsr.plv := csr.io.priv.plv
   mmu.io.fromCsr.pgda := csr.io.tlbCtrl.pgda
@@ -194,10 +207,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   mmu.io.fromCsr.asid := csr.io.toTlb.asid
 
-  mmu.io.fromIcacheFlush := false.B
-  mmu.io.fromMemFlush := false.B
-
-  mmu.io.maint <> 0.U.asTypeOf(new MmuMaintPort)
+  mmu.io.fromIcacheFlush := backendRedirect
+  mmu.io.fromMemFlush := backendRedirect
 
   // ---------- AXI3 Crossbar ----------
   val axi_crossbar = Module(new AXI3Crossbar2to1)

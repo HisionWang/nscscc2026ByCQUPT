@@ -1,6 +1,9 @@
 # vivado on docker
 -----
+HOST
+
 > workdir:  /data/docker-work/vivado/{workspace}
+
 ## preparation
 - 创建一个工作目录, 或者用test目录
     - 使用script
@@ -41,8 +44,9 @@
     ```
 
 ## tools
-> IN CONTAINER
-vivado path: /opt/Xilinx/Vivado/2023.2
+IN CONTAINER
+
+> vivado path: /opt/Xilinx/Vivado/2023.2
 
 ### funcation
 ```bash
@@ -91,7 +95,7 @@ aliase cp="cp -a"
     ```bash
     scripts/set_clk.sh <directory> <freqency>
     scripts/get_clk.sh <directory>
-
+    
     ```
     - Container
     问AI vivado怎么用tcl修改IP核配置吧
@@ -131,7 +135,7 @@ aliase cp="cp -a"
     ```
     [https://adaptivesupport.amd.com/s/article/000034450?language=en_US](https://adaptivesupport.amd.com/s/article/000034450?language=en_US)
 2. others
-    ```bash
+    ```diff
     [~/v/b/chiplab]─[f19ba95...]── ─ git diff 614c047a1961ad505cb86755115d1dc28229b22a f19ba95398a2e11d4cf179ced5578612684cd017
         diff --git a/IP/myCPU b/IP/myCPU
         deleted file mode 160000
@@ -151,7 +155,7 @@ aliase cp="cp -a"
         +
          launch_runs impl_1 -to_step write_bitstream
          wait_on_run impl_1
-
+    
         diff --git a/fpga/nscscc-team/run_vivado/create_project.tcl b/fpga/nscscc-team/run_vivado/create_project.tcl
         index 48a5aa1..99888f1 100644
         --- a/fpga/nscscc-team/run_vivado/create_project.tcl
@@ -163,7 +167,7 @@ aliase cp="cp -a"
          set  project_name loongson
          set  project_path ./project
         @@ -13,6 +15,10 @@ create_project -force $project_name $project_path -part $project_part
-
+    
          # Add conventional sources
          add_files -scan_for_includes ../../../chip/soc_demo/nscscc-team
         +
@@ -175,11 +179,11 @@ aliase cp="cp -a"
          add_files -norecurse "../../../IP/APB_DEV/apb_dev_top_no_nand.v"
         @@ -26,7 +32,7 @@ add_files -quiet [glob -nocomplain ../../../chip/soc_demo/nscscc-team/xilinx_ip/
          add_files -fileset sim_1 ../testbench
-
+    
          # Add myCPU
         -add_files -scan_for_includes ../../../IP/myCPU
         +add_files -scan_for_includes $mycpu_dir
-
+    
          # Add xilinx_ip in myCPU
          add_files -quiet [glob -nocomplain ../../../IP/myCPU/xilinx_ip/*/*.xci]
         diff --git a/fpga/nscscc-team/run_vivado/get_clk.tcl b/fpga/nscscc-team/run_vivado/get_clk.tcl

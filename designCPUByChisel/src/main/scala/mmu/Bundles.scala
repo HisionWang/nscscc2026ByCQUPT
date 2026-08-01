@@ -4,8 +4,8 @@ import chisel3._
 import chisel3.util._
 
 import nscscc.config._
-import nscscc.frontend.icache._
 import nscscc.backend.decode._
+import nscscc.csr._
 
 class TlbEntry(implicit p: Parameters) extends NSBundle {
   val e     = Bool()
@@ -45,47 +45,17 @@ class TlbSearchResp(implicit p: Parameters) extends NSBundle {
   val v      = Bool()
 }
 
-class TlbWriteReq(implicit p: Parameters) extends NSBundle {
-  val index = UInt(tlbIdxLen.W)
-  val e     = Bool()
-  val vppn  = UInt(vppnLen.W)
-  val ps    = UInt(psLen.W)
-  val asid  = UInt(asidLen.W)
-  val g     = Bool()
-  val ppn0  = UInt(ppnLen.W)
-  val plv0  = UInt(plvLen.W)
-  val mat0  = UInt(matLen.W)
-  val d0    = Bool()
-  val v0    = Bool()
-  val ppn1  = UInt(ppnLen.W)
-  val plv1  = UInt(plvLen.W)
-  val mat1  = UInt(matLen.W)
-  val d1    = Bool()
-  val v1    = Bool()
-}
- 
-class TlbReadResp(implicit p: Parameters) extends NSBundle {
-  val e    = Bool()
-  val vppn = UInt(vppnLen.W)
-  val ps   = UInt(psLen.W)
-  val asid = UInt(asidLen.W)
-  val g    = Bool()
-  val ppn0 = UInt(ppnLen.W)
-  val plv0 = UInt(plvLen.W)
-  val mat0 = UInt(matLen.W)
-  val d0   = Bool()
-  val v0   = Bool()
-  val ppn1 = UInt(ppnLen.W)
-  val plv1 = UInt(plvLen.W)
-  val mat1 = UInt(matLen.W)
-  val d1   = Bool()
-  val v1   = Bool()
+class TlbSearchPort(implicit p: Parameters) extends NSBundle {
+  val req   = Flipped(Decoupled(new TlbSearchReq))
+  val resp  = Decoupled(new TlbSearchResp)
+  val flush = Input(Bool())
 }
 
-class InvtlbReq(implicit p: Parameters) extends NSBundle {
-  val op   = UInt(invtlbOpLen.W)
-  val asid = UInt(asidLen.W)
-  val vpn  = UInt(vppnLen.W)
+class TlbInstr(implicit p: Parameters) extends NSBundle {
+  val cmd = UInt(TlbOp.width.W)
+  val op  = UInt(InvtlbOp.width.W)
+  val rj  = UInt(asidLen.W)
+  val rk  = UInt(XLEN.W)
 }
 
 class IcacheToMmu(implicit p: Parameters) extends NSBundle {
@@ -103,6 +73,18 @@ class MmuTransError(implicit p: Parameters) extends NSBundle {
   val excpAdef      = Bool()
   val excpAle       = Bool()
   def getAnyError: Bool = excpTlbRefill || excpTlbPif || excpTlbPpi || excpAdef || excpAle
+}
+
+class DcacheMmuTransError(implicit p: Parameters) extends NSBundle {
+  val excpTlbRefill = Bool()
+  val excpTlbPil    = Bool()
+  val excpTlbPis    = Bool()
+  val excpTlbPme    = Bool()
+  val excpTlbPpi    = Bool()
+  val excpAdef      = Bool()
+  val excpAle       = Bool()
+  def getAnyError: Bool = excpTlbRefill || excpTlbPil || excpTlbPis ||
+    excpTlbPme || excpTlbPpi || excpAdef || excpAle
 }
 
 class MmuToIcache(implicit p: Parameters) extends NSBundle {
@@ -138,13 +120,12 @@ class CsrToMmu(implicit p: Parameters) extends NSBundle {
   val asid = UInt(asidLen.W)
 }
 
-class MmuMaintPort(implicit p: Parameters) extends NSBundle {
-  val fromInvtlb = Flipped(Decoupled(new InvtlbReq))
-  val fromWrite  = Flipped(Decoupled(new TlbWriteReq))
-
-  // 不是维护指令, 先放这
-  val fromReadIndex = Input(UInt(tlbIdxLen.W))
-  val toReadResp    = Output(new TlbReadResp)
+class MmuTlbPort(implicit p: Parameters) extends NSBundle {
+  val instr   = Flipped(Valid(new TlbInstr))
+  val csr     = Input(new CsrToTlb)
+  val cmd     = Output(new TlbCmd)
+  val read    = Output(new TlbToCsr)
+  val fillIdx = Output(UInt(tlbIdxLen.W))
 }
 
 class MmuIoBundle(implicit p: Parameters) extends NSBundle {
@@ -159,5 +140,5 @@ class MmuIoBundle(implicit p: Parameters) extends NSBundle {
   val toMem   = Decoupled(new MmuToSqResp)
   val fromMemFlush = Input(Bool())
 
-  val maint = new MmuMaintPort
+  val tlb = new MmuTlbPort
 }

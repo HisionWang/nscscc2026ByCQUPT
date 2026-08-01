@@ -10,7 +10,7 @@ class DifftestInstrCommit extends BlackBox with HasBlackBoxResource {
   val io = IO(new Bundle {
     val clock = Input(Clock())
     val coreid = Input(UInt(8.W))
-    val index = Input(UInt(64.W))
+    val index = Input(UInt(8.W))
     val valid = Input(Bool())
     val pc = Input(UInt(64.W))
     val instr = Input(UInt(32.W))

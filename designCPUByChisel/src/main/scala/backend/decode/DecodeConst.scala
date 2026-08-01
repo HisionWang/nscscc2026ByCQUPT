@@ -47,6 +47,7 @@ object ImmType {
   val si16 = 4.U(width.W)
   val si20 = 5.U(width.W)
   val si26 = 6.U(width.W)
+  val si14 = 7.U(width.W)
 }
 
 object AluOp {
@@ -90,6 +91,15 @@ object LsuOp {
   val stw  = 6.U(width.W)
   val ldbu = 7.U(width.W)
   val ldhu = 8.U(width.W)
+  val llw  = 9.U(width.W)
+  val scw  = 10.U(width.W)
+}
+
+object BarOp {
+  val width = 2
+  val none = 0.U(width.W)
+  val dbar = 1.U(width.W)
+  val ibar = 2.U(width.W)
 }
 
 object CsrOp {
@@ -104,6 +114,40 @@ object CsrOp {
   val rdcntid  = 6.U(width.W)  // 新增
 
   val cpucfg  = 7.U(width.W)   // ← 新增
+}
+
+object TlbOp {
+  val width = 3
+  val none       = 0.U(width.W)
+  val search     = 1.U(width.W)
+  val read       = 2.U(width.W)
+  val write      = 3.U(width.W)
+  val fill       = 4.U(width.W)
+  val invalidate = 5.U(width.W)
+}
+
+object InvtlbOp {
+  val width = 5
+
+  val all                = "h00".U(width.W)
+  val allAlt             = "h01".U(width.W)
+  val glb          = "h02".U(width.W)
+  val nonGlb       = "h03".U(width.W)
+  val nonGlbAsid   = "h04".U(width.W)
+  val nonGlbAsidVa = "h05".U(width.W)
+  val glbOrAsidVa  = "h06".U(width.W)
+
+  def isValid(op: UInt): Bool = op <= glbOrAsidVa
+
+  def useAsid(op: UInt): Bool =
+    op === nonGlbAsid || op === nonGlbAsidVa || op === glbOrAsidVa
+
+  def useVaddr(op: UInt): Bool =
+    op === nonGlbAsidVa || op === glbOrAsidVa
+
+  def isLegal(op: UInt, rj: UInt, rk: UInt): Bool =
+    isValid(op) && (useAsid(op) || rj === 0.U) &&
+      (useVaddr(op) || rk === 0.U)
 }
 
 object MulOp {
@@ -123,4 +167,3 @@ object DivOp {
   val divu  = 3.U(width.W)
   val modu  = 4.U(width.W)
 }
-

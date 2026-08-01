@@ -11,6 +11,7 @@ object ImmGen {
     val si16 = Cat(Fill(14, inst(25)), inst(25, 10), 0.U(2.W))
     val si20 = Cat(inst(24, 5), 0.U(12.W))
     val si26 = Cat(Fill(4, inst(9)), inst(9, 0), inst(25, 10), 0.U(2.W))
+    val si14 = Cat(Fill(16, inst(23)), inst(23, 10), 0.U(2.W))
 
     MuxLookup(immType, 0.U(32.W))(Seq(
       ImmType.si12 -> si12,
@@ -18,7 +19,8 @@ object ImmGen {
       ImmType.ui5  -> ui5,
       ImmType.si16 -> si16,
       ImmType.si20 -> si20,
-      ImmType.si26 -> si26
+      ImmType.si26 -> si26,
+      ImmType.si14 -> si14
     ))
   }
 }

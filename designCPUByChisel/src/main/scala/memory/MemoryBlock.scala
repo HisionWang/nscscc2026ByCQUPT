@@ -14,6 +14,7 @@ import nscscc.axi._
 class ExeMmuResult(implicit p: Parameters) extends NSBundle {
   val exeRes      = new ExeResult
   val mmuRes      = Flipped( new MmuToSqResp )
+  val scSuccess   = Bool()
 }
  
 
@@ -56,6 +57,9 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
       val valid = Input(Bool())
       val sqIdx = Input(UInt(log2Ceil(SqSize).W))
     })
+    // True when every older committed store has completed.  Speculative
+    // younger stores are intentionally excluded to avoid a ROB/SQ deadlock.
+    val storeQueueEmpty = Output(Bool())
 
     val axi = new AXI3MasterIO
  
@@ -110,6 +114,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   // ================================================================
   loadQueue.io.sqOldestRobIdx := storeQueue.io.oldestRobIdx
   loadQueue.io.sqEmpty        := storeQueue.io.sqEmpty
+  io.storeQueueEmpty          := storeQueue.io.committedStoreEmpty
  
   // ================================================================
   //  执行单元地址/数据通道路由
@@ -131,6 +136,9 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     mmuError.excpAle          -> ALE,
     mmuError.excpTlbPpi       -> PPI_D,
     mmuError.excpTlbRefill    -> TLBR_D,
+    mmuError.excpTlbPme       -> PME,
+    mmuError.excpTlbPis       -> PIS,
+    mmuError.excpTlbPil       -> PIL,
   )
 
   // LQ 地址写入
@@ -148,6 +156,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   storeQueue.io.addrWrite.paddr := addrChannel.bits.mmuRes.paddr
   storeQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
   storeQueue.io.addrWrite.excp := excp
+  storeQueue.io.addrWrite.scSuccess := addrChannel.bits.scSuccess
  
   // SQ 数据写入（STD）
   storeQueue.io.dataWrite.valid := dataFire && dataUop.isStd

@@ -34,6 +34,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val data         = UInt(XLEN.W)
     val excp       = new ExceptionBundle
     val cacheable    = Bool()    // MMU 返回的可缓存标志
+    val scSuccess    = Bool()
     val lsuOp        = UInt(LsuOp.width.W)
     val pc           = UInt(XLEN.W)
     val pdst         = UInt(PhyRegIdxWidth.W)
@@ -65,6 +66,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val paddr = Input(UInt(XLEN.W))
       val excp       = Input(new ExceptionBundle)
       val cacheable    = Input(Bool() )   // MMU 返回的可缓存标志
+      val scSuccess    = Input(Bool())
       
     }
  
@@ -100,6 +102,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     // ── 输出给 LQ 的排序信息 ──
     val oldestRobIdx = Output(new RobPtr(RobSize))
     val sqEmpty      = Output(Bool())
+
+    val committedStoreEmpty = Output(Bool())
  
     // ── 状态 ──
     val full   = Output(Bool())
@@ -160,6 +164,9 @@ defaultRobIdx.flag  := false.B
  
 io.oldestRobIdx := Mux(hasActiveStore, entries(activeIdx).robIdxFull, defaultRobIdx)
 io.sqEmpty      := !hasActiveStore   // 排序语义：没有活跃 store 才算"空"
+io.committedStoreEmpty := !VecInit(entries.map(e =>
+  e.valid && !e.alreadyFlush && e.committed
+)).asUInt.orR
 
  
   // ================================================================
@@ -186,6 +193,7 @@ io.sqEmpty      := !hasActiveStore   // 排序语义：没有活跃 store 才算
     entries(idx).data         := 0.U
     entries(idx).excp      := 0.U.asTypeOf(new ExceptionBundle)
     entries(idx).cacheable    := false.B
+    entries(idx).scSuccess    := false.B
     entries(idx).lsuOp        := io.enq.lsuOp
     entries(idx).pc           := io.enq.pc
     entries(idx).pdst         := io.enq.pdst
@@ -236,6 +244,7 @@ when(doRedirect) {
     entries(idx).paddr     := io.addrWrite.paddr
     entries(idx).excp     := io.addrWrite.excp
     entries(idx).cacheable     := io.addrWrite.cacheable
+    entries(idx).scSuccess     := io.addrWrite.scSuccess
   }
  
   // ================================================================
@@ -247,7 +256,8 @@ when(doRedirect) {
     entries(idx).data := MuxLookup(entries(idx).lsuOp, io.dataWrite.data)(Seq(
         LsuOp.stb -> Cat(0.U(24.W), io.dataWrite.data(7, 0)),
         LsuOp.sth -> Cat(0.U(16.W), io.dataWrite.data(15, 0)),
-        LsuOp.stw -> io.dataWrite.data
+        LsuOp.stw -> io.dataWrite.data,
+        LsuOp.scw -> io.dataWrite.data
     ))
   }
  
@@ -269,11 +279,14 @@ when(doRedirect) {
   val wbIdx          = (deqPtr.value + wbOffset)(log2Ceil(SqSize) - 1, 0)
   val wbEntry        = entries(wbIdx)
  
+  val wbIsSc = wbEntry.lsuOp === LsuOp.scw
+  val wbMemWrite = !wbIsSc || wbEntry.scSuccess
+
   io.outResult.valid                := hasWbCandidate
-  io.outResult.bits.data            := 0.U
+  io.outResult.bits.data            := Mux(wbIsSc, wbEntry.scSuccess.asUInt, 0.U)
   io.outResult.bits.memValid        := true.B
   io.outResult.bits.memRead         := false.B
-  io.outResult.bits.memWrite        := true.B
+  io.outResult.bits.memWrite        := wbMemWrite
   io.outResult.bits.memVaddr        := wbEntry.vaddr
   io.outResult.bits.memPaddr        := wbEntry.paddr
 
@@ -291,7 +304,8 @@ when(doRedirect) {
   io.outResult.bits.csrWen:= DontCare
   io.outResult.bits.csrWaddr:= DontCare
   io.outResult.bits.csrWdata:= DontCare
-   io.outResult.bits.csrTimer:= DontCare
+  io.outResult.bits.csrTimer:= DontCare
+  io.outResult.bits.tlbFillIdx := 0.U
 
   //io.outResult.bits.redirect.bits.flushSelf := true.B
   //io.outResult.bits.brMsRedirect := DontCare
@@ -311,7 +325,7 @@ when(doRedirect) {
   wbUop.oldPdst    := 0.U
   wbUop.rs1Valid   := false.B
   wbUop.rs2Valid   := false.B
-  wbUop.rdValid    := false.B
+  wbUop.rdValid    := wbEntry.rfWen
   wbUop.robIdx     := wbEntry.robIdxFull
   wbUop.robIdxFull := wbEntry.robIdxFull
   wbUop.issueQueue := 0.U
@@ -332,12 +346,14 @@ when(doRedirect) {
  
   wbUop.ctrl.fuType   := wbEntry.fuType
   wbUop.ctrl.lsuOp    := wbEntry.lsuOp
-  wbUop.ctrl.rfWen    := false.B
+  wbUop.ctrl.barOp    := BarOp.none
+  wbUop.ctrl.rfWen    := wbEntry.rfWen
   wbUop.ctrl.memRead  := false.B
-  wbUop.ctrl.memWrite := true.B
+  wbUop.ctrl.memWrite := wbMemWrite
   wbUop.ctrl.aluOp    := 0.U
   wbUop.ctrl.bruOp    := 0.U
   wbUop.ctrl.csrOp    := 0.U
+  wbUop.ctrl.tlbOp    := TlbOp.none
   wbUop.ctrl.mulOp    := 0.U
   wbUop.ctrl.divOp    := 0.U
   wbUop.ctrl.src1Type := 0.U
@@ -347,6 +363,9 @@ when(doRedirect) {
   wbUop.ctrl.isBranch := false.B
   wbUop.ctrl.isJump   := false.B
   wbUop.ctrl.isPriv   := false.B
+  wbUop.ctrl.waitForward := false.B
+  wbUop.ctrl.blockBackward := false.B
+  wbUop.ctrl.flushOnCommit := false.B
  
   wbUop.pdInfo := DontCare
   wbUop.bpuInfo := DontCare
@@ -363,6 +382,9 @@ when(doRedirect) {
     when(io.robCommit(i).valid) {
       val idx = io.robCommit(i).sqIdx
       entries(idx).committed := true.B
+      when(entries(idx).lsuOp === LsuOp.scw && !entries(idx).scSuccess) {
+        entries(idx).Memwritten := true.B
+      }
     }
 
   }
@@ -376,7 +398,9 @@ when(doRedirect) {
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    dcacheCandidates(i) := e.valid && e.committed && !e.excp.hasException && !e.dcacheIssued && !e.alreadyFlush
+    val scMayWrite = e.lsuOp =/= LsuOp.scw || e.scSuccess
+    dcacheCandidates(i) := e.valid && e.committed && scMayWrite &&
+      !e.excp.hasException && !e.dcacheIssued && !e.alreadyFlush
   }
  
   val hasDcacheCandidate = dcacheCandidates.reduce(_ || _)
@@ -393,7 +417,8 @@ when(doRedirect) {
   io.dcacheReq.valid      := hasDcacheCandidate
   io.dcacheReq.bits.paddr := dcacheEntry.paddr
   io.dcacheReq.bits.data  := dcacheEntry.data
-  io.dcacheReq.bits.lsuOp  := dcacheEntry.lsuOp
+  io.dcacheReq.bits.lsuOp := Mux(dcacheEntry.lsuOp === LsuOp.scw,
+    LsuOp.stw, dcacheEntry.lsuOp)
   io.dcacheReq.bits.cacheable  := dcacheEntry.cacheable
   io.dcacheReq.bits.sqIdx  := dcacheIdx
  

@@ -225,6 +225,8 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
   val csrWdata    = UInt(XLEN.W)
   val csrTimer    = UInt(64.W)
 
+  val tlbFillIdx  = UInt(tlbIdxLen.W)
+
   val excp       = new ExceptionBundle
   val isBypass = Bool()  // 异常/误预测标记
 }

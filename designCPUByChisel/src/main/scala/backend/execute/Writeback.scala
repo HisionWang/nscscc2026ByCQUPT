@@ -127,6 +127,7 @@ class Writeback(numExeUnits: Int)(implicit p: Parameters) extends NSModule with 
       io.toRObResults(w).bits.csrWaddr :=res.csrWaddr
       io.toRObResults(w).bits.csrWdata :=res.csrWdata
       io.toRObResults(w).bits.csrTimer :=res.csrTimer
+    io.toRObResults(w).bits.tlbFillIdx := res.tlbFillIdx
 
   }
  

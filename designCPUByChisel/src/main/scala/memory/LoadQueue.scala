@@ -202,7 +202,8 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.dcacheReq.bits.lqIdx  := issueIdx
   io.dcacheReq.bits.paddr  := issueEntry.paddr
   io.dcacheReq.bits.cacheable  := issueEntry.cacheable
-  io.dcacheReq.bits.lsuOp  := issueEntry.lsuOp
+  io.dcacheReq.bits.lsuOp := Mux(issueEntry.lsuOp === LsuOp.llw,
+    LsuOp.ldw, issueEntry.lsuOp)
   io.dcacheReq.bits.robIdx  := issueEntry.robIdxFull
  
   when(io.dcacheReq.fire) {
@@ -262,6 +263,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.csrWaddr:= DontCare
   io.outResult.bits.csrWdata:= DontCare
   io.outResult.bits.csrTimer:= DontCare
+  io.outResult.bits.tlbFillIdx := 0.U
 
   //io.outResult.bits.brMsRedirect := DontCare
   //io.outResult.bits.redirect.bits.flushSelf := true.B
@@ -305,12 +307,14 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   // DecodeCtrl
   wbUop.ctrl.fuType   := wbEntry.fuType
   wbUop.ctrl.lsuOp    := wbEntry.lsuOp
+  wbUop.ctrl.barOp    := BarOp.none
   wbUop.ctrl.rfWen    := wbEntry.rfWen
   wbUop.ctrl.memRead  := true.B
   wbUop.ctrl.memWrite := false.B
   wbUop.ctrl.aluOp    := 0.U
   wbUop.ctrl.bruOp    := 0.U
   wbUop.ctrl.csrOp    := 0.U
+  wbUop.ctrl.tlbOp    := TlbOp.none
   wbUop.ctrl.mulOp    := 0.U
   wbUop.ctrl.divOp    := 0.U
   wbUop.ctrl.src1Type := 0.U
@@ -320,6 +324,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.isBranch := false.B
   wbUop.ctrl.isJump   := false.B
   wbUop.ctrl.isPriv   := false.B
+  wbUop.ctrl.waitForward := false.B
+  wbUop.ctrl.blockBackward := false.B
+  wbUop.ctrl.flushOnCommit := false.B
  
   // pdInfo 置零
   wbUop.pdInfo := DontCare

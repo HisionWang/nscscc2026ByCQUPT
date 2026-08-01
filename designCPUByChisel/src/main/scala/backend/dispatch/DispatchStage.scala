@@ -45,6 +45,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     //val bufHaslqIdx   = Flipped( new LqPtr(LqSize) )
     
     val robEnq  = new RobEnqIO
+    val robEmpty = Input(Bool())
 
     val flush   = Input(Bool())
     val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule )) 
@@ -74,19 +75,49 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ── 需求掩码 ──
   val needRob = VecInit((0 until CtrlBlockWidth).map(i => laneValid(i) && !robWritten(i)))
   val needIq  = VecInit((0 until CtrlBlockWidth).map(i => laneValid(i) && !iqSent(i)))
-  
+
   val stgValid = needIq.asUInt.orR
+
+  // 序列化指令先等待所有更老指令离开 Dispatch/ROB；进入后阻止年轻
+  // 指令继续分发，直到该指令离开 ROB，或被流水线冲刷。
+  val blockBackwardActive = RegInit(false.B)
+  val lanePending = VecInit((0 until CtrlBlockWidth).map(i => needRob(i) || needIq(i)))
+  val laneWaitForward = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && stgData(i).ctrl.waitForward
+  ))
+  val laneBlockBackward = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && stgData(i).ctrl.blockBackward
+  ))
+  val laneCanDispatch = Wire(Vec(CtrlBlockWidth, Bool()))
+  for (i <- 0 until CtrlBlockWidth) {
+    val olderPending = if (i == 0) false.B else {
+      VecInit((0 until i).map(j => lanePending(j))).asUInt.orR
+    }
+    val olderBlockBackward = if (i == 0) false.B else {
+      VecInit((0 until i).map(j =>
+        lanePending(j) && laneBlockBackward(j))).asUInt.orR
+    }
+    val waitForward = laneWaitForward(i) && (olderPending || !io.robEmpty)
+    laneCanDispatch(i) := !blockBackwardActive &&
+      !olderBlockBackward && !waitForward
+  }
     
   // ================================================================
   //  一、指令分类（基于 needIq）
   // ================================================================
-  val isAluLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && stgData(i).ctrl.fuType === FuType.alu))
-  val isCsrLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && (stgData(i).ctrl.fuType === FuType.csr || stgData(i).ctrl.isPriv)))
-  val isDivLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && stgData(i).ctrl.fuType === FuType.div))
-  val isMulLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && stgData(i).ctrl.fuType === FuType.mul))
-  val isJmpLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && stgData(i).ctrl.fuType === FuType.bru))
-  val isLoadLane  = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memRead))
-  val isStoreLane = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memWrite))
+  val isAluLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.alu))
+  val privLane    = VecInit((0 until CtrlBlockWidth).map(i =>
+    needIq(i) && laneCanDispatch(i) && (
+      stgData(i).ctrl.fuType === FuType.csr ||
+      stgData(i).ctrl.tlbOp =/= TlbOp.none ||
+      stgData(i).ctrl.isPriv
+    )
+  ))
+  val isDivLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.div))
+  val isMulLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.mul))
+  val isJmpLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.bru))
+  val isLoadLane  = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memRead))
+  val isStoreLane = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.lsu && stgData(i).ctrl.memWrite))
  
   // ================================================================
   //  二、计算IQ 可用性
@@ -110,14 +141,14 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  Phase 1: 专属指令路由
   // ================================================================
-  val csrToQ1 = truncateMask(VecInit((0 until CtrlBlockWidth).map(i => isCsrLane(i) && q1Avail)), 1)
+  val privToQ1 = truncateMask(VecInit((0 until CtrlBlockWidth).map(i => privLane(i) && q1Avail)), 1)
   val divToQ2 = truncateMask(VecInit( (0 until CtrlBlockWidth).map(i => isDivLane(i) && q2Avail)), 1)
   val isMulOrJmpLane = VecInit((0 until CtrlBlockWidth).map(i => (isMulLane(i) || isJmpLane(i)) && q3Avail))
   val mulJmpToQ3 = truncateMask(isMulOrJmpLane, 1)
   
-  var consumedMask = csrToQ1.asUInt | divToQ2.asUInt | mulJmpToQ3.asUInt
+  var consumedMask = privToQ1.asUInt | divToQ2.asUInt | mulJmpToQ3.asUInt
   
-  val q1FreeAfterExclusive = !csrToQ1.asUInt.orR && q1Avail
+  val q1FreeAfterExclusive = !privToQ1.asUInt.orR && q1Avail
   val q2FreeAfterExclusive = !divToQ2.asUInt.orR && q2Avail
   val q3FreeAfterExclusive = !mulJmpToQ3.asUInt.orR && q3Avail
  
@@ -194,7 +225,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   val aluToQ2 = VecInit((0 until CtrlBlockWidth).map(i => (aluRound1(i) && aluRound1ToQ2) || (aluRound2(i) && aluRound2ToQ2) || (aluRound3(i) && aluRound3ToQ2)))
   val aluToQ3 = VecInit((0 until CtrlBlockWidth).map(i => (aluRound1(i) && aluRound1ToQ3) || (aluRound2(i) && aluRound2ToQ3) || (aluRound3(i) && aluRound3ToQ3)))
  
-  val q1Final = VecInit((0 until CtrlBlockWidth).map(i => csrToQ1(i) || aluToQ1(i)))
+  val q1Final = VecInit((0 until CtrlBlockWidth).map(i => privToQ1(i) || aluToQ1(i)))
   val q2Final = VecInit((0 until CtrlBlockWidth).map(i => divToQ2(i) || aluToQ2(i)))
   val q3Final = VecInit((0 until CtrlBlockWidth).map(i => mulJmpToQ3(i) || aluToQ3(i)))
  
@@ -237,15 +268,20 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
 
   // 由于 LSQ 检查已融入 q4Cand，此处不再需要 lsqBatchReady
   val dispatchFire = stgValid && hasIqDispatch && /*(robBatchReady || !anyNeedRob) && */ !io.flush && !io.stall //flush是指flush的时候不做任何fire，因为下面那个寄存器不能阻断flush
-                                                                                                    // stall就是回滚的stall
+                                                                                                     // stall就是回滚的stall
+
+  val blockBackwardFire = dispatchFire && VecInit((0 until CtrlBlockWidth).map(i =>
+    laneBlockBackward(i) && laneCanDispatch(i) && needRob(i) && iqDispatchMask(i)
+  )).asUInt.orR
 
   val AllWillFire = VecInit((0 until CtrlBlockWidth).map(i => (needIq(i) && iqDispatchMask(i)) || !needIq(i)  )).reduce(_ && _)
-  val canAcceptNew =( !stgValid || ( dispatchFire && AllWillFire ) )  //&& !io.robEnq.full
- 
+  val canAcceptNew = !blockBackwardActive && !blockBackwardFire &&
+    (!stgValid || (dispatchFire && AllWillFire))
+
   val inValid = io.in.map(_.valid).reduce(_ || _)
-  val inFire  = inValid && canAcceptNew && !io.flush //dispatch阶段的flush性质变了，下面那个寄存器中的flush不能阻断inFire
+  val inFire  = inValid && canAcceptNew && !io.flush
   for (i <- 0 until CtrlBlockWidth) {
-    io.in(i).ready := canAcceptNew 
+    io.in(i).ready := canAcceptNew
   }
 
   // ================================================================
@@ -265,6 +301,14 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   val doRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
   val redirectRobIdx = io.redirectInfo.bits.robIdx
+
+  when(io.flush) {
+    blockBackwardActive := false.B
+  }.elsewhen(blockBackwardFire) {
+    blockBackwardActive := true.B
+  }.elsewhen(blockBackwardActive && io.robEmpty) {
+    blockBackwardActive := false.B
+  }
 
   //val doFlush.asUInt.orR = doRedirect && ( (  io.inReq.bits.uop.robIdxFull.isAfter(redirectRobIdx)))
   val doFlush = Wire(Vec(CtrlBlockWidth, Bool()))
@@ -289,8 +333,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     }
   }.elsewhen(dispatchFire) {
     for (i <- 0 until CtrlBlockWidth) {
-      when(needRob(i)) { robWritten(i) := true.B }
-      when(iqDispatchMask(i) && needIq(i)) { iqSent(i) := true.B }
+      when(needRob(i) && laneCanDispatch(i)) { robWritten(i) := true.B }
+      when(dispatchFire && iqDispatchMask(i) && needIq(i)) { iqSent(i) := true.B }
     }
   }
  
@@ -345,7 +389,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
 
   val allocValids = Wire(Vec(CtrlBlockWidth, Bool()))
   for (i <- 0 until CtrlBlockWidth) {
-    allocValids(i) := dispatchFire && needRob(i) && stgData(i).rdValid && stgData(i).ldst =/= 0.U
+    allocValids(i) := dispatchFire && needRob(i) && laneCanDispatch(i) &&
+      stgData(i).rdValid && stgData(i).ldst =/= 0.U
     busyTable.io.allocReq(i).valid := allocValids(i)
     busyTable.io.allocReq(i).bits  := stgData(i).pdst
   }
@@ -512,7 +557,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   //  ROB 批量写入 (ROB仍然维持进入流水级当拍进行一次性批量分发)
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
-    io.robEnq.valid(i)              := dispatchFire && needRob(i) && !io.flush
+    io.robEnq.valid(i)              := dispatchFire && needRob(i) && laneCanDispatch(i)
     //io.robEnq.valids(i)           := needRob(i)
     io.robEnq.bits(i).pc            := stgData(i).pc
     io.robEnq.bits(i).inst          := stgData(i).inst
@@ -525,8 +570,15 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).memWrite      := stgData(i).ctrl.memWrite
     io.robEnq.bits(i).csrWen        := stgData(i).ctrl.csrWen
     io.robEnq.bits(i).csrOp         := stgData(i).ctrl.csrOp
+    io.robEnq.bits(i).tlbOp         := stgData(i).ctrl.tlbOp
     io.robEnq.bits(i).csrWaddr      := stgData(i).csrAddress
+    io.robEnq.bits(i).flushOnCommit := stgData(i).ctrl.flushOnCommit
     io.robEnq.bits(i).isPriv        := stgData(i).ctrl.isPriv
+    io.robEnq.bits(i).waitStore     := stgData(i).ctrl.barOp =/= BarOp.none ||
+      stgData(i).ctrl.lsuOp === LsuOp.scw
+    io.robEnq.bits(i).llbitSet      := stgData(i).ctrl.lsuOp === LsuOp.llw
+    io.robEnq.bits(i).llbitClear    := stgData(i).ctrl.lsuOp === LsuOp.scw
+    io.robEnq.bits(i).ibar          := stgData(i).ctrl.barOp === BarOp.ibar
     io.robEnq.bits(i).excp          := stgData(i).excp
     io.robEnq.bits(i).robIdx        := stgData(i).robIdx
 
@@ -540,6 +592,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).sqIdx         := DontCare
     io.robEnq.bits(i).csrWdata      := DontCare
     io.robEnq.bits(i).csrTimer      := DontCare
+    io.robEnq.bits(i).tlbFillIdx    := DontCare
 
   }
 }

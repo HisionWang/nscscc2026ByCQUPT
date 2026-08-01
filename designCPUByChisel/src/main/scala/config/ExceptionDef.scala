@@ -68,21 +68,6 @@ object ExcType extends Enumeration {
     case ERTN   => 0x0
   }
 
- 
-  /** 哪些异常需要写入 BADV（纯 Scala Boolean） */
-  def needsBadv(exc: ExcType): Boolean = exc match {
-    case ADEF | ALE | TLBR_I | TLBR_D | PIF | PIS | PIL | PPI_I | PPI_D | PME => true
-    case _ => false
-  }
- 
-  /** 哪些异常是 TLB 重填类（纯 Scala Boolean） */
-  def isTlbRefill(exc: ExcType): Boolean = exc match {
-    case TLBR_I | TLBR_D => true
-    case _ => false
-  }
- 
-  /** 哪些异常是数据类（需用 badv 而非 pc） */
-  def isDataExc(exc: ExcType): Boolean = exc.id >= TLBR_D.id
 }
 
 import ExcType._
@@ -136,21 +121,39 @@ class ExceptionBundle extends Bundle {
     })
   }
 
-  def isVaddrError: Bool = highestPriority === ExcType.ADEF.id.U || highestPriority === ExcType.ALE.id.U
-
- 
-  /** 是否为 TLB 重填异常 */
-  def isTlbRefill: Bool = has(TLBR_I) || has(TLBR_D)
- 
-  /** 取最高优先级异常对应的 BADV 写入值 */
-  def badvSelect(pc: UInt, badv: UInt): UInt = {
-    val pri = highestPriority
-    Mux(pri >= ExcType.ALE.id.U, badv, pc)
+  /** 最高优先级异常是否要求更新 BADV。 */
+  def needsBadvWrite: Bool = {
+    val exc = highestPriority
+    exc === ADEF.id.U   || exc === ALE.id.U    ||
+    exc === TLBR_I.id.U || exc === TLBR_D.id.U ||
+    exc === PIF.id.U    || exc === PIS.id.U    ||
+    exc === PIL.id.U    || exc === PPI_I.id.U  ||
+    exc === PPI_D.id.U  || exc === PME.id.U
   }
- 
-  /** 取最高优先级异常的 VPPN */
-  def vppnSelect(pc: UInt, badv: UInt): UInt = {
-    badvSelect(pc, badv)(31, 13)
+
+  /** 最高优先级异常是否要求用故障地址更新 TLBEHI.VPPN。 */
+  def needsTlbehiWrite: Bool = {
+    val exc = highestPriority
+    exc === TLBR_I.id.U || exc === TLBR_D.id.U ||
+    exc === PIF.id.U    || exc === PIS.id.U    ||
+    exc === PIL.id.U    || exc === PPI_I.id.U  ||
+    exc === PPI_D.id.U  || exc === PME.id.U
+  }
+
+  /** 最高优先级异常是否为 TLB 重填异常。 */
+  def isTlbRefill: Bool = {
+    val exc = highestPriority
+    exc === TLBR_I.id.U || exc === TLBR_D.id.U
+  }
+
+  /** BADV/TLBEHI 的地址来源：取指异常使用 PC，数据异常使用访存地址。 */
+  def badvSelect(pc: UInt, memVaddr: UInt): UInt = {
+    val exc = highestPriority
+    val useMemVaddr =
+      exc === ALE.id.U    || exc === TLBR_D.id.U ||
+      exc === PME.id.U    || exc === PPI_D.id.U  ||
+      exc === PIS.id.U    || exc === PIL.id.U
+    Mux(useMemVaddr, memVaddr, pc)
   }
 }
  

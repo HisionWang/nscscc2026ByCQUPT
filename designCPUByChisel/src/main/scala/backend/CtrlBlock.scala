@@ -13,6 +13,7 @@ import nscscc.difftest._
 import nscscc.backend.execute._
 import nscscc.backend.redirect._
 import nscscc.csr._
+import nscscc.mmu._
 
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
@@ -38,6 +39,8 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
   val commitToSq  = new RobCommitToSq
   val commitToCsr = new RobCommitToCsr
+  val currentPlv  = Input(UInt(plvLen.W))
+  val storeQueueEmpty = Input(Bool())
 
  
   // ── 重定向 ──
@@ -121,6 +124,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   dispatchStage.io.flush    := doFlush
   dispatchStage.io.redirectInfo := io.redirectInfo
   dispatchStage.io.stall := redirectController.io.robRedirectPause
+  dispatchStage.io.robEmpty := rob.io.robCount === 0.U && disp2Rob.io.empty
   // ── IQ 入队端口 ──
   dispatchStage.io.q1IQEnq     <> io.q1IQEnq
   dispatchStage.io.q2IQEnq     <> io.q2IQEnq
@@ -186,6 +190,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
  
   io.commitToSq := rob.io.commitToSq
   io.commitToCsr := rob.io.commitToCsr
+  rob.io.currentPlv := io.currentPlv
+  rob.io.storeQueueEmpty := io.storeQueueEmpty
   if (EnableDifftest) {
     for (i <- 0 until CommitWidth) {
       val robCommit = rob.io.commit.bits(i)
@@ -206,8 +212,9 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.excpFlush  := robCommit.excp.hasException
       diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst)
       diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excp)
-      diffCommit.tlbfillEn  := false.B
-      diffCommit.randIndex  := 0.U
+      diffCommit.tlbfillEn  := rob.io.commit.valid(i) &&
+        robCommit.tlbOp === TlbOp.fill
+      diffCommit.randIndex  := robCommit.tlbFillIdx
       diffCommit.trap       := DifftestUtils.isTrap(robCommit.inst)
       diffCommit.trapCode   := 0.U
       diffCommit.load.valid := robCommit.memRead

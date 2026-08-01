@@ -11,6 +11,7 @@ import nscscc.backend.dispatch.DispatchedInst
 import nscscc.backend.regread.ExeReq
 import nscscc.backend.rename.RedirectInfo
 import nscscc.frontend.BpuUpdateReq
+import nscscc.mmu._
 
 class ExeResult(implicit p: Parameters) extends NSBundle {
   val uop           = new DispatchedInst
@@ -30,12 +31,15 @@ class ExeResult(implicit p: Parameters) extends NSBundle {
   val csrWdata      = UInt(XLEN.W)
 
   val csrTimer    = UInt(64.W)
+
+  val tlbFillIdx  = UInt(tlbIdxLen.W)
 }
  
 case class ExeUnitParams(
   hasAlu: Boolean = false,
   hasBru: Boolean = false,
   hasCsr: Boolean = false,
+  hasTlb: Boolean = false,
   hasMul: Boolean = false,
   hasDiv: Boolean = false,
   hasMemAddr: Boolean = false,
@@ -56,6 +60,10 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     val csrRaddr     = Output(UInt(csrAddrLen.W)) 
     val csrRdata     = Input(UInt(XLEN.W))
     val timerInfo =        Input(new TimerBundle)
+
+    val tlbInstr   = Valid(new TlbInstr)
+    val tlbFillIdx = Input(UInt(tlbIdxLen.W))
+    val currentPlv = Input(UInt(plvLen.W))
   })
 
 
@@ -76,8 +84,17 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   // ================================================================
   val stgValid = RegInit(false.B)
   val stgData = RegInit(0.U.asTypeOf(new ExeReq))
- 
-  val outFire  = stgValid && io.outResult.ready
+
+  val stgIsTlb = if (params.hasTlb)
+    stgValid && stgData.uop.ctrl.tlbOp =/= TlbOp.none
+  else false.B
+  val tlbKilled = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect &&
+    stgData.uop.robIdxFull.isAfter(io.redirectInfo.bits.robIdx)
+  val tlbNeedsExec = stgIsTlb && !tlbKilled &&
+    !stgData.uop.excp.hasException && io.currentPlv === 0.U
+  val fastOutValid = stgValid
+
+  val outFire  = fastOutValid && io.outResult.ready
   val stgReady = !stgValid || outFire
  
   val fastInFire = io.inReq.valid && isFastPath && stgReady
@@ -101,7 +118,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   }.elsewhen(outFire) {
     stgValid := false.B
   }
- 
+
   // ================================================================
   //  快速通道 Phase 2：功能单元计算
   // ================================================================
@@ -195,6 +212,13 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val fastCsrWaddr = Mux(fastIsCsr, stgData.uop.csrAddress, 0.U)
   val fastCsrWdata = Mux(fastIsCsr, csrWdata, 0.U)
   val fastCsrTimer = Mux(fastIsCsr, csrTimer, 0.U)
+
+  val fastIsTlb = stgIsTlb
+  io.tlbInstr.valid    := tlbNeedsExec && outFire
+  io.tlbInstr.bits.cmd := stgData.uop.ctrl.tlbOp
+  io.tlbInstr.bits.op  := stgData.uop.inst(InvtlbOp.width - 1, 0)
+  io.tlbInstr.bits.rj  := stgData.rs1Data(asidLen - 1, 0)
+  io.tlbInstr.bits.rk  := stgData.rs2Data
  
   // ================================================================
   //  乘法器（流水线）
@@ -236,7 +260,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val divWins  = !stgValid && divOutValid
   val mulWins  = !stgValid && !divOutValid && mulOutValid
  
-  io.outResult.valid := stgValid || mulOutValid || divOutValid
+  io.outResult.valid := fastOutValid || mulOutValid || divOutValid
  
   if (params.hasDiv) {
     div.io.out.ready := divWins && io.outResult.ready
@@ -293,6 +317,10 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   io.outResult.bits.csrTimer := Mux1H(Seq(fastWins -> fastCsrTimer) ++
     (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
     (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+
+  io.outResult.bits.tlbFillIdx := Mux(
+    fastWins && fastIsTlb && stgData.uop.ctrl.tlbOp === TlbOp.fill,
+    io.tlbFillIdx, 0.U)
  
   // ================================================================
   //  重定向：BRU
@@ -318,6 +346,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     (params.hasAlu,   FuType.alu),
     (params.hasBru,   FuType.bru),
     (params.hasCsr,   FuType.csr),
+    (params.hasTlb,   FuType.priv),
     (params.hasMul,   FuType.mul),
     (params.hasDiv,   FuType.div),
     (params.hasMemAddr || params.hasStd, FuType.lsu)

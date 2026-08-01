@@ -42,6 +42,7 @@ class Divider(implicit p: Parameters) extends NSModule {
   io.out.bits.csrWaddr := 0.U
   io.out.bits.csrWdata := 0.U
   io.out.bits.csrTimer := 0.U
+  io.out.bits.tlbFillIdx := 0.U
  
   // ================================================================
   //  状态机
