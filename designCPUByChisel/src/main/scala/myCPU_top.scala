@@ -109,8 +109,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   memory.io.redirectInfo <> backend.io.redirectInfo
   backend.io.storeQueueEmpty := memory.io.storeQueueEmpty
-  memory.io.ibarFenceReq := backend.io.ibarFenceReq
-  backend.io.ibarFenceDone := memory.io.ibarFenceDone
   
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
