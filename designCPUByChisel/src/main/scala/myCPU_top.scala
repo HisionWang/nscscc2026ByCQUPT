@@ -126,8 +126,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   backend.io.toMemResult(1) <> memory.io.fromExeResult
   // 2.后端传给memory的地址信息处理
   val memaddrtrans = Module(new MemAddrTrans) 
-  val backendRedirect = backend.io.redirectInfo.valid &&
-    backend.io.redirectInfo.bits.doRedirect
   memaddrtrans.io.flush := false.B
   memaddrtrans.io.llbit := llbit
   memaddrtrans.io.in <> backend.io.toMemResult(0)
@@ -209,7 +207,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   mmu.io.fromCsr.asid := csr.io.toTlb.asid
 
-  mmu.io.fromIcacheFlush := backendRedirect
+  mmu.io.fromIcacheFlush := false.B
   mmu.io.fromMemFlush := false.B
 
   // ---------- AXI3 Crossbar ----------

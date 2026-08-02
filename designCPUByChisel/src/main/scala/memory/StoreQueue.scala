@@ -280,13 +280,12 @@ when(doRedirect) {
   val wbEntry        = entries(wbIdx)
  
   val wbIsSc = wbEntry.lsuOp === LsuOp.scw
-  val wbMemWrite = !wbIsSc || wbEntry.scSuccess
 
   io.outResult.valid                := hasWbCandidate
   io.outResult.bits.data            := Mux(wbIsSc, wbEntry.scSuccess.asUInt, 0.U)
   io.outResult.bits.memValid        := true.B
   io.outResult.bits.memRead         := false.B
-  io.outResult.bits.memWrite        := wbMemWrite
+  io.outResult.bits.memWrite        := true.B
   io.outResult.bits.memVaddr        := wbEntry.vaddr
   io.outResult.bits.memPaddr        := wbEntry.paddr
 
@@ -349,7 +348,7 @@ when(doRedirect) {
   wbUop.ctrl.barOp    := BarOp.none
   wbUop.ctrl.rfWen    := wbEntry.rfWen
   wbUop.ctrl.memRead  := false.B
-  wbUop.ctrl.memWrite := wbMemWrite
+  wbUop.ctrl.memWrite := true.B
   wbUop.ctrl.aluOp    := 0.U
   wbUop.ctrl.bruOp    := 0.U
   wbUop.ctrl.csrOp    := 0.U
@@ -398,8 +397,8 @@ when(doRedirect) {
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    val scMayWrite = e.lsuOp =/= LsuOp.scw || e.scSuccess
-    dcacheCandidates(i) := e.valid && e.committed && scMayWrite &&
+    val scFailed = e.lsuOp === LsuOp.scw && !e.scSuccess
+    dcacheCandidates(i) := e.valid && e.committed && !scFailed &&
       !e.excp.hasException && !e.dcacheIssued && !e.alreadyFlush
   }
  
