@@ -249,7 +249,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    wbCandidates(i) := e.valid && e.addrValid && e.dataValid && !e.writtenBack
+    wbCandidates(i) := e.valid && !e.alreadyFlush && e.addrValid && e.dataValid && !e.writtenBack
   }
  
   val hasWbCandidate = wbCandidates.reduce(_ || _)

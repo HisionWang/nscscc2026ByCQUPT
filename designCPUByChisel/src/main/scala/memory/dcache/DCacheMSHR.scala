@@ -222,7 +222,14 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   }
   val hasReadyStore = readyStores.asUInt.orR
   val hasReadyLs    = VecInit((0 until nSec).map(j =>
-    lsValid(j) && lsReadyReg(j) && !lsFlushed(j)
+
+//      val isFlushedByRedirect = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect &&
+//  lsIsLoad(j) && !lsIsStore(j) && lsRobIdx(j).isAfter(io.redirectInfo.bits.robIdx)
+
+    lsValid(j) && lsReadyReg(j) && !lsFlushed(j) && !(io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+    /* && lsIsLoad(j) && !lsIsStore(j) && lsRobIdx(j).isAfter(io.redirectInfo.bits.robIdx) */)
+
+
   )).asUInt.orR
   val selectedLsIdx = Mux(hasReadyStore, PriorityEncoder(readyStores), PriorityEncoder(readyLoads))
  

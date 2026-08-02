@@ -331,11 +331,14 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
  
   // ---------- Array 读 ----------
   // s_idle → s_tag_read 时发起读，或 s_idle → s_replay（走 s_tag_read 复用）
-  array.io.read.valid := (state === s_idle && (idle_doPending && curCacheable ||
+  //array.io.read.valid := (state === s_idle && (idle_doPending && curCacheable ||
+  //                       idle_doLsu && !lsuIsUncache || idle_doReplay))
+  //array.io.read.idx   := Mux(idle_doReplay, mshr.io.lsPaddr(blockOffBits + idxBits - 1, blockOffBits),
+  //                      Mux(idle_doPending, curPaddr(blockOffBits + idxBits - 1, blockOffBits), lsuSetIdx))
+ array.io.read.valid := (state === s_idle && (idle_doPending && pendCacheable ||
                          idle_doLsu && !lsuIsUncache || idle_doReplay))
   array.io.read.idx   := Mux(idle_doReplay, mshr.io.lsPaddr(blockOffBits + idxBits - 1, blockOffBits),
-                        Mux(idle_doPending, curPaddr(blockOffBits + idxBits - 1, blockOffBits), lsuSetIdx))
- 
+                        Mux(idle_doPending, pendPaddr(blockOffBits + idxBits - 1, blockOffBits), lsuSetIdx))
   // ---------- Array 写 ----------
   // 条件：s_store_write（store hit 写合并数据）或 s_refill（MSHR 重填）
   val storeWriteActive = state === s_store_write && io.storeAck.fire
@@ -388,7 +391,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
 //                     (state === s_miss && curIsStore && !curIsReplay && mshr.io.missReq.fire)
 
   io.loadReq.ready  := state === s_idle && idle_doLsu && loadSelected
-io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
+  io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
 
 
   // loadResp：s_load_resp 或 s_uc_load
@@ -488,26 +491,10 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
         }
       }.elsewhen(!curCacheable) {
         state := s_miss
-      }.elsewhen(s1Hit && !curIsLoad && !curIsStore) {
-        // 读到的指令不是 load/store，直接回 idle
-        state := s_idle
-      }.elsewhen(s1Hit && curIsLoad && curIsStore) {
-        // 同时是 load 和 store，优先 load
-        curHitWay := s1HitWay
-        state     := s_load_resp
       }.elsewhen(s1Hit && curIsLoad) {
         curHitWay := s1HitWay
         state     := s_load_resp
-      }.elsewhen(s1Hit && curIsStore ){//&& !mshr.io.hasStore) {
-        curHitWay := s1HitWay
-        state     := s_store_write
-      }.otherwise {
-        state := s_miss
-      }
-      when(s1Hit && curIsLoad) {
-        curHitWay := s1HitWay
-        state     := s_load_resp
-      }.elsewhen(s1Hit && curIsStore ){//&& !mshr.io.hasStore) {
+      }.elsewhen(s1Hit && curIsStore ){
         curHitWay := s1HitWay
         state     := s_store_write
       }.otherwise {
@@ -521,7 +508,6 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
       }
       when(io.loadResp.fire) { state := s_idle }
     }
- 
     is(s_store_write) {
       when(pendSqIdx === curSqIdx && pendIsStore){
         pendingMiss     := false.B
@@ -559,11 +545,18 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
     }
  
     is(s_uc_load) {
+      when(pendLqIdx === curLqIdx && pendIsLoad){
+        pendingMiss     := false.B
+      }
+
       when(io.loadResp.fire) { state := s_idle }
     }
  
     is(s_uc_store) {
-      
+      when(pendSqIdx === curSqIdx && pendIsStore){
+        pendingMiss     := false.B
+      }
+
       when(io.storeAck.fire) { state := s_idle }
     }
   }

@@ -243,7 +243,6 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
           lqDoForward(lqI) := false.B
         }
         .otherwise {
- 
           // 2.2.1 有地址未就位 → 等
           when(hasOlderAddrUnknown) {
             lqCanIssue(lqI)  := false.B
@@ -310,6 +309,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
               }
             }
           }
+          
+
+
         }
       }
     }
@@ -372,7 +374,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until LqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(LqSize) - 1, 0)
     val e = entries(idx)
-    wbCandidates(i) := e.valid && (e.dataValid || e.excp.hasException) && !e.writtenBack
+    wbCandidates(i) := e.valid && !e.alreadyFlush &&  (e.dataValid || e.excp.hasException) && !e.writtenBack
   }
  
   val hasWbCandidate = wbCandidates.reduce(_ || _)
@@ -420,12 +422,12 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.isSta      := false.B
   wbUop.isStd      := false.B
  
-  val wbLqIdx = Wire(new SqPtr(SqSize))
+  val wbLqIdx = Wire(new LqPtr(LqSize))
   wbLqIdx.value := wbIdx
   wbLqIdx.flag  := false.B
   wbUop.lqIdx   := wbLqIdx
  
-  val wbSqIdx = Wire(new LqPtr(LqSize))
+  val wbSqIdx = Wire(new SqPtr(SqSize))
   wbSqIdx.value := wbEntry.sqIdx
   wbSqIdx.flag  := false.B
   wbUop.sqIdx   := wbSqIdx
