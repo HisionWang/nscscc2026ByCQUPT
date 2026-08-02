@@ -60,6 +60,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     // True when every older committed store has completed.  Speculative
     // younger stores are intentionally excluded to avoid a ROB/SQ deadlock.
     val storeQueueEmpty = Output(Bool())
+    val ibarFenceReq = Input(Bool())
+    val ibarFenceDone = Output(Bool())
 
     val axi = new AXI3MasterIO
  
@@ -176,6 +178,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
 
   dcache.io.storeReq <> storeQueue.io.dcacheReq
   dcache.io.storeAck <> storeQueue.io.storeAck
+  dcache.io.fenceReq := io.ibarFenceReq
+  io.ibarFenceDone := dcache.io.fenceDone
   dcache.io.axi <> io.axi
   dcache.io.redirectInfo <> io.redirectInfo
 

@@ -33,9 +33,18 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
       val dirty     = Input(Bool())
       val tag       = Input(UInt(tagBits.W))
     }
+    val hasDirty = Output(Bool())
+    val dirtyIdx = Output(UInt(idxBits.W))
+    val dirtyWay = Output(UInt(wayBits.W))
   })
   // 在 metaBRAMs/dataBRAMs 声明之前插入
   val validArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
+  val dirtyArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
+
+  val dirtyWayMask = VecInit((0 until nWays).map(way => dirtyArray(way).orR)).asUInt
+  io.hasDirty := dirtyWayMask.orR
+  io.dirtyWay := PriorityEncoder(dirtyWayMask)
+  io.dirtyIdx := PriorityEncoder(dirtyArray(io.dirtyWay))
   
   val metaBRAMs = VecInit(Seq.fill(nWays)(
     Module(new SimpleBlockRAM(depth = nSets, width = metaWidth, readLatency = 1)).io
@@ -80,6 +89,7 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
     dataBRAMs(way).wr_data := 0.U
     when(io.write.valid && waySel) {
       validArray(way) := validArray(way).bitSet(io.write.idx, true.B)
+      dirtyArray(way) := dirtyArray(way).bitSet(io.write.idx, io.write.dirty)
 
       metaBRAMs(way).wr_en   := true.B
       metaBRAMs(way).wr_addr := io.write.idx
@@ -95,6 +105,8 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
       //val mwData = Cat(io.metaWrite.metaValid, io.metaWrite.dirty, io.metaWrite.tag)
       val mwData = Cat(io.metaWrite.dirty, io.metaWrite.tag) 
       validArray(way) := validArray(way).bitSet(io.metaWrite.idx, io.metaWrite.metaValid)
+      dirtyArray(way) := dirtyArray(way).bitSet(io.metaWrite.idx,
+        io.metaWrite.metaValid && io.metaWrite.dirty)
       metaBRAMs(way).wr_en   := true.B
       metaBRAMs(way).wr_addr := io.metaWrite.idx
       metaBRAMs(way).wr_data := mwData

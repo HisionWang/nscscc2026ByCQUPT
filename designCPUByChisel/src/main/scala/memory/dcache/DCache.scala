@@ -33,6 +33,8 @@ class DCache(implicit p: Parameters) extends NSModule {
     val storeAck = Decoupled(new Bundle {
       val sqIdx = UInt(log2Ceil(SqSize).W)
     })
+    val fenceReq  = Input(Bool())
+    val fenceDone = Output(Bool())
     val axi      = new AXI3MasterIO
 
     val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
@@ -52,6 +54,19 @@ class DCache(implicit p: Parameters) extends NSModule {
     //   0----------1--------------2--------------3--------------4---------5-----------6------------7
   val s_idle :: s_tag_read :: s_load_resp :: s_store_write :: s_miss :: s_refill :: s_uc_load :: s_uc_store :: Nil = Enum(8)
   val state = RegInit(s_idle)
+
+  // IBAR DCache clean.  The normal cache pipeline and all MSHRs are drained
+  // before the scanner owns the Array/AXI write channels.
+  val f_idle :: f_wait_idle :: f_find_dirty :: f_read_req :: f_read_resp :: f_wb_aw :: f_wb_w :: f_wb_b :: f_clear :: f_done :: Nil = Enum(10)
+  val fenceState = RegInit(f_idle)
+  val fenceSet = RegInit(0.U(idxBits.W))
+  val fenceWay = RegInit(0.U(wayBits.W))
+  val fenceWbTag = RegInit(0.U(tagBits.W))
+  val fenceWbData = RegInit(0.U((blockBytes * 8).W))
+  val fenceBurstBeats = blockBytes / (XLEN / 8)
+  val fenceBeat = RegInit(0.U(log2Ceil(fenceBurstBeats).W))
+
+  io.fenceDone := fenceState === f_done
  
   // ================================================================
   //  请求锁存寄存器
@@ -275,7 +290,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
   val idle_doReplay   = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && mshr.io.lsReady && !mshr.io.lsIsUncache
   val idle_doPending  = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay && pendingMiss
   val idle_doLsu      = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay && !idle_doPending &&
-                        lsuHasReq && !storeBlocked
+                        lsuHasReq && !storeBlocked && fenceState === f_idle && !io.fenceReq
  
   // pendingMiss 重试时如果被 redirect 了，直接丢弃
   val pendingFlushed = pendingMiss && shouldFlush(pendRobIdx) 
@@ -297,7 +312,47 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
  
   // ---------- MSHR 连接 ----------
   mshr.io.redirectInfo := io.redirectInfo
-  mshr.io.axi <> io.axi
+
+  val fenceOwnsAxi = fenceState === f_wb_aw || fenceState === f_wb_w ||
+    fenceState === f_wb_b
+  val fenceWbAddr = Cat(fenceWbTag, fenceSet, 0.U(blockOffBits.W))
+  val fenceWbWords = VecInit((0 until fenceBurstBeats).map(i =>
+    fenceWbData(i * XLEN + XLEN - 1, i * XLEN)))
+
+  // Read channels always belong to the MSHRs.  Fence starts only after
+  // mshr.idle, so taking the write channels cannot split an active burst.
+  io.axi.ar.data := mshr.io.axi.ar.data
+  mshr.io.axi.ar.arready := io.axi.ar.arready && !fenceOwnsAxi
+  mshr.io.axi.r.data := io.axi.r.data
+  io.axi.r.rready := mshr.io.axi.r.rready && !fenceOwnsAxi
+
+  io.axi.aw.data := mshr.io.axi.aw.data
+  mshr.io.axi.aw.awready := io.axi.aw.awready && !fenceOwnsAxi
+  when(fenceOwnsAxi) {
+    io.axi.aw.data.awid    := 0.U
+    io.axi.aw.data.awaddr  := fenceWbAddr
+    io.axi.aw.data.awlen   := (fenceBurstBeats - 1).U
+    io.axi.aw.data.awsize  := 2.U
+    io.axi.aw.data.awburst := 1.U
+    io.axi.aw.data.awlock  := 0.U
+    io.axi.aw.data.awcache := 0.U
+    io.axi.aw.data.awprot  := 0.U
+    io.axi.aw.data.awvalid := fenceState === f_wb_aw
+  }
+
+  io.axi.w.data := mshr.io.axi.w.data
+  mshr.io.axi.w.wready := io.axi.w.wready && !fenceOwnsAxi
+  when(fenceOwnsAxi) {
+    io.axi.w.data.wid    := 0.U
+    io.axi.w.data.wdata  := fenceWbWords(fenceBeat)
+    io.axi.w.data.wstrb  := Fill(XLEN / 8, 1.U(1.W))
+    io.axi.w.data.wlast  := fenceBeat === (fenceBurstBeats - 1).U
+    io.axi.w.data.wvalid := fenceState === f_wb_w
+  }
+
+  mshr.io.axi.b.data := io.axi.b.data
+  io.axi.b.bready := Mux(fenceOwnsAxi, fenceState === f_wb_b,
+    mshr.io.axi.b.bready)
  
   // probeBlockAddr：始终从寄存器驱动，无组合环
   mshr.io.probeBlockAddr := curPaddr(31, blockOffBits)
@@ -331,10 +386,15 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
  
   // ---------- Array 读 ----------
   // s_idle → s_tag_read 时发起读，或 s_idle → s_replay（走 s_tag_read 复用）
-  array.io.read.valid := (state === s_idle && (idle_doPending && curCacheable ||
-                         idle_doLsu && !lsuIsUncache || idle_doReplay))
-  array.io.read.idx   := Mux(idle_doReplay, mshr.io.lsPaddr(blockOffBits + idxBits - 1, blockOffBits),
-                        Mux(idle_doPending, curPaddr(blockOffBits + idxBits - 1, blockOffBits), lsuSetIdx))
+  val normalArrayReadValid = state === s_idle && (idle_doPending && curCacheable ||
+    idle_doLsu && !lsuIsUncache || idle_doReplay)
+  val normalArrayReadIdx = Mux(idle_doReplay,
+    mshr.io.lsPaddr(blockOffBits + idxBits - 1, blockOffBits),
+    Mux(idle_doPending, curPaddr(blockOffBits + idxBits - 1, blockOffBits), lsuSetIdx))
+  val fenceArrayReadValid = fenceState === f_read_req
+
+  array.io.read.valid := fenceArrayReadValid || normalArrayReadValid
+  array.io.read.idx   := Mux(fenceArrayReadValid, fenceSet, normalArrayReadIdx)
  
   // ---------- Array 写 ----------
   // 条件：s_store_write（store hit 写合并数据）或 s_refill（MSHR 重填）
@@ -352,15 +412,19 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
  
   // ---------- Meta 写 ----------
   // 仅 s_miss 且首次 miss 且 cacheable 且 MSHR 接受时无效化 victim
-  array.io.metaWrite.valid     := state === s_miss && mshr.io.isFirstMiss && curCacheable && mshr.io.missReq.fire
-  array.io.metaWrite.idx       := curPaddr(blockOffBits + idxBits - 1, blockOffBits)
-  array.io.metaWrite.way       := curVictimWay
-  array.io.metaWrite.metaValid := false.B
+  val normalMetaWriteActive = state === s_miss && mshr.io.isFirstMiss &&
+    curCacheable && mshr.io.missReq.fire
+  val fenceMetaWriteActive = fenceState === f_clear
+  array.io.metaWrite.valid     := fenceMetaWriteActive || normalMetaWriteActive
+  array.io.metaWrite.idx       := Mux(fenceMetaWriteActive, fenceSet,
+    curPaddr(blockOffBits + idxBits - 1, blockOffBits))
+  array.io.metaWrite.way       := Mux(fenceMetaWriteActive, fenceWay, curVictimWay)
+  array.io.metaWrite.metaValid := fenceMetaWriteActive
   array.io.metaWrite.dirty     := false.B
-  array.io.metaWrite.tag       := 0.U
+  array.io.metaWrite.tag       := Mux(fenceMetaWriteActive, fenceWbTag, 0.U)
  
   // ---------- Replacer ----------
-  replacer.io.victim.req := array.io.read.valid && !idle_doReplay
+  replacer.io.victim.req := normalArrayReadValid && !idle_doReplay
   replacer.io.victim.idx := array.io.read.idx
  
   replacer.io.touch.valid := (state === s_load_resp  && io.loadResp.fire) ||
@@ -563,10 +627,84 @@ io.storeReq.ready := state === s_idle && idle_doLsu && storeSelected
       when(io.storeAck.fire) { state := s_idle }
     }
   }
+
+  switch(fenceState) {
+    is(f_idle) {
+      when(io.fenceReq) {
+        fenceState := f_wait_idle
+      }
+    }
+
+    is(f_wait_idle) {
+      when(!io.fenceReq) {
+        fenceState := f_idle
+      }.elsewhen(state === s_idle && !pendingMiss && mshr.io.idle) {
+        fenceState := f_find_dirty
+      }
+    }
+
+    is(f_find_dirty) {
+      when(array.io.hasDirty) {
+        fenceSet := array.io.dirtyIdx
+        fenceWay := array.io.dirtyWay
+        fenceState := f_read_req
+      }.otherwise {
+        fenceState := f_done
+      }
+    }
+
+    is(f_read_req) {
+      fenceState := f_read_resp
+    }
+
+    is(f_read_resp) {
+      when(array.io.read.validOut) {
+        fenceWbTag := array.io.read.resp.ways(fenceWay).tag
+        fenceWbData := array.io.read.resp.ways(fenceWay).data
+        fenceBeat := 0.U
+        fenceState := f_wb_aw
+      }
+    }
+
+    is(f_wb_aw) {
+      when(io.axi.aw.data.awvalid && io.axi.aw.awready) {
+        fenceBeat := 0.U
+        fenceState := f_wb_w
+      }
+    }
+
+    is(f_wb_w) {
+      when(io.axi.w.data.wvalid && io.axi.w.wready) {
+        when(io.axi.w.data.wlast) {
+          fenceBeat := 0.U
+          fenceState := f_wb_b
+        }.otherwise {
+          fenceBeat := fenceBeat + 1.U
+        }
+      }
+    }
+
+    is(f_wb_b) {
+      when(io.axi.b.data.bvalid && io.axi.b.bready) {
+        fenceState := f_clear
+      }
+    }
+
+    is(f_clear) {
+      fenceState := f_find_dirty
+    }
+
+    is(f_done) {
+      when(!io.fenceReq) {
+        fenceState := f_idle
+      }
+    }
+  }
  
   // ================================================================
   //  调试
   // ================================================================
   diffDontTouch(state)
   diffDontTouch(pendingMiss)
+  diffDontTouch(fenceState)
 }

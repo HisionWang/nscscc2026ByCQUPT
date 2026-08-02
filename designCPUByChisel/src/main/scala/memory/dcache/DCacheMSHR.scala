@@ -38,6 +38,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     val matchPrimId    = Output(UInt(1.W))
  
     val hasStore = Output(Bool())
+    val idle     = Output(Bool())
  
     val canAlloc        = Output(Bool())
     val refillWriteReq  = Output(Valid(new Bundle {
@@ -93,6 +94,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   io.matchPrimId := PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
  
   io.hasStore := VecInit((0 until nSec).map(i => lsValid(i) && lsIsStore(i) && !lsFlushed(i))).asUInt.orR
+  io.idle := !VecInit(primaries.map(_.io.busy)).asUInt.orR && !lsValid.asUInt.orR
  
   // ===== 请求分配逻辑 =====
   val reqBlockAddr  = io.missReq.bits.paddr(31, blockOffBits)
