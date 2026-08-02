@@ -102,6 +102,26 @@ object BarOp {
   val ibar = 2.U(width.W)
 }
 
+object CacopCode {
+  val width          = 5
+  val cacheTypeWidth = 3
+  val operationWidth = 2
+
+  // code[2:0]: cache selected by the operation
+  val iCache      = 0.U(cacheTypeWidth.W)
+  val dCache      = 1.U(cacheTypeWidth.W)
+  val sharedCache = 2.U(cacheTypeWidth.W)
+
+  // code[4:3]: operation performed on the selected cache
+  val storeTag                    = 0.U(operationWidth.W)
+  val indexInvalidateOrWriteback  = 1.U(operationWidth.W)
+  val hitInvalidateOrWriteback    = 2.U(operationWidth.W)
+  val implementationDefined = 3.U(operationWidth.W)
+
+  def cacheType(code: UInt): UInt = code(cacheTypeWidth - 1, 0)
+  def operation(code: UInt): UInt = code(width - 1, cacheTypeWidth)
+}
+
 object CsrOp {
   val width = 3
   val none   = 0.U(width.W)

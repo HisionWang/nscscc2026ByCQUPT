@@ -43,6 +43,13 @@ class RATReadIO extends Bundle {
   val hold2 = Bool()
 }
 
+class CacopDecode extends Bundle {
+  val valid     = Bool()
+  val code      = UInt(CacopCode.width.W)
+  val cacheType = UInt(CacopCode.cacheTypeWidth.W)
+  val operation = UInt(CacopCode.operationWidth.W)
+}
+
 // 控制信号打平
 class DecodeCtrl(implicit p: Parameters) extends NSBundle {
   val fuType   = UInt(FuType.width.W)
@@ -88,6 +95,7 @@ class DecodedInst(implicit p: Parameters) extends NSBundle {
   
   val csrAddress = UInt(csrAddrLen.W)
   val imm        = UInt(XLEN.W)
+  val cacop      = new CacopDecode
   
   val ctrl       = new DecodeCtrl
   val excp       = new ExceptionBundle

@@ -134,7 +134,9 @@ object DecodeTable {
        src1Type = SrcType.reg,
        src2Type = SrcType.none,
        rfWen = y, csrWen = n),
-    CACOP -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    CACOP -> ctrl(FuType.priv, aluOp = AluOp.add,
+      src1Type = SrcType.reg, src2Type = SrcType.imm,
+      immType = ImmType.si12, rfWen = n, isPriv = y),
 
     TLBSRCH -> ctrl(FuType.priv, tlbOp = TlbOp.search,
       src1Type = SrcType.none, src2Type = SrcType.none,
@@ -184,6 +186,7 @@ class Decoder(implicit p: Parameters) extends NSModule {
   val isSys  = SYSCALL === inst
   val isBrk  = BREAK === inst
   val isErtn = I_ERTN === inst
+  val isCacop = CACOP === inst
   val isInvtlb = INVTLB === inst
   val invtlbOp = inst(InvtlbOp.width - 1, 0)
   val isInvtlbLegal = InvtlbOp.isLegal(invtlbOp, rj, rk)
@@ -274,6 +277,10 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.rdValid    := rdValid
   io.out.csrAddress := csrAddress
   io.out.imm        := ImmGen(inst, immType)
+  io.out.cacop.valid     := isCacop && !isIllegal
+  io.out.cacop.code      := Mux(isCacop, inst(4, 0), 0.U)
+  io.out.cacop.cacheType := Mux(isCacop, CacopCode.cacheType(inst), 0.U)
+  io.out.cacop.operation := Mux(isCacop, CacopCode.operation(inst), 0.U)
   
   io.out.ctrl.fuType   := Mux(isIllegal, FuType.csr, fuType)
   io.out.ctrl.aluOp    := aluOp
