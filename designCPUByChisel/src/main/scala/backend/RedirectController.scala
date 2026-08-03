@@ -117,8 +117,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   // ================================================================
   val isRollingBack  = (state === s_rob_rollback)
   val rollbackDone   = isRollingBack && io.robRollbackDone
- 
-  io.robRedirectPause   := isRollingBack //&& !rollbackDone
+  io.robRedirectPause   := isRollingBack //|| io.robRedirect.valid
 
  
   // ================================================================

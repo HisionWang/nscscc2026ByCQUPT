@@ -119,7 +119,7 @@ class Tlb(implicit p: Parameters) extends NSModule {
 
   val readEntry = entries(csr.tlbidx(tlbIdxLen - 1, 0))
   io.read.tlbidx := Cat(
-    !readEntry.e, 0.U(1.W), Mux(readEntry.ps, 21.U, 12.U),
+    !readEntry.e, 0.U(1.W), Mux(readEntry.ps, 21.U(6.W), 12.U(6.W)),
     0.U(19.W), csr.tlbidx(tlbIdxLen - 1, 0)
   )
   io.read.tlbehi := Cat(readEntry.vppn, 0.U(13.W))

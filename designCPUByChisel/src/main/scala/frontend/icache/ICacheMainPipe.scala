@@ -128,14 +128,14 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s1_array_received_data = RegInit(0.U.asTypeOf(new arrayReadData))
   val s1_mmu_received_data   = RegInit(0.U.asTypeOf(new MmuToIcache))
     // 记录响应接收状态
-  when(s1_fire || s1_flush) {
+  when(s0_fire || s1_flush) {
     s1_array_received := false.B
   }.elsewhen(array_resp_fire) {
     s1_array_received := true.B
     s1_array_received_data := io.arrays_read.resp.data
   }
  
-  when(s1_fire || s1_flush) {
+  when(s0_fire || s1_flush) {
     s1_mmu_received := false.B
   }.elsewhen(mmu_resp_fire) {
     s1_mmu_received := true.B

@@ -124,7 +124,7 @@ class BusyTableIO(implicit p: Parameters) extends NSBundle {
 // ================================================================
 class RobEnqIO(implicit p: Parameters) extends NSBundle {
   val valid = Vec(CtrlBlockWidth, Bool())
-  //val valids = Vec(CtrlBlockWidth, Input(Bool()))
+  val validforPreg = Vec(CtrlBlockWidth, Bool())
   val bits  = Vec(CtrlBlockWidth, new RobEntryInner)
   //val canEnq = Output(Bool())  // ROB 是否能容纳本批指令
   //val full = Output(Bool())

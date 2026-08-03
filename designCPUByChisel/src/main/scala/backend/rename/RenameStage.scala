@@ -92,9 +92,9 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  【修改】发射条件：增加快照容量检查
   // ================================================================
-  val canFireThisCycle = freeList.io.canAlloc && snapshotManager.io.allocOk && canRobAccept  // ← 修改
+  val canFireThisCycle = freeList.io.canAlloc && snapshotManager.io.allocOk && canRobAccept && !io.stall// ← 修改
  
-  val outFire = stgValid && outReadyAll && canFireThisCycle && !io.stall
+  val outFire = stgValid && outReadyAll && canFireThisCycle 
 
 
   val stgReady = !stgValid || outFire

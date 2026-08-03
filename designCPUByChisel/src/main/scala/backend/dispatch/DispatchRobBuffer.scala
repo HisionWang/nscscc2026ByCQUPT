@@ -44,6 +44,7 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
   //  流水级寄存器
   // ================================================================
   val bufValid  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
+  val bufValidForPreg  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val bufData   = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U.asTypeOf(new RobEntryInner))))
  
   
@@ -56,11 +57,13 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
     // 误预测重定向：全刷
     for (i <- 0 until CtrlBlockWidth) {
       bufValid(i) := false.B
+      bufValidForPreg(i) := false.B
     }
   }.elsewhen(enqFire) {
     // 正常写入：从分发级接收
     for (i <- 0 until CtrlBlockWidth) {
       bufValid(i) := io.enq.valid(i)
+      bufValidForPreg(i) := io.enq.validforPreg(i)
       bufData(i)  := io.enq.bits(i)
     }
   }
@@ -75,12 +78,14 @@ class DispatchRobBuffer(implicit p: Parameters) extends NSModule {
     io.deq.valid(i)  := bufValid(i) && deqFire
     //io.deq.valids(i) := bufValid(i)
     io.deq.bits(i)   := bufData(i)
+    io.deq.validforPreg(i) := bufValidForPreg(i)
   }
  
   // 出队成功后清空buffer（如果同时有入队，入队优先级更高因为已经在elsewhen中处理）
   when(deqFire && !enqFire) {
     for (i <- 0 until CtrlBlockWidth) {
       bufValid(i) := false.B
+      bufValidForPreg(i) := false.B
     }
   }
  

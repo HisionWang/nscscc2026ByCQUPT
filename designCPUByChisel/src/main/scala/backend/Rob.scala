@@ -194,7 +194,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     }
   }
  
-  when(/* io.enq.canEnq && */ enqValidCount.orR && io.enq.valid(0) && !io.robPause ) {
+  when(/* io.enq.canEnq && */ enqValidCount.orR && io.enq.valid.asUInt.orR && !io.robPause ) {
     enqPtr := enqPtr + enqValidCount
   }
  
@@ -372,14 +372,14 @@ class ROB(implicit p: Parameters) extends NSModule {
   when(io.robRedirect.valid) {
     //latchCanEnq := io.enq.canEnq
     for (i <- 0 until CtrlBlockWidth) {
-      latchEnqValid(i) := io.enq.valid(i) && /*io.enq.canEnq && */ io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
+      latchEnqValid(i) := io.enq.validforPreg(i) && /*io.enq.canEnq && */ io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
       latchEnqPdst(i)  := io.enq.bits(i).pdst
       latchEnqRfWen(i) := io.enq.bits(i).rfWen
     }
 
     //dispatchCanEnq := io.enqFromDispatch.canEnq
     for (i <- 0 until CtrlBlockWidth) {
-      dispatchValid(i) := io.enqFromDispatch.valid(i) && /*!io.enqFromDispatch.canEnq && */ io.enqFromDispatch.bits(i).rfWen && io.enqFromDispatch.bits(i).ldst =/= 0.U
+      dispatchValid(i) := io.enqFromDispatch.validforPreg(i) && /*!io.enqFromDispatch.canEnq && */ io.enqFromDispatch.bits(i).rfWen && io.enqFromDispatch.bits(i).ldst =/= 0.U
       dispatchPdst(i)  := io.enqFromDispatch.bits(i).pdst
       dispatchRfWen(i) := io.enqFromDispatch.bits(i).rfWen
     }
@@ -406,7 +406,7 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   switch(rollbackState) {
     is(rb_buffer) {
-      when(dispIdx >= CtrlBlockWidth.U) {
+      when(dispIdx >= CtrlBlockWidth.U - 1.U) {
         //rollbackState := rb_rob
         //rollbackPtr   := Mux(ptrEq(enqPtr, deqPtr), deqPtr, decPtr(enqPtr)) // 安全起见检查 ROB 是否已空
         rollbackState := rb_disp
@@ -417,7 +417,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     }
 
     is(rb_disp) {
-      when(dispIdx >=  CtrlBlockWidth.U) {
+      when(dispIdx >=  CtrlBlockWidth.U - 1.U) {
         rollbackState := rb_rob
         rollbackPtr   := Mux(enqPtr === deqPtr, deqPtr, enqPtr - 1.U) // 安全起见检查 ROB 是否已空
       }.otherwise {

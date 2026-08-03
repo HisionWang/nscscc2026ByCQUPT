@@ -124,7 +124,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   backend.io.toMemResult(1) <> memory.io.fromExeResult
   // 2.后端传给memory的地址信息处理
   val memaddrtrans = Module(new MemAddrTrans) 
-  memaddrtrans.io.flush := false.B
+  
   memaddrtrans.io.llbit := llbit
   memaddrtrans.io.in <> backend.io.toMemResult(0)
   memory.io.fromExeMmuResult <> memaddrtrans.io.out
@@ -205,8 +205,17 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   mmu.io.fromCsr.asid := csr.io.toTlb.asid
 
-  mmu.io.fromIcacheFlush := false.B
-  mmu.io.fromMemFlush := false.B
+  mmu.io.fromIcacheFlush := backend.io.redirectInfo.valid && backend.io.redirectInfo.bits.doRedirect
+
+  //Rob的重定向才去做两者的flush
+  //实际上这里是根本不需要去做刷掉的，因为LSQ中自然会刷
+  //但有很必要是因为，如果某次rob redirct改变了地址映射方式（恰好在mmu中的state 由sdie —> busy这个时期映射方式改变）
+  //就可能会导致mmu的状态机堵住
+  //于是mmu必然需要刷新机制回到idle
+  //既然mmu需要刷新机制，那memaddrtrans也还是需要刷新，不然就阻塞了
+  //而Rob发出的redirct信号一定是可以刷这里的
+  mmu.io.fromMemFlush := backend.io.redirectInfo.valid && backend.io.redirectInfo.bits.doRedirect && backend.io.redirectInfo.bits.fromRob
+  memaddrtrans.io.flush := backend.io.redirectInfo.valid && backend.io.redirectInfo.bits.doRedirect && backend.io.redirectInfo.bits.fromRob
 
   // ---------- AXI3 Crossbar ----------
   val axi_crossbar = Module(new AXI3Crossbar2to1)

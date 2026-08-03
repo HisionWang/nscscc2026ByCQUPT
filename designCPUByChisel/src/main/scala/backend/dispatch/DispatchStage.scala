@@ -569,7 +569,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
   // ================================================================
   for (i <- 0 until CtrlBlockWidth) {
     io.robEnq.valid(i)              := dispatchFire && needRob(i) && laneCanDispatch(i)
-    //io.robEnq.valids(i)           := needRob(i)
+    io.robEnq.validforPreg(i)       := needRob(i)
     io.robEnq.bits(i).pc            := stgData(i).pc
     io.robEnq.bits(i).inst          := stgData(i).inst
     io.robEnq.bits(i).fuType        := stgData(i).ctrl.fuType
