@@ -30,7 +30,7 @@ class Multiplier(implicit p: Parameters) extends NSModule {
     val out   = Decoupled(new ExeResult)
     val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
   })
- 
+
   io.out.bits.memValid      := false.B
   io.out.bits.memRead       := false.B
   io.out.bits.memWrite      := false.B
@@ -41,6 +41,7 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   io.out.bits.csrWaddr      := 0.U
   io.out.bits.csrWdata      := 0.U
   io.out.bits.csrTimer      := 0.U
+  io.out.bits.tlbFillIdx    := 0.U
  
   // ================================================================
   //  S1 寄存器：锁存原始输入（不计算）

@@ -18,6 +18,7 @@ import nscscc.difftest._
 import nscscc.csr._
 import nscscc.backend.rob._
 import nscscc.frontend.BpuUpdateReq
+import nscscc.mmu._
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
@@ -33,6 +34,10 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val fromMemResult  = Flipped (Vec(2, Decoupled(new ExeResult) ))
   val commitToSq  = new RobCommitToSq
   val commitToCsr  = new RobCommitToCsr
+  val tlbInstr     = Valid(new TlbInstr)
+  val tlbFillIdx   = Input(UInt(tlbIdxLen.W))
+  val currentPlv   = Input(UInt(plvLen.W))
+  val storeQueueEmpty = Input(Bool())
 
   val excpEvent           = Output(new ExcpEvent)
   val excpInfo            = Output(new ExcpInfo)
@@ -58,6 +63,8 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
 
   io.commitToSq <> ctrlBlock.io.commitToSq
   io.commitToCsr <> ctrlBlock.io.commitToCsr
+  ctrlBlock.io.currentPlv := io.currentPlv
+  ctrlBlock.io.storeQueueEmpty := io.storeQueueEmpty
 
   io.lsEnq <> ctrlBlock.io.lsEnq
   val scheduler   = Module(new Scheduler)
@@ -85,7 +92,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //   eu1: Q2 → ALU + DIV
   //   eu2: Q3 → ALU + MUL + BRU
   val exeUnits = Seq(
-    Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasCsr = true))),
+    Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasCsr = true, hasTlb = true))),
     Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasDiv = true))),
     Module(new ExeUnit(ExeUnitParams(hasAlu = true, hasBru = true, hasMul = true))),
 
@@ -105,6 +112,15 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   exeUnits(2).io.timerInfo :=  DontCare
   exeUnits(3).io.timerInfo :=  DontCare
   exeUnits(4).io.timerInfo :=  DontCare
+
+  io.tlbInstr := exeUnits(0).io.tlbInstr
+  exeUnits(0).io.tlbFillIdx := io.tlbFillIdx
+  for (eu <- exeUnits) {
+    eu.io.currentPlv := io.currentPlv
+  }
+  for (i <- 1 until exeUnits.length) {
+    exeUnits(i).io.tlbFillIdx := 0.U
+  }
 
   io.bpuUpdate := exeUnits(2).io.bpuUpdate
   val bruInfoFromExe3 =  exeUnits(2).io.bruInfo

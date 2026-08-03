@@ -130,9 +130,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   // ================================================================
   //  重定向目标地址
   // ================================================================
-  val isTlbExcp = false.B //robInfoExcpVec(5) || robInfoExcpVec(4) ||
-                  //robInfoExcpVec(3) || robInfoExcpVec(2) ||
-                  //robInfoExcpVec(1)
+  val isTlbExcp = robInfoIsException && robInfoExcpVec.isTlbRefill
   val isNormalExcp = robInfoIsException && !robInfoExcpVec.has(ERTN)
   val isErtnExcp = robInfoIsException &&  robInfoExcpVec.has(ERTN)
 
@@ -178,20 +176,23 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   // ================================================================
   //  CSR 异常写入
   // ================================================================
-  io.excpEvent.excp := io.robRedirect.valid && io.robRedirect.isException && !io.robRedirect.excp.has(ERTN)
-  io.excpEvent.ertn := io.robRedirect.valid && io.robRedirect.isException &&  io.robRedirect.excp.has(ERTN)
-  io.excpEvent.vppnCaptrue := false.B
-  io.excpEvent.tlbrefill := false.B
+  val commitException = io.robRedirect.valid && io.robRedirect.isException
+  io.excpEvent.excp := commitException && !io.robRedirect.excp.has(ERTN)
+  io.excpEvent.ertn := commitException && io.robRedirect.excp.has(ERTN)
+  io.excpEvent.badvWrite := commitException && io.robRedirect.excp.needsBadvWrite
+  io.excpEvent.tlbehiWrite := commitException && io.robRedirect.excp.needsTlbehiWrite
+  io.excpEvent.tlbRefill := commitException && io.robRedirect.excp.isTlbRefill
 
 // io.csrExcpVec   := io.robRedirect.excp
 // io.csrExcpPc    := io.robRedirect.pc
 
-  io.excpInfo.vaddrError := io.robRedirect.excp.isVaddrError && io.robRedirect.valid && io.robRedirect.isException
+  val exceptionVaddr = io.robRedirect.excp.badvSelect(
+    io.robRedirect.pc, io.robRedirect.excpVaddr)
   io.excpInfo.era := io.robRedirect.pc
   io.excpInfo.ecode := io.robRedirect.excp.ecode
   io.excpInfo.esubcode := io.robRedirect.excp.esubcode
-  io.excpInfo.badVaddr := io.robRedirect.excp.badvSelect(io.robRedirect.pc, io.robRedirect.excpVaddr)
-  io.excpInfo.vppn     := 0.U
+  io.excpInfo.badVaddr := exceptionVaddr
+  io.excpInfo.vppn     := exceptionVaddr(31, 13)
 
 
 }

@@ -39,6 +39,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
       val valid = Input(Bool())
       val idx   = Input(UInt(idxBits.W))
     }
+    val invalidate = Input(Bool())
   })
   
   // === 创建 BlockRAM 阵列 ===
@@ -71,7 +72,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
     dataBRAMs(way).rd_en   := io.read.req.valid
     dataBRAMs(way).rd_addr := io.read.req.idx
   }
-  
+
   // 读取响应 - 使用 BlockRAM 的输出
   // 注意：BlockRAM 的 rd_valid 信号在读取使能后的第2个周期变高
   val readRespValid = WireDefault(false.B)
@@ -149,6 +150,13 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
       dataBRAMs(way).wr_data := 0.U
     }
 
+  }
+
+  // IBAR Action
+  when(io.invalidate) {
+    for (way <- 0 until nWays) {
+      validArray(way) := 0.U
+    }
   }
   
 //  when(io.flush.valid) {

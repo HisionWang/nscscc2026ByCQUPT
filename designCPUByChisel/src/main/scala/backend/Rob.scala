@@ -10,6 +10,7 @@ import nscscc.backend.execute._
 import nscscc.util.CircularQueuePtr
 import nscscc.backend.redirect._
 import nscscc.csr._
+import nscscc.mmu._
  
 // ═══════════════════════════════════════════════════════════════
 //  ROB 内部表项
@@ -34,7 +35,14 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val csrWaddr    = UInt(csrAddrLen.W)
   val csrWdata    = UInt(XLEN.W)
   val csrTimer    = UInt(64.W)
+  val tlbOp       = UInt(TlbOp.width.W)
+  val tlbFillIdx  = UInt(tlbIdxLen.W)
+  val flushOnCommit = Bool()
   val isPriv      = Bool()
+  val waitStore   = Bool()
+  val llbitSet    = Bool()
+  val llbitClear  = Bool()
+  val ibar        = Bool()
   val excp        = new ExceptionBundle
   val robIdx      = new RobPtr(RobSize)
   val writtenBack = Bool()
@@ -58,6 +66,9 @@ class RobCommitToCsr(implicit p: Parameters) extends NSBundle {
   val csrWen   = Bool()
   val csrWaddr = UInt(csrAddrLen.W)
   val csrWdata = UInt(XLEN.W)
+  val llbitSet = Bool()
+  val llbitClear = Bool()
+  val ibar = Bool()
 }
 
 class ArchCommitInfo(implicit p: Parameters) extends NSBundle {
@@ -80,6 +91,8 @@ class ROB(implicit p: Parameters) extends NSModule {
     val commit           = new RobCommitIO
     val commitToSq       = new RobCommitToSq
     val commitToCsr      = new RobCommitToCsr
+    val currentPlv       = Input(UInt(plvLen.W))
+    val storeQueueEmpty  = Input(Bool())
     val writeback        = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
  
     val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
@@ -91,6 +104,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     val robRollbackDone  = Output(Bool())
 
     val robCount     = Output(UInt(log2Ceil(RobSize + 1).W))
+    val head         = Output(Valid(new RobPtr(RobSize)))
     val enqFromDispatch  = Flipped(new RobEnqIO)
     
   })
@@ -127,6 +141,8 @@ class ROB(implicit p: Parameters) extends NSModule {
   val full  = (deqPtr.value === enqPtr.value) && (deqPtr.flag =/= enqPtr.flag)
   val count = enqPtr.distanceTo(deqPtr)
   io.robCount := count
+  io.head.valid := entries(deqPtr.value).valid
+  io.head.bits  := entries(deqPtr.value).robIdx
  
   // ================================================================
   //  2. 入队逻辑 (Enqueue)
@@ -161,7 +177,14 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).csrWen       := io.enq.bits(i).csrWen
       entries(writeIdx).csrWaddr     := io.enq.bits(i).csrWaddr
       entries(writeIdx).csrOp        := io.enq.bits(i).csrOp
+      entries(writeIdx).tlbOp        := io.enq.bits(i).tlbOp
+      entries(writeIdx).tlbFillIdx := 0.U
+      entries(writeIdx).flushOnCommit:= io.enq.bits(i).flushOnCommit
       entries(writeIdx).isPriv       := io.enq.bits(i).isPriv
+      entries(writeIdx).waitStore    := io.enq.bits(i).waitStore
+      entries(writeIdx).llbitSet     := io.enq.bits(i).llbitSet
+      entries(writeIdx).llbitClear   := io.enq.bits(i).llbitClear
+      entries(writeIdx).ibar         := io.enq.bits(i).ibar
       entries(writeIdx).fuType       := io.enq.bits(i).fuType
       entries(writeIdx).excp         := io.enq.bits(i).excp
       entries(writeIdx).writtenBack  := false.B
@@ -193,12 +216,13 @@ class ROB(implicit p: Parameters) extends NSModule {
       }
       entries(idx).csrWdata := wb.bits.csrWdata
       entries(idx).csrTimer := wb.bits.csrTimer
+      entries(idx).tlbFillIdx := wb.bits.tlbFillIdx
       when(wb.bits.excp.hasException) {
         entries(idx).excp := wb.bits.excp
       }
     }
   }
- 
+
   // ================================================================
   //  4. 提交逻辑 (Commit) - 完全修复组合逻辑链
   // ================================================================
@@ -208,13 +232,28 @@ class ROB(implicit p: Parameters) extends NSModule {
   val canConsider = Wire(Vec(CommitWidth, Bool()))
   val isExcpSlot  = Wire(Vec(CommitWidth, Bool()))
   val isCsrSlot   = Wire(Vec(CommitWidth, Bool()))
+  val isFlushSlot = Wire(Vec(CommitWidth, Bool()))
   val blockNext   = Wire(Vec(CommitWidth, Bool())) // 标记当前槽位是否会阻断后续槽位
   val inFlushRange = Wire(Vec(RobSize, Bool()))
   for (i <- 0 until CommitWidth) {
     val idx       = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
     val entry     = entries(idx)
-    val thisReady = entry.valid && entry.writtenBack  && !inFlushRange(idx)
-    val hasExcp   = entry.excp.hasException
+    val isTlb     = entry.tlbOp =/= TlbOp.none
+    val tlbIpe    = isTlb && io.currentPlv =/= 0.U
+    val commitExcp = Wire(new ExceptionBundle)
+    commitExcp.excpVec := entry.excp.mergeMany(
+      base = entry.excp.excpVec,
+      tlbIpe -> ExcType.IPE
+    )
+    val hasExcp = commitExcp.hasException
+    val olderStoreCommitting = if (i == 0) false.B else {
+      VecInit((0 until i).map(j =>
+        canConsider(j) && commitCandidates(j).memWrite)).asUInt.orR
+    }
+    val storeReady = !entry.waitStore ||
+      (io.storeQueueEmpty && !olderStoreCommitting) || hasExcp
+    val thisReady = entry.valid && entry.writtenBack &&
+      storeReady && !inFlushRange(idx)
     val isCsrW    = entry.csrWen && !hasExcp
 
     // 构建严格的依赖链，代替存在 BUG 的 Scala var 循环赋值
@@ -226,16 +265,20 @@ class ROB(implicit p: Parameters) extends NSModule {
 
     isExcpSlot(i)       := canConsider(i) && hasExcp
     isCsrSlot(i)        := canConsider(i) && isCsrW  && !hasExcp
+    isFlushSlot(i)      := canConsider(i) && entry.flushOnCommit && !hasExcp
     commitValids(i)     := canConsider(i) //&& !hasExcp // 正常提交（异常指令也走提交的方式来消失） 
     commitCandidates(i) := entry
+    commitCandidates(i).excp := commitExcp
 
-    // 如果当前未 Ready，或者是异常、或者是CSR，都会切断后续指令的提交资格
-    blockNext(i) := !canConsider(i) || isExcpSlot(i) || isCsrSlot(i)
+    // Exceptions, CSR writes and all flush-on-commit instructions serialize retirement.
+    blockNext(i) := !canConsider(i) || isExcpSlot(i) ||
+      isCsrSlot(i) || isFlushSlot(i)
   }
 
   // 提取首个导致 Redirect 的槽位信息
-  val redirectValid = isExcpSlot.asUInt.orR || isCsrSlot.asUInt.orR
-  val redirectIdx   = PriorityEncoder(isExcpSlot.asUInt | isCsrSlot.asUInt)
+  val redirectMask  = isExcpSlot.asUInt | isCsrSlot.asUInt | isFlushSlot.asUInt
+  val redirectValid = redirectMask.orR
+  val redirectIdx   = PriorityEncoder(redirectMask)
   val redirectEntry = commitCandidates(redirectIdx)
 
   io.robRedirect.valid       := redirectValid
@@ -248,6 +291,12 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.commitToCsr.csrWen      := isCsrSlot.asUInt.orR
   io.commitToCsr.csrWaddr    := redirectEntry.csrWaddr
   io.commitToCsr.csrWdata    := redirectEntry.csrWdata
+  io.commitToCsr.llbitSet := redirectValid && redirectEntry.llbitSet &&
+    !redirectEntry.excp.hasException
+  io.commitToCsr.llbitClear := redirectValid && redirectEntry.llbitClear &&
+    !redirectEntry.excp.hasException
+  io.commitToCsr.ibar := redirectValid && redirectEntry.ibar &&
+    !redirectEntry.excp.hasException
   
   // 输出正常 Commit 信号
   for (i <- 0 until CommitWidth) {
@@ -255,7 +304,8 @@ class ROB(implicit p: Parameters) extends NSModule {
     io.commit.bits(i)         := commitCandidates(i)
     io.commit.isExcpCommit(i) := commitCandidates(i).excp.hasException
     
-    io.commitToSq.valid(i)    := commitValids(i) && commitCandidates(i).memWrite
+    io.commitToSq.valid(i)    := commitValids(i) &&
+      commitCandidates(i).memWrite
     io.commitToSq.bits(i)     := commitCandidates(i)
     
     //异常也是必须要提交架构，但他并不是“提交架构”，而是复用这个端口来归还“物理寄存器”

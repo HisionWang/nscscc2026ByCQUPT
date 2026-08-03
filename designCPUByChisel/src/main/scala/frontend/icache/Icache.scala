@@ -13,6 +13,7 @@ class ICache(implicit p: Parameters) extends NSModule {
   
   val io = IO(new Bundle {
     val redirect = Input(Bool())
+    val invalidate = Input(Bool())
     // CPU接口
     val cpu_req = Flipped( Decoupled(new Bundle {
       val addr  = (UInt(32.W))   // 虚拟地址
@@ -47,6 +48,7 @@ class ICache(implicit p: Parameters) extends NSModule {
 
   array.io.flush.valid := false.B
   array.io.flush.idx := 0.U
+  array.io.invalidate := io.invalidate
   //array OK
 
   mainPipe.io.victim_read  <> replacer.io.victim

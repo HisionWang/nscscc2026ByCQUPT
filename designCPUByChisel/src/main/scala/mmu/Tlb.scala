@@ -3,39 +3,39 @@ package nscscc.mmu
 import chisel3._
 import chisel3.util._
 
+import nscscc.backend.decode.{InvtlbOp, TlbOp}
 import nscscc.config._
+import nscscc.csr._
 
 class Tlb(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
-    val search = Vec(nrSearchPort, new Bundle {
-      val req  = Flipped(Decoupled(new TlbSearchReq))
-      val resp = Decoupled(new TlbSearchResp)
-      val flush = Input(Bool())
-    })
-    val invtlb = Flipped(Decoupled(new InvtlbReq))
-    val write  = Flipped(Decoupled(new TlbWriteReq))
-    val rIndex = Input(UInt(tlbIdxLen.W))
-    val rResp  = Output(new TlbReadResp)
+    val search = Vec(nrSearchPort, new TlbSearchPort)
+
+    val instr   = Input(Valid(new TlbInstr))
+    val csr     = Input(new CsrToTlb)
+    val cmd     = Output(new TlbCmd)
+    val read    = Output(new TlbToCsr)
+    val fillIdx = Output(UInt(tlbIdxLen.W))
+    val flush   = Output(Bool())
   })
 
   val entries = RegInit(VecInit(Seq.fill(nrTlb)(0.U.asTypeOf(new TlbEntry))))
+  val csr = RegNext(io.csr)
 
-  val portBusy = Wire(Vec(nrSearchPort, Bool()))
-  val pipeBusy = portBusy.asUInt.orR
+  val isSearch = io.instr.bits.cmd === TlbOp.search
+  val isRead   = io.instr.bits.cmd === TlbOp.read
+  val isWrite  = io.instr.bits.cmd === TlbOp.write
+  val isFill   = io.instr.bits.cmd === TlbOp.fill
+  val isInv    = io.instr.bits.cmd === TlbOp.invalidate
+  val changeTlb = isWrite || isFill || isInv
 
-  // tlb维护指令阻塞search请求
-  val maintValid = io.write.valid || io.invtlb.valid
-  val blockSearch = maintValid
-
-  // 等待所有search event完成
-  io.write.ready  := !pipeBusy
-  io.invtlb.ready := !pipeBusy && !io.write.valid
+  io.flush := io.instr.valid && changeTlb
 
   // nrSearchPort个并行流水线
   for (idx <- 0 until nrSearchPort) {
     val req   = io.search(idx).req
     val resp  = io.search(idx).resp
-    val flush = io.search(idx).flush
+    val flush = io.search(idx).flush || io.flush
 
     val s1Valid = RegInit(false.B)
     val s1Req   = RegInit(0.U.asTypeOf(new TlbSearchReq))
@@ -48,10 +48,9 @@ class Tlb(implicit p: Parameters) extends NSModule {
     val s2Ready = !s2Valid || resp.ready
     val s1Ready = !s1Valid || s2Ready
 
-    req.ready := !blockSearch && !flush && s1Ready
+    req.ready := !flush && s1Ready
 
     // lookup
-    // 感觉关键路径还是在stage1
     val matchVec = VecInit(entries.map { e =>
       val vppnHit = Mux(e.ps,
         e.vppn(vppnLen - 1, vppnLen - 10) === req.bits.vppn(vppnLen - 1, vppnLen - 10),
@@ -100,67 +99,89 @@ class Tlb(implicit p: Parameters) extends NSModule {
     resp.valid := s2Valid
     resp.bits  := s2Resp
 
-    portBusy(idx) := (s1Valid || s2Valid) && !flush
   }
 
-  when (io.write.fire) {
-    val w = io.write.bits
-    val e = entries(w.index)
+  val searchMatches = VecInit(entries.map { entry =>
+    val vppn = csr.tlbehi(XLEN - 1, 13)
+    val vppnHit = Mux(entry.ps,
+      entry.vppn(vppnLen - 1, vppnLen - 10) ===
+        vppn(vppnLen - 1, vppnLen - 10),
+      entry.vppn === vppn
+    )
+    entry.e && (entry.g || entry.asid === csr.asid) && vppnHit
+  })
 
-    e.e     := w.e
-    e.vppn  := w.vppn
-    e.asid  := w.asid
-    e.g     := w.g
-    e.ps    := w.ps =/= 12.U
-    e.ppn0  := w.ppn0
-    e.plv0  := w.plv0
-    e.mat0  := w.mat0
-    e.d0    := w.d0
-    e.v0    := w.v0
-    e.ppn1  := w.ppn1
-    e.plv1  := w.plv1
-    e.mat1  := w.mat1
-    e.d1    := w.d1
-    e.v1    := w.v1
-  }
+  io.cmd := 0.U.asTypeOf(new TlbCmd)
+  io.cmd.srchVld := io.instr.valid && isSearch
+  io.cmd.srchHit := searchMatches.asUInt.orR
+  io.cmd.srchIdx := PriorityEncoder(searchMatches)
+  io.cmd.tlbrd   := io.instr.valid && isRead
 
-  when (io.invtlb.fire) {
-    for (i <- 0 until nrTlb) {
-      val ent = entries(i)
-      val vppnHit = Mux(ent.ps,
-        ent.vppn(vppnLen - 1, vppnLen - 10) === io.invtlb.bits.vpn(vppnLen - 1, vppnLen - 10),
-        ent.vppn === io.invtlb.bits.vpn
-      )
-      val asidHit = ent.asid === io.invtlb.bits.asid
-      val clr = MuxLookup(io.invtlb.bits.op, false.B)(Seq(
-        0.U -> true.B,
-        1.U -> true.B,
-        2.U -> ent.g,
-        3.U -> !ent.g,
-        4.U -> (!ent.g && asidHit),
-        5.U -> (!ent.g && asidHit && vppnHit),
-        6.U -> ((ent.g || asidHit) && vppnHit)
-      ))
-      when (clr) {
-        entries(i).e := false.B
-      }
+  val readEntry = entries(csr.tlbidx(tlbIdxLen - 1, 0))
+  io.read.tlbidx := Cat(
+    !readEntry.e, 0.U(1.W), Mux(readEntry.ps, 21.U, 12.U),
+    0.U(19.W), csr.tlbidx(tlbIdxLen - 1, 0)
+  )
+  io.read.tlbehi := Cat(readEntry.vppn, 0.U(13.W))
+  io.read.tlbeho0 := Cat(
+    0.U(4.W), readEntry.ppn0, 0.U(1.W), readEntry.g,
+    readEntry.mat0, readEntry.plv0, readEntry.d0, readEntry.v0
+  )
+  io.read.tlbeho1 := Cat(
+    0.U(4.W), readEntry.ppn1, 0.U(1.W), readEntry.g,
+    readEntry.mat1, readEntry.plv1, readEntry.d1, readEntry.v1
+  )
+  io.read.asid := Cat(0.U((XLEN - asidLen).W), readEntry.asid)
+
+  val fillIdx = RegInit(0.U(tlbIdxLen.W))
+  io.fillIdx := fillIdx
+
+  when(io.instr.valid && (isWrite || isFill)) {
+    val index = Mux(isWrite, csr.tlbidx(tlbIdxLen - 1, 0), fillIdx)
+    val entry = entries(index)
+
+    entry.e     := csr.ecode === "h3f".U || !csr.tlbidx(31)
+    entry.vppn  := csr.tlbehi(XLEN - 1, 13)
+    entry.asid  := csr.asid
+    entry.g     := csr.tlbelo0(6) && csr.tlbelo1(6)
+    entry.ps    := csr.tlbidx(29, 24) =/= 12.U
+    entry.ppn0  := csr.tlbelo0(27, 8)
+    entry.plv0  := csr.tlbelo0(3, 2)
+    entry.mat0  := csr.tlbelo0(5, 4)
+    entry.d0    := csr.tlbelo0(1)
+    entry.v0    := csr.tlbelo0(0)
+    entry.ppn1  := csr.tlbelo1(27, 8)
+    entry.plv1  := csr.tlbelo1(3, 2)
+    entry.mat1  := csr.tlbelo1(5, 4)
+    entry.d1    := csr.tlbelo1(1)
+    entry.v1    := csr.tlbelo1(0)
+
+    when(isFill) {
+      fillIdx := fillIdx + 1.U
     }
   }
 
-  val r = entries(io.rIndex)
-  io.rResp.e    := r.e
-  io.rResp.vppn := r.vppn
-  io.rResp.asid := r.asid
-  io.rResp.g    := r.g
-  io.rResp.ps   := Mux(r.ps, 21.U, 12.U)
-  io.rResp.ppn0 := r.ppn0
-  io.rResp.plv0 := r.plv0
-  io.rResp.mat0 := r.mat0
-  io.rResp.d0   := r.d0
-  io.rResp.v0   := r.v0
-  io.rResp.ppn1 := r.ppn1
-  io.rResp.plv1 := r.plv1
-  io.rResp.mat1 := r.mat1
-  io.rResp.d1   := r.d1
-  io.rResp.v1   := r.v1
+  when(io.instr.valid && isInv) {
+    val invVppn = io.instr.bits.rk(XLEN - 1, 13)
+    for (entry <- entries) {
+      val vppnHit = Mux(entry.ps,
+        entry.vppn(vppnLen - 1, vppnLen - 10) ===
+          invVppn(vppnLen - 1, vppnLen - 10),
+        entry.vppn === invVppn
+      )
+      val asidHit = entry.asid === io.instr.bits.rj
+      val clear = MuxLookup(io.instr.bits.op, false.B)(Seq(
+        InvtlbOp.all          -> true.B,
+        InvtlbOp.allAlt       -> true.B,
+        InvtlbOp.glb          -> entry.g,
+        InvtlbOp.nonGlb       -> !entry.g,
+        InvtlbOp.nonGlbAsid   -> (!entry.g && asidHit),
+        InvtlbOp.nonGlbAsidVa -> (!entry.g && asidHit && vppnHit),
+        InvtlbOp.glbOrAsidVa  -> ((entry.g || asidHit) && vppnHit)
+      ))
+      when(clear) {
+        entry.e := false.B
+      }
+    }
+  }
 }

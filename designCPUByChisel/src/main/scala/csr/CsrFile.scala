@@ -83,7 +83,7 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   when(excpFlush) {
     crmd.plv := 0.U
     crmd.ie  := 0.U
-    when(io.excpEvent.tlbrefill) {
+    when(io.excpEvent.tlbRefill) {
       crmd.da := 1.U
       crmd.pg := 0.U
     }
@@ -153,7 +153,7 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   // -------------------------
   when(swWen(csrAddr.badv)) {
     badv.bindFrom(wdata)
-  }.elsewhen(io.excpInfo.vaddrError) {
+  }.elsewhen(io.excpEvent.badvWrite) {
     badv.vaddr := io.excpInfo.badVaddr
   }
 
@@ -169,9 +169,9 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   // -------------------------
   when(swWen(csrAddr.tlbidx)) {
     tlbidx.bindFrom(wdata)
-  }.elsewhen(io.tlbCmd.tlbsrch) {
-    when(io.tlbCmd.tlbsrchHit) {
-      tlbidx.index := io.tlbCmd.tlbsrchIndex
+  }.elsewhen(io.tlbCmd.srchVld) {
+    when(io.tlbCmd.srchHit) {
+      tlbidx.index := io.tlbCmd.srchIdx
       tlbidx.ne    := 0.U
     }.otherwise {
       tlbidx.ne := 1.U
@@ -193,7 +193,7 @@ class CsrFile(implicit p: Parameters) extends NSModule {
     tlbehi.vppn := io.fromTlb.tlbehi(31, 13)
   }.elsewhen(tlbrdInvalidWen) {
     tlbehi.vppn := 0.U
-  }.elsewhen(io.excpEvent.vppnCaptrue) {
+  }.elsewhen(io.excpEvent.tlbehiWrite) {
     tlbehi.vppn := io.excpInfo.vppn
   }
 
@@ -295,7 +295,7 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   when(swWen(csrAddr.pgdh)) { pgdh.bindFrom(wdata) }
 
   // llbctl:
-  //   rollb 由 LL/SC 硬件维护（此处未接入，保持 0）
+  //   rollb 由 LL/SC 在精确提交点维护
   //   WCLLB 写1清 rollb
   //   klo 软件写; ERTN 且 klo=0 时清 rollb; ERTN 且 klo=1 时清 klo
   when(swWen(csrAddr.llbctl)) {
@@ -307,6 +307,10 @@ class CsrFile(implicit p: Parameters) extends NSModule {
     }.otherwise {
       llbctl.rollb := 0.U // 清 LLBit
     }
+  }.elsewhen(io.llbitClear) {
+    llbctl.rollb := 0.U
+  }.elsewhen(io.llbitSet) {
+    llbctl.rollb := 1.U
   }
 
   val pgdReadVal = Cat(Mux(badv.vaddr(31), pgdh.base: UInt, pgdl.base: UInt), 0.U(12.W))
@@ -351,6 +355,7 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   // 输出
   // -------------------------
   io.hasIrq := (ecfg.lie & estat.is).orR && crmd.ie.asBool
+  io.llbit := llbctl.rollb.asBool
 
   io.redirectAddr.eentry    := eentry.toUInt
   io.redirectAddr.tlbrentry := tlbrentry.toUInt
@@ -359,12 +364,12 @@ class CsrFile(implicit p: Parameters) extends NSModule {
   io.timerInfo.tid   := tid.toUInt
   io.timerInfo.timer := timer64
 
-  // pg/da 按照tlbrefill例外特殊处理
+  // pg/da 按照 TLB refill 例外特殊处理
   val pgOut: UInt = crmd.pg
-  //Mux(excpFlush && io.excpEvent.tlbrefill, 0.U,
+  //Mux(excpFlush && io.excpEvent.tlbRefill, 0.U,
   //            Mux(ertnTlbrefill, 1.U, crmd.pg))
   val daOut: UInt = crmd.da
-  //Mux(excpFlush && io.excpEvent.tlbrefill, 1.U,
+  //Mux(excpFlush && io.excpEvent.tlbRefill, 1.U,
   //            Mux(ertnTlbrefill, 0.U, crmd.da))
   io.tlbCtrl.pgda := Cat(pgOut, daOut)
 

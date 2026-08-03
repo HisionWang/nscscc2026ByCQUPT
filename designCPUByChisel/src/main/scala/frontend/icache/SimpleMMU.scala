@@ -8,18 +8,6 @@ import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.mmu._
 import nscscc.backend.decode._
-class DcacheMmuTransError(implicit p: Parameters) extends NSBundle {
-  /* tlbRefill : refill
-   * excpPif   : tlb hit but invalid
-   * excpPpi   : unprivilege
-   */
-  val excpTlbRefill = Bool()
-  val excpTlbPif    = Bool()
-  val excpTlbPpi    = Bool()
-  val excpAdef      = Bool()
-  val excpAle      = Bool()
-  def getAnyError: Bool = excpTlbRefill || excpTlbPif || excpTlbPpi || excpAdef || excpAle
-}
 
 class SimpleMMU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

@@ -23,8 +23,9 @@ class CsrFileWriteReq(implicit p: Parameters) extends CsrFileBundleSkel {
 class ExcpEvent(implicit p: Parameters) extends CsrFileBundleSkel {
   val excp = Bool()
   val ertn = Bool()
-  val vppnCaptrue= Bool()
-  val tlbrefill = Bool()
+  val badvWrite = Bool()
+  val tlbehiWrite = Bool()
+  val tlbRefill = Bool()
 }
 
 class RedirectEntry(implicit p: Parameters) extends CsrFileBundleSkel {
@@ -34,7 +35,6 @@ class RedirectEntry(implicit p: Parameters) extends CsrFileBundleSkel {
 }
 
 class ExcpInfo(implicit p: Parameters) extends CsrFileBundleSkel {
-  val vaddrError = Bool()
   val era = UInt(XLEN.W)
   val ecode = UInt(6.W)
   val esubcode = UInt(9.W)
@@ -49,9 +49,9 @@ class TimerBundle(implicit p: Parameters) extends CsrFileBundleSkel {
 
 class TlbCmd(implicit p: Parameters) extends CsrFileBundleSkel {
   val tlbrd = Bool()
-  val tlbsrch = Bool()
-  val tlbsrchHit = Bool()
-  val tlbsrchIndex = UInt(5.W)
+  val srchVld = Bool()
+  val srchHit = Bool()
+  val srchIdx = UInt(5.W)
 }
 
 class PrivCtrl(implicit p: Parameters) extends CsrFileBundleSkel {
@@ -103,4 +103,7 @@ class CsrFileIo(implicit p: Parameters) extends CsrFileBundleSkel {
   val cacheCtrl = Output(new CacheCtrl)
   val toTlb = Output(new CsrToTlb)
   val fromTlb = Input(new TlbToCsr)
+  val llbitSet = Input(Bool())
+  val llbitClear = Input(Bool())
+  val llbit = Output(Bool())
 }

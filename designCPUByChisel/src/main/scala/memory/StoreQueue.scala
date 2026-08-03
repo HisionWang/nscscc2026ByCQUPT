@@ -46,6 +46,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val data         = UInt(XLEN.W)
     val excp         = new ExceptionBundle
     val cacheable    = Bool()
+    val scSuccess    = Bool()
     val lsuOp        = UInt(LsuOp.width.W)
     val pc           = UInt(XLEN.W)
     val pdst         = UInt(PhyRegIdxWidth.W)
@@ -74,6 +75,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
       val paddr     = Input(UInt(XLEN.W))
       val excp      = Input(new ExceptionBundle)
       val cacheable = Input(Bool())
+      val scSuccess = Input(Bool())
     }
  
     val dataWrite = new Bundle {
@@ -106,9 +108,10 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
     val oldestRobIdx = Output(new RobPtr(RobSize))
     val sqEmpty      = Output(Bool())
-    val full         = Output(Bool())
-    val empty        = Output(Bool())
-    val enqPtr       = Output(UInt(log2Ceil(SqSize).W))
+    val committedStoreEmpty = Output(Bool())
+    val full                = Output(Bool())
+    val empty               = Output(Bool())
+    val enqPtr              = Output(UInt(log2Ceil(SqSize).W))
     val sqHasEntries = Output(UInt(log2Ceil(SqSize + 1).W))
   })
  
@@ -169,7 +172,11 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   io.oldestRobIdx := Mux(hasActiveStore, entries(activeIdx).robIdxFull, defaultRobIdx)
   io.sqEmpty      := !hasActiveStore
- 
+
+  io.committedStoreEmpty := !VecInit(entries.map(e =>
+    e.valid && !e.alreadyFlush && e.committed
+  )).asUInt.orR
+
   // ================================================================
   //  1. 入队
   // ================================================================
@@ -192,6 +199,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).data         := 0.U
     entries(idx).excp         := 0.U.asTypeOf(new ExceptionBundle)
     entries(idx).cacheable    := false.B
+    entries(idx).scSuccess    := false.B
     entries(idx).lsuOp        := io.enq.lsuOp
     entries(idx).pc           := io.enq.pc
     entries(idx).pdst         := io.enq.pdst
@@ -227,6 +235,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).paddr     := io.addrWrite.paddr
     entries(idx).excp      := io.addrWrite.excp
     entries(idx).cacheable := io.addrWrite.cacheable
+    entries(idx).scSuccess := io.addrWrite.scSuccess
   }
  
   // ================================================================
@@ -238,7 +247,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(idx).data := MuxLookup(entries(idx).lsuOp, io.dataWrite.data)(Seq(
       LsuOp.stb -> Cat(0.U(24.W), io.dataWrite.data(7, 0)),
       LsuOp.sth -> Cat(0.U(16.W), io.dataWrite.data(15, 0)),
-      LsuOp.stw -> io.dataWrite.data
+      LsuOp.stw -> io.dataWrite.data,
+      LsuOp.scw -> io.dataWrite.data,
     ))
   }
  
@@ -257,8 +267,10 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   val wbIdx          = (deqPtr.value + wbOffset)(log2Ceil(SqSize) - 1, 0)
   val wbEntry        = entries(wbIdx)
  
+  val wbIsSc = wbEntry.lsuOp === LsuOp.scw
+
   io.outResult.valid                := hasWbCandidate
-  io.outResult.bits.data            := 0.U
+  io.outResult.bits.data            := Mux(wbIsSc, wbEntry.scSuccess.asUInt, 0.U)
   io.outResult.bits.memValid        := true.B
   io.outResult.bits.memRead         := false.B
   io.outResult.bits.memWrite        := true.B
@@ -273,10 +285,11 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.redirect.valid  := DontCare
   io.outResult.bits.redirect.bits.valid  := DontCare
   io.outResult.bits.redirect.bits.robIdx := wbEntry.robIdxFull
-  io.outResult.bits.csrWen   := DontCare
-  io.outResult.bits.csrWaddr := DontCare
-  io.outResult.bits.csrWdata := DontCare
-  io.outResult.bits.csrTimer := DontCare
+  io.outResult.bits.csrWen     := DontCare
+  io.outResult.bits.csrWaddr   := DontCare
+  io.outResult.bits.csrWdata   := DontCare
+  io.outResult.bits.csrTimer   := DontCare
+  io.outResult.bits.tlbFillIdx := 0.U
  
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
@@ -293,7 +306,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   wbUop.oldPdst    := 0.U
   wbUop.rs1Valid   := false.B
   wbUop.rs2Valid   := false.B
-  wbUop.rdValid    := false.B
+  wbUop.rdValid    := wbEntry.rfWen
   wbUop.robIdx     := wbEntry.robIdxFull
   wbUop.robIdxFull := wbEntry.robIdxFull
   wbUop.issueQueue := 0.U
@@ -314,12 +327,14 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   wbUop.ctrl.fuType   := wbEntry.fuType
   wbUop.ctrl.lsuOp    := wbEntry.lsuOp
-  wbUop.ctrl.rfWen    := false.B
+  wbUop.ctrl.barOp    := BarOp.none
+  wbUop.ctrl.rfWen    := wbEntry.rfWen
   wbUop.ctrl.memRead  := false.B
   wbUop.ctrl.memWrite := true.B
   wbUop.ctrl.aluOp    := 0.U
   wbUop.ctrl.bruOp    := 0.U
   wbUop.ctrl.csrOp    := 0.U
+  wbUop.ctrl.tlbOp    := TlbOp.none
   wbUop.ctrl.mulOp    := 0.U
   wbUop.ctrl.divOp    := 0.U
   wbUop.ctrl.src1Type := 0.U
@@ -329,6 +344,9 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.isBranch := false.B
   wbUop.ctrl.isJump   := false.B
   wbUop.ctrl.isPriv   := false.B
+  wbUop.ctrl.waitForward := false.B
+  wbUop.ctrl.blockBackward := false.B
+  wbUop.ctrl.flushOnCommit := false.B
  
   wbUop.pdInfo  := DontCare
   wbUop.bpuInfo := DontCare
@@ -345,6 +363,9 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     when(io.robCommit(i).valid) {
       val idx = io.robCommit(i).sqIdx
       entries(idx).committed := true.B
+      when(entries(idx).lsuOp === LsuOp.scw && !entries(idx).scSuccess) {
+        entries(idx).Memwritten := true.B
+      }
     }
   }
  
@@ -355,7 +376,9 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   for (i <- 0 until SqSize) {
     val idx = (deqPtr.value + i.U)(log2Ceil(SqSize) - 1, 0)
     val e = entries(idx)
-    dcacheCandidates(i) := e.valid && e.committed && !e.excp.hasException && !e.dcacheIssued && !e.alreadyFlush
+    val scFailed = e.lsuOp === LsuOp.scw && !e.scSuccess
+    dcacheCandidates(i) := e.valid && e.committed && !scFailed &&
+      !e.excp.hasException && !e.dcacheIssued && !e.alreadyFlush
   }
  
   val hasDcacheCandidate = dcacheCandidates.reduce(_ || _)
@@ -366,9 +389,10 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.dcacheReq.valid      := hasDcacheCandidate
   io.dcacheReq.bits.paddr := dcacheEntry.paddr
   io.dcacheReq.bits.data  := dcacheEntry.data
-  io.dcacheReq.bits.lsuOp := dcacheEntry.lsuOp
   io.dcacheReq.bits.cacheable := dcacheEntry.cacheable
   io.dcacheReq.bits.sqIdx := dcacheIdx
+  io.dcacheReq.bits.lsuOp := Mux(dcacheEntry.lsuOp === LsuOp.scw,
+    LsuOp.stw, dcacheEntry.lsuOp)
  
   when(io.dcacheReq.fire) {
     entries(dcacheIdx).dcacheIssued := true.B

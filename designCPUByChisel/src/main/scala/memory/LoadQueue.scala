@@ -333,12 +333,13 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val issueEntry        = entries(issueIdx)
  
   // ── 3c. DCache 请求 ──
-  io.dcacheReq.valid       := hasIssueCandidate && !isNewer(issueIdx)
-  io.dcacheReq.bits.lqIdx  := issueIdx
-  io.dcacheReq.bits.paddr  := issueEntry.paddr
-  io.dcacheReq.bits.cacheable := issueEntry.cacheable
-  io.dcacheReq.bits.lsuOp  := issueEntry.lsuOp
-  io.dcacheReq.bits.robIdx := issueEntry.robIdxFull
+  io.dcacheReq.valid           := hasIssueCandidate && !isNewer(issueIdx)
+  io.dcacheReq.bits.lqIdx      := issueIdx
+  io.dcacheReq.bits.paddr      := issueEntry.paddr
+  io.dcacheReq.bits.cacheable  := issueEntry.cacheable
+  io.dcacheReq.bits.robIdx     := issueEntry.robIdxFull
+  io.dcacheReq.bits.lsuOp := Mux(issueEntry.lsuOp === LsuOp.llw,
+    LsuOp.ldw, issueEntry.lsuOp)
  
   when(io.dcacheReq.fire) {
     entries(issueIdx).issued := true.B
@@ -393,10 +394,11 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.redirect.valid  := DontCare
   io.outResult.bits.redirect.bits.valid  := DontCare
   io.outResult.bits.redirect.bits.robIdx := DontCare
-  io.outResult.bits.csrWen   := DontCare
-  io.outResult.bits.csrWaddr := DontCare
-  io.outResult.bits.csrWdata := DontCare
-  io.outResult.bits.csrTimer := DontCare
+  io.outResult.bits.csrWen     := DontCare
+  io.outResult.bits.csrWaddr   := DontCare
+  io.outResult.bits.csrWdata   := DontCare
+  io.outResult.bits.csrTimer   := DontCare
+  io.outResult.bits.tlbFillIdx := 0.U
  
   val wbUop = io.outResult.bits.uop
   wbUop.pc         := wbEntry.pc
@@ -434,12 +436,14 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
  
   wbUop.ctrl.fuType   := wbEntry.fuType
   wbUop.ctrl.lsuOp    := wbEntry.lsuOp
+  wbUop.ctrl.barOp    := BarOp.none
   wbUop.ctrl.rfWen    := wbEntry.rfWen
   wbUop.ctrl.memRead  := true.B
   wbUop.ctrl.memWrite := false.B
   wbUop.ctrl.aluOp    := 0.U
   wbUop.ctrl.bruOp    := 0.U
   wbUop.ctrl.csrOp    := 0.U
+  wbUop.ctrl.tlbOp    := TlbOp.none
   wbUop.ctrl.mulOp    := 0.U
   wbUop.ctrl.divOp    := 0.U
   wbUop.ctrl.src1Type := 0.U
@@ -449,6 +453,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.isBranch := false.B
   wbUop.ctrl.isJump   := false.B
   wbUop.ctrl.isPriv   := false.B
+  wbUop.ctrl.waitForward := false.B
+  wbUop.ctrl.blockBackward := false.B
+  wbUop.ctrl.flushOnCommit := false.B
  
   wbUop.pdInfo  := DontCare
   wbUop.bpuInfo := DontCare

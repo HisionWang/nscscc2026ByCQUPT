@@ -12,6 +12,8 @@ class Mmu(implicit p: Parameters) extends NSModule {
   val tlb = Module(new Tlb)
 
   private def emptyError(): MmuTransError = 0.U.asTypeOf(new MmuTransError)
+  private def emptyDataError(): DcacheMmuTransError =
+    0.U.asTypeOf(new DcacheMmuTransError)
 
   private def hitDmw(dmw: UInt, vaddr: UInt, plv: UInt): Bool = {
     val plvHit = (plv === 0.U && dmw(0)) || (plv === 3.U && dmw(3))
@@ -49,8 +51,11 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val reqBuffer = RegInit(0.U.asTypeOf(new IcacheToMmu))
     val reqValid  = RegInit(false.B)
 
-    when (io.fromIcacheFlush) {
+    val flush = io.fromIcacheFlush || tlb.io.flush
+
+    when (flush) {
       state := sIdle
+      reqValid := false.B
     }.otherwise {
       when (io.fromIcache.fire) {
         reqBuffer := io.fromIcache.bits
@@ -104,7 +109,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
     // 保留单请求锁，但允许响应fire的同一拍接收下一条请求。
     val respFire     = io.toIcache.fire
-    val canAcceptReq = (isIdle || respFire) && !io.fromIcacheFlush
+    val canAcceptReq = (isIdle || respFire) && !flush
 
     tlbReq.valid        := canAcceptReq && io.fromIcache.valid && nextNeedSearch
     tlbReq.bits.vppn    := nextVaddr(31, 13)
@@ -114,12 +119,12 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
     io.fromIcache.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
 
-    tlbResp.ready := isBusy && io.toIcache.ready && !io.fromIcacheFlush
-    tlb.io.search(0).flush := io.fromIcacheFlush
+    tlbResp.ready := isBusy && io.toIcache.ready && !flush
+    tlb.io.search(0).flush := flush
 
     // Response
     /* TLB <> MMU <> ICACHE */
-    io.toIcache.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) && !io.fromIcacheFlush
+    io.toIcache.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) && !flush
     val resp       = tlbResp.bits
     val tlbError   = WireDefault(emptyError())
     val tlbOut     = WireDefault(0.U.asTypeOf(new MmuToIcache))
@@ -130,9 +135,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
     tlbError.excpAdef      := addrMisaligned
 
     tlbOut.paddr        := tlbPaddr(resp)
-    // TODO: uncomment
-    // tlbOut.cacheable     := isCacheable(resp.mat)
-    tlbOut.cacheable    := true.B
+    tlbOut.cacheable    := isCacheable(resp.mat)
     tlbOut.error        := tlbError
     tlbOut.hasError     := tlbError.asUInt.orR
 
@@ -158,8 +161,11 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val reqBuffer = RegInit(0.U.asTypeOf(new SqToMmuReq))
     val reqValid  = RegInit(false.B)
 
-    when (io.fromMemFlush) {
+    val flush = io.fromMemFlush || tlb.io.flush
+
+    when (flush) {
       state := sIdle
+      reqValid := false.B
     }.otherwise {
       when (io.fromMem.fire) {
         reqBuffer := io.fromMem.bits
@@ -200,7 +206,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
     // 我肯定是改了的吧！！！！！！
     directResp.cacheable := isDirect && isCacheable(io.fromCsr.datm)
     //directResp.cacheable := true.B
-    directResp.error     := emptyError()
+    directResp.error     := emptyDataError()
     directResp.error.excpAle := addrMisaligned
     directResp.hasError  := directResp.error.asUInt.orR
 
@@ -210,7 +216,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
     // TODO: uncomment
     dmwResp.cacheable := (dmw0Hit && isCacheable(io.fromCsr.dmw0(5, 4))) || (dmw1Hit && isCacheable(io.fromCsr.dmw1(5, 4)))
     //dmwResp.cacheable := true.B
-    dmwResp.error     := emptyError()
+    dmwResp.error     := emptyDataError()
     dmwResp.error.excpAle := addrMisaligned
     dmwResp.hasError  := dmwResp.error.asUInt.orR
 
@@ -218,7 +224,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val tlbResp = tlb.io.search(1).resp
 
     val respFire     = io.toMem.fire
-    val canAcceptReq = (isIdle || respFire) && !io.fromMemFlush
+    val canAcceptReq = (isIdle || respFire) && !flush
 
     tlbReq.valid        := canAcceptReq && io.fromMem.valid && nextNeedSearch
     tlbReq.bits.vppn    := nextVaddr(31, 13)
@@ -228,24 +234,31 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
     io.fromMem.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
 
-    tlbResp.ready := isBusy && io.toMem.ready && !io.fromMemFlush
-    tlb.io.search(1).flush := io.fromMemFlush
+    tlbResp.ready := isBusy && io.toMem.ready && !flush
+    tlb.io.search(1).flush := flush
 
-    io.toMem.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) && !io.fromMemFlush
+    io.toMem.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) && !flush
 
     val resp     = tlbResp.bits
-    val tlbError = WireDefault(emptyError())
+    val tlbError = WireDefault(emptyDataError())
     val tlbOut   = WireDefault(0.U.asTypeOf(new MmuToSqResp))
 
+    val isStore = reqLsuOp === LsuOp.stb ||
+      reqLsuOp === LsuOp.sth || reqLsuOp === LsuOp.stw
+    val pageInvalid = resp.found && !resp.v
+    val privilegeError = resp.found && resp.v &&
+      (io.fromCsr.plv > resp.plv)
+
     tlbError.excpTlbRefill := !resp.found
-    tlbError.excpTlbPif    := resp.found && !resp.v
-    tlbError.excpTlbPpi    := resp.found && resp.v && (io.fromCsr.plv > resp.plv)
+    tlbError.excpTlbPil    := pageInvalid && !isStore
+    tlbError.excpTlbPis    := pageInvalid && isStore
+    tlbError.excpTlbPpi    := privilegeError
+    tlbError.excpTlbPme    := resp.found && resp.v &&
+      !privilegeError && isStore && !resp.d
     tlbError.excpAle       := addrMisaligned
 
     tlbOut.paddr     := tlbPaddr(resp)
-    // TODO: uncomment
-    // tlbOut.cacheable := isCacheable(resp.mat)
-    tlbOut.cacheable := true.B
+    tlbOut.cacheable := isCacheable(resp.mat)
     tlbOut.error     := tlbError
     tlbOut.hasError  := tlbError.asUInt.orR
 
@@ -264,17 +277,9 @@ class Mmu(implicit p: Parameters) extends NSModule {
     tlb.io.search(i).flush      := false.B
   }
 
-  // TODO: uncomment
-  // tlb.io.invtlb := io.maint.fromInvtlb
-  // tlb.io.write  := io.maint.fromWrite tlb.io.rIndex := io.maint.fromReadIndex
-  // io.maint.toReadResp := tlb.io.rResp
-  io.maint.fromWrite.ready  := false.B
-  io.maint.fromInvtlb.ready := false.B
-  io.maint.toReadResp := DontCare
-  tlb.io.invtlb.valid := false.B
-  tlb.io.invtlb.bits  := DontCare
-  tlb.io.write.valid  := false.B
-  tlb.io.write.bits   := DontCare
-  tlb.io.rIndex <> DontCare
-  tlb.io.rResp  <> DontCare
+  tlb.io.instr := io.tlb.instr
+  tlb.io.csr   := io.tlb.csr
+  io.tlb.cmd   := tlb.io.cmd
+  io.tlb.read  := tlb.io.read
+  io.tlb.fillIdx := tlb.io.fillIdx
 }
