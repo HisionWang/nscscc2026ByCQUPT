@@ -106,7 +106,8 @@ object DecodeTable {
       rfWen = n, flushOnCommit = y),
     IBAR -> ctrl(FuType.alu, barOp = BarOp.ibar,
       src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, flushOnCommit = y),
+      rfWen = n, waitForward = y, blockBackward = y,
+      flushOnCommit = y),
 
     JIRL -> ctrl(FuType.bru, bruOp = BruOp.jirl, src1Type = SrcType.reg, src2Type = SrcType.imm, immType = ImmType.si16, isJump = y),
     B    -> ctrl(FuType.bru, bruOp = BruOp.b, src1Type = SrcType.pc, src2Type = SrcType.imm, immType = ImmType.si26, rfWen = n, isBranch = y),

@@ -41,6 +41,8 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   val commitToCsr = new RobCommitToCsr
   val currentPlv  = Input(UInt(plvLen.W))
   val storeQueueEmpty = Input(Bool())
+  val ibarFenceReq = Output(Bool())
+  val ibarFenceDone = Input(Bool())
 
  
   // ── 重定向 ──
@@ -192,6 +194,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   io.commitToCsr := rob.io.commitToCsr
   rob.io.currentPlv := io.currentPlv
   rob.io.storeQueueEmpty := io.storeQueueEmpty
+  io.ibarFenceReq := rob.io.ibarFenceReq
+  rob.io.ibarFenceDone := io.ibarFenceDone
   if (EnableDifftest) {
     for (i <- 0 until CommitWidth) {
       val robCommit = rob.io.commit.bits(i)

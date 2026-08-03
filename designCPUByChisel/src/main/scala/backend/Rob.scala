@@ -93,6 +93,8 @@ class ROB(implicit p: Parameters) extends NSModule {
     val commitToCsr      = new RobCommitToCsr
     val currentPlv       = Input(UInt(plvLen.W))
     val storeQueueEmpty  = Input(Bool())
+    val ibarFenceReq     = Output(Bool())
+    val ibarFenceDone    = Input(Bool())
     val writeback        = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
  
     val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
@@ -228,6 +230,11 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   val commitValids     = Wire(Vec(CommitWidth, Bool()))
   val commitCandidates = Wire(Vec(CommitWidth, new RobEntryInner))
+
+  val headEntry = entries(deqPtr.value)
+  io.ibarFenceReq := headEntry.valid && headEntry.writtenBack &&
+    headEntry.ibar && io.storeQueueEmpty &&
+    !headEntry.excp.hasException
   
   val canConsider = Wire(Vec(CommitWidth, Bool()))
   val isExcpSlot  = Wire(Vec(CommitWidth, Bool()))
@@ -250,8 +257,9 @@ class ROB(implicit p: Parameters) extends NSModule {
       VecInit((0 until i).map(j =>
         canConsider(j) && commitCandidates(j).memWrite)).asUInt.orR
     }
+    val ibarReady = !entry.ibar || io.ibarFenceDone
     val storeReady = !entry.waitStore ||
-      (io.storeQueueEmpty && !olderStoreCommitting) || hasExcp
+      (io.storeQueueEmpty && !olderStoreCommitting && ibarReady) || hasExcp
     val thisReady = entry.valid && entry.writtenBack &&
       storeReady && !inFlushRange(idx)
     val isCsrW    = entry.csrWen && !hasExcp
