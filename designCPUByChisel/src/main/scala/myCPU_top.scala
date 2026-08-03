@@ -183,6 +183,9 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.wReq.data := backend.io.commitToCsr.csrWdata
   csr.io.llbitSet := backend.io.commitToCsr.llbitSet
   csr.io.llbitClear := backend.io.commitToCsr.llbitClear
+
+  memory.io.ibarFenceReq := backend.io.ibarFenceReq
+  backend.io.ibarFenceDone := memory.io.ibarFenceDone
   
   csr.io.excpEvent <> backend.io.excpEvent
   csr.io.excpInfo <> backend.io.excpInfo
