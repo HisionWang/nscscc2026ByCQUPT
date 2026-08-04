@@ -288,7 +288,8 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
   val idle_doUcLoad   = !idle_doRefill  && mshr.io.lsReady && mshr.io.lsIsUncache && mshr.io.lsIsLoad
   val idle_doUcStore  = !idle_doRefill  && !idle_doUcLoad && mshr.io.lsReady && mshr.io.lsIsUncache && mshr.io.lsIsStore
   val idle_doReplay   = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && mshr.io.lsReady && !mshr.io.lsIsUncache
-  val idle_doPending  = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay && pendingMiss
+  val idle_doPending  = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay &&
+                        pendingMiss //&& !pendingFlushed
   val idle_doLsu      = !idle_doRefill  && !idle_doUcLoad && !idle_doUcStore && !idle_doReplay && !idle_doPending &&
                         lsuHasReq && !storeBlocked && fenceState === f_idle && !io.fenceReq
  
@@ -455,7 +456,8 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
 
 
   // loadResp：s_load_resp 或 s_uc_load
-  io.loadResp.valid := (state === s_load_resp || state === s_uc_load)
+  io.loadResp.valid := (state === s_load_resp || state === s_uc_load) &&
+    !(shouldFlush(curRobIdx) && curIsLoad && !curIsStore)
   io.loadResp.bits.lqIdx := curLqIdx
   io.loadResp.bits.data  := Mux(state === s_uc_load, 
 
@@ -483,7 +485,8 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
       }.elsewhen(idle_doUcLoad) {
         curLqIdx    := mshr.io.lsLqIdx
         curLsIdx    := mshr.io.lsIdx
-        curPaddr    := mshr.io.lsPaddr          // ← 补
+        curRobIdx   := mshr.io.lsRobIdx
+        curPaddr    := mshr.io.lsPaddr
         curLsuOp    := mshr.io.lsLsuOp   
         curIsReplay := true.B
         curUcData   := mshr.io.lsUncacheData
@@ -498,6 +501,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
         curPaddr     := mshr.io.lsPaddr
         curLqIdx     := mshr.io.lsLqIdx
         curSqIdx     := mshr.io.lsSqIdx
+        curRobIdx    := mshr.io.lsRobIdx
         curLsuOp     := mshr.io.lsLsuOp
         curStoreData := mshr.io.lsStoreData
         curIsLoad    := mshr.io.lsIsLoad
@@ -546,9 +550,9 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
       when(shouldFlush(curRobIdx)  && curIsLoad && !curIsStore) {
         state := s_idle
         //如果这个load曾经是miss了的，也就是已经把保存在了pendingmiss中的话
-        when(pendIsLoad && pendLqIdx === curLqIdx){
-          pendingMiss  := false.B
-        }
+        //when(pendIsLoad && pendLqIdx === curLqIdx){
+        //  pendingMiss  := false.B
+        //}
       }.elsewhen(!curCacheable) {
         state := s_miss
       }.elsewhen(s1Hit && curIsLoad) {
@@ -563,14 +567,18 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
     }
  
     is(s_load_resp) {
-      when(pendLqIdx === curLqIdx && pendIsLoad){
-        pendingMiss     := false.B
+      when(pendLqIdx === curLqIdx && pendIsLoad /* && curIsLoad //猜猜他是怎么到这个状态的*/){
+        pendingMiss     := false.B  //pending的请求莫名其妙地命中且走了
       }
-      when(io.loadResp.fire) { state := s_idle }
+      when(shouldFlush(curRobIdx) && curIsLoad && !curIsStore) {
+        state := s_idle
+      }.elsewhen(io.loadResp.fire) {
+        state := s_idle
+      }
     }
     is(s_store_write) {
-      when(pendSqIdx === curSqIdx && pendIsStore){
-        pendingMiss     := false.B
+      when(pendSqIdx === curSqIdx && pendIsStore /* && curIsStore */ ){
+        pendingMiss     := false.B //pending的请求莫名其妙地命中且走了
       }
       when(io.storeAck.fire) { state := s_idle }
     }
@@ -578,11 +586,11 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
     is(s_miss) {
       when(shouldFlush(curRobIdx) && curIsLoad && !curIsStore) {
         state := s_idle
-        when(pendIsLoad && pendLqIdx === curLqIdx){
-          pendingMiss  := false.B
-        }
+        //when((curIsLoad && pendIsLoad && pendLqIdx === curLqIdx) || (curIsStore && pendIsStore && pendSqIdx === curSqIdx)){
+        //  pendingMiss  := false.B
+        //}
       }.elsewhen(mshr.io.missReq.fire) {
-        pendingMiss := false.B
+        pendingMiss := false.B //pending的请求终于被MSHR拿走了
         state       := s_idle
       }.otherwise {
         pendingMiss     := true.B
@@ -605,20 +613,28 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
     }
  
     is(s_uc_load) {
-      when(pendLqIdx === curLqIdx && pendIsLoad){
-        pendingMiss     := false.B
-      }
+    //  when(pendLqIdx === curLqIdx && pendIsLoad /*&& curIsLoad */){
+    //    pendingMiss     := false.B //pending的请求终于命中且走了 买噶，uncache这谈什么命中~
+    //  }
 
-      when(io.loadResp.fire) { state := s_idle }
+      when(shouldFlush(curRobIdx) && curIsLoad /* && !curIsStore*/) {
+        state := s_idle
+      }.elsewhen(io.loadResp.fire) {
+        state := s_idle
+      }
     }
  
     is(s_uc_store) {
-      when(pendSqIdx === curSqIdx && pendIsStore){
-        pendingMiss     := false.B
-      }
+    //  when(pendSqIdx === curSqIdx && pendIsStore /*&& curIsStore */){
+    //    pendingMiss     := false.B //pending的请求终于命中且走了，买噶，uncache这谈什么命中~
+    //  }
 
       when(io.storeAck.fire) { state := s_idle }
     }
+  }
+//在pending的那条，该刷就得刷，你再也跑不掉了！
+  when(pendingFlushed) {
+    pendingMiss := false.B
   }
 
   switch(fenceState) {
