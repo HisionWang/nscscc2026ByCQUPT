@@ -463,6 +463,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.isBranch := false.B
   wbUop.ctrl.isJump   := false.B
   wbUop.ctrl.isPriv   := false.B
+  wbUop.ctrl.isIdle   := false.B
   wbUop.ctrl.waitForward := false.B
   wbUop.ctrl.blockBackward := false.B
   wbUop.ctrl.flushOnCommit := false.B

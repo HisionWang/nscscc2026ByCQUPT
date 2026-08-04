@@ -73,6 +73,7 @@ class DecodeCtrl(implicit p: Parameters) extends NSBundle {
   val isBranch = Bool()
   val isJump   = Bool()
   val isPriv   = Bool()
+  val isIdle   = Bool()
   val waitForward = Bool()
   val blockBackward = Bool()
   val flushOnCommit = Bool()

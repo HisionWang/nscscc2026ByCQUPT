@@ -15,6 +15,7 @@ class IFU(implicit p: Parameters) extends NSModule {
     //val redirect = Flipped(new RedirectIO)
     val frontendRedirect = Input(new FrontendRedirect)
     val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
+    val idle            = Input(Bool())
 
 
     
@@ -69,7 +70,8 @@ class IFU(implicit p: Parameters) extends NSModule {
                                                seqPC                   )))
 
     // pcReg将要进入Icache条件
-  val pc_fire = pcValid && (io.icache_req.ready && io.bpuInfoQueuEnq.ready )&& !backendRedirectValid && !frontendRedirect.valid
+  val pc_fire = pcValid && !io.idle &&
+    (io.icache_req.ready && io.bpuInfoQueuEnq.ready ) && !backendRedirectValid && !frontendRedirect.valid
  
   // ==================== 发起BPU的预测请求 ====================
   io.predictReq.nextPC := nextPC
@@ -94,7 +96,8 @@ class IFU(implicit p: Parameters) extends NSModule {
  
   // ==================== ICache请求 ====================
   io.icache_req.addr  := pcReg
-  io.icache_req.valid := !backendRedirectValid &&
+  io.icache_req.valid := !io.idle &&
+                         !backendRedirectValid &&
                          !frontendRedirect.valid //当重定向来了之后，不给Cache发当前请求
   io.icache_req.flush  := backendRedirectValid || frontendRedirect.valid
  

@@ -110,7 +110,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     needIq(i) && laneCanDispatch(i) && (
       stgData(i).ctrl.fuType === FuType.csr ||
       stgData(i).ctrl.tlbOp =/= TlbOp.none ||
-      stgData(i).ctrl.isPriv
+      ( stgData(i).ctrl.fuType === FuType.priv ) //Cacop得单独走有mmu的地方
     )
   ))
   val isDivLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.div))
@@ -586,6 +586,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).csrWaddr      := stgData(i).csrAddress
     io.robEnq.bits(i).flushOnCommit := stgData(i).ctrl.flushOnCommit
     io.robEnq.bits(i).isPriv        := stgData(i).ctrl.isPriv
+    io.robEnq.bits(i).isIdle        := stgData(i).ctrl.isIdle
     io.robEnq.bits(i).waitStore     := stgData(i).ctrl.barOp =/= BarOp.none ||
       stgData(i).ctrl.lsuOp === LsuOp.scw || stgData(i).cacop.valid
     io.robEnq.bits(i).llbitSet      := stgData(i).ctrl.lsuOp === LsuOp.llw

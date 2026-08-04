@@ -106,6 +106,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val memory = Module(new MemoryBlock)
   val mmu = Module(new Mmu)
   val llbit = Wire(Bool())
+  val coreIdle = RegInit(false.B)
 
   memory.io.redirectInfo <> backend.io.redirectInfo
   backend.io.storeQueueEmpty := memory.io.storeQueueEmpty
@@ -113,6 +114,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
   frontend.io.invalidateICache := backend.io.commitToCsr.ibar || backend.io.cacopICacheReq
+  frontend.io.idle := coreIdle
 
 
   diffDontTouch(backend.io.lsEnq)
@@ -177,6 +179,12 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.rResp <> backend.io.csrResp
 
   backend.io.extInt :=  csr.io.hasIrq
+
+  when(backend.io.idle) {
+    coreIdle := true.B
+  }.elsewhen(csr.io.hasIrq) {
+    coreIdle := false.B
+  }
 
   csr.io.wReq.wen := backend.io.commitToCsr.csrWen
   csr.io.wReq.addr := backend.io.commitToCsr.csrWaddr

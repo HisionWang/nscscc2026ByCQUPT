@@ -39,6 +39,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val tlbFillIdx  = UInt(tlbIdxLen.W)
   val flushOnCommit = Bool()
   val isPriv      = Bool()
+  val isIdle      = Bool()
   val waitStore   = Bool()
   val llbitSet    = Bool()
   val llbitClear  = Bool()
@@ -72,6 +73,7 @@ class RobCommitToCsr(implicit p: Parameters) extends NSBundle {
   val llbitSet = Bool()
   val llbitClear = Bool()
   val ibar = Bool()
+  val idle = Bool()
 }
 
 class ArchCommitInfo(implicit p: Parameters) extends NSBundle {
@@ -187,6 +189,7 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).tlbFillIdx := 0.U
       entries(writeIdx).flushOnCommit:= io.enq.bits(i).flushOnCommit
       entries(writeIdx).isPriv       := io.enq.bits(i).isPriv
+      entries(writeIdx).isIdle       := io.enq.bits(i).isIdle
       entries(writeIdx).waitStore    := io.enq.bits(i).waitStore
       entries(writeIdx).llbitSet     := io.enq.bits(i).llbitSet
       entries(writeIdx).llbitClear   := io.enq.bits(i).llbitClear
@@ -268,11 +271,22 @@ class ROB(implicit p: Parameters) extends NSModule {
     val idx       = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
     val entry     = entries(idx)
     val isTlb     = entry.tlbOp =/= TlbOp.none
-    val tlbIpe    = isTlb && io.currentPlv =/= 0.U
+    val isCacop   = entry.isCacop
+    val isPrivCsr = entry.fuType === FuType.csr && (
+      entry.csrOp === CsrOp.read ||
+      entry.csrOp === CsrOp.write ||
+      entry.csrOp === CsrOp.xchg
+    )
+    val userHitCacopAllowed = isCacop &&
+      io.currentPlv === 3.U &&
+      CacopCode.isHitOp(entry.cacopOperation)
+    //val tlbIpe    = isTlb && io.currentPlv =/= 0.U
+    // val csrIpe    = isPrivCsr && io.currentPlv =/= 0.U
+    val isIpe = entry.isPriv && io.currentPlv =/= 0.U && !userHitCacopAllowed
     val commitExcp = Wire(new ExceptionBundle)
     commitExcp.excpVec := entry.excp.mergeMany(
       base = entry.excp.excpVec,
-      tlbIpe -> ExcType.IPE
+      isIpe -> ExcType.IPE
     )
     val hasExcp = commitExcp.hasException
     val olderStoreCommitting = if (i == 0) false.B else {
@@ -329,6 +343,8 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.commitToCsr.llbitClear := redirectValid && redirectEntry.llbitClear &&
     !redirectEntry.excp.hasException
   io.commitToCsr.ibar := redirectValid && redirectEntry.ibar &&
+    !redirectEntry.excp.hasException
+  io.commitToCsr.idle := redirectValid && redirectEntry.isIdle &&
     !redirectEntry.excp.hasException
   
   // 输出正常 Commit 信号

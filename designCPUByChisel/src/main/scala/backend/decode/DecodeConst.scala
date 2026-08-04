@@ -121,6 +121,7 @@ object CacopCode {
 
   def cacheType(code: UInt): UInt = code(cacheTypeWidth - 1, 0)
   def operation(code: UInt): UInt = code(width - 1, cacheTypeWidth)
+  def isHitOp(op: UInt): Bool = op === hitInvalidateOrWriteback
 }
 
 object CsrOp {
@@ -167,8 +168,9 @@ object InvtlbOp {
     op === nonGlbAsidVa || op === glbOrAsidVa
 
   def isLegal(op: UInt, rj: UInt, rk: UInt): Bool =
-    isValid(op) && (useAsid(op) || rj === 0.U) &&
-      (useVaddr(op) || rk === 0.U)
+    isValid(op) 
+    //&& (useAsid(op) || rj === 0.U) &&
+    //  (useVaddr(op) || rk === 0.U)
 }
 
 object MulOp {

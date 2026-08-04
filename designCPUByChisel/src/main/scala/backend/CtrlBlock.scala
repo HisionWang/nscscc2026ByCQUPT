@@ -215,8 +215,9 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.csrRstat   := isCsrRead && robCommit.csrWaddr === csrAddr.estat.U
       diffCommit.csrData    := robCommit.rfdata
       diffCommit.csrTimer   := robCommit.csrTimer
-      diffCommit.excpFlush  := robCommit.excp.hasException
-      diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst)
+      val isPureErtnExcp = robCommit.excp.excpVec === (1.U << ExcType.ERTN.id).asUInt
+      diffCommit.excpFlush  := robCommit.excp.hasException && !isPureErtnExcp
+      diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst) && isPureErtnExcp
       diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excp)
       diffCommit.tlbfillEn  := rob.io.commit.valid(i) &&
         robCommit.tlbOp === TlbOp.fill

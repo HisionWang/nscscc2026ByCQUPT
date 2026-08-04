@@ -48,6 +48,7 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val timerInfo =        Input(new TimerBundle)
 
   val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
+  val idle = Output(Bool())
 
 }
 
@@ -66,6 +67,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
 
   io.commitToSq <> ctrlBlock.io.commitToSq
   io.commitToCsr <> ctrlBlock.io.commitToCsr
+  io.idle := ctrlBlock.io.commitToCsr.idle
   ctrlBlock.io.currentPlv := io.currentPlv
   ctrlBlock.io.storeQueueEmpty := io.storeQueueEmpty
   io.ibarFenceReq := ctrlBlock.io.ibarFenceReq

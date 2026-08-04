@@ -19,6 +19,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
     val invalidateICache = Input(Bool())
+    val idle           = Input(Bool())
     //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
     val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
     //MMU
@@ -51,6 +52,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
 
   ifu.io.frontendRedirect.valid := frontendRedirectValid
   ifu.io.frontendRedirect.target := frontendRedirectTarget
+  ifu.io.idle := io.idle
   // BPU接口
   bpu.io.predictReq := ifu.io.predictReq
   bpu.io.predictFire := ifu.io.predictFire

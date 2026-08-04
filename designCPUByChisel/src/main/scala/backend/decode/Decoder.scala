@@ -16,7 +16,7 @@ object DecodeTable {
     n, FuType.none,  //非法指令默认走CSR单元
     AluOp.add, BruOp.none, LsuOp.none, BarOp.none, CsrOp.none, TlbOp.none, MulOp.none, DivOp.none,
     SrcType.none, SrcType.none, ImmType.none,
-    n, n, n, n, n, n, n, n, n, n, y
+    n, n, n, n, n, n, n, n, n, n, n, y
   )
 
   private def ctrl(
@@ -39,13 +39,14 @@ object DecodeTable {
     isBranch: UInt = n,
     isJump: UInt = n,
     isPriv: UInt = n,
+    isIdle: UInt = n,
     waitForward: UInt = n,
     blockBackward: UInt = n,
     flushOnCommit: UInt = n
   ): List[UInt] = List(
     y, fuType, aluOp, bruOp, lsuOp, barOp, csrOp, tlbOp, mulOp, divOp,
     src1Type, src2Type, immType,
-    rfWen, memRead, memWrite, csrWen, isBranch, isJump, isPriv,
+    rfWen, memRead, memWrite, csrWen, isBranch, isJump, isPriv, isIdle,
     waitForward, blockBackward, flushOnCommit, n
   )
 
@@ -119,9 +120,9 @@ object DecodeTable {
     BLTU -> ctrl(FuType.bru, bruOp = BruOp.bltu, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
     BGEU -> ctrl(FuType.bru, bruOp = BruOp.bgeu, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
 
-    CSRRD   -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.read, src1Type = SrcType.zero, src2Type = SrcType.none, csrWen = n),
-    CSRWR   -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.write, src1Type = SrcType.reg, src2Type = SrcType.none, csrWen = y),
-    CSRXCHG -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.xchg, src1Type = SrcType.reg, src2Type = SrcType.reg, csrWen = y),
+    CSRRD   -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.read, src1Type = SrcType.zero, src2Type = SrcType.none, csrWen = n, isPriv = y),
+    CSRWR   -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.write, src1Type = SrcType.reg, src2Type = SrcType.none, csrWen = y, isPriv = y),
+    CSRXCHG -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.xchg, src1Type = SrcType.reg, src2Type = SrcType.reg, csrWen = y, isPriv = y),
     RDCNTVL_W ->
       ctrl(FuType.csr, csrOp = CsrOp.rdcntvl, src1Type = SrcType.zero, src2Type = SrcType.none),
     RDCNTVH_W ->
@@ -131,6 +132,8 @@ object DecodeTable {
     BREAK   -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     SYSCALL -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     I_ERTN  -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    IDLE    -> ctrl(FuType.priv, rfWen = n, isPriv = y, isIdle = y,
+      waitForward = y, blockBackward = y, flushOnCommit = y),
     CPUCFG -> ctrl(FuType.csr, csrOp = CsrOp.cpucfg,
        src1Type = SrcType.reg,
        src2Type = SrcType.none,
@@ -138,7 +141,7 @@ object DecodeTable {
     CACOP -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.cacop,
       src1Type = SrcType.reg, src2Type = SrcType.imm,
       immType = ImmType.si12, rfWen = n, memRead = y,
-      waitForward = y, blockBackward = y, flushOnCommit = y),
+      waitForward = y, blockBackward = y, flushOnCommit = y, isPriv = y),
 
     TLBSRCH -> ctrl(FuType.priv, tlbOp = TlbOp.search,
       src1Type = SrcType.none, src2Type = SrcType.none,
@@ -218,10 +221,11 @@ class Decoder(implicit p: Parameters) extends NSModule {
   val isBranch = decoded(17).asBool
   val isJump   = decoded(18).asBool
   val isPriv   = decoded(19).asBool
-  val waitForward = decoded(20).asBool
-  val blockBackward = decoded(21).asBool
-  val flushOnCommit = decoded(22).asBool
-  val isIllegalBase = decoded(23).asBool
+  val isIdle   = decoded(20).asBool
+  val waitForward = decoded(21).asBool
+  val blockBackward = decoded(22).asBool
+  val flushOnCommit = decoded(23).asBool
+  val isIllegalBase = decoded(24).asBool
 
   // ===========================================================
   // 4. 有效寄存器计算
@@ -235,8 +239,8 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 5. 异常向量拼接 (高位在前，ExceptionCode 常量索引)
   // ===========================================================
-  val isIllegal = (isIllegalBase || (isInvtlb && !isInvtlbLegal)) &&
-    !isSys && !isBrk && !isErtn
+  val isIllegal = isIllegalBase || (isInvtlb && !isInvtlbLegal)
+   //&& !isSys && !isBrk && !isErtn
   
 
   val excpIn = io.inData.exception
@@ -304,9 +308,10 @@ class Decoder(implicit p: Parameters) extends NSModule {
   io.out.ctrl.isBranch := isBranch
   io.out.ctrl.isJump   := isJump
   io.out.ctrl.isPriv   := isPriv
+  io.out.ctrl.isIdle   := isIdle && !isIllegal
   io.out.ctrl.waitForward := waitForward && !isIllegal
   io.out.ctrl.blockBackward := blockBackward && !isIllegal
-  io.out.ctrl.flushOnCommit := flushOnCommit
+  io.out.ctrl.flushOnCommit := flushOnCommit && !isIllegal
   
   io.out.excp     := excp
   io.out.pdInfo  := io.inData.pdInfo

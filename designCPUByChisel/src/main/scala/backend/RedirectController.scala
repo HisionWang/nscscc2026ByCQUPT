@@ -129,9 +129,11 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   // ================================================================
   //  重定向目标地址
   // ================================================================
-  val isTlbExcp = robInfoIsException && robInfoExcpVec.isTlbRefill
-  val isNormalExcp = robInfoIsException && !robInfoExcpVec.has(ERTN)
-  val isErtnExcp = robInfoIsException &&  robInfoExcpVec.has(ERTN)
+  val hasErtnBit = robInfoExcpVec.has(ERTN)
+  val isPureErtnExcp = robInfoExcpVec.excpVec === (1.U << ExcType.ERTN.id).asUInt
+  val isErtnExcp = robInfoIsException && hasErtnBit && isPureErtnExcp
+  val isTlbExcp = robInfoIsException && !isErtnExcp && robInfoExcpVec.isTlbRefill
+  val isNormalExcp = robInfoIsException && !isErtnExcp
 
 //  val robTarget = Mux(robInfoIsException,
 //    Mux(isTlbExcp, io.tlbrentry, io.eentry),
@@ -176,8 +178,11 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   //  CSR 异常写入
   // ================================================================
   val commitException = io.robRedirect.valid && io.robRedirect.isException
-  io.excpEvent.excp := commitException && !io.robRedirect.excp.has(ERTN)
-  io.excpEvent.ertn := commitException && io.robRedirect.excp.has(ERTN)
+  val commitHasErtnBit = io.robRedirect.excp.has(ERTN)
+  val commitIsPureErtn = io.robRedirect.excp.excpVec === (1.U << ExcType.ERTN.id).asUInt
+  val commitIsErtnExcp = commitException && commitHasErtnBit && commitIsPureErtn
+  io.excpEvent.excp := commitException && !commitIsErtnExcp
+  io.excpEvent.ertn := commitIsErtnExcp
   io.excpEvent.badvWrite := commitException && io.robRedirect.excp.needsBadvWrite
   io.excpEvent.tlbehiWrite := commitException && io.robRedirect.excp.needsTlbehiWrite
   io.excpEvent.tlbRefill := commitException && io.robRedirect.excp.isTlbRefill
@@ -186,7 +191,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
 // io.csrExcpPc    := io.robRedirect.pc
 
   val exceptionVaddr = io.robRedirect.excp.badvSelect(
-    io.robRedirect.pc, io.robRedirect.excpVaddr)
+  io.robRedirect.pc, io.robRedirect.excpVaddr)
   io.excpInfo.era := io.robRedirect.pc
   io.excpInfo.ecode := io.robRedirect.excp.ecode
   io.excpInfo.esubcode := io.robRedirect.excp.esubcode
