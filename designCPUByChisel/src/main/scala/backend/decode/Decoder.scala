@@ -135,9 +135,10 @@ object DecodeTable {
        src1Type = SrcType.reg,
        src2Type = SrcType.none,
        rfWen = y, csrWen = n),
-    CACOP -> ctrl(FuType.priv, aluOp = AluOp.add,
+    CACOP -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.cacop,
       src1Type = SrcType.reg, src2Type = SrcType.imm,
-      immType = ImmType.si12, rfWen = n, isPriv = y),
+      immType = ImmType.si12, rfWen = n, memRead = y,
+      waitForward = y, blockBackward = y, flushOnCommit = y),
 
     TLBSRCH -> ctrl(FuType.priv, tlbOp = TlbOp.search,
       src1Type = SrcType.none, src2Type = SrcType.none,

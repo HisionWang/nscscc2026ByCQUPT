@@ -38,6 +38,7 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val excp       = new ExceptionBundle
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
+  val cacop      = new CacopDecode
   val pdInfo     = new PredecodeInfo
   val bpuInfo     = new bpuInfoBundle
  

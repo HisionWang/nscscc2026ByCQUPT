@@ -347,6 +347,10 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.waitForward := false.B
   wbUop.ctrl.blockBackward := false.B
   wbUop.ctrl.flushOnCommit := false.B
+  wbUop.cacop.valid := false.B
+  wbUop.cacop.code := 0.U
+  wbUop.cacop.cacheType := 0.U
+  wbUop.cacop.operation := 0.U
  
   wbUop.pdInfo  := DontCare
   wbUop.bpuInfo := DontCare

@@ -112,7 +112,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
-  frontend.io.invalidateICache := backend.io.commitToCsr.ibar
+  frontend.io.invalidateICache := backend.io.commitToCsr.ibar || backend.io.cacopICacheReq
 
 
   diffDontTouch(backend.io.lsEnq)

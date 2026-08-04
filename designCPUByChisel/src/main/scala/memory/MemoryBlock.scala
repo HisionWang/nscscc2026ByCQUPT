@@ -69,6 +69,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   loadQueue.io.enq.rfWen  := io.lsEnq.toLsqData.ctrl.rfWen
   loadQueue.io.enq.lsuOp  := io.lsEnq.toLsqData.ctrl.lsuOp
   loadQueue.io.enq.fuType := io.lsEnq.toLsqData.ctrl.fuType
+  loadQueue.io.enq.cacop  := io.lsEnq.toLsqData.cacop
  
   storeQueue.io.enq.valid  := io.lsEnq.req.valid && io.lsEnq.req.bits.isStore
   storeQueue.io.enq.robIdx := io.lsEnq.req.bits.robIdx

@@ -93,6 +93,7 @@ object LsuOp {
   val ldhu = 8.U(width.W)
   val llw  = 9.U(width.W)
   val scw  = 10.U(width.W)
+  val cacop = 11.U(width.W)
 }
 
 object BarOp {

@@ -43,6 +43,9 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val llbitSet    = Bool()
   val llbitClear  = Bool()
   val ibar        = Bool()
+  val isCacop     = Bool()
+  val cacopCacheType = UInt(CacopCode.cacheTypeWidth.W)
+  val cacopOperation = UInt(CacopCode.operationWidth.W)
   val excp        = new ExceptionBundle
   val robIdx      = new RobPtr(RobSize)
   val writtenBack = Bool()
@@ -95,6 +98,7 @@ class ROB(implicit p: Parameters) extends NSModule {
     val storeQueueEmpty  = Input(Bool())
     val ibarFenceReq     = Output(Bool())
     val ibarFenceDone    = Input(Bool())
+    val cacopICacheReq   = Output(Bool())
     val writeback        = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
  
     val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
@@ -187,6 +191,9 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).llbitSet     := io.enq.bits(i).llbitSet
       entries(writeIdx).llbitClear   := io.enq.bits(i).llbitClear
       entries(writeIdx).ibar         := io.enq.bits(i).ibar
+      entries(writeIdx).isCacop      := io.enq.bits(i).isCacop
+      entries(writeIdx).cacopCacheType := io.enq.bits(i).cacopCacheType
+      entries(writeIdx).cacopOperation := io.enq.bits(i).cacopOperation
       entries(writeIdx).fuType       := io.enq.bits(i).fuType
       entries(writeIdx).excp         := io.enq.bits(i).excp
       entries(writeIdx).writtenBack  := false.B
@@ -209,6 +216,13 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(idx).writtenBack := true.B
       entries(idx).rfdata      := wb.bits.rfdata
       entries(idx).sqIdx       := wb.bits.sqIdx
+      when(entries(idx).isCacop) {
+        entries(idx).memRead   := false.B
+        entries(idx).memWrite  := false.B
+        entries(idx).memVaddr  := wb.bits.memVaddr
+        entries(idx).memPaddr  := wb.bits.memPaddr
+        entries(idx).storeData := 0.U
+      }
       when(wb.bits.memValid) {
         entries(idx).memRead    := wb.bits.isMemRead
         entries(idx).memWrite   := wb.bits.isMemWrite
@@ -232,9 +246,17 @@ class ROB(implicit p: Parameters) extends NSModule {
   val commitCandidates = Wire(Vec(CommitWidth, new RobEntryInner))
 
   val headEntry = entries(deqPtr.value)
+  val headIsDcacheCacop = headEntry.isCacop &&
+    headEntry.cacopCacheType === CacopCode.dCache &&
+    headEntry.cacopOperation =/= CacopCode.implementationDefined
+  val headIsIcacheCacop = headEntry.isCacop &&
+    headEntry.cacopCacheType === CacopCode.iCache &&
+    headEntry.cacopOperation =/= CacopCode.implementationDefined
   io.ibarFenceReq := headEntry.valid && headEntry.writtenBack &&
-    headEntry.ibar && io.storeQueueEmpty &&
+    (headEntry.ibar || headIsDcacheCacop) && io.storeQueueEmpty &&
     !headEntry.excp.hasException
+  io.cacopICacheReq := headEntry.valid && headEntry.writtenBack &&
+    headIsIcacheCacop && io.storeQueueEmpty && !headEntry.excp.hasException
   
   val canConsider = Wire(Vec(CommitWidth, Bool()))
   val isExcpSlot  = Wire(Vec(CommitWidth, Bool()))
@@ -258,8 +280,11 @@ class ROB(implicit p: Parameters) extends NSModule {
         canConsider(j) && commitCandidates(j).memWrite)).asUInt.orR
     }
     val ibarReady = !entry.ibar || io.ibarFenceDone
+    val cacopReady = !entry.isCacop ||
+      entry.cacopOperation === CacopCode.implementationDefined ||
+      entry.cacopCacheType =/= CacopCode.dCache || io.ibarFenceDone
     val storeReady = !entry.waitStore ||
-      (io.storeQueueEmpty && !olderStoreCommitting && ibarReady) || hasExcp
+      (io.storeQueueEmpty && !olderStoreCommitting && ibarReady && cacopReady) || hasExcp
     val thisReady = entry.valid && entry.writtenBack &&
       storeReady && !inFlushRange(idx)
     val isCsrW    = entry.csrWen && !hasExcp

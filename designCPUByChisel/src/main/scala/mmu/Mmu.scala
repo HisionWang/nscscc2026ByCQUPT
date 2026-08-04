@@ -180,7 +180,8 @@ class Mmu(implicit p: Parameters) extends NSModule {
     def memAddrMisaligned(vaddr: UInt, lsuOp: UInt): Bool = {
       val halfAccess = lsuOp === LsuOp.ldh || lsuOp === LsuOp.ldhu || lsuOp === LsuOp.sth
       val wordAccess = lsuOp === LsuOp.ldw || lsuOp === LsuOp.stw
-      (halfAccess && vaddr(0)) || (wordAccess && (vaddr(1, 0) =/= 0.U))
+      Mux(lsuOp === LsuOp.cacop, false.B,
+        (halfAccess && vaddr(0)) || (wordAccess && (vaddr(1, 0) =/= 0.U)))
     }
 
     val reqVaddr = reqBuffer.vaddr

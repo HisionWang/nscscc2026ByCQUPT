@@ -58,7 +58,8 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   io.mmuReq.bits.lsuOp := MuxLookup(s1_data.uop.ctrl.lsuOp,
     s1_data.uop.ctrl.lsuOp)(Seq(
       LsuOp.llw -> LsuOp.ldw,
-      LsuOp.scw -> LsuOp.stw
+      LsuOp.scw -> LsuOp.stw,
+      LsuOp.cacop -> LsuOp.cacop
     ))
 
   //io.mmuReq.bits.sqIdx := s1_data.uop.sqIdx // 携带 Sq 编号，MMU 会原样送回

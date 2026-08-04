@@ -40,6 +40,7 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val storeQueueEmpty = Input(Bool())
   val ibarFenceReq = Output(Bool())
   val ibarFenceDone = Input(Bool())
+  val cacopICacheReq = Output(Bool())
 
   val excpEvent           = Output(new ExcpEvent)
   val excpInfo            = Output(new ExcpInfo)
@@ -69,6 +70,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   ctrlBlock.io.storeQueueEmpty := io.storeQueueEmpty
   io.ibarFenceReq := ctrlBlock.io.ibarFenceReq
   ctrlBlock.io.ibarFenceDone := io.ibarFenceDone
+  io.cacopICacheReq := ctrlBlock.io.cacopICacheReq
 
   io.lsEnq <> ctrlBlock.io.lsEnq
   val scheduler   = Module(new Scheduler)

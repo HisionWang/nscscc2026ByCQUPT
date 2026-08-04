@@ -447,6 +447,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.excp       := stgData(i).excp
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
+    u.cacop      := stgData(i).cacop
     u.pdInfo     := stgData(i).pdInfo
     u.bpuInfo     := stgData(i).bpuInfo
     u.ldst       := stgData(i).ldst
@@ -586,10 +587,13 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).flushOnCommit := stgData(i).ctrl.flushOnCommit
     io.robEnq.bits(i).isPriv        := stgData(i).ctrl.isPriv
     io.robEnq.bits(i).waitStore     := stgData(i).ctrl.barOp =/= BarOp.none ||
-      stgData(i).ctrl.lsuOp === LsuOp.scw
+      stgData(i).ctrl.lsuOp === LsuOp.scw || stgData(i).cacop.valid
     io.robEnq.bits(i).llbitSet      := stgData(i).ctrl.lsuOp === LsuOp.llw
     io.robEnq.bits(i).llbitClear    := stgData(i).ctrl.lsuOp === LsuOp.scw
     io.robEnq.bits(i).ibar          := stgData(i).ctrl.barOp === BarOp.ibar
+    io.robEnq.bits(i).isCacop       := stgData(i).cacop.valid
+    io.robEnq.bits(i).cacopCacheType := stgData(i).cacop.cacheType
+    io.robEnq.bits(i).cacopOperation := stgData(i).cacop.operation
     io.robEnq.bits(i).excp          := stgData(i).excp
     io.robEnq.bits(i).robIdx        := stgData(i).robIdx
 

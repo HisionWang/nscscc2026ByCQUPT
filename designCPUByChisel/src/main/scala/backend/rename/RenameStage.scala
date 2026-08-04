@@ -275,6 +275,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     u.excp       := stgData(i).excp
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
+    u.cacop      := stgData(i).cacop
     u.pdInfo     := stgData(i).pdInfo
     u.bpuInfo    := stgData(i).bpuInfo
  

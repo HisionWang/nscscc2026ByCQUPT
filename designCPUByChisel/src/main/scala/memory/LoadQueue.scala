@@ -33,6 +33,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val pdst         = UInt(PhyRegIdxWidth.W)
     val rfWen        = Bool()
     val fuType       = UInt(FuType.width.W)
+    val cacop        = new CacopDecode
   }
  
   val io = IO(new Bundle {
@@ -48,6 +49,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       val rfWen  = Input(Bool())
       val lsuOp  = Input(UInt(LsuOp.width.W))
       val fuType = Input(UInt(FuType.width.W))
+      val cacop  = Input(new CacopDecode)
     }
  
     val addrWrite = new Bundle {
@@ -131,6 +133,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).pdst         := io.enq.pdst
     entries(idx).rfWen        := io.enq.rfWen
     entries(idx).fuType       := io.enq.fuType
+    entries(idx).cacop        := io.enq.cacop
     enqPtr := enqPtr + 1.U
   }
  
@@ -159,6 +162,11 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     entries(idx).paddr     := io.addrWrite.paddr
     entries(idx).excp      := io.addrWrite.excp
     entries(idx).cacheable := io.addrWrite.cacheable
+    when(entries(idx).cacop.valid) {
+      entries(idx).issued := true.B
+      entries(idx).dataValid := true.B
+      entries(idx).data := 0.U
+    }
   }
  
   // ================================================================
@@ -272,7 +280,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
  
                 lqCanIssue(lqI) := false.B  // 有冲突一律不作为候选
  
-                when(hasSingleConflict) {
+                when(hasSingleConflict && !e.cacop.valid) {
                   val singleConflictIdx = PriorityEncoder(sqOlderAddrConflict)
                   val singleSq = io.sqForwardInfo(singleConflictIdx)
  
@@ -324,6 +332,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val e = entries(idx)
     issueCandidates(i) := e.valid && e.addrValid && !e.issued &&
                           !e.excp.hasException && !e.alreadyFlush &&
+                          !e.cacop.valid &&
                           lqCanIssue(idx)
   }
  
@@ -382,11 +391,12 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val wbOffset       = PriorityEncoder(wbCandidates)
   val wbIdx          = (deqPtr.value + wbOffset)(log2Ceil(LqSize) - 1, 0)
   val wbEntry        = entries(wbIdx)
+  val wbIsCacop      = wbEntry.cacop.valid
  
   io.outResult.valid                := hasWbCandidate
   io.outResult.bits.data            := wbEntry.data
-  io.outResult.bits.memValid        := true.B
-  io.outResult.bits.memRead         := true.B
+  io.outResult.bits.memValid        := !wbIsCacop
+  io.outResult.bits.memRead         := !wbIsCacop
   io.outResult.bits.memWrite        := false.B
   io.outResult.bits.memVaddr        := wbEntry.vaddr
   io.outResult.bits.memPaddr        := wbEntry.paddr
@@ -438,7 +448,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.lsuOp    := wbEntry.lsuOp
   wbUop.ctrl.barOp    := BarOp.none
   wbUop.ctrl.rfWen    := wbEntry.rfWen
-  wbUop.ctrl.memRead  := true.B
+  wbUop.ctrl.memRead  := !wbIsCacop
   wbUop.ctrl.memWrite := false.B
   wbUop.ctrl.aluOp    := 0.U
   wbUop.ctrl.bruOp    := 0.U
@@ -456,6 +466,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.waitForward := false.B
   wbUop.ctrl.blockBackward := false.B
   wbUop.ctrl.flushOnCommit := false.B
+  wbUop.cacop := wbEntry.cacop
  
   wbUop.pdInfo  := DontCare
   wbUop.bpuInfo := DontCare
