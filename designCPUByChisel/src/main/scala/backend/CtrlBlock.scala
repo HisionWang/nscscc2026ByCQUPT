@@ -227,7 +227,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.load.valid := robCommit.memRead
       diffCommit.load.paddr := robCommit.memPaddr
       diffCommit.load.vaddr := robCommit.memVaddr
-      diffCommit.store.valid := robCommit.memWrite
+      diffCommit.store.valid := robCommit.storeValid
       diffCommit.store.paddr := robCommit.memPaddr
       diffCommit.store.vaddr := robCommit.memVaddr
       diffCommit.store.data  := robCommit.storeData

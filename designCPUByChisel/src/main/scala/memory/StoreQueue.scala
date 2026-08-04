@@ -281,6 +281,8 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.memStoreData    := Mux(wbEntry.lsuOp === LsuOp.stb,
                                            wbEntry.data << (storeByteOff * 8.U),
                                            wbEntry.data << (wbEntry.paddr(1) * 16.U))
+  io.outResult.bits.storeValid := !wbEntry.excp.hasException &&
+    (!wbIsSc || wbEntry.scSuccess)
  
   io.outResult.bits.redirect.valid  := DontCare
   io.outResult.bits.redirect.bits.valid  := DontCare

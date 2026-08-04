@@ -29,6 +29,7 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val memVaddr    = UInt(XLEN.W)
   val memPaddr    = UInt(XLEN.W)
   val storeData   = UInt(XLEN.W)
+  val storeValid  = Bool()
   val sqIdx       = new SqPtr(SqSize)
   val csrWen      = Bool()
   val csrOp       = UInt(CsrOp.width.W)
@@ -182,6 +183,7 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).memVaddr     := 0.U
       entries(writeIdx).memPaddr     := 0.U
       entries(writeIdx).storeData    := 0.U
+      entries(writeIdx).storeValid   := false.B
       entries(writeIdx).csrWen       := io.enq.bits(i).csrWen
       entries(writeIdx).csrWaddr     := io.enq.bits(i).csrWaddr
       entries(writeIdx).csrOp        := io.enq.bits(i).csrOp
@@ -232,6 +234,7 @@ class ROB(implicit p: Parameters) extends NSModule {
         entries(idx).memVaddr   := wb.bits.memVaddr
         entries(idx).memPaddr   := wb.bits.memPaddr
         entries(idx).storeData  := wb.bits.memStoreData
+        entries(idx).storeValid := wb.bits.storeValid
       }
       entries(idx).csrWdata := wb.bits.csrWdata
       entries(idx).csrTimer := wb.bits.csrTimer

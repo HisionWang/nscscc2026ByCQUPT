@@ -94,9 +94,11 @@ object DecodeTable {
     LD_HU -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.ldhu, src2Type = SrcType.imm, immType = ImmType.si12, memRead = y),
     LL_W  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.llw,
       src2Type = SrcType.imm, immType = ImmType.si14, memRead = y,
+      waitForward = y, blockBackward = y,
       flushOnCommit = y),
     SC_W  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.scw,
       src2Type = SrcType.imm, immType = ImmType.si14, memWrite = y,
+      waitForward = y, blockBackward = y,
       flushOnCommit = y),
 
     // 只计算地址，不分配LSQ，不执行, 无异常

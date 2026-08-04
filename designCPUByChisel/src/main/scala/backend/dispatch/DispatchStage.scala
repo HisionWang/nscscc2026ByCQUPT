@@ -605,6 +605,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).memVaddr      := DontCare
     io.robEnq.bits(i).memPaddr      := DontCare
     io.robEnq.bits(i).storeData     := DontCare
+    io.robEnq.bits(i).storeValid    := DontCare
     io.robEnq.bits(i).sqIdx         := DontCare
     io.robEnq.bits(i).csrWdata      := DontCare
     io.robEnq.bits(i).csrTimer      := DontCare

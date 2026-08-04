@@ -200,7 +200,7 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestStoreEvent.io.clock := clock
     difftestStoreEvent.io.coreid := 0.U
     difftestStoreEvent.io.index := i.U
-    difftestStoreEvent.io.valid := commit.valid && commit.store.valid
+    difftestStoreEvent.io.valid := commit.valid && commit.store.valid && !commit.excpFlush
     difftestStoreEvent.io.storePAddr := zeroExt64(commit.store.paddr)
     difftestStoreEvent.io.storeVAddr := zeroExt64(commit.store.vaddr)
     difftestStoreEvent.io.storeData := zeroExt64(commit.store.data)

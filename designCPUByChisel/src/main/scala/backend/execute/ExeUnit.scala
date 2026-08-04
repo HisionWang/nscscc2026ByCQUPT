@@ -24,6 +24,7 @@ class ExeResult(implicit p: Parameters) extends NSBundle {
   val memVaddr      = UInt(XLEN.W)
   val memPaddr      = UInt(XLEN.W)
   val memStoreData  = UInt(XLEN.W)
+  val storeValid    = Bool()
  
   // CSR 写回信息（提交时使用）
   val csrWen        = Bool()
@@ -303,6 +304,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   io.outResult.bits.memStoreData  := Mux1H(Seq(fastWins -> fastMemStoreData) ++
     (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
     (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
+  io.outResult.bits.storeValid := false.B
  
   // ── CSR 字段 ──
   io.outResult.bits.csrWen   := Mux1H(Seq(fastWins -> fastCsrWen) ++

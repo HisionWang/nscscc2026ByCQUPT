@@ -219,6 +219,7 @@ class RobWriteback(implicit p: Parameters) extends NSBundle {
   val memVaddr  = UInt(XLEN.W)
   val memPaddr  = UInt(XLEN.W)
   val memStoreData  = UInt(XLEN.W)
+  val storeValid  = Bool()
   val rfdata  = UInt(XLEN.W)
 
   val csrWen      = Bool()
