@@ -21,6 +21,10 @@ TOP_V     := $(RTL_DIR)/core_top.v
 # 	@mkdir -p $(RTL_DIR)
 # 	@$(MILL) -i $(MODULE).runMain $(CORE_TOP)
 
+s:
+	sbt "runMain nscscc.CoreGen simu"
+
+
 # 路径变量（强烈建议统一在这里管理）
 ENV_SCRIPT   := ..
 SBT_DIR      := .

@@ -38,7 +38,6 @@ class CircularQueueIO[T <: Data](gen: T, entries: Int, enqWidth: Int, deqWidth: 
  
   /** 入队端口：enqWidth路，每路都是Decoupled（带握手的） */
   val enq  = Vec(enqWidth, Flipped(DecoupledIO(gen)))
- 
   /** 出队端口：deqWidth路，每路都是Decoupled */
   val deq  = Vec(deqWidth, DecoupledIO(gen))
  
