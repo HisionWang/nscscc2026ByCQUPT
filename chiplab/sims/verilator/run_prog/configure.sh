@@ -477,9 +477,11 @@ do
         linux) 
             RUN_FUNC=n
             RUN_C=y
-            DEAD_CLOCK_EN=y
+            DEAD_CLOCK_EN=n
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
+            SIMU_TRACE=n
+            THREAD=20
             mkdir -p ./obj/
             mkdir -p ./log/
             ;;
