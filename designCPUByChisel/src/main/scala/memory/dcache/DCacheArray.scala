@@ -36,6 +36,8 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
     val hasDirty = Output(Bool())
     val dirtyIdx = Output(UInt(idxBits.W))
     val dirtyWay = Output(UInt(wayBits.W))
+
+    val dcacheInvalid = Input(Bool())
   })
   // 在 metaBRAMs/dataBRAMs 声明之前插入
   val validArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
@@ -111,6 +113,14 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
       metaBRAMs(way).wr_en   := true.B
       metaBRAMs(way).wr_addr := io.metaWrite.idx
       metaBRAMs(way).wr_data := mwData
+    }
+  }
+
+
+
+    when(io.dcacheInvalid) {
+    for (way <- 0 until nWays) {
+      validArray(way) := 0.U
     }
   }
 }

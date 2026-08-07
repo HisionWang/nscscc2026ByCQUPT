@@ -419,7 +419,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
   array.io.metaWrite.idx       := Mux(fenceMetaWriteActive, fenceSet,
     curPaddr(blockOffBits + idxBits - 1, blockOffBits))
   array.io.metaWrite.way       := Mux(fenceMetaWriteActive, fenceWay, curVictimWay)
-  array.io.metaWrite.metaValid := fenceMetaWriteActive
+  array.io.metaWrite.metaValid := false.B //fenceMetaWriteActive
   array.io.metaWrite.dirty     := false.B
   array.io.metaWrite.tag       := Mux(fenceMetaWriteActive, fenceWbTag, 0.U)
  
@@ -488,6 +488,9 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
         curRobIdx   := mshr.io.lsRobIdx
         curPaddr    := mshr.io.lsPaddr
         curLsuOp    := mshr.io.lsLsuOp   
+        curIsLoad   := true.B
+        curIsStore  := false.B
+        curCacheable := false.B
         curIsReplay := true.B
         curUcData   := mshr.io.lsUncacheData
         state       := s_uc_load
@@ -495,6 +498,12 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
       }.elsewhen(idle_doUcStore) {
         curSqIdx    := mshr.io.lsSqIdx
         curLsIdx    := mshr.io.lsIdx
+        curPaddr    := mshr.io.lsPaddr
+        curLsuOp    := mshr.io.lsLsuOp
+        curStoreData := mshr.io.lsStoreData
+        curIsLoad   := false.B
+        curIsStore  := true.B
+        curCacheable := false.B
         curIsReplay := true.B
         state       := s_uc_store
       }.elsewhen(idle_doReplay) {
@@ -709,6 +718,8 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
       }
     }
   }
+
+  array.io.dcacheInvalid := fenceState === f_done
  
   // ================================================================
   //  调试

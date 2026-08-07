@@ -119,7 +119,9 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
  
   val canAllocFirst  = hasFreePrim && hasFreeSec && !setConflict
   val canAllocMerge  = hasFreeSec
-  val canAllocUncache = hasFreePrim
+  // Uncache requests still need a secondary LS slot to carry completion
+  // metadata back into the DCache replay path.
+  val canAllocUncache = hasFreePrim && hasFreeSec
  
   val canAllocReq = Mux(reqIsUncache, canAllocUncache,
                     Mux(isFirstMissReq, canAllocFirst, canAllocMerge))

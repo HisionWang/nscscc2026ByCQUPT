@@ -84,6 +84,9 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     val empty         = Output(Bool())
     val enqPtr        = Output(UInt(log2Ceil(LqSize).W))
     val lqHasEntries  = Output(UInt(log2Ceil(LqSize + 1).W))
+    val committedStoreEmpty = Input(Bool())
+    val robHead         = Input(Valid(new RobPtr(RobSize)))
+
   })
  
   // ================================================================
@@ -236,7 +239,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       //  情况 1：Uncache load
       // ═══════════════════════════════════════
       when(isUncache) {
-        lqCanIssue(lqI)  := !hasOlderActive
+        lqCanIssue(lqI)  := !hasOlderActive && (lqI.U === deqPtr.value) && io.committedStoreEmpty && io.robHead.valid && io.robHead.bits === e.robIdxFull
         lqDoForward(lqI) := false.B
       }
  
@@ -342,7 +345,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   val issueEntry        = entries(issueIdx)
  
   // ── 3c. DCache 请求 ──
-  io.dcacheReq.valid           := hasIssueCandidate && !isNewer(issueIdx)
+  io.dcacheReq.valid           := hasIssueCandidate && !isNewer(issueIdx) 
   io.dcacheReq.bits.lqIdx      := issueIdx
   io.dcacheReq.bits.paddr      := issueEntry.paddr
   io.dcacheReq.bits.cacheable  := issueEntry.cacheable

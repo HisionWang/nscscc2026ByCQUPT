@@ -151,7 +151,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   val count = enqPtr.distanceTo(deqPtr)
   io.robCount := count
   io.head.valid := entries(deqPtr.value).valid
-  io.head.bits  := entries(deqPtr.value).robIdx
+  io.head.bits  := deqPtr //entries(deqPtr.value).robIdx
  
   // ================================================================
   //  2. 入队逻辑 (Enqueue)

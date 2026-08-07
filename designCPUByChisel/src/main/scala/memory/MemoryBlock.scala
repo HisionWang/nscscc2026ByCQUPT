@@ -53,6 +53,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     }))
  
     val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
+    val robHead         = Input(Valid(new RobPtr(RobSize)))
   })
  
   val loadQueue  = Module(new LoadQueue)
@@ -93,6 +94,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   loadQueue.io.sqEmpty        := storeQueue.io.sqEmpty
   io.storeQueueEmpty          := storeQueue.io.committedStoreEmpty
   loadQueue.io.sqForwardInfo  <> storeQueue.io.sqForwardInfo  // ★ 新增
+
+  loadQueue.io.robHead := io.robHead
  
   // ── 执行单元地址/数据通道路由 ──
   val addrChannel = io.fromExeMmuResult
@@ -123,6 +126,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   loadQueue.io.addrWrite.paddr     := addrChannel.bits.mmuRes.paddr
   loadQueue.io.addrWrite.cacheable := addrChannel.bits.mmuRes.cacheable
   loadQueue.io.addrWrite.excp      := excp
+  loadQueue.io.committedStoreEmpty := storeQueue.io.committedStoreEmpty
  
   storeQueue.io.addrWrite.valid     := addrFire && addrUop.isSta
   storeQueue.io.addrWrite.idx       := addrUop.sqIdx.value

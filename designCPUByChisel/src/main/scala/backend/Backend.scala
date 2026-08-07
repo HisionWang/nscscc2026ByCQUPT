@@ -19,6 +19,7 @@ import nscscc.csr._
 import nscscc.backend.rob._
 import nscscc.frontend.BpuUpdateReq
 import nscscc.mmu._
+import firrtl.passes.createMask
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
   val redirect = Output(new RedirectInfo)
@@ -49,6 +50,7 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
 
   val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
   val idle = Output(Bool())
+  val robHead         = Output(Valid(new RobPtr(RobSize)))
 
 }
 
@@ -63,6 +65,8 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   io.excpEvent <> ctrlBlock.io.excpEvent
   io.excpInfo <> ctrlBlock.io.excpInfo
   io.redirectAddrFromCsr <> ctrlBlock.io.redirectAddrFromCsr
+
+  io.robHead := ctrlBlock.io.robHead
   
 
   io.commitToSq <> ctrlBlock.io.commitToSq

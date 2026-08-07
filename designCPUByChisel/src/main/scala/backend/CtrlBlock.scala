@@ -67,6 +67,7 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   val extInt   = Input(Bool())
 
   val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
+  val robHead         = Output(Valid(new RobPtr(RobSize)))
 }
  
 class CtrlBlock(implicit p: Parameters) extends NSModule {
@@ -177,6 +178,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   rob.io.robRollbackTarget := redirectController.io.robRollbackTarget
   //回滚响应
   redirectController.io.robRollbackDone := rob.io.robRollbackDone
+  
+  io.robHead := rob.io.head
 
 
  

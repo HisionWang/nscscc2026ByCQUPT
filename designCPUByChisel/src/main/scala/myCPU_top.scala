@@ -135,6 +135,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
 
   memory.io.toWbResult <> backend.io.fromMemResult
+  memory.io.robHead <> backend.io.robHead
 
   
   for (i <- 0 until CommitWidth) {

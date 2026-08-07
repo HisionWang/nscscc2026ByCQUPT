@@ -191,7 +191,7 @@ class AXI3Crossbar2to1(implicit p: Parameters) extends NSModule {
   io.in_dcache.r.data.rresp := io.out.r.data.rresp
   io.in_dcache.r.data.rlast := io.out.r.data.rlast
  
-  io.out.r.rready := Mux(rToIcache, io.in_icache.r.rready, io.in_dcache.r.rready)
+  io.out.r.rready := io.in_icache.r.rready || io.in_dcache.r.rready //Mux(rToIcache, io.in_icache.r.rready, io.in_dcache.r.rready)
  
   // ══════════════════════════════════════════════════════════════
   //  B 通道：基于 bid 路由响应（与原设计一致）
@@ -207,5 +207,5 @@ class AXI3Crossbar2to1(implicit p: Parameters) extends NSModule {
   io.in_dcache.b.data.bid   := io.out.b.data.bid
   io.in_dcache.b.data.bresp := io.out.b.data.bresp
  
-  io.out.b.bready := Mux(bToIcache, io.in_icache.b.bready, io.in_dcache.b.bready)
+  io.out.b.bready := io.in_icache.b.bready || io.in_dcache.b.bready // Mux(bToIcache, io.in_icache.b.bready, io.in_dcache.b.bready)
 }

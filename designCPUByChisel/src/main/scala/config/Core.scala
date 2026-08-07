@@ -58,7 +58,7 @@ trait HasCoreParameters {
   val blockOffBits = log2Ceil(blockBytes)
   val tagBits     = 32 - idxBits - blockOffBits
 
-  val nMshrEntries: Int = 4
+  val nMshrEntries: Int = 2
   val icacheAxiMissId : Int = nMshrEntries
   val icacheAxiNucacheId : Int = icacheAxiMissId + 1
 

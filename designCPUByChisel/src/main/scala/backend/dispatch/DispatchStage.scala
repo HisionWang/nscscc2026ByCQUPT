@@ -240,7 +240,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     val hasOlderMemBlocked = if (i == 0) false.B else {
       VecInit((0 until i).map(j =>
         // 更老的 load 因 LQ 满而阻塞
-        //(isLoadLane(j)  && io.dispatchLqFull) ||
+        (isLoadLane(j)  && io.dispatchLqFull) ||
         // 更老的 store 因 SQ 满或 IQ5 满而阻塞
         (isStoreLane(j) && (io.dispatchSqFull || !q5Avail))
       )).asUInt.orR
