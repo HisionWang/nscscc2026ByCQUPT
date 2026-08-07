@@ -239,7 +239,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       //  情况 1：Uncache load
       // ═══════════════════════════════════════
       when(isUncache) {
-        lqCanIssue(lqI)  := !hasOlderActive && (lqI.U === deqPtr.value) && io.committedStoreEmpty && io.robHead.valid && io.robHead.bits === e.robIdxFull
+        lqCanIssue(lqI)  := !hasOlderActive && io.robHead.bits === e.robIdxFull //&& (lqI.U === deqPtr.value) && io.committedStoreEmpty && io.robHead.valid 
         lqDoForward(lqI) := false.B
       }
  

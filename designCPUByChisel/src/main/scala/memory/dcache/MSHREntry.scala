@@ -175,7 +175,17 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
   io.ar.bits.arid    := io.id
   io.ar.bits.araddr  := Mux(state === s_uc_ar, reqPaddr, refillAddr)
   io.ar.bits.arlen   := Mux(state === s_uc_ar, 0.U, (burstBeats - 1).U)
-  io.ar.bits.arsize  := 2.U
+  //io.ar.bits.arsize  := 2.U
+  io.ar.bits.arsize  := Mux(state === s_uc_ar,
+    MuxLookup(reqLsuOp, 2.U)(Seq(
+      LsuOp.ldb  -> 0.U,
+      LsuOp.ldbu -> 0.U,
+      LsuOp.ldh  -> 1.U,
+      LsuOp.ldhu -> 1.U,
+      LsuOp.ldw  -> 2.U
+    )),
+    2.U // Cache Refill 始终保持 4B/beat
+  )
   io.ar.bits.arburst := Mux(state === s_uc_ar, 0.U, 1.U)
   io.ar.bits.arlock  := 0.U
   io.ar.bits.arcache := 0.U
