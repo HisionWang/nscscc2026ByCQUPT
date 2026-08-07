@@ -9,7 +9,7 @@ class CpuCfg(implicit p: Parameters) extends NSModule {
     val addr  = Input(UInt(32.W))   // rj 的值，即配置字号
     val rdata = Output(UInt(32.W))  // 读出的配置信息字
   })
- 
+
   // 依据当前 CPU 定义填写：
   // - LA32R
   // - 实现了带页表的 MMU
@@ -57,7 +57,7 @@ class CpuCfg(implicit p: Parameters) extends NSModule {
   val L3_WAY_MINUS1      = 0.U(16.W)
   val L3_INDEX_LOG2      = 0.U(8.W)
   val L3_LINESIZE_LOG2   = 0.U(7.W)
- 
+
   // ── 配置信息字拼接（严格按照龙芯手册位域） ──
   val cfg_0x1  = Cat(0.U(12.W), VALEN, PALEN, 0.U(1.W), PGMMU, ARCH)
   val cfg_0x2  = Cat(0.U(29.W), FP_DP, FP_SP, FP)

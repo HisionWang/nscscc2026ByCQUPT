@@ -163,6 +163,10 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     if (width >= 64) x(63, 0) else Cat(0.U((64 - width).W), x)
   }
 
+  private def isSyscallCommit(commit: DifftestCommitInfo): Bool =
+    commit.excpFlush && DifftestUtils.isSyscall(commit.instr) &&
+      commit.csrEcode === ExcType.ecodeInt(ExcType.SYS).U
+
   val cmt = RegInit(0.U.asTypeOf(Vec(CommitWidth, new DifftestCommitInfo)))
   val cmtTimer64 = RegInit(0.U(64.W))
   cmt := io.commit
@@ -181,8 +185,8 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestInstrCommit.io.coreid := 0.U
     difftestInstrCommit.io.index := i.U
 
-    //在difftest模块分支时才阻断
-    difftestInstrCommit.io.valid := commit.valid && ( !cmt(i).excpFlush || cmt(i).ertnFlush )
+    difftestInstrCommit.io.valid := commit.valid &&
+      (!commit.excpFlush || commit.ertnFlush || isSyscallCommit(commit))
     difftestInstrCommit.io.pc := zeroExt64(commit.pc)
     difftestInstrCommit.io.instr := commit.instr
     difftestInstrCommit.io.skip := false.B
@@ -214,7 +218,9 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestLoadEvent.io.vaddr := zeroExt64(commit.load.vaddr)
   }
 
-  val excpValids = VecInit(cmt.map( c => c.valid && (c.excpFlush || c.ertnFlush)))
+  val excpValids = VecInit(cmt.map { c =>
+    c.valid && ((c.excpFlush && !isSyscallCommit(c)) || c.ertnFlush)
+  })
   val excpCommit = PriorityMux(excpValids, cmt)
   val difftestExcpEvent = Module(new DifftestExcpEvent)
   difftestExcpEvent.io.clock := clock

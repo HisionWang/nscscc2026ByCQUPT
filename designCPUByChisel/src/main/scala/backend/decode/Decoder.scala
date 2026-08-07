@@ -132,7 +132,8 @@ object DecodeTable {
     RDCNTID_W ->
       ctrl(FuType.csr, csrOp = CsrOp.rdcntid, src1Type = SrcType.zero, src2Type = SrcType.none, rfWen = y),
     BREAK   -> ctrl(FuType.priv, rfWen = n, isPriv = y),
-    SYSCALL -> ctrl(FuType.priv, rfWen = n, isPriv = y),
+    SYSCALL -> ctrl(FuType.priv, rfWen = n, isPriv = y,
+      waitForward = y, blockBackward = y, flushOnCommit = y),
     I_ERTN  -> ctrl(FuType.priv, rfWen = n, isPriv = y),
     IDLE    -> ctrl(FuType.priv, rfWen = n, isPriv = y, isIdle = y,
       waitForward = y, blockBackward = y, flushOnCommit = y),
