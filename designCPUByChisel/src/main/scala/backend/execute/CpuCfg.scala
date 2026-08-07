@@ -13,7 +13,7 @@ class CpuCfg(implicit p: Parameters) extends NSModule {
   // ── 根据你提供的 localparam 定义配置常量 ──
   // 若你的 CPU 有 ICache / DCache / MMU 等，修改这些值即可
   val ARCH            = 2.U(2.W)    // 00=LA32, 01=LA64, 10=LA32R
-  val PGMMU           = 0.U(1.W)    // 是否实现页表映射MMU
+  val PGMMU           = 1.U(1.W)    // 是否实现页表映射MMU
   val PALEN           = 0x1f.U(8.W) // 物理地址位数
   val VALEN           = 0x1f.U(8.W) // 虚拟地址位数
   val FP              = 0.U(1.W)
