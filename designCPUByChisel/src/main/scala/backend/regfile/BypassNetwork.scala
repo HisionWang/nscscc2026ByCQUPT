@@ -65,10 +65,19 @@ class BypassNetwork(implicit p: Parameters) extends NSModule with HasCoreParamet
     val src1PdstMatch = io.bypassResults(src1ExeIdx).pdst === io.inReqs(ch).bits.uop.prs1
     val src2PdstMatch = io.bypassResults(src2ExeIdx).pdst === io.inReqs(ch).bits.uop.prs2
     
+    val lastCycleHasBlock = RegInit(false.B)
+
     val src1UseBypass = io.inReqs(ch).bits.src1DataSource === DataSource.exeUnit &&
-                        src1BypassV // && src1PdstMatch
+                        src1BypassV  && !lastCycleHasBlock
     val src2UseBypass = io.inReqs(ch).bits.src2DataSource === DataSource.exeUnit &&
-                        src2BypassV // && src2PdstMatch
+                        src2BypassV  && !lastCycleHasBlock
+    
+    //不必考虑被刷时的处理，因为valid的在被刷的那个周期会拉低
+    when (io.outReqs(ch).valid && !io.outReqs(ch).ready) {
+      lastCycleHasBlock := true.B
+    } .otherwise {
+      lastCycleHasBlock := false.B
+    }
 
     val src1err = src1UseBypass && !src1PdstMatch
     val src2err = src2UseBypass && !src2PdstMatch
