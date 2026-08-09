@@ -16,6 +16,7 @@ class DCache(implicit p: Parameters) extends NSModule {
       val lqIdx     = UInt(log2Ceil(LqSize).W)
       val robIdx    = new RobPtr(RobSize)
       val paddr     = UInt(XLEN.W)
+      val vaddr     = UInt(XLEN.W)
       val cacheable = Bool()
       val lsuOp     = UInt(LsuOp.width.W)
     }))
@@ -25,6 +26,7 @@ class DCache(implicit p: Parameters) extends NSModule {
     })
     val storeReq = Flipped(Decoupled(new Bundle {
       val paddr     = UInt(XLEN.W)
+      val vaddr     = UInt(XLEN.W)
       val data      = UInt(XLEN.W)
       val lsuOp     = UInt(LsuOp.width.W)
       val cacheable = Bool()
@@ -298,6 +300,7 @@ def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt,
  
   // LSU 请求信息（组合信号）
   val lsuPaddr     = Mux(loadSelected, io.loadReq.bits.paddr, io.storeReq.bits.paddr)
+  val lsuVaddr     = Mux(loadSelected, io.loadReq.bits.vaddr, io.storeReq.bits.vaddr)
   val lsuSetIdx    = lsuPaddr(blockOffBits + idxBits - 1, blockOffBits)
   val lsuIsUncache = Mux(loadSelected, !io.loadReq.bits.cacheable, !io.storeReq.bits.cacheable)
  

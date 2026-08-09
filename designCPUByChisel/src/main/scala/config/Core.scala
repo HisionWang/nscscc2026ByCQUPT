@@ -43,8 +43,8 @@ trait HasCoreParameters {
   val fetchOffsetBits: Int = log2Ceil(fetchWidth)
 
   /*---- Cache相关 ----*/
-  // 64KB 4路组相联
-  val  nSets:      Int = 256
+
+  val  nSets:      Int = 64
   val  nWays:      Int = 4
   val  blockBytes: Int = 64
 

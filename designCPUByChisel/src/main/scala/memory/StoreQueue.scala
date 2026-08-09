@@ -92,6 +92,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val dcacheReq = Decoupled(new Bundle {
       val sqIdx    = UInt(log2Ceil(SqSize).W)
       val paddr    = UInt(XLEN.W)
+      val vaddr    = UInt(XLEN.W)
       val cacheable = Bool()
       val data     = UInt(XLEN.W)
       val lsuOp    = UInt(LsuOp.width.W)
@@ -395,6 +396,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
  
   io.dcacheReq.valid      := hasDcacheCandidate
   io.dcacheReq.bits.paddr := dcacheEntry.paddr
+  io.dcacheReq.bits.vaddr := dcacheEntry.vaddr
   io.dcacheReq.bits.data  := dcacheEntry.data
   io.dcacheReq.bits.cacheable := dcacheEntry.cacheable
   io.dcacheReq.bits.sqIdx := dcacheIdx

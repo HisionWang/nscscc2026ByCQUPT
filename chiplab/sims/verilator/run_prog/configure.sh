@@ -481,7 +481,8 @@ do
             OUTPUT_PC_INFO=n
             OUTPUT_UART_INFO=y
             SIMU_TRACE=n
-            THREAD=20
+            THREAD=8
+            MEM_TRACE=n
             mkdir -p ./obj/
             mkdir -p ./log/
             ;;

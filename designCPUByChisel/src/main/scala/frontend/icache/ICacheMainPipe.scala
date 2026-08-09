@@ -164,6 +164,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   val s3_ptag    = Wire(UInt(tagBits.W))
   val s3_pidx    = Wire(UInt(idxBits.W))
+  val s3_vidx    = Wire(UInt(idxBits.W))
  
   val miss_data_valid = RegInit(false.B)
   val s3_valid = RegInit(false.B)
@@ -176,7 +177,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_hit_way       = RegInit(0.U(wayBits.W))
   val miss_data_buffer = RegInit(0.U((blockBytes * 8).W))
   val s1_bypass_data = miss_data_buffer
-  val s1_can_bypass = (s1_ptag === s3_ptag && s1_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !(s3_mmu_error.getAnyError))
+  val s1_can_bypass = (s1_ptag === s3_ptag && s1_vidx === s3_vidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !(s3_mmu_error.getAnyError))
   val s1_bypass_hit_way    = io.victim_read.resp
  
   val s2_bypass_data_from_s1 = RegInit(0.U((blockBytes * 8).W))
@@ -235,7 +236,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_fire =((s3_valid && s3_hit) || state === s_done )&& cpu_ready
  
  
-  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_pidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s2_uncached && !(s3_mmu_error.getAnyError))
+  val s2_can_bypass = (s2_ptag === s3_ptag && s2_vidx === s3_vidx && miss_data_valid && s3_valid && s3_miss && !s3_uncached && !s2_uncached && !(s3_mmu_error.getAnyError))
   val s2_bypass_data = miss_data_buffer
   when(s3_flush) {
     s3_valid := false.B
@@ -266,6 +267,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
   s3_ptag := s3_paddr(31, blockOffBits + idxBits)
   s3_pidx := s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
+
+  
+  s3_vidx := s3_vaddr(blockOffBits + idxBits - 1, blockOffBits)
  
  
   // ══════════════════════════════════════════════════════════════
@@ -495,7 +499,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   output_valid := false.B
   output_miss := false.B
   output_uncached := false.B
-  output_mmu_error := 0.U.asTypeOf(new MmuTransError)
+  output_mmu_error := s3_mmu_error
  
   io.icache_resp.bits.instrs := output_instrs
   io.icache_resp.valid := output_valid
@@ -515,7 +519,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
+        output_mmu_error := s3_mmu_error
       }
     }
     is(s_done) {
@@ -525,7 +529,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
+        output_mmu_error := s3_mmu_error
       }.elsewhen(uncache_data_valid) {
         output_instrs := uncache_instrs
         output_instvalids(0) := true.B
@@ -535,7 +539,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := true.B
         output_miss := false.B
         output_uncached := true.B
-        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
+        output_mmu_error := s3_mmu_error
       }.elsewhen(s3_mmu_error.getAnyError) {
         output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
         output_valid := true.B
@@ -547,7 +551,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_valid := false.B
         output_miss := false.B
         output_uncached := false.B
-        output_mmu_error := 0.U.asTypeOf(new MmuTransError)
+        output_mmu_error := s3_mmu_error
       }
     }
     
@@ -573,11 +577,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // 1. 命中状态
   when(s3_hit) {
     io.replacer_touch.valid := true.B
-    io.replacer_touch.idx   := s3_pidx
+    io.replacer_touch.idx   := s3_vidx
     io.replacer_touch.way   := s3_hit_way
   }.otherwise {
     io.replacer_touch.valid := false.B
-    io.replacer_touch.idx   := s3_pidx
+    io.replacer_touch.idx   := s3_vidx
     io.replacer_touch.way   := s3_hit_way
   }
  
@@ -658,17 +662,20 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }
    
   // 4. 缺失状态 - 写入data
-  when(state === s_miss_write && miss_data_valid && cpu_ready) {
+  io.victim_read.req := (state === s_miss_req) || (state === s_miss_wait) || (state === s_miss_write)
+  io.victim_read.idx := s3_vidx
+
+  when(state === s_miss_write && miss_data_valid ){ //&& cpu_ready) {
     io.array_write.valid := true.B
-    io.array_write.idx   := s3_pidx
+    io.array_write.idx   := s3_vidx
     io.array_write.tag   := s3_ptag
     io.array_write.data  := miss_data_buffer
-    io.victim_read.req := true.B
-    io.victim_read.idx := s3_pidx
+    //io.victim_read.req := true.B
+    //io.victim_read.idx := s3_vidx
     io.array_write.way   := io.victim_read.resp
  
     io.replacer_touch.valid := true.B
-    io.replacer_touch.idx := s3_pidx
+    io.replacer_touch.idx := s3_vidx
     io.replacer_touch.way := io.victim_read.resp
     
   }.otherwise {
@@ -678,11 +685,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.array_write.data  := 0.U
     io.array_write.way   := 0.U
  
-    io.victim_read.req := false.B
-    io.victim_read.idx := s3_pidx
+    //io.victim_read.req := false.B
+    //io.victim_read.idx := s3_vidx
  
     io.replacer_touch.valid := false.B
-    io.replacer_touch.idx := s3_pidx
+    io.replacer_touch.idx := s3_vidx
     io.replacer_touch.way := io.victim_read.resp
   }
   

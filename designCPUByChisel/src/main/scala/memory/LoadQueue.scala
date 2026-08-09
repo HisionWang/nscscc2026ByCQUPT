@@ -69,6 +69,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       val lqIdx     = UInt(log2Ceil(LqSize).W)
       val robIdx    = new RobPtr(RobSize)
       val paddr     = UInt(XLEN.W)
+      val vaddr     = UInt(XLEN.W)
       val cacheable = Bool()
       val lsuOp     = UInt(LsuOp.width.W)
     })
@@ -348,6 +349,7 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
   io.dcacheReq.valid           := hasIssueCandidate && !isNewer(issueIdx) 
   io.dcacheReq.bits.lqIdx      := issueIdx
   io.dcacheReq.bits.paddr      := issueEntry.paddr
+  io.dcacheReq.bits.vaddr      := issueEntry.vaddr
   io.dcacheReq.bits.cacheable  := issueEntry.cacheable
   io.dcacheReq.bits.robIdx     := issueEntry.robIdxFull
   io.dcacheReq.bits.lsuOp := Mux(issueEntry.lsuOp === LsuOp.llw,
