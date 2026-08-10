@@ -25,8 +25,17 @@ class CacheReplacer(implicit p: Parameters) extends NSModule {
     }
   })
   
-  // ── victim 响应寄存器（所有算法共用） ──
-  val victimRespReg = RegInit(0.U(wayBits.W))
+  // Victim read is intentionally split into two stages:
+  // 1) latch req/idx, 2) read replacement state combinationally from the
+  //    registered index so the response is still available in the next cycle.
+  val victimReqReg = RegInit(false.B)
+  val victimIdxReg = RegInit(0.U(idxBits.W))
+  val victimResp = WireDefault(0.U(wayBits.W))
+
+  victimReqReg := io.victim.req
+  when(io.victim.req) {
+    victimIdxReg := io.victim.idx
+  }
   
   if (nWays == 2) {
     // ════════════════════════════════════════════════════════
@@ -46,9 +55,7 @@ class CacheReplacer(implicit p: Parameters) extends NSModule {
     }
     
     // Victim：选"非最近使用"的路
-    when(io.victim.req) {
-      victimRespReg := ~lastUsed(io.victim.idx) // ~0 = 1, ~1 = 0，即"另一路"
-    }
+    victimResp := ~lastUsed(victimIdxReg) // ~0 = 1, ~1 = 0，即"另一路"
     
     // Flush：重置为 0（默认 victim = way1）
     when(io.flush.valid) {
@@ -93,14 +100,12 @@ class CacheReplacer(implicit p: Parameters) extends NSModule {
       plruTree(io.touch.idx) := updatePLRU(plruTree(io.touch.idx), io.touch.way)
     }
     
-    when(io.victim.req) {
-      victimRespReg := getVictim(plruTree(io.victim.idx))
-    }
+    victimResp := getVictim(plruTree(victimIdxReg))
     
     when(io.flush.valid) {
       plruTree(io.flush.idx) := 0.U
     }
   }
   
-  io.victim.resp := victimRespReg
+  io.victim.resp := victimResp //Mux(victimReqReg, victimResp, 0.U)
 }
