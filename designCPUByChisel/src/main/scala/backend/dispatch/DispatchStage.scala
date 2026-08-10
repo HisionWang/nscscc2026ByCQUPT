@@ -46,6 +46,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     
     val robEnq  = new RobEnqIO
     val robEmpty = Input(Bool())
+    val dis2robHas = Input(Bool())
 
     val flush   = Input(Bool())
     val redirectInfo    = Flipped(ValidIO( new redirectInfoToModule )) 
@@ -97,7 +98,14 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
       VecInit((0 until i).map(j =>
         lanePending(j) && laneBlockBackward(j))).asUInt.orR
     }
-    val waitForward = laneWaitForward(i) && (olderPending || /*!io.robEmpty rename中已确定ROB空*/ (false.B))
+    //这里很乱，但是应该有效
+    //Empty直连的话，Rob->dispatch->rename 超长组合路径
+    //首先，有waitForward性质的指令进入dispatch的时候，rob包空
+    //olderPending保证，前面有指令在dispatch的时候waitForward被挡住
+    //io.dis2robHas保证，前面指令发到dip2rob时被挡住
+    //由于robEmpty是综合了dis2robHas的数据的，所以再下一拍，这个条件又能保证waitForward被挡住
+    // 结论：没有逻辑、但行得通
+    val waitForward = laneWaitForward(i) && (olderPending || io.dis2robHas || RegNext(!io.robEmpty ))
 
     laneCanDispatch(i) := !blockBackwardActive &&
       !olderBlockBackward && !waitForward
@@ -318,7 +326,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     blockBackwardActive := false.B
   }.elsewhen(blockBackwardFire) {
     blockBackwardActive := true.B
-  }.elsewhen(blockBackwardActive  && RegNext( io.robEmpty ) ) { //解开需要动态依赖rob的信息
+  }.elsewhen(blockBackwardActive  && io.robEmpty ) { //解开需要动态依赖rob的信息
     blockBackwardActive := false.B
   }
 

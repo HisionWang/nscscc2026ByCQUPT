@@ -95,7 +95,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // 判断ROB是否能接收：剩余空间 - 在途指令数 >= 当前需要分配数
   // robFreeSpace 由 ROB 提供（ROB.count的补数或直接提供）
   // inFlightToRob = dispatchNeedRobCount + bufferValidCount
-  val canRobAccept = ( RobSize.U >= needRobAllocCount +& io.inFlightToRename +& io.robCount ) && ( !hasSpecial || (hasSpecial && io.inFlightToRename +& io.robCount === 0.U))
+  val canRobAccept = ( RobSize.U >= needRobAllocCount +& io.inFlightToRename +& io.robCount ) && ( !hasSpecial || (hasSpecial && io.inFlightToRename === 0.U && io.robCount === 0.U))
  
 
  

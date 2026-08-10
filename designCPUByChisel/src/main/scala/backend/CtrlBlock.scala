@@ -112,8 +112,8 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   renameStage.io.robCount := rob.io.robCount
   renameStage.io.inFlightToRename := disp2Rob.io.inFlightToRename
   renameStage.io.redirectInfo := io.redirectInfo
-//因为Rob的归还物理寄存器的逻辑是在收到redirct之后打一拍后再归还，所以这里必须配合在Redirect拉起的那个周期就必须暂停rename和dispatch让他不要再变了……变了就还不了了~
-  renameStage.io.stall := redirectController.io.robRedirectPause || rob.io.robRedirect.valid
+  //因为Rob的归还物理寄存器的逻辑是在收到redirct之后打一拍后再归还，所以这里必须配合在Redirect拉起的那个周期就必须暂停rename和dispatch让他不要再变了……变了就还不了了~
+  renameStage.io.stall := redirectController.io.robRedirectPause // || rob.io.robRedirect.valid
   
 
   if (EnableDifftest) {
@@ -127,7 +127,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   dispatchStage.io.in       <> renameStage.io.out
   dispatchStage.io.flush    := doFlush
   dispatchStage.io.redirectInfo := io.redirectInfo
-  dispatchStage.io.stall := redirectController.io.robRedirectPause || rob.io.robRedirect.valid
+  dispatchStage.io.stall := redirectController.io.robRedirectPause //|| rob.io.robRedirect.valid
   dispatchStage.io.robEmpty := rob.io.robCount === 0.U && disp2Rob.io.empty
   // ── IQ 入队端口 ──
   dispatchStage.io.q1IQEnq     <> io.q1IQEnq
@@ -157,7 +157,9 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
 
   disp2Rob.io.enq <> dispatchStage.io.robEnq
   disp2Rob.io.flush := doFlush
-  disp2Rob.io.pause := redirectController.io.robRedirectPause || rob.io.robRedirect.valid
+  disp2Rob.io.pause := redirectController.io.robRedirectPause // || rob.io.robRedirect.valid
+
+  dispatchStage.io.dis2robHas := !disp2Rob.io.empty
 
  
   // ================================================================
@@ -178,7 +180,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   rob.io.robRollbackTarget := redirectController.io.robRollbackTarget
   //回滚响应
   redirectController.io.robRollbackDone := rob.io.robRollbackDone
-  
+
   io.robHead := rob.io.head
 
 

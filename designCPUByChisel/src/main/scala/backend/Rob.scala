@@ -406,7 +406,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  6. ROB 回滚逻辑 (Rollback FSM)
   // ================================================================
-  val rb_idle :: rb_buffer :: rb_disp ::rb_rob :: Nil = Enum(4)
+  val rb_idle :: wait_reg ::rb_buffer :: rb_disp ::rb_rob :: Nil = Enum(5)
   val rollbackState = RegInit(rb_idle)
   val isRollingBack = rollbackState =/= rb_idle
  
@@ -421,7 +421,7 @@ class ROB(implicit p: Parameters) extends NSModule {
   val dispatchPdst  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U(PhyRegIdxWidth.W))))
   val dispatchRfWen = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
  
-  when(io.robRedirect.valid) {
+  when(io.robNeedRollback && rollbackState === rb_idle) {
     //latchCanEnq := io.enq.canEnq
     for (i <- 0 until CtrlBlockWidth) {
       latchEnqValid(i) := io.enq.validforPreg(i) && /*io.enq.canEnq && */ io.enq.bits(i).rfWen && io.enq.bits(i).ldst =/= 0.U
@@ -446,17 +446,24 @@ class ROB(implicit p: Parameters) extends NSModule {
  
   // ── 启动回滚与状态转移 ──
   when(io.robNeedRollback && rollbackState === rb_idle) {
-    when((/* !latchCanEnq || */ !latchEnqValid.asUInt.orR) && ( /* !dispatchCanEnq || */ !dispatchValid.asUInt.orR)) {
-      // Dispatch 无遗漏，直接进入 ROB 扫描阶段
-      rollbackState := rb_rob
-      rollbackPtr   := Mux(enqPtr === deqPtr , deqPtr, enqPtr-1.U )
-    }.otherwise {
-      rollbackState := rb_buffer
-      dispIdx       := 0.U
-    }
+    //latchEnqValid和dispatchValid是需要先存一级寄存器的
+    //所以要先等他俩存好延迟一个周期
+    rollbackState := wait_reg
+
+
   }
  
   switch(rollbackState) {
+    is(wait_reg){
+      when((/* !latchCanEnq || */ !latchEnqValid.asUInt.orR) && ( /* !dispatchCanEnq || */ !dispatchValid.asUInt.orR)) {
+        // Dispatch 无遗漏，直接进入 ROB 扫描阶段
+        rollbackState := rb_rob
+        rollbackPtr   := Mux(enqPtr === deqPtr , deqPtr, enqPtr-1.U )
+      }.otherwise {
+        rollbackState := rb_buffer
+        dispIdx       := 0.U
+      }
+    }
     is(rb_buffer) {
       when(dispIdx >= CtrlBlockWidth.U - 1.U) {
         //rollbackState := rb_rob
