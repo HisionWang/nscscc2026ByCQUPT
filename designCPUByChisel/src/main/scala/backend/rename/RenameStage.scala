@@ -69,6 +69,16 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   val stgValid  = RegInit(false.B)
   val laneValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
   val stgData = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U.asTypeOf(new DecodedInst))))
+
+  val laneWaitForward = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && stgData(i).ctrl.waitForward && stgValid
+  ))
+  val laneBlockBackward = VecInit((0 until CtrlBlockWidth).map(i =>
+    laneValid(i) && stgData(i).ctrl.blockBackward && stgValid
+  ))
+
+  val hasSpecial = laneWaitForward.asUInt.orR || laneBlockBackward.asUInt.orR
+
  
   val outReadyAll = (0 until CtrlBlockWidth).map(i =>
     !laneValid(i) || io.out(i).ready
@@ -85,7 +95,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
   // 判断ROB是否能接收：剩余空间 - 在途指令数 >= 当前需要分配数
   // robFreeSpace 由 ROB 提供（ROB.count的补数或直接提供）
   // inFlightToRob = dispatchNeedRobCount + bufferValidCount
-  val canRobAccept = RobSize.U >= needRobAllocCount +& io.inFlightToRename +& io.robCount
+  val canRobAccept = ( RobSize.U >= needRobAllocCount +& io.inFlightToRename +& io.robCount ) && ( !hasSpecial || (hasSpecial && io.inFlightToRename +& io.robCount === 0.U))
  
 
  

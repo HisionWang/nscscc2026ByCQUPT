@@ -97,7 +97,8 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
       VecInit((0 until i).map(j =>
         lanePending(j) && laneBlockBackward(j))).asUInt.orR
     }
-    val waitForward = laneWaitForward(i) && (olderPending || !io.robEmpty)
+    val waitForward = laneWaitForward(i) && (olderPending || /*!io.robEmpty rename中已确定ROB空*/ (false.B))
+
     laneCanDispatch(i) := !blockBackwardActive &&
       !olderBlockBackward && !waitForward
   }
@@ -317,7 +318,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     blockBackwardActive := false.B
   }.elsewhen(blockBackwardFire) {
     blockBackwardActive := true.B
-  }.elsewhen(blockBackwardActive && io.robEmpty) {
+  }.elsewhen(blockBackwardActive  && RegNext( io.robEmpty ) ) { //解开需要动态依赖rob的信息
     blockBackwardActive := false.B
   }
 
