@@ -113,7 +113,8 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
-  frontend.io.invalidateICache := backend.io.commitToCsr.ibar || backend.io.cacopICacheReq
+  //invalidIcahe由上诉redirectInfo去做
+  //frontend.io.invalidateICache := backend.io.commitToCsr.ibar || backend.io.cacopICacheReq
   frontend.io.idle := coreIdle
 
 

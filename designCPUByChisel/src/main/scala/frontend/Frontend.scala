@@ -18,7 +18,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
     // ========== 后端到前端的反馈 ==========
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
-    val invalidateICache = Input(Bool())
+    //val invalidateICache = Input(Bool())
     val idle           = Input(Bool())
     //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
     val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
@@ -81,8 +81,8 @@ class Frontend(implicit p: Parameters) extends NSModule {
   icache.io.cpu_req.valid := ifu.io.icache_req.valid
   icache.io.cpu_req.bits.addr := ifu.io.icache_req.addr
   ifu.io.icache_req.ready := icache.io.cpu_req.ready
-  icache.io.redirect := ifu.io.icache_req.flush || io.invalidateICache
-  icache.io.invalidate := io.invalidateICache
+  icache.io.redirect := ifu.io.icache_req.flush               //|| io.invalidateICache
+  icache.io.invalidate := io.redirectInfo.bits.invalidIcache
 
   // 响应 剔除
   //ifu.io.icache_resp <> icache.io.icache_resp

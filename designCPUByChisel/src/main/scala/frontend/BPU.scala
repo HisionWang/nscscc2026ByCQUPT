@@ -26,171 +26,351 @@ class BPU(implicit p: Parameters) extends NSModule {
    
   })
 
-  // ==================== 辅助计算 ====================
-  // 块内字节数位宽，例如 fetchWidth=4 时，块大小为16字节，位宽为4
-  val fetchBlockBitsValue = log2Ceil(fetchWidth) + 2
+  if(useBPUV0 == 1){
 
-  val btbEntryNoValidWidth = 0.U.asTypeOf(new BTBEntryNoValid).getWidth
-  val rnd = new Random()
-  val randomBtbInit = Seq.fill(btbSize)(BigInt(btbEntryNoValidWidth, rnd))
-
-  // ==================== 实例化双体 BRAM ====================
-  // Bank0: 存储当前对齐块 (Block N) 的预测信息
-  // ==================== valid 用寄存器存储，复位清零 ====================
-  val validArray0 = RegInit(VecInit(Seq.fill(btbSize)(false.B)))
-  val btbMem0 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1
-                                          //  ,initVals = Some(randomBtbInit)
-                                          ))
-  val phtMem0 = Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1))
-
-  val validArray1 = RegInit(VecInit(Seq.fill(btbSize)(false.B)))
-  // Bank1: 存储下一个对齐块 (Block N+1) 的预测信息
-  val btbMem1 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1
-                                          // ,initVals = Some(randomBtbInit)
-                                          ))
-  val phtMem1 = Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1))
-
-  // ==================== 读请求逻辑 (提前一拍使用 nextPC 索引) ====================
-  val readBlockIdx = io.predictReq.nextPC(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
-  val readPhtIdx   = io.predictReq.nextPC(phtIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
-
-  // 4个BRAM共享同一个读使能和读地址
-  btbMem0.io.rd_en   := io.predictReq.rdBpu
-  btbMem0.io.rd_addr := readBlockIdx
-  phtMem0.io.rd_en   := io.predictReq.rdBpu
-  phtMem0.io.rd_addr := readPhtIdx
-
-  btbMem1.io.rd_en   := io.predictReq.rdBpu
-  btbMem1.io.rd_addr := readBlockIdx
-  phtMem1.io.rd_en   := io.predictReq.rdBpu
-  phtMem1.io.rd_addr := readPhtIdx
-
-  // ==================== 预测命中与优先级逻辑 (当前周期使用 pc 校验) ====================
-  val fetchOffset = io.predictReq.pc(fetchBlockBitsValue - 1, 2)
+    // ==================== 辅助计算 ====================
+    // 块内字节数位宽，例如 fetchWidth=4 时，块大小为16字节，位宽为4
+    val fetchBlockBitsValue = log2Ceil(fetchWidth) + 2
   
-  // 计算当前块和下一个块的 Tag
-  val tag0 = io.predictReq.pc(31, btbIndexBits + fetchBlockBitsValue)
-  // 获取下一个块的起始地址，用于提取 Tag1
-  val nextBlockBase = Cat(io.predictReq.pc(31, fetchBlockBitsValue) + 1.U, 0.U(fetchBlockBitsValue.W))
-  val tag1 = nextBlockBase(31, btbIndexBits + fetchBlockBitsValue)
-
-  // 解析 Bank0 (当前块) 数据
-  val readIdxReg = RegEnable(readBlockIdx, 0.U(btbIndexBits.W), io.predictReq.rdBpu)
-
-  val btbEntry0  = btbMem0.io.rd_data.asTypeOf(new BTBEntryNoValid)
-  val phtCounter0= phtMem0.io.rd_data
-  val phtTaken0  = phtCounter0(1)
-  // 命中条件0：Entry有效，Tag匹配，且分支位于取指起始偏移之后 (或刚好对齐)
-  val btbHit0    = validArray0(readIdxReg) && (btbEntry0.tag === tag0) && (btbEntry0.offset >= fetchOffset)
-  val predTaken0 = btbHit0 && (btbEntry0.isJalr || btbEntry0.isJal || phtTaken0)
-
-  // 解析 Bank1 (下一块) 数据
-  val btbEntry1  = btbMem1.io.rd_data.asTypeOf(new BTBEntryNoValid)
-  val phtCounter1= phtMem1.io.rd_data
-  val phtTaken1  = phtCounter1(1)
-  // 命中条件1：Entry有效，Tag匹配，且分支位于下一块的开头，且在当前 fetchWidth 覆盖范围内
-  // 并且不跨Cache行
-  val btbHit1    = validArray1(readIdxReg) && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset) && !io.predictReq.crossLine
-  val predTaken1 = btbHit1 && (btbEntry1.isJalr || btbEntry1.isJal || phtTaken1)
-
-  // ==================== 仲裁与输出生成 ====================
-  // 优先级：Bank0 (靠前) > Bank1 (靠后)
-  val finalTaken  = predTaken0 || predTaken1
-  val finalTarget = Mux(predTaken0, btbEntry0.target, btbEntry1.target)
-
-  // 关键：计算相对当前取指 PC 的相对 takenOffset，供 Predecoder 使用
-  // 如果命中 Bank0，偏移量就是：原本在块内的偏移 - 取指起始偏移
-  val offset0_out = btbEntry0.offset - fetchOffset
-  // 如果命中 Bank1，偏移量就是：在下一块的偏移 + 取指块容量 - 取指起始偏移
-  val offset1_out = btbEntry1.offset + fetchWidth.U - fetchOffset
+    val btbEntryNoValidWidth = 0.U.asTypeOf(new BTBEntryNoValid).getWidth
+    val rnd = new Random()
+    val randomBtbInit = Seq.fill(btbSize)(BigInt(btbEntryNoValidWidth, rnd))
   
-  val finalOffset = Mux(predTaken0, offset0_out, offset1_out)
-
+    // ==================== 实例化双体 BRAM ====================
+    // Bank0: 存储当前对齐块 (Block N) 的预测信息
+    // ==================== valid 用寄存器存储，复位清零 ====================
+    val validArray0 = RegInit(VecInit(Seq.fill(btbSize)(false.B)))
+    val btbMem0 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1
+                                            //  ,initVals = Some(randomBtbInit)
+                                            ))
+    val phtMem0 = Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1))
   
-
-  io.predictResp.taken       := finalTaken
-  io.predictResp.takenOffset := finalOffset
-  io.predictResp.target      := finalTarget
-
-  // 组装 Meta 信息（反馈给更新逻辑使用）
-  io.predictResp.meta.btbHit     := btbHit0 || btbHit1
-  io.predictResp.meta.valid      := Mux(btbHit1 , validArray1(readIdxReg)  , validArray0(readIdxReg) )
-  io.predictResp.meta.btbIsJalr  := Mux(btbHit1 , btbEntry1.isJalr         , btbEntry0.isJalr        )
-  io.predictResp.meta.btbIsJal   := Mux(btbHit1 , btbEntry1.isJal          , btbEntry0.isJal         )
-  io.predictResp.meta.btbIsCall  := Mux(btbHit1 , btbEntry1.isCall         , btbEntry0.isCall        )
-  io.predictResp.meta.btbIsRet   := Mux(btbHit1 , btbEntry1.isRet          , btbEntry0.isRet         )
-  io.predictResp.meta.btbOffset  := Mux(btbHit1 , btbEntry1.offset         , btbEntry0.offset        ) // 真实块内offset
-  io.predictResp.meta.phtCounter := Mux(btbHit1 , phtCounter1              , phtCounter0             )
-  io.predictResp.meta.rasTop     := 0.U 
-  io.predictResp.meta.predTaken  := finalTaken
-  io.predictResp.meta.predTarget := finalTarget
-
-  // ==================== BPU 更新逻辑 (双写核心) ====================
-  val doUpdate = io.update_br.valid || io.update_pd.valid
-  val update   = Mux(io.update_br.valid, io.update_br, io.update_pd)
-
-  // 默认关闭所有写使能
-  btbMem0.io.wr_en := false.B; btbMem0.io.wr_addr := 0.U; btbMem0.io.wr_data := 0.U
-  phtMem0.io.wr_en := false.B; phtMem0.io.wr_addr := 0.U; phtMem0.io.wr_data := 0.U
-  btbMem1.io.wr_en := false.B; btbMem1.io.wr_addr := 0.U; btbMem1.io.wr_data := 0.U
-  phtMem1.io.wr_en := false.B; phtMem1.io.wr_addr := 0.U; phtMem1.io.wr_data := 0.U
-
-  when(doUpdate) {
-    // 提取需要更新的目标块索引和 Tag
-    val updateBlockIdx = update.pc(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
-    val updatePhtIdx = update.pc(phtIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
-    val updateTag      = update.pc(31, btbIndexBits + fetchBlockBitsValue)
-
-    // 新的 BTB 条目
-    val newEntry = Wire(new BTBEntryNoValid)
-    // newEntry.valid  := update.validEntry
-    newEntry.tag    := updateTag
-    newEntry.target := update.target
-    newEntry.isJalr := update.isJalr
-    newEntry.isJal  := update.isJal
-    newEntry.isCall := update.isCall
-    newEntry.isRet  := update.isRet
-    newEntry.offset := update.offset 
+    val validArray1 = RegInit(VecInit(Seq.fill(btbSize)(false.B)))
+    // Bank1: 存储下一个对齐块 (Block N+1) 的预测信息
+    val btbMem1 = Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1
+                                            // ,initVals = Some(randomBtbInit)
+                                            ))
+    val phtMem1 = Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1))
+  
+    // ==================== 读请求逻辑 (提前一拍使用 nextPC 索引) ====================
+    val readBlockIdx = io.predictReq.nextPC(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+    val readPhtIdx   = io.predictReq.nextPC(phtIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+  
+    // 4个BRAM共享同一个读使能和读地址
+    btbMem0.io.rd_en   := io.predictReq.rdBpu
+    btbMem0.io.rd_addr := readBlockIdx
+    phtMem0.io.rd_en   := io.predictReq.rdBpu
+    phtMem0.io.rd_addr := readPhtIdx
+  
+    btbMem1.io.rd_en   := io.predictReq.rdBpu
+    btbMem1.io.rd_addr := readBlockIdx
+    phtMem1.io.rd_en   := io.predictReq.rdBpu
+    phtMem1.io.rd_addr := readPhtIdx
+  
+    // ==================== 预测命中与优先级逻辑 (当前周期使用 pc 校验) ====================
+    val fetchOffset = io.predictReq.pc(fetchBlockBitsValue - 1, 2)
     
+    // 计算当前块和下一个块的 Tag
+    val tag0 = io.predictReq.pc(31, btbIndexBits + fetchBlockBitsValue)
+    // 获取下一个块的起始地址，用于提取 Tag1
+    val nextBlockBase = Cat(io.predictReq.pc(31, fetchBlockBitsValue) + 1.U, 0.U(fetchBlockBitsValue.W))
+    val tag1 = nextBlockBase(31, btbIndexBits + fetchBlockBitsValue)
+  
+    // 解析 Bank0 (当前块) 数据
+    val readIdxReg = RegEnable(readBlockIdx, 0.U(btbIndexBits.W), io.predictReq.rdBpu)
+  
+    val btbEntry0  = btbMem0.io.rd_data.asTypeOf(new BTBEntryNoValid)
+    val phtCounter0= phtMem0.io.rd_data
+    val phtTaken0  = phtCounter0(1)
+    // 命中条件0：Entry有效，Tag匹配，且分支位于取指起始偏移之后 (或刚好对齐)
+    val btbHit0    = validArray0(readIdxReg) && (btbEntry0.tag === tag0) && (btbEntry0.offset >= fetchOffset)
+    val predTaken0 = btbHit0 && (btbEntry0.isJalr || btbEntry0.isJal || phtTaken0)
+  
+    // 解析 Bank1 (下一块) 数据
+    val btbEntry1  = btbMem1.io.rd_data.asTypeOf(new BTBEntryNoValid)
+    val phtCounter1= phtMem1.io.rd_data
+    val phtTaken1  = phtCounter1(1)
+    // 命中条件1：Entry有效，Tag匹配，且分支位于下一块的开头，且在当前 fetchWidth 覆盖范围内
+    // 并且不跨Cache行
+    val btbHit1    = validArray1(readIdxReg) && (btbEntry1.tag === tag1) && (btbEntry1.offset < fetchOffset) && !io.predictReq.crossLine
+    val predTaken1 = btbHit1 && (btbEntry1.isJalr || btbEntry1.isJal || phtTaken1)
+  
+    // ==================== 仲裁与输出生成 ====================
+    // 优先级：Bank0 (靠前) > Bank1 (靠后)
+    val finalTaken  = predTaken0 || predTaken1
+    val finalTarget = Mux(predTaken0, btbEntry0.target, btbEntry1.target)
+  
+    // 关键：计算相对当前取指 PC 的相对 takenOffset，供 Predecoder 使用
+    // 如果命中 Bank0，偏移量就是：原本在块内的偏移 - 取指起始偏移
+    val offset0_out = btbEntry0.offset - fetchOffset
+    // 如果命中 Bank1，偏移量就是：在下一块的偏移 + 取指块容量 - 取指起始偏移
+    val offset1_out = btbEntry1.offset + fetchWidth.U - fetchOffset
     
+    val finalOffset = Mux(predTaken0, offset0_out, offset1_out)
+  
     
-
-    
-    // 更新 PHT 计数器
-    val oldCounter  = update.oldPhtCounter 
-    val nextCounter = WireDefault(oldCounter)
-    when(!update.validEntry){
-      nextCounter := 2.U
-    }.elsewhen(update.taken && oldCounter =/= 3.U) {
-      nextCounter := oldCounter + 1.U
-    }.elsewhen(!update.taken && oldCounter =/= 0.U) {
-      nextCounter := oldCounter - 1.U
+  
+    io.predictResp.taken       := finalTaken
+    io.predictResp.takenOffset := finalOffset
+    io.predictResp.target      := finalTarget
+  
+    // 组装 Meta 信息（反馈给更新逻辑使用）
+    io.predictResp.meta.btbHit     := btbHit0 || btbHit1
+    io.predictResp.meta.valid      := Mux(btbHit1 , validArray1(readIdxReg)  , validArray0(readIdxReg) )
+    io.predictResp.meta.btbIsJalr  := Mux(btbHit1 , btbEntry1.isJalr         , btbEntry0.isJalr        )
+    io.predictResp.meta.btbIsJal   := Mux(btbHit1 , btbEntry1.isJal          , btbEntry0.isJal         )
+    io.predictResp.meta.btbIsCall  := Mux(btbHit1 , btbEntry1.isCall         , btbEntry0.isCall        )
+    io.predictResp.meta.btbIsRet   := Mux(btbHit1 , btbEntry1.isRet          , btbEntry0.isRet         )
+    io.predictResp.meta.btbOffset  := Mux(btbHit1 , btbEntry1.offset         , btbEntry0.offset        ) // 真实块内offset
+    io.predictResp.meta.phtCounter := Mux(btbHit1 , phtCounter1              , phtCounter0             )
+    io.predictResp.meta.rasTop     := 0.U 
+    io.predictResp.meta.predTaken  := finalTaken
+    io.predictResp.meta.predTarget := finalTarget
+  
+    // ==================== BPU 更新逻辑 (双写核心) ====================
+    val doUpdate = io.update_br.valid || io.update_pd.valid
+    val update   = Mux(io.update_br.valid, io.update_br, io.update_pd)
+  
+    // 默认关闭所有写使能
+    btbMem0.io.wr_en := false.B; btbMem0.io.wr_addr := 0.U; btbMem0.io.wr_data := 0.U
+    phtMem0.io.wr_en := false.B; phtMem0.io.wr_addr := 0.U; phtMem0.io.wr_data := 0.U
+    btbMem1.io.wr_en := false.B; btbMem1.io.wr_addr := 0.U; btbMem1.io.wr_data := 0.U
+    phtMem1.io.wr_en := false.B; phtMem1.io.wr_addr := 0.U; phtMem1.io.wr_data := 0.U
+  
+    when(doUpdate) {
+      // 提取需要更新的目标块索引和 Tag
+      val updateBlockIdx = update.pc(btbIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+      val updatePhtIdx = update.pc(phtIndexBits + fetchBlockBitsValue - 1, fetchBlockBitsValue)
+      val updateTag      = update.pc(31, btbIndexBits + fetchBlockBitsValue)
+  
+      // 新的 BTB 条目
+      val newEntry = Wire(new BTBEntryNoValid)
+      // newEntry.valid  := update.validEntry
+      newEntry.tag    := updateTag
+      newEntry.target := update.target
+      newEntry.isJalr := update.isJalr
+      newEntry.isJal  := update.isJal
+      newEntry.isCall := update.isCall
+      newEntry.isRet  := update.isRet
+      newEntry.offset := update.offset 
+      
+      
+      
+  
+      
+      // 更新 PHT 计数器
+      val oldCounter  = update.oldPhtCounter 
+      val nextCounter = WireDefault(oldCounter)
+      when(!update.validEntry){
+        nextCounter := 2.U
+      }.elsewhen(update.taken && oldCounter =/= 3.U) {
+        nextCounter := oldCounter + 1.U
+      }.elsewhen(!update.taken && oldCounter =/= 0.U) {
+        nextCounter := oldCounter - 1.U
+      }
+  
+      // --- 双发写入逻辑 ---
+      // 1. 写入 Bank0: 地址就是当前目标块的索引
+      btbMem0.io.wr_en   := true.B
+      btbMem0.io.wr_addr := updateBlockIdx
+      btbMem0.io.wr_data := newEntry.asUInt
+      validArray0(updateBlockIdx) := update.validEntry
+  
+      phtMem0.io.wr_en   := true.B
+      phtMem0.io.wr_addr := updatePhtIdx
+      phtMem0.io.wr_data := nextCounter
+  
+      // 2. 写入 Bank1: 地址是 目标块索引减 1 (自然溢出回卷是正常的)
+      // 因为 Bank1 的索引 N 里面存的是 N+1 块的数据，所以要写 X 块的数据，就要写在索引 X-1 处
+      val updateBlockIdx_minus_1 = updateBlockIdx - 1.U
+      val updatePhtIdx_minus_1 = updatePhtIdx - 1.U
+  
+      btbMem1.io.wr_en   := true.B
+      btbMem1.io.wr_addr := updateBlockIdx_minus_1
+      btbMem1.io.wr_data := newEntry.asUInt
+      validArray1(updateBlockIdx_minus_1) := update.validEntry
+  
+      phtMem1.io.wr_en   := true.B
+      phtMem1.io.wr_addr := updatePhtIdx_minus_1
+      phtMem1.io.wr_data := nextCounter
     }
 
-    // --- 双发写入逻辑 ---
-    // 1. 写入 Bank0: 地址就是当前目标块的索引
-    btbMem0.io.wr_en   := true.B
-    btbMem0.io.wr_addr := updateBlockIdx
-    btbMem0.io.wr_data := newEntry.asUInt
-    validArray0(updateBlockIdx) := update.validEntry
 
-    phtMem0.io.wr_en   := true.B
-    phtMem0.io.wr_addr := updatePhtIdx
-    phtMem0.io.wr_data := nextCounter
+  }else{
+    
+    // ==================== 辅助计算 ====================
+    val btbEntryNoValidWidth = (0.U.asTypeOf(new BTBEntryNoValid)).getWidth
+    val cacheLineBits = log2Ceil(blockBytes)  // ICache行地址位宽，64字节时为6
+   
+    // ==================== 实例化 4 个 Bank ====================
+    // Bank i 存储指令块内第 i 条指令 (PC[3:2] == i) 的预测信息
+    // 每个Bank独立拥有 BTB BRAM + PHT BRAM + valid 寄存器阵列
+    val validArrays = Seq.fill(4)(RegInit(VecInit(Seq.fill(btbSize)(false.B))))
+    val btbMems = Seq.tabulate(4)(_ =>
+      Module(new SimpleBlockRAM(depth = btbSize, width = btbEntryNoValidWidth, readLatency = 1)))
+    val phtMems = Seq.tabulate(4)(_ =>
+      Module(new SimpleBlockRAM(depth = phtSize, width = 2, readLatency = 1)))
+   
+    // ==================== 读请求逻辑 (使用 nextPC，提前一拍读取 BRAM) ====================
+    // 从 nextPC 顺延计算 4 条 PC，每条 PC 根据 PC[3:2] 路由到对应 Bank
+    val nextPC = io.predictReq.nextPC
+   
+    val bankBtbReadAddr = Wire(Vec(4, UInt(btbIndexBits.W)))
+    val bankPhtReadAddr = Wire(Vec(4, UInt(phtIndexBits.W)))
+   
+    for (b <- 0 until 4) {
+      bankBtbReadAddr(b) := 0.U
+      bankPhtReadAddr(b) := 0.U
+    }
+   
+    // 4条顺序PC各自映射到4个不同Bank，无冲突
+    for (i <- 0 until 4) {
+      val pc_i   = nextPC + (i * 4).U
+      val bank   = pc_i(3, 2)                       // 该PC映射到哪个Bank
+      val btbIdx = pc_i(btbIndexBits + 3, 4)        // BTB索引 (跳过byte[1:0] + bank[3:2])
+      val phtIdx = pc_i(phtIndexBits + 3, 4)        // PHT索引
+   
+      when(bank === 0.U) {
+        bankBtbReadAddr(0) := btbIdx; bankPhtReadAddr(0) := phtIdx
+      } .elsewhen(bank === 1.U) {
+        bankBtbReadAddr(1) := btbIdx; bankPhtReadAddr(1) := phtIdx
+      } .elsewhen(bank === 2.U) {
+        bankBtbReadAddr(2) := btbIdx; bankPhtReadAddr(2) := phtIdx
+      } .otherwise {
+        bankBtbReadAddr(3) := btbIdx; bankPhtReadAddr(3) := phtIdx
+      }
+    }
+   
+    // 发送读请求到 4 个 Bank
+    for (b <- 0 until 4) {
+      btbMems(b).io.rd_en   := io.predictReq.rdBpu
+      btbMems(b).io.rd_addr := bankBtbReadAddr(b)
+      phtMems(b).io.rd_en   := io.predictReq.rdBpu
+      phtMems(b).io.rd_addr := bankPhtReadAddr(b)
+    }
+   
+    // ==================== 预测处理逻辑 (下一周期，BRAM数据已就绪) ====================
+    // 此时 nextPC 已顺理成章地成为真正的 pc，从4个位置中找到第一条 hit 且 taken 的预测
+    val curPC = io.predictReq.pc
+   
+    val btbEntries   = Wire(Vec(4, new BTBEntryNoValid))
+    val phtCounters  = Wire(Vec(4, UInt(2.W)))
+    val entryValids  = Wire(Vec(4, Bool()))
+    val btbHits      = Wire(Vec(4, Bool()))
+    val predTakens   = Wire(Vec(4, Bool()))
+    val crossLines   = Wire(Vec(4, Bool()))
+   
+    for (i <- 0 until 4) {
+      val pc_i   = curPC + (i * 4).U
+      val bank   = pc_i(3, 2)
+      val btbIdx = pc_i(btbIndexBits + 3, 4)
+      val tag    = pc_i(31, btbIndexBits + 4)
+   
+      // 从对应 Bank 的 BRAM 输出中提取数据
+      val btbData = MuxLookup(bank, 0.U, (0 until 4).map(b => b.U -> btbMems(b).io.rd_data))
+      val phtData = MuxLookup(bank, 0.U, (0 until 4).map(b => b.U -> phtMems(b).io.rd_data))
+      val valid   = MuxLookup(bank, false.B, (0 until 4).map(b => b.U -> validArrays(b)(btbIdx)))
+   
+      btbEntries(i)  := btbData.asTypeOf(new BTBEntryNoValid)
+      phtCounters(i) := phtData
+      entryValids(i) := valid
+   
+      // 跨 Cache 行检测: PC_i 与取指起始 PC 不在同一 ICache 行则标记为跨行
+      crossLines(i) := pc_i(31, cacheLineBits) =/= curPC(31, cacheLineBits)
+   
+      // 命中条件: 不跨行 && Entry有效 && Tag匹配
+      btbHits(i) := !crossLines(i) && valid && (btbEntries(i).tag === tag)
+   
+      // 跳转条件: 命中 && (间接跳转 || 无条件跳转 || PHT预测跳转)
+      val phtTaken = phtCounters(i)(1)
+      predTakens(i) := btbHits(i) && (btbEntries(i).isJalr || btbEntries(i).isJal || phtTaken)
+    }
+   
+    // ==================== 仲裁: 从前往后 (位置0~3) 找第一条 taken ====================
+    val finalTaken  = predTakens.asUInt.orR
+    val finalTarget = MuxCase(0.U, (0 until 4).map(i => predTakens(i) -> btbEntries(i).target))
+    val finalOffset = MuxCase(0.U, (0 until 4).map(i => predTakens(i) -> i.U))
+    val finalHit    = btbHits.asUInt.orR
+   
+    // 选中的位置: 第一条 taken 的位置，若无 taken 则默认位置3 (与旧设计 Bank1 默认语义一致)
+    val selectedPos = MuxCase(0.U, (0 until 4).map(i => btbHits(i) -> i.U))
+   
+    // 输出
+    io.predictResp.taken       := finalTaken
+    io.predictResp.takenOffset := finalOffset
+    io.predictResp.target      := finalTarget
+   
+    // 组装 Meta 信息
+    io.predictResp.meta.btbHit     := finalHit
+    io.predictResp.meta.valid      := entryValids(selectedPos)
+    io.predictResp.meta.btbIsJalr  := btbEntries(selectedPos).isJalr
+    io.predictResp.meta.btbIsJal   := btbEntries(selectedPos).isJal
+    io.predictResp.meta.btbIsCall  := btbEntries(selectedPos).isCall
+    io.predictResp.meta.btbIsRet   := btbEntries(selectedPos).isRet
+    io.predictResp.meta.btbOffset  := btbEntries(selectedPos).offset
+    io.predictResp.meta.phtCounter := phtCounters(selectedPos)
+    io.predictResp.meta.rasTop     := 0.U
+    io.predictResp.meta.predTaken  := finalTaken
+    io.predictResp.meta.predTarget := finalTarget
+   
+    // ==================== BPU 更新逻辑 ====================
+    val doUpdate = io.update_br.valid || io.update_pd.valid
+    val update   = Mux(io.update_br.valid, io.update_br, io.update_pd)
+   
+    // 默认关闭所有写使能
+    for (b <- 0 until 4) {
+      btbMems(b).io.wr_en   := false.B
+      btbMems(b).io.wr_addr := 0.U
+      btbMems(b).io.wr_data := 0.U
+      phtMems(b).io.wr_en   := false.B
+      phtMems(b).io.wr_addr := 0.U
+      phtMems(b).io.wr_data := 0.U
+    }
+   
+    when(doUpdate) {
+      val updatePC     = update.pc
+      val updateBank   = updatePC(3, 2)                    // PC[3:2] 选择 Bank
+      val updateBtbIdx = updatePC(btbIndexBits + 3, 4)     // BTB 索引 (跳过 bank 选择位)
+      val updatePhtIdx = updatePC(phtIndexBits + 3, 4)     // PHT 索引
+      val updateTag    = updatePC(31, btbIndexBits + 4)     // Tag
+   
+      // 新的 BTB 条目
+      val newEntry = Wire(new BTBEntryNoValid)
+      newEntry.tag    := updateTag
+      newEntry.target := update.target
+      newEntry.isJalr := update.isJalr
+      newEntry.isJal  := update.isJal
+      newEntry.isCall := update.isCall
+      newEntry.isRet  := update.isRet
+      newEntry.offset := update.offset
+   
+      // 更新 PHT 计数器 (2-bit 饱和计数器)
+      val oldCounter  = update.oldPhtCounter
+      val nextCounter = WireDefault(oldCounter)
+      when(!update.validEntry) {
+        nextCounter := 2.U
+      } .elsewhen(update.taken && oldCounter =/= 3.U) {
+        nextCounter := oldCounter + 1.U
+      } .elsewhen(!update.taken && oldCounter =/= 0.U) {
+        nextCounter := oldCounter - 1.U
+      }
+   
+      // 仅写入 PC[3:2] 指定的那一个 Bank
+      for (b <- 0 until 4) {
+        when(updateBank === b.U) {
+          btbMems(b).io.wr_en   := true.B
+          btbMems(b).io.wr_addr := updateBtbIdx
+          btbMems(b).io.wr_data := newEntry.asUInt
+          validArrays(b)(updateBtbIdx) := update.validEntry
+   
+          phtMems(b).io.wr_en   := true.B
+          phtMems(b).io.wr_addr := updatePhtIdx
+          phtMems(b).io.wr_data := nextCounter
+        }
+      }
+    }
 
-    // 2. 写入 Bank1: 地址是 目标块索引减 1 (自然溢出回卷是正常的)
-    // 因为 Bank1 的索引 N 里面存的是 N+1 块的数据，所以要写 X 块的数据，就要写在索引 X-1 处
-    val updateBlockIdx_minus_1 = updateBlockIdx - 1.U
-    val updatePhtIdx_minus_1 = updatePhtIdx - 1.U
-
-    btbMem1.io.wr_en   := true.B
-    btbMem1.io.wr_addr := updateBlockIdx_minus_1
-    btbMem1.io.wr_data := newEntry.asUInt
-    validArray1(updateBlockIdx_minus_1) := update.validEntry
-
-    phtMem1.io.wr_en   := true.B
-    phtMem1.io.wr_addr := updatePhtIdx_minus_1
-    phtMem1.io.wr_data := nextCounter
   }
+
 }
 

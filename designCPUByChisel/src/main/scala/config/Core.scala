@@ -35,6 +35,7 @@ trait HasCoreParameters {
   val btbSize:  Int = 256
   val phtSize:  Int = 1024
   val rasSize:  Int = 8 
+  val useBPUV0: Int = 1
 
   val fetchBlockBits: Int = log2Ceil(fetchWidth * 4)
   val btbIndexBits: Int = log2Ceil(btbSize)
@@ -77,7 +78,7 @@ trait HasCoreParameters {
   val PhyRegIdxWidth = log2Ceil(IntPhyRegs)
   val RobSize       = 32           // ROB 深度
   val SnapshotNum   = 8            // 快照数量
-  val CommitWidth   =  CtrlBlockWidth  // 提交宽度（通常等于译码宽度）
+  val CommitWidth   =  1 //CtrlBlockWidth  // 提交宽度（通常等于译码宽度）
 
   val LqSize       : Int = 8      // Load Queue 深度（2的幂）
   val SqSize       : Int = 8      // Store Queue 深度（2的幂）

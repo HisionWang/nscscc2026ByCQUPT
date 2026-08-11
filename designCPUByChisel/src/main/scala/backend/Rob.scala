@@ -73,7 +73,8 @@ class RobCommitToCsr(implicit p: Parameters) extends NSBundle {
   val csrWdata = UInt(XLEN.W)
   val llbitSet = Bool()
   val llbitClear = Bool()
-  val ibar = Bool()
+//icahe的invalid由redirect做
+// val ibar = Bool()
   val idle = Bool()
 }
 
@@ -258,9 +259,15 @@ class ROB(implicit p: Parameters) extends NSModule {
   val headIsIcacheCacop = headEntry.isCacop &&
     headEntry.cacopCacheType === CacopCode.iCache &&
     headEntry.cacopOperation =/= CacopCode.implementationDefined
-  io.ibarFenceReq := headEntry.valid && headEntry.writtenBack &&
-    (headEntry.ibar || headIsDcacheCacop) && io.storeQueueEmpty &&
-    !headEntry.excp.hasException
+  // toDcache
+  io.ibarFenceReq := 
+    RegNext(
+      headEntry.valid && headEntry.writtenBack &&
+      (headEntry.ibar || headIsDcacheCacop) && io.storeQueueEmpty &&
+      !headEntry.excp.hasException
+    )
+  // Icache的cacop
+  //已弃用
   io.cacopICacheReq := headEntry.valid && headEntry.writtenBack &&
     headIsIcacheCacop && io.storeQueueEmpty && !headEntry.excp.hasException
   
@@ -337,18 +344,21 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.robRedirect.excp        := redirectEntry.excp
   io.robRedirect.pc          := redirectEntry.pc
   io.robRedirect.excpVaddr   := redirectEntry.memVaddr
+  io.robRedirect.invalidIcache       :=   redirectValid && (redirectEntry.ibar ||
+
+  ( redirectEntry.isCacop &&
+    redirectEntry.cacopCacheType === CacopCode.iCache &&
+    redirectEntry.cacopOperation =/= CacopCode.implementationDefined)
+   )&&  !redirectEntry.excp.hasException
 
   io.commitToCsr.csrWen      := isCsrSlot.asUInt.orR
   io.commitToCsr.csrWaddr    := redirectEntry.csrWaddr
   io.commitToCsr.csrWdata    := redirectEntry.csrWdata
-  io.commitToCsr.llbitSet := redirectValid && redirectEntry.llbitSet &&
-    !redirectEntry.excp.hasException
-  io.commitToCsr.llbitClear := redirectValid && redirectEntry.llbitClear &&
-    !redirectEntry.excp.hasException
-  io.commitToCsr.ibar := redirectValid && redirectEntry.ibar &&
-    !redirectEntry.excp.hasException
-  io.commitToCsr.idle := redirectValid && redirectEntry.isIdle &&
-    !redirectEntry.excp.hasException
+
+  io.commitToCsr.llbitSet   :=   redirectValid && redirectEntry.llbitSet &&  !redirectEntry.excp.hasException
+  io.commitToCsr.llbitClear :=   redirectValid && redirectEntry.llbitClear &&  !redirectEntry.excp.hasException
+  
+  io.commitToCsr.idle       :=   redirectValid && redirectEntry.isIdle &&  !redirectEntry.excp.hasException
   
   // 输出正常 Commit 信号
   for (i <- 0 until CommitWidth) {

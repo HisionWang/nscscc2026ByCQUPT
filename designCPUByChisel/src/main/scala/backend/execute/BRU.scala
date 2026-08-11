@@ -32,6 +32,7 @@ class redirectInfoFromBru(implicit p: Parameters) extends NSBundle {
 class redirectInfoToModule(implicit p: Parameters) extends NSBundle {
   val doRedirect = Bool()
   val flushSelf  = Bool()
+  val invalidIcache = Bool()
  
   // 如果是来自于BRU的重定向:
   val fromBru = Bool()

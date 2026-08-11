@@ -19,6 +19,8 @@ class RobRedirectReq(implicit p: Parameters) extends NSBundle {
   val excp = new ExceptionBundle
   val pc          = UInt(XLEN.W)                  // 异常指令PC / CSR写指令PC
   val excpVaddr          = UInt(XLEN.W)                  // 异常指令PC / CSR写指令PC
+  val invalidIcache = Bool()
+  
 }
 
  
@@ -75,6 +77,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
  
   // ROB 重定向信息（在回滚期间保持稳定）
   val robInfoIsException = RegInit(false.B)
+  val robInfoInvalidIcache = RegInit(false.B)
   val robInfoExcpVec     = RegInit(0.U.asTypeOf(new ExceptionBundle))
   val robInfoPc          = RegInit(0.U(XLEN.W))
   val robInfoRobIdx      = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
@@ -87,6 +90,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
         robInfoExcpVec      := robReq.excp
         robInfoPc           := robReq.pc
         robInfoRobIdx       := robReq.robIdx
+        robInfoInvalidIcache := robReq.invalidIcache
       }.elsewhen(io.bruRedirect.valid ){//就算没有重定向也要发去释放快照//&& io.bruRedirect.bits.doRedirect) {
         state := s_bru_redirect
       }
@@ -98,6 +102,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
         robInfoExcpVec      := robReq.excp
         robInfoPc           := robReq.pc
         robInfoRobIdx       := robReq.robIdx
+        robInfoInvalidIcache := robReq.invalidIcache
       }.elsewhen(io.bruRedirect.valid ){
         state := s_bru_redirect
       }.otherwise{
@@ -165,6 +170,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   io.redirectInfo.bits.fromBru        := bruRedirecting
   io.redirectInfo.bits.snptId         := bruReg.bits.snptId
   io.redirectInfo.bits.robIdx         := Mux(bruRedirecting, bruReg.bits.robIdx, robInfoRobIdx)
+  io.redirectInfo.bits.invalidIcache  := Mux(bruRedirecting, false.B, robInfoInvalidIcache)
   io.redirectInfo.bits.fromRob        := robRedirecting
   io.redirectInfo.bits.target         := Mux(bruRedirecting, bruReg.bits.target, robTarget)
  
