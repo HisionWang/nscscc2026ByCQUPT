@@ -226,7 +226,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_cacheLine_data = RegInit(0.U((blockBytes * 8).W))
  
   val cpu_ready = io.icache_resp.ready
-
+  //      0       1         2                 3              4                5               6            7              8                  9                10               11                    12                                       
   val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: s_drain_miss :: s_drain_uncache :: s_drain_miss_req :: s_drain_uncache_req :: Nil = Enum(13)
   
   val state = RegInit(s_idle)
@@ -286,6 +286,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   switch(state) {
     is(s_idle) {
       when(s3_valid && !s3_flush && !s3_hit) {
+
         when(s3_mmu_error.getAnyError) {
           next_state := s_mmu_error_state
         }.elsewhen(s3_uncached) {
@@ -297,14 +298,16 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         }.otherwise {
           next_state := s_idle
         }
+
+
       }.otherwise {
         next_state := s_idle
       }
     }
     
-    is(s_hit) {
-      next_state := s_done
-    }
+//    is(s_hit) {
+//      next_state := s_done
+//    }
     
     is(s_miss_req) {
       when(io.axi.ar.arready) {
@@ -501,19 +504,26 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   output_uncached := false.B
   output_mmu_error := s3_mmu_error
  
-  io.icache_resp.bits.instrs := output_instrs
-  io.icache_resp.valid := output_valid
-  io.icache_resp.bits.instvalids := output_instvalids
- 
-  io.icache_resp.bits.addr := s3_vaddr
- 
-  io.icache_resp.bits.uncached := output_uncached
-  io.icache_resp.bits.mmu_error := output_mmu_error
+
   
   // 根据状态选择输出
+  // 对外的输出，包括output_valid和output_instvalids
+  // 只允许在s_idle && hit （包括异常时的hit） 的时候
+  //      在s_done的时候输出
+  // 其他状态坚决不允许输出
+  //  s3_hit的时候状态机是不会变化的
+  //  hit 和mmu err是可能同时发生的
+  io.icache_resp.bits.instrs      :=   output_instrs
+  io.icache_resp.valid            :=   output_valid
+  io.icache_resp.bits.instvalids  :=   output_instvalids
+  io.icache_resp.bits.addr        :=   s3_vaddr
+  io.icache_resp.bits.uncached    :=   output_uncached
+  io.icache_resp.bits.mmu_error   :=   output_mmu_error
   switch(state) {
     is(s_idle){
-      when(s3_hit && s3_valid) {
+      when(s3_hit && s3_valid ) { //&& !s3_mmu_error.getAnyError) {
+      //包括mmu err的时候，这里也是会用hit响应
+      //但只要正确传出s3_mmu_error就没啥问题
         output_instrs := hit_instrs
         output_instvalids := hit_valids
         output_valid := true.B
@@ -522,6 +532,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_mmu_error := s3_mmu_error
       }
     }
+    
     is(s_done) {
       when(miss_data_valid) {
         output_instrs := miss_instrs
@@ -542,6 +553,14 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_mmu_error := s3_mmu_error
       }.elsewhen(s3_mmu_error.getAnyError) {
         output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+        //这里就是mmu_error + 没有取到任何的指令的情况
+        // mmuerr也可能同时伴随着hit的情况
+        //这种情况也是需要再传出一个有效值出去的！！！！
+        output_instvalids(0) := true.B
+        output_instvalids(1) := false.B
+        output_instvalids(2) := false.B
+        output_instvalids(3) := false.B
+        
         output_valid := true.B
         output_miss := false.B
         output_uncached := false.B
@@ -554,19 +573,19 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
         output_mmu_error := s3_mmu_error
       }
     }
-    
-    is(s_mmu_error_state) {
-      output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
-      output_valid := true.B
-      output_instvalids(0) := true.B
-      output_instvalids(1) := false.B
-      output_instvalids(2) := false.B
-      output_instvalids(3) := false.B
-      
-      output_miss := false.B
-      output_uncached := false.B
-      output_mmu_error := s3_mmu_error
-    }
+// 不允许在此状态进行输出
+//    is(s_mmu_error_state) {
+//      output_instrs := 0.U.asTypeOf(Vec(fetchWidth, UInt(32.W)))
+//      output_valid := false.B
+//      output_instvalids(0) := false.B
+//      output_instvalids(1) := false.B
+//      output_instvalids(2) := false.B
+//      output_instvalids(3) := false.B
+//      
+//      output_miss := false.B
+//      output_uncached := false.B
+//      output_mmu_error := s3_mmu_error
+//    }
   }
   
   // === Stage 3 ready信号 ===
