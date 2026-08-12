@@ -11,12 +11,14 @@ class L2Bridge(implicit p: Parameters) extends NSModule {
     val axi = new AXI3MasterIO
   })
 
-  val idle :: readAddr :: readData :: writeAddr :: writeData :: writeResp :: Nil = Enum(6)
+  val idle :: readAddr :: readData :: writeChannels :: writeResp :: Nil = Enum(5)
   val state = RegInit(idle)
 
   val readCmd = Reg(new L2BridgeReadCmd)
   val writeCmd = Reg(new L2BridgeWriteCmd)
   val writeBeat = RegInit(0.U(l2BeatIdxBits.W))
+  val awDone = RegInit(false.B)
+  val wDone = RegInit(false.B)
   val writeWords = writeCmd.data.asTypeOf(Vec(l2BurstBeats, UInt(XLEN.W)))
 
   io.client.read.req.ready := state === idle && !io.client.write.req.valid
@@ -57,13 +59,13 @@ class L2Bridge(implicit p: Parameters) extends NSModule {
   io.axi.aw.data.awlock := 0.U
   io.axi.aw.data.awcache := 0.U
   io.axi.aw.data.awprot := 0.U
-  io.axi.aw.data.awvalid := state === writeAddr
+  io.axi.aw.data.awvalid := state === writeChannels && !awDone
 
   io.axi.w.data.wid := 0.U
   io.axi.w.data.wdata := writeWords(writeBeat)
   io.axi.w.data.wstrb := Mux(writeCmd.isLine, Fill(l2BeatBytes, 1.U(1.W)), writeCmd.strb)
   io.axi.w.data.wlast := !writeCmd.isLine || writeBeat === (l2BurstBeats - 1).U
-  io.axi.w.data.wvalid := state === writeData
+  io.axi.w.data.wvalid := state === writeChannels && !wDone
 
   io.axi.b.bready := false.B
 
@@ -72,7 +74,9 @@ class L2Bridge(implicit p: Parameters) extends NSModule {
     when(io.client.write.req.fire) {
       writeCmd := io.client.write.req.bits
       writeBeat := 0.U
-      state := writeAddr
+      awDone := false.B
+      wDone := false.B
+      state := writeChannels
     }.elsewhen(io.client.read.req.fire) {
       readCmd := io.client.read.req.bits
       state := readAddr
@@ -91,16 +95,23 @@ class L2Bridge(implicit p: Parameters) extends NSModule {
     }
   }
 
-  when(state === writeAddr && io.axi.aw.data.awvalid && io.axi.aw.awready) {
-    state := writeData
-  }
+  val awFire = io.axi.aw.data.awvalid && io.axi.aw.awready
+  val wFire = io.axi.w.data.wvalid && io.axi.w.wready
+  val lastWFire = wFire && io.axi.w.data.wlast
 
-  when(state === writeData && io.axi.w.data.wvalid && io.axi.w.wready) {
+  // AW和W独立握手，任何一个通道都不能等待另一个通道的READY。
+  when(state === writeChannels && awFire) {
+    awDone := true.B
+  }
+  when(state === writeChannels && wFire) {
     when(io.axi.w.data.wlast) {
-      state := writeResp
+      wDone := true.B
     }.otherwise {
       writeBeat := writeBeat + 1.U
     }
+  }
+  when(state === writeChannels && (awDone || awFire) && (wDone || lastWFire)) {
+    state := writeResp
   }
 
   // Complete the write only when B and done handshake together.

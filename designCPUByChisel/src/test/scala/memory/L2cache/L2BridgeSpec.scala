@@ -85,18 +85,29 @@ class L2BridgeSpec
       dut.io.axi.aw.data.awlen.expect(15.U)
       dut.io.axi.aw.data.awsize.expect(2.U)
       dut.io.axi.aw.data.awburst.expect(1.U)
-      dut.io.axi.w.data.wvalid.expect(false.B)
+      dut.io.axi.w.data.wvalid.expect(true.B)
       dut.clock.step(2)
       dut.io.axi.aw.data.awvalid.expect(true.B)
       dut.io.axi.aw.data.awaddr.expect("h80000040".U)
       dut.io.axi.aw.data.awlen.expect(15.U)
+
+      // W可以先于AW完成若干beat，AW仍保持稳定有效。
+      dut.io.axi.w.wready.poke(true.B)
+      for (i <- 0 until 2) {
+        dut.io.axi.w.data.wvalid.expect(true.B)
+        dut.io.axi.w.data.wdata.expect(words(i).U)
+        dut.io.axi.aw.data.awvalid.expect(true.B)
+        dut.io.axi.aw.data.awaddr.expect("h80000040".U)
+        dut.clock.step()
+      }
+      dut.io.axi.w.wready.poke(false.B)
 
       dut.io.axi.aw.awready.poke(true.B)
       dut.clock.step()
       dut.io.axi.aw.awready.poke(false.B)
       dut.io.axi.aw.data.awvalid.expect(false.B)
 
-      for (i <- 0 until 16) {
+      for (i <- 2 until 16) {
         if (i == 3) {
           dut.io.axi.w.wready.poke(false.B)
           dut.io.axi.w.data.wvalid.expect(true.B)
