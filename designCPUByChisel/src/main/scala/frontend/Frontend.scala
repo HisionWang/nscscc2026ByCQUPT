@@ -7,7 +7,7 @@ import nscscc.config._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.frontend.icache._
-import nscscc.axi._
+import nscscc.mem.L2cache.L2NativeReadIO
 import nscscc.backend.execute._
  
 class Frontend(implicit p: Parameters) extends NSModule {
@@ -25,8 +25,8 @@ class Frontend(implicit p: Parameters) extends NSModule {
     //MMU
     val mmu = new MMURead
  
-    // ========== AXI3 总线 (ICache访存) ==========
-    val axi_master = new AXI3MasterIO
+    // ========== ICache 到 L2 的原生读接口 ==========
+    val l2_read = new L2NativeReadIO(1)
   })
  
   io.out.foreach(_.bits := DontCare)
@@ -140,6 +140,6 @@ class Frontend(implicit p: Parameters) extends NSModule {
   // 后端redirect: 清空IBuffer
   ibuffer.io.flush := backendRedirectValid
  
-  // ==================== AXI3 总线 ====================
-  io.axi_master <> icache.io.axi_master
+  // ==================== L2 原生读接口 ====================
+  io.l2_read <> icache.io.l2_read
 }
