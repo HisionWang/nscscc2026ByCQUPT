@@ -92,6 +92,13 @@ object CoreGen extends App {
        |// Git branch      : $gitBranch
        |// Git commit      : $gitCommit
        |// Git message     : $gitCommitSubject
+       |// ---------------------------------------------------------------
+       |// BPU  : useBPUV0=${config(CoreConfigKeys.UseBPUV0)}, btbSize=${config(CoreConfigKeys.BtbSize)}, phtSize=${config(CoreConfigKeys.PhtSize)}
+       |// Cache: nSets=${config(CoreConfigKeys.NSets)}, nWays=${config(CoreConfigKeys.NWays)}, nMshrEntries=${config(CoreConfigKeys.NMshrEntries)}
+       |// Pipe : ibufDepth=${config(CoreConfigKeys.IbufDepth)}, RobSize=${config(CoreConfigKeys.RobSize)}, SnapshotNum=${config(CoreConfigKeys.SnapshotNum)}
+       |//        CommitWidth=${config(CoreConfigKeys.CommitWidth)}, LqSize=${config(CoreConfigKeys.LqSize)}, SqSize=${config(CoreConfigKeys.SqSize)}
+       |// IQ   : IQ1=${config(CoreConfigKeys.IQ1Params).numEntries}, IQ2=${config(CoreConfigKeys.IQ2Params).numEntries}, IQ3=${config(CoreConfigKeys.IQ3Params).numEntries}
+       |//        IQ4=${config(CoreConfigKeys.IQ4Params).numEntries}, IQ5=${config(CoreConfigKeys.IQ5Params).numEntries}
        |// ================================================================
        |
        |""".stripMargin

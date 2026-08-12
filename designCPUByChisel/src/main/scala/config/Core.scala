@@ -13,6 +13,38 @@ object DebugConfigKeys {
   val EnableDifftest = new Field[Boolean](true)
 }
 
+object CoreConfigKeys {
+  val FetchWidth =     new Field[Int](4)
+  val CtrlBlockWidth = new Field[Int](3)
+
+  val BtbSize  = new Field[Int](256)
+  val PhtSize  = new Field[Int](1024)
+  val RasSize  = new Field[Int](8)
+  val UseBPUV0 = new Field[Int](1)
+
+  val NSets = new Field[Int](64)
+  val NWays = new Field[Int](8)
+  val BlockBytes = new Field[Int](64)
+  val NMshrEntries = new Field[Int](2)
+  val BurstNum = new Field[Int](16)
+
+  val IbufDepth = new Field[Int](8)
+  val IntLogicRegs = new Field[Int](32)
+  val IntPhyRegs = new Field[Int](70)
+  val RobSize = new Field[Int](32)
+  val SnapshotNum = new Field[Int](8)
+  val CommitWidth = new Field[Int](3)
+  val LqSize = new Field[Int](8)
+  val SqSize = new Field[Int](8)
+  val WbBusWidth = new Field[Int](5)
+  val IQNum = new Field[Int](5)
+  val IQ1Params = new Field[IQParams](IQParams(8,   5, exeSource = 0))
+  val IQ2Params = new Field[IQParams](IQParams(8,   5, exeSource = 1))
+  val IQ3Params = new Field[IQParams](IQParams(8,   5, exeSource = 2))
+  val IQ4Params = new Field[IQParams](IQParams(16,  5, exeSource = 3))
+  val IQ5Params = new Field[IQParams](IQParams(8,   5, exeSource = 4))
+}
+
 case class IQParams(
   numEntries: Int,
   numWakeupPorts: Int,
@@ -21,21 +53,21 @@ case class IQParams(
  
 // 4. 定义"参数特质" - 通过CPUConfigKeys对象访问参数键
 trait HasCoreParameters {
-  implicit val p: Parameters
+  implicit def p: Parameters
   val XLEN : Int = 32
   // ============================================================
   // === BPU (Branch Prediction Unit) 参数 ===
   // ============================================================
    /*---- 通路位宽相关 ----*/
-  val  fetchWidth: Int = 4
+  val  fetchWidth: Int = p(CoreConfigKeys.FetchWidth)
   
-  val  CtrlBlockWidth : Int = 3
+  val  CtrlBlockWidth : Int = p(CoreConfigKeys.CtrlBlockWidth)
 
   // --- 基本容量 ---
-  val btbSize:  Int = 256
-  val phtSize:  Int = 1024
-  val rasSize:  Int = 8 
-  val useBPUV0: Int = 1
+  val btbSize:  Int = p(CoreConfigKeys.BtbSize)
+  val phtSize:  Int = p(CoreConfigKeys.PhtSize)
+  val rasSize:  Int = p(CoreConfigKeys.RasSize)
+  val useBPUV0: Int = p(CoreConfigKeys.UseBPUV0)
 
   val fetchBlockBits: Int = log2Ceil(fetchWidth * 4)
   val btbIndexBits: Int = log2Ceil(btbSize)
@@ -45,9 +77,9 @@ trait HasCoreParameters {
 
   /*---- Cache相关 ----*/
 
-  val  nSets:      Int = 64
-  val  nWays:      Int = 4
-  val  blockBytes: Int = 64
+  val  nSets:      Int = p(CoreConfigKeys.NSets)
+  val  nWays:      Int = p(CoreConfigKeys.NWays)
+  val  blockBytes: Int = p(CoreConfigKeys.BlockBytes)
 
   // 8KB 2路组相联
  // val  nSets:      Int = 64
@@ -59,13 +91,13 @@ trait HasCoreParameters {
   val blockOffBits = log2Ceil(blockBytes)
   val tagBits     = 32 - idxBits - blockOffBits
 
-  val nMshrEntries: Int = 2
+  val nMshrEntries: Int = p(CoreConfigKeys.NMshrEntries)
   val icacheAxiMissId : Int = nMshrEntries
   val icacheAxiNucacheId : Int = icacheAxiMissId + 1
 
-  val burstNum: Int = 16
+  val burstNum: Int = p(CoreConfigKeys.BurstNum)
 
-  val  ibufDepth:  Int = 8  // 必须为2的次方倍
+  val  ibufDepth:  Int = p(CoreConfigKeys.IbufDepth)  // 必须为2的次方倍
 
 
 
@@ -73,27 +105,27 @@ trait HasCoreParameters {
   // === 后端 Dispatch / ROB / IQ 参数 ===
   // ============================================================
 
-  val IntLogicRegs  = 32           // 逻辑寄存器数量
-  val IntPhyRegs    = 70           // 物理寄存器数量（可调整）
+  val IntLogicRegs  = p(CoreConfigKeys.IntLogicRegs)           // 逻辑寄存器数量
+  val IntPhyRegs    = p(CoreConfigKeys.IntPhyRegs)             // 物理寄存器数量（可调整）
   val PhyRegIdxWidth = log2Ceil(IntPhyRegs)
-  val RobSize       = 32           // ROB 深度
-  val SnapshotNum   = 8            // 快照数量
-  val CommitWidth   = CtrlBlockWidth  // 提交宽度（通常等于译码宽度）
+  val RobSize       = p(CoreConfigKeys.RobSize)               // ROB 深度
+  val SnapshotNum   = p(CoreConfigKeys.SnapshotNum)           // 快照数量
+  val CommitWidth   = p(CoreConfigKeys.CommitWidth)           // 提交宽度（通常等于译码宽度）
 
-  val LqSize       : Int = 8      // Load Queue 深度（2的幂）
-  val SqSize       : Int = 8      // Store Queue 深度（2的幂）
-  val WbBusWidth   : Int = 5       // 写回总线宽度（执行单元回写端口数）
+  val LqSize       : Int = p(CoreConfigKeys.LqSize)      // Load Queue 深度（2的幂）
+  val SqSize       : Int = p(CoreConfigKeys.SqSize)      // Store Queue 深度（2的幂）
+  val WbBusWidth   : Int = p(CoreConfigKeys.WbBusWidth)       // 写回总线宽度（执行单元回写端口数）
 
   // ── IssueQueue 参数 ──
   val IQNumWakeupPorts : Int = WbBusWidth
-  val IQNum : Int = 5 
+  val IQNum : Int = p(CoreConfigKeys.IQNum) 
   val EnableDifftest: Boolean = p(DebugConfigKeys.EnableDifftest)
   
-  val IQ1Params = p(new Field[IQParams](IQParams(8, IQNumWakeupPorts, exeSource = 0))) //ALU_CSR
-  val IQ2Params = p(new Field[IQParams](IQParams(8, IQNumWakeupPorts, exeSource = 1))) //ALU_DIV
-  val IQ3Params = p(new Field[IQParams](IQParams(8, IQNumWakeupPorts, exeSource = 2))) //ALU_MUL_JMP
-  val IQ4Params = p(new Field[IQParams](IQParams(16, IQNumWakeupPorts, exeSource = 3))) //LOAD_STA
-  val IQ5Params = p(new Field[IQParams](IQParams(8,  IQNumWakeupPorts, exeSource = 4))) //STD
+  val IQ1Params = p(CoreConfigKeys.IQ1Params) //ALU_CSR
+  val IQ2Params = p(CoreConfigKeys.IQ2Params) //ALU_DIV
+  val IQ3Params = p(CoreConfigKeys.IQ3Params) //ALU_MUL_JMP
+  val IQ4Params = p(CoreConfigKeys.IQ4Params) //LOAD_STA
+  val IQ5Params = p(CoreConfigKeys.IQ5Params) //STD
 
   val IQ1Width = log2Ceil(IQ1Params.numEntries + 1)
   val IQ2Width = log2Ceil(IQ2Params.numEntries + 1)
