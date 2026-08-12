@@ -398,8 +398,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   lookupToken.isStb := chooseStbLookup
   lookupToken.stbSlot := stbLookupSlot
 
-  io.icache.req.ready := chooseI && Mux(chosenUncache, true.B, array.io.read.req.ready)
-  io.dcache.read.req.ready := chooseD && Mux(chosenUncache, true.B, array.io.read.req.ready)
+  io.icache.req.ready := array.io.initDone && chooseI &&
+    Mux(chosenUncache, true.B, array.io.read.req.ready)
+  io.dcache.read.req.ready := array.io.initDone && chooseD &&
+    Mux(chosenUncache, true.B, array.io.read.req.ready)
 
   when(array.io.read.req.fire) {
     lookupSetBusy(array.io.read.req.bits.set) := true.B
@@ -436,7 +438,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val writeReqBlock = io.dcache.write.req.bits.addr(XLEN - 1, l2BlockOffBits)
   val sameStbWrite = VecInit((0 until stbCount).map(i => stbValid(i) &&
     stbAddr(i)(XLEN - 1, l2BlockOffBits) === writeReqBlock)).asUInt.orR
-  io.dcache.write.req.ready := Mux(cacheLineWrite,
+  io.dcache.write.req.ready := array.io.initDone && Mux(cacheLineWrite,
     hasDStbFree && !sameStbWrite && !uncacheBusy && !uncacheWantsDrain,
     dUncacheWriteWantsDrain && allCacheWorkDrained)
 

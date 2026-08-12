@@ -39,12 +39,30 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
     dut.io.write.valid.poke(false.B)
   }
 
+  it should "block reads for all 512 metadata scrub cycles" in {
+    test(new L2CacheArray) { dut =>
+      idle(dut)
+      dut.reset.poke(true.B)
+      dut.clock.step(2)
+      dut.reset.poke(false.B)
+
+      dut.io.read.req.valid.poke(true.B)
+      dut.io.read.req.bits.set.poke(0.U)
+      for (_ <- 0 until 512) {
+        dut.io.read.req.ready.expect(false.B)
+        dut.clock.step()
+      }
+      dut.io.read.req.ready.expect(true.B)
+    }
+  }
+
   it should "return each accepted read exactly two cycles later at II one" in {
     test(new L2CacheArray) { dut =>
       idle(dut)
       dut.reset.poke(true.B)
       dut.clock.step(2)
       dut.reset.poke(false.B)
+      dut.clock.step(512)
 
       writeLine(dut, 7, 3, 0x1234, BigInt("11" * 64, 16), dirty = true)
       writeLine(dut, 8, 6, 0x4321, BigInt("22" * 64, 16), dirty = false)
@@ -84,17 +102,21 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
       dut.reset.poke(true.B)
       dut.clock.step(2)
       dut.reset.poke(false.B)
+      dut.clock.step(512)
       writeLine(dut, 511, 7, 0x55, BigInt(1), dirty = true)
       dut.reset.poke(true.B)
       dut.clock.step(2)
       dut.reset.poke(false.B)
+      dut.clock.step(512)
       dut.io.read.req.valid.poke(true.B)
       dut.io.read.req.bits.set.poke(511.U)
       dut.clock.step()
       dut.io.read.req.valid.poke(false.B)
       dut.clock.step()
       dut.io.read.resp.valid.expect(true.B)
-      dut.io.read.resp.bits.ways(7).valid.expect(false.B)
+      for (way <- 0 until 8) {
+        dut.io.read.resp.bits.ways(way).valid.expect(false.B)
+      }
     }
   }
 
@@ -104,6 +126,7 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
       dut.reset.poke(true.B)
       dut.clock.step(2)
       dut.reset.poke(false.B)
+      dut.clock.step(512)
 
       val oldData = BigInt("a5" * 64, 16)
       writeLine(dut, 9, 2, 0x66, oldData, dirty = false)
@@ -168,6 +191,7 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
       dut.reset.poke(true.B)
       dut.clock.step(2)
       dut.reset.poke(false.B)
+      dut.clock.step(512)
       writeLine(dut, 3, 0, 0x11, BigInt("12" * 64, 16), dirty = false)
 
       dut.io.read.req.valid.poke(true.B)
@@ -196,6 +220,7 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
       dut.reset.poke(true.B)
       dut.clock.step(2)
       dut.reset.poke(false.B)
+      dut.clock.step(512)
       val oldData = BigInt("5a" * 64, 16)
       writeLine(dut, 21, 4, 0x31, oldData, dirty = false)
 

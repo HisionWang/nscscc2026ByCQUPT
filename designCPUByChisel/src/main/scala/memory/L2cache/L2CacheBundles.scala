@@ -160,6 +160,7 @@ class L2ArrayReadIO(implicit p: Parameters) extends NSBundle {
 }
 
 class L2ArrayIO(implicit p: Parameters) extends NSBundle {
+  val initDone = Output(Bool())
   val read = new L2ArrayReadIO
   val write = Flipped(Valid(new L2ArrayWriteReq))
 }

@@ -123,6 +123,7 @@ class L2CacheSpec
     dut.reset.poke(true.B)
     dut.clock.step(2)
     dut.reset.poke(false.B)
+    dut.clock.step(512)
   }
 
   private def sendIRead(
