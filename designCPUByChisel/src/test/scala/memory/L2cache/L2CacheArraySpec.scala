@@ -189,4 +189,51 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
       dut.io.read.resp.bits.ways(0).data.expect(BigInt("12" * 64, 16).U)
     }
   }
+
+  it should "return one atomic metadata snapshot when a later write targets the same set" in {
+    test(new L2CacheArray) { dut =>
+      idle(dut)
+      dut.reset.poke(true.B)
+      dut.clock.step(2)
+      dut.reset.poke(false.B)
+      val oldData = BigInt("5a" * 64, 16)
+      writeLine(dut, 21, 4, 0x31, oldData, dirty = false)
+
+      // N：lookup已经被Array接收。
+      dut.io.read.req.valid.poke(true.B)
+      dut.io.read.req.bits.set.poke(21.U)
+      dut.io.read.req.ready.expect(true.B)
+      dut.clock.step()
+
+      // N+1：控制器之后可能安排同set metadata写；在途响应仍必须是N拍快照。
+      dut.io.read.req.valid.poke(false.B)
+      dut.io.write.valid.poke(true.B)
+      dut.io.write.bits.set.poke(21.U)
+      dut.io.write.bits.way.poke(4.U)
+      dut.io.write.bits.valid.poke(true.B)
+      dut.io.write.bits.dirty.poke(true.B)
+      dut.io.write.bits.tag.poke(0x32.U)
+      dut.io.write.bits.data.poke(0.U)
+      dut.io.write.bits.dataWen.poke(false.B)
+      dut.clock.step()
+
+      dut.io.read.resp.valid.expect(true.B)
+      dut.io.read.resp.bits.ways(4).valid.expect(true.B)
+      dut.io.read.resp.bits.ways(4).dirty.expect(false.B)
+      dut.io.read.resp.bits.ways(4).tag.expect(0x31.U)
+      dut.io.read.resp.bits.ways(4).data.expect(oldData.U)
+
+      // 下一次lookup才能看到N+1拍的新metadata。
+      dut.io.write.valid.poke(false.B)
+      dut.io.read.req.valid.poke(true.B)
+      dut.io.read.req.bits.set.poke(21.U)
+      dut.clock.step()
+      dut.io.read.req.valid.poke(false.B)
+      dut.clock.step()
+      dut.io.read.resp.valid.expect(true.B)
+      dut.io.read.resp.bits.ways(4).dirty.expect(true.B)
+      dut.io.read.resp.bits.ways(4).tag.expect(0x32.U)
+      dut.io.read.resp.bits.ways(4).data.expect(oldData.U)
+    }
+  }
 }

@@ -118,10 +118,15 @@ class L2CacheArray(implicit p: Parameters) extends NSModule {
 
     val tagDataD1 = tagRams(way).read(io.read.req.bits.set, readFire)
     val tagDataD2 = RegEnable(tagDataD1, 0.U, readValidD1)
+    // metadata也随lookup流水两拍，避免后一拍同set写入撕裂响应快照。
+    val validDataD1 = RegEnable(validBits(way)(io.read.req.bits.set), false.B, readFire)
+    val validDataD2 = RegEnable(validDataD1, false.B, readValidD1)
+    val dirtyDataD1 = RegEnable(dirtyBits(way)(io.read.req.bits.set), false.B, readFire)
+    val dirtyDataD2 = RegEnable(dirtyDataD1, false.B, readValidD1)
 
-    io.read.resp.bits.ways(way).valid := validBits(way)(readSetD2)
+    io.read.resp.bits.ways(way).valid := validDataD2
     io.read.resp.bits.ways(way).dirty :=
-      validBits(way)(readSetD2) && dirtyBits(way)(readSetD2)
+      validDataD2 && dirtyDataD2
     io.read.resp.bits.ways(way).tag := tagDataD2
     io.read.resp.bits.ways(way).data := dataRams(way).io.read.data
   }
