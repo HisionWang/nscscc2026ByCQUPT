@@ -55,25 +55,27 @@ class L2NativeMasterIO(val idWidth: Int)(implicit p: Parameters) extends NSBundl
   val write = new L2NativeWriteIO(idWidth)
 }
 
-// Bridge 只保存并回传 source/id，不解释它们的 cache 策略含义。
-class L2BridgeReadCmd(implicit p: Parameters) extends NSBundle {
+// Bridge只保存并回传内部槽号；L1原始ID由L2的MSHR保存，不能在此处截断。
+class L2BridgeOwner(implicit p: Parameters) extends NSBundle {
   val source = UInt(l2BridgeSourceBits.W)
-  val id = UInt(l2MshrIdBits.W)
+  val slot = UInt(l2MshrIdBits.W)
+}
+
+class L2BridgeReadCmd(implicit p: Parameters) extends NSBundle {
+  val owner = new L2BridgeOwner
   val addr = UInt(XLEN.W)
   val isLine = Bool()
   val size = UInt(3.W)
 }
 
 class L2BridgeReadBeat(implicit p: Parameters) extends NSBundle {
-  val source = UInt(l2BridgeSourceBits.W)
-  val id = UInt(l2MshrIdBits.W)
+  val owner = new L2BridgeOwner
   val data = UInt(XLEN.W)
   val last = Bool()
 }
 
 class L2BridgeWriteCmd(implicit p: Parameters) extends NSBundle {
-  val source = UInt(l2BridgeSourceBits.W)
-  val id = UInt(l2MshrIdBits.W)
+  val owner = new L2BridgeOwner
   val addr = UInt(XLEN.W)
   val isLine = Bool()
   val size = UInt(3.W)
@@ -82,8 +84,7 @@ class L2BridgeWriteCmd(implicit p: Parameters) extends NSBundle {
 }
 
 class L2BridgeWriteDone(implicit p: Parameters) extends NSBundle {
-  val source = UInt(l2BridgeSourceBits.W)
-  val id = UInt(l2MshrIdBits.W)
+  val owner = new L2BridgeOwner
 }
 
 class L2BridgeReadClientIO(implicit p: Parameters) extends NSBundle {
@@ -125,4 +126,40 @@ class L2ReplacerLookup(implicit p: Parameters) extends NSBundle {
 class L2ReplacerTouch(implicit p: Parameters) extends NSBundle {
   val set = UInt(l2IdxBits.W)
   val way = UInt(l2WayBits.W)
+}
+
+class L2ArrayWayData(implicit p: Parameters) extends NSBundle {
+  val valid = Bool()
+  val dirty = Bool()
+  val tag = UInt(l2TagBits.W)
+  val data = UInt(l2LineBits.W)
+}
+
+class L2ArrayReadReq(implicit p: Parameters) extends NSBundle {
+  val set = UInt(l2IdxBits.W)
+}
+
+class L2ArrayReadResp(implicit p: Parameters) extends NSBundle {
+  val set = UInt(l2IdxBits.W)
+  val ways = Vec(l2Ways, new L2ArrayWayData)
+}
+
+class L2ArrayWriteReq(implicit p: Parameters) extends NSBundle {
+  val set = UInt(l2IdxBits.W)
+  val way = UInt(l2WayBits.W)
+  val valid = Bool()
+  val dirty = Bool()
+  val tag = UInt(l2TagBits.W)
+  val data = UInt(l2LineBits.W)
+  val dataWen = Bool()
+}
+
+class L2ArrayReadIO(implicit p: Parameters) extends NSBundle {
+  val req = Flipped(Decoupled(new L2ArrayReadReq))
+  val resp = Valid(new L2ArrayReadResp)
+}
+
+class L2ArrayIO(implicit p: Parameters) extends NSBundle {
+  val read = new L2ArrayReadIO
+  val write = Flipped(Valid(new L2ArrayWriteReq))
 }

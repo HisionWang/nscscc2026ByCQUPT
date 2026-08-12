@@ -86,6 +86,7 @@ trait HasCoreParameters {
   val l2LineBits: Int = l2BlockBytes * 8
   val l2BeatBytes: Int = XLEN / 8
   val l2BurstBeats: Int = l2BlockBytes / l2BeatBytes
+  val l2BeatIdxBits: Int = log2Ceil(l2BurstBeats)
   val l2MshrIdBits: Int = log2Ceil(l2MshrEntries)
   val l2BridgeSourceBits: Int = 2
 
