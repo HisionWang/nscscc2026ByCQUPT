@@ -22,11 +22,11 @@ object CoreConfigKeys {
   val RasSize  = new Field[Int](8)
   val UseBPUV0 = new Field[Int](1)
 
-  val NSets = new Field[Int](64)
-  val NWays = new Field[Int](8)
-  val BlockBytes = new Field[Int](64)
-  val NMshrEntries = new Field[Int](2)
-  val BurstNum = new Field[Int](16)
+  val NSets        = new Field[Int](64)
+  val NWays        = new Field[Int]( 8)
+  val BlockBytes   = new Field[Int](64)
+  val NMshrEntries = new Field[Int]( 2)
+  val BurstNum     = new Field[Int](16)
 
   val IbufDepth = new Field[Int](8)
   val IntLogicRegs = new Field[Int](32)

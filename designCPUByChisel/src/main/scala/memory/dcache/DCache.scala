@@ -83,7 +83,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   val curIsStore   = RegInit(false.B)
   val curCacheable = RegInit(false.B)
   val curIsReplay  = RegInit(false.B)
-  val curLsIdx     = RegInit(0.U(log2Ceil(4).W))
+  val curLsIdx     = RegInit(0.U(log2Ceil(nMshrEntries * 2).W))
   val curArrayData = RegInit(0.U.asTypeOf(new DCacheArrayReadData))
   val curHitWay    = RegInit(0.U(wayBits.W))
   val curVictimWay = RegInit(0.U(wayBits.W))
@@ -110,7 +110,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   val refillWay    = RegInit(0.U(wayBits.W))
   val refillTag    = RegInit(0.U(tagBits.W))
   val refillData   = RegInit(0.U((blockBytes * 8).W))
-  val refillPrimId = RegInit(0.U(1.W))
+  val refillPrimId = RegInit(0.U(log2Ceil(nMshrEntries max 1).W))
  
   // ================================================================
   //  反饥饿仲裁

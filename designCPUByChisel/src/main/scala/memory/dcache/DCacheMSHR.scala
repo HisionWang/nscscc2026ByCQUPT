@@ -12,8 +12,9 @@ import nscscc.axi._
 //  MSHR 顶层：2 Primary + 4 LoadStore
 // ================================================================
 class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
-  val nPrim = 2
-  val nSec  = 4
+  val nPrim = nMshrEntries
+  val nSec  = nMshrEntries * 2
+  val primIdWidth = log2Ceil(nPrim max 1)
  
   val io = IO(new Bundle {
     val missReq = Flipped(Decoupled(new Bundle {
@@ -35,7 +36,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     val probeBlockAddr = Input(UInt((tagBits + idxBits).W))
     val probeMatch     = Output(Bool())
     val isFirstMiss    = Output(Bool())
-    val matchPrimId    = Output(UInt(1.W))
+    val matchPrimId    = Output(UInt(primIdWidth.W))
  
     val hasStore = Output(Bool())
     val idle     = Output(Bool())
@@ -47,8 +48,8 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
       val tag  = UInt(tagBits.W)
       val data = UInt((blockBytes * 8).W)
     }))
-    val refillWriteAck    = Input(Valid(UInt(1.W)))
-    val refillWritePrimId = Output(UInt(1.W))
+    val refillWriteAck    = Input(Valid(UInt(primIdWidth.W)))
+    val refillWritePrimId = Output(UInt(primIdWidth.W))
  
     val lsReady       = Output(Bool())
     val lsIdx         = Output(UInt(log2Ceil(nSec).W))
@@ -82,7 +83,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   val lsStoreData = RegInit(VecInit(Seq.fill(nSec)(0.U(XLEN.W))))
   val lsIsLoad    = RegInit(VecInit(Seq.fill(nSec)(false.B)))
   val lsIsStore   = RegInit(VecInit(Seq.fill(nSec)(false.B)))
-  val lsPrimaryId = RegInit(VecInit(Seq.fill(nSec)(0.U(1.W))))
+  val lsPrimaryId = RegInit(VecInit(Seq.fill(nSec)(0.U(primIdWidth.W))))
   val lsIsUncache = RegInit(VecInit(Seq.fill(nSec)(false.B)))
   val lsFlushed   = RegInit(VecInit(Seq.fill(nSec)(false.B)))
  
@@ -92,7 +93,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   val blockMatchVec = primaries.map(p => p.io.busy && !p.io.isUncache && p.io.blockAddr === io.probeBlockAddr && !reqIsUncache)
   io.probeMatch  := VecInit(blockMatchVec).asUInt.orR
   io.isFirstMiss := !VecInit(blockMatchVec).asUInt.orR
-  io.matchPrimId := PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
+  io.matchPrimId := PriorityEncoder(VecInit(blockMatchVec).asUInt)
  
   io.hasStore := VecInit((0 until nSec).map(i => lsValid(i) && lsIsStore(i) && !lsFlushed(i))).asUInt.orR
   io.idle := !VecInit(primaries.map(_.io.busy)).asUInt.orR && !lsValid.asUInt.orR
@@ -102,7 +103,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   val reqSetIdx     = io.missReq.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
  
   val isFirstMissReq = !VecInit(blockMatchVec).asUInt.orR
-  val matchPrimIdReq = PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })
+  val matchPrimIdReq = PriorityEncoder(VecInit(blockMatchVec).asUInt)
  
   val freePrimMask = VecInit(primaries.map(_.io.canAccept)).asUInt
   val hasFreePrim  = freePrimMask.orR
@@ -254,7 +255,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   // ===== Refill Write =====
   val refillWritePrimVec = VecInit(primaries.map(_.io.refillWriteReq))
   val hasRefillWrite     = refillWritePrimVec.asUInt.orR
-  val refillWritePrimSel = PriorityEncoder(refillWritePrimVec)
+  val refillWritePrimSel = PriorityEncoder(refillWritePrimVec.asUInt)
  
   val primSetIdxVec    = VecInit(primaries.map(_.io.setIdx))
   val primVictimWayVec = VecInit(primaries.map(_.io.mshrVictimWay))
@@ -276,14 +277,13 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   //  防止高优先级请求抢占正在等待 arready 的低优先级请求。
   // ══════════════════════════════════════════════════════════════
   val arLocked = RegInit(false.B)
-  val arWinner = RegInit(0.U(1.W))   // 0=Primary0, 1=Primary1
- 
+  val arWinner = RegInit(0.U(primIdWidth.W))
+
   val arValids = VecInit(primaries.map(_.io.ar.valid))
   val arAnyValid = arValids.asUInt.orR
- 
-  // 当前选择：锁定时用寄存器，未锁定时按优先级仲裁（P0 > P1）
-  val arSel = Mux(arLocked, arWinner,
-               Mux(arValids(0), 0.U, Mux(arValids(1), 1.U, 0.U)))
+
+  // 当前选择：锁定时用寄存器，未锁定时按优先级仲裁（低编号优先）
+  val arSel = Mux(arLocked, arWinner, PriorityEncoder(arValids.asUInt))
   val arSelOH = UIntToOH(arSel, nPrim)
  
   // 输出 valid：选中 Primary 的 valid
@@ -321,7 +321,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   }
  
   // ===== AXI R 路由 =====
-  val rId   = io.axi.r.data.rid(0)
+  val rId   = if (primIdWidth == 0) 0.U else io.axi.r.data.rid(primIdWidth - 1, 0)
   val rIdOH = UIntToOH(rId, nPrim)
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.r.valid := io.axi.r.data.rvalid && rIdOH(i)
@@ -333,13 +333,12 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   //  AXI AW 通道：锁定仲裁（同 AR）
   // ══════════════════════════════════════════════════════════════
   val awLocked = RegInit(false.B)
-  val awWinner = RegInit(0.U(1.W))
+  val awWinner = RegInit(0.U(primIdWidth.W))
  
   val awValids = VecInit(primaries.map(_.io.aw.valid))
   val awAnyValid = awValids.asUInt.orR
  
-  val awSel = Mux(awLocked, awWinner,
-               Mux(awValids(0), 0.U, Mux(awValids(1), 1.U, 0.U)))
+  val awSel = Mux(awLocked, awWinner, PriorityEncoder(awValids.asUInt))
   val awSelOH = UIntToOH(awSel, nPrim)
  
   val awOutValid = awValids(awSel)
@@ -377,13 +376,12 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   //  锁定持续到 wlast 握手完成或该 Primary 撤下 wvalid。
   // ══════════════════════════════════════════════════════════════
   val wLocked = RegInit(false.B)
-  val wWinner = RegInit(0.U(1.W))
+  val wWinner = RegInit(0.U(primIdWidth.W))
  
   val wValids = VecInit(primaries.map(_.io.w.valid))
   val wAnyValid = wValids.asUInt.orR
  
-  val wSel = Mux(wLocked, wWinner,
-              Mux(wValids(0), 0.U, Mux(wValids(1), 1.U, 0.U)))
+  val wSel = Mux(wLocked, wWinner, PriorityEncoder(wValids.asUInt))
   val wSelOH = UIntToOH(wSel, nPrim)
  
   val wOutValid = wValids(wSel)
@@ -412,7 +410,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
   }
  
   // ===== AXI B 路由 =====
-  val bId   = io.axi.b.data.bid(0)
+  val bId   = if (primIdWidth == 0) 0.U else io.axi.b.data.bid(primIdWidth - 1, 0)
   val bIdOH = UIntToOH(bId, nPrim)
   for ((prim, i) <- primaries.zipWithIndex) {
     prim.io.b.valid := io.axi.b.data.bvalid && bIdOH(i)

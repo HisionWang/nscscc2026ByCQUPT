@@ -12,9 +12,10 @@ import nscscc.axi._
 // ================================================================
 class MSHREntry(implicit p: Parameters) extends NSModule {
   val burstBeats = blockBytes / (XLEN / 8)
+  val primIdWidth = log2Ceil(nMshrEntries max 1)
  
   val io = IO(new Bundle {
-    val id = Input(UInt(1.W))
+    val id = Input(UInt(primIdWidth.W))
  
     val req = Flipped(Decoupled(new Bundle {
       val paddr       = UInt(XLEN.W)
