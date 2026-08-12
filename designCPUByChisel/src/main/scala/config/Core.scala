@@ -65,6 +65,30 @@ trait HasCoreParameters {
 
   val burstNum: Int = 16
 
+  // ============================================================
+  // === 统一 L2 Cache 参数（与 L1 参数独立）
+  // ============================================================
+  val l2Sets: Int = 512
+  val l2Ways: Int = 8
+  val l2BlockBytes: Int = 64
+
+  val l2MshrEntries: Int = 4
+  val l2LrbEntries: Int = 2
+  val l2IStbEntries: Int = 1
+  val l2DStbEntries: Int = 2
+  val l2EbEntries: Int = 1
+  val l2ReadLatency: Int = 2
+
+  val l2IdxBits: Int = log2Ceil(l2Sets)
+  val l2WayBits: Int = log2Ceil(l2Ways)
+  val l2BlockOffBits: Int = log2Ceil(l2BlockBytes)
+  val l2TagBits: Int = XLEN - l2IdxBits - l2BlockOffBits
+  val l2LineBits: Int = l2BlockBytes * 8
+  val l2BeatBytes: Int = XLEN / 8
+  val l2BurstBeats: Int = l2BlockBytes / l2BeatBytes
+  val l2MshrIdBits: Int = log2Ceil(l2MshrEntries)
+  val l2BridgeSourceBits: Int = 2
+
   val  ibufDepth:  Int = 8  // 必须为2的次方倍
 
 
