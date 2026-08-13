@@ -4,7 +4,7 @@
     "xci_name": "L2_meta_512x19",
     "component_reference": "xilinx.com:ip:blk_mem_gen:8.4",
     "ip_revision": "7",
-    "gen_directory": ".",
+    "gen_directory": "../../../../loongson.gen/sources_1/ip/L2_meta_512x19",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "L2_meta_512x19", "resolve_type": "user", "usage": "all" } ],
@@ -174,7 +174,7 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "7" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "." } ],
+        "OUTPUTDIR": [ { "value": "../../../../loongson.gen/sources_1/ip/L2_meta_512x19" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2023.2" } ],
