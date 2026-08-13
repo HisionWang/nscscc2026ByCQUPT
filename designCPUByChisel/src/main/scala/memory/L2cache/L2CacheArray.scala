@@ -80,7 +80,7 @@ class L2DataRAM(val depth: Int, val width: Int)(implicit p: Parameters)
     memory.io.dina := io.write.bits.data
     memory.io.clkb := clock
     memory.io.rstb := reset.asBool
-    memory.io.enb := io.read.enable
+    memory.io.enb := true.B
     memory.io.addrb := io.read.addr
     io.read.data := memory.io.doutb
   }
@@ -120,7 +120,7 @@ class L2MetadataRAM(val depth: Int, val width: Int)(implicit p: Parameters)
     memory.io.dina := io.write.bits.data
     memory.io.clkb := clock
     memory.io.rstb := reset.asBool
-    memory.io.enb := io.read.enable
+    memory.io.enb := true.B
     memory.io.addrb := io.read.addr
     io.read.data := memory.io.doutb
   }
