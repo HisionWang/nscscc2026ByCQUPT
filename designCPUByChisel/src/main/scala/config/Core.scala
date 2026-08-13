@@ -20,10 +20,10 @@ object CoreConfigKeys {
   val BtbSize  = new Field[Int](256)
   val PhtSize  = new Field[Int](1024)
   val RasSize  = new Field[Int](8)
-  val UseBPUV0 = new Field[Int](1)
+  val UseBPUV0 = new Field[Int](0)
 
-  val NSets = new Field[Int](64)
-  val NWays = new Field[Int](8)
+  val NSets = new Field[Int](256)
+  val NWays = new Field[Int](4)
   val BlockBytes = new Field[Int](64)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
