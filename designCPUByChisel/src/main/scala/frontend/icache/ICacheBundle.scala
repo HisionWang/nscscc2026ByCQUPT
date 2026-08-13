@@ -10,10 +10,10 @@ import nscscc.config.NSBundle
 
 class arrayReadData(implicit p: Parameters) extends  NSBundle{
 
-  val cacheLine = 
-    Vec(nWays, new Bundle { 
+  val cacheLine =
+    Vec(nWaysI, new Bundle {
       val has  = Bool()
-      val tag  = UInt(tagBits.W)
+      val tag  = UInt(tagBitsI.W)
       val data = UInt((blockBytes * 8).W)
     })
 }
@@ -22,7 +22,7 @@ class ICacheArrayRead(implicit p: Parameters) extends NSBundle {
 
   val req   = new Bundle{
     val valid = Output(Bool())
-    val idx = Output(UInt(idxBits.W))
+    val idx = Output(UInt(idxBitsI.W))
   }
 
   val resp    = new Bundle{
@@ -35,9 +35,9 @@ class ICacheArrayRead(implicit p: Parameters) extends NSBundle {
 class ICacheArrayWrite(implicit p: Parameters) extends NSBundle {
 
     val valid = Output( Bool() )
-    val idx   = Output( UInt(idxBits.W) )
-    val way = Output(UInt(wayBits.W))
-    val tag   = Output( UInt(tagBits.W) )
+    val idx   = Output( UInt(idxBitsI.W) )
+    val way = Output(UInt(wayBitsI.W))
+    val tag   = Output( UInt(tagBitsI.W) )
     val data  = Output( UInt((blockBytes * 8).W) )
 
 }
@@ -45,15 +45,15 @@ class ICacheArrayWrite(implicit p: Parameters) extends NSBundle {
 class victimRead(implicit p: Parameters) extends NSBundle {
 
     val req  = Output(Bool())
-    val idx  = Output(UInt(idxBits.W))
-    val resp = Input(UInt(wayBits.W))
+    val idx  = Output(UInt(idxBitsI.W))
+    val resp = Input(UInt(wayBitsI.W))
 }
 
 class victimChange(implicit p: Parameters) extends NSBundle {
 
     val valid = Output(Bool())
-    val idx   = Output(UInt(idxBits.W))
-    val way   = Output(UInt(wayBits.W))
+    val idx   = Output(UInt(idxBitsI.W))
+    val way   = Output(UInt(wayBitsI.W))
 }
 
 //class mmuReadData(implicit p: Parameters) extends  NSBundle{

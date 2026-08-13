@@ -6,56 +6,56 @@ import nscscc.config._
 import nscscc.util.SimpleBlockRAM
  
 class DCacheArray(implicit p: Parameters) extends NSModule {
-  val metaWidth = tagBits    + 1 //2
+  val metaWidth = tagBitsD    + 1 //2
   val dataWidth = blockBytes * 8
  
   val io = IO(new Bundle {
     val read = new Bundle {
       val valid    = Input(Bool())
-      val idx      = Input(UInt(idxBits.W))
+      val idx      = Input(UInt(idxBitsD.W))
       val resp     = Output(new DCacheArrayReadData)
       val validOut = Output(Bool())
     }
     val write = new Bundle {
       val valid = Input(Bool())
-      val idx   = Input(UInt(idxBits.W))
-      val way   = Input(UInt(wayBits.W))
-      val tag   = Input(UInt(tagBits.W))
+      val idx   = Input(UInt(idxBitsD.W))
+      val way   = Input(UInt(wayBitsD.W))
+      val tag   = Input(UInt(tagBitsD.W))
       val dirty = Input(Bool())
       val data  = Input(UInt(dataWidth.W))
       val wen   = Input(Bool())
     }
     val metaWrite = new Bundle {
       val valid     = Input(Bool())
-      val idx       = Input(UInt(idxBits.W))
-      val way       = Input(UInt(wayBits.W))
+      val idx       = Input(UInt(idxBitsD.W))
+      val way       = Input(UInt(wayBitsD.W))
       val metaValid = Input(Bool())
       val dirty     = Input(Bool())
-      val tag       = Input(UInt(tagBits.W))
+      val tag       = Input(UInt(tagBitsD.W))
     }
     val hasDirty = Output(Bool())
-    val dirtyIdx = Output(UInt(idxBits.W))
-    val dirtyWay = Output(UInt(wayBits.W))
+    val dirtyIdx = Output(UInt(idxBitsD.W))
+    val dirtyWay = Output(UInt(wayBitsD.W))
 
     val dcacheInvalid = Input(Bool())
   })
   // 在 metaBRAMs/dataBRAMs 声明之前插入
-  val validArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
-  val dirtyArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
+  val validArray = RegInit(VecInit(Seq.fill(nWaysD)(0.U(nSetsD.W))))
+  val dirtyArray = RegInit(VecInit(Seq.fill(nWaysD)(0.U(nSetsD.W))))
 
-  val dirtyWayMask = VecInit((0 until nWays).map(way => dirtyArray(way).orR)).asUInt
+  val dirtyWayMask = VecInit((0 until nWaysD).map(way => dirtyArray(way).orR)).asUInt
   io.hasDirty := dirtyWayMask.orR
   io.dirtyWay := PriorityEncoder(dirtyWayMask)
   io.dirtyIdx := PriorityEncoder(dirtyArray(io.dirtyWay))
   
-  val metaBRAMs = VecInit(Seq.fill(nWays)(
-    Module(new SimpleBlockRAM(depth = nSets, width = metaWidth, readLatency = 1)).io
+  val metaBRAMs = VecInit(Seq.fill(nWaysD)(
+    Module(new SimpleBlockRAM(depth = nSetsD, width = metaWidth, readLatency = 1)).io
   ))
-  val dataBRAMs = VecInit(Seq.fill(nWays)(
-    Module(new SimpleBlockRAM(depth = nSets, width = dataWidth, readLatency = 1)).io
+  val dataBRAMs = VecInit(Seq.fill(nWaysD)(
+    Module(new SimpleBlockRAM(depth = nSetsD, width = dataWidth, readLatency = 1)).io
   ))
  
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysD) {
     metaBRAMs(way).rd_en   := io.read.valid
     metaBRAMs(way).rd_addr := io.read.idx
     dataBRAMs(way).rd_en   := io.read.valid
@@ -63,16 +63,16 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
   }
  
   val readRespData = Wire(new DCacheArrayReadData)
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysD) {
     val metaUInt = metaBRAMs(way).rd_data
 
     //val readIdxReg = RegEnable(io.read.idx, io.read.valid)
-    val readIdxReg = RegEnable(io.read.idx, 0.U(idxBits.W), io.read.valid)
+    val readIdxReg = RegEnable(io.read.idx, 0.U(idxBitsD.W), io.read.valid)
 
-    readRespData.ways(way).valid := validArray(way)(readIdxReg)  //metaUInt(tagBits + 1)
-    //readRespData.ways(way).dirty := metaUInt(tagBits)
-    readRespData.ways(way).dirty := metaUInt(tagBits) && validArray(way)(readIdxReg)
-    readRespData.ways(way).tag   := metaUInt(tagBits - 1, 0)
+    readRespData.ways(way).valid := validArray(way)(readIdxReg)  //metaUInt(tagBitsD + 1)
+    //readRespData.ways(way).dirty := metaUInt(tagBitsD)
+    readRespData.ways(way).dirty := metaUInt(tagBitsD) && validArray(way)(readIdxReg)
+    readRespData.ways(way).tag   := metaUInt(tagBitsD - 1, 0)
     readRespData.ways(way).data  := dataBRAMs(way).rd_data
   }
  
@@ -80,7 +80,7 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
   io.read.validOut := RegNext(io.read.valid)
  
   val writeWayOneHot = UIntToOH(io.write.way)
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysD) {
     val waySel = writeWayOneHot(way)
     //val metaWriteData = Cat(true.B, io.write.dirty, io.write.tag)
     val metaWriteData = Cat(io.write.dirty, io.write.tag)  // BRAM 不再存 valid
@@ -119,7 +119,7 @@ class DCacheArray(implicit p: Parameters) extends NSModule {
 
 
     when(io.dcacheInvalid) {
-    for (way <- 0 until nWays) {
+    for (way <- 0 until nWaysD) {
       validArray(way) := 0.U
     }
   }

@@ -59,14 +59,14 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s0_ready = s0_fire || !s0_valid
   io.cpu_req.ready := s0_ready
  
-  val curr_vidx = io.cpu_req.bits.addr(blockOffBits + idxBits - 1, blockOffBits)
-  val curr_vtag = io.cpu_req.bits.addr(31, blockOffBits + idxBits)
+  val curr_vidx = io.cpu_req.bits.addr(blockOffBits + idxBitsI - 1, blockOffBits)
+  val curr_vtag = io.cpu_req.bits.addr(31, blockOffBits + idxBitsI)
  
   // === Stage 0: 发出Cached的SRAM读取请求，向MMU发起地址转换 ===
    
   val s0_vaddr = RegInit(0.U(32.W))
-  val s0_vidx  = RegInit(0.U(idxBits.W))
-  val s0_vtag  = RegInit(0.U(tagBits.W))
+  val s0_vidx  = RegInit(0.U(idxBitsI.W))
+  val s0_vtag  = RegInit(0.U(tagBitsI.W))
  
   val io_fire = s0_ready && io.cpu_req.valid
  
@@ -95,8 +95,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // === Stage 1: 接收接收双方的请求，并判断是否为uncahe ===
   val s1_valid = RegInit(false.B)
   val s1_vaddr = RegInit(0.U(32.W))
-  val s1_vidx  = RegInit(0.U(idxBits.W))
-  val s1_vtag  = RegInit(0.U(tagBits.W))
+  val s1_vidx  = RegInit(0.U(idxBitsI.W))
+  val s1_vtag  = RegInit(0.U(tagBitsI.W))
  
   val s1_fire  = Wire(Bool())
   val s2_ready = Wire(Bool())
@@ -147,10 +147,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_paddr     = RegInit(0.U(32.W))
   val s2_uncached  = RegInit(false.B)
   val s2_mmu_error = RegInit(0.U.asTypeOf(new MmuTransError))
-  val s2_vidx      = RegInit(0.U(idxBits.W))
-  val s2_vtag      = RegInit(0.U(tagBits.W))
-  val s2_pidx      = RegInit(0.U(idxBits.W))
-  val s2_ptag      = RegInit(0.U(tagBits.W))
+  val s2_vidx      = RegInit(0.U(idxBitsI.W))
+  val s2_vtag      = RegInit(0.U(tagBitsI.W))
+  val s2_pidx      = RegInit(0.U(idxBitsI.W))
+  val s2_ptag      = RegInit(0.U(tagBitsI.W))
   val s2_array_data = RegInit(0.U.asTypeOf(new arrayReadData))
    
   val s3_ready = Wire(Bool())
@@ -158,13 +158,13 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s2_is_uncached_access = s2_mmu_error.getAnyError || s2_uncached
   s2_ready := s2_fire || !s2_valid
  
-  val s1_ptag = Mux(s1_mmu_received, s1_mmu_received_data.paddr(31, blockOffBits + idxBits), io.mmu.fromMmu.bits.paddr(31, blockOffBits + idxBits))
+  val s1_ptag = Mux(s1_mmu_received, s1_mmu_received_data.paddr(31, blockOffBits + idxBitsI), io.mmu.fromMmu.bits.paddr(31, blockOffBits + idxBitsI))
   val s1_array_data_read = Mux(s1_array_received, s1_array_received_data, io.arrays_read.resp.data)
   val s1_paddr = Mux(s1_mmu_received, s1_mmu_received_data.paddr, io.mmu.fromMmu.bits.paddr)
  
-  val s3_ptag    = Wire(UInt(tagBits.W))
-  val s3_pidx    = Wire(UInt(idxBits.W))
-  val s3_vidx    = Wire(UInt(idxBits.W))
+  val s3_ptag    = Wire(UInt(tagBitsI.W))
+  val s3_pidx    = Wire(UInt(idxBitsI.W))
+  val s3_vidx    = Wire(UInt(idxBitsI.W))
  
   val miss_data_valid = RegInit(false.B)
   val s3_valid = RegInit(false.B)
@@ -174,7 +174,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_mmu_error     = RegInit(0.U.asTypeOf(new MmuTransError))
   val s3_hit           = RegInit(false.B)
   val s3_miss          = RegInit(false.B)
-  val s3_hit_way       = RegInit(0.U(wayBits.W))
+  val s3_hit_way       = RegInit(0.U(wayBitsI.W))
   val miss_data_words = RegInit(VecInit(Seq.fill(blockBytes / (XLEN / 8))(0.U(XLEN.W))))
   val miss_data_buffer = miss_data_words.asUInt
   val s1_bypass_data = miss_data_buffer
@@ -183,7 +183,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   val s2_bypass_data_from_s1 = RegInit(0.U((blockBytes * 8).W))
   val s2_can_bypass_from_s1  = RegInit(false.B)
-  val s2_hit_way_from_s1     = RegInit(0.U(wayBits.W))
+  val s2_hit_way_from_s1     = RegInit(0.U(wayBitsI.W))
  
   when(s2_flush) {
     s2_valid := false.B
@@ -208,10 +208,10 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }.elsewhen(s2_fire) {
     s2_valid := false.B
   }
-  val tag_hits = Wire(  Vec(nWays, Bool()) )
+  val tag_hits = Wire(  Vec(nWaysI, Bool()) )
  
  
-  for (i <- 0 until nWays) { 
+  for (i <- 0 until nWaysI) {
     tag_hits(i) := s2_array_data.cacheLine(i).has &&  
                       s2_array_data.cacheLine(i).tag === s2_ptag 
  
@@ -266,11 +266,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   }.elsewhen(s3_fire) {
     s3_valid := false.B
   }
-  s3_ptag := s3_paddr(31, blockOffBits + idxBits)
-  s3_pidx := s3_paddr(blockOffBits + idxBits - 1, blockOffBits)
+  s3_ptag := s3_paddr(31, blockOffBits + idxBitsI)
+  s3_pidx := s3_paddr(blockOffBits + idxBitsI - 1, blockOffBits)
 
   
-  s3_vidx := s3_vaddr(blockOffBits + idxBits - 1, blockOffBits)
+  s3_vidx := s3_vaddr(blockOffBits + idxBitsI - 1, blockOffBits)
  
  
   // ══════════════════════════════════════════════════════════════

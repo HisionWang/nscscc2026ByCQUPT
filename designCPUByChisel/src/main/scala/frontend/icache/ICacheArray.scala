@@ -10,13 +10,13 @@ import nscscc.config.NSBundle
 // 内部存储单元定义
 class MetaEntry(implicit p: Parameters) extends NSBundle {
   val valid = Bool()
-  val tag   = UInt(tagBits.W)
+  val tag   = UInt(tagBitsI.W)
   
   def toUInt: UInt = Cat(valid, tag)
   def fromUInt(value: UInt): MetaEntry = {
     val result = Wire(new MetaEntry)
-    result.valid := value(tagBits)
-    result.tag   := value(tagBits-1, 0)
+    result.valid := value(tagBitsI)
+    result.tag   := value(tagBitsI-1, 0)
     result
   }
 }
@@ -26,7 +26,7 @@ class MetaEntry(implicit p: Parameters) extends NSBundle {
 class ICacheArray(implicit p: Parameters) extends NSModule {
 
   val dataBits: Int = blockBytes * 8
-  val metaWidth: Int = tagBits // + 1  // 1位valid + tagBits位标签
+  val metaWidth: Int = tagBitsI // + 1  // 1位valid + tagBits位标签
   
   val io = IO(new Bundle {
     // 读取端口
@@ -37,7 +37,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
     // Flush端口
     val flush = new Bundle {
       val valid = Input(Bool())
-      val idx   = Input(UInt(idxBits.W))
+      val idx   = Input(UInt(idxBitsI.W))
     }
     val invalidate = Input(Bool())
   })
@@ -45,20 +45,20 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   // === 创建 BlockRAM 阵列 ===
   // 每个 way 有自己的 meta 和 data BlockRAM
   // === valid 位用寄存器存储，复位时自动清零 ===
-  val validArray = RegInit(VecInit(Seq.fill(nWays)(0.U(nSets.W))))
+  val validArray = RegInit(VecInit(Seq.fill(nWaysI)(0.U(nSetsI.W))))
 
-  val metaBRAMs = VecInit(Seq.fill(nWays)(
+  val metaBRAMs = VecInit(Seq.fill(nWaysI)(
     Module(new SimpleBlockRAM(
-      depth = nSets,
+      depth = nSetsI,
       width = metaWidth,
       readLatency = 1
     )).io
   ))
 
   
-  val dataBRAMs = VecInit(Seq.fill(nWays)(
+  val dataBRAMs = VecInit(Seq.fill(nWaysI)(
     Module(new SimpleBlockRAM(
-      depth = nSets,
+      depth = nSetsI,
       width = dataBits,
       readLatency = 1
     )).io
@@ -66,7 +66,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   
   // === 读取逻辑 ===
   // 连接所有 BlockRAM 的读取地址
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysI) {
     metaBRAMs(way).rd_en   := io.read.req.valid
     metaBRAMs(way).rd_addr := io.read.req.idx
     dataBRAMs(way).rd_en   := io.read.req.valid
@@ -79,9 +79,9 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   val readRespData = Wire(new arrayReadData)
 
   //val readIdxReg = RegEnable(io.read.req.idx, io.read.req.valid)
-  val readIdxReg = RegEnable(io.read.req.idx, 0.U(idxBits.W), io.read.req.valid)
+  val readIdxReg = RegEnable(io.read.req.idx, 0.U(idxBitsI.W), io.read.req.valid)
   // 组合 BlockRAM 的输出
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysI) {
     // 从 BlockRAM 输出转换为数据格式
     val metaUInt = metaBRAMs(way).rd_data
     val dataUInt = dataBRAMs(way).rd_data
@@ -89,7 +89,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
     //readRespData.cacheLine(way).has  := metaUInt(tagBits)
     readRespData.cacheLine(way).has  := validArray(way)(readIdxReg)  // 从寄存器读 valid
 
-    readRespData.cacheLine(way).tag  := metaUInt(tagBits-1, 0)
+    readRespData.cacheLine(way).tag  := metaUInt(tagBitsI-1, 0)
     readRespData.cacheLine(way).data := dataUInt
   }
   
@@ -105,7 +105,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   val writeWayOneHot = UIntToOH(io.write.way)
   diffDontTouch(writeWayOneHot)
   
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysI) {
     val waySel = writeWayOneHot(way)
     diffDontTouch(waySel)
     
@@ -135,7 +135,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   
   // === Flush逻辑 ===
   // flush 时清除所有 way 的指定地址
-  for (way <- 0 until nWays) {
+  for (way <- 0 until nWaysI) {
     // flush 时写入 meta 为 0 (valid = false, tag = 0)
     when(io.flush.valid){
       validArray(way) := validArray(way).bitSet(io.flush.idx, false.B)
@@ -154,7 +154,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
 
   // IBAR Action
   when(io.invalidate) {
-    for (way <- 0 until nWays) {
+    for (way <- 0 until nWaysI) {
       validArray(way) := 0.U
     }
   }
@@ -166,9 +166,9 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
   // === 冲突处理（可选）===
   // 如果读写同时访问同一地址，需要处理冲突
   // 这里使用简单的优先级：写优先
-  val readWriteConflict = Wire(Vec(nWays, Bool()))
-  for (way <- 0 until nWays) {
-    val waySel = if (way < nWays) writeWayOneHot(way) else false.B
+  val readWriteConflict = Wire(Vec(nWaysI, Bool()))
+  for (way <- 0 until nWaysI) {
+    val waySel = if (way < nWaysI) writeWayOneHot(way) else false.B
     readWriteConflict(way) := io.read.req.valid && io.write.valid && 
                               (io.read.req.idx === io.write.idx) && waySel
   }
@@ -179,7 +179,7 @@ class ICacheArray(implicit p: Parameters) extends NSModule {
 //  }
 //  
 //  println("ICacheIntegratedArray instantiated with SimpleBlockRAM:")
-//  println(s"  Sets: $nSets, Ways: $nWays")
+//  println(s"  Sets: $nSets, Ways: $nWaysI")
 //  println(s"  Tag Bits: $tagBits, Data Bits: $dataBits")
 //  println(s"  Meta BRAM Width: $metaWidth bits, Data BRAM Width: $dataBits bits")
 //  println(s"  Read Latency: 2 cycles (BlockRAM default)")

@@ -1,6 +1,7 @@
 package nscscc.mem.dcache
 
 import chisel3._
+import chisel3.util.log2Ceil
 import chiseltest._
 import nscscc.backend.decode.LsuOp
 import nscscc.config._
@@ -94,10 +95,12 @@ class MSHREntryNativeSpec
       request(dut, missAddr, MshrReqType.cacheable,
         victimDirty = true, victimTag = victimTag, victimData = victim)
 
-      val idxBits = 6
-      val blockOffBits = 6
+      val idxBits = log2Ceil(p(CoreConfigKeys.NSetsD))
+      val blockOffBits = log2Ceil(p(CoreConfigKeys.BlockBytes))
+      val tagBits = 32 - idxBits - blockOffBits
+      val tagMask = (BigInt(1) << tagBits) - 1
       val set = (missAddr >> blockOffBits) & ((BigInt(1) << idxBits) - 1)
-      val victimAddr = (victimTag << (idxBits + blockOffBits)) | (set << blockOffBits)
+      val victimAddr = ((victimTag & tagMask) << (idxBits + blockOffBits)) | (set << blockOffBits)
       dut.io.l2.write.req.valid.expect(true.B)
       dut.io.l2.write.req.bits.id.expect(1.U)
       dut.io.l2.write.req.bits.addr.expect(victimAddr.U)

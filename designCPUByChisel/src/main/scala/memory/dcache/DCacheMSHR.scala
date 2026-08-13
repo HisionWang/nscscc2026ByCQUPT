@@ -26,13 +26,13 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
       val isLoad      = Bool()
       val isStore     = Bool()
       val cacheable   = Bool()
-      val victimWay   = UInt(wayBits.W)
+      val victimWay   = UInt(wayBitsD.W)
       val victimDirty = Bool()
-      val victimTag   = UInt(tagBits.W)
+      val victimTag   = UInt(tagBitsD.W)
       val victimData  = UInt((blockBytes * 8).W)
     }))
  
-    val probeBlockAddr = Input(UInt((tagBits + idxBits).W))
+    val probeBlockAddr = Input(UInt((tagBitsD + idxBitsD).W))
     val probeMatch     = Output(Bool())
     val isFirstMiss    = Output(Bool())
     val matchPrimId    = Output(UInt(1.W))
@@ -42,9 +42,9 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
  
     val canAlloc        = Output(Bool())
     val refillWriteReq  = Output(Valid(new Bundle {
-      val idx  = UInt(idxBits.W)
-      val way  = UInt(wayBits.W)
-      val tag  = UInt(tagBits.W)
+      val idx  = UInt(idxBitsD.W)
+      val way  = UInt(wayBitsD.W)
+      val tag  = UInt(tagBitsD.W)
       val data = UInt((blockBytes * 8).W)
     }))
     val refillWriteAck    = Input(Valid(UInt(1.W)))
@@ -99,7 +99,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
  
   // ===== 请求分配逻辑 =====
   val reqBlockAddr  = io.missReq.bits.paddr(31, blockOffBits)
-  val reqSetIdx     = io.missReq.bits.paddr(blockOffBits + idxBits - 1, blockOffBits)
+  val reqSetIdx     = io.missReq.bits.paddr(blockOffBits + idxBitsD - 1, blockOffBits)
  
   val isFirstMissReq = !VecInit(blockMatchVec).asUInt.orR
   val matchPrimIdReq = PriorityMux(blockMatchVec.zipWithIndex.map { case (m, i) => m -> i.U })

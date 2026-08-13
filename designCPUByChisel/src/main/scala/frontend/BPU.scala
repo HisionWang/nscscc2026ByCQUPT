@@ -26,7 +26,7 @@ class BPU(implicit p: Parameters) extends NSModule {
    
   })
 
-  if(useBPUV0 == 1){
+  if(useNewBPU == 0){
 
     // ==================== 辅助计算 ====================
     // 块内字节数位宽，例如 fetchWidth=4 时，块大小为16字节，位宽为4
