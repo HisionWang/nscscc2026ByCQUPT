@@ -93,7 +93,7 @@ object CoreGen extends App {
        |// Git commit      : $gitCommit
        |// Git message     : $gitCommitSubject
        |// ---------------------------------------------------------------
-       |// BPU  : useBPUV0=${config(CoreConfigKeys.UseBPUV0)}, btbSize=${config(CoreConfigKeys.BtbSize)}, phtSize=${config(CoreConfigKeys.PhtSize)}
+       |// BPU  : useNewBPU=${config(CoreConfigKeys.useNewBPU)}, btbSize=${config(CoreConfigKeys.BtbSize)}, phtSize=${config(CoreConfigKeys.PhtSize)}
        |// Cache: nSets=${config(CoreConfigKeys.NSets)}, nWays=${config(CoreConfigKeys.NWays)}, nMshrEntries=${config(CoreConfigKeys.NMshrEntries)}
        |// Pipe : ibufDepth=${config(CoreConfigKeys.IbufDepth)}, RobSize=${config(CoreConfigKeys.RobSize)}, SnapshotNum=${config(CoreConfigKeys.SnapshotNum)}
        |//        CommitWidth=${config(CoreConfigKeys.CommitWidth)}, LqSize=${config(CoreConfigKeys.LqSize)}, SqSize=${config(CoreConfigKeys.SqSize)}

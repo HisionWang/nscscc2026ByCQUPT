@@ -96,7 +96,7 @@ class IFU(implicit p: Parameters) extends NSModule {
  
   // ==================== ICache请求 ====================
   io.icache_req.addr  := pcReg
-  io.icache_req.valid := !io.idle &&
+  io.icache_req.valid := !io.idle && pcReg =/= 0x1BFFFFFC.U &&
                          !backendRedirectValid &&
                          !frontendRedirect.valid //当重定向来了之后，不给Cache发当前请求
   io.icache_req.flush  := backendRedirectValid || frontendRedirect.valid

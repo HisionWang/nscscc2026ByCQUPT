@@ -17,12 +17,13 @@ object CoreConfigKeys {
   val FetchWidth =     new Field[Int](4)
   val CtrlBlockWidth = new Field[Int](3)
 
-  val BtbSize  = new Field[Int](256)
-  val PhtSize  = new Field[Int](1024)
-  val RasSize  = new Field[Int](8)
-  val UseBPUV0 = new Field[Int](0)
+  val BtbSize   = new Field[Int](256)
+  val PhtSize   = new Field[Int](1024)
+  val RasSize   = new Field[Int](8)
+  val useNewBPU = new Field[Int](1)
+  val usePIPT   = new Field[Int](1)
 
-  val NSets = new Field[Int](256)
+  val NSets = new Field[Int](512)
   val NWays = new Field[Int](4)
   val BlockBytes = new Field[Int](64)
   val NMshrEntries = new Field[Int](2)
@@ -67,7 +68,8 @@ trait HasCoreParameters {
   val btbSize:  Int = p(CoreConfigKeys.BtbSize)
   val phtSize:  Int = p(CoreConfigKeys.PhtSize)
   val rasSize:  Int = p(CoreConfigKeys.RasSize)
-  val useBPUV0: Int = p(CoreConfigKeys.UseBPUV0)
+  val useNewBPU: Int = p(CoreConfigKeys.useNewBPU)
+  val usePIPT: Int = p(CoreConfigKeys.usePIPT)
 
   val fetchBlockBits: Int = log2Ceil(fetchWidth * 4)
   val btbIndexBits: Int = log2Ceil(btbSize)
