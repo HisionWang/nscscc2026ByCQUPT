@@ -6,7 +6,7 @@ import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
 import nscscc.axi._
-import nscscc.frontend.icache.CacheReplacer
+import nscscc.frontend.icache.CacheReplacerD
 import nscscc.backend.execute._
 
 class DCache(implicit p: Parameters) extends NSModule {
@@ -42,14 +42,14 @@ class DCache(implicit p: Parameters) extends NSModule {
   })
  
   val array    = Module(new DCacheArray)
-  val replacer = Module(new CacheReplacer)
+  val replacer = Module(new CacheReplacerD)
   val mshr     = Module(new DCacheMSHRFile)
  
   val f_idle :: f_wait_idle :: f_find_dirty :: f_read_req :: f_read_resp :: f_wb_aw :: f_wb_w :: f_wb_b :: f_clear :: f_done :: Nil = Enum(10)
   val fenceState = RegInit(f_idle)
-  val fenceSet = RegInit(0.U(idxBits.W))
-  val fenceWay = RegInit(0.U(wayBits.W))
-  val fenceWbTag = RegInit(0.U(tagBits.W))
+  val fenceSet = RegInit(0.U(idxBitsD.W))
+  val fenceWay = RegInit(0.U(wayBitsD.W))
+  val fenceWbTag = RegInit(0.U(tagBitsD.W))
   val fenceWbData = RegInit(0.U((blockBytes * 8).W))
   val fenceBurstBeats = blockBytes / (XLEN / 8)
   val fenceBeat = RegInit(0.U(log2Ceil(fenceBurstBeats).W))
@@ -59,9 +59,9 @@ class DCache(implicit p: Parameters) extends NSModule {
      robIdx.isAfter(io.redirectInfo.bits.robIdx) && io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
 
   def doTagCompare(data: DCacheArrayReadData, paddr: UInt, cacheable: Bool) = {
-    val ptag = paddr(31, blockOffBits + idxBits)
-    val hits = Wire(Vec(nWays, Bool()))
-    for (i <- 0 until nWays) hits(i) := data.ways(i).valid && data.ways(i).tag === ptag
+    val ptag = paddr(31, blockOffBits + idxBitsD)
+    val hits = Wire(Vec(nWaysD, Bool()))
+    for (i <- 0 until nWaysD) hits(i) := data.ways(i).valid && data.ways(i).tag === ptag
     val hit    = hits.asUInt.orR && cacheable
     val hitWay = OHToUInt(hits)
     (hit, hitWay)
@@ -273,7 +273,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   }
 
   val s2_is_first_cycle = s2_valid && RegNext(s1_fire)
-  val s2_victimWay_reg = RegInit(0.U(wayBits.W))
+  val s2_victimWay_reg = RegInit(0.U(wayBitsD.W))
   when (s2_is_first_cycle) { s2_victimWay_reg := replacer.io.victim.resp }
   val s2_victimWay = Mux(s2_is_first_cycle, replacer.io.victim.resp, s2_victimWay_reg)
 
@@ -311,14 +311,14 @@ class DCache(implicit p: Parameters) extends NSModule {
 
   val fenceArrayReadValid = fenceState === f_read_req
   array.io.read.valid := fenceArrayReadValid || s1_fire
-  array.io.read.idx   := Mux(fenceArrayReadValid, fenceSet, s1_paddr(blockOffBits + idxBits - 1, blockOffBits))
+  array.io.read.idx   := Mux(fenceArrayReadValid, fenceSet, s1_paddr(blockOffBits + idxBitsD - 1, blockOffBits))
 
   val storeWriteActive  = s2_fire_store && io.storeAck.ready && s2_cacheable
   val refillWriteActive = do_refill
   array.io.write.valid := storeWriteActive || refillWriteActive
-  array.io.write.idx   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.idx, s2_paddr(blockOffBits + idxBits - 1, blockOffBits))
+  array.io.write.idx   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.idx, s2_paddr(blockOffBits + idxBitsD - 1, blockOffBits))
   array.io.write.way   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.way, s2_hitWay)
-  array.io.write.tag   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.tag, s2_paddr(31, blockOffBits + idxBits))
+  array.io.write.tag   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.tag, s2_paddr(31, blockOffBits + idxBitsD))
   array.io.write.dirty := Mux(refillWriteActive, false.B, true.B)
   array.io.write.data  := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.data, mergeStoreLine(array.io.read.resp, s2_hitWay, s2_paddr, s2_storeData, s2_lsuOp))
   array.io.write.wen   := true.B
@@ -326,7 +326,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   val normalMetaWriteActive = s2_mshr_accept && mshr.io.isFirstMiss && s2_cacheable
   val fenceMetaWriteActive  = fenceState === f_clear
   array.io.metaWrite.valid     := fenceMetaWriteActive || normalMetaWriteActive
-  array.io.metaWrite.idx       := Mux(fenceMetaWriteActive, fenceSet, s2_paddr(blockOffBits + idxBits - 1, blockOffBits))
+  array.io.metaWrite.idx       := Mux(fenceMetaWriteActive, fenceSet, s2_paddr(blockOffBits + idxBitsD - 1, blockOffBits))
   array.io.metaWrite.way       := Mux(fenceMetaWriteActive, fenceWay, s2_victimWay)
   array.io.metaWrite.metaValid := false.B
   array.io.metaWrite.dirty     := false.B
@@ -335,7 +335,7 @@ class DCache(implicit p: Parameters) extends NSModule {
   replacer.io.victim.req := array.io.read.valid && !s1_isReplay
   replacer.io.victim.idx := array.io.read.idx
   replacer.io.touch.valid := (s2_fire_load && io.loadResp.ready) || storeWriteActive || refillWriteActive
-  replacer.io.touch.idx   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.idx, s2_paddr(blockOffBits + idxBits - 1, blockOffBits))
+  replacer.io.touch.idx   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.idx, s2_paddr(blockOffBits + idxBitsD - 1, blockOffBits))
   replacer.io.touch.way   := Mux(refillWriteActive, mshr.io.refillWriteReq.bits.way, s2_hitWay)
   replacer.io.flush.valid := false.B
   replacer.io.flush.idx   := 0.U

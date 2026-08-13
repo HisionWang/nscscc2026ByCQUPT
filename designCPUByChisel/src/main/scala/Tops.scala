@@ -93,12 +93,26 @@ object CoreGen extends App {
        |// Git commit      : $gitCommit
        |// Git message     : $gitCommitSubject
        |// ---------------------------------------------------------------
-       |// BPU  : useNewBPU=${config(CoreConfigKeys.useNewBPU)}, btbSize=${config(CoreConfigKeys.BtbSize)}, phtSize=${config(CoreConfigKeys.PhtSize)}
-       |// Cache: nSets=${config(CoreConfigKeys.NSets)}, nWays=${config(CoreConfigKeys.NWays)}, nMshrEntries=${config(CoreConfigKeys.NMshrEntries)}
-       |// Pipe : ibufDepth=${config(CoreConfigKeys.IbufDepth)}, RobSize=${config(CoreConfigKeys.RobSize)}, SnapshotNum=${config(CoreConfigKeys.SnapshotNum)}
-       |//        CommitWidth=${config(CoreConfigKeys.CommitWidth)}, LqSize=${config(CoreConfigKeys.LqSize)}, SqSize=${config(CoreConfigKeys.SqSize)}
-       |// IQ   : IQ1=${config(CoreConfigKeys.IQ1Params).numEntries}, IQ2=${config(CoreConfigKeys.IQ2Params).numEntries}, IQ3=${config(CoreConfigKeys.IQ3Params).numEntries}
-       |//        IQ4=${config(CoreConfigKeys.IQ4Params).numEntries}, IQ5=${config(CoreConfigKeys.IQ5Params).numEntries}
+       |// BPU  : useNewBPU   =  ${config(CoreConfigKeys.useNewBPU)}, 
+       |//        btbSize     =  ${config(CoreConfigKeys.BtbSize)}, 
+       |//        phtSize     =  ${config(CoreConfigKeys.PhtSize)}
+       |// Cache: usePIPT     =  ${config(CoreConfigKeys.usePIPT)}, 
+       |//        nSetsI      =  ${config(CoreConfigKeys.NSetsI)}, 
+       |//        nWaysI      =  ${config(CoreConfigKeys.NWaysI)}, 
+       |//        nSetsD      =  ${config(CoreConfigKeys.NSetsD)}, 
+       |//        nWaysD      =  ${config(CoreConfigKeys.NWaysD)}, 
+       |//        nMshrEntries=  ${config(CoreConfigKeys.NMshrEntries)}
+       |// Pipe : ibufDepth   =  ${config(CoreConfigKeys.IbufDepth)}, 
+       |//        RobSize     =  ${config(CoreConfigKeys.RobSize)}, 
+       |//        SnapshotNum =  ${config(CoreConfigKeys.SnapshotNum)}
+       |//        CommitWidth =  ${config(CoreConfigKeys.CommitWidth)}, 
+       |//        LqSize      =  ${config(CoreConfigKeys.LqSize)}, 
+       |//        SqSize      =  ${config(CoreConfigKeys.SqSize)}
+       |// IQ   : IQ1         =  ${config(CoreConfigKeys.IQ1Params).numEntries}, 
+       |//        IQ2         =  ${config(CoreConfigKeys.IQ2Params).numEntries}, 
+       |//        IQ3         =  ${config(CoreConfigKeys.IQ3Params).numEntries}
+       |//        IQ4         =  ${config(CoreConfigKeys.IQ4Params).numEntries}, 
+       |//        IQ5         =  ${config(CoreConfigKeys.IQ5Params).numEntries}
        |// ================================================================
        |
        |""".stripMargin

@@ -82,7 +82,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
     // S1 发起 Array Read (使用物理索引 pidx)
     io.arrays_read.req.valid := s1_fire
-    io.arrays_read.req.idx   := cur_mmu_data.paddr(blockOffBits + idxBits - 1, blockOffBits)
+    io.arrays_read.req.idx   := cur_mmu_data.paddr(blockOffBits + idxBitsI - 1, blockOffBits)
 
     when (s1_fire) {
       s2_valid       := true.B
@@ -111,11 +111,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     val array_ready    = expect_array_resp || s2_array_latched
 
     // 命中判定计算 (PIPT: 使用 MMU 中保留的物理地址进行判断)
-    val ptag = s2_mmu_data_reg.paddr(31, blockOffBits + idxBits)
-    val pidx = s2_mmu_data_reg.paddr(blockOffBits + idxBits - 1, blockOffBits)
+    val ptag = s2_mmu_data_reg.paddr(31, blockOffBits + idxBitsI)
+    val pidx = s2_mmu_data_reg.paddr(blockOffBits + idxBitsI - 1, blockOffBits)
 
-    val hits = Wire(Vec(nWays, Bool()))
-    for (i <- 0 until nWays) {
+    val hits = Wire(Vec(nWaysI, Bool()))
+    for (i <- 0 until nWaysI) {
       hits(i) := cur_array_data.cacheLine(i).has && cur_array_data.cacheLine(i).tag === ptag
     }
     val array_hit = hits.asUInt.orR
@@ -134,8 +134,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     val state = RegInit(s_idle)
     
     val fsm_paddr      = RegInit(0.U(32.W))
-    val fsm_ptag       = RegInit(0.U(tagBits.W))
-    val fsm_idx        = RegInit(0.U(idxBits.W)) // PIPT 使用统一的 physical index
+    val fsm_ptag       = RegInit(0.U(tagBitsI.W))
+    val fsm_idx        = RegInit(0.U(idxBitsI.W)) // PIPT 使用统一的 physical index
     val fsm_is_uncache = RegInit(false.B)
 
     val miss_data_buffer    = RegInit(0.U((blockBytes * 8).W))
@@ -362,7 +362,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
 
     // S0 发射请求 (向 SRAM Array 和 MMU 组合发射)
     io.arrays_read.req.valid := s0_fire
-    io.arrays_read.req.idx   := io.cpu_req.bits.addr(blockOffBits + idxBits - 1, blockOffBits)
+    io.arrays_read.req.idx   := io.cpu_req.bits.addr(blockOffBits + idxBitsI - 1, blockOffBits)
 
     io.mmu.toMmu.valid := s0_fire
     io.mmu.toMmu.bits.vaddr := io.cpu_req.bits.addr
@@ -421,11 +421,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     //  命中判定与 FSM 触发逻辑 (S1 同级处理)
     // ══════════════════════════════════════════════════════════════
 
-    val ptag = cur_mmu_data.paddr(31, blockOffBits + idxBits)
-    val vidx = s1_vaddr(blockOffBits + idxBits - 1, blockOffBits)
+    val ptag = cur_mmu_data.paddr(31, blockOffBits + idxBitsI)
+    val vidx = s1_vaddr(blockOffBits + idxBitsI - 1, blockOffBits)
 
-    val hits = Wire(Vec(nWays, Bool()))
-    for (i <- 0 until nWays) {
+    val hits = Wire(Vec(nWaysI, Bool()))
+    for (i <- 0 until nWaysI) {
       hits(i) := cur_array_data.cacheLine(i).has && cur_array_data.cacheLine(i).tag === ptag
     }
     val array_hit = hits.asUInt.orR
@@ -450,8 +450,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     val state = RegInit(s_idle)
     
     val fsm_paddr      = RegInit(0.U(32.W))
-    val fsm_ptag       = RegInit(0.U(tagBits.W))
-    val fsm_vidx       = RegInit(0.U(idxBits.W))
+    val fsm_ptag       = RegInit(0.U(tagBitsI.W))
+    val fsm_vidx       = RegInit(0.U(idxBitsI.W))
     val fsm_is_uncache = RegInit(false.B)
 
     val miss_data_buffer    = RegInit(0.U((blockBytes * 8).W))

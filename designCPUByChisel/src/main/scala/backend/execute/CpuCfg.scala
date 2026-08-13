@@ -43,11 +43,11 @@ class CpuCfg(implicit p: Parameters) extends NSModule {
   val L3_D_INCLUSIVE   = 0.U(1.W)
 
   // 0x11 / 0x12: 当前 L1 ICache / DCache 都使用全局 Cache 参数
-  val I_WAY_MINUS1       = (nWays - 1).U(16.W)
-  val I_INDEX_LOG2       = idxBits.U(8.W)
+  val I_WAY_MINUS1       = (nWaysI - 1).U(16.W)
+  val I_INDEX_LOG2       = idxBitsI.U(8.W)
   val I_LINESIZE_LOG2    = blockOffBits.U(7.W)
-  val D_WAY_MINUS1       = (nWays - 1).U(16.W)
-  val D_INDEX_LOG2       = idxBits.U(8.W)
+  val D_WAY_MINUS1       = (nWaysD - 1).U(16.W)
+  val D_INDEX_LOG2       = idxBitsD.U(8.W)
   val D_LINESIZE_LOG2    = blockOffBits.U(7.W)
 
   // 0x13 / 0x14: 当前无 L2 / L3

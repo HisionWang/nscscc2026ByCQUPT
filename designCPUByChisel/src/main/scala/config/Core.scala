@@ -21,10 +21,15 @@ object CoreConfigKeys {
   val PhtSize   = new Field[Int](1024)
   val RasSize   = new Field[Int](8)
   val useNewBPU = new Field[Int](1)
-  val usePIPT   = new Field[Int](1)
+  val usePIPT   = new Field[Int](0)
 
-  val NSets = new Field[Int](512)
-  val NWays = new Field[Int](4)
+  val NWaysI = new Field[Int](8)
+  val NSetsI = new Field[Int](64)
+  
+  val NWaysD = new Field[Int](4)
+  val NSetsD = new Field[Int](256)
+  
+
   val BlockBytes = new Field[Int](64)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
@@ -79,8 +84,10 @@ trait HasCoreParameters {
 
   /*---- Cache相关 ----*/
 
-  val  nSets:      Int = p(CoreConfigKeys.NSets)
-  val  nWays:      Int = p(CoreConfigKeys.NWays)
+  val  nSetsI:      Int = p(CoreConfigKeys.NSetsI)
+  val  nSetsD:      Int = p(CoreConfigKeys.NSetsD)
+  val  nWaysI:      Int = p(CoreConfigKeys.NWaysI)
+  val  nWaysD:      Int = p(CoreConfigKeys.NWaysD)
   val  blockBytes: Int = p(CoreConfigKeys.BlockBytes)
 
   // 8KB 2路组相联
@@ -88,10 +95,14 @@ trait HasCoreParameters {
  // val  nWays:      Int = 2  //替换算法只写了2和4，所以这里只能是2和4
  // val  blockBytes: Int = 64
 
-  val idxBits     = log2Ceil(nSets)
-  val wayBits     = log2Ceil(nWays)
+  val idxBitsI     = log2Ceil(nSetsI)
+  val wayBitsI     = log2Ceil(nWaysI)
+  val wayBitsD     = log2Ceil(nWaysD)
   val blockOffBits = log2Ceil(blockBytes)
-  val tagBits     = 32 - idxBits - blockOffBits
+  val tagBitsI     = 32 - idxBitsI - blockOffBits
+
+  val idxBitsD     = log2Ceil(nSetsD)
+  val tagBitsD     = 32 - idxBitsD - blockOffBits
 
   val nMshrEntries: Int = p(CoreConfigKeys.NMshrEntries)
   val icacheAxiMissId : Int = nMshrEntries

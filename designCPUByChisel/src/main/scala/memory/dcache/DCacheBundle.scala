@@ -16,23 +16,23 @@ object MshrReqType {
 class DCacheMetaEntry(implicit p: Parameters) extends NSBundle {
   val valid = Bool()
   val dirty = Bool()
-  val tag   = UInt(tagBits.W)
+  val tag   = UInt(tagBitsD.W)
   def toUInt: UInt = Cat(valid, dirty, tag)
   def fromUInt(value: UInt): DCacheMetaEntry = {
     val result = Wire(new DCacheMetaEntry)
-    result.valid := value(tagBits + 1)
-    result.dirty := value(tagBits)
-    result.tag   := value(tagBits - 1, 0)
+    result.valid := value(tagBitsD + 1)
+    result.dirty := value(tagBitsD)
+    result.tag   := value(tagBitsD - 1, 0)
     result
   }
-  def metaWidth: Int = tagBits + 2
+  def metaWidth: Int = tagBitsD + 2
 }
  
 class DCacheArrayReadData(implicit p: Parameters) extends NSBundle {
-  val ways = Vec(nWays, new Bundle {
+  val ways = Vec(nWaysD, new Bundle {
     val valid = Bool()
     val dirty = Bool()
-    val tag   = UInt(tagBits.W)
+    val tag   = UInt(tagBitsD.W)
     val data  = UInt((blockBytes * 8).W)
   })
 }
