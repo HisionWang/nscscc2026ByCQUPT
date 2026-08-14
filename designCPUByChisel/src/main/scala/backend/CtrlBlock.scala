@@ -88,8 +88,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val rob = Module(new ROB)
   val disp2Lsq = Module(new DispatchLsqBuffer)
 
-  redirectController.io.excpEvent <> io.excpEvent
-  redirectController.io.excpInfo <> io.excpInfo
+
   redirectController.io.redirectAddrFromCsr <> io.redirectAddrFromCsr
 
   io.redirectInfo := redirectController.io.redirectInfo
@@ -194,23 +193,30 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   //  renameStage.io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
   //  renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
   //}
-  renameStage.io.archCommit <> rob.io.archCommit
- 
-  io.commitToSq := rob.io.commitToSq
-  io.commitToCsr := rob.io.commitToCsr
+  io.commitToSq             := rob.io.commitToSq
+  
+  //缓解时序~
+  renameStage.io.archCommit <>  RegNext( rob.io.archCommit               )
+  io.commitToCsr            :=  RegNext( rob.io.commitToCsr              )
+  io.excpEvent              <>  RegNext( redirectController.io.excpEvent )
+  io.excpInfo               <>  RegNext( redirectController.io.excpInfo  )
+
   rob.io.currentPlv := io.currentPlv
+
   rob.io.storeQueueEmpty := io.storeQueueEmpty
-  io.ibarFenceReq := rob.io.ibarFenceReq
-  rob.io.ibarFenceDone := io.ibarFenceDone
-  io.cacopICacheReq := rob.io.cacopICacheReq
+  io.ibarFenceReq        := rob.io.ibarFenceReq
+  rob.io.ibarFenceDone   := io.ibarFenceDone
+  io.cacopICacheReq      := rob.io.cacopICacheReq
   if (EnableDifftest) {
     for (i <- 0 until CommitWidth) {
-      val robCommit = rob.io.commit.bits(i)
+      val robCommit      = RegNext(    rob.io.commit.bits(i) )
+      val robCommitvalid = RegNext(    rob.io.commit.valid(i) )
+
       val diffCommit = difftest.get.commit(i)
       val isCsrRead = robCommit.fuType === FuType.csr && robCommit.csrOp === CsrOp.read
 
       //ROB提交窗口中时包含着异常的，也就是在rob视角异常也会提交（用这种方式清除他），但肯定不会改架构
-      diffCommit.valid      := rob.io.commit.valid(i) //&& !rob.io.commit.isExcpCommit(i)
+      diffCommit.valid      := robCommitvalid//&& !rob.io.commit.isExcpCommit(i) 
       diffCommit.pc         := robCommit.pc
       diffCommit.instr      := robCommit.inst(31, 0)
       diffCommit.rfWen      := robCommit.rfWen
@@ -224,7 +230,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.excpFlush  := robCommit.excp.hasException && !isPureErtnExcp
       diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst) && isPureErtnExcp
       diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excp)
-      diffCommit.tlbfillEn  := rob.io.commit.valid(i) &&
+      diffCommit.tlbfillEn  := robCommitvalid &&
         robCommit.tlbOp === TlbOp.fill
       diffCommit.randIndex  := robCommit.tlbFillIdx
       diffCommit.trap       := DifftestUtils.isTrap(robCommit.inst)

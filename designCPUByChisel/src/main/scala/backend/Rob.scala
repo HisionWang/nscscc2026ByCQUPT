@@ -355,10 +355,10 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.commitToCsr.csrWaddr    := redirectEntry.csrWaddr
   io.commitToCsr.csrWdata    := redirectEntry.csrWdata
 
-  io.commitToCsr.llbitSet   :=   redirectValid && redirectEntry.llbitSet &&  !redirectEntry.excp.hasException
-  io.commitToCsr.llbitClear :=   redirectValid && redirectEntry.llbitClear &&  !redirectEntry.excp.hasException
-  
-  io.commitToCsr.idle       :=   redirectValid && redirectEntry.isIdle &&  !redirectEntry.excp.hasException
+  io.commitToCsr.llbitSet    :=   redirectValid && redirectEntry.llbitSet &&  !redirectEntry.excp.hasException
+  io.commitToCsr.llbitClear  :=   redirectValid && redirectEntry.llbitClear &&  !redirectEntry.excp.hasException
+   
+  io.commitToCsr.idle        :=   redirectValid && redirectEntry.isIdle &&  !redirectEntry.excp.hasException
   
   // 输出正常 Commit 信号
   for (i <- 0 until CommitWidth) {

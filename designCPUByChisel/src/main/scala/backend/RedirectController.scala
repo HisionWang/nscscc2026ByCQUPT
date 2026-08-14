@@ -44,8 +44,8 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
     val robRollbackTarget = Output(new RobPtr(RobSize))
  
     // ── Rename 恢复 ──
-    val doRecover       = Output(Bool())
-    val recoverSnptId  = Output(UInt(log2Ceil(SnapshotNum).W))
+    // val doRecover       = Output(Bool())
+    // val recoverSnptId  = Output(UInt(log2Ceil(SnapshotNum).W))
  
     // ── CSR 异常写入 ──
     //val csrExcpValid   = Output(Bool())
@@ -72,7 +72,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   //    s_bru_redirect: BRU重定向，本周期发出redirectInfo
   //    s_rob_rollback: ROB重定向，等待回滚完成后发出redirectInfo
   // ================================================================
-  val s_idle :: s_bru_redirect :: s_rob_rollback :: Nil = Enum(3)
+  val s_idle :: s_bru_redirect :: s_rob_rollback :: s_rob_flush :: Nil = Enum(4)
   val state = RegInit(s_idle)
  
   // ROB 重定向信息（在回滚期间保持稳定）
@@ -111,8 +111,11 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
     }
     is(s_rob_rollback) {
       when(io.robRollbackDone) {
-        state := s_idle
+        state := s_rob_flush
       }
+    }
+    is(s_rob_flush) { // archcommit 打了一拍，所以Rob重定向信号也要跟着延迟一拍
+      state := s_idle
     }
   }
  
@@ -162,7 +165,7 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   //    ROB：rollbackDone 周期发出
   // ================================================================
   val bruRedirecting = (state === s_bru_redirect)
-  val robRedirecting = rollbackDone
+  val robRedirecting = (state === s_rob_flush)
  
   io.redirectInfo.valid               := bruRedirecting || robRedirecting
   io.redirectInfo.bits.doRedirect     := Mux(bruRedirecting, bruReg.bits.doRedirect, robRedirecting)
@@ -173,12 +176,12 @@ class RedirectController(implicit p: Parameters) extends NSModule with HasCsrPar
   io.redirectInfo.bits.invalidIcache  := Mux(bruRedirecting, false.B, robInfoInvalidIcache)
   io.redirectInfo.bits.fromRob        := robRedirecting
   io.redirectInfo.bits.target         := Mux(bruRedirecting, bruReg.bits.target, robTarget)
- 
+
   // ================================================================
   //  Rename 恢复
   // ================================================================
-  io.doRecover      := robRedirecting
-  io.recoverSnptId  := bruReg.bits.snptId
+  // io.doRecover      := robRedirecting
+  // io.recoverSnptId  := bruReg.bits.snptId
  
   // ================================================================
   //  CSR 异常写入

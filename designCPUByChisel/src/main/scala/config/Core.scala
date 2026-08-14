@@ -24,8 +24,8 @@ object CoreConfigKeys {
   val useNewBPU = new Field[Int](1)
   val usePIPT   = new Field[Int](0)
 
-  //0:原始的 1:优化出wb的减一级流水 2:forward不再到req，到表项
-  val LoadQVersion = new Field[Int](1)
+  //0:原始的 1:优化出wb的减一级流水 2:forward不再到req，而是到表项，缓解时序
+  val LoadQVersion = new Field[Int](2)
 
   val NWaysI = new Field[Int](8)
   val NSetsI = new Field[Int](64)

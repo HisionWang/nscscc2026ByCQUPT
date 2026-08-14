@@ -265,7 +265,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     val s2_ready_to_fire = s2_valid && array_ready && (s2_can_resp_direct || state === s_done)
     s2_fire := s2_ready_to_fire && io.icache_resp.ready && !io.redirect
 
-    io.icache_resp.valid           := s2_ready_to_fire && !io.redirect
+    io.icache_resp.valid           := s2_ready_to_fire // && !io.redirect
     io.icache_resp.bits.instrs     := out_instrs
     io.icache_resp.bits.instvalids := out_valids
     diffDontTouch(io.icache_resp.bits.instvalids)
@@ -284,7 +284,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.victim_read.req := (state === s_miss_req) || (state === s_miss_wait) || (state === s_miss_write)
     io.victim_read.idx := fsm_idx
 
-    io.array_write.valid := (state === s_miss_write) && miss_data_valid && !io.redirect
+    io.array_write.valid := (state === s_miss_write) && miss_data_valid // && !io.redirect
     io.array_write.idx   := fsm_idx
     io.array_write.tag   := fsm_ptag
     io.array_write.data  := miss_data_buffer
@@ -610,9 +610,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     // 响应触发条件：已完整收到 Array 和 MMU 数据，且 (能直连响应 CPU 或是 FSM 刚好完成)
     val s1_ready_to_fire = s1_valid && array_ready && mmu_ready && (s1_can_resp_direct || state === s_done)
     
-    s1_fire := s1_ready_to_fire && io.icache_resp.ready && !io.redirect
+    s1_fire := s1_ready_to_fire && io.icache_resp.ready  //&& !io.redirect
 
-    io.icache_resp.valid           := s1_ready_to_fire && !io.redirect
+    io.icache_resp.valid           := s1_ready_to_fire // && !io.redirect
     io.icache_resp.bits.instrs     := out_instrs
     io.icache_resp.bits.instvalids := out_valids
     diffDontTouch(io.icache_resp.bits.instvalids)
@@ -634,7 +634,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.victim_read.req := (state === s_miss_req) || (state === s_miss_wait) || (state === s_miss_write)
     io.victim_read.idx := fsm_vidx
 
-    io.array_write.valid := (state === s_miss_write) && miss_data_valid && !io.redirect
+    io.array_write.valid := (state === s_miss_write) && miss_data_valid //&& !io.redirect
     io.array_write.idx   := fsm_vidx
     io.array_write.tag   := fsm_ptag
     io.array_write.data  := miss_data_buffer
