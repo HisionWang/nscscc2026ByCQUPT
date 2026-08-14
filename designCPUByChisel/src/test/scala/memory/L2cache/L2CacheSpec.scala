@@ -24,6 +24,11 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
 
     val dReadReq = Flipped(Decoupled(new L2ReadReq(1)))
     val dReadRespReady = Input(Bool())
+    val dReadRespValid = Output(Bool())
+    val dReadRespId = Output(UInt(1.W))
+    val dReadRespWords = Output(Vec(l2BurstBeats, UInt(XLEN.W)))
+    val dReadRespFullLine = Output(Bool())
+    val dReadRespLast = Output(Bool())
     val dWriteReqValid = Input(Bool())
     val dWriteReqReady = Output(Bool())
     val dWriteReqId = Input(UInt(1.W))
@@ -51,6 +56,12 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
   cache.io.dcache.read.req <> io.dReadReq
   cache.io.dcache.read.cancel := false.B
   cache.io.dcache.read.resp.ready := io.dReadRespReady
+  io.dReadRespValid := cache.io.dcache.read.resp.valid
+  io.dReadRespId := cache.io.dcache.read.resp.bits.id
+  io.dReadRespWords := cache.io.dcache.read.resp.bits.data.asTypeOf(
+    Vec(l2BurstBeats, UInt(XLEN.W)))
+  io.dReadRespFullLine := cache.io.dcache.read.resp.bits.fullLine
+  io.dReadRespLast := cache.io.dcache.read.resp.bits.last
   cache.io.dcache.write.req.valid := io.dWriteReqValid
   io.dWriteReqReady := cache.io.dcache.write.req.ready
   cache.io.dcache.write.req.bits.id := io.dWriteReqId
