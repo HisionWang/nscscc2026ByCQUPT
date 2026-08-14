@@ -26,16 +26,16 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   // ================================================================
   //  组合逻辑透传：直接向 MMU 发起地址翻译请求 (省去一拍延迟)
   // ================================================================
-  
+
   // LLBit=0 的 SC.W 直接失败，不进行地址翻译。
   val in_sc_fail = io.in.bits.uop.ctrl.lsuOp === LsuOp.scw && !io.llbit
-  
+
   // MMU 能够接收（或无需接收）的条件
   val can_issue_mmu = in_sc_fail || io.mmuReq.ready
 
   // 预留单级流水线 (S1) 的准备好信号
   val s1_ready = Wire(Bool())
-  
+
   // 握手成功条件
   val in_fire = io.in.valid && s1_ready && can_issue_mmu
 
@@ -58,7 +58,7 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   val s1_valid    = RegInit(false.B)
   val s1_exe_data = RegInit(0.U.asTypeOf(new ExeResult))
   val s1_sc_fail  = RegInit(false.B)
-  
+
   // [关键缓冲器]：应对 SimpleMMU 没有内部停顿逻辑（不支持反压）的问题
   val s1_mmu_done = RegInit(false.B)
   val s1_mmu_resp = RegInit(0.U.asTypeOf(new MmuToSqResp))
@@ -106,6 +106,6 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   io.out.bits.mmuRes := Mux(s1_sc_fail,
     0.U.asTypeOf(new MmuToSqResp),
     Mux(s1_mmu_done, s1_mmu_resp, io.mmuResp.bits))
-    
+
   io.out.bits.scSuccess := s1_exe_data.uop.ctrl.lsuOp === LsuOp.scw && !s1_sc_fail
 }

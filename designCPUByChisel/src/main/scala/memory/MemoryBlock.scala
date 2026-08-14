@@ -10,7 +10,7 @@ import nscscc.backend.rename._
 import nscscc.backend.execute._
 import nscscc.mmu._
 import nscscc.mem.dcache.DCache
-import nscscc.axi._
+import nscscc.mem.L2cache._
  
 class ExeMmuResult(implicit p: Parameters) extends NSBundle {
   val exeRes    = new ExeResult
@@ -46,7 +46,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     val ibarFenceReq = Input(Bool())
     val ibarFenceDone = Output(Bool())
 
-    val axi = new AXI3MasterIO
+    val l2 = new L2NativeMasterIO(1)
  
     val redirect = Flipped(Valid(new Bundle {
       val robIdx = new RobPtr(RobSize)
@@ -153,7 +153,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   dcache.io.storeAck <> storeQueue.io.storeAck
   dcache.io.fenceReq := io.ibarFenceReq
   io.ibarFenceDone := dcache.io.fenceDone
-  dcache.io.axi <> io.axi
+  dcache.io.l2 <> io.l2
   dcache.io.redirectInfo <> io.redirectInfo
  
   diffDontTouch(loadQueue.io.dcacheReq)

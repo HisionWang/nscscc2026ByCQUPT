@@ -5,7 +5,7 @@ import chisel3.util._
 import nscscc.config._
 import nscscc.backend.decode._
 import nscscc.backend.rename._
-import nscscc.axi._
+import nscscc.mem.L2cache._
 import nscscc.frontend.icache.CacheReplacerD
 import nscscc.backend.execute._
 
@@ -37,7 +37,7 @@ class DCache(implicit p: Parameters) extends NSModule {
     })
     val fenceReq  = Input(Bool())
     val fenceDone = Output(Bool())
-    val axi       = new AXI3MasterIO
+    val l2        = new L2NativeMasterIO(1)
     val redirectInfo = Flipped(ValidIO(new redirectInfoToModule))
   })
  
@@ -45,14 +45,12 @@ class DCache(implicit p: Parameters) extends NSModule {
   val replacer = Module(new CacheReplacerD)
   val mshr     = Module(new DCacheMSHRFile)
  
-  val f_idle :: f_wait_idle :: f_find_dirty :: f_read_req :: f_read_resp :: f_wb_aw :: f_wb_w :: f_wb_b :: f_clear :: f_done :: Nil = Enum(10)
+  val f_idle :: f_wait_idle :: f_find_dirty :: f_read_req :: f_read_resp :: f_wb_req :: f_wb_done :: f_clear :: f_done :: Nil = Enum(9)
   val fenceState = RegInit(f_idle)
   val fenceSet = RegInit(0.U(idxBitsD.W))
   val fenceWay = RegInit(0.U(wayBitsD.W))
   val fenceWbTag = RegInit(0.U(tagBitsD.W))
   val fenceWbData = RegInit(0.U((blockBytes * 8).W))
-  val fenceBurstBeats = blockBytes / (XLEN / 8)
-  val fenceBeat = RegInit(0.U(log2Ceil(fenceBurstBeats).W))
   io.fenceDone := fenceState === f_done
  
   def shouldFlush(robIdx: RobPtr): Bool =
@@ -341,62 +339,62 @@ class DCache(implicit p: Parameters) extends NSModule {
   replacer.io.flush.idx   := 0.U
 
   // ================================================================
-  //  Fence 状态机 & AXI 路由
+  //  Fence 状态机与 L2 native 仲裁
   // ================================================================
   switch(fenceState) {
     is(f_idle) { when(io.fenceReq) { fenceState := f_wait_idle } }
     is(f_wait_idle) {
       when(!io.fenceReq) { fenceState := f_idle }
-      .elsewhen(!s2_valid && !pend_valid && mshr.io.idle) { fenceState := f_find_dirty } 
+      .elsewhen(!s2_valid && !pend_valid && mshr.io.idle) { fenceState := f_find_dirty }
     }
     is(f_find_dirty) {
-      when(array.io.hasDirty) { fenceSet := array.io.dirtyIdx; fenceWay := array.io.dirtyWay; fenceState := f_read_req }
-      .otherwise { fenceState := f_done }
+      when(array.io.hasDirty) {
+        fenceSet := array.io.dirtyIdx
+        fenceWay := array.io.dirtyWay
+        fenceState := f_read_req
+      }.otherwise { fenceState := f_done }
     }
-    is(f_read_req)  { fenceState := f_read_resp }
+    is(f_read_req) { fenceState := f_read_resp }
     is(f_read_resp) {
-      when(array.io.read.validOut) { fenceWbTag := array.io.read.resp.ways(fenceWay).tag; fenceWbData := array.io.read.resp.ways(fenceWay).data; fenceBeat := 0.U; fenceState := f_wb_aw }
+      when(array.io.read.validOut) {
+        fenceWbTag := array.io.read.resp.ways(fenceWay).tag
+        fenceWbData := array.io.read.resp.ways(fenceWay).data
+        fenceState := f_wb_req
+      }
     }
-    is(f_wb_aw) { when(io.axi.aw.data.awvalid && io.axi.aw.awready) { fenceBeat := 0.U; fenceState := f_wb_w } }
-    is(f_wb_w) { when(io.axi.w.data.wvalid && io.axi.w.wready) { when(io.axi.w.data.wlast) { fenceBeat := 0.U; fenceState := f_wb_b } .otherwise { fenceBeat := fenceBeat + 1.U } } }
-    is(f_wb_b) { when(io.axi.b.data.bvalid && io.axi.b.bready) { fenceState := f_clear } }
+    is(f_wb_req) {
+      when(io.l2.write.req.fire) { fenceState := f_wb_done }
+    }
+    // cleanLine只有在L2返回done（即DDR写响应完成）后才能清除dirty行。
+    is(f_wb_done) {
+      when(io.l2.write.done.fire) { fenceState := f_clear }
+    }
     is(f_clear) { fenceState := f_find_dirty }
     is(f_done) { when(!io.fenceReq) { fenceState := f_idle } }
   }
   array.io.dcacheInvalid := fenceState === f_done
 
-  val fenceOwnsAxi = fenceState === f_wb_aw || fenceState === f_wb_w || fenceState === f_wb_b
+  val fenceOwnsL2 = fenceState === f_wb_req || fenceState === f_wb_done
   val fenceWbAddr = Cat(fenceWbTag, fenceSet, 0.U(blockOffBits.W))
-  val fenceWbWords = VecInit((0 until fenceBurstBeats).map(i => fenceWbData(i * XLEN + XLEN - 1, i * XLEN)))
 
-  io.axi.ar.data := mshr.io.axi.ar.data
-  mshr.io.axi.ar.arready := io.axi.ar.arready && !fenceOwnsAxi
-  mshr.io.axi.r.data := io.axi.r.data
-  io.axi.r.rready := mshr.io.axi.r.rready && !fenceOwnsAxi
-  io.axi.aw.data := mshr.io.axi.aw.data
-  mshr.io.axi.aw.awready := io.axi.aw.awready && !fenceOwnsAxi
+  // 读通道始终由MSHR使用；fence只在MSHR排空后接管写通道。
+  io.l2.read <> mshr.io.l2.read
 
-  when(fenceOwnsAxi) {
-    io.axi.aw.data.awid    := 0.U
-    io.axi.aw.data.awaddr  := fenceWbAddr
-    io.axi.aw.data.awlen   := (fenceBurstBeats - 1).U
-    io.axi.aw.data.awsize  := 2.U
-    io.axi.aw.data.awburst := 1.U
-    io.axi.aw.data.awlock  := 0.U
-    io.axi.aw.data.awcache := 0.U
-    io.axi.aw.data.awprot  := 0.U
-    io.axi.aw.data.awvalid := fenceState === f_wb_aw
+  io.l2.write.req.valid := Mux(fenceOwnsL2,
+    fenceState === f_wb_req, mshr.io.l2.write.req.valid)
+  io.l2.write.req.bits := mshr.io.l2.write.req.bits
+  when(fenceOwnsL2) {
+    io.l2.write.req.bits.id := 0.U
+    io.l2.write.req.bits.addr := fenceWbAddr
+    io.l2.write.req.bits.kind := L2WriteKind.cleanLine
+    io.l2.write.req.bits.size := 2.U
+    io.l2.write.req.bits.data := fenceWbData
+    io.l2.write.req.bits.strb := Fill(l2BeatBytes, 1.U(1.W))
   }
+  mshr.io.l2.write.req.ready := io.l2.write.req.ready && !fenceOwnsL2
 
-  io.axi.w.data := mshr.io.axi.w.data
-  mshr.io.axi.w.wready := io.axi.w.wready && !fenceOwnsAxi
-  when(fenceOwnsAxi) {
-    io.axi.w.data.wid    := 0.U
-    io.axi.w.data.wdata  := fenceWbWords(fenceBeat)
-    io.axi.w.data.wstrb  := Fill(XLEN / 8, 1.U(1.W))
-    io.axi.w.data.wlast  := fenceBeat === (fenceBurstBeats - 1).U
-    io.axi.w.data.wvalid := fenceState === f_wb_w
-  }
-  mshr.io.axi.b.data := io.axi.b.data
-  io.axi.b.bready := Mux(fenceOwnsAxi, fenceState === f_wb_b, mshr.io.axi.b.bready)
+  mshr.io.l2.write.done.valid := io.l2.write.done.valid && !fenceOwnsL2
+  mshr.io.l2.write.done.bits := io.l2.write.done.bits
+  io.l2.write.done.ready := Mux(fenceOwnsL2,
+    fenceState === f_wb_done, mshr.io.l2.write.done.ready)
 }
