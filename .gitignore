@@ -35,7 +35,8 @@ chiplab/toolchains/*
 .idea
 .bsp
 .vscode
-
+.codex
+.agents
 gen
 target
 project
