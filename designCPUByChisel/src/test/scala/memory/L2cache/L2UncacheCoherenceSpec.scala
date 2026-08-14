@@ -424,6 +424,103 @@ class L2UncacheCoherenceSpec
       requireDdrMiss(dut, target)
     }
   }
+
+  it should "invalidate an I-origin clean line before an uncached D word write" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val line = BigInt("1c07c6c0", 16)
+      val modifiedWord = BigInt("5000bc00", 16)
+      val words = (0 until burstBeats).map(i => BigInt(0x61000000L + i))
+
+      // Fill the L2 line through the instruction-side port, matching n73.
+      dut.io.iRespReady.poke(false.B)
+      dut.io.iReq.valid.poke(true.B)
+      dut.io.iReq.bits.id.poke(0.U)
+      dut.io.iReq.bits.addr.poke(line.U)
+      dut.io.iReq.bits.size.poke(2.U)
+      dut.io.iReq.bits.uncache.poke(false.B)
+      var wait = 0
+      while (!dut.io.iReq.ready.peek().litToBoolean && wait < 120) {
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+      waitForAr(dut)
+      dut.io.axi.ar.data.araddr.expect(line.U)
+      dut.io.axi.ar.data.arlen.expect((burstBeats - 1).U)
+      completeRead(dut, words)
+      dut.io.iRespReady.poke(true.B)
+      var responses = 0
+      wait = 0
+      while (responses < burstBeats && wait < 120) {
+        if (dut.io.iRespValid.peek().litToBoolean) responses += 1
+        dut.clock.step()
+        wait += 1
+      }
+      withClue("I-origin cacheable refill did not return all beats") {
+        responses shouldBe burstBeats
+      }
+      dut.clock.step(4)
+
+      // Perform the same aligned uncached word write used to patch code.
+      dut.io.dWriteReqValid.poke(true.B)
+      dut.io.dWriteReqId.poke(1.U)
+      dut.io.dWriteReqAddr.poke((line + 0x20).U)
+      dut.io.dWriteReqKind.poke(L2WriteKind.uncache)
+      dut.io.dWriteReqSize.poke(2.U)
+      dut.io.dWriteReqWords(0).poke(modifiedWord.U)
+      dut.io.dWriteReqStrb.poke("hf".U)
+      wait = 0
+      while (!dut.io.dWriteReqReady.peek().litToBoolean && wait < 120) {
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.dWriteReqReady.expect(true.B)
+      dut.clock.step()
+      dut.io.dWriteReqValid.poke(false.B)
+      wait = 0
+      while (!dut.io.axi.aw.data.awvalid.peek().litToBoolean && wait < 120) {
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.axi.aw.data.awvalid.expect(true.B)
+      dut.io.axi.aw.data.awaddr.expect((line + 0x20).U)
+      dut.io.axi.aw.data.awlen.expect(0.U)
+      dut.io.axi.aw.data.awsize.expect(2.U)
+      dut.io.axi.w.data.wvalid.expect(true.B)
+      dut.io.axi.w.data.wdata.expect(modifiedWord.U)
+      dut.io.axi.w.data.wstrb.expect("hf".U)
+      dut.io.axi.aw.awready.poke(true.B)
+      dut.io.axi.w.wready.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.aw.awready.poke(false.B)
+      dut.io.axi.w.wready.poke(false.B)
+      dut.io.axi.b.data.bvalid.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.b.data.bvalid.poke(false.B)
+      dut.clock.step(4)
+
+      // A following instruction-side fetch must miss; a hit would expose stale code.
+      dut.io.iReq.valid.poke(true.B)
+      dut.io.iReq.bits.id.poke(0.U)
+      dut.io.iReq.bits.addr.poke(line.U)
+      dut.io.iReq.bits.size.poke(2.U)
+      dut.io.iReq.bits.uncache.poke(false.B)
+      wait = 0
+      while (!dut.io.iReq.ready.peek().litToBoolean && wait < 120) {
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+      waitForAr(dut)
+      dut.io.axi.ar.data.araddr.expect(line.U)
+      dut.io.axi.ar.data.arlen.expect((burstBeats - 1).U)
+    }
+  }
   it should "wait for dirty writeback B before issuing an uncached read" in {
     test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
       resetDut(dut)
