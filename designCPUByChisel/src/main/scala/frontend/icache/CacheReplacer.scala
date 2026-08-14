@@ -1,10 +1,10 @@
 package nscscc.frontend.icache
- 
+
 import chisel3._
 import chisel3.util._
 import nscscc.config.Parameters
 import nscscc.config.NSModule
- 
+
 /**
  * ═══════════════════════════════════════════════════════════════
  *  Cache 替换策略模块（ICache / DCache 共用）
@@ -16,7 +16,7 @@ import nscscc.config.NSModule
  * ═══════════════════════════════════════════════════════════════
  */
 class CacheReplacerI(implicit p: Parameters) extends NSModule {
-  
+
   val io = IO(new Bundle {
     val touch  = Flipped(new victimChange)
     val victim = Flipped(new victimRead)
@@ -25,7 +25,7 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
       val idx   = Input(UInt(idxBitsI.W))
     }
   })
-  
+
   // Victim read is intentionally split into two stages:
   // 1) latch req/idx, 2) read replacement state combinationally from the
   //    registered index so the response is still available in the next cycle.
@@ -37,29 +37,29 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
   when(io.victim.req) {
     victimIdxReg := io.victim.idx
   }
-  
+
   if (nWaysI == 2) {
     // ════════════════════════════════════════════════════════
     //  2路组相联：1-bit 真 LRU
     // ════════════════════════════════════════════════════════
     val lastUsed = RegInit(VecInit(Seq.fill(nSetsI)(0.U(1.W))))
-    
+
     when(io.touch.valid) {
       lastUsed(io.touch.idx) := io.touch.way
     }
-    
+
     victimResp := ~lastUsed(victimIdxReg)
-    
+
     when(io.flush.valid) {
       lastUsed(io.flush.idx) := 0.U(1.W)
     }
-    
+
   } else if (nWaysI == 4) {
     // ════════════════════════════════════════════════════════
     //  4路组相联：3-bit PLRU 伪二叉树
     // ════════════════════════════════════════════════════════
     val plruTree = RegInit(VecInit(Seq.fill(nSetsI)(0.U(3.W))))
-    
+
     def updatePLRU(oldPLRU: UInt, way: UInt): UInt = {
       val newPLRU = WireDefault(0.U(3.W))
       switch(way) {
@@ -70,24 +70,24 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
       }
       newPLRU
     }
-    
+
     def getVictim(plru: UInt): UInt = {
       val plru0 = plru(0)
       val plru1 = plru(1)
       val plru2 = plru(2)
       Mux(!plru0, Mux(!plru1, 0.U, 1.U), Mux(!plru2, 2.U, 3.U))
     }
-    
+
     when(io.touch.valid) {
       plruTree(io.touch.idx) := updatePLRU(plruTree(io.touch.idx), io.touch.way)
     }
-    
+
     victimResp := getVictim(plruTree(victimIdxReg))
-    
+
     when(io.flush.valid) {
       plruTree(io.flush.idx) := 0.U(3.W)
     }
-    
+
   } else if (nWaysI == 8) {
     // ════════════════════════════════════════════════════════
     //  8路组相联：7-bit PLRU 伪二叉树
@@ -108,7 +108,7 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
     //  - Touch：访问某路时，该路径上的所有节点必须反转，指向**远离**该路的分支。
     // ════════════════════════════════════════════════════════
     val plruTree = RegInit(VecInit(Seq.fill(nSetsI)(0.U(7.W))))
-    
+
     def updatePLRU(oldPLRU: UInt, way: UInt): UInt = {
       val newPLRU = WireDefault(0.U(7.W))
       // 提取旧状态的各个 bit，方便重新组合
@@ -141,7 +141,7 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
       }
       newPLRU
     }
-    
+
     def getVictim(plru: UInt): UInt = {
       val b0 = plru(0)
       val b1 = plru(1)
@@ -150,7 +150,7 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
       val b4 = plru(4)
       val b5 = plru(5)
       val b6 = plru(6)
-      
+
       // 树形路由逻辑：0 走上面/左边分支，1 走下面/右边分支
       Mux(!b0,
         Mux(!b1,
@@ -163,18 +163,18 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
         )
       )
     }
-    
+
     when(io.touch.valid) {
       plruTree(io.touch.idx) := updatePLRU(plruTree(io.touch.idx), io.touch.way)
     }
-    
+
     victimResp := getVictim(plruTree(victimIdxReg))
-    
+
     when(io.flush.valid) {
       plruTree(io.flush.idx) := 0.U(7.W)
     }
   }
-  
+
   io.victim.resp := victimResp //Mux(victimReqReg, victimResp, 0.U)
 }
 
@@ -182,7 +182,7 @@ class CacheReplacerI(implicit p: Parameters) extends NSModule {
 
 
 class CacheReplacerD(implicit p: Parameters) extends NSModule {
-  
+
   val io = IO(new Bundle {
     val touch  = Flipped(new victimChange)
     val victim = Flipped(new victimRead)
@@ -191,7 +191,7 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
       val idx   = Input(UInt(idxBitsD.W))
     }
   })
-  
+
   // Victim read is intentionally split into two stages:
   // 1) latch req/idx, 2) read replacement state combinationally from the
   //    registered index so the response is still available in the next cycle.
@@ -203,29 +203,29 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
   when(io.victim.req) {
     victimIdxReg := io.victim.idx
   }
-  
+
   if (nWaysD == 2) {
     // ════════════════════════════════════════════════════════
     //  2路组相联：1-bit 真 LRU
     // ════════════════════════════════════════════════════════
     val lastUsed = RegInit(VecInit(Seq.fill(nSetsD)(0.U(1.W))))
-    
+
     when(io.touch.valid) {
       lastUsed(io.touch.idx) := io.touch.way
     }
-    
+
     victimResp := ~lastUsed(victimIdxReg)
-    
+
     when(io.flush.valid) {
       lastUsed(io.flush.idx) := 0.U(1.W)
     }
-    
+
   } else if (nWaysD == 4) {
     // ════════════════════════════════════════════════════════
     //  4路组相联：3-bit PLRU 伪二叉树
     // ════════════════════════════════════════════════════════
     val plruTree = RegInit(VecInit(Seq.fill(nSetsD)(0.U(3.W))))
-    
+
     def updatePLRU(oldPLRU: UInt, way: UInt): UInt = {
       val newPLRU = WireDefault(0.U(3.W))
       switch(way) {
@@ -236,24 +236,24 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
       }
       newPLRU
     }
-    
+
     def getVictim(plru: UInt): UInt = {
       val plru0 = plru(0)
       val plru1 = plru(1)
       val plru2 = plru(2)
       Mux(!plru0, Mux(!plru1, 0.U, 1.U), Mux(!plru2, 2.U, 3.U))
     }
-    
+
     when(io.touch.valid) {
       plruTree(io.touch.idx) := updatePLRU(plruTree(io.touch.idx), io.touch.way)
     }
-    
+
     victimResp := getVictim(plruTree(victimIdxReg))
-    
+
     when(io.flush.valid) {
       plruTree(io.flush.idx) := 0.U(3.W)
     }
-    
+
   } else if (nWaysD == 8) {
     // ════════════════════════════════════════════════════════
     //  8路组相联：7-bit PLRU 伪二叉树
@@ -274,7 +274,7 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
     //  - Touch：访问某路时，该路径上的所有节点必须反转，指向**远离**该路的分支。
     // ════════════════════════════════════════════════════════
     val plruTree = RegInit(VecInit(Seq.fill(nSetsD)(0.U(7.W))))
-    
+
     def updatePLRU(oldPLRU: UInt, way: UInt): UInt = {
       val newPLRU = WireDefault(0.U(7.W))
       // 提取旧状态的各个 bit，方便重新组合
@@ -307,7 +307,7 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
       }
       newPLRU
     }
-    
+
     def getVictim(plru: UInt): UInt = {
       val b0 = plru(0)
       val b1 = plru(1)
@@ -316,7 +316,7 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
       val b4 = plru(4)
       val b5 = plru(5)
       val b6 = plru(6)
-      
+
       // 树形路由逻辑：0 走上面/左边分支，1 走下面/右边分支
       Mux(!b0,
         Mux(!b1,
@@ -329,17 +329,17 @@ class CacheReplacerD(implicit p: Parameters) extends NSModule {
         )
       )
     }
-    
+
     when(io.touch.valid) {
       plruTree(io.touch.idx) := updatePLRU(plruTree(io.touch.idx), io.touch.way)
     }
-    
+
     victimResp := getVictim(plruTree(victimIdxReg))
-    
+
     when(io.flush.valid) {
       plruTree(io.flush.idx) := 0.U(7.W)
     }
   }
-  
+
   io.victim.resp := victimResp //Mux(victimReqReg, victimResp, 0.U)
 }

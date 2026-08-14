@@ -3,7 +3,7 @@ package nscscc.frontend.icache
 import chisel3._
 import chisel3.util._
 
-import nscscc.axi._
+import nscscc.mem.L2cache.L2NativeReadIO
 
 import nscscc.config.Parameters
 import nscscc.config.NSModule
@@ -21,7 +21,7 @@ class ICache(implicit p: Parameters) extends NSModule {
     
     val icache_resp = Decoupled(new IcacheResp)
 
-    val axi_master         = new AXI3MasterIO
+    val l2_read = new L2NativeReadIO(1)
 
     val mmu = new MMURead
     
@@ -39,7 +39,7 @@ class ICache(implicit p: Parameters) extends NSModule {
   
   mainPipe.io.cpu_req  <> io.cpu_req
   mainPipe.io.icache_resp  <> io.icache_resp
-  mainPipe.io.axi  <> io.axi_master
+  mainPipe.io.l2_read <> io.l2_read
 
   mainPipe.io.arrays_read  <> array.io.read
   mainPipe.io.array_write  <> array.io.write

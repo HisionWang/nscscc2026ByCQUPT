@@ -10,8 +10,8 @@ import nscscc.config.NSBundle
 
 class arrayReadData(implicit p: Parameters) extends  NSBundle{
 
-  val cacheLine = 
-    Vec(nWaysI, new Bundle { 
+  val cacheLine =
+    Vec(nWaysI, new Bundle {
       val has  = Bool()
       val tag  = UInt(tagBitsI.W)
       val data = UInt((blockBytes * 8).W)

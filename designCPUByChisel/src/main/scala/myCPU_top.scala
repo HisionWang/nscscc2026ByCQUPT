@@ -15,6 +15,7 @@ import nscscc.csr._
 import nscscc.difftest._
 import nscscc.backend.Backend
 import nscscc.mem._
+import nscscc.mem.L2cache.L2Cache
  
 class core_top(implicit p: Parameters) extends NSRawModule {
   // ========== 时钟与复位 ==========
@@ -230,27 +231,29 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   mmu.io.fromMemFlush := backend.io.redirectInfo.valid && backend.io.redirectInfo.bits.doRedirect && backend.io.redirectInfo.bits.fromRob
   memaddrtrans.io.flush := backend.io.redirectInfo.valid && backend.io.redirectInfo.bits.doRedirect && backend.io.redirectInfo.bits.fromRob
 
-  // ---------- AXI3 Crossbar ----------
-  val axi_crossbar = Module(new AXI3Crossbar2to1)
+  // I/D L1通过分组native端口接入统一L2，L2是唯一DDR master。
+  val l2cache = Module(new L2Cache)
+  l2cache.io.icache <> frontend.io.l2_read
+  l2cache.io.dcache <> memory.io.l2
+
+  // 本版不改变现有CACOP处理路径，L2维护端口仅作扩展预留。
+  l2cache.io.maintenance.req.valid := false.B
+  l2cache.io.maintenance.req.bits.op := 0.U
+  l2cache.io.maintenance.req.bits.addr := 0.U
+  l2cache.io.maintenance.done.ready := true.B
  
-  // ================================================================
-  // AXI3 Crossbar 连接
-  // ================================================================
-  axi_crossbar.io.in_icache   <> frontend.io.axi_master
-  axi_crossbar.io.in_dcache   <> memory.io.axi
- 
-  // Crossbar → 顶层AXI3接口
+  // L2 → 顶层AXI3接口
   // AR通道
-  arid    := axi_crossbar.io.out.ar.data.arid
-  araddr  := axi_crossbar.io.out.ar.data.araddr
-  arlen   := axi_crossbar.io.out.ar.data.arlen
-  arsize  := axi_crossbar.io.out.ar.data.arsize
-  arburst := 1.U //axi_crossbar.io.out.ar.data.arburst
-  arlock  := 0.U //axi_crossbar.io.out.ar.data.arlock
-  arcache := 0.U //axi_crossbar.io.out.ar.data.arcache
-  arprot  := 0.U //axi_crossbar.io.out.ar.data.arprot
-  arvalid := axi_crossbar.io.out.ar.data.arvalid
-  axi_crossbar.io.out.ar.arready := arready
+  arid    := l2cache.io.axi.ar.data.arid
+  araddr  := l2cache.io.axi.ar.data.araddr
+  arlen   := l2cache.io.axi.ar.data.arlen
+  arsize  := l2cache.io.axi.ar.data.arsize
+  arburst := l2cache.io.axi.ar.data.arburst
+  arlock  := l2cache.io.axi.ar.data.arlock
+  arcache := l2cache.io.axi.ar.data.arcache
+  arprot  := l2cache.io.axi.ar.data.arprot
+  arvalid := l2cache.io.axi.ar.data.arvalid
+  l2cache.io.axi.ar.arready := arready
  
   // R通道
   val r_data = Wire(new AXI3RData)
@@ -259,36 +262,36 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   r_data.rresp  := rresp
   r_data.rlast  := rlast
   r_data.rvalid := rvalid
-  axi_crossbar.io.out.r.data := r_data
-  rready := axi_crossbar.io.out.r.rready
+  l2cache.io.axi.r.data := r_data
+  rready := l2cache.io.axi.r.rready
  
   // AW通道
-  awid    := axi_crossbar.io.out.aw.data.awid
-  awaddr  := axi_crossbar.io.out.aw.data.awaddr
-  awlen   := axi_crossbar.io.out.aw.data.awlen
-  awsize  := axi_crossbar.io.out.aw.data.awsize
-  awburst := 1.U //axi_crossbar.io.out.aw.data.awburst
-  awlock  := 0.U //axi_crossbar.io.out.aw.data.awlock
-  awcache := 0.U //axi_crossbar.io.out.aw.data.awcache
-  awprot  := 0.U //axi_crossbar.io.out.aw.data.awprot
-  awvalid := axi_crossbar.io.out.aw.data.awvalid
-  axi_crossbar.io.out.aw.awready := awready
+  awid    := l2cache.io.axi.aw.data.awid
+  awaddr  := l2cache.io.axi.aw.data.awaddr
+  awlen   := l2cache.io.axi.aw.data.awlen
+  awsize  := l2cache.io.axi.aw.data.awsize
+  awburst := l2cache.io.axi.aw.data.awburst
+  awlock  := l2cache.io.axi.aw.data.awlock
+  awcache := l2cache.io.axi.aw.data.awcache
+  awprot  := l2cache.io.axi.aw.data.awprot
+  awvalid := l2cache.io.axi.aw.data.awvalid
+  l2cache.io.axi.aw.awready := awready
  
   // W通道
-  wid     := axi_crossbar.io.out.w.data.wid
-  wdata   := axi_crossbar.io.out.w.data.wdata
-  wstrb   := axi_crossbar.io.out.w.data.wstrb
-  wlast   := axi_crossbar.io.out.w.data.wlast
-  wvalid  := axi_crossbar.io.out.w.data.wvalid
-  axi_crossbar.io.out.w.wready := wready
+  wid     := l2cache.io.axi.w.data.wid
+  wdata   := l2cache.io.axi.w.data.wdata
+  wstrb   := l2cache.io.axi.w.data.wstrb
+  wlast   := l2cache.io.axi.w.data.wlast
+  wvalid  := l2cache.io.axi.w.data.wvalid
+  l2cache.io.axi.w.wready := wready
  
   // B通道
   val b_data = Wire(new AXI3BData)
   b_data.bid    := bid
   b_data.bresp  := bresp
   b_data.bvalid := bvalid
-  axi_crossbar.io.out.b.data := b_data
-  bready := axi_crossbar.io.out.b.bready
+  l2cache.io.axi.b.data := b_data
+  bready := l2cache.io.axi.b.bready
  
   // ================================================================
   // 调试信号
