@@ -220,6 +220,132 @@ class L2UncacheCoherenceSpec
     dut.clock.step(3)
   }
 
+  private def installDirtyLine(dut: L2CacheTestHarness, addr: BigInt, words: Seq[BigInt]): Unit = {
+    dut.io.dWriteReqValid.poke(true.B)
+    dut.io.dWriteReqId.poke(1.U)
+    dut.io.dWriteReqAddr.poke(addr.U)
+    dut.io.dWriteReqKind.poke(L2WriteKind.putLine)
+    dut.io.dWriteReqSize.poke(2.U)
+    for ((word, beat) <- words.zipWithIndex) dut.io.dWriteReqWords(beat).poke(word.U)
+    dut.io.dWriteReqStrb.poke("hf".U)
+    dut.io.dWriteReqReady.expect(true.B)
+    dut.clock.step()
+    dut.io.dWriteReqValid.poke(false.B)
+    dut.clock.step(8)
+  }
+
+  private def sendUncachedPartialWrite(dut: L2CacheTestHarness, addr: BigInt): Unit = {
+    dut.io.dWriteReqValid.poke(true.B)
+    dut.io.dWriteReqId.poke(1.U)
+    dut.io.dWriteReqAddr.poke(addr.U)
+    dut.io.dWriteReqKind.poke(L2WriteKind.uncache)
+    dut.io.dWriteReqSize.poke(0.U)
+    dut.io.dWriteReqWords(0).poke("h0000007f".U)
+    dut.io.dWriteReqStrb.poke(8.U)
+    var wait = 0
+    while (!dut.io.dWriteReqReady.peek().litToBoolean && wait < 120) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.dWriteReqReady.expect(true.B)
+    dut.clock.step()
+    dut.io.dWriteReqValid.poke(false.B)
+  }
+
+  private def completeDirtyWriteback(
+      dut: L2CacheTestHarness, addr: BigInt, words: Seq[BigInt]): Unit = {
+    var wait = 0
+    while (!dut.io.axi.aw.data.awvalid.peek().litToBoolean && wait < 120) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.axi.aw.data.awvalid.expect(true.B)
+    dut.io.axi.aw.data.awaddr.expect(addr.U)
+    dut.io.axi.aw.data.awlen.expect((burstBeats - 1).U)
+    dut.io.axi.aw.data.awsize.expect(2.U)
+    dut.io.axi.aw.awready.poke(true.B)
+    dut.io.axi.w.wready.poke(true.B)
+    for ((word, beat) <- words.zipWithIndex) {
+      dut.io.axi.w.data.wvalid.expect(true.B)
+      dut.io.axi.w.data.wdata.expect(word.U)
+      dut.io.axi.w.data.wstrb.expect("hf".U)
+      dut.io.axi.w.data.wlast.expect((beat == burstBeats - 1).B)
+      dut.clock.step()
+    }
+    dut.io.axi.aw.awready.poke(false.B)
+    dut.io.axi.w.wready.poke(false.B)
+    wait = 0
+    while (!dut.io.axi.b.bready.peek().litToBoolean && wait < 20) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.axi.b.bready.expect(true.B)
+    for (_ <- 0 until 8) {
+      dut.io.axi.ar.data.arvalid.expect(false.B)
+      dut.io.axi.aw.data.awvalid.expect(false.B)
+      dut.clock.step()
+    }
+    dut.io.axi.b.data.bvalid.poke(true.B)
+    dut.clock.step()
+    dut.io.axi.b.data.bvalid.poke(false.B)
+  }
+
+  private def completeRawReadAfterWriteback(dut: L2CacheTestHarness, addr: BigInt): Unit = {
+    waitForAr(dut)
+    dut.io.axi.ar.data.araddr.expect(addr.U)
+    dut.io.axi.ar.data.arlen.expect(0.U)
+    dut.io.axi.ar.data.arsize.expect(2.U)
+    completeRead(dut, Seq(BigInt("76543210", 16)))
+    dut.io.dReadRespReady.poke(true.B)
+    var wait = 0
+    while (!dut.io.dReadRespValid.peek().litToBoolean && wait < 40) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.dReadRespValid.expect(true.B)
+    dut.io.dReadRespFullLine.expect(false.B)
+    dut.clock.step(3)
+  }
+
+  private def completeRawWriteAfterWriteback(dut: L2CacheTestHarness, addr: BigInt): Unit = {
+    var wait = 0
+    while (!dut.io.axi.aw.data.awvalid.peek().litToBoolean && wait < 80) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.axi.aw.data.awvalid.expect(true.B)
+    dut.io.axi.aw.data.awaddr.expect(addr.U)
+    dut.io.axi.aw.data.awlen.expect(0.U)
+    dut.io.axi.aw.data.awsize.expect(0.U)
+    dut.io.axi.w.data.wvalid.expect(true.B)
+    dut.io.axi.w.data.wdata.expect("h0000007f".U)
+    dut.io.axi.w.data.wstrb.expect(8.U)
+    dut.io.axi.w.data.wlast.expect(true.B)
+    dut.io.axi.aw.awready.poke(true.B)
+    dut.io.axi.w.wready.poke(true.B)
+    dut.clock.step()
+    dut.io.axi.aw.awready.poke(false.B)
+    dut.io.axi.w.wready.poke(false.B)
+    wait = 0
+    while (!dut.io.axi.b.bready.peek().litToBoolean && wait < 20) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.axi.b.bready.expect(true.B)
+    dut.io.axi.b.data.bvalid.poke(true.B)
+    dut.clock.step()
+    dut.io.axi.b.data.bvalid.poke(false.B)
+    wait = 0
+    while (!dut.io.dWriteDoneValid.peek().litToBoolean && wait < 20) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.dWriteDoneValid.expect(true.B)
+    dut.io.dWriteDoneId.expect(1.U)
+    dut.clock.step(3)
+  }
+
+
   it should "probe and invalidate a clean hit before an uncached read" in {
     test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
       resetDut(dut)
@@ -260,4 +386,32 @@ class L2UncacheCoherenceSpec
       requireDdrMiss(dut, target)
     }
   }
+  it should "wait for dirty writeback B before issuing an uncached read" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val target = BigInt("8001c000", 16)
+      val words = (0 until burstBeats).map(i => BigInt(0x72000000L + i))
+      installDirtyLine(dut, target, words)
+      dut.io.dReadRespReady.poke(false.B)
+      sendDRead(dut, target + 4, uncache = true)
+      completeDirtyWriteback(dut, target, words)
+      completeRawReadAfterWriteback(dut, target + 4)
+      requireDdrMiss(dut, target)
+    }
+  }
+
+  it should "wait for dirty writeback B before issuing an uncached write" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val target = BigInt("80020000", 16)
+      val words = (0 until burstBeats).map(i => BigInt(0x73000000L + i))
+      installDirtyLine(dut, target, words)
+      sendUncachedPartialWrite(dut, target + 3)
+      completeDirtyWriteback(dut, target, words)
+      completeRawWriteAfterWriteback(dut, target + 3)
+      requireDdrMiss(dut, target)
+    }
+  }
+
+
 }

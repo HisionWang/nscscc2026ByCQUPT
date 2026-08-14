@@ -38,6 +38,8 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
     val dWriteReqWords = Input(Vec(l2BurstBeats, UInt(XLEN.W)))
     val dWriteReqStrb = Input(UInt(l2BeatBytes.W))
     val dWriteDoneReady = Input(Bool())
+    val dWriteDoneValid = Output(Bool())
+    val dWriteDoneId = Output(UInt(1.W))
 
     val axi = new AXI3MasterIO
   })
@@ -71,6 +73,8 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
   cache.io.dcache.write.req.bits.data := io.dWriteReqWords.asUInt
   cache.io.dcache.write.req.bits.strb := io.dWriteReqStrb
   cache.io.dcache.write.done.ready := io.dWriteDoneReady
+  io.dWriteDoneValid := cache.io.dcache.write.done.valid
+  io.dWriteDoneId := cache.io.dcache.write.done.bits.id
 
   cache.io.maintenance.req.valid := false.B
   cache.io.maintenance.req.bits.op := 0.U

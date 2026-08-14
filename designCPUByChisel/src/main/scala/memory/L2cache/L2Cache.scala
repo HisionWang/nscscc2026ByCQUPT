@@ -114,6 +114,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val ebData = RegInit(0.U(l2LineBits.W))
   val ebHasMshr = RegInit(false.B)
   val ebMshr = RegInit(0.U(l2MshrIdBits.W))
+  val ebForUncache = RegInit(false.B)
 
   // 总计3项STB：第0项为未来I侧exclusive预留，后2项供DCache。
   val stbCount = l2IStbEntries + l2DStbEntries
@@ -222,9 +223,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   )
   val headStbCanProcess = (!headNeedsEb || !ebValid)
   val resultCanProcess = resultQueue.io.deq.valid && !hasFillInstall &&
-    // Task A handles probe miss and clean hit. A dirty hit must retain its
-    // exact line until Task B transfers it into the eviction buffer.
-    Mux(head.token.isUncacheProbe, !head.hit || !head.oldDirty,
+    // Probe misses and clean hits need no EB; dirty hits wait until the exact line can be transferred into EB.
+    Mux(head.token.isUncacheProbe, !head.hit || !head.oldDirty || !ebValid,
       Mux(head.token.isStb, headStbCanProcess, headReadCanProcess))
   resultQueue.io.deq.ready := resultCanProcess
 
@@ -306,6 +306,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
         ucCoherenceReady := true.B
       }.elsewhen(!head.oldDirty) {
         ucCoherenceReady := true.B
+      }.otherwise {
+        ebValid := true.B
+        ebIssued := false.B
+        ebAddr := Cat(head.oldTag,
+          head.token.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits),
+          0.U(l2BlockOffBits.W))
+        ebData := head.oldData
+        ebHasMshr := false.B
+        ebForUncache := true.B
+        ucCoherenceReady := false.B
       }
     }.elsewhen(head.token.isStb) {
       val slot = head.token.stbSlot
@@ -318,6 +328,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
           0.U(l2BlockOffBits.W))
         ebData := head.oldData
         ebHasMshr := false.B
+        ebForUncache := false.B
       }
       when(stbKind(slot) === L2WriteKind.putLine) {
         stbValid(slot) := false.B
@@ -353,6 +364,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
         ebData := head.oldData
         ebHasMshr := true.B
         ebMshr := slot
+        ebForUncache := false.B
       }
     }
   }
@@ -628,12 +640,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   bridge.io.client.write.done.ready := true.B
   when(bridge.io.client.write.done.fire) {
     when(bridge.io.client.write.done.bits.owner.source === L2BridgeWriteOwner.eviction) {
+      when(ebForUncache) {
+        ucCoherenceReady := true.B
+      }
       ebValid := false.B
       ebIssued := false.B
       when(ebHasMshr) {
         mshrWaitEb(ebMshr) := false.B
       }
       ebHasMshr := false.B
+      ebForUncache := false.B
     }.elsewhen(bridge.io.client.write.done.bits.owner.source === L2BridgeWriteOwner.cleanLine) {
       stbDdrDone(bridge.io.client.write.done.bits.owner.slot) := true.B
     }.otherwise {
