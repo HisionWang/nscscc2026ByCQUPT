@@ -227,8 +227,8 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val s3_cacheLine_data = RegInit(0.U((blockBytes * 8).W))
  
   val cpu_ready = io.icache_resp.ready
-  //      0       1         2                 3              4                5               6            7              8                  9                10               11                    12                                       
-  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: s_drain_miss :: s_drain_uncache :: s_drain_miss_req :: s_drain_uncache_req :: Nil = Enum(13)
+  // ICache只跟踪仍属于自己的事务；redirect后由L2负责排空旧事务。
+  val s_idle :: s_hit :: s_miss_req :: s_miss_wait :: s_miss_write :: s_uncache_req :: s_uncache_wait :: s_done :: s_mmu_error_state :: Nil = Enum(9)
   
   val state = RegInit(s_idle)
   val next_state = WireInit(s_idle)
@@ -273,16 +273,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   s3_vidx := s3_vaddr(blockOffBits + idxBitsI - 1, blockOffBits)
  
  
-  // ══════════════════════════════════════════════════════════════
-  //  状态机：13 状态
-  //
-  //  新增 s_drain_miss_req / s_drain_uncache_req：
-  //    当 flush 来袭时，如果 ARVALID 已拉高但 ARREADY 尚未到来，
-  //    不能撤 ARVALID（AXI 协规要求），必须进入这两个状态
-  //    继续保持 ARVALID，等 ARREADY 到后才转入 drain_wait 排空响应。
-  // ══════════════════════════════════════════════════════════════
-
-  
   // 状态转移逻辑
   switch(state) {
     is(s_idle) {
@@ -344,76 +334,11 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
       }
     }
     
-    is(s_drain_miss) {
-      next_state := Mux(io.l2_read.resp.fire && io.l2_read.resp.bits.last,
-        s_idle, s_drain_miss)
-    }
-    
-    is(s_drain_uncache) {
-      next_state := Mux(io.l2_read.resp.fire && io.l2_read.resp.bits.last,
-        s_idle, s_drain_uncache)
-    }
-    
-    // ── 新增：flush 时 ARVALID 已拉高但 ARREADY 未到的守卫状态 ──
-    // 保持 ARVALID 不撤，等 ARREADY 到后转入 drain 排空响应
-    is(s_drain_miss_req) {
-      next_state := Mux(io.l2_read.req.fire, s_drain_miss, s_drain_miss_req)
-    }
-    
-    is(s_drain_uncache_req) {
-      next_state := Mux(io.l2_read.req.fire, s_drain_uncache, s_drain_uncache_req)
-    }
   }
   
-  // ══════════════════════════════════════════════════════════════
-  //  flush 时状态覆盖逻辑（修正版）
-  //
-  //  核心原则：ARVALID 一旦拉高，在 ARREADY 到来之前绝不能撤！
-  //
-  //  分类处理：
-  //    1. AR 已握手完成（s_miss_wait / s_uncache_wait / drain）：
-  //       响应必然到来 → 进入 drain 排空
-  //    2. AR 已握手完成（本拍 arready 刚到）：
-  //       响应必然到来 → 进入 drain 排空
-  //    3. ARVALID 已拉高但 ARREADY 还没到（s_miss_req / s_uncache_req）：
-  //       **不能撤 ARVALID** → 进入 s_drain_miss_req / s_drain_uncache_req
-  //       继续保持 ARVALID，等 ARREADY 到后转入 drain 排空
-  //    4. 其他状态（idle / hit / done / mmu_error / miss_write）：
-  //       无 AXI 事务在途 → 安全回到 idle
-  // ══════════════════════════════════════════════════════════════
-  val readNativeLastFire = io.l2_read.resp.fire && io.l2_read.resp.bits.last
- 
+  // redirect撤销尚未握手的请求；已握手的请求通过cancel转交L2排空。
   when(s3_flush) {
-    // ── miss 路径 ──
-    when(state === s_miss_wait && !readNativeLastFire) {
-      // AR 已完成，R 响应还在路上 → 排空
-      state := s_drain_miss
-    }.elsewhen(state === s_drain_miss && !readNativeLastFire) {
-      // 已在排空，继续
-      state := s_drain_miss
-    }.elsewhen(state === s_miss_req && io.l2_read.req.fire) {
-      // AR 握手本拍刚好完成，响应必然到来 → 排空
-      state := s_drain_miss
-    }.elsewhen(state === s_miss_req && !io.l2_read.req.fire) {
-      // native请求尚未握手，redirect可以直接取消。
-      state := s_idle
-    }
-    // ── uncache 路径 ──
-    .elsewhen(state === s_uncache_wait && !readNativeLastFire) {
-      state := s_drain_uncache
-    }.elsewhen(state === s_drain_uncache && !readNativeLastFire) {
-      state := s_drain_uncache
-    }.elsewhen(state === s_uncache_req && io.l2_read.req.fire) {
-      state := s_drain_uncache
-    }.elsewhen(state === s_uncache_req && !io.l2_read.req.fire) {
-      // native请求尚未握手，redirect可以直接取消。
-      state := s_idle
-    }
- 
-    // ── 其他状态：无 AXI 事务在途 → 安全回到 idle ──
-    .otherwise {
-      state := s_idle
-    }
+    state := s_idle
   }.otherwise {
     state := next_state
   }
@@ -477,7 +402,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   //  s3_hit的时候状态机是不会变化的
   //  hit 和mmu err是可能同时发生的
   io.icache_resp.bits.instrs      :=   output_instrs
-  io.icache_resp.valid            :=   output_valid
+  io.icache_resp.valid            :=   output_valid && !s3_flush
   io.icache_resp.bits.instvalids  :=   output_instvalids
   io.icache_resp.bits.addr        :=   s3_vaddr
   io.icache_resp.bits.uncached    :=   output_uncached
@@ -557,7 +482,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   // === 各状态的具体任务 ===
   
   // 1. 命中状态
-  when(s3_hit) {
+  when(s3_hit && !s3_flush) {
     io.replacer_touch.valid := true.B
     io.replacer_touch.idx   := s3_vidx
     io.replacer_touch.way   := s3_hit_way
@@ -570,20 +495,20 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
  
   // miss与uncache共用一个分组native读端口。
   val nativeReqPending = state === s_miss_req || state === s_uncache_req
+  val nativeRespExpected = state === s_miss_wait || state === s_uncache_wait
+  io.l2_read.cancel := s3_flush && nativeRespExpected
   io.l2_read.req.valid := nativeReqPending && !s3_flush
   io.l2_read.req.bits.id := 0.U
   io.l2_read.req.bits.addr := s3_paddr
   io.l2_read.req.bits.size := 2.U
-  io.l2_read.req.bits.uncache := state === s_uncache_req ||
-    state === s_drain_uncache_req
-  when(state === s_miss_req || state === s_drain_miss_req) {
+  io.l2_read.req.bits.uncache := state === s_uncache_req
+  when(state === s_miss_req) {
     io.l2_read.req.bits.addr := Cat(s3_ptag, s3_pidx, 0.U(blockOffBits.W))
   }
  
-  val nativeRespExpected = state === s_miss_wait || state === s_uncache_wait ||
-    state === s_drain_miss || state === s_drain_uncache
   // ICache V1只发出ID=0，不接收不属于当前事务的返回。
-  io.l2_read.resp.ready := nativeRespExpected && io.l2_read.resp.bits.id === 0.U
+  io.l2_read.resp.ready := nativeRespExpected && !s3_flush &&
+    io.l2_read.resp.bits.id === 0.U
   
   val beat_counter = RegInit(0.U(4.W))
   
@@ -602,11 +527,6 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     }
   }
  
-  // drain_miss 状态排空时重置 beat_counter
-  when(state === s_drain_miss && io.l2_read.resp.fire && io.l2_read.resp.bits.last) {
-    beat_counter := 0.U
-  }
- 
   when (s3_fire){
     miss_data_words := VecInit(Seq.fill(blockBytes / (XLEN / 8))(0.U(XLEN.W)))
   }
@@ -615,7 +535,7 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   io.victim_read.req := (state === s_miss_req) || (state === s_miss_wait) || (state === s_miss_write)
   io.victim_read.idx := s3_vidx
 
-  when(state === s_miss_write && miss_data_valid ){ //&& cpu_ready) {
+  when(state === s_miss_write && miss_data_valid && !s3_flush){ //&& cpu_ready) {
     io.array_write.valid := true.B
     io.array_write.idx   := s3_vidx
     io.array_write.tag   := s3_ptag

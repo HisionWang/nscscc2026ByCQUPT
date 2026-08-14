@@ -42,6 +42,8 @@ class L2WriteDone(val idWidth: Int)(implicit p: Parameters) extends NSBundle {
 // 从 L1 master 视角定义方向；L2 顶层使用 Flipped 接入。
 class L2NativeReadIO(val idWidth: Int)(implicit p: Parameters) extends NSBundle {
   val req = Decoupled(new L2ReadReq(idWidth))
+  // Master撤销已经被L2接收的读请求；L2继续排空下游事务但丢弃响应。
+  val cancel = Output(Bool())
   val resp = Flipped(Decoupled(new L2ReadResp(idWidth)))
 }
 

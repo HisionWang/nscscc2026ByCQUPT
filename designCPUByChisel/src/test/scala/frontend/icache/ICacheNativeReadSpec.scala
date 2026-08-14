@@ -190,7 +190,7 @@ class ICacheNativeReadSpec
     }
   }
 
-  it should "cancel a pending request but drain an accepted request after redirect" in {
+  it should "withdraw a pending request and transfer an accepted request to L2 on redirect" in {
     test(new ICacheMainPipe) { dut =>
       resetDut(dut)
       launchRead(dut, vaddr = 0x80000300L, paddr = 0x90000300L, cacheable = true)
@@ -218,15 +218,15 @@ class ICacheNativeReadSpec
 
       dut.io.l2_read.resp.valid.poke(false.B)
       dut.io.redirect.poke(true.B)
+      dut.io.l2_read.cancel.expect(true.B)
       dut.clock.step()
       dut.io.redirect.poke(false.B)
+      dut.io.l2_read.cancel.expect(false.B)
 
+      // L2 owns and drains the stale transaction after cancel; ICache is free.
       dut.io.l2_read.resp.valid.poke(true.B)
       dut.io.l2_read.resp.bits.id.poke(0.U)
-      dut.io.l2_read.resp.ready.expect(true.B)
-      dut.clock.step()
-      dut.io.l2_read.resp.valid.poke(false.B)
-
+      dut.io.l2_read.resp.ready.expect(false.B)
       for (_ <- 0 until 3) {
         dut.io.array_write.valid.expect(false.B)
         dut.io.icache_resp.valid.expect(false.B)

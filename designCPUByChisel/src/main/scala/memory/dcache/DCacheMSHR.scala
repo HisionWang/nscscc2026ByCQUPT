@@ -284,6 +284,7 @@ class DCacheMSHRFile(implicit p: Parameters) extends NSModule {
     readLocked := false.B
   }
 
+  io.l2.read.cancel := false.B
   io.l2.read.req.valid := readOutValid
   io.l2.read.req.bits := Mux1H(readSelOH, primaries.map(_.io.l2.read.req.bits))
   for ((prim, i) <- primaries.zipWithIndex) {

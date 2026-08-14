@@ -14,6 +14,7 @@ import org.scalatest.matchers.should.Matchers
 class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val iReq = Flipped(Decoupled(new L2ReadReq(1)))
+    val iCancel = Input(Bool())
     val iRespValid = Output(Bool())
     val iRespReady = Input(Bool())
     val iRespId = Output(UInt(1.W))
@@ -38,6 +39,7 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
 
   val cache = Module(new L2Cache)
   cache.io.icache.req <> io.iReq
+  cache.io.icache.cancel := io.iCancel
   io.iRespValid := cache.io.icache.resp.valid
   cache.io.icache.resp.ready := io.iRespReady
   io.iRespId := cache.io.icache.resp.bits.id
@@ -47,6 +49,7 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
   io.iRespLast := cache.io.icache.resp.bits.last
 
   cache.io.dcache.read.req <> io.dReadReq
+  cache.io.dcache.read.cancel := false.B
   cache.io.dcache.read.resp.ready := io.dReadRespReady
   cache.io.dcache.write.req.valid := io.dWriteReqValid
   io.dWriteReqReady := cache.io.dcache.write.req.ready
@@ -87,6 +90,7 @@ class L2CacheSpec
     dut.io.iReq.bits.addr.poke(0.U)
     dut.io.iReq.bits.size.poke(2.U)
     dut.io.iReq.bits.uncache.poke(false.B)
+    dut.io.iCancel.poke(false.B)
     dut.io.iRespReady.poke(true.B)
 
     dut.io.dReadReq.valid.poke(false.B)
@@ -147,6 +151,205 @@ class L2CacheSpec
     }
     dut.clock.step()
     dut.io.iReq.valid.poke(false.B)
+  }
+
+  it should "register an I request before any L2 or AXI activity" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val addr = BigInt("86000040", 16)
+      dut.io.iReq.valid.poke(true.B)
+      dut.io.iReq.bits.addr.poke(addr.U)
+      dut.io.iReq.ready.expect(true.B)
+      dut.io.axi.ar.data.arvalid.expect(false.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+      dut.io.iReq.ready.expect(false.B)
+      dut.io.axi.ar.data.arvalid.expect(false.B)
+    }
+  }
+
+  it should "cancel a pending registered I request without issuing it" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val addr = BigInt("86000140", 16)
+      dut.io.iReq.valid.poke(true.B)
+      dut.io.iReq.bits.addr.poke(addr.U)
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+      dut.io.iCancel.poke(true.B)
+      dut.clock.step()
+      dut.io.iCancel.poke(false.B)
+      for (_ <- 0 until 8) {
+        dut.io.axi.ar.data.arvalid.expect(false.B)
+        dut.io.iRespValid.expect(false.B)
+        dut.clock.step()
+      }
+      dut.io.iReq.ready.expect(true.B)
+    }
+  }
+
+  it should "drain a cancelled I miss into L2 without responding to ICache" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val addr = BigInt("86000240", 16)
+      val words = (0 until 16).map(i => BigInt(0x72000000L + i))
+      sendIRead(dut, addr)
+      var wait = 0
+      while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 40) {
+        dut.clock.step(); wait += 1
+      }
+      dut.io.axi.ar.data.arvalid.expect(true.B)
+      dut.io.axi.ar.arready.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.ar.arready.poke(false.B)
+      dut.io.iCancel.poke(true.B)
+      dut.clock.step()
+      dut.io.iCancel.poke(false.B)
+      for (beat <- 0 until 16) {
+        dut.io.axi.r.data.rvalid.poke(true.B)
+        dut.io.axi.r.data.rdata.poke(words(beat).U)
+        dut.io.axi.r.data.rlast.poke((beat == 15).B)
+        dut.io.axi.r.rready.expect(true.B)
+        dut.io.iRespValid.expect(false.B)
+        dut.clock.step()
+      }
+      dut.io.axi.r.data.rvalid.poke(false.B)
+      for (_ <- 0 until 20) { dut.io.iRespValid.expect(false.B); dut.clock.step() }
+      sendIRead(dut, addr)
+      wait = 0
+      while (!dut.io.iRespValid.peek().litToBoolean && wait < 40) {
+        dut.io.axi.ar.data.arvalid.expect(false.B)
+        dut.clock.step(); wait += 1
+      }
+      dut.io.iRespValid.expect(true.B)
+      dut.io.iRespFullLine.expect(true.B)
+      for (word <- 0 until 16) dut.io.iRespWords(word).expect(words(word).U)
+    }
+  }
+  it should "cancel an already buffered L2 hit and accept the next I request" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val hitAddr = BigInt("86000380", 16)
+      val nextAddr = BigInt("86000480", 16)
+      val words = (0 until 16).map(i => BigInt(0x73000000L + i))
+      dut.io.dWriteReqValid.poke(true.B)
+      dut.io.dWriteReqAddr.poke(hitAddr.U)
+      dut.io.dWriteReqKind.poke(L2WriteKind.putLine)
+      for (word <- 0 until 16) dut.io.dWriteReqWords(word).poke(words(word).U)
+      dut.io.dWriteReqReady.expect(true.B)
+      dut.clock.step()
+      dut.io.dWriteReqValid.poke(false.B)
+      dut.clock.step(8)
+
+      dut.io.iRespReady.poke(false.B)
+      sendIRead(dut, hitAddr)
+      var wait = 0
+      while (!dut.io.iRespValid.peek().litToBoolean && wait < 40) {
+        dut.clock.step(); wait += 1
+      }
+      dut.io.iRespValid.expect(true.B)
+      dut.io.iCancel.poke(true.B)
+      dut.clock.step()
+      dut.io.iCancel.poke(false.B)
+      dut.io.iRespValid.expect(false.B)
+      dut.io.iRespReady.poke(true.B)
+      sendIRead(dut, nextAddr)
+      wait = 0
+      while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 40) {
+        dut.clock.step(); wait += 1
+      }
+      dut.io.axi.ar.data.arvalid.expect(true.B)
+      dut.io.axi.ar.data.araddr.expect(nextAddr.U)
+    }
+  }
+  it should "keep a new owner active when the prior normal MSHR cleans up" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val oldAddr = BigInt("82100000", 16)
+      val targetAddr = BigInt("82100140", 16)
+
+      dut.io.iRespReady.poke(false.B)
+      sendIRead(dut, oldAddr)
+      var wait = 0
+      while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 40) {
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.axi.ar.data.arvalid.expect(true.B)
+      dut.io.axi.ar.data.araddr.expect(oldAddr.U)
+      dut.io.axi.ar.arready.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.ar.arready.poke(false.B)
+
+      for (beat <- 0 until 16) {
+        dut.io.axi.r.data.rvalid.poke(true.B)
+        dut.io.axi.r.data.rdata.poke((0x56000000L + beat).U)
+        dut.io.axi.r.data.rlast.poke((beat == 15).B)
+        dut.io.axi.r.rready.expect(true.B)
+        dut.clock.step()
+      }
+      dut.io.axi.r.data.rvalid.poke(false.B)
+      dut.io.axi.r.data.rlast.poke(false.B)
+
+      dut.io.iRespReady.poke(true.B)
+      var consumed = 0
+      while (consumed < 15) {
+        if (dut.io.iRespValid.peek().litToBoolean) {
+          dut.io.iRespLast.expect(false.B)
+          consumed += 1
+        }
+        dut.clock.step()
+      }
+      wait = 0
+      while (!dut.io.iRespValid.peek().litToBoolean && wait < 40) {
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.iRespValid.expect(true.B)
+      dut.io.iRespLast.expect(true.B)
+
+      // Capture the next miss on the old request's accepted last response.
+      dut.io.iReq.valid.poke(true.B)
+      dut.io.iReq.bits.addr.poke(targetAddr.U)
+      dut.io.iReq.bits.uncache.poke(false.B)
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+
+      // On this edge the new lookup is accepted while the prior MSHR cleans up.
+      // Cancelling immediately afterwards must still target the new owner.
+      dut.clock.step()
+      dut.io.iCancel.poke(true.B)
+      dut.clock.step()
+      dut.io.iCancel.poke(false.B)
+
+      wait = 0
+      while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 40) {
+        dut.io.iRespValid.expect(false.B)
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.axi.ar.data.arvalid.expect(true.B)
+      dut.io.axi.ar.data.araddr.expect(targetAddr.U)
+      dut.io.axi.ar.arready.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.ar.arready.poke(false.B)
+      for (beat <- 0 until 16) {
+        dut.io.axi.r.data.rvalid.poke(true.B)
+        dut.io.axi.r.data.rdata.poke((0x57000000L + beat).U)
+        dut.io.axi.r.data.rlast.poke((beat == 15).B)
+        dut.io.axi.r.rready.expect(true.B)
+        dut.io.iRespValid.expect(false.B)
+        dut.clock.step()
+      }
+      dut.io.axi.r.data.rvalid.poke(false.B)
+      dut.io.axi.r.data.rlast.poke(false.B)
+      for (_ <- 0 until 20) {
+        dut.io.iRespValid.expect(false.B)
+        dut.clock.step()
+      }
+    }
   }
 
   it should "accept a putLine into the D STB and return it as one full line" in {
@@ -251,8 +454,23 @@ class L2CacheSpec
       dut.io.iReq.bits.addr.poke(BigInt("80002000", 16).U)
       dut.io.iReq.bits.size.poke(2.U)
       dut.io.iReq.bits.uncache.poke(false.B)
-      for (_ <- 0 until 4) {
+      // Wait for the first request to leave the boundary entry, then queue
+      // one later request. It must not pass the outstanding uncache.
+      var entryWait = 0
+      while (!dut.io.iReq.ready.peek().litToBoolean && entryWait < 8) {
+        dut.clock.step()
+        entryWait += 1
+      }
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+      for (_ <- 0 until 3) {
         dut.io.iReq.ready.expect(false.B)
+        // The outstanding uncache may hold ARVALID; the queued cacheable line
+        // must not replace or bypass it.
+        if (dut.io.axi.ar.data.arvalid.peek().litToBoolean) {
+          dut.io.axi.ar.data.araddr.expect(BigInt("1c00102c", 16).U)
+        }
         dut.clock.step()
       }
     }
@@ -277,81 +495,56 @@ class L2CacheSpec
       dut.io.iReq.bits.uncache.poke(false.B)
 
       dut.io.dWriteReqReady.expect(true.B)
-      dut.io.iReq.ready.expect(false.B)
+      // The write keeps exclusive internal admission; I may only enter its
+      // boundary register and cannot issue a cacheable lookup yet.
+      dut.io.iReq.ready.expect(true.B)
       dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
       dut.io.dWriteReqValid.poke(false.B)
       for (_ <- 0 until 3) {
         dut.io.iReq.ready.expect(false.B)
+        dut.io.axi.ar.data.arvalid.expect(false.B)
         dut.clock.step()
       }
     }
   }
-  it should "release one of four completed MSHRs while a fifth miss waits at lookup result" in {
+  it should "hold a new I miss in the entry while a cancelled miss drains" in {
     test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
       resetDut(dut)
-      dut.io.iRespReady.poke(false.B)
-      val addresses = (0 until 5).map(i => BigInt("82000000", 16) + i * 0x40)
+      val staleAddr = BigInt("82000000", 16)
+      val targetAddr = BigInt("82000140", 16)
 
-      val fillWords = (0 until 16).map(i => BigInt(0x55000000L + i))
-      for (addr <- addresses.take(4)) {
-        sendIRead(dut, addr)
-        var wait = 0
-        while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 40) {
-          dut.clock.step()
-          wait += 1
-        }
-        withClue(s"miss 0x${addr.toString(16)} did not issue") {
-          dut.io.axi.ar.data.arvalid.peek().litToBoolean shouldBe true
-        }
-        dut.io.axi.ar.data.araddr.expect(addr.U)
-        dut.io.axi.ar.arready.poke(true.B)
+      sendIRead(dut, staleAddr)
+      var wait = 0
+      while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 40) {
         dut.clock.step()
-        dut.io.axi.ar.arready.poke(false.B)
+        wait += 1
+      }
+      dut.io.axi.ar.data.arvalid.expect(true.B)
+      dut.io.axi.ar.data.araddr.expect(staleAddr.U)
+      dut.io.axi.ar.arready.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.ar.arready.poke(false.B)
 
-        for (beat <- 0 until 16) {
-          dut.io.axi.r.data.rvalid.poke(true.B)
-          dut.io.axi.r.data.rdata.poke((fillWords(beat) + (addr & 0xff)).U)
-          dut.io.axi.r.data.rlast.poke((beat == 15).B)
-          dut.io.axi.r.rready.expect(true.B)
-          dut.clock.step()
-        }
-        dut.io.axi.r.data.rvalid.poke(false.B)
-        dut.io.axi.r.data.rlast.poke(false.B)
+      dut.io.iCancel.poke(true.B)
+      dut.clock.step()
+      dut.io.iCancel.poke(false.B)
+
+      // The redirected target may enter the one-entry boundary immediately.
+      dut.io.iReq.valid.poke(true.B)
+      dut.io.iReq.bits.addr.poke(targetAddr.U)
+      dut.io.iReq.bits.uncache.poke(false.B)
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+
+      // The stale DDR transaction is still outstanding. The target request
+      // must remain queued: no lookup consumption, second AR, or response.
+      for (_ <- 0 until 8) {
+        dut.io.iReq.ready.expect(false.B)
+        dut.io.axi.ar.data.arvalid.expect(false.B)
+        dut.io.iRespValid.expect(false.B)
         dut.clock.step()
-      }
-
-      sendIRead(dut, addresses(4))
-      dut.clock.step(5)
-      dut.io.axi.ar.data.arvalid.expect(false.B)
-
-      dut.io.iRespReady.poke(true.B)
-      var responseBeats = 0
-      var cycles = 0
-      while (responseBeats < 16 && cycles < 80) {
-        if (dut.io.iRespValid.peek().litToBoolean) {
-          dut.io.iRespWords(0).expect(fillWords(responseBeats).U)
-          responseBeats += 1
-        }
-        dut.clock.step()
-        cycles += 1
-      }
-      withClue("the fifth lookup result must not block completed MSHR response beats") {
-        responseBeats shouldBe 16
-      }
-
-      var fifthIssued = false
-      cycles = 0
-      while (!fifthIssued && cycles < 80) {
-        if (dut.io.axi.ar.data.arvalid.peek().litToBoolean) {
-          dut.io.axi.ar.data.araddr.expect(addresses(4).U)
-          fifthIssued = true
-        } else {
-          dut.clock.step()
-        }
-        cycles += 1
-      }
-      withClue("the fifth miss must issue after the completed MSHR releases") {
-        fifthIssued shouldBe true
       }
     }
   }
@@ -418,10 +611,17 @@ class L2CacheSpec
       dut.io.iReq.valid.poke(true.B)
       dut.io.iReq.bits.addr.poke(uncacheAddr.U)
       dut.io.iReq.bits.uncache.poke(true.B)
+
+      // Capture the uncache into the registered I boundary first. Requiring
+      // its raw bits to block D in this same cycle would recreate the path we
+      // are deliberately cutting.
+      dut.io.iReq.ready.expect(true.B)
+      dut.clock.step()
+      dut.io.iReq.valid.poke(false.B)
+
       dut.io.dReadReq.valid.poke(true.B)
       dut.io.dReadReq.bits.addr.poke(blockedLine.U)
       dut.io.dReadReq.bits.uncache.poke(false.B)
-
       dut.io.iReq.ready.expect(false.B)
       dut.io.dReadReq.ready.expect(false.B)
       dut.io.dReadReq.valid.poke(false.B)
@@ -447,16 +647,15 @@ class L2CacheSpec
       dut.io.axi.r.data.rvalid.poke(false.B)
       dut.io.axi.r.data.rlast.poke(false.B)
 
-      var uncacheAccepted = false
       wait = 0
-      while (!uncacheAccepted && wait < 100) {
-        uncacheAccepted = dut.io.iReq.ready.peek().litToBoolean
+      while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 100) {
         dut.clock.step()
         wait += 1
       }
-      withClue("waiting uncache must be admitted after old cache work drains") {
-        uncacheAccepted shouldBe true
+      withClue("queued uncache must issue after old cache work drains") {
+        dut.io.axi.ar.data.arvalid.peek().litToBoolean shouldBe true
       }
+      dut.io.axi.ar.data.araddr.expect(uncacheAddr.U)
     }
   }
 

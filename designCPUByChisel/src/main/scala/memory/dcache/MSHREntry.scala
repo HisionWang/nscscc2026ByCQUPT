@@ -151,6 +151,7 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
     state := sUcDone
   }
 
+  io.l2.read.cancel := false.B
   io.l2.read.req.valid := state === sReadReq || state === sUcReadReq
   io.l2.read.req.bits.id := io.id
   io.l2.read.req.bits.addr := Mux(state === sUcReadReq, reqPaddr, refillAddr)

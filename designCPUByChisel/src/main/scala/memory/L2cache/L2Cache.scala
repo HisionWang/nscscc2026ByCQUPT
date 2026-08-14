@@ -57,6 +57,14 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   io.maintenance.done.valid := false.B
   io.maintenance.done.bits.done := false.B
 
+  // ICache request boundary: no combinational bypass into L2.
+  val iReqEntryValid = RegInit(false.B)
+  val iReqEntryBits = RegInit(0.U.asTypeOf(new L2ReadReq(1)))
+  val iActive = RegInit(false.B)
+  val iActiveMshr = RegInit(0.U(l2MshrIdBits.W))
+  val iActiveHasMshr = RegInit(false.B)
+  val iKilled = RegInit(false.B)
+
   val iLrbValid = RegInit(false.B)
   val iLrbBits = Reg(new L2ReadResp(1))
   val iLrbFromMshr = RegInit(false.B)
@@ -69,7 +77,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val dLrbFromUncache = RegInit(false.B)
   val dLrbMshr = RegInit(0.U(l2MshrIdBits.W))
 
-  io.icache.resp.valid := iLrbValid
+  io.icache.resp.valid := iLrbValid && !iKilled && !io.icache.cancel
   io.icache.resp.bits := iLrbBits
   io.dcache.read.resp.valid := dLrbValid
   io.dcache.read.resp.bits := dLrbBits
@@ -201,7 +209,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val headStbForwardSlot = PriorityEncoder(headStbMatchVec)
   val headNeedsEb = !head.hit && head.oldValid && head.oldDirty
 
-  val headPortReady = Mux(head.token.source === L2PortSource.dcache, dLrbReady, iLrbReady)
+  val headPortReady = Mux(head.token.source === L2PortSource.dcache, dLrbReady, iLrbReady || iKilled)
   val headReadCanProcess = Mux(
     headHasStbForward || head.hit,
     headPortReady,
@@ -214,8 +222,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   val resultReadResponse = resultCanProcess && !head.token.isStb &&
     (headHasStbForward || head.hit)
-  val resultToI = resultReadResponse && head.token.source === L2PortSource.icache
+  val resultToI = resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !io.icache.cancel
   val resultToD = resultReadResponse && head.token.source === L2PortSource.dcache
+  val killedIResult = resultCanProcess && !head.token.isStb &&
+    head.token.source === L2PortSource.icache && (iKilled || io.icache.cancel)
   val resultResponseData = Mux(headHasStbForward, stbData(headStbForwardSlot), head.oldData)
 
   // Array只有一个整行写口：fill安装优先，其次处理lookup结果。
@@ -301,6 +311,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       mshrInstalled(slot) := false.B
       mshrResponseQueued(slot) := false.B
       mshrResponseAck(slot) := false.B
+      when(head.token.source === L2PortSource.icache) {
+        iActiveMshr := slot
+        iActiveHasMshr := true.B
+      }
       for (beat <- 0 until l2BurstBeats) {
         lfbBeatValid(slot)(beat) := false.B
       }
@@ -317,10 +331,17 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     }
   }
 
+  // Killed lookup hits/forwards have no lower transaction to drain.
+  when(killedIResult && (head.hit || headHasStbForward)) {
+    iActive := false.B
+    iKilled := false.B
+    iActiveHasMshr := false.B
+  }
+
   // STB/lookup/active miss CAM在接收请求前完成。
-  val iReqSet = io.icache.req.bits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+  val iReqSet = iReqEntryBits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
   val dReqSet = io.dcache.read.req.bits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
-  val iReqBlock = io.icache.req.bits.addr(XLEN - 1, l2BlockOffBits)
+  val iReqBlock = iReqEntryBits.addr(XLEN - 1, l2BlockOffBits)
   val dReqBlock = io.dcache.read.req.bits.addr(XLEN - 1, l2BlockOffBits)
   val iMshrConflict = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
     mshrAddr(i)(XLEN - 1, l2BlockOffBits) === iReqBlock)).asUInt.orR
@@ -343,7 +364,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val uncacheWrite = io.dcache.write.req.bits.kind === L2WriteKind.uncache
   // uncache一旦等待排空，就停止接收新的cacheable请求，避免被持续流量饿死。
   val uncacheBusy = ucReadValid || ucWriteValid
-  val iUncacheReadWantsDrain = io.icache.req.valid && io.icache.req.bits.uncache
+  val iUncacheReadWantsDrain = iReqEntryValid && iReqEntryBits.uncache
   val dUncacheReadWantsDrain = io.dcache.read.req.valid && io.dcache.read.req.bits.uncache
   val dUncacheWriteWantsDrain = io.dcache.write.req.valid && uncacheWrite
   val uncacheWantsDrain = iUncacheReadWantsDrain || dUncacheReadWantsDrain ||
@@ -355,14 +376,14 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val dUncacheCanHandle = dUncacheReadWantsDrain && allCacheWorkDrained &&
     !dUncacheWriteWantsDrain && !iUncacheReadWantsDrain
 
-  val iCacheEligible = !io.icache.req.bits.uncache && lookupHasCredit &&
+  val iCacheEligible = !iReqEntryBits.uncache && lookupHasCredit &&
     !uncacheBusy && !uncacheWantsDrain && !lookupSetBusy(iReqSet) && !iMshrConflict && !iMshrSetConflict && !iEbConflict &&
     (!array.io.write.valid || array.io.write.bits.set =/= iReqSet)
   val dCacheEligible = !io.dcache.read.req.bits.uncache && lookupHasCredit &&
     !uncacheBusy && !uncacheWantsDrain && !lookupSetBusy(dReqSet) && !dMshrConflict && !dMshrSetConflict && !dEbConflict &&
     (!array.io.write.valid || array.io.write.bits.set =/= dReqSet)
-  val iReadCanHandle = io.icache.req.valid && Mux(io.icache.req.bits.uncache,
-    iUncacheCanHandle, iCacheEligible)
+  val iReadCanHandle = iReqEntryValid && !iActive && Mux(iReqEntryBits.uncache,
+    iUncacheCanHandle, iCacheEligible) && !io.icache.cancel
   val dReadCanHandle = io.dcache.read.req.valid && Mux(io.dcache.read.req.bits.uncache,
     dUncacheCanHandle, dCacheEligible)
 
@@ -384,7 +405,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val chooseStbLookup = hasStbLookup && (!readWantsLookup || preferStb)
   val chooseI = !chooseStbLookup && iReadCanHandle && (!dReadCanHandle || !preferD)
   val chooseD = !chooseStbLookup && dReadCanHandle && (!iReadCanHandle || preferD)
-  val chosenUncache = (chooseI && io.icache.req.bits.uncache) ||
+  val chosenUncache = (chooseI && iReqEntryBits.uncache) ||
     (chooseD && io.dcache.read.req.bits.uncache)
 
   array.io.read.req.valid := (chooseI || chooseD) && !chosenUncache || chooseStbLookup
@@ -392,16 +413,56 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     stbAddr(stbLookupSlot)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits),
     Mux(chooseD, dReqSet, iReqSet))
   lookupToken.source := Mux(chooseD, L2PortSource.dcache, L2PortSource.icache)
-  lookupToken.id := Mux(chooseD, io.dcache.read.req.bits.id, io.icache.req.bits.id)
+  lookupToken.id := Mux(chooseD, io.dcache.read.req.bits.id, iReqEntryBits.id)
   lookupToken.addr := Mux(chooseStbLookup, stbAddr(stbLookupSlot),
-    Mux(chooseD, io.dcache.read.req.bits.addr, io.icache.req.bits.addr))
+    Mux(chooseD, io.dcache.read.req.bits.addr, iReqEntryBits.addr))
   lookupToken.isStb := chooseStbLookup
   lookupToken.stbSlot := stbLookupSlot
 
-  io.icache.req.ready := array.io.initDone && chooseI &&
-    Mux(chosenUncache, true.B, array.io.read.req.ready)
+  // Entry-only ready cuts the ICache -> L2 arbitration/CAM path.
+  io.icache.req.ready := array.io.initDone && !iReqEntryValid && !io.icache.cancel
   io.dcache.read.req.ready := array.io.initDone && chooseD &&
     Mux(chosenUncache, true.B, array.io.read.req.ready)
+
+  val iInternalAccept = chooseI && Mux(chosenUncache, true.B, array.io.read.req.fire)
+  when(io.icache.req.fire) {
+    iReqEntryBits := io.icache.req.bits
+    iReqEntryValid := true.B
+  }
+  when(iInternalAccept) {
+    iReqEntryValid := false.B
+    iActive := true.B
+    iKilled := false.B
+    iActiveHasMshr := false.B
+  }
+  // Cancel wins over same-cycle capture, issue, and response.
+  when(io.icache.cancel) {
+    iReqEntryValid := false.B
+    when(iActive || iInternalAccept) { iKilled := true.B }
+    // A same-cycle killed lookup hit/forward has no lower transaction to drain.
+    when(killedIResult && (head.hit || headHasStbForward)) {
+      iActive := false.B
+      iKilled := false.B
+      iActiveHasMshr := false.B
+    }
+    when(iLrbValid) {
+      when(iLrbFromUncache) {
+        ucReadValid := false.B
+        iActive := false.B
+        iKilled := false.B
+        iActiveHasMshr := false.B
+      }.elsewhen(!iLrbFromMshr) {
+        // A buffered hit/forward has no lower transaction left to drain.
+        iActive := false.B
+        iKilled := false.B
+        iActiveHasMshr := false.B
+      }.elsewhen(iLrbBits.last) {
+        // The final MSHR response was queued already; acknowledge it internally.
+        mshrResponseAck(iLrbMshr) := true.B
+      }
+    }
+    iLrbValid := false.B
+  }
 
   when(array.io.read.req.fire) {
     lookupSetBusy(array.io.read.req.bits.set) := true.B
@@ -410,16 +471,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       stbLookupIssued(stbLookupSlot) := true.B
     }
   }
-  when(io.icache.req.fire || io.dcache.read.req.fire) {
-    preferD := io.icache.req.fire
+  when(iInternalAccept || io.dcache.read.req.fire) {
+    preferD := iInternalAccept
   }
-  when(io.icache.req.fire && io.icache.req.bits.uncache) {
+  when(iInternalAccept && iReqEntryBits.uncache) {
     ucReadValid := true.B
     ucReadIssued := false.B
     ucReadSource := L2PortSource.icache
-    ucReadId := io.icache.req.bits.id
-    ucReadAddr := io.icache.req.bits.addr
-    ucReadSize := io.icache.req.bits.size
+    ucReadId := iReqEntryBits.id
+    ucReadAddr := iReqEntryBits.addr
+    ucReadSize := iReqEntryBits.size
   }.elsewhen(io.dcache.read.req.fire && io.dcache.read.req.bits.uncache) {
     ucReadValid := true.B
     ucReadIssued := false.B
@@ -563,7 +624,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   val bridgeBeatIsMshr = bridge.io.client.read.beat.bits.owner.source === L2BridgeReadOwner.mshr
   val bridgeBeatIsUc = bridge.io.client.read.beat.bits.owner.source === L2BridgeReadOwner.uncache
-  val ucBeatPortReady = Mux(ucReadSource === L2PortSource.dcache, dLrbReady, iLrbReady)
+  val ucBeatPortReady = Mux(ucReadSource === L2PortSource.dcache, dLrbReady, iLrbReady || iKilled || io.icache.cancel)
   val ucBeatBlockedByResult = Mux(ucReadSource === L2PortSource.dcache,
     resultToD, resultToI)
   bridge.io.client.read.beat.ready := Mux(bridgeBeatIsMshr, true.B,
@@ -593,11 +654,34 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val hasDSend = dSendVec.asUInt.orR
   val iSendMshr = PriorityEncoder(iSendVec)
   val dSendMshr = PriorityEncoder(dSendVec)
-  val iMshrLoad = !resultToI && hasISend && iLrbReady &&
+  val iMshrLoad = !iKilled && !io.icache.cancel && !resultToI && hasISend && iLrbReady &&
     !(bridge.io.client.read.beat.valid && bridgeBeatIsUc && ucReadSource === L2PortSource.icache)
   val dMshrLoad = !resultToD && hasDSend && dLrbReady &&
     !(bridge.io.client.read.beat.valid && bridgeBeatIsUc && ucReadSource === L2PortSource.dcache)
   val ucBeatLoad = bridge.io.client.read.beat.fire && bridgeBeatIsUc
+  val killedUcBeat = ucBeatLoad && ucReadSource === L2PortSource.icache && (iKilled || io.icache.cancel)
+  val killedMshrCanAdvance = iKilled && iActiveHasMshr && mshrValid(iActiveMshr) &&
+    mshrSource(iActiveMshr) === L2PortSource.icache && !mshrResponseQueued(iActiveMshr) &&
+    lfbBeatValid(iActiveMshr)(mshrSendBeat(iActiveMshr))
+  val killedMshrSlot = iActiveMshr
+  val killedMshrBeat = mshrSendBeat(killedMshrSlot)
+
+  // A killed I miss is consumed internally; DDR refill/install is retained in L2.
+  when(killedMshrCanAdvance) {
+    lfbBeatValid(killedMshrSlot)(killedMshrBeat) := false.B
+    when(killedMshrBeat === (l2BurstBeats - 1).U) {
+      mshrResponseQueued(killedMshrSlot) := true.B
+      mshrResponseAck(killedMshrSlot) := true.B
+    }.otherwise {
+      mshrSendBeat(killedMshrSlot) := killedMshrBeat + 1.U
+    }
+  }
+  when(killedUcBeat && bridge.io.client.read.beat.bits.last) {
+    ucReadValid := false.B
+    iActive := false.B
+    iKilled := false.B
+    iActiveHasMshr := false.B
+  }
 
   when(io.icache.resp.fire) {
     iLrbValid := false.B
@@ -608,6 +692,12 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       ucReadValid := false.B
     }
   }
+  when(io.icache.resp.fire && iLrbBits.last) {
+    iActive := false.B
+    iKilled := false.B
+    iActiveHasMshr := false.B
+  }
+
   when(io.dcache.read.resp.fire) {
     dLrbValid := false.B
     when(dLrbFromMshr && dLrbBits.last) {
@@ -618,7 +708,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     }
   }
 
-  when(ucBeatLoad && ucReadSource === L2PortSource.icache) {
+  when(ucBeatLoad && ucReadSource === L2PortSource.icache && !iKilled && !io.icache.cancel) {
     iLrbValid := true.B
     iLrbBits.id := ucReadId
     iLrbBits.data := Cat(0.U((l2LineBits - XLEN).W), bridge.io.client.read.beat.bits.data)
@@ -626,7 +716,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iLrbBits.last := bridge.io.client.read.beat.bits.last
     iLrbFromMshr := false.B
     iLrbFromUncache := true.B
-  }.elsewhen(resultReadResponse && head.token.source === L2PortSource.icache) {
+  }.elsewhen(resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !io.icache.cancel) {
     iLrbValid := true.B
     iLrbBits.id := head.token.id
     iLrbBits.data := resultResponseData
@@ -727,6 +817,14 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   for (i <- 0 until l2MshrEntries) {
     when(mshrValid(i) && mshrInstalled(i) && mshrResponseAck(i)) {
       mshrValid(i) := false.B
+      // Normal I misses release ownership on the accepted last response beat.
+      // Only the exact cancelled owner may release it from MSHR cleanup.
+      when(mshrSource(i) === L2PortSource.icache && iActive && iKilled &&
+        iActiveHasMshr && iActiveMshr === i.U) {
+        iActive := false.B
+        iKilled := false.B
+        iActiveHasMshr := false.B
+      }
     }
   }
 }
