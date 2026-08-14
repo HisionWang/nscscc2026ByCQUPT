@@ -108,7 +108,8 @@ object CoreGen extends App {
        |//        CommitWidth =  ${config(CoreConfigKeys.CommitWidth)}, 
        |//        LqSize      =  ${config(CoreConfigKeys.LqSize)}, 
        |//        SqSize      =  ${config(CoreConfigKeys.SqSize)}
-       |// IQ   : IQ1         =  ${config(CoreConfigKeys.IQ1Params).numEntries}, 
+       |// IQ   : LoadQVersion=  ${config(CoreConfigKeys.LoadQVersion)}, 
+       |//        IQ1         =  ${config(CoreConfigKeys.IQ1Params).numEntries}, 
        |//        IQ2         =  ${config(CoreConfigKeys.IQ2Params).numEntries}, 
        |//        IQ3         =  ${config(CoreConfigKeys.IQ3Params).numEntries}
        |//        IQ4         =  ${config(CoreConfigKeys.IQ4Params).numEntries}, 
