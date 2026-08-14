@@ -27,10 +27,10 @@ object CoreConfigKeys {
   //0:原始的 1:优化出wb的减一级流水 2:forward不再到req，而是到表项，缓解时序
   val LoadQVersion = new Field[Int](2)
 
-  val NWaysI = new Field[Int](8)
+  val NWaysI = new Field[Int](2)
   val NSetsI = new Field[Int](64)
-  val NWaysD = new Field[Int](4)
-  val NSetsD = new Field[Int](256)
+  val NWaysD = new Field[Int](2)
+  val NSetsD = new Field[Int](64)
   // L1 I/D Cache共用固定64B cache line，必须与L2一致。
   val BlockBytes = new Field[Int](64)
   val NMshrEntries = new Field[Int](2)
