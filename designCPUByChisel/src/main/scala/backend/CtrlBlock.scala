@@ -159,8 +159,7 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   disp2Rob.io.pause := redirectController.io.robRedirectPause // || rob.io.robRedirect.valid
 
   dispatchStage.io.dis2robHas := !disp2Rob.io.empty
-
- 
+  
   // ================================================================
   //  ROB
   // ================================================================
@@ -182,17 +181,6 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
 
   io.robHead := rob.io.head
 
-
- 
-  // ROB 提交信息 → 重命名级（释放旧物理寄存器 + 更新架构表）
-  //for (i <- 0 until CommitWidth) {
-  //  renameStage.io.commit(i).valid   := rob.io.commit.valid(i) && !rob.io.commit.isExcpCommit(i)
-  //  renameStage.io.commit(i).pdst    := rob.io.commit.bits(i).pdst
-  //  renameStage.io.commit(i).oldPdst := rob.io.commit.bits(i).oldPdst
-  //  renameStage.io.commit(i).ldst    := rob.io.commit.bits(i).ldst
-  //  renameStage.io.commit(i).rfWen   := rob.io.commit.bits(i).rfWen
-  //  renameStage.io.commit(i).isWalk  := rob.io.commit.isWalk
-  //}
   io.commitToSq             := rob.io.commitToSq
   
   //缓解时序~
