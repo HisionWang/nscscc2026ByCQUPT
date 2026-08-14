@@ -346,6 +346,44 @@ class L2UncacheCoherenceSpec
   }
 
 
+  private def sendIUncachedRead(dut: L2CacheTestHarness, addr: BigInt): Unit = {
+    dut.io.iReq.valid.poke(true.B)
+    dut.io.iReq.bits.id.poke(0.U)
+    dut.io.iReq.bits.addr.poke(addr.U)
+    dut.io.iReq.bits.size.poke(2.U)
+    dut.io.iReq.bits.uncache.poke(true.B)
+    var wait = 0
+    while (!dut.io.iReq.ready.peek().litToBoolean && wait < 80) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.iReq.ready.expect(true.B)
+    dut.clock.step()
+    dut.io.iReq.valid.poke(false.B)
+  }
+
+  private def completeCleanDUncachedReadNoWrite(
+      dut: L2CacheTestHarness, addr: BigInt): Unit = {
+    sendDRead(dut, addr, uncache = true)
+    var wait = 0
+    while (!dut.io.axi.ar.data.arvalid.peek().litToBoolean && wait < 80) {
+      dut.io.axi.aw.data.awvalid.expect(false.B)
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.axi.aw.data.awvalid.expect(false.B)
+    dut.io.axi.ar.data.araddr.expect(addr.U)
+    dut.io.axi.ar.data.arlen.expect(0.U)
+    completeRead(dut, Seq(BigInt("2468ace0", 16)))
+    while (!dut.io.dReadRespValid.peek().litToBoolean && wait < 120) {
+      dut.clock.step()
+      wait += 1
+    }
+    dut.io.dReadRespValid.expect(true.B)
+    dut.clock.step(3)
+  }
+
+
   it should "probe and invalidate a clean hit before an uncached read" in {
     test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
       resetDut(dut)
@@ -410,6 +448,58 @@ class L2UncacheCoherenceSpec
       completeDirtyWriteback(dut, target, words)
       completeRawWriteAfterWriteback(dut, target + 3)
       requireDdrMiss(dut, target)
+    }
+  }
+
+
+  it should "rearm dirty and clean uncached D reads without a second line writeback" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val dirty = BigInt("80024000", 16)
+      val clean = BigInt("80028000", 16)
+      val words = (0 until burstBeats).map(i => BigInt(0x74000000L + i))
+      installDirtyLine(dut, dirty, words)
+      fillCleanLine(dut, clean)
+      dut.io.dReadRespReady.poke(false.B)
+      sendDRead(dut, dirty + 4, uncache = true)
+      completeDirtyWriteback(dut, dirty, words)
+      completeRawReadAfterWriteback(dut, dirty + 4)
+      completeCleanDUncachedReadNoWrite(dut, clean + 4)
+      requireDdrMiss(dut, clean)
+    }
+  }
+
+  it should "drain a cancelled I uncached owner before the next D uncached probe" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val first = BigInt("8002c000", 16)
+      val next = BigInt("80030000", 16)
+      fillCleanLine(dut, first)
+      fillCleanLine(dut, next)
+      sendIUncachedRead(dut, first + 4)
+      waitForAr(dut)
+      dut.io.axi.ar.data.araddr.expect((first + 4).U)
+      dut.io.iCancel.poke(true.B)
+      dut.clock.step()
+      dut.io.iCancel.poke(false.B)
+      dut.io.iRespValid.expect(false.B)
+      dut.io.axi.ar.arready.poke(true.B)
+      dut.clock.step()
+      dut.io.axi.ar.arready.poke(false.B)
+      dut.io.axi.r.data.rvalid.poke(true.B)
+      dut.io.axi.r.data.rdata.poke("h13579bdf".U)
+      dut.io.axi.r.data.rlast.poke(true.B)
+      dut.io.axi.r.rready.expect(true.B)
+      dut.io.iRespValid.expect(false.B)
+      dut.clock.step()
+      dut.io.axi.r.data.rvalid.poke(false.B)
+      dut.io.axi.r.data.rlast.poke(false.B)
+      for (_ <- 0 until 6) {
+        dut.io.iRespValid.expect(false.B)
+        dut.clock.step()
+      }
+      completeCleanDUncachedReadNoWrite(dut, next + 4)
+      requireDdrMiss(dut, next)
     }
   }
 
