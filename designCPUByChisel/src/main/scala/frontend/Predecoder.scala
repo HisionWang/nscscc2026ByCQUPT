@@ -8,24 +8,7 @@ import nscscc.mmu._
 import nscscc.config.NSModule
 import nscscc.config.NSBundle
 import nscscc.frontend.icache._
- /*
- 1.检测当前携带过来的bpu信息中预测结果是否为跳转。
-   1.1 如果预测不跳转：那就检测有效指令中是否有B和Bl两类强跳转：进行判断
-         1.1.1 如果没有强跳转：那就放行每一条有效指令，并为每一条指令携带上不跳转的BPU信息供后端核验
-         1.1.2 如果有强跳转：  遇到错误，a：截断第一条强跳转后续的指令，保留的指令携带不跳转的BPU信息发往后端 b：发起前端重定向，纠正取指方向为强跳转＋4 c：发去这条强跳转指令的更新bpu的数据
-   1.2 如果预测的是跳转：那么首先要做的事就是把这条跳转的指令后续指令都剔除不有效，然后再检测这条预测为指令的前方是否有b或者bl指令：进行判断
-         1.2.1 如果预测为跳转的这条指令前方有b或者bl ：遇到错误， a：截断第一条强跳转后续的指令，保留的指令携带不跳转的BPU信息发往后端  b：发起前端重定向，纠正取指方向为强跳转＋4 c:发去这条强跳转指令的更新bpu的数据（非预测的那条指令）
-         1.2.2 如果预测为跳转的这条指令前方没有B或者bl：那就检测携带了跳转信息这条指令是否为跳转指令（包括b、bl以及条件跳转等所有跳转指令）：进行判断：
-                  1.2.2.1 如果这条指令是跳转指令：判断是否为强跳转指令：
-                                      1.2.2.1.1 如果是强跳转指令：判断是否预测跳转目标是否正确：
-                                                            1.2.2.1.1.1：强跳转预测目标正确：a：该指令后续指令都无效，b：该指令携带他的跳转信息发往后端  c：该指令前序指令均携带不跳转的信息发往后端  d：更新BPU计数器
-                                                            1.2.2.1.1.2：强跳转预测目标错误：a：该指令后续指令都无效，b：该指令携带他的跳转信息发往后端  c：该指令前序指令均携带不跳转的信息发往后端  d：发起前端重定向，纠正取指方向为强跳转目标 e：更新BPU数据
-                                      1.2.2.1.2 如果不是强跳转指令，也就是为其他跳转指令（包括jirl）：a：该指令后续指令都无效，b：该指令携带他的跳转信息发往后端  c：该指令前序指令均携带不跳转的信息发往后端 不更新bpu
-                  1.2.2.2 如果这条指令不是跳转指令，遇到错误： a：该指令后续指令都无效  b：该指令前序指令均携带不跳转的信息发往后端  c：发起重定向，目标为该指令+4 （虽然该指令后续的pc+4可能就在此周期的预译码，但为了控制简单，此处还是截断+重定向下一pc的方式处理）       d：修正BPU数据，判不valid
- 
- 
- 
- */
+
 class Predecoder(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val flush         = Input(Bool())
@@ -72,26 +55,19 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   // ================================================================
   // 第二部分：组合逻辑 —— 预译码与校验
   // ================================================================
-  // 模块职责（仅此三项）：
-  //   1. 检测 B/BL 强跳转的预测错误并纠正
-  //   2. 检测非跳转指令被预测为跳转并重定向
-  //   3. 为每条指令生成独立的 BPU 信息供后端核验
-  // 注意：call/ret 等操作已全部剔除
-  // ================================================================
  
   // ---- Step 1: 逐条指令基础预译码（纯组合，每信号赋值一次） ----
- 
   val pc         = Wire(Vec(fetchWidth, UInt(32.W)))
-  val isJalInst  = Wire(Vec(fetchWidth, Bool()))   // B || BL（强跳转）
-  val isJirlInst = Wire(Vec(fetchWidth, Bool()))   // JIRL（间接跳转）
-  val isBrInst   = Wire(Vec(fetchWidth, Bool()))   // 条件分支 beq/bne/blt/bge/bltu/bgeu
-  val isCfiInst  = Wire(Vec(fetchWidth, Bool()))   // 任意控制流指令
-  val jalTgt     = Wire(Vec(fetchWidth, UInt(32.W)))  // B/BL 跳转目标（仅 B/BL 有意义）
+  val isJalInst  = Wire(Vec(fetchWidth, Bool()))   
+  val isJirlInst = Wire(Vec(fetchWidth, Bool()))   
+  val isBrInst   = Wire(Vec(fetchWidth, Bool()))   
+  val isCfiInst  = Wire(Vec(fetchWidth, Bool()))   
+  val jalTgt     = Wire(Vec(fetchWidth, UInt(32.W)))  
  
   for (i <- 0 until fetchWidth) {
     val instr  = s_instrs(i)
     val opcode = instr(31, 26)
-    val v      = s_valids(i)   // 仅有效指令参与后续计算
+    val v      = s_valids(i)
  
     pc(i)         := s_addr + (i * 4).U
     isJalInst(i)  := v && (opcode === LoongArch32Opcodes.OPC_B || opcode === LoongArch32Opcodes.OPC_BL)
@@ -99,14 +75,12 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     isBrInst(i)   := v && LoongArch32Opcodes.isBranchOpcode(opcode)
     isCfiInst(i)  := isJalInst(i) || isJirlInst(i) || isBrInst(i)
  
-    // B/BL 跳转目标：26位偏移符号扩展 << 2 + PC
     val offs26        = Cat(instr(9, 0), instr(25, 10))
     val jalOffsetSext = Cat(Fill(4, Cat(offs26, 0.U(2.W))(27)), Cat(offs26, 0.U(2.W)))
     jalTgt(i)        := Mux(v, pc(i) + jalOffsetSext, 0.U)
   }
  
   // ---- Step 2: 前缀扫描找第一条强跳转 (B/BL) ----
- 
   val priorJal = Wire(Vec(fetchWidth + 1, Bool()))
   priorJal(0)  := false.B
   for (i <- 0 until fetchWidth) {
@@ -124,35 +98,22 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   val firstJalPC     = MuxCase(0.U, (0 until fetchWidth).map(i => isFirstJal(i) -> pc(i)))
  
   // ---- Step 3: BPU 预测分解 ----
- 
   val predTaken  = s_bpu.taken
   val predIdx    = s_bpu.takenOffset
   val predTarget = s_bpu.target
  
-  // 预测跳转指令的属性（通过 MuxCase 从 per-instruction 信号中选取 predIdx 对应项）
   val predIsJal     = MuxCase(false.B, (0 until fetchWidth).map(i => (i.U === predIdx) -> isJalInst(i)))
   val predIsCfi     = MuxCase(false.B, (0 until fetchWidth).map(i => (i.U === predIdx) -> isCfiInst(i)))
   val predJalTarget = MuxCase(0.U,    (0 until fetchWidth).map(i => (i.U === predIdx) -> jalTgt(i)))
   val predPC        = MuxCase(0.U,    (0 until fetchWidth).map(i => (i.U === predIdx) -> pc(i)))
  
-  // 预测跳转位置之前是否存在强跳转
   val hasJalBeforePred = (0 until fetchWidth)
     .map(i => isJalInst(i) && i.U < predIdx)
     .reduce(_ || _)
  
-  // 强跳转预测目标是否正确
   val jalTargetCorrect = predIsJal && (predTarget === predJalTarget)
  
-  // ---- Step 4: 场景判定（决策树编码，MuxCase 单次赋值） ----
-  //
-  //   0: 预测不跳转，块内无强跳转                     → 放行            (1.1.1)
-  //   1: 预测不跳转，块内有强跳转                     → 重定向到强跳转目标 (1.1.2)
-  //   2: 预测跳转，跳转位置前有强跳转                  → 重定向到首条强跳转目标 (1.2.1)
-  //   3: 预测跳转，预测指令是强跳转且目标正确           → 无需重定向       (1.2.2.1.1.1)
-  //   4: 预测跳转，预测指令是强跳转但目标错误           → 重定向到正确目标  (1.2.2.1.1.2)
-  //   5: 预测跳转，预测指令是其他跳转(JIRL/条件分支)    → 无需重定向       (1.2.2.1.2)
-  //   6: 预测跳转，预测指令不是跳转指令                 → 重定向到PC+4     (1.2.2.2)
- 
+  // ---- Step 4: 场景判定 ----
   val scenario = MuxCase(0.U(3.W), Seq(
     (!predTaken && !hasJal)                                            -> 0.U,
     (!predTaken && hasJal)                                             -> 1.U,
@@ -163,26 +124,36 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     (predTaken && !hasJalBeforePred && !predIsCfi)                     -> 6.U
   ))
  
-  // ---- Step 5: 前端重定向 ----
- 
+  // ---- Step 5: 前端重定向（修改后加入打拍逻辑） ----
   val needRedirect = scenario === 1.U || scenario === 2.U ||
                      scenario === 4.U || scenario === 6.U || ( s_uncached && s_valid )
  
   val redirectTarget = MuxCase(0.U, Seq(
     ( s_uncached && s_valid && !isFirstJal(0)) -> (s_addr + 4.U),
     ( s_uncached && s_valid && isFirstJal(0)) -> firstJalTarget,
-
     (scenario === 1.U || scenario === 2.U) -> firstJalTarget,
     (scenario === 4.U)                     -> predJalTarget,
     (scenario === 6.U)                     -> (predPC + 4.U)
   ))
  
+  // 【修改逻辑】：注册一拍的重定向信号
+  val pendingRedirect = RegInit(false.B)
+  val pendingRedirectTarget = RegInit(0.U(32.W))
+
+  // 当指令成功发射(outFire)且需要重定向时，锁存信号并延迟一拍发出
+  when(outFire && needRedirect) {
+    pendingRedirect := true.B
+    pendingRedirectTarget := redirectTarget
+  } .elsewhen(pendingRedirect) {
+    // 脉冲一拍后自动清除
+    pendingRedirect := false.B
+  }
+ 
   val feRedirect = Wire(new FrontendRedirect)
-  feRedirect.valid  := outFire && needRedirect //必须要outfire的时候才能发起重定向，不然如果ibf满了的话，自己这周期的有效指令就被刷了
-  feRedirect.target := redirectTarget
+  feRedirect.valid  := pendingRedirect
+  feRedirect.target := pendingRedirectTarget
  
   // ---- Step 6: BPU 更新 ----
- 
   val needBpuUpdate = scenario === 1.U || scenario === 2.U ||
                       scenario === 3.U || scenario === 4.U || scenario === 6.U
  
@@ -210,13 +181,9 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   bpuUpdate.rasTop        := s_bpu.meta.rasTop
   bpuUpdate.oldPhtCounter := Mux(scenario === 1.U || scenario === 2.U, 0.U,
                                ( s_bpu.meta.phtCounter)
-                             )  // 场景3/4/6使用实际计数器
+                             )  
  
   // ---- Step 7: 入队掩码（截断逻辑） ----
-  // 场景 0: 不截断，全部放行
-  // 场景 1/2: 截断到 firstJalIdx（含），其后的指令无效
-  // 场景 3/4/5/6: 截断到 predIdx（含），其后的指令无效
- 
   val truncateIdx = MuxCase((fetchWidth - 1).U, Seq(
     (scenario === 1.U || scenario === 2.U) -> firstJalIdx,
     (scenario === 3.U || scenario === 4.U || scenario === 5.U || scenario === 6.U) -> predIdx
@@ -227,33 +194,26 @@ class Predecoder(implicit p: Parameters) extends NSModule {
     enqMask(i) := s_valids(i) && (i.U <= truncateIdx)
   }
  
-  // ---- Step 8: 逐条指令输出（独立 BPU 信息 + 预译码信息） ----
- 
+  // ---- Step 8: 逐条指令输出 ----
   val outPdInfo  = Wire(Vec(fetchWidth, new PredecodeInfo))
   val outBpuInfo = Wire(Vec(fetchWidth, new bpuInfoBundle))
  
   for (i <- 0 until fetchWidth) {
     val instr  = s_instrs(i)
     val opcode = instr(31, 26)
-    val v      = s_valids(i) && enqMask(i)   // 仅有效且未截断的指令
+    val v      = s_valids(i) && enqMask(i)   
  
-    // ---- 预译码信息 ----
     outPdInfo(i).valid      := v
     outPdInfo(i).isBr       := v && LoongArch32Opcodes.isBranchOpcode(opcode)
     outPdInfo(i).isJal      := v && (opcode === LoongArch32Opcodes.OPC_B || opcode === LoongArch32Opcodes.OPC_BL)
     outPdInfo(i).isJalr     := v && (opcode === LoongArch32Opcodes.OPC_JIRL)
-    outPdInfo(i).isCall     := false.B   // 已剔除
-    outPdInfo(i).isRet      := false.B   // 已剔除
+    outPdInfo(i).isCall     := false.B   
+    outPdInfo(i).isRet      := false.B   
     outPdInfo(i).jumpTarget := Mux(
       v && (opcode === LoongArch32Opcodes.OPC_B || opcode === LoongArch32Opcodes.OPC_BL),
       jalTgt(i), 0.U
     )
  
-    // ---- 逐条独立 BPU 信息 ----
-    // 判断该指令是否为"特殊指令"（需要携带跳转信息的指令）
-    //   场景 1/2: 第一条强跳转携带 taken=true
-    //   场景 3/4/5: 预测跳转指令携带 taken=true
-    //   其余: taken=false
     val isSpecialJal  = (scenario === 1.U || scenario === 2.U) && (i.U === firstJalIdx)
     val isSpecialPred = (scenario === 3.U || scenario === 4.U || scenario === 5.U) && (i.U === predIdx)
     val isSpecial     = isSpecialJal || isSpecialPred
@@ -273,7 +233,12 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   // 第三部分：输出
   // ================================================================
  
-  io.out.valid               := s_valid
+  //：如果当前周期正在发起打拍后的重定向(pendingRedirect)，
+  // 或者接收到了外部的 flush（包括后端的重定向），直接强制掩掉输出有效信号！
+  // 此机制完美阻断了错取数据进入 IBuffer，实现了预译码级内的“自我清洗”。
+  val isFlushed = io.flush || pendingRedirect
+  io.out.valid               := s_valid && !isFlushed
+
   io.out.bits.instrs         := s_instrs
   io.out.bits.instvalids     := s_valids
   io.out.bits.pcs            := pc
