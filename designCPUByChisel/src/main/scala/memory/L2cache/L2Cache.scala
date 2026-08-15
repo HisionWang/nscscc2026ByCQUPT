@@ -27,6 +27,7 @@ class L2LookupToken(implicit p: Parameters) extends NSBundle {
   val addr = UInt(XLEN.W)
   val isStb = Bool()
   val isUncacheProbe = Bool()
+  val cancelled = Bool()
   val stbSlot = UInt(log2Ceil(l2IStbEntries + l2DStbEntries).W)
 }
 
@@ -65,6 +66,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val iActiveMshr = RegInit(0.U(l2MshrIdBits.W))
   val iActiveHasMshr = RegInit(false.B)
   val iKilled = RegInit(false.B)
+  // Strict non-flowing D-side request boundaries. L2 internals never inspect
+  // raw DCache payloads or feed CAM/Array backpressure directly to DCache.
+  val dReqEntryValid = RegInit(false.B)
+  val dReqEntryBits = RegInit(0.U.asTypeOf(new L2ReadReq(1)))
+  val dWriteEntryValid = RegInit(false.B)
+  val dWriteEntryBits = RegInit(0.U.asTypeOf(new L2WriteReq(1)))
+  val iCancelPending = RegInit(false.B)
+  val iCancelClearEntry = RegInit(false.B)
+  val iCancelKillActive = RegInit(false.B)
+
 
   val iLrbValid = RegInit(false.B)
   val iLrbBits = Reg(new L2ReadResp(1))
@@ -78,13 +89,13 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val dLrbFromUncache = RegInit(false.B)
   val dLrbMshr = RegInit(0.U(l2MshrIdBits.W))
 
-  io.icache.resp.valid := iLrbValid && !iKilled && !io.icache.cancel
+  io.icache.resp.valid := iLrbValid && !iKilled && !iCancelPending
   io.icache.resp.bits := iLrbBits
   io.dcache.read.resp.valid := dLrbValid
   io.dcache.read.resp.bits := dLrbBits
 
-  val iLrbReady = !iLrbValid || io.icache.resp.ready
-  val dLrbReady = !dLrbValid || io.dcache.read.resp.ready
+  val iLrbReady = !iLrbValid
+  val dLrbReady = !dLrbValid
 
   // 4个MSHR各自拥有一个16拍LFB。
   val mshrValid = RegInit(VecInit(Seq.fill(l2MshrEntries)(false.B)))
@@ -222,18 +233,23 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     hasFreeMshr && !mshrSetVec.asUInt.orR && (!headNeedsEb || !ebValid)
   )
   val headStbCanProcess = (!headNeedsEb || !ebValid)
-  val resultCanProcess = resultQueue.io.deq.valid && !hasFillInstall &&
-    // Probe misses and clean hits need no EB; dirty hits wait until the exact line can be transferred into EB.
-    Mux(head.token.isUncacheProbe, !head.hit || !head.oldDirty || !ebValid,
-      Mux(head.token.isStb, headStbCanProcess, headReadCanProcess))
+  val cancelledLookupResult = resultQueue.io.deq.valid && head.token.cancelled &&
+    !hasFillInstall
+  val ucProbeResultCanProcess = resultQueue.io.deq.valid && head.token.isUncacheProbe &&
+    !hasFillInstall && (!head.hit || !head.oldDirty || !ebValid)
+  val demandResultCanProcess = resultQueue.io.deq.valid && !head.token.isUncacheProbe &&
+    !head.token.cancelled && !hasFillInstall &&
+    Mux(head.token.isStb, headStbCanProcess, headReadCanProcess)
+  val resultCanProcess = demandResultCanProcess || ucProbeResultCanProcess ||
+    cancelledLookupResult
   resultQueue.io.deq.ready := resultCanProcess
 
-  val resultReadResponse = resultCanProcess && !head.token.isStb && !head.token.isUncacheProbe &&
+  val resultReadResponse = demandResultCanProcess && !head.token.isStb &&
     (headHasStbForward || head.hit)
-  val resultToI = resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !io.icache.cancel
+  val resultToI = resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !iCancelPending
   val resultToD = resultReadResponse && head.token.source === L2PortSource.dcache
-  val killedIResult = resultCanProcess && !head.token.isStb && !head.token.isUncacheProbe &&
-    head.token.source === L2PortSource.icache && (iKilled || io.icache.cancel)
+  val killedIResult = demandResultCanProcess && !head.token.isStb &&
+    head.token.source === L2PortSource.icache && (iKilled || iCancelPending)
   val resultResponseData = Mux(headHasStbForward, stbData(headStbForwardSlot), head.oldData)
 
   // Array只有一个整行写口：fill安装优先，其次处理lookup结果。
@@ -254,7 +270,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     replacer.io.touch.valid := true.B
     replacer.io.touch.bits.set := array.io.write.bits.set
     replacer.io.touch.bits.way := array.io.write.bits.way
-  }.elsewhen(resultCanProcess && head.token.isStb) {
+  }.elsewhen(demandResultCanProcess && head.token.isStb) {
     val slot = head.token.stbSlot
     array.io.write.valid := true.B
     array.io.write.bits.set := stbAddr(slot)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
@@ -267,7 +283,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     replacer.io.touch.valid := true.B
     replacer.io.touch.bits.set := array.io.write.bits.set
     replacer.io.touch.bits.way := head.way
-  }.elsewhen(resultCanProcess && head.token.isUncacheProbe && head.hit) {
+  }.elsewhen(ucProbeResultCanProcess && head.hit) {
     array.io.write.valid := true.B
     array.io.write.bits.set := head.token.addr(
       l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
@@ -277,7 +293,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     array.io.write.bits.tag := head.oldTag
     array.io.write.bits.data := 0.U
     array.io.write.bits.dataWen := false.B
-  }.elsewhen(resultCanProcess && !head.token.isStb && !head.token.isUncacheProbe &&
+  }.elsewhen(demandResultCanProcess && !head.token.isStb &&
     !head.hit && !headHasStbForward) {
     // miss分配MSHR时先令victim无效，way由该MSHR独占。
     array.io.write.valid := true.B
@@ -300,7 +316,13 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   when(resultCanProcess) {
     lookupSetBusy(head.token.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)) := false.B
-    when(head.token.isUncacheProbe) {
+    when(head.token.cancelled) {
+      // The request reached only the registered lookup boundary. Drop it
+      // before allocating an MSHR or issuing DDR traffic.
+      iActive := false.B
+      iKilled := false.B
+      iActiveHasMshr := false.B
+    }.elsewhen(head.token.isUncacheProbe) {
       ucProbeInFlight := false.B
       when(!head.hit) {
         ucCoherenceReady := true.B
@@ -378,9 +400,9 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   // STB/lookup/active miss CAM在接收请求前完成。
   val iReqSet = iReqEntryBits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
-  val dReqSet = io.dcache.read.req.bits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+  val dReqSet = dReqEntryBits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
   val iReqBlock = iReqEntryBits.addr(XLEN - 1, l2BlockOffBits)
-  val dReqBlock = io.dcache.read.req.bits.addr(XLEN - 1, l2BlockOffBits)
+  val dReqBlock = dReqEntryBits.addr(XLEN - 1, l2BlockOffBits)
   val iMshrConflict = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
     mshrAddr(i)(XLEN - 1, l2BlockOffBits) === iReqBlock)).asUInt.orR
   val dMshrConflict = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
@@ -392,21 +414,25 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val iEbConflict = ebValid && ebAddr(XLEN - 1, l2BlockOffBits) === iReqBlock
   val dEbConflict = ebValid && ebAddr(XLEN - 1, l2BlockOffBits) === dReqBlock
 
+  val cacheLineWrite = dWriteEntryBits.kind === L2WriteKind.putLine ||
+    dWriteEntryBits.kind === L2WriteKind.cleanLine
+  val uncacheWrite = dWriteEntryBits.kind === L2WriteKind.uncache
+  val pendingCacheableBoundary =
+    (iReqEntryValid && !iReqEntryBits.uncache) ||
+    (dReqEntryValid && !dReqEntryBits.uncache) ||
+    (dWriteEntryValid && cacheLineWrite)
   val allCacheWorkDrained = !mshrValid.asUInt.orR && !stbValid.asUInt.orR &&
     !ebValid && !lookupSetBusy.asUInt.orR && resultQueue.io.count === 0.U &&
     !lookupTokenD1Valid && !lookupTokenD2Valid && !iLrbValid && !dLrbValid &&
-    !ucReadValid && !ucWriteValid && !dDoneValid
-
-  val cacheLineWrite = io.dcache.write.req.bits.kind === L2WriteKind.putLine ||
-    io.dcache.write.req.bits.kind === L2WriteKind.cleanLine
-  val uncacheWrite = io.dcache.write.req.bits.kind === L2WriteKind.uncache
+    !ucReadValid && !ucWriteValid && !dDoneValid && !pendingCacheableBoundary
   // uncache一旦等待排空，就停止接收新的cacheable请求，避免被持续流量饿死。
   val uncacheBusy = ucReadValid || ucWriteValid
   val iUncacheReadWantsDrain = iReqEntryValid && iReqEntryBits.uncache
-  val dUncacheReadWantsDrain = io.dcache.read.req.valid && io.dcache.read.req.bits.uncache
-  val dUncacheWriteWantsDrain = io.dcache.write.req.valid && uncacheWrite
+  val dUncacheReadWantsDrain = dReqEntryValid && dReqEntryBits.uncache
+  val dUncacheWriteWantsDrain = dWriteEntryValid && uncacheWrite
   val uncacheWantsDrain = iUncacheReadWantsDrain || dUncacheReadWantsDrain ||
     dUncacheWriteWantsDrain
+  val uncacheAdmissionLocked = uncacheBusy || uncacheWantsDrain
 
   // 同拍多个uncache意向采用固定优先级：D写 > I读 > D读。
   val iUncacheCanHandle = iUncacheReadWantsDrain && allCacheWorkDrained &&
@@ -415,14 +441,14 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     !dUncacheWriteWantsDrain && !iUncacheReadWantsDrain
 
   val iCacheEligible = !iReqEntryBits.uncache && lookupHasCredit &&
-    !uncacheBusy && !uncacheWantsDrain && !lookupSetBusy(iReqSet) && !iMshrConflict && !iMshrSetConflict && !iEbConflict &&
+    !uncacheBusy && !lookupSetBusy(iReqSet) && !iMshrConflict && !iMshrSetConflict && !iEbConflict &&
     (!array.io.write.valid || array.io.write.bits.set =/= iReqSet)
-  val dCacheEligible = !io.dcache.read.req.bits.uncache && lookupHasCredit &&
-    !uncacheBusy && !uncacheWantsDrain && !lookupSetBusy(dReqSet) && !dMshrConflict && !dMshrSetConflict && !dEbConflict &&
+  val dCacheEligible = !dReqEntryBits.uncache && lookupHasCredit &&
+    !uncacheBusy && !lookupSetBusy(dReqSet) && !dMshrConflict && !dMshrSetConflict && !dEbConflict &&
     (!array.io.write.valid || array.io.write.bits.set =/= dReqSet)
   val iReadCanHandle = iReqEntryValid && !iActive && Mux(iReqEntryBits.uncache,
-    iUncacheCanHandle, iCacheEligible) && !io.icache.cancel
-  val dReadCanHandle = io.dcache.read.req.valid && Mux(io.dcache.read.req.bits.uncache,
+    iUncacheCanHandle, iCacheEligible) && !iCancelPending
+  val dReadCanHandle = dReqEntryValid && Mux(dReqEntryBits.uncache,
     dUncacheCanHandle, dCacheEligible)
 
   val preferD = RegInit(false.B)
@@ -444,7 +470,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val chooseI = !chooseStbLookup && iReadCanHandle && (!dReadCanHandle || !preferD)
   val chooseD = !chooseStbLookup && dReadCanHandle && (!iReadCanHandle || preferD)
   val chosenUncache = (chooseI && iReqEntryBits.uncache) ||
-    (chooseD && io.dcache.read.req.bits.uncache)
+    (chooseD && dReqEntryBits.uncache)
   val ucProbeOwnerAddr = Mux(ucReadValid, ucReadAddr, ucWriteAddr)
   val ucProbeAddr = Cat(ucProbeOwnerAddr(XLEN - 1, l2BlockOffBits),
     0.U(l2BlockOffBits.W))
@@ -461,22 +487,26 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     Mux(ucReadValid, ucReadSource, L2PortSource.dcache),
     Mux(chooseD, L2PortSource.dcache, L2PortSource.icache))
   lookupToken.id := Mux(chooseUcProbe, Mux(ucReadValid, ucReadId, ucWriteId),
-    Mux(chooseD, io.dcache.read.req.bits.id, iReqEntryBits.id))
+    Mux(chooseD, dReqEntryBits.id, iReqEntryBits.id))
   lookupToken.addr := Mux(chooseUcProbe, ucProbeAddr, Mux(chooseStbLookup,
-    stbAddr(stbLookupSlot), Mux(chooseD, io.dcache.read.req.bits.addr, iReqEntryBits.addr)))
+    stbAddr(stbLookupSlot), Mux(chooseD, dReqEntryBits.addr, iReqEntryBits.addr)))
   lookupToken.isStb := chooseStbLookup
   lookupToken.isUncacheProbe := chooseUcProbe
+  lookupToken.cancelled := chooseI && io.icache.cancel
   lookupToken.stbSlot := stbLookupSlot
 
-  // Entry-only ready cuts the ICache -> L2 arbitration/CAM path.
-  io.icache.req.ready := array.io.initDone && !iReqEntryValid && !io.icache.cancel
-  io.dcache.read.req.ready := array.io.initDone && chooseD &&
-    Mux(chosenUncache, true.B, array.io.read.req.ready)
-
+  // External ready depends only on registered boundary-level state.
+  io.icache.req.ready := array.io.initDone && !iReqEntryValid && !uncacheAdmissionLocked
+  io.dcache.read.req.ready := array.io.initDone && !dReqEntryValid && !uncacheAdmissionLocked
   val iInternalAccept = chooseI && Mux(chosenUncache, true.B, array.io.read.req.fire)
+  val dInternalAccept = chooseD && Mux(chosenUncache, true.B, array.io.read.req.fire)
   when(io.icache.req.fire) {
     iReqEntryBits := io.icache.req.bits
     iReqEntryValid := true.B
+  }
+  when(io.dcache.read.req.fire) {
+    dReqEntryBits := io.dcache.read.req.bits
+    dReqEntryValid := true.B
   }
   when(iInternalAccept) {
     iReqEntryValid := false.B
@@ -484,11 +514,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iKilled := false.B
     iActiveHasMshr := false.B
   }
-  // Cancel wins over same-cycle capture, issue, and response.
-  when(io.icache.cancel) {
-    iReqEntryValid := false.B
-    when(iActive || iInternalAccept) { iKilled := true.B }
-    // A same-cycle killed lookup hit/forward has no lower transaction to drain.
+  when(dInternalAccept) {
+    dReqEntryValid := false.B
+  }
+
+  // Raw cancel is sampled into local state. It never drives Array/CAM control
+  // or native ready/valid combinationally.
+  when(iCancelPending) {
+    iCancelPending := false.B
+    when(iCancelClearEntry) { iReqEntryValid := false.B }
+    when(iCancelKillActive) { iKilled := true.B }
     when(killedIResult && (head.hit || headHasStbForward)) {
       iActive := false.B
       iKilled := false.B
@@ -501,16 +536,19 @@ class L2Cache(implicit p: Parameters) extends NSModule {
         iKilled := false.B
         iActiveHasMshr := false.B
       }.elsewhen(!iLrbFromMshr) {
-        // A buffered hit/forward has no lower transaction left to drain.
         iActive := false.B
         iKilled := false.B
         iActiveHasMshr := false.B
       }.elsewhen(iLrbBits.last) {
-        // The final MSHR response was queued already; acknowledge it internally.
         mshrResponseAck(iLrbMshr) := true.B
       }
     }
     iLrbValid := false.B
+  }
+  when(io.icache.cancel) {
+    iCancelPending := true.B
+    iCancelClearEntry := iReqEntryValid && !iInternalAccept
+    iCancelKillActive := iActive || iInternalAccept
   }
 
   when(array.io.read.req.fire) {
@@ -524,7 +562,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       ucProbeInFlight := true.B
     }
   }
-  when(iInternalAccept || io.dcache.read.req.fire) {
+  when(iInternalAccept || dInternalAccept) {
     preferD := iInternalAccept
   }
   when(iInternalAccept && iReqEntryBits.uncache) {
@@ -537,13 +575,13 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     ucProbePending := true.B
     ucProbeInFlight := false.B
     ucCoherenceReady := false.B
-  }.elsewhen(io.dcache.read.req.fire && io.dcache.read.req.bits.uncache) {
+  }.elsewhen(dInternalAccept && dReqEntryBits.uncache) {
     ucReadValid := true.B
     ucReadIssued := false.B
     ucReadSource := L2PortSource.dcache
-    ucReadId := io.dcache.read.req.bits.id
-    ucReadAddr := io.dcache.read.req.bits.addr
-    ucReadSize := io.dcache.read.req.bits.size
+    ucReadId := dReqEntryBits.id
+    ucReadAddr := dReqEntryBits.addr
+    ucReadSize := dReqEntryBits.size
     ucProbePending := true.B
     ucProbeInFlight := false.B
     ucCoherenceReady := false.B
@@ -555,37 +593,46 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   ))
   val hasDStbFree = dStbFreeVec.asUInt.orR
   val dStbFreeSlot = PriorityEncoder(dStbFreeVec)
-  val writeReqBlock = io.dcache.write.req.bits.addr(XLEN - 1, l2BlockOffBits)
+  val writeReqBlock = dWriteEntryBits.addr(XLEN - 1, l2BlockOffBits)
   val sameStbWrite = VecInit((0 until stbCount).map(i => stbValid(i) &&
     stbAddr(i)(XLEN - 1, l2BlockOffBits) === writeReqBlock)).asUInt.orR
-  io.dcache.write.req.ready := array.io.initDone && Mux(cacheLineWrite,
-    hasDStbFree && !sameStbWrite && !uncacheBusy && !uncacheWantsDrain,
+  val dWriteInternalAccept = dWriteEntryValid && Mux(cacheLineWrite,
+    hasDStbFree && !sameStbWrite && !uncacheBusy,
     dUncacheWriteWantsDrain && allCacheWorkDrained)
+  io.dcache.write.req.ready := array.io.initDone && !dWriteEntryValid &&
+    !uncacheAdmissionLocked
+  when(io.dcache.write.req.fire) {
+    dWriteEntryBits := io.dcache.write.req.bits
+    dWriteEntryValid := true.B
+  }
+  when(dWriteInternalAccept) {
+    dWriteEntryValid := false.B
+  }
 
-  when(io.dcache.write.req.fire && cacheLineWrite) {
+  when(dWriteInternalAccept && cacheLineWrite) {
     val slot = dStbFreeSlot
     stbValid(slot) := true.B
-    stbAddr(slot) := Cat(io.dcache.write.req.bits.addr(XLEN - 1, l2BlockOffBits),
+    stbAddr(slot) := Cat(dWriteEntryBits.addr(XLEN - 1, l2BlockOffBits),
       0.U(l2BlockOffBits.W))
-    stbData(slot) := io.dcache.write.req.bits.data
-    stbKind(slot) := io.dcache.write.req.bits.kind
-    stbId(slot) := io.dcache.write.req.bits.id
+    stbData(slot) := dWriteEntryBits.data
+    stbKind(slot) := dWriteEntryBits.kind
+    stbId(slot) := dWriteEntryBits.id
     stbLookupIssued(slot) := false.B
     stbInstalled(slot) := false.B
     stbWriteIssued(slot) := false.B
     stbDdrDone(slot) := false.B
     stbDoneQueued(slot) := false.B
     stbDoneAck(slot) := false.B
-  }.elsewhen(io.dcache.write.req.fire && uncacheWrite) {
+  }.elsewhen(dWriteInternalAccept && uncacheWrite) {
     ucWriteValid := true.B
     ucWriteIssued := false.B
     ucWriteBridgeDone := false.B
     ucWriteDoneQueued := false.B
-    ucWriteId := io.dcache.write.req.bits.id
-    ucWriteAddr := io.dcache.write.req.bits.addr
-    ucWriteSize := io.dcache.write.req.bits.size
-    ucWriteData := io.dcache.write.req.bits.data
-    ucWriteStrb := io.dcache.write.req.bits.strb
+    ucWriteId := dWriteEntryBits.id
+    ucWriteAddr := dWriteEntryBits.addr
+    ucWriteSize := dWriteEntryBits.size
+    ucWriteData := dWriteEntryBits.data
+    ucWriteStrb := dWriteEntryBits.strb
     ucProbePending := true.B
     ucProbeInFlight := false.B
     ucCoherenceReady := false.B
@@ -690,7 +737,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   val bridgeBeatIsMshr = bridge.io.client.read.beat.bits.owner.source === L2BridgeReadOwner.mshr
   val bridgeBeatIsUc = bridge.io.client.read.beat.bits.owner.source === L2BridgeReadOwner.uncache
-  val ucBeatPortReady = Mux(ucReadSource === L2PortSource.dcache, dLrbReady, iLrbReady || iKilled || io.icache.cancel)
+  val ucBeatPortReady = Mux(ucReadSource === L2PortSource.dcache, dLrbReady, iLrbReady || iKilled || iCancelPending)
   val ucBeatBlockedByResult = Mux(ucReadSource === L2PortSource.dcache,
     resultToD, resultToI)
   bridge.io.client.read.beat.ready := Mux(bridgeBeatIsMshr, true.B,
@@ -720,12 +767,12 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val hasDSend = dSendVec.asUInt.orR
   val iSendMshr = PriorityEncoder(iSendVec)
   val dSendMshr = PriorityEncoder(dSendVec)
-  val iMshrLoad = !iKilled && !io.icache.cancel && !resultToI && hasISend && iLrbReady &&
+  val iMshrLoad = !iKilled && !iCancelPending && !resultToI && hasISend && iLrbReady &&
     !(bridge.io.client.read.beat.valid && bridgeBeatIsUc && ucReadSource === L2PortSource.icache)
   val dMshrLoad = !resultToD && hasDSend && dLrbReady &&
     !(bridge.io.client.read.beat.valid && bridgeBeatIsUc && ucReadSource === L2PortSource.dcache)
   val ucBeatLoad = bridge.io.client.read.beat.fire && bridgeBeatIsUc
-  val killedUcBeat = ucBeatLoad && ucReadSource === L2PortSource.icache && (iKilled || io.icache.cancel)
+  val killedUcBeat = ucBeatLoad && ucReadSource === L2PortSource.icache && (iKilled || iCancelPending)
   val killedMshrCanAdvance = iKilled && iActiveHasMshr && mshrValid(iActiveMshr) &&
     mshrSource(iActiveMshr) === L2PortSource.icache && !mshrResponseQueued(iActiveMshr) &&
     lfbBeatValid(iActiveMshr)(mshrSendBeat(iActiveMshr))
@@ -774,7 +821,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     }
   }
 
-  when(ucBeatLoad && ucReadSource === L2PortSource.icache && !iKilled && !io.icache.cancel) {
+  when(ucBeatLoad && ucReadSource === L2PortSource.icache && !iKilled && !iCancelPending) {
     iLrbValid := true.B
     iLrbBits.id := ucReadId
     iLrbBits.data := Cat(0.U((l2LineBits - XLEN).W), bridge.io.client.read.beat.bits.data)
@@ -782,7 +829,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iLrbBits.last := bridge.io.client.read.beat.bits.last
     iLrbFromMshr := false.B
     iLrbFromUncache := true.B
-  }.elsewhen(resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !io.icache.cancel) {
+  }.elsewhen(resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !iCancelPending) {
     iLrbValid := true.B
     iLrbBits.id := head.token.id
     iLrbBits.data := resultResponseData
@@ -847,7 +894,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     stbKind(i) === L2WriteKind.cleanLine && stbDdrDone(i) && !stbDoneQueued(i)))
   val hasCleanDone = cleanDoneVec.asUInt.orR
   val cleanDoneSlot = PriorityEncoder(cleanDoneVec)
-  val doneBufferReady = !dDoneValid || io.dcache.write.done.ready
+  val doneBufferReady = !dDoneValid
   when(io.dcache.write.done.fire) {
     dDoneValid := false.B
     when(dDoneIsStb) {

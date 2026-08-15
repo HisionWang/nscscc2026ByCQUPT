@@ -188,7 +188,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.l2_read.req.bits.size := 2.U
     io.l2_read.req.bits.uncache := state === s_uncache_req
 
-    io.l2_read.resp.ready := nativeRespExpected && !io.redirect && (io.l2_read.resp.bits.id === 0.U)
+    // Redirect affects architectural consumption, but the native return channel
+    // keeps draining so frontend flush cannot enter L2 scheduling combinationally.
+    io.l2_read.resp.ready := nativeRespExpected && (io.l2_read.resp.bits.id === 0.U)
 
     // L2 读响应接收
     when (state === s_miss_wait && io.l2_read.resp.fire) {
@@ -429,7 +431,9 @@ class ICacheMainPipe(implicit p: Parameters) extends NSModule {
     io.l2_read.req.bits.size := 2.U
     io.l2_read.req.bits.uncache := state === s_uncache_req
 
-    io.l2_read.resp.ready := nativeRespExpected && !io.redirect && (io.l2_read.resp.bits.id === 0.U)
+    // Redirect affects architectural consumption, but the native return channel
+    // keeps draining so frontend flush cannot enter L2 scheduling combinationally.
+    io.l2_read.resp.ready := nativeRespExpected && (io.l2_read.resp.bits.id === 0.U)
 
     // L2 读响应接收
     when (state === s_miss_wait && io.l2_read.resp.fire) {

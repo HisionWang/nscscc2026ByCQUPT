@@ -5,7 +5,7 @@ import chisel3.util._
 import nscscc.config._
 
 class L2Replacer(implicit p: Parameters) extends NSModule {
-  require(l2Ways == 8, "L2Replacer V1 requires eight ways")
+  require(Seq(2, 4, 8, 16).contains(l2Ways), "tree-PLRU requires 2/4/8/16 ways")
 
   val io = IO(new Bundle {
     val lookup = Input(new L2ReplacerLookup)
@@ -13,20 +13,23 @@ class L2Replacer(implicit p: Parameters) extends NSModule {
     val victim = Output(UInt(l2WayBits.W))
   })
 
-  // 每个 set 的 8 路二叉 PLRU 树只需要 7 位。
+  // N路二叉tree-PLRU每个set需要N-1位，节点按heap顺序编号。
   val treeState = RegInit(VecInit(Seq.fill(l2Sets)(
-    VecInit(Seq.fill(7)(false.B))
+    VecInit(Seq.fill(l2Ways - 1)(false.B))
   )))
   val lookupTree = treeState(io.lookup.set)
 
-  val victimHigh = lookupTree(0)
-  val victimMiddle = Mux(lookupTree(0), lookupTree(2), lookupTree(1))
-  val victimLow = Mux(
-    lookupTree(0),
-    Mux(lookupTree(2), lookupTree(6), lookupTree(5)),
-    Mux(lookupTree(1), lookupTree(4), lookupTree(3))
-  )
-  val plruVictim = Cat(victimHigh, victimMiddle, victimLow)
+  def victimFrom(node: Int, ways: Int): UInt = {
+    val direction = lookupTree(node)
+    if (ways == 2) {
+      direction.asUInt
+    } else {
+      val left = victimFrom(node * 2 + 1, ways / 2)
+      val right = victimFrom(node * 2 + 2, ways / 2)
+      Cat(direction, Mux(direction, right, left))
+    }
+  }
+  val plruVictim = victimFrom(0, l2Ways)
 
   // 只要存在 invalid way，就优先选择最低编号 invalid way。
   val firstInvalid = PriorityEncoder(~io.lookup.validMask)
@@ -35,25 +38,17 @@ class L2Replacer(implicit p: Parameters) extends NSModule {
   when(io.touch.valid) {
     val oldTree = treeState(io.touch.bits.set)
     val nextTree = WireInit(oldTree)
-    val way = io.touch.bits.way
-
-    when(!way(2)) {
-      nextTree(0) := true.B
-      when(!way(1)) {
-        nextTree(1) := true.B
-        nextTree(3) := !way(0)
-      }.otherwise {
-        nextTree(1) := false.B
-        nextTree(4) := !way(0)
-      }
-    }.otherwise {
-      nextTree(0) := false.B
-      when(!way(1)) {
-        nextTree(2) := true.B
-        nextTree(5) := !way(0)
-      }.otherwise {
-        nextTree(2) := false.B
-        nextTree(6) := !way(0)
+    // 为每个way静态展开更新路径，避免动态Vec索引形成深选择链。
+    for (way <- 0 until l2Ways) {
+      when(io.touch.bits.way === way.U) {
+        var node = 0
+        for (level <- 0 until log2Ceil(l2Ways)) {
+          val direction = ((way >> (log2Ceil(l2Ways) - 1 - level)) & 1) == 1
+          nextTree(node) := (!direction).B
+          if (level != log2Ceil(l2Ways) - 1) {
+            node = node * 2 + 1 + (if (direction) 1 else 0)
+          }
+        }
       }
     }
 

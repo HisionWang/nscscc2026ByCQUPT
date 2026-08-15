@@ -128,7 +128,8 @@ class L2MetadataRAM(val depth: Int, val width: Int)(implicit p: Parameters)
 
 class L2CacheArray(implicit p: Parameters) extends NSModule {
   require(l2ReadLatency == 2, "L2CacheArray V1 requires a two-cycle read")
-  require(l2Sets == 512 && l2Ways == 8 && l2LineBits == 512)
+  require(l2Sets == 512 && l2LineBits == 512)
+  require(Seq(2, 4, 8, 16).contains(l2Ways))
   private val metadataBits = l2TagBits + 2
   require(metadataBits == 19)
 
@@ -138,7 +139,7 @@ class L2CacheArray(implicit p: Parameters) extends NSModule {
   val metadataRams = Seq.fill(l2Ways)(
     Module(new L2MetadataRAM(l2Sets, metadataBits)))
 
-  // reset后每拍同时清八路的一个set；512拍内拒绝所有外部请求。
+  // reset后每拍同时清全部way的一个set；512拍内拒绝所有外部请求。
   val initDone = RegInit(false.B)
   val scrubSet = RegInit(0.U(l2IdxBits.W))
   when(!initDone) {

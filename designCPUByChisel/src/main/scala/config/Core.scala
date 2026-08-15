@@ -33,6 +33,7 @@ object CoreConfigKeys {
   val NSetsD = new Field[Int](64)
   // L1 I/D Cache共用固定64B cache line，必须与L2一致。
   val BlockBytes = new Field[Int](64)
+  val L2Ways = new Field[Int](8)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
   val IbufDepth = new Field[Int](8)
@@ -95,8 +96,9 @@ trait HasCoreParameters {
 
   // 统一L2 Cache参数独立于L1 I/D Cache参数。
   val l2Sets: Int = 512
-  val l2Ways: Int = 8
+  val l2Ways: Int = p(CoreConfigKeys.L2Ways)
   val l2BlockBytes: Int = 64
+  require(Seq(2, 4, 8, 16).contains(l2Ways), "L2 ways must be one of 2, 4, 8, 16")
   val l2MshrEntries: Int = 4
   val l2LrbEntries: Int = 2
   val l2IStbEntries: Int = 1
