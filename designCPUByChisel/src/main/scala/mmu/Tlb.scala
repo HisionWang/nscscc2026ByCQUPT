@@ -48,7 +48,7 @@ class Tlb(implicit p: Parameters) extends NSModule {
     val s2Ready = !s2Valid || resp.ready
     val s1Ready = !s1Valid || s2Ready
 
-    req.ready := !flush && s1Ready
+    req.ready := s1Ready // Hision&& !flush 
 
     // lookup
     val matchVec = VecInit(entries.map { e =>

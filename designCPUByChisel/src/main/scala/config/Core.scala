@@ -18,7 +18,7 @@ object CoreConfigKeys {
   val CtrlBlockWidth = new Field[Int](3)
 
   val BtbSize   = new Field[Int](256)
-  val PhtSize   = new Field[Int](1024)
+  val PhtSize   = new Field[Int](256)
   val RasSize   = new Field[Int](8)
 
   val useNewBPU = new Field[Int](1)
@@ -31,7 +31,7 @@ object CoreConfigKeys {
   val NSetsI = new Field[Int](64)
   
   val NWaysD = new Field[Int](4)
-  val NSetsD = new Field[Int](256)
+  val NSetsD = new Field[Int](128)
   
 
   val BlockBytes = new Field[Int](64)
