@@ -199,7 +199,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val lookupTokenD2 = RegEnable(lookupTokenD1, 0.U.asTypeOf(new L2LookupToken), lookupTokenD1Valid)
   val lookupTokenD2Valid = RegNext(lookupTokenD1Valid, false.B)
 
-  val resultQueue = Module(new Queue(new L2LookupResult, 4, pipe = true))
+  val resultQueue = Module(new L2ResultQueue(4))
   val arrayValidMask = VecInit(array.io.read.resp.bits.ways.map(_.valid)).asUInt
   val arrayHitMask = VecInit(array.io.read.resp.bits.ways.map(way =>
     way.valid && way.tag === lookupTokenD2.addr(XLEN - 1, l2IdxBits + l2BlockOffBits)
