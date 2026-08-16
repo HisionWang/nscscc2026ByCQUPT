@@ -193,6 +193,7 @@ object CoreGen extends App {
        |//        btbSize       =  ${config(CoreConfigKeys.BtbSize)}, 
        |//        phtSize       =  ${config(CoreConfigKeys.PhtSize)}
        |// Cache: L2Ways        =  ${config(CoreConfigKeys.L2Ways)}, 
+       |//        L2Prefetch    =  ${config(CoreConfigKeys.L2Prefetch)}, 
        |//        usePIPT       =  ${config(CoreConfigKeys.usePIPT)}, 
        |//        nWaysI        =  ${config(CoreConfigKeys.NWaysI)}, 
        |//        nSetsI        =  ${config(CoreConfigKeys.NSetsI)}, 
