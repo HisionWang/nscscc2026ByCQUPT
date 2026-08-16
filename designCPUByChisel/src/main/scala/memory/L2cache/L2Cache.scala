@@ -5,6 +5,10 @@ import chisel3.util._
 import nscscc.axi._
 import nscscc.config._
 
+object L2PrefetchProtocol {
+  final val EpochBits = 8
+}
+
 object L2PortSource {
   def icache: Bool = false.B
   def dcache: Bool = true.B
@@ -27,6 +31,8 @@ class L2LookupToken(implicit p: Parameters) extends NSBundle {
   val addr = UInt(XLEN.W)
   val isStb = Bool()
   val isUncacheProbe = Bool()
+  val isPrefetch = Bool()
+  val prefetchEpoch = UInt(L2PrefetchProtocol.EpochBits.W)
   val cancelled = Bool()
   val stbSlot = UInt(log2Ceil(l2IStbEntries + l2DStbEntries).W)
 }
@@ -75,19 +81,33 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val iCancelPending = RegInit(false.B)
   val iCancelClearEntry = RegInit(false.B)
   val iCancelKillActive = RegInit(false.B)
+  val iPrefetchEpoch = RegInit(0.U(L2PrefetchProtocol.EpochBits.W))
+  val iCancelWasHigh = RegNext(io.icache.cancel, false.B)
+  val iCancelPulse = io.icache.cancel && !iCancelWasHigh
 
+
+  // Completion events cross another register before entering either predictor.
+  val iPrefetchTrainValid = RegInit(false.B)
+  val iPrefetchTrainAddr = RegInit(0.U(XLEN.W))
+  val dPrefetchTrainValid = RegInit(false.B)
+  val dPrefetchTrainAddr = RegInit(0.U(XLEN.W))
+  // A live grant owns one of the four lookup/result credits until it fires or
+  // is discarded, so ordinary demand lookup can never overbook resultQueue.
+  val prefetchGrantValid = RegInit(false.B)
 
   val iLrbValid = RegInit(false.B)
   val iLrbBits = Reg(new L2ReadResp(1))
   val iLrbFromMshr = RegInit(false.B)
   val iLrbFromUncache = RegInit(false.B)
   val iLrbMshr = RegInit(0.U(l2MshrIdBits.W))
+  val iLrbAddr = RegInit(0.U(XLEN.W))
 
   val dLrbValid = RegInit(false.B)
   val dLrbBits = Reg(new L2ReadResp(1))
   val dLrbFromMshr = RegInit(false.B)
   val dLrbFromUncache = RegInit(false.B)
   val dLrbMshr = RegInit(0.U(l2MshrIdBits.W))
+  val dLrbAddr = RegInit(0.U(XLEN.W))
 
   io.icache.resp.valid := iLrbValid && !iKilled && !iCancelPending
   io.icache.resp.bits := iLrbBits
@@ -101,6 +121,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val mshrValid = RegInit(VecInit(Seq.fill(l2MshrEntries)(false.B)))
   val mshrSource = RegInit(VecInit(Seq.fill(l2MshrEntries)(false.B)))
   val mshrId = RegInit(VecInit(Seq.fill(l2MshrEntries)(0.U(1.W))))
+  val mshrPrefetch = RegInit(VecInit(Seq.fill(l2MshrEntries)(false.B)))
   val mshrAddr = RegInit(VecInit(Seq.fill(l2MshrEntries)(0.U(XLEN.W))))
   val mshrWay = RegInit(VecInit(Seq.fill(l2MshrEntries)(0.U(l2WayBits.W))))
   val mshrWaitEb = RegInit(VecInit(Seq.fill(l2MshrEntries)(false.B)))
@@ -199,22 +220,33 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   resultQueue.io.enq.bits.oldTag := Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.tag))
   resultQueue.io.enq.bits.oldData := Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.data))
 
-  val lookupOccupancy = resultQueue.io.count + lookupTokenD1Valid.asUInt + lookupTokenD2Valid.asUInt
-  val lookupHasCredit = lookupOccupancy < 4.U
+  val lookupOccupancy = resultQueue.io.count +
+    lookupTokenD1Valid.asUInt + lookupTokenD2Valid.asUInt
+  val effectiveLookupOccupancy =
+    lookupOccupancy + prefetchGrantValid.asUInt
+  val lookupHasCredit = effectiveLookupOccupancy < 4.U
 
   val mshrFreeMask = VecInit(mshrValid.map(v => !v)).asUInt
   val hasFreeMshr = mshrFreeMask.orR
   val freeMshr = PriorityEncoder(mshrFreeMask)
+  val freeMshrCount = PopCount(mshrFreeMask)
+  val hasPurePrefetchMshr = mshrPrefetch.asUInt.orR
   val mshrSetVec = VecInit((0 until l2MshrEntries).map(i =>
     mshrValid(i) && mshrAddr(i)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) ===
       resultQueue.io.deq.bits.token.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
   ))
 
-  val fillVec = VecInit((0 until l2MshrEntries).map(i =>
-    mshrValid(i) && mshrFillComplete(i) && !mshrInstalled(i)
+  val demandFillVec = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && !mshrPrefetch(i) && mshrFillComplete(i) && !mshrInstalled(i)
   ))
-  val hasFillInstall = fillVec.asUInt.orR
-  val fillInstallMshr = PriorityEncoder(fillVec)
+  val prefetchFillVec = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && mshrPrefetch(i) && mshrFillComplete(i) && !mshrInstalled(i)
+  ))
+  val hasDemandFillInstall = demandFillVec.asUInt.orR
+  val hasPrefetchFillInstall = prefetchFillVec.asUInt.orR
+  val hasFillInstall = hasDemandFillInstall || hasPrefetchFillInstall
+  val fillInstallMshr = Mux(hasDemandFillInstall,
+    PriorityEncoder(demandFillVec), PriorityEncoder(prefetchFillVec))
 
   val head = resultQueue.io.deq.bits
   val headBlock = head.token.addr(XLEN - 1, l2BlockOffBits)
@@ -222,9 +254,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     stbValid(i) && stbAddr(i)(XLEN - 1, l2BlockOffBits) === headBlock
   ))
   val headHasStbForward = headStbMatchVec.asUInt.orR && !head.token.isStb &&
-    !head.token.isUncacheProbe
+    !head.token.isUncacheProbe && !head.token.isPrefetch
   val headStbForwardSlot = PriorityEncoder(headStbMatchVec)
-  val headNeedsEb = !head.token.isUncacheProbe && !head.hit && head.oldValid && head.oldDirty
+  val headNeedsEb = !head.token.isUncacheProbe && !head.token.isPrefetch &&
+    !head.hit && head.oldValid && head.oldDirty
 
   val headPortReady = Mux(head.token.source === L2PortSource.dcache, dLrbReady, iLrbReady || iKilled)
   val headReadCanProcess = Mux(
@@ -237,11 +270,28 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     !hasFillInstall
   val ucProbeResultCanProcess = resultQueue.io.deq.valid && head.token.isUncacheProbe &&
     !hasFillInstall && (!head.hit || !head.oldDirty || !ebValid)
-  val demandResultCanProcess = resultQueue.io.deq.valid && !head.token.isUncacheProbe &&
+  val demandResultCanProcess = resultQueue.io.deq.valid &&
+    !head.token.isUncacheProbe && !head.token.isPrefetch &&
     !head.token.cancelled && !hasFillInstall &&
     Mux(head.token.isStb, headStbCanProcess, headReadCanProcess)
-  val resultCanProcess = demandResultCanProcess || ucProbeResultCanProcess ||
-    cancelledLookupResult
+  val prefetchDrainPresent = ucReadValid || ucWriteValid || ucProbePending ||
+    (iReqEntryValid && iReqEntryBits.uncache) ||
+    (dReqEntryValid && dReqEntryBits.uncache) ||
+    (dWriteEntryValid && dWriteEntryBits.kind === L2WriteKind.uncache)
+  val staleIPrefetchResult = head.token.isPrefetch &&
+    head.token.source === L2PortSource.icache &&
+    head.token.prefetchEpoch =/= iPrefetchEpoch
+  val prefetchResultCanAllocate = resultQueue.io.deq.valid &&
+    head.token.isPrefetch && !head.hit && !head.oldDirty &&
+    !headStbMatchVec.asUInt.orR && !hasFillInstall &&
+    freeMshrCount >= 3.U && !hasPurePrefetchMshr &&
+    !mshrSetVec.asUInt.orR && !prefetchDrainPresent &&
+    !staleIPrefetchResult
+  // A speculative result is lossy and never blocks a later demand result.
+  val prefetchResultCanProcess = resultQueue.io.deq.valid &&
+    head.token.isPrefetch
+  val resultCanProcess = demandResultCanProcess || prefetchResultCanProcess ||
+    ucProbeResultCanProcess || cancelledLookupResult
   resultQueue.io.deq.ready := resultCanProcess
 
   val resultReadResponse = demandResultCanProcess && !head.token.isStb &&
@@ -267,9 +317,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     array.io.write.bits.tag := mshrAddr(fillInstallMshr)(XLEN - 1, l2BlockOffBits + l2IdxBits)
     array.io.write.bits.data := lfbWords(fillInstallMshr).asUInt
     array.io.write.bits.dataWen := true.B
-    replacer.io.touch.valid := true.B
-    replacer.io.touch.bits.set := array.io.write.bits.set
-    replacer.io.touch.bits.way := array.io.write.bits.way
+    when(!mshrPrefetch(fillInstallMshr)) {
+      replacer.io.touch.valid := true.B
+      replacer.io.touch.bits.set := array.io.write.bits.set
+      replacer.io.touch.bits.way := array.io.write.bits.way
+    }
   }.elsewhen(demandResultCanProcess && head.token.isStb) {
     val slot = head.token.stbSlot
     array.io.write.valid := true.B
@@ -294,8 +346,9 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     array.io.write.bits.data := 0.U
     array.io.write.bits.dataWen := false.B
   }.elsewhen(demandResultCanProcess && !head.token.isStb &&
-    !head.hit && !headHasStbForward) {
-    // miss分配MSHR时先令victim无效，way由该MSHR独占。
+      !head.hit && !headHasStbForward) {
+    // Demand miss allocation invalidates its victim immediately.  A prefetch
+    // keeps a clean victim intact until the completed fill installs atomically.
     array.io.write.valid := true.B
     array.io.write.bits.set := head.token.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
     array.io.write.bits.way := head.way
@@ -316,7 +369,29 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   when(resultCanProcess) {
     lookupSetBusy(head.token.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)) := false.B
-    when(head.token.cancelled) {
+    when(head.token.isPrefetch) {
+      when(prefetchResultCanAllocate) {
+        val slot = freeMshr
+        mshrValid(slot) := true.B
+        mshrSource(slot) := head.token.source
+        mshrId(slot) := 0.U
+        mshrPrefetch(slot) := true.B
+        mshrAddr(slot) := Cat(head.token.addr(XLEN - 1, l2BlockOffBits),
+          0.U(l2BlockOffBits.W))
+        mshrWay(slot) := head.way
+        mshrWaitEb(slot) := false.B
+        mshrReadIssued(slot) := false.B
+        mshrRecvBeat(slot) := 0.U
+        mshrSendBeat(slot) := 0.U
+        mshrFillComplete(slot) := false.B
+        mshrInstalled(slot) := false.B
+        mshrResponseQueued(slot) := false.B
+        mshrResponseAck(slot) := false.B
+        for (beat <- 0 until l2BurstBeats) {
+          lfbBeatValid(slot)(beat) := false.B
+        }
+      }
+    }.elsewhen(head.token.cancelled) {
       // The request reached only the registered lookup boundary. Drop it
       // before allocating an MSHR or issuing DDR traffic.
       iActive := false.B
@@ -358,6 +433,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     }.elsewhen(!head.hit && !headHasStbForward) {
       val slot = freeMshr
       mshrValid(slot) := true.B
+      mshrPrefetch(slot) := false.B
       mshrSource(slot) := head.token.source
       mshrId(slot) := head.token.id
       mshrAddr(slot) := Cat(head.token.addr(XLEN - 1, l2BlockOffBits), 0.U(l2BlockOffBits.W))
@@ -407,6 +483,14 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     mshrAddr(i)(XLEN - 1, l2BlockOffBits) === iReqBlock)).asUInt.orR
   val dMshrConflict = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
     mshrAddr(i)(XLEN - 1, l2BlockOffBits) === dReqBlock)).asUInt.orR
+  val iPrefetchMatchVec = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && mshrPrefetch(i) &&
+      mshrAddr(i)(XLEN - 1, l2BlockOffBits) === iReqBlock))
+  val dPrefetchMatchVec = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && mshrPrefetch(i) &&
+      mshrAddr(i)(XLEN - 1, l2BlockOffBits) === dReqBlock))
+  val iPrefetchMatch = iPrefetchMatchVec.asUInt.orR
+  val dPrefetchMatch = dPrefetchMatchVec.asUInt.orR
   val iMshrSetConflict = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
     mshrAddr(i)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) === iReqSet)).asUInt.orR
   val dMshrSetConflict = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
@@ -434,6 +518,37 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     dUncacheWriteWantsDrain
   val uncacheAdmissionLocked = uncacheBusy || uncacheWantsDrain
 
+  val prefetchCandidateValid = WireDefault(false.B)
+  val prefetchCandidateBits = WireDefault(
+    0.U.asTypeOf(new L2PrefetchCandidate))
+  val prefetchCandidateReady = WireDefault(false.B)
+  if (l2PrefetchMode != L2PrefetchMode.Disabled) {
+    val prefetch = Module(new L2PrefetchHub)
+    prefetch.io.iTrain.valid := iPrefetchTrainValid
+    prefetch.io.iTrain.bits := iPrefetchTrainAddr
+    prefetch.io.dTrain.valid := dPrefetchTrainValid
+    prefetch.io.dTrain.bits := dPrefetchTrainAddr
+    prefetch.io.iClear := uncacheAdmissionLocked || iCancelPending
+    prefetch.io.dClear := uncacheAdmissionLocked
+    prefetch.io.queueClear := uncacheAdmissionLocked || iCancelPending
+    prefetchCandidateValid := prefetch.io.candidate.valid
+    prefetchCandidateBits := prefetch.io.candidate.bits
+    prefetch.io.candidate.ready := prefetchCandidateReady
+  }
+  // Two registered boundaries keep predictor and conflict checks away from
+  // the Array request mux.  All expensive CAM/reduction work ends at grant D.
+  val prefetchIssueValid = RegInit(false.B)
+  val prefetchIssueBits = RegInit(0.U.asTypeOf(new L2PrefetchCandidate))
+  val prefetchIssueEpoch = RegInit(0.U(L2PrefetchProtocol.EpochBits.W))
+  val prefetchGrantBits = RegInit(0.U.asTypeOf(new L2PrefetchCandidate))
+  val prefetchGrantEpoch = RegInit(0.U(L2PrefetchProtocol.EpochBits.W))
+  prefetchCandidateReady := !prefetchIssueValid
+  when(prefetchCandidateValid && prefetchCandidateReady) {
+    prefetchIssueValid := true.B
+    prefetchIssueBits := prefetchCandidateBits
+    prefetchIssueEpoch := iPrefetchEpoch
+  }
+
   // 同拍多个uncache意向采用固定优先级：D写 > I读 > D读。
   val iUncacheCanHandle = iUncacheReadWantsDrain && allCacheWorkDrained &&
     !dUncacheWriteWantsDrain
@@ -452,6 +567,19 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     dUncacheCanHandle, dCacheEligible)
 
   val preferD = RegInit(false.B)
+  val iPromoteEligible = iReqEntryValid && !iReqEntryBits.uncache &&
+    !iActive && !iCancelPending && iPrefetchMatch
+  val dPromoteEligible = dReqEntryValid && !dReqEntryBits.uncache &&
+    dPrefetchMatch
+  val chooseIPromotion = iPromoteEligible &&
+    (!dPromoteEligible || !preferD)
+  val chooseDPromotion = dPromoteEligible &&
+    (!iPromoteEligible || preferD)
+  val choosePromotion = chooseIPromotion || chooseDPromotion
+  val promoteMshr = Mux(chooseDPromotion,
+    PriorityEncoder(dPrefetchMatchVec), PriorityEncoder(iPrefetchMatchVec))
+  val promoteMask = UIntToOH(promoteMshr, l2MshrEntries) &
+    Fill(l2MshrEntries, choosePromotion)
 
   val stbLookupVec = VecInit((0 until stbCount).map(i => stbValid(i) &&
     !stbLookupIssued(i) && !stbInstalled(i) &&
@@ -466,9 +594,12 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val stbLookupSlot = PriorityEncoder(stbLookupVec)
   val preferStb = RegInit(false.B)
   val readWantsLookup = iReadCanHandle || dReadCanHandle
-  val chooseStbLookup = hasStbLookup && (!readWantsLookup || preferStb)
-  val chooseI = !chooseStbLookup && iReadCanHandle && (!dReadCanHandle || !preferD)
-  val chooseD = !chooseStbLookup && dReadCanHandle && (!iReadCanHandle || preferD)
+  val chooseStbLookup = !choosePromotion && hasStbLookup &&
+    (!readWantsLookup || preferStb)
+  val chooseI = !choosePromotion && !chooseStbLookup && iReadCanHandle &&
+    (!dReadCanHandle || !preferD)
+  val chooseD = !choosePromotion && !chooseStbLookup && dReadCanHandle &&
+    (!iReadCanHandle || preferD)
   val chosenUncache = (chooseI && iReqEntryBits.uncache) ||
     (chooseD && dReqEntryBits.uncache)
   val ucProbeOwnerAddr = Mux(ucReadValid, ucReadAddr, ucWriteAddr)
@@ -478,28 +609,97 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val chooseUcProbe = ucProbePending && !ucProbeInFlight && lookupHasCredit &&
     !lookupSetBusy(ucProbeSet) && !array.io.write.valid
 
+  val otherLookupSelected =
+    (((chooseI || chooseD) && !chosenUncache) ||
+      chooseStbLookup || chooseUcProbe)
+  val otherLookupSet = Mux(chooseUcProbe, ucProbeSet, Mux(chooseStbLookup,
+    stbAddr(stbLookupSlot)(
+      l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits),
+    Mux(chooseD, dReqSet, iReqSet)))
+
+  val prefetchIssueBlock = prefetchIssueBits.addr(XLEN - 1, l2BlockOffBits)
+  val prefetchIssueSet = prefetchIssueBits.addr(
+    l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+  val prefetchIssueMshrSetConflict = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && mshrAddr(i)(
+      l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) === prefetchIssueSet
+  )).asUInt.orR
+  val prefetchIssueStbSetConflict = VecInit((0 until stbCount).map(i =>
+    stbValid(i) && stbAddr(i)(
+      l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) === prefetchIssueSet
+  )).asUInt.orR
+  val prefetchIssueEbConflict = ebValid &&
+    ebAddr(XLEN - 1, l2BlockOffBits) === prefetchIssueBlock
+  val prefetchCheckBlocked = uncacheAdmissionLocked ||
+    (iCancelPending && prefetchIssueBits.isInstruction) ||
+    hasPurePrefetchMshr || freeMshrCount < 3.U ||
+    lookupOccupancy >= 3.U || lookupSetBusy(prefetchIssueSet) ||
+    prefetchIssueMshrSetConflict || prefetchIssueStbSetConflict ||
+    prefetchIssueEbConflict ||
+    (otherLookupSelected && otherLookupSet === prefetchIssueSet) ||
+    (array.io.write.valid && array.io.write.bits.set === prefetchIssueSet)
+
+  when(prefetchIssueValid && !prefetchGrantValid) {
+    prefetchIssueValid := false.B
+    when(!prefetchCheckBlocked) {
+      prefetchGrantValid := true.B
+      prefetchGrantBits := prefetchIssueBits
+      prefetchGrantEpoch := prefetchIssueEpoch
+    }
+  }
+  when(uncacheAdmissionLocked ||
+      (iCancelPending && prefetchIssueBits.isInstruction)) {
+    prefetchIssueValid := false.B
+  }
+  when(uncacheAdmissionLocked ||
+      (iCancelPending && prefetchGrantBits.isInstruction)) {
+    prefetchGrantValid := false.B
+  }
+
+  val prefetchSet = prefetchGrantBits.addr(
+    l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+  // The final Array-select stage contains only registered candidate state,
+  // fixed priority, and the mandatory single-set Array collision guard.
+  val prefetchGrantSuperseded =
+    (otherLookupSelected && otherLookupSet === prefetchSet) ||
+    (array.io.write.valid && array.io.write.bits.set === prefetchSet)
+  val choosePrefetch = prefetchGrantValid && !prefetchGrantSuperseded &&
+    !chooseUcProbe && !chooseStbLookup && !chooseI && !chooseD
+  when(prefetchGrantValid &&
+      (prefetchGrantSuperseded ||
+        (choosePrefetch && array.io.read.req.ready))) {
+    prefetchGrantValid := false.B
+  }
+
   array.io.read.req.valid := ((chooseI || chooseD) && !chosenUncache) || chooseStbLookup ||
-    chooseUcProbe
+    chooseUcProbe || choosePrefetch
   array.io.read.req.bits.set := Mux(chooseUcProbe, ucProbeSet, Mux(chooseStbLookup,
     stbAddr(stbLookupSlot)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits),
-    Mux(chooseD, dReqSet, iReqSet)))
+    Mux(choosePrefetch, prefetchSet, Mux(chooseD, dReqSet, iReqSet))))
   lookupToken.source := Mux(chooseUcProbe,
     Mux(ucReadValid, ucReadSource, L2PortSource.dcache),
-    Mux(chooseD, L2PortSource.dcache, L2PortSource.icache))
+    Mux(choosePrefetch, !prefetchGrantBits.isInstruction,
+      Mux(chooseD, L2PortSource.dcache, L2PortSource.icache)))
   lookupToken.id := Mux(chooseUcProbe, Mux(ucReadValid, ucReadId, ucWriteId),
-    Mux(chooseD, dReqEntryBits.id, iReqEntryBits.id))
+    Mux(choosePrefetch, 0.U, Mux(chooseD, dReqEntryBits.id, iReqEntryBits.id)))
   lookupToken.addr := Mux(chooseUcProbe, ucProbeAddr, Mux(chooseStbLookup,
-    stbAddr(stbLookupSlot), Mux(chooseD, dReqEntryBits.addr, iReqEntryBits.addr)))
+    stbAddr(stbLookupSlot), Mux(choosePrefetch, prefetchGrantBits.addr,
+      Mux(chooseD, dReqEntryBits.addr, iReqEntryBits.addr))))
   lookupToken.isStb := chooseStbLookup
   lookupToken.isUncacheProbe := chooseUcProbe
+  lookupToken.isPrefetch := choosePrefetch
   lookupToken.cancelled := chooseI && io.icache.cancel
+  lookupToken.prefetchEpoch := Mux(choosePrefetch &&
+    prefetchGrantBits.isInstruction, prefetchGrantEpoch, 0.U)
   lookupToken.stbSlot := stbLookupSlot
 
   // External ready depends only on registered boundary-level state.
   io.icache.req.ready := array.io.initDone && !iReqEntryValid && !uncacheAdmissionLocked
   io.dcache.read.req.ready := array.io.initDone && !dReqEntryValid && !uncacheAdmissionLocked
-  val iInternalAccept = chooseI && Mux(chosenUncache, true.B, array.io.read.req.fire)
-  val dInternalAccept = chooseD && Mux(chosenUncache, true.B, array.io.read.req.fire)
+  val iInternalAccept = chooseIPromotion ||
+    (chooseI && Mux(chosenUncache, true.B, array.io.read.req.fire))
+  val dInternalAccept = chooseDPromotion ||
+    (chooseD && Mux(chosenUncache, true.B, array.io.read.req.fire))
   when(io.icache.req.fire) {
     iReqEntryBits := io.icache.req.bits
     iReqEntryValid := true.B
@@ -516,6 +716,22 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   }
   when(dInternalAccept) {
     dReqEntryValid := false.B
+  }
+  when(choosePromotion) {
+    mshrPrefetch(promoteMshr) := false.B
+    mshrSource(promoteMshr) := Mux(chooseDPromotion,
+      L2PortSource.dcache, L2PortSource.icache)
+    mshrId(promoteMshr) := Mux(chooseDPromotion,
+      dReqEntryBits.id, iReqEntryBits.id)
+    mshrSendBeat(promoteMshr) := 0.U
+    mshrResponseQueued(promoteMshr) := false.B
+    mshrResponseAck(promoteMshr) := false.B
+    when(chooseIPromotion) {
+      iActive := true.B
+      iKilled := false.B
+      iActiveMshr := promoteMshr
+      iActiveHasMshr := true.B
+    }
   }
 
   // Raw cancel is sampled into local state. It never drives Array/CAM control
@@ -549,6 +765,9 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iCancelPending := true.B
     iCancelClearEntry := iReqEntryValid && !iInternalAccept
     iCancelKillActive := iActive || iInternalAccept
+  }
+  when(iCancelPulse) {
+    iPrefetchEpoch := iPrefetchEpoch + 1.U
   }
 
   when(array.io.read.req.fire) {
@@ -705,16 +924,50 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   }
 
   // Bridge读事务：等待EB的MSHR不能发AR；uncache只会在排空后出现。
-  val mshrReadVec = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
-    !mshrReadIssued(i) && !mshrWaitEb(i)))
-  val hasMshrRead = mshrReadVec.asUInt.orR
-  val bridgeReadMshr = PriorityEncoder(mshrReadVec)
+  val cancelPurePrefetch = VecInit((0 until l2MshrEntries).map { i =>
+    val slotSet = mshrAddr(i)(
+      l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+    val boundarySetConflict =
+      (iReqEntryValid && !iReqEntryBits.uncache && iReqSet === slotSet) ||
+      (dReqEntryValid && !dReqEntryBits.uncache && dReqSet === slotSet) ||
+      (dWriteEntryValid && cacheLineWrite &&
+        dWriteEntryBits.addr(
+          l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) === slotSet)
+    mshrValid(i) && mshrPrefetch(i) && !mshrReadIssued(i) &&
+      !promoteMask(i) &&
+      (uncacheAdmissionLocked || boundarySetConflict ||
+        (iCancelPending && mshrSource(i) === L2PortSource.icache))
+  })
+  for (i <- 0 until l2MshrEntries) {
+    when(cancelPurePrefetch(i)) {
+      mshrValid(i) := false.B
+      mshrPrefetch(i) := false.B
+    }
+  }
+  val demandMshrReadVec = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && !mshrPrefetch(i) &&
+      !mshrReadIssued(i) && !mshrWaitEb(i)))
+  val prefetchMshrReadVec = VecInit((0 until l2MshrEntries).map(i =>
+    mshrValid(i) && mshrPrefetch(i) && !cancelPurePrefetch(i) &&
+      !mshrReadIssued(i) && !mshrWaitEb(i)))
+  val hasDemandMshrRead = demandMshrReadVec.asUInt.orR
+  val hasPrefetchMshrRead = prefetchMshrReadVec.asUInt.orR
+  val demandReadMshr = PriorityEncoder(demandMshrReadVec)
+  val prefetchReadMshr = PriorityEncoder(prefetchMshrReadVec)
+  val registeredDemandWork = pendingCacheableBoundary || iActive ||
+    stbValid.asUInt.orR || ebValid || lookupTokenD1Valid ||
+    lookupTokenD2Valid || resultQueue.io.count =/= 0.U
+  val prefetchBridgeMayQueue = hasPrefetchMshrRead &&
+    !hasDemandMshrRead && !registeredDemandWork && !uncacheAdmissionLocked
+  val bridgeReadMshr = Mux(hasDemandMshrRead,
+    demandReadMshr, prefetchReadMshr)
   val bridgeReadQueue = Module(new Queue(new L2BridgeReadCmd, 1,
     pipe = false, flow = false))
   bridge.io.client.read.req <> bridgeReadQueue.io.deq
-  bridgeReadQueue.io.enq.valid := hasMshrRead || (ucReadValid && !ucReadIssued && ucCoherenceReady)
+  bridgeReadQueue.io.enq.valid := hasDemandMshrRead || prefetchBridgeMayQueue ||
+    (ucReadValid && !ucReadIssued && ucCoherenceReady)
   bridgeReadQueue.io.enq.bits := 0.U.asTypeOf(new L2BridgeReadCmd)
-  when(hasMshrRead) {
+  when(hasDemandMshrRead || prefetchBridgeMayQueue) {
     bridgeReadQueue.io.enq.bits.owner.source := L2BridgeReadOwner.mshr
     bridgeReadQueue.io.enq.bits.owner.slot := bridgeReadMshr
     bridgeReadQueue.io.enq.bits.addr := mshrAddr(bridgeReadMshr)
@@ -758,10 +1011,12 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   // 每个L1端口独立从LFB取已到达beat，DDR接收不依赖L1 ready。
   val iSendVec = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
-    mshrSource(i) === L2PortSource.icache && !mshrResponseQueued(i) &&
+    !mshrPrefetch(i) && mshrSource(i) === L2PortSource.icache &&
+    !mshrResponseQueued(i) &&
     lfbBeatValid(i)(mshrSendBeat(i))))
   val dSendVec = VecInit((0 until l2MshrEntries).map(i => mshrValid(i) &&
-    mshrSource(i) === L2PortSource.dcache && !mshrResponseQueued(i) &&
+    !mshrPrefetch(i) && mshrSource(i) === L2PortSource.dcache &&
+    !mshrResponseQueued(i) &&
     lfbBeatValid(i)(mshrSendBeat(i))))
   val hasISend = iSendVec.asUInt.orR
   val hasDSend = dSendVec.asUInt.orR
@@ -796,10 +1051,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iActiveHasMshr := false.B
   }
 
+  iPrefetchTrainValid := false.B
+  dPrefetchTrainValid := false.B
   when(io.icache.resp.fire) {
     iLrbValid := false.B
     when(iLrbFromMshr && iLrbBits.last) {
       mshrResponseAck(iLrbMshr) := true.B
+    }
+    when(iLrbBits.last && !iLrbFromUncache && !io.icache.cancel) {
+      iPrefetchTrainValid := true.B
+      iPrefetchTrainAddr := iLrbAddr
     }
     when(iLrbFromUncache) {
       ucReadValid := false.B
@@ -816,6 +1077,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     when(dLrbFromMshr && dLrbBits.last) {
       mshrResponseAck(dLrbMshr) := true.B
     }
+    when(dLrbBits.last && !dLrbFromUncache) {
+      dPrefetchTrainValid := true.B
+      dPrefetchTrainAddr := dLrbAddr
+    }
     when(dLrbFromUncache) {
       ucReadValid := false.B
     }
@@ -829,6 +1094,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iLrbBits.last := bridge.io.client.read.beat.bits.last
     iLrbFromMshr := false.B
     iLrbFromUncache := true.B
+    iLrbAddr := ucReadAddr
   }.elsewhen(resultReadResponse && head.token.source === L2PortSource.icache && !iKilled && !iCancelPending) {
     iLrbValid := true.B
     iLrbBits.id := head.token.id
@@ -837,6 +1103,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iLrbBits.last := true.B
     iLrbFromMshr := false.B
     iLrbFromUncache := false.B
+    iLrbAddr := head.token.addr
   }.elsewhen(iMshrLoad) {
     val slot = iSendMshr
     val beat = mshrSendBeat(slot)
@@ -848,6 +1115,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iLrbFromMshr := true.B
     iLrbFromUncache := false.B
     iLrbMshr := slot
+    iLrbAddr := mshrAddr(slot)
     when(beat === (l2BurstBeats - 1).U) {
       mshrResponseQueued(slot) := true.B
     }.otherwise {
@@ -863,6 +1131,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     dLrbBits.last := bridge.io.client.read.beat.bits.last
     dLrbFromMshr := false.B
     dLrbFromUncache := true.B
+    dLrbAddr := ucReadAddr
   }.elsewhen(resultReadResponse && head.token.source === L2PortSource.dcache) {
     dLrbValid := true.B
     dLrbBits.id := head.token.id
@@ -871,6 +1140,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     dLrbBits.last := true.B
     dLrbFromMshr := false.B
     dLrbFromUncache := false.B
+    dLrbAddr := head.token.addr
   }.elsewhen(dMshrLoad) {
     val slot = dSendMshr
     val beat = mshrSendBeat(slot)
@@ -882,6 +1152,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     dLrbFromMshr := true.B
     dLrbFromUncache := false.B
     dLrbMshr := slot
+    dLrbAddr := mshrAddr(slot)
     when(beat === (l2BurstBeats - 1).U) {
       mshrResponseQueued(slot) := true.B
     }.otherwise {
@@ -928,8 +1199,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     }
   }
   for (i <- 0 until l2MshrEntries) {
-    when(mshrValid(i) && mshrInstalled(i) && mshrResponseAck(i)) {
+    val normalDone = !mshrPrefetch(i) && mshrInstalled(i) && mshrResponseAck(i)
+    val prefetchDone = mshrPrefetch(i) && mshrInstalled(i) && !promoteMask(i)
+    when(mshrValid(i) && (normalDone || prefetchDone)) {
       mshrValid(i) := false.B
+      mshrPrefetch(i) := false.B
       // Normal I misses release ownership on the accepted last response beat.
       // Only the exact cancelled owner may release it from MSHR cleanup.
       when(mshrSource(i) === L2PortSource.icache && iActive && iKilled &&

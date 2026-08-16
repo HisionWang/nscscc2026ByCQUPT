@@ -8,19 +8,31 @@ import org.scalatest.matchers.should.Matchers
 class L2WaysParameterSpec extends AnyFlatSpec with Matchers {
   behavior of "L2 ways parameter"
 
-  private def params(ways: Int): Parameters = new Parameters(Map(
+  private def params(ways: Int, mode: Int): Parameters = new Parameters(Map(
     DebugConfigKeys.EnableDifftest -> true,
-    CoreConfigKeys.L2Ways -> ways))
+    CoreConfigKeys.L2Ways -> ways,
+    CoreConfigKeys.L2Prefetch -> mode))
 
-  Seq(2, 4, 8, 16).foreach { ways =>
-    it should s"elaborate the complete L2 cache with $ways ways" in {
-      implicit val p: Parameters = params(ways)
-      val arrayVerilog = ChiselStage.emitSystemVerilog(new L2CacheArray)
-      val replacerVerilog = ChiselStage.emitSystemVerilog(new L2Replacer)
+  private val modes = Seq(
+    L2PrefetchMode.Disabled -> "disabled",
+    L2PrefetchMode.IOnly -> "I-only",
+    L2PrefetchMode.DOnly -> "D-only",
+    L2PrefetchMode.Hybrid -> "hybrid"
+  )
+
+  for {
+    ways <- Seq(2, 4, 8, 16)
+    (mode, modeName) <- modes
+  } {
+    it should s"elaborate the complete $ways-way L2 cache in $modeName mode" in {
+      implicit val p: Parameters = params(ways, mode)
       val cacheVerilog = ChiselStage.emitSystemVerilog(new L2Cache)
-      arrayVerilog should include ("module L2CacheArray")
-      replacerVerilog should include ("module L2Replacer")
       cacheVerilog should include ("module L2Cache")
+      if (mode == L2PrefetchMode.Disabled) {
+        cacheVerilog should not include "module L2PrefetchHub"
+      } else {
+        cacheVerilog should include ("module L2PrefetchHub")
+      }
     }
   }
 }

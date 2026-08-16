@@ -13,6 +13,19 @@ object DebugConfigKeys {
   val EnableDifftest = new Field[Boolean](true)
 }
 
+object L2PrefetchMode {
+  final val Disabled = 0
+  final val IOnly = 1
+  final val DOnly = 2
+  final val Hybrid = 3
+
+  val supported: Seq[Int] = Seq(Disabled, IOnly, DOnly, Hybrid)
+
+  def enablesI(mode: Int): Boolean = mode == IOnly || mode == Hybrid
+
+  def enablesD(mode: Int): Boolean = mode == DOnly || mode == Hybrid
+}
+
 object CoreConfigKeys {
   val FetchWidth = new Field[Int](4)
   val CtrlBlockWidth = new Field[Int](3)
@@ -36,6 +49,7 @@ object CoreConfigKeys {
 
   val BlockBytes = new Field[Int](64)
   val L2Ways = new Field[Int](4)
+  val L2Prefetch = new Field[Int](L2PrefetchMode.Disabled)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
   val IbufDepth = new Field[Int](8)
@@ -99,8 +113,13 @@ trait HasCoreParameters {
   // 统一L2 Cache参数独立于L1 I/D Cache参数。
   val l2Sets: Int = 512
   val l2Ways: Int = p(CoreConfigKeys.L2Ways)
+  val l2PrefetchMode: Int = p(CoreConfigKeys.L2Prefetch)
   val l2BlockBytes: Int = 64
   require(Seq(2, 4, 8, 16).contains(l2Ways), "L2 ways must be one of 2, 4, 8, 16")
+  require(L2PrefetchMode.supported.contains(l2PrefetchMode),
+    "L2 prefetch mode must be one of 0 (disabled), 1 (I-only), 2 (D-only), 3 (hybrid)")
+  val l2IPrefetchEnabled: Boolean = L2PrefetchMode.enablesI(l2PrefetchMode)
+  val l2DPrefetchEnabled: Boolean = L2PrefetchMode.enablesD(l2PrefetchMode)
   val l2MshrEntries: Int = 4
   val l2LrbEntries: Int = 2
   val l2IStbEntries: Int = 1

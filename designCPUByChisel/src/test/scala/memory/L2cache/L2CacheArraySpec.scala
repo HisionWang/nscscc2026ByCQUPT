@@ -10,7 +10,9 @@ class L2CacheArraySpec extends AnyFlatSpec with ChiselScalatestTester with Match
   behavior of "L2CacheArray"
 
   private implicit val p: Parameters =
-    new Parameters(Map(DebugConfigKeys.EnableDifftest -> true))
+    new Parameters(Map(
+      DebugConfigKeys.EnableDifftest -> true,
+      CoreConfigKeys.L2Ways -> 8))
 
   private def idle(dut: L2CacheArray): Unit = {
     dut.io.read.req.valid.poke(false.B)

@@ -10,7 +10,9 @@ class L2MetadataBlackBoxSpec extends AnyFlatSpec with Matchers {
 
   it should "instantiate eight L2_meta_512x19 memories" in {
     implicit val p: Parameters =
-      new Parameters(Map(DebugConfigKeys.EnableDifftest -> false))
+      new Parameters(Map(
+        DebugConfigKeys.EnableDifftest -> false,
+        CoreConfigKeys.L2Ways -> 8))
     val verilog = ChiselStage.emitSystemVerilog(new L2CacheArray)
 
     verilog should include("L2_meta_512x19")
@@ -20,7 +22,9 @@ class L2MetadataBlackBoxSpec extends AnyFlatSpec with Matchers {
 
   it should "keep both FPGA BRAM read enables asserted" in {
     implicit val p: Parameters =
-      new Parameters(Map(DebugConfigKeys.EnableDifftest -> false))
+      new Parameters(Map(
+        DebugConfigKeys.EnableDifftest -> false,
+        CoreConfigKeys.L2Ways -> 8))
     val verilog = ChiselStage.emitSystemVerilog(new L2CacheArray)
     val dataEnable =
       "(?s)module L2DataRAM\\(.*?assign memory_enb = 1'h1;.*?endmodule".r

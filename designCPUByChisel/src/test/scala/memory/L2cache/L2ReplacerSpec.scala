@@ -10,7 +10,9 @@ class L2ReplacerSpec extends AnyFlatSpec with ChiselScalatestTester with Matcher
   behavior of "L2Replacer"
 
   private implicit val p: Parameters =
-    new Parameters(Map(DebugConfigKeys.EnableDifftest -> true))
+    new Parameters(Map(
+      DebugConfigKeys.EnableDifftest -> true,
+      CoreConfigKeys.L2Ways -> 8))
 
   private def resetDut(dut: L2Replacer): Unit = {
     dut.reset.poke(true.B)

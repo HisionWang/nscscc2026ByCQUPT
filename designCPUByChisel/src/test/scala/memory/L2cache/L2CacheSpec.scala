@@ -469,25 +469,18 @@ class L2CacheSpec
       dut.io.iReq.bits.addr.poke(BigInt("80002000", 16).U)
       dut.io.iReq.bits.size.poke(2.U)
       dut.io.iReq.bits.uncache.poke(false.B)
-      // Wait for the first request to leave the boundary entry, then queue
-      // one later request. It must not pass the outstanding uncache.
-      var entryWait = 0
-      while (!dut.io.iReq.ready.peek().litToBoolean && entryWait < 8) {
-        dut.clock.step()
-        entryWait += 1
-      }
-      dut.io.iReq.ready.expect(true.B)
-      dut.clock.step()
-      dut.io.iReq.valid.poke(false.B)
-      for (_ <- 0 until 3) {
+      // Once an uncache request owns the drain, the non-flowing boundary
+      // rejects younger cacheable requests until that transaction completes.
+      for (_ <- 0 until 4) {
         dut.io.iReq.ready.expect(false.B)
-        // The outstanding uncache may hold ARVALID; the queued cacheable line
-        // must not replace or bypass it.
+        // The outstanding uncache may hold ARVALID; the younger cacheable line
+        // must never replace or bypass it.
         if (dut.io.axi.ar.data.arvalid.peek().litToBoolean) {
           dut.io.axi.ar.data.araddr.expect(BigInt("1c00102c", 16).U)
         }
         dut.clock.step()
       }
+      dut.io.iReq.valid.poke(false.B)
     }
   }
 
@@ -591,6 +584,11 @@ class L2CacheSpec
         dut.io.dWriteReqValid.poke(true.B)
         dut.io.dWriteReqAddr.poke(addr.U)
         dut.io.dWriteReqKind.poke(L2WriteKind.putLine)
+        var boundaryWait = 0
+        while (!dut.io.dWriteReqReady.peek().litToBoolean && boundaryWait < 8) {
+          dut.clock.step()
+          boundaryWait += 1
+        }
         dut.io.dWriteReqReady.expect(true.B)
         dut.clock.step()
         readIndex += 2
