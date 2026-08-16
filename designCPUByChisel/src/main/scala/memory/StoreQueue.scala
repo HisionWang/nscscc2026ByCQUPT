@@ -136,10 +136,13 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.empty  := empty
   io.enqPtr := enqPtr.value
  
-  val count = enqPtr.distanceTo(deqPtr)
-  io.sqHasEntries := count
+  //val count = enqPtr.distanceTo(deqPtr)
+  //io.sqHasEntries := count
+  // 独立的表项计数寄存器
+  val sqHasEntriesReg = RegInit(0.U(log2Ceil(SqSize + 1).W))
+  io.sqHasEntries := sqHasEntriesReg
  
-  // ★ 新增：SQ → LQ 转发信息连线
+  // SQ → LQ 转发信息连线
   for (i <- 0 until SqSize) {
     val e = entries(i)
     io.sqForwardInfo(i).paddr        := e.paddr
@@ -425,4 +428,11 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     entries(deqPtr.value).valid := false.B
     deqPtr := deqPtr + 1.U
   }
+  // 维护表项计数寄存器
+  when(enqFire && !canDeq) {
+    sqHasEntriesReg := sqHasEntriesReg + 1.U
+  }.elsewhen(!enqFire && canDeq) {
+    sqHasEntriesReg := sqHasEntriesReg - 1.U
+  }
+
 }

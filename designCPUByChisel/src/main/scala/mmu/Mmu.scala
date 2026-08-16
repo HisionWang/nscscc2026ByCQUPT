@@ -109,7 +109,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
     // 保留单请求锁，但允许响应fire的同一拍接收下一条请求。
     val respFire     = io.toIcache.fire
-    val canAcceptReq = (isIdle || respFire) && !flush
+    val canAcceptReq = (isIdle || respFire) // Hision && !flush
 
     tlbReq.valid        := canAcceptReq && io.fromIcache.valid && nextNeedSearch
     tlbReq.bits.vppn    := nextVaddr(31, 13)
@@ -119,12 +119,12 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
     io.fromIcache.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
 
-    tlbResp.ready := isBusy && io.toIcache.ready && !flush
+    tlbResp.ready := isBusy && io.toIcache.ready // Hision && !flush
     tlb.io.search(0).flush := flush
 
     // Response
     /* TLB <> MMU <> ICACHE */
-    io.toIcache.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) && !flush
+    io.toIcache.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) // Hision && !flush
     val resp       = tlbResp.bits
     val tlbError   = WireDefault(emptyError())
     val tlbOut     = WireDefault(0.U.asTypeOf(new MmuToIcache))
@@ -225,7 +225,7 @@ class Mmu(implicit p: Parameters) extends NSModule {
     val tlbResp = tlb.io.search(1).resp
 
     val respFire     = io.toMem.fire
-    val canAcceptReq = (isIdle || respFire) && !flush
+    val canAcceptReq = (isIdle || respFire) // Hision && !flush
 
     tlbReq.valid        := canAcceptReq && io.fromMem.valid && nextNeedSearch
     tlbReq.bits.vppn    := nextVaddr(31, 13)
@@ -235,10 +235,10 @@ class Mmu(implicit p: Parameters) extends NSModule {
 
     io.fromMem.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
 
-    tlbResp.ready := isBusy && io.toMem.ready && !flush
+    tlbResp.ready := isBusy && io.toMem.ready  // Hision && !flush
     tlb.io.search(1).flush := flush
 
-    io.toMem.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) && !flush
+    io.toMem.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) // Hision && !flush
 
     val resp     = tlbResp.bits
     val tlbError = WireDefault(emptyDataError())

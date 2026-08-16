@@ -18,7 +18,7 @@ object CoreConfigKeys {
   val CtrlBlockWidth = new Field[Int](3)
 
   val BtbSize   = new Field[Int](256)
-  val PhtSize   = new Field[Int](1024)
+  val PhtSize   = new Field[Int](256)
   val RasSize   = new Field[Int](8)
 
   val useNewBPU = new Field[Int](1)
@@ -29,11 +29,13 @@ object CoreConfigKeys {
 
   val NWaysI = new Field[Int](2)
   val NSetsI = new Field[Int](64)
+  
   val NWaysD = new Field[Int](2)
   val NSetsD = new Field[Int](64)
-  // L1 I/D Cache共用固定64B cache line，必须与L2一致。
+  
+
   val BlockBytes = new Field[Int](64)
-  val L2Ways = new Field[Int](8)
+  val L2Ways = new Field[Int](4)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
   val IbufDepth = new Field[Int](8)

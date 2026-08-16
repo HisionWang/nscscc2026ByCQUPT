@@ -110,8 +110,11 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     io.full   := full
     io.empty  := empty
     io.enqPtr := enqPtr.value
-    val count = enqPtr.distanceTo(deqPtr)
-    io.lqHasEntries := count
+    //val count = enqPtr.distanceTo(deqPtr)
+    //io.lqHasEntries := count
+    // 新增：独立的表项计数寄存器
+    val lqHasEntriesReg = RegInit(0.U(log2Ceil(LqSize + 1).W))
+    io.lqHasEntries := lqHasEntriesReg
    
     // ================================================================
     //  1. 入队
@@ -494,6 +497,12 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       deqPtr := deqPtr + 1.U
     }
 
+    when(enqFire && !canDeq) {
+      lqHasEntriesReg := lqHasEntriesReg + 1.U
+    }.elsewhen(!enqFire && canDeq) {
+      lqHasEntriesReg := lqHasEntriesReg - 1.U
+    }
+
   }else if(LoadQVersion == 1){
     // ================================================================
     //  存储体 + 指针
@@ -514,8 +523,10 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     io.full   := full
     io.empty  := empty
     io.enqPtr := enqPtr.value
-    val count = enqPtr.distanceTo(deqPtr)
-    io.lqHasEntries := count
+    //val count = enqPtr.distanceTo(deqPtr)
+    //io.lqHasEntries := count
+    val lqHasEntriesReg = RegInit(0.U(log2Ceil(LqSize + 1).W))
+    io.lqHasEntries := lqHasEntriesReg
    
     // ================================================================
     //  1. 入队
@@ -868,6 +879,13 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
       entries(deqPtr.value).valid := false.B
       deqPtr := deqPtr + 1.U
     }
+
+    when(enqFire && !canDeq) {
+      lqHasEntriesReg := lqHasEntriesReg + 1.U
+    }.elsewhen(!enqFire && canDeq) {
+      lqHasEntriesReg := lqHasEntriesReg - 1.U
+    }
+
   }else if(LoadQVersion == 2){
     // ================================================================
     //  切断了forward和req的联系
@@ -888,8 +906,10 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     io.full   := full
     io.empty  := empty
     io.enqPtr := enqPtr.value
-    val count = enqPtr.distanceTo(deqPtr)
-    io.lqHasEntries := count
+    //val count = enqPtr.distanceTo(deqPtr)
+    //io.lqHasEntries := count
+    val lqHasEntriesReg = RegInit(0.U(log2Ceil(LqSize + 1).W))
+    io.lqHasEntries := lqHasEntriesReg
    
     // ================================================================
     //  1. 入队
@@ -1212,6 +1232,12 @@ class LoadQueue(implicit p: Parameters) extends NSModule {
     when(canDeq) {
       entries(deqPtr.value).valid := false.B
       deqPtr := deqPtr + 1.U
+    }
+
+    when(enqFire && !canDeq) {
+      lqHasEntriesReg := lqHasEntriesReg + 1.U
+    }.elsewhen(!enqFire && canDeq) {
+      lqHasEntriesReg := lqHasEntriesReg - 1.U
     }
   
   

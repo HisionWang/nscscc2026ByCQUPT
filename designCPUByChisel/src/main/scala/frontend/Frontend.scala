@@ -18,9 +18,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
     // ========== 后端到前端的反馈 ==========
     val redirect       = Flipped(new RedirectIO)
     val bpuUpdateBr    = Input(new BpuUpdateReq)
-    //val invalidateICache = Input(Bool())
     val idle           = Input(Bool())
-    //val brMsRedirect   = Flipped (ValidIO( new brMispredictRedirect) )    // 误预测重定向
     val redirectInfo    = Flipped ( ValidIO( new redirectInfoToModule )   ) // 误预测重定向
     //MMU
     val mmu = new MMURead
@@ -43,9 +41,12 @@ class Frontend(implicit p: Parameters) extends NSModule {
 
   val predecoder = Module(new Predecoder)
   val ibuffer  = Module(new IBF)
-  val frontendRedirectValid  = predecoder.io.out.bits.frontendRedirect.valid && predecoder.io.out.valid
+  
+  // 【修改】：解耦有效信号。因为重定向信号被打了一拍，发送重定向这拍时 io.out.valid 会被阻断。
+  val frontendRedirectValid  = predecoder.io.out.bits.frontendRedirect.valid
   val frontendRedirectTarget = predecoder.io.out.bits.frontendRedirect.target
   val backendRedirectValid = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect
+  
   diffDontTouch(frontendRedirectValid)
   diffDontTouch(frontendRedirectTarget)
   diffDontTouch(backendRedirectValid)
@@ -58,7 +59,6 @@ class Frontend(implicit p: Parameters) extends NSModule {
   bpu.io.predictFire := ifu.io.predictFire
 
   ifu.io.predictResp := bpu.io.predictResp
-
 
   bpu.io.update_pd := predecoder.io.out.bits.bpuUpdate
   // 只有当预译码输出有效时才更新
@@ -73,26 +73,18 @@ class Frontend(implicit p: Parameters) extends NSModule {
   bpu.io.rasRestoreTop  := Mux(backendRedirectValid,
                                 io.redirect.rtype,  // 复用rtype字段传递rasTop
                                 0.U)
-  // 注意: 这里简化了rasTop的传递, 实际应在RedirectIO中增加rasTop字段
-  // 或者通过后端redirect的bpuMeta来恢复。当前用rtype字段暂存, 后续需修改。
  
   // ==================== IFU ↔ ICache ====================
   // 请求
   icache.io.cpu_req.valid := ifu.io.icache_req.valid
   icache.io.cpu_req.bits.addr := ifu.io.icache_req.addr
   ifu.io.icache_req.ready := icache.io.cpu_req.ready
-  icache.io.redirect := ifu.io.icache_req.flush               //|| io.invalidateICache
+  icache.io.redirect := ifu.io.icache_req.flush
   icache.io.invalidate := io.redirectInfo.bits.invalidIcache
-
-  // 响应 剔除
-  //ifu.io.icache_resp <> icache.io.icache_resp
-  
 
   // ==================== IFU ↔ bpuQ ====================
   bpuInfoQueue.io.enq <> ifu.io.bpuInfoQueuEnq
   bpuInfoQueue.io.flush := backendRedirectValid || frontendRedirectValid
-
-
 
   // ==================== bpuQ ↔ pd ====================
   val hasBpuInfo = bpuInfoQueue.io.deq.valid
@@ -100,44 +92,33 @@ class Frontend(implicit p: Parameters) extends NSModule {
   bpuInfoQueue.io.deq.ready := processResp && predecoder.io.icacheResp.ready
 
   predecoder.io.bpuInfo      := bpuInfoQueue.io.deq.bits
-  
   predecoder.io.bpuInfoValid := hasBpuInfo
-
-
 
   // ==================== icache ↔ pd ====================
   icache.io.icache_resp.ready := predecoder.io.icacheResp.ready
-
   predecoder.io.icacheResp <> icache.io.icache_resp
 
   //使用一下BPU的信息
-    for (i <- 0 until fetchWidth) {
-        predecoder.io.icacheResp.bits.instvalids(i) := icache.io.icache_resp.bits.instvalids(i) && hasBpuInfo &&
-                                                      ( 
-                                                        !bpuInfoQueue.io.deq.bits.taken || 
-                                                        (bpuInfoQueue.io.deq.bits.taken && i.U <= bpuInfoQueue.io.deq.bits.takenOffset)
-                                                      )
-    }
-
-                                                
-
+  for (i <- 0 until fetchWidth) {
+      predecoder.io.icacheResp.bits.instvalids(i) := icache.io.icache_resp.bits.instvalids(i) && hasBpuInfo &&
+                                                    ( 
+                                                      !bpuInfoQueue.io.deq.bits.taken || 
+                                                      (bpuInfoQueue.io.deq.bits.taken && i.U <= bpuInfoQueue.io.deq.bits.takenOffset)
+                                                    )
+  }
 
   predecoder.io.flush         := backendRedirectValid || frontendRedirectValid
 
- 
-  // ==================== pd → IBuffer ====================剔除
+  // ==================== pd → IBuffer ====================
   ibuffer.io.in <> predecoder.io.out
  
   // ==================== IBuffer → 后端 ====================
   io.out <> ibuffer.io.out
   
- 
   // ==================== 后端反馈 → IFU ====================
   ifu.io.redirectInfo       <> io.redirectInfo
  
   // ==================== IBuffer flush ====================
-  // 前端redirect: 不清空IBuffer (错误指令入队前已截断)
-  // 后端redirect: 清空IBuffer
   ibuffer.io.flush := backendRedirectValid
  
   // ==================== L2 原生读接口 ====================

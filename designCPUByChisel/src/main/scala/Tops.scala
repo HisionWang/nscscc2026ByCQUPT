@@ -192,11 +192,12 @@ object CoreGen extends App {
        |// BPU  : useNewBPU     =  ${config(CoreConfigKeys.useNewBPU)}, 
        |//        btbSize       =  ${config(CoreConfigKeys.BtbSize)}, 
        |//        phtSize       =  ${config(CoreConfigKeys.PhtSize)}
-       |// Cache: usePIPT       =  ${config(CoreConfigKeys.usePIPT)}, 
-       |//        nSetsI        =  ${config(CoreConfigKeys.NSetsI)}, 
+       |// Cache: L2Ways        =  ${config(CoreConfigKeys.L2Ways)}, 
+       |//        usePIPT       =  ${config(CoreConfigKeys.usePIPT)}, 
        |//        nWaysI        =  ${config(CoreConfigKeys.NWaysI)}, 
-       |//        nSetsD        =  ${config(CoreConfigKeys.NSetsD)}, 
+       |//        nSetsI        =  ${config(CoreConfigKeys.NSetsI)}, 
        |//        nWaysD        =  ${config(CoreConfigKeys.NWaysD)}, 
+       |//        nSetsD        =  ${config(CoreConfigKeys.NSetsD)}, 
        |//        nMshrEntries  =  ${config(CoreConfigKeys.NMshrEntries)}
        |// Pipe : ibufDepth     =  ${config(CoreConfigKeys.IbufDepth)}, 
        |//        RobSize       =  ${config(CoreConfigKeys.RobSize)}, 
