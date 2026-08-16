@@ -32,6 +32,7 @@ class L2ResultQueueSpec extends AnyFlatSpec with ChiselScalatestTester with Matc
     dut.io.enq.bits.token.prefetchEpoch.poke(0.U)
     dut.io.enq.bits.token.cancelled.poke(false.B)
     dut.io.enq.bits.token.stbSlot.poke(0.U)
+    dut.io.enq.bits.token.busySlot.poke(0.U)
     dut.io.enq.bits.hit.poke(true.B)
     dut.io.enq.bits.way.poke(0.U)
     dut.io.enq.bits.oldValid.poke(true.B)

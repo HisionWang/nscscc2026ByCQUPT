@@ -120,7 +120,7 @@ trait HasCoreParameters {
     "L2 prefetch mode must be one of 0 (disabled), 1 (I-only), 2 (D-only), 3 (hybrid)")
   val l2IPrefetchEnabled: Boolean = L2PrefetchMode.enablesI(l2PrefetchMode)
   val l2DPrefetchEnabled: Boolean = L2PrefetchMode.enablesD(l2PrefetchMode)
-  val l2MshrEntries: Int = 4
+  val l2MshrEntries: Int = 3
   val l2LrbEntries: Int = 2
   val l2IStbEntries: Int = 1
   val l2DStbEntries: Int = 2
