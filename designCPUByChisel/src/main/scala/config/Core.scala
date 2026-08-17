@@ -39,7 +39,7 @@ object CoreConfigKeys {
 
   //0:原始的 1:优化出wb的减一级流水 2:forward不再到req，而是到表项，缓解时序
   val LoadQVersion = new Field[Int](2)
-  val EnableLoadQExecWakeup = new Field[Boolean](true)
+  val EnableLoadQExecWakeup = new Field[Boolean](false)
 
   val NWaysI = new Field[Int](2)
   val NSetsI = new Field[Int](64)
