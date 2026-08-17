@@ -92,4 +92,8 @@ object Instructions {
   val TLBWR       = BitPat("b00000110010010000011000000000000")
   val TLBFILL     = BitPat("b00000110010010000011010000000000")
   val INVTLB      = BitPat("b00000110010010011???????????????")
+  
+  // custom instruction
+  val CUSTOM_ALU  = BitPat("b00000110010010011???????????????")
+
 }

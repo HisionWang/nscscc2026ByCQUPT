@@ -64,6 +64,7 @@ object AluOp {
   val srl   = 9.U(width.W)
   val sra   = 10.U(width.W)
   val pass2 = 11.U(width.W)
+  val custom = 12.U(width.W)
 }
 
 object BruOp {
@@ -78,6 +79,7 @@ object BruOp {
   val bge  = 7.U(width.W)
   val bltu = 8.U(width.W)
   val bgeu = 9.U(width.W)
+  val custom = 10.U(width.W)
 }
 
 object LsuOp {

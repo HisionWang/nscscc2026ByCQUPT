@@ -44,7 +44,7 @@ class redirectInfoToModule(implicit p: Parameters) extends NSBundle {
   // 重定向目标
   val target = UInt(XLEN.W)
 }
- 
+
 class BRU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val valid     = Input(Bool())
@@ -71,8 +71,20 @@ class BRU(implicit p: Parameters) extends NSModule {
   val ge  = !lt
   val ltu = src1 < src2
   val geu = !ltu
- 
+
   // ── 分支是否 taken（实际值） ──
+  val customUnit = if (customInstrEnable) {
+    val unit = Module(new CustomBruUnit)
+    unit.io.valid := io.valid && op === BruOp.custom
+    unit.io.op := op
+    unit.io.inst := io.uop.inst
+    unit.io.rs1 := src1
+    unit.io.rs2 := src2
+    Some(unit)
+  } else {
+    None
+  }
+
   val branchTaken = MuxCase(false.B, Seq(
     (op === BruOp.jirl) -> true.B,
     (op === BruOp.b)    -> true.B,
@@ -83,7 +95,7 @@ class BRU(implicit p: Parameters) extends NSModule {
     (op === BruOp.bge)  -> ge,
     (op === BruOp.bltu) -> ltu,
     (op === BruOp.bgeu) -> geu
-  ))
+  ) ++ customUnit.toSeq.map(unit => (op === BruOp.custom) -> unit.io.taken))
  
   // ── 目标地址计算（实际值） ──
   val imm          = io.uop.imm

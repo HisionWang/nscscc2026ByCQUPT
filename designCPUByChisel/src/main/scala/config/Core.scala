@@ -21,6 +21,7 @@ case class IQParams(
  
 // 4. 定义"参数特质" - 通过CPUConfigKeys对象访问参数键
 trait HasCoreParameters {
+<<<<<<< Updated upstream
   implicit val p: Parameters
   val XLEN : Int = 32
   // ============================================================
@@ -35,6 +36,11 @@ trait HasCoreParameters {
   val btbSize:  Int = 256
   val phtSize:  Int = 1024
   val rasSize:  Int = 8 
+=======
+  implicit def p: Parameters
+  val XLEN: Int = 32
+  val customInstrEnable: Boolean = false
+>>>>>>> Stashed changes
 
   val fetchBlockBits: Int = log2Ceil(fetchWidth * 4)
   val btbIndexBits: Int = log2Ceil(btbSize)
