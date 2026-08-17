@@ -46,6 +46,10 @@ class L2LookupResult(implicit p: Parameters) extends NSBundle {
   val oldDirty = Bool()
   val oldTag = UInt(l2TagBits.W)
   val oldData = UInt(l2LineBits.W)
+  val stbMatch = Bool()
+  val stbForwarded = Bool()
+  val mshrSetConflict = Bool()
+  val ebBlockConflict = Bool()
 }
 
 class L2Cache(implicit p: Parameters) extends NSModule {
@@ -192,18 +196,45 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   io.dcache.write.done.valid := dDoneValid
   io.dcache.write.done.bits := dDoneBits
 
-  val lookupBusy = Module(new L2LookupBusyScoreboard(queryPorts = 4 + stbCount))
+  val lookupBusy = Module(new L2LookupBusyScoreboard(queryPorts = 5 + stbCount))
   val iBusyQueryPort = 0
   val dBusyQueryPort = 1
   val ucBusyQueryPort = 2
   val prefetchBusyQueryPort = 3
-  val stbBusyQueryBase = 4
+  val dWriteBusyQueryPort = 4
+  val stbBusyQueryBase = 5
   val lookupToken = Wire(new L2LookupToken)
   lookupToken := 0.U.asTypeOf(new L2LookupToken)
   val lookupTokenD1 = RegEnable(lookupToken, 0.U.asTypeOf(new L2LookupToken), array.io.read.req.fire)
   val lookupTokenD1Valid = RegNext(array.io.read.req.fire, false.B)
   val lookupTokenD2 = RegEnable(lookupTokenD1, 0.U.asTypeOf(new L2LookupToken), lookupTokenD1Valid)
   val lookupTokenD2Valid = RegNext(lookupTokenD1Valid, false.B)
+
+  val cacheLineWrite = dWriteEntryBits.kind === L2WriteKind.putLine ||
+    dWriteEntryBits.kind === L2WriteKind.cleanLine
+  val uncacheWrite = dWriteEntryBits.kind === L2WriteKind.uncache
+
+  // Observe STB/MSHR/EB state beside the Array read. The wide CAM and data mux
+  // terminate at resultQueue instead of extending from its registered head.
+  val lookupHazard = Module(new L2LookupHazard)
+  lookupHazard.io.addr := lookupTokenD2.addr
+  lookupHazard.io.isStb := lookupTokenD2.isStb
+  lookupHazard.io.isUncacheProbe := lookupTokenD2.isUncacheProbe
+  lookupHazard.io.isPrefetch := lookupTokenD2.isPrefetch
+  for (i <- 0 until stbCount) {
+    lookupHazard.io.stbValid(i) := stbValid(i) && !stbInstalled(i)
+    lookupHazard.io.stbAddr(i) := stbAddr(i)
+    lookupHazard.io.stbData(i) := stbData(i)
+  }
+  lookupHazard.io.pendingWriteValid := dWriteEntryValid && cacheLineWrite
+  lookupHazard.io.pendingWriteAddr := dWriteEntryBits.addr
+  lookupHazard.io.pendingWriteData := dWriteEntryBits.data
+  for (i <- 0 until l2MshrEntries) {
+    lookupHazard.io.mshrValid(i) := mshrValid(i)
+    lookupHazard.io.mshrAddr(i) := mshrAddr(i)
+  }
+  lookupHazard.io.ebValid := ebValid
+  lookupHazard.io.ebAddr := ebAddr
 
   val resultQueue = Module(new L2ResultQueue(4))
   val arrayValidMask = VecInit(array.io.read.resp.bits.ways.map(_.valid)).asUInt
@@ -216,6 +247,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   replacer.io.lookup.validMask := arrayValidMask
   val arrayChosenWay = Mux(arrayHit, arrayHitWay, replacer.io.victim)
   val arrayChosenOH = UIntToOH(arrayChosenWay, l2Ways)
+  val arrayChosenData = Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.data))
 
   resultQueue.io.enq.valid := array.io.read.resp.valid && lookupTokenD2Valid
   resultQueue.io.enq.bits.token := lookupTokenD2
@@ -224,7 +256,12 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   resultQueue.io.enq.bits.oldValid := Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.valid))
   resultQueue.io.enq.bits.oldDirty := Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.dirty))
   resultQueue.io.enq.bits.oldTag := Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.tag))
-  resultQueue.io.enq.bits.oldData := Mux1H(arrayChosenOH, array.io.read.resp.bits.ways.map(_.data))
+  resultQueue.io.enq.bits.oldData := Mux(lookupHazard.io.stbForwarded,
+    lookupHazard.io.stbForwardData, arrayChosenData)
+  resultQueue.io.enq.bits.stbMatch := lookupHazard.io.stbMatch
+  resultQueue.io.enq.bits.stbForwarded := lookupHazard.io.stbForwarded
+  resultQueue.io.enq.bits.mshrSetConflict := lookupHazard.io.mshrSetConflict
+  resultQueue.io.enq.bits.ebBlockConflict := lookupHazard.io.ebBlockConflict
 
   val lookupOccupancy = resultQueue.io.count +
     lookupTokenD1Valid.asUInt + lookupTokenD2Valid.asUInt
@@ -237,10 +274,6 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val freeMshr = PriorityEncoder(mshrFreeMask)
   val freeMshrCount = PopCount(mshrFreeMask)
   val hasPurePrefetchMshr = mshrPrefetch.asUInt.orR
-  val mshrSetVec = VecInit((0 until l2MshrEntries).map(i =>
-    mshrValid(i) && mshrAddr(i)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) ===
-      resultQueue.io.deq.bits.token.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
-  ))
 
   val demandFillVec = VecInit((0 until l2MshrEntries).map(i =>
     mshrValid(i) && !mshrPrefetch(i) && mshrFillComplete(i) && !mshrInstalled(i)
@@ -256,12 +289,9 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   val head = resultQueue.io.deq.bits
   val headBlock = head.token.addr(XLEN - 1, l2BlockOffBits)
-  val headStbMatchVec = VecInit((0 until stbCount).map(i =>
-    stbValid(i) && stbAddr(i)(XLEN - 1, l2BlockOffBits) === headBlock
-  ))
-  val headHasStbForward = headStbMatchVec.asUInt.orR && !head.token.isStb &&
-    !head.token.isUncacheProbe && !head.token.isPrefetch
-  val headStbForwardSlot = PriorityEncoder(headStbMatchVec)
+  val latePendingWriteMatch = dWriteEntryValid && cacheLineWrite &&
+    dWriteEntryBits.addr(XLEN - 1, l2BlockOffBits) === headBlock
+  val headHasStbForward = head.stbForwarded || latePendingWriteMatch
   val headNeedsEb = !head.token.isUncacheProbe && !head.token.isPrefetch &&
     !head.hit && head.oldValid && head.oldDirty
 
@@ -269,7 +299,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val headReadCanProcess = Mux(
     headHasStbForward || head.hit,
     headPortReady,
-    hasFreeMshr && !mshrSetVec.asUInt.orR && (!headNeedsEb || !ebValid)
+    hasFreeMshr && (!headNeedsEb || !ebValid)
   )
   val headStbCanProcess = (!headNeedsEb || !ebValid)
   val cancelledLookupResult = resultQueue.io.deq.valid && head.token.cancelled &&
@@ -289,9 +319,9 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     head.token.prefetchEpoch =/= iPrefetchEpoch
   val prefetchResultCanAllocate = resultQueue.io.deq.valid &&
     head.token.isPrefetch && !head.hit && !head.oldDirty &&
-    !headStbMatchVec.asUInt.orR && !hasFillInstall &&
+    !head.stbMatch && !latePendingWriteMatch && !hasFillInstall &&
     freeMshrCount >= 3.U && !hasPurePrefetchMshr &&
-    !mshrSetVec.asUInt.orR && !prefetchDrainPresent &&
+    !head.mshrSetConflict && !head.ebBlockConflict && !prefetchDrainPresent &&
     !staleIPrefetchResult
   // A speculative result is lossy and never blocks a later demand result.
   val prefetchResultCanProcess = resultQueue.io.deq.valid &&
@@ -308,7 +338,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val resultToD = resultReadResponse && head.token.source === L2PortSource.dcache
   val killedIResult = demandResultCanProcess && !head.token.isStb &&
     head.token.source === L2PortSource.icache && (iKilled || iCancelPending)
-  val resultResponseData = Mux(headHasStbForward, stbData(headStbForwardSlot), head.oldData)
+  val resultResponseData = Mux(latePendingWriteMatch, dWriteEntryBits.data, head.oldData)
 
   // Array只有一个整行写口：fill安装优先，其次处理lookup结果。
   array.io.write.valid := false.B
@@ -507,9 +537,6 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val iEbConflict = ebValid && ebAddr(XLEN - 1, l2BlockOffBits) === iReqBlock
   val dEbConflict = ebValid && ebAddr(XLEN - 1, l2BlockOffBits) === dReqBlock
 
-  val cacheLineWrite = dWriteEntryBits.kind === L2WriteKind.putLine ||
-    dWriteEntryBits.kind === L2WriteKind.cleanLine
-  val uncacheWrite = dWriteEntryBits.kind === L2WriteKind.uncache
   val pendingCacheableBoundary =
     (iReqEntryValid && !iReqEntryBits.uncache) ||
     (dReqEntryValid && !dReqEntryBits.uncache) ||
@@ -832,10 +859,13 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val hasDStbFree = dStbFreeVec.asUInt.orR
   val dStbFreeSlot = PriorityEncoder(dStbFreeVec)
   val writeReqBlock = dWriteEntryBits.addr(XLEN - 1, l2BlockOffBits)
+  val writeReqSet = dWriteEntryBits.addr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+  lookupBusy.io.querySet(dWriteBusyQueryPort) := writeReqSet
+  val dWriteSetBusy = lookupBusy.io.queryBusy(dWriteBusyQueryPort)
   val sameStbWrite = VecInit((0 until stbCount).map(i => stbValid(i) &&
     stbAddr(i)(XLEN - 1, l2BlockOffBits) === writeReqBlock)).asUInt.orR
   val dWriteInternalAccept = dWriteEntryValid && Mux(cacheLineWrite,
-    hasDStbFree && !sameStbWrite && !uncacheBusy,
+    hasDStbFree && !sameStbWrite && !uncacheBusy && !dWriteSetBusy,
     dUncacheWriteWantsDrain && allCacheWorkDrained)
   io.dcache.write.req.ready := array.io.initDone && !dWriteEntryValid &&
     !uncacheAdmissionLocked
