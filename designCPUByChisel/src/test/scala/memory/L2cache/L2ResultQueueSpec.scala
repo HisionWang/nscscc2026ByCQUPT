@@ -39,6 +39,10 @@ class L2ResultQueueSpec extends AnyFlatSpec with ChiselScalatestTester with Matc
     dut.io.enq.bits.oldDirty.poke(false.B)
     dut.io.enq.bits.oldTag.poke(1.U)
     dut.io.enq.bits.oldData.poke(addr.U)
+    dut.io.enq.bits.stbMatch.poke(false.B)
+    dut.io.enq.bits.stbForwarded.poke(false.B)
+    dut.io.enq.bits.mshrSetConflict.poke(false.B)
+    dut.io.enq.bits.ebBlockConflict.poke(false.B)
   }
 
   it should "register a queued result before exposing it to L2 control" in {
