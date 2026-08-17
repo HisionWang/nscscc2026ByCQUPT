@@ -84,7 +84,37 @@ class FreeList(implicit p: Parameters) extends NSModule {
       Mux(req, oh | acc, acc)
   }
  
-  val recoverDeallocs = Mux(io.doRecover, allocsAfterBr(io.recoverId), 0.U(IntPhyRegs.W))
+  // ================================================================
+  //  打一拍更新 allocsAfterBr 的逻辑（切断超长组合路径）
+  // ================================================================
+  // 将慢速路径的分配/保存请求打一拍
+  val delayed_snptSave   = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U.asTypeOf(Valid(UInt(log2Ceil(SnapshotNum).W))))))
+  val delayed_allocMasks = RegInit(VecInit(Seq.fill(CtrlBlockWidth + 1)(0.U(IntPhyRegs.W))))
+  val delayed_doAlloc    = RegInit(false.B)
+
+  delayed_snptSave   := io.snptSave
+  delayed_allocMasks := allocMasks
+  delayed_doAlloc    := io.doAlloc
+
+  // 计算“带前推”的旁路快照状态 (将上一拍延迟的分配数据融合进当前状态，对组合逻辑直接可见)
+  val allocsAfterBr_bypassed = Wire(Vec(SnapshotNum, UInt(IntPhyRegs.W)))
+  for (i <- 0 until SnapshotNum) {
+    val matchVec = VecInit((0 until CtrlBlockWidth).map(j =>
+      delayed_snptSave(j).valid && delayed_snptSave(j).bits === i.U
+    )).asUInt
+
+    when(matchVec.orR) {
+      allocsAfterBr_bypassed(i) := Mux1H(matchVec,
+        (0 until CtrlBlockWidth).map(j => delayed_allocMasks(j + 1))
+      )
+    }.otherwise {
+      val added = Mux(delayed_doAlloc, delayed_allocMasks.head, 0.U(IntPhyRegs.W))
+      allocsAfterBr_bypassed(i) := allocsAfterBr(i) | added
+    }
+  }
+
+  // 提取恢复用的寄存器掩码，使用旁路前推后的最新状态，避免漏恢复
+  val recoverDeallocs = Mux(io.doRecover, allocsAfterBr_bypassed(io.recoverId), 0.U(IntPhyRegs.W))
  
   val commitDeallocMask = io.deallocReqs.map { d =>
     Mux(d.valid, UIntToOH(d.bits)(IntPhyRegs - 1, 0), 0.U(IntPhyRegs.W))
@@ -92,22 +122,12 @@ class FreeList(implicit p: Parameters) extends NSModule {
  
   val deallocMask = commitDeallocMask | recoverDeallocs
  
+  // 结合当拍的“冲刷”和“释放”操作，更新实际的 allocsAfterBr 寄存器
   for (i <- 0 until SnapshotNum) {
-    val matchVec = VecInit((0 until CtrlBlockWidth).map(j =>
-      io.snptSave(j).valid && io.snptSave(j).bits === i.U
-    )).asUInt
- 
     when(io.snptInvalidate(i)) {
       allocsAfterBr(i) := 0.U
- 
-    }.elsewhen(matchVec.orR) {
-      allocsAfterBr(i) := Mux1H(matchVec,
-        (0 until CtrlBlockWidth).map(j => allocMasks(j + 1))
-      )
- 
     }.otherwise {
-      val added = Mux(io.doAlloc, allocMasks.head, 0.U(IntPhyRegs.W))
-      allocsAfterBr(i) := (allocsAfterBr(i) & (~recoverDeallocs).asUInt) | added
+      allocsAfterBr(i) := allocsAfterBr_bypassed(i) & (~recoverDeallocs).asUInt
     }
   }
  
