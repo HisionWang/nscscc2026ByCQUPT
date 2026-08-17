@@ -64,7 +64,7 @@ class RenameTable(implicit p: Parameters) extends NSModule {
     val anyMatch  = VecInit(matchVec).asUInt.orR
     baseState(i) := Mux(anyMatch, matchData, specTable(i))
   }
-   //  5. scanLeft 计算中间状态（iFuCore MapTable 核心算法）
+   //  5. scanLeft 计算中间状态
   val remapStates = io.specWritePorts.scanLeft(baseState) { case (table, wPort) =>
     VecInit(table.zipWithIndex.map { case (preg, lreg) =>
       if (lreg == 0) 0.U(PhyRegIdxWidth.W)
