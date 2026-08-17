@@ -39,11 +39,12 @@ object CoreConfigKeys {
 
   //0:原始的 1:优化出wb的减一级流水 2:forward不再到req，而是到表项，缓解时序
   val LoadQVersion = new Field[Int](2)
+  val EnableLoadQExecWakeup = new Field[Boolean](true)
 
-  val NWaysI = new Field[Int](4)
+  val NWaysI = new Field[Int](2)
   val NSetsI = new Field[Int](64)
   
-  val NWaysD = new Field[Int](4)
+  val NWaysD = new Field[Int](2)
   val NSetsD = new Field[Int](128)
   
 
@@ -147,6 +148,7 @@ trait HasCoreParameters {
 
   val LqSize       : Int = p(CoreConfigKeys.LqSize)      // Load Queue 深度（2的幂）
   val LoadQVersion       : Int = p(CoreConfigKeys.LoadQVersion)      // Load Queue 深度（2的幂）
+  val EnableLoadQExecWakeup: Boolean = p(CoreConfigKeys.EnableLoadQExecWakeup)
   val SqSize       : Int = p(CoreConfigKeys.SqSize)      // Store Queue 深度（2的幂）
   val WbBusWidth   : Int = p(CoreConfigKeys.WbBusWidth)       // 写回总线宽度（执行单元回写端口数）
 
