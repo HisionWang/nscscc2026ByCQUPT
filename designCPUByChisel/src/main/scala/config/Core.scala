@@ -52,7 +52,7 @@ object CoreConfigKeys {
   val L2Prefetch = new Field[Int](L2PrefetchMode.Disabled)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
-  val IbufDepth = new Field[Int](16)
+  val IbufDepth = new Field[Int](8)
   val IntLogicRegs = new Field[Int](32)
   val IntPhyRegs = new Field[Int](70)
   val RobSize = new Field[Int](32)

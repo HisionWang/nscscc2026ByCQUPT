@@ -71,35 +71,13 @@ class RenameTable(implicit p: Parameters) extends NSModule {
       else Mux(wPort.wen && wPort.addr === lreg.U, wPort.data, preg)
     })
   }
-    //  6. 快照保存
-
-  // ── 打一拍写快照的逻辑 ──
-  // 寄存上一拍的快照保存请求
-  val delayedSnptSaveValid = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(false.B)))
-  val delayedSnptSaveBits  = RegInit(VecInit(Seq.fill(CtrlBlockWidth)(0.U(log2Ceil(SnapshotNum).W))))
-  val delayedSnptState     = Reg(Vec(CtrlBlockWidth, Vec(IntLogicRegs, UInt(PhyRegIdxWidth.W))))
-
+    //  6. 快照保存：为每条需要快照的通道写入精确定位的状态
+ 
   for (i <- 0 until CtrlBlockWidth) {
-    // 如果当拍没有发生重定向冲刷，则将快照保存请求记录下来
-    // 如果发生了 io.redirect，则冲刷掉打拍的写入请求，保证异常分支产生的脏状态不被保留
-    delayedSnptSaveValid(i) := io.snptSave(i).valid && !io.redirect
-    
     when(io.snptSave(i).valid) {
-      delayedSnptSaveBits(i) := io.snptSave(i).bits
-      delayedSnptState(i)    := remapStates(i + 1)
+      snapshots(io.snptSave(i).bits) := remapStates(i + 1)
     }
   }
-
-  // 写入快照表（打一拍后的执行）
-  for (i <- 0 until CtrlBlockWidth) {
-    // 如果在写入的这拍又发生了重定向（flush），则取消写入，因为该分支以及被分配的槽位必定已经被作废
-    // 如果在 stall 期间，依然可以正常写入上一拍寄存在这的快照（不受 stall 妨碍）
-    // 如果同时遇到释放快照的操作，由于释放是对不同槽位的 Valid 处理，与此处落库写新槽位互不冲突
-    when(delayedSnptSaveValid(i) && !io.redirect) {
-      snapshots(delayedSnptSaveBits(i)) := delayedSnptState(i)
-    }
-  }
-
   //  7. 快照有效位更新
   for (i <- 0 until SnapshotNum) {
     val nextValid = WireInit(snptValids(i))
