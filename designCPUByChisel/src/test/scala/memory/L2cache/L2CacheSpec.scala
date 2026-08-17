@@ -397,6 +397,45 @@ class L2CacheSpec
     }
   }
 
+  it should "forward a putLine accepted after Array response but before result commit" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val addr = BigInt("80000280", 16)
+      val words = (0 until 16).map(i => BigInt(0x33000000L + i))
+
+      // Capture the read, then let its lookup reach the D2/Array response cycle.
+      sendIRead(dut, addr, id = 1)
+      dut.clock.step(2)
+
+      // This write is accepted on the same edge that the lookup result enters
+      // resultQueue. It was not visible to the earlier parallel STB snapshot.
+      dut.io.dWriteReqValid.poke(true.B)
+      dut.io.dWriteReqId.poke(1.U)
+      dut.io.dWriteReqAddr.poke(addr.U)
+      dut.io.dWriteReqKind.poke(L2WriteKind.putLine)
+      for (word <- 0 until 16) {
+        dut.io.dWriteReqWords(word).poke(words(word).U)
+      }
+      dut.io.dWriteReqReady.expect(true.B)
+      dut.clock.step()
+      dut.io.dWriteReqValid.poke(false.B)
+
+      var wait = 0
+      while (!dut.io.iRespValid.peek().litToBoolean && wait < 24) {
+        dut.io.axi.ar.data.arvalid.expect(false.B)
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.iRespValid.expect(true.B)
+      dut.io.iRespFullLine.expect(true.B)
+      dut.io.iRespLast.expect(true.B)
+      dut.io.axi.ar.data.arvalid.expect(false.B)
+      for (word <- 0 until 16) {
+        dut.io.iRespWords(word).expect(words(word).U)
+      }
+    }
+  }
+
   it should "stream a DDR miss to L1, install it, then hit as a full line" in {
     test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
       resetDut(dut)
