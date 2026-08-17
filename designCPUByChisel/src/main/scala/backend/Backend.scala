@@ -146,7 +146,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   regRead.io.redirectInfo <> ctrlBlock.io.redirectInfo
  
   val writeback = Module(new Writeback(numExeUnits))
-  val execWakeup = Wire(Vec(4, new WakeupSignal))
+  val execWakeup = Wire(Vec(3, new WakeupSignal))
  
   // ══════════════════════════════════════════════════════════════
   //  前端指令输入
@@ -206,21 +206,10 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
 
   for (i <- 0 until 3) {
     execWakeup(i).valid := exeUnits(i).io.outResult.valid &&
-    exeUnits(i).io.outResult.bits.uop.ctrl.rfWen &&
-    exeUnits(i).io.outResult.bits.uop.rdValid
+      exeUnits(i).io.outResult.bits.uop.ctrl.rfWen &&
+      exeUnits(i).io.outResult.bits.uop.rdValid
     execWakeup(i).exeSource := i.U
     execWakeup(i).pdst := exeUnits(i).io.outResult.bits.uop.pdst
-  }
-
-  if(EnableLoadQExecWakeup){
-    execWakeup(3).valid := io.fromMemResult(0).valid && io.fromMemResult(0).bits.uop.ctrl.rfWen && io.fromMemResult(0).bits.uop.rdValid
-    execWakeup(3).exeSource := 3.U
-    execWakeup(3).pdst := io.fromMemResult(0).bits.uop.pdst
-
-  }else{
-    execWakeup(3).valid := false.B
-    execWakeup(3).exeSource := 0.U
-    execWakeup(3).pdst := 0.U
   }
 
 
