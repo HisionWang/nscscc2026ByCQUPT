@@ -34,7 +34,7 @@ class Frontend(implicit p: Parameters) extends NSModule {
   val ifu      = Module(new IFU)
 
   // 预测信息队列(跟踪ICache流水线中的BPU预测)
-  val bpuInfoQueue = Module(new FlushableQueue(new bpuInfoBundle, entries = 8))
+  val bpuInfoQueue = Module(new FlushableQueue(new bpuInfoBundle, entries = 2))
   val icache   = Module(new ICache) //it's OK
 
   icache.io.mmu <> io.mmu

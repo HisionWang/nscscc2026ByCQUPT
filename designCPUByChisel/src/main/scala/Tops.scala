@@ -190,8 +190,7 @@ object CoreGen extends App {
        |${gitCommitStatBlock.stripSuffix("\n")}
        |// ---------------------------------------------------------------
        |// BPU  : useNewBPU     =  ${config(CoreConfigKeys.useNewBPU)}, 
-       |//        btbSize       =  ${config(CoreConfigKeys.BtbSize)}, 
-       |//        phtSize       =  ${config(CoreConfigKeys.PhtSize)}
+       |//        BtbPhtSize    =  ${config(CoreConfigKeys.BtbPhtSize)}, 
        |// Cache: L2Ways        =  ${config(CoreConfigKeys.L2Ways)}, 
        |//        L2Prefetch    =  ${config(CoreConfigKeys.L2Prefetch)}, 
        |//        usePIPT       =  ${config(CoreConfigKeys.usePIPT)}, 

@@ -29,9 +29,9 @@ object L2PrefetchMode {
 object CoreConfigKeys {
   val FetchWidth = new Field[Int](4)
   val CtrlBlockWidth = new Field[Int](3)
-
-  val BtbSize   = new Field[Int](256)
-  val PhtSize   = new Field[Int](1024)
+  // 256、128、64
+  val BtbPhtSize   = new Field[Int](128)
+  //val PhtSize   = new Field[Int](128)
   val RasSize   = new Field[Int](8)
 
   val useNewBPU = new Field[Int](1)
@@ -40,11 +40,11 @@ object CoreConfigKeys {
   //0:原始的 1:优化出wb的减一级流水 2:forward不再到req，而是到表项，缓解时序
   val LoadQVersion = new Field[Int](2)
 
-  val NWaysI = new Field[Int](2)
+  val NWaysI = new Field[Int](4)
   val NSetsI = new Field[Int](64)
   
-  val NWaysD = new Field[Int](2)
-  val NSetsD = new Field[Int](64)
+  val NWaysD = new Field[Int](4)
+  val NSetsD = new Field[Int](128)
   
 
   val BlockBytes = new Field[Int](64)
@@ -52,7 +52,7 @@ object CoreConfigKeys {
   val L2Prefetch = new Field[Int](L2PrefetchMode.Disabled)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
-  val IbufDepth = new Field[Int](8)
+  val IbufDepth = new Field[Int](16)
   val IntLogicRegs = new Field[Int](32)
   val IntPhyRegs = new Field[Int](70)
   val RobSize = new Field[Int](32)
@@ -81,14 +81,14 @@ trait HasCoreParameters {
 
   val fetchWidth: Int = p(CoreConfigKeys.FetchWidth)
   val CtrlBlockWidth: Int = p(CoreConfigKeys.CtrlBlockWidth)
-  val btbSize: Int = p(CoreConfigKeys.BtbSize)
-  val phtSize: Int = p(CoreConfigKeys.PhtSize)
+  val BtbPhtSize: Int = p(CoreConfigKeys.BtbPhtSize)
+  //val phtSize: Int = p(CoreConfigKeys.PhtSize)
   val rasSize: Int = p(CoreConfigKeys.RasSize)
   val useNewBPU: Int = p(CoreConfigKeys.useNewBPU)
   val usePIPT: Int = p(CoreConfigKeys.usePIPT)
   val fetchBlockBits: Int = log2Ceil(fetchWidth * 4)
-  val btbIndexBits: Int = log2Ceil(btbSize)
-  val phtIndexBits: Int = log2Ceil(phtSize)
+  val btbIndexBits: Int = log2Ceil(BtbPhtSize)
+  val phtIndexBits: Int = log2Ceil(BtbPhtSize)
   val btbTagBits: Int = 32 - fetchBlockBits - btbIndexBits
   val fetchOffsetBits: Int = log2Ceil(fetchWidth)
 
