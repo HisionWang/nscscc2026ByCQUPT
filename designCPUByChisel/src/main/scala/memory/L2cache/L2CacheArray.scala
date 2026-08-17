@@ -152,7 +152,7 @@ class L2CacheArray(implicit p: Parameters) extends NSModule {
   io.initDone := initDone
 
   val sameSetWrite =
-    io.write.valid && io.write.bits.set === io.read.req.bits.set
+    io.write.valid && io.read.req.valid && io.write.bits.set === io.read.req.bits.set
   io.read.req.ready := initDone && !sameSetWrite
   val readFire = io.read.req.fire
 

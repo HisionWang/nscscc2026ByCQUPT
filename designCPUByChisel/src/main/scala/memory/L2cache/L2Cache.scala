@@ -237,6 +237,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   lookupHazard.io.ebAddr := ebAddr
 
   val resultQueue = Module(new L2ResultQueue(4))
+  val resultCommitStage = Module(new L2ResultCommitStage)
+  resultCommitStage.io.in <> resultQueue.io.deq
+  resultCommitStage.io.pendingWriteValid := dWriteEntryValid && cacheLineWrite
+  resultCommitStage.io.pendingWriteAddr := dWriteEntryBits.addr
+  resultCommitStage.io.pendingWriteData := dWriteEntryBits.data
   val arrayValidMask = VecInit(array.io.read.resp.bits.ways.map(_.valid)).asUInt
   val arrayHitMask = VecInit(array.io.read.resp.bits.ways.map(way =>
     way.valid && way.tag === lookupTokenD2.addr(XLEN - 1, l2IdxBits + l2BlockOffBits)
@@ -264,7 +269,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   resultQueue.io.enq.bits.ebBlockConflict := lookupHazard.io.ebBlockConflict
 
   val lookupOccupancy = resultQueue.io.count +
-    lookupTokenD1Valid.asUInt + lookupTokenD2Valid.asUInt
+    lookupTokenD1Valid.asUInt + lookupTokenD2Valid.asUInt +
+    resultCommitStage.io.out.valid.asUInt
   val effectiveLookupOccupancy =
     lookupOccupancy + prefetchGrantValid.asUInt
   val lookupHasCredit = effectiveLookupOccupancy < 4.U && lookupBusy.io.hasFree
@@ -286,12 +292,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val hasFillInstall = hasDemandFillInstall || hasPrefetchFillInstall
   val fillInstallMshr = Mux(hasDemandFillInstall,
     PriorityEncoder(demandFillVec), PriorityEncoder(prefetchFillVec))
+  val fillInstallSet = mshrAddr(fillInstallMshr)(
+    l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
 
-  val head = resultQueue.io.deq.bits
-  val headBlock = head.token.addr(XLEN - 1, l2BlockOffBits)
-  val latePendingWriteMatch = dWriteEntryValid && cacheLineWrite &&
-    dWriteEntryBits.addr(XLEN - 1, l2BlockOffBits) === headBlock
-  val headHasStbForward = head.stbForwarded || latePendingWriteMatch
+  val head = resultCommitStage.io.out.bits
+  val headHasStbForward = head.stbForwarded
   val headNeedsEb = !head.token.isUncacheProbe && !head.token.isPrefetch &&
     !head.hit && head.oldValid && head.oldDirty
 
@@ -302,11 +307,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     hasFreeMshr && (!headNeedsEb || !ebValid)
   )
   val headStbCanProcess = (!headNeedsEb || !ebValid)
-  val cancelledLookupResult = resultQueue.io.deq.valid && head.token.cancelled &&
+  val cancelledLookupResult = resultCommitStage.io.out.valid && head.token.cancelled &&
     !hasFillInstall
-  val ucProbeResultCanProcess = resultQueue.io.deq.valid && head.token.isUncacheProbe &&
+  val ucProbeResultCanProcess = resultCommitStage.io.out.valid && head.token.isUncacheProbe &&
     !hasFillInstall && (!head.hit || !head.oldDirty || !ebValid)
-  val demandResultCanProcess = resultQueue.io.deq.valid &&
+  val demandResultCanProcess = resultCommitStage.io.out.valid &&
     !head.token.isUncacheProbe && !head.token.isPrefetch &&
     !head.token.cancelled && !hasFillInstall &&
     Mux(head.token.isStb, headStbCanProcess, headReadCanProcess)
@@ -317,20 +322,20 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val staleIPrefetchResult = head.token.isPrefetch &&
     head.token.source === L2PortSource.icache &&
     head.token.prefetchEpoch =/= iPrefetchEpoch
-  val prefetchResultCanAllocate = resultQueue.io.deq.valid &&
+  val prefetchResultCanAllocate = resultCommitStage.io.out.valid &&
     head.token.isPrefetch && !head.hit && !head.oldDirty &&
-    !head.stbMatch && !latePendingWriteMatch && !hasFillInstall &&
+    !head.stbMatch && !hasFillInstall &&
     freeMshrCount >= 3.U && !hasPurePrefetchMshr &&
     !head.mshrSetConflict && !head.ebBlockConflict && !prefetchDrainPresent &&
     !staleIPrefetchResult
   // A speculative result is lossy and never blocks a later demand result.
-  val prefetchResultCanProcess = resultQueue.io.deq.valid &&
+  val prefetchResultCanProcess = resultCommitStage.io.out.valid &&
     head.token.isPrefetch
   val resultCanProcess = demandResultCanProcess || prefetchResultCanProcess ||
     ucProbeResultCanProcess || cancelledLookupResult
-  lookupBusy.io.release.valid := resultCanProcess
+  resultCommitStage.io.out.ready := resultCanProcess
+  lookupBusy.io.release.valid := resultCommitStage.io.out.fire
   lookupBusy.io.release.bits := head.token.busySlot
-  resultQueue.io.deq.ready := resultCanProcess
 
   val resultReadResponse = demandResultCanProcess && !head.token.isStb &&
     (headHasStbForward || head.hit)
@@ -338,7 +343,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val resultToD = resultReadResponse && head.token.source === L2PortSource.dcache
   val killedIResult = demandResultCanProcess && !head.token.isStb &&
     head.token.source === L2PortSource.icache && (iKilled || iCancelPending)
-  val resultResponseData = Mux(latePendingWriteMatch, dWriteEntryBits.data, head.oldData)
+  val resultResponseData = head.oldData
 
   // Array只有一个整行写口：fill安装优先，其次处理lookup结果。
   array.io.write.valid := false.B
@@ -348,7 +353,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
 
   when(hasFillInstall) {
     array.io.write.valid := true.B
-    array.io.write.bits.set := mshrAddr(fillInstallMshr)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
+    array.io.write.bits.set := fillInstallSet
     array.io.write.bits.way := mshrWay(fillInstallMshr)
     array.io.write.bits.valid := true.B
     array.io.write.bits.dirty := false.B
@@ -543,7 +548,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     (dWriteEntryValid && cacheLineWrite)
   val allCacheWorkDrained = !mshrValid.asUInt.orR && !stbValid.asUInt.orR &&
     !ebValid && !lookupBusy.io.anyBusy && resultQueue.io.count === 0.U &&
-    !lookupTokenD1Valid && !lookupTokenD2Valid && !iLrbValid && !dLrbValid &&
+    !resultCommitStage.io.out.valid && !lookupTokenD1Valid && !lookupTokenD2Valid &&
+    !iLrbValid && !dLrbValid &&
     !ucReadValid && !ucWriteValid && !dDoneValid && !pendingCacheableBoundary
   // uncache一旦等待排空，就停止接收新的cacheable请求，避免被持续流量饿死。
   val uncacheBusy = ucReadValid || ucWriteValid
@@ -591,12 +597,17 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val dUncacheCanHandle = dUncacheReadWantsDrain && allCacheWorkDrained &&
     !dUncacheWriteWantsDrain && !iUncacheReadWantsDrain
 
+  // A registered result owns the commit cycle. New lookups wait one cycle,
+  // so result address/control cannot feed the lookupBusy allocation path.
+  val resultCommitBlocksLookup = resultCommitStage.io.out.valid
   val iCacheEligible = !iReqEntryBits.uncache && lookupHasCredit &&
+    !resultCommitBlocksLookup &&
     !uncacheBusy && !lookupBusy.io.queryBusy(iBusyQueryPort) && !iMshrConflict && !iMshrSetConflict && !iEbConflict &&
-    (!array.io.write.valid || array.io.write.bits.set =/= iReqSet)
+    (!hasFillInstall || fillInstallSet =/= iReqSet)
   val dCacheEligible = !dReqEntryBits.uncache && lookupHasCredit &&
+    !resultCommitBlocksLookup &&
     !uncacheBusy && !lookupBusy.io.queryBusy(dBusyQueryPort) && !dMshrConflict && !dMshrSetConflict && !dEbConflict &&
-    (!array.io.write.valid || array.io.write.bits.set =/= dReqSet)
+    (!hasFillInstall || fillInstallSet =/= dReqSet)
   val iReadCanHandle = iReqEntryValid && !iActive && Mux(iReqEntryBits.uncache,
     iUncacheCanHandle, iCacheEligible) && !iCancelPending
   val dReadCanHandle = dReqEntryValid && Mux(dReqEntryBits.uncache,
@@ -623,11 +634,12 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   }
   val stbLookupVec = VecInit((0 until stbCount).map(i => stbValid(i) &&
     !stbLookupIssued(i) && !stbInstalled(i) &&
+    !resultCommitBlocksLookup &&
     !lookupBusy.io.queryBusy(stbBusyQueryBase + i) &&
     !VecInit((0 until l2MshrEntries).map(m => mshrValid(m) &&
       mshrAddr(m)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) ===
         stbAddr(i)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits))).asUInt.orR &&
-    (!array.io.write.valid || array.io.write.bits.set =/=
+    (!hasFillInstall || fillInstallSet =/=
       stbAddr(i)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits))
   ))
   val hasStbLookup = stbLookupVec.asUInt.orR && lookupHasCredit
@@ -648,7 +660,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val ucProbeSet = ucProbeAddr(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
   lookupBusy.io.querySet(ucBusyQueryPort) := ucProbeSet
   val chooseUcProbe = ucProbePending && !ucProbeInFlight && lookupHasCredit &&
-    !lookupBusy.io.queryBusy(ucBusyQueryPort) && !array.io.write.valid
+    !resultCommitBlocksLookup && !hasFillInstall &&
+    !lookupBusy.io.queryBusy(ucBusyQueryPort)
 
   val otherLookupSelected =
     (((chooseI || chooseD) && !chosenUncache) ||
@@ -679,9 +692,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     prefetchIssueMshrSetConflict || prefetchIssueStbSetConflict ||
     prefetchIssueEbConflict ||
     (otherLookupSelected && otherLookupSet === prefetchIssueSet) ||
-    (array.io.write.valid && array.io.write.bits.set === prefetchIssueSet)
+    (hasFillInstall && fillInstallSet === prefetchIssueSet)
 
-  when(prefetchIssueValid && !prefetchGrantValid) {
+  when(prefetchIssueValid && !prefetchGrantValid &&
+      !resultCommitBlocksLookup) {
     prefetchIssueValid := false.B
     when(!prefetchCheckBlocked) {
       prefetchGrantValid := true.B
@@ -704,10 +718,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   // fixed priority, and the mandatory single-set Array collision guard.
   val prefetchGrantSuperseded =
     (otherLookupSelected && otherLookupSet === prefetchSet) ||
-    (array.io.write.valid && array.io.write.bits.set === prefetchSet)
+    (hasFillInstall && fillInstallSet === prefetchSet)
   val prefetchGrantCanIssue =
     !mshrValid.asUInt.orR && lookupOccupancy === 0.U
-  val choosePrefetch = prefetchGrantValid && prefetchGrantCanIssue && !prefetchGrantSuperseded &&
+  val choosePrefetch = prefetchGrantValid && prefetchGrantCanIssue &&
+    !resultCommitBlocksLookup && !prefetchGrantSuperseded &&
     !chooseUcProbe && !chooseStbLookup && !chooseI && !chooseD
   when(prefetchGrantValid &&
       (prefetchGrantSuperseded ||
@@ -868,7 +883,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     hasDStbFree && !sameStbWrite && !uncacheBusy && !dWriteSetBusy,
     dUncacheWriteWantsDrain && allCacheWorkDrained)
   io.dcache.write.req.ready := array.io.initDone && !dWriteEntryValid &&
-    !uncacheAdmissionLocked
+    !uncacheAdmissionLocked && !resultCommitStage.io.in.valid &&
+    !resultCommitStage.io.out.valid
   when(io.dcache.write.req.fire) {
     dWriteEntryBits := io.dcache.write.req.bits
     dWriteEntryValid := true.B
@@ -1005,7 +1021,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val prefetchReadMshr = PriorityEncoder(prefetchMshrReadVec)
   val registeredDemandWork = pendingCacheableBoundary || iActive ||
     stbValid.asUInt.orR || ebValid || lookupTokenD1Valid ||
-    lookupTokenD2Valid || resultQueue.io.count =/= 0.U
+    lookupTokenD2Valid || resultQueue.io.count =/= 0.U ||
+    resultCommitStage.io.out.valid
   val prefetchBridgeMayQueue = hasPrefetchMshrRead &&
     !hasDemandMshrRead && !registeredDemandWork && !uncacheAdmissionLocked
   val bridgeReadMshr = Mux(hasDemandMshrRead,

@@ -9,6 +9,14 @@ import nscscc.config._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+class L2CacheProbe(implicit p: Parameters) extends L2Cache {
+  val resultCommitInputValid = IO(Output(Bool()))
+  val resultCommitOutputValid = IO(Output(Bool()))
+
+  resultCommitInputValid := resultCommitStage.io.in.valid
+  resultCommitOutputValid := resultCommitStage.io.out.valid
+}
+
 // Verilator 5将宽端口表示为VlWide，老版chiseltest的harness无法直接访问。
 // 该test-only包装器将两个512位端口拆成16个32位word，不改动L2 RTL。
 class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
@@ -40,11 +48,13 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
     val dWriteDoneReady = Input(Bool())
     val dWriteDoneValid = Output(Bool())
     val dWriteDoneId = Output(UInt(1.W))
+    val resultCommitInputValid = Output(Bool())
+    val resultCommitOutputValid = Output(Bool())
 
     val axi = new AXI3MasterIO
   })
 
-  val cache = Module(new L2Cache)
+  val cache = Module(new L2CacheProbe)
   cache.io.icache.req <> io.iReq
   cache.io.icache.cancel := io.iCancel
   io.iRespValid := cache.io.icache.resp.valid
@@ -76,6 +86,8 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
   io.dWriteDoneValid := cache.io.dcache.write.done.valid
   io.dWriteDoneId := cache.io.dcache.write.done.bits.id
 
+  io.resultCommitInputValid := cache.resultCommitInputValid
+  io.resultCommitOutputValid := cache.resultCommitOutputValid
   cache.io.maintenance.req.valid := false.B
   cache.io.maintenance.req.bits.op := 0.U
   cache.io.maintenance.req.bits.addr := 0.U
@@ -436,6 +448,70 @@ class L2CacheSpec
     }
   }
 
+  it should "hold a same-edge D write at the commit input boundary" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val addr = BigInt("80000380", 16)
+
+      sendIRead(dut, addr, id = 1)
+      var wait = 0
+      while (!dut.io.resultCommitInputValid.peek().litToBoolean && wait < 24) {
+        dut.io.axi.ar.data.arvalid.expect(false.B)
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.resultCommitInputValid.expect(true.B)
+
+      // Do not accept a raw D write on the edge that registers this result.
+      dut.io.dWriteReqValid.poke(true.B)
+      dut.io.dWriteReqId.poke(1.U)
+      dut.io.dWriteReqAddr.poke(addr.U)
+      dut.io.dWriteReqKind.poke(L2WriteKind.putLine)
+      dut.io.dWriteReqReady.expect(false.B)
+      dut.clock.step()
+
+      var readyWait = 0
+      while (!dut.io.dWriteReqReady.peek().litToBoolean && readyWait < 8) {
+        dut.clock.step()
+        readyWait += 1
+      }
+      dut.io.dWriteReqReady.expect(true.B)
+      dut.clock.step()
+      dut.io.dWriteReqValid.poke(false.B)
+    }
+  }
+
+  it should "hold a later D write while a registered result is committing" in {
+    test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
+      resetDut(dut)
+      val addr = BigInt("80000480", 16)
+
+      sendIRead(dut, addr, id = 1)
+      var wait = 0
+      while (!dut.io.resultCommitOutputValid.peek().litToBoolean && wait < 24) {
+        dut.io.axi.ar.data.arvalid.expect(false.B)
+        dut.clock.step()
+        wait += 1
+      }
+      dut.io.resultCommitOutputValid.expect(true.B)
+
+      // A younger line write waits until the registered result releases.
+      dut.io.dWriteReqValid.poke(true.B)
+      dut.io.dWriteReqAddr.poke(addr.U)
+      dut.io.dWriteReqKind.poke(L2WriteKind.putLine)
+      dut.io.dWriteReqReady.expect(false.B)
+      dut.clock.step()
+
+      var readyWait = 0
+      while (!dut.io.dWriteReqReady.peek().litToBoolean && readyWait < 8) {
+        dut.clock.step()
+        readyWait += 1
+      }
+      dut.io.dWriteReqReady.expect(true.B)
+      dut.clock.step()
+      dut.io.dWriteReqValid.poke(false.B)
+    }
+  }
   it should "stream a DDR miss to L1, install it, then hit as a full line" in {
     test(new L2CacheTestHarness).withAnnotations(verilator) { dut =>
       resetDut(dut)
