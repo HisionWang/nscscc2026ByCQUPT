@@ -41,6 +41,11 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
     val dWriteDoneValid = Output(Bool())
     val dWriteDoneId = Output(UInt(1.W))
 
+    val maintenanceReqValid = Input(Bool())
+    val maintenanceReqReady = Output(Bool())
+    val maintenanceDoneReady = Input(Bool())
+    val maintenanceDoneValid = Output(Bool())
+
     val axi = new AXI3MasterIO
   })
 
@@ -76,10 +81,12 @@ class L2CacheTestHarness(implicit p: Parameters) extends NSModule {
   io.dWriteDoneValid := cache.io.dcache.write.done.valid
   io.dWriteDoneId := cache.io.dcache.write.done.bits.id
 
-  cache.io.maintenance.req.valid := false.B
+  cache.io.maintenance.req.valid := io.maintenanceReqValid
   cache.io.maintenance.req.bits.op := 0.U
   cache.io.maintenance.req.bits.addr := 0.U
-  cache.io.maintenance.done.ready := true.B
+  io.maintenanceReqReady := cache.io.maintenance.req.ready
+  cache.io.maintenance.done.ready := io.maintenanceDoneReady
+  io.maintenanceDoneValid := cache.io.maintenance.done.valid
   io.axi <> cache.io.axi
 }
 
@@ -123,6 +130,9 @@ class L2CacheSpec
     for (word <- 0 until 16) dut.io.dWriteReqWords(word).poke(0.U)
     dut.io.dWriteReqStrb.poke(0.U)
     dut.io.dWriteDoneReady.poke(true.B)
+
+    dut.io.maintenanceReqValid.poke(false.B)
+    dut.io.maintenanceDoneReady.poke(true.B)
 
     dut.io.axi.ar.arready.poke(false.B)
     dut.io.axi.aw.awready.poke(false.B)

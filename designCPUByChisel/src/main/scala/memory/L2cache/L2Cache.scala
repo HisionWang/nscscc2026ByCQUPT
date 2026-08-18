@@ -23,6 +23,7 @@ object L2BridgeWriteOwner {
   def eviction: UInt = 0.U(2.W)
   def cleanLine: UInt = 1.U(2.W)
   def uncache: UInt = 2.U(2.W)
+  def maintenance: UInt = 3.U(2.W)
 }
 
 class L2LookupToken(implicit p: Parameters) extends NSBundle {
@@ -65,10 +66,33 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val bridge = Module(new L2Bridge)
   io.axi <> bridge.io.axi
 
-  // V1不接管现有CACOP路径。
-  io.maintenance.req.ready := false.B
-  io.maintenance.done.valid := false.B
-  io.maintenance.done.bits.done := false.B
+  // Full-L2 clean+invalidate maintenance. It deliberately processes only one
+  // line at a time; correctness and short logic are preferred over CACOP speed.
+  val maintIdle :: maintDrain :: maintReadIssue :: maintReadWait :: maintWriteReq :: maintWriteWait :: maintInvalidate :: maintDone :: maintWaitReqLow :: Nil = Enum(9)
+  val maintState = RegInit(maintIdle)
+  val maintSet = RegInit(0.U(l2IdxBits.W))
+  val maintVictimWay = RegInit(0.U(l2WayBits.W))
+  val maintVictimTag = RegInit(0.U(l2TagBits.W))
+  val maintVictimAddr = RegInit(0.U(XLEN.W))
+  val maintVictimData = RegInit(0.U(l2LineBits.W))
+
+  val maintenanceAdmissionLocked =
+    maintState =/= maintIdle || io.maintenance.req.valid
+  val maintenanceReadIssue = maintState === maintReadIssue
+  val maintenanceArrayExclusive =
+    maintState =/= maintIdle && maintState =/= maintDrain
+  val maintenanceInvalidate = maintState === maintInvalidate
+  val maintenanceWritePending = maintState === maintWriteReq
+
+  io.maintenance.req.ready := array.io.initDone && maintState === maintIdle
+  io.maintenance.done.valid := maintState === maintDone
+  io.maintenance.done.bits.done := io.maintenance.done.valid
+  when(io.maintenance.done.fire) {
+    maintState := maintWaitReqLow
+  }
+  when(maintState === maintWaitReqLow && !io.maintenance.req.valid) {
+    maintState := maintIdle
+  }
 
   // ICache request boundary: no combinational bypass into L2.
   val iReqEntryValid = RegInit(false.B)
@@ -205,8 +229,9 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val stbBusyQueryBase = 5
   val lookupToken = Wire(new L2LookupToken)
   lookupToken := 0.U.asTypeOf(new L2LookupToken)
-  val lookupTokenD1 = RegEnable(lookupToken, 0.U.asTypeOf(new L2LookupToken), array.io.read.req.fire)
-  val lookupTokenD1Valid = RegNext(array.io.read.req.fire, false.B)
+  val normalLookupFire = array.io.read.req.fire && !maintenanceReadIssue
+  val lookupTokenD1 = RegEnable(lookupToken, 0.U.asTypeOf(new L2LookupToken), normalLookupFire)
+  val lookupTokenD1Valid = RegNext(normalLookupFire, false.B)
   val lookupTokenD2 = RegEnable(lookupTokenD1, 0.U.asTypeOf(new L2LookupToken), lookupTokenD1Valid)
   val lookupTokenD2Valid = RegNext(lookupTokenD1Valid, false.B)
 
@@ -262,6 +287,44 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   resultQueue.io.enq.bits.stbForwarded := lookupHazard.io.stbForwarded
   resultQueue.io.enq.bits.mshrSetConflict := lookupHazard.io.mshrSetConflict
   resultQueue.io.enq.bits.ebBlockConflict := lookupHazard.io.ebBlockConflict
+
+  val maintValidMask =
+    VecInit(array.io.read.resp.bits.ways.map(_.valid)).asUInt
+  val maintHasValid = maintValidMask.orR
+  val maintSelectedWay = PriorityEncoder(maintValidMask)
+  val maintSelectedOH = UIntToOH(maintSelectedWay, l2Ways)
+  val maintSelectedDirty = Mux1H(
+    maintSelectedOH, array.io.read.resp.bits.ways.map(_.dirty))
+  val maintSelectedTag = Mux1H(
+    maintSelectedOH, array.io.read.resp.bits.ways.map(_.tag))
+  val maintSelectedData = Mux1H(
+    maintSelectedOH, array.io.read.resp.bits.ways.map(_.data))
+
+  when(maintenanceReadIssue && array.io.read.req.fire) {
+    maintState := maintReadWait
+  }
+  when(maintState === maintReadWait && array.io.read.resp.valid) {
+    when(maintHasValid) {
+      maintVictimWay := maintSelectedWay
+      maintVictimTag := maintSelectedTag
+      maintVictimAddr := Cat(
+        maintSelectedTag, maintSet, 0.U(l2BlockOffBits.W))
+      maintVictimData := maintSelectedData
+      maintState := Mux(
+        maintSelectedDirty, maintWriteReq, maintInvalidate)
+    }.otherwise {
+      when(maintSet === (l2Sets - 1).U) {
+        maintState := maintDone
+      }.otherwise {
+        maintSet := maintSet + 1.U
+        maintState := maintReadIssue
+      }
+    }
+  }
+  when(maintState === maintInvalidate) {
+    // Dirty lines reach this state only after their AXI B response.
+    maintState := maintReadIssue
+  }
 
   val lookupOccupancy = resultQueue.io.count +
     lookupTokenD1Valid.asUInt + lookupTokenD2Valid.asUInt
@@ -346,7 +409,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   replacer.io.touch.valid := false.B
   replacer.io.touch.bits := 0.U.asTypeOf(new L2ReplacerTouch)
 
-  when(hasFillInstall) {
+  when(maintenanceInvalidate) {
+    array.io.write.valid := true.B
+    array.io.write.bits.set := maintSet
+    array.io.write.bits.way := maintVictimWay
+    array.io.write.bits.valid := false.B
+    array.io.write.bits.dirty := false.B
+    array.io.write.bits.tag := maintVictimTag
+    array.io.write.bits.data := 0.U
+    array.io.write.bits.dataWen := false.B
+  }.elsewhen(hasFillInstall) {
     array.io.write.valid := true.B
     array.io.write.bits.set := mshrAddr(fillInstallMshr)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits)
     array.io.write.bits.way := mshrWay(fillInstallMshr)
@@ -545,6 +617,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     !ebValid && !lookupBusy.io.anyBusy && resultQueue.io.count === 0.U &&
     !lookupTokenD1Valid && !lookupTokenD2Valid && !iLrbValid && !dLrbValid &&
     !ucReadValid && !ucWriteValid && !dDoneValid && !pendingCacheableBoundary
+  val maintenanceDrainReady = allCacheWorkDrained &&
+    !iReqEntryValid && !dReqEntryValid && !dWriteEntryValid
+
+  when(io.maintenance.req.fire) {
+    maintSet := 0.U
+    maintState := maintDrain
+  }
+  when(maintState === maintDrain && maintenanceDrainReady) {
+    maintState := maintReadIssue
+  }
   // uncache一旦等待排空，就停止接收新的cacheable请求，避免被持续流量饿死。
   val uncacheBusy = ucReadValid || ucWriteValid
   val iUncacheReadWantsDrain = iReqEntryValid && iReqEntryBits.uncache
@@ -564,9 +646,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     prefetch.io.iTrain.bits := iPrefetchTrainAddr
     prefetch.io.dTrain.valid := dPrefetchTrainValid
     prefetch.io.dTrain.bits := dPrefetchTrainAddr
-    prefetch.io.iClear := uncacheAdmissionLocked || iCancelPending
-    prefetch.io.dClear := uncacheAdmissionLocked
-    prefetch.io.queueClear := uncacheAdmissionLocked || iCancelPending
+    prefetch.io.iClear := uncacheAdmissionLocked ||
+      maintenanceAdmissionLocked || iCancelPending
+    prefetch.io.dClear := uncacheAdmissionLocked || maintenanceAdmissionLocked
+    prefetch.io.queueClear := uncacheAdmissionLocked ||
+      maintenanceAdmissionLocked || iCancelPending
     prefetchCandidateValid := prefetch.io.candidate.valid
     prefetchCandidateBits := prefetch.io.candidate.bits
     prefetch.io.candidate.ready := prefetchCandidateReady
@@ -672,7 +756,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   )).asUInt.orR
   val prefetchIssueEbConflict = ebValid &&
     ebAddr(XLEN - 1, l2BlockOffBits) === prefetchIssueBlock
-  val prefetchCheckBlocked = uncacheAdmissionLocked ||
+  val prefetchCheckBlocked = uncacheAdmissionLocked || maintenanceAdmissionLocked ||
     (iCancelPending && prefetchIssueBits.isInstruction) ||
     hasPurePrefetchMshr || freeMshrCount < 3.U ||
     lookupOccupancy >= 3.U || lookupBusy.io.queryBusy(prefetchBusyQueryPort) ||
@@ -689,11 +773,11 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       prefetchGrantEpoch := prefetchIssueEpoch
     }
   }
-  when(uncacheAdmissionLocked ||
+  when(uncacheAdmissionLocked || maintenanceAdmissionLocked ||
       (iCancelPending && prefetchIssueBits.isInstruction)) {
     prefetchIssueValid := false.B
   }
-  when(uncacheAdmissionLocked ||
+  when(uncacheAdmissionLocked || maintenanceAdmissionLocked ||
       (iCancelPending && prefetchGrantBits.isInstruction)) {
     prefetchGrantValid := false.B
   }
@@ -705,7 +789,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val prefetchGrantSuperseded =
     (otherLookupSelected && otherLookupSet === prefetchSet) ||
     (array.io.write.valid && array.io.write.bits.set === prefetchSet)
-  val prefetchGrantCanIssue =
+  val prefetchGrantCanIssue = !maintenanceAdmissionLocked &&
     !mshrValid.asUInt.orR && lookupOccupancy === 0.U
   val choosePrefetch = prefetchGrantValid && prefetchGrantCanIssue && !prefetchGrantSuperseded &&
     !chooseUcProbe && !chooseStbLookup && !chooseI && !chooseD
@@ -715,12 +799,16 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     prefetchGrantValid := false.B
   }
 
-  array.io.read.req.valid := ((chooseI || chooseD) && !chosenUncache) || chooseStbLookup ||
-    chooseUcProbe || choosePrefetch
-  array.io.read.req.bits.set := Mux(chooseUcProbe, ucProbeSet, Mux(chooseStbLookup,
+  val normalArrayReadValid =
+    ((chooseI || chooseD) && !chosenUncache) || chooseStbLookup ||
+      chooseUcProbe || choosePrefetch
+  val normalArrayReadSet = Mux(chooseUcProbe, ucProbeSet, Mux(chooseStbLookup,
     stbAddr(stbLookupSlot)(l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits),
     Mux(choosePrefetch, prefetchSet, Mux(chooseD, dReqSet, iReqSet))))
-  lookupBusy.io.allocate.valid := array.io.read.req.fire
+  array.io.read.req.valid := maintenanceReadIssue ||
+    (normalArrayReadValid && !maintenanceArrayExclusive)
+  array.io.read.req.bits.set := Mux(maintenanceReadIssue, maintSet, normalArrayReadSet)
+  lookupBusy.io.allocate.valid := normalLookupFire
   lookupBusy.io.allocate.bits := array.io.read.req.bits.set
   lookupToken.source := Mux(chooseUcProbe,
     Mux(ucReadValid, ucReadSource, L2PortSource.dcache),
@@ -741,12 +829,14 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   lookupToken.busySlot := lookupBusy.io.allocateSlot
 
   // External ready depends only on registered boundary-level state.
-  io.icache.req.ready := array.io.initDone && !iReqEntryValid && !uncacheAdmissionLocked
-  io.dcache.read.req.ready := array.io.initDone && !dReqEntryValid && !uncacheAdmissionLocked
+  io.icache.req.ready := array.io.initDone && !iReqEntryValid &&
+    !uncacheAdmissionLocked && !maintenanceAdmissionLocked
+  io.dcache.read.req.ready := array.io.initDone && !dReqEntryValid &&
+    !uncacheAdmissionLocked && !maintenanceAdmissionLocked
   val iInternalAccept = chooseIPromotion ||
-    (chooseI && Mux(chosenUncache, true.B, array.io.read.req.fire))
+    (chooseI && Mux(chosenUncache, true.B, normalLookupFire))
   val dInternalAccept = chooseDPromotion ||
-    (chooseD && Mux(chosenUncache, true.B, array.io.read.req.fire))
+    (chooseD && Mux(chosenUncache, true.B, normalLookupFire))
   when(io.icache.req.fire) {
     iReqEntryBits := io.icache.req.bits
     iReqEntryValid := true.B
@@ -817,7 +907,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     iPrefetchEpoch := iPrefetchEpoch + 1.U
   }
 
-  when(array.io.read.req.fire) {
+  when(normalLookupFire) {
     preferStb := !chooseStbLookup
     when(chooseStbLookup) {
       stbLookupIssued(stbLookupSlot) := true.B
@@ -868,7 +958,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     hasDStbFree && !sameStbWrite && !uncacheBusy && !dWriteSetBusy,
     dUncacheWriteWantsDrain && allCacheWorkDrained)
   io.dcache.write.req.ready := array.io.initDone && !dWriteEntryValid &&
-    !uncacheAdmissionLocked
+    !uncacheAdmissionLocked && !maintenanceAdmissionLocked
   when(io.dcache.write.req.fire) {
     dWriteEntryBits := io.dcache.write.req.bits
     dWriteEntryValid := true.B
@@ -914,10 +1004,19 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val bridgeWriteQueue = Module(new Queue(new L2BridgeWriteCmd, 1,
     pipe = false, flow = false))
   bridge.io.client.write.req <> bridgeWriteQueue.io.deq
-  bridgeWriteQueue.io.enq.valid := (ebValid && !ebIssued) || hasCleanWrite ||
+  bridgeWriteQueue.io.enq.valid := maintenanceWritePending ||
+    (ebValid && !ebIssued) || hasCleanWrite ||
     (ucWriteValid && !ucWriteIssued && ucCoherenceReady)
   bridgeWriteQueue.io.enq.bits := 0.U.asTypeOf(new L2BridgeWriteCmd)
-  when(ebValid && !ebIssued) {
+  when(maintenanceWritePending) {
+    bridgeWriteQueue.io.enq.bits.owner.source := L2BridgeWriteOwner.maintenance
+    bridgeWriteQueue.io.enq.bits.owner.slot := 0.U
+    bridgeWriteQueue.io.enq.bits.addr := maintVictimAddr
+    bridgeWriteQueue.io.enq.bits.isLine := true.B
+    bridgeWriteQueue.io.enq.bits.size := 2.U
+    bridgeWriteQueue.io.enq.bits.data := maintVictimData
+    bridgeWriteQueue.io.enq.bits.strb := Fill(l2BeatBytes, 1.U(1.W))
+  }.elsewhen(ebValid && !ebIssued) {
     bridgeWriteQueue.io.enq.bits.owner.source := L2BridgeWriteOwner.eviction
     bridgeWriteQueue.io.enq.bits.owner.slot := ebMshr
     bridgeWriteQueue.io.enq.bits.addr := ebAddr
@@ -947,8 +1046,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       ebIssued := true.B
     }.elsewhen(bridgeWriteQueue.io.enq.bits.owner.source === L2BridgeWriteOwner.cleanLine) {
       stbWriteIssued(bridgeWriteQueue.io.enq.bits.owner.slot) := true.B
-    }.otherwise {
+    }.elsewhen(bridgeWriteQueue.io.enq.bits.owner.source === L2BridgeWriteOwner.uncache) {
       ucWriteIssued := true.B
+    }.otherwise {
+      maintState := maintWriteWait
     }
   }
 
@@ -967,8 +1068,10 @@ class L2Cache(implicit p: Parameters) extends NSModule {
       ebForUncache := false.B
     }.elsewhen(bridge.io.client.write.done.bits.owner.source === L2BridgeWriteOwner.cleanLine) {
       stbDdrDone(bridge.io.client.write.done.bits.owner.slot) := true.B
-    }.otherwise {
+    }.elsewhen(bridge.io.client.write.done.bits.owner.source === L2BridgeWriteOwner.uncache) {
       ucWriteBridgeDone := true.B
+    }.otherwise {
+      maintState := maintInvalidate
     }
   }
 
@@ -984,7 +1087,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
           l2BlockOffBits + l2IdxBits - 1, l2BlockOffBits) === slotSet)
     mshrValid(i) && mshrPrefetch(i) && !mshrReadIssued(i) &&
       !promoteMask(i) &&
-      (uncacheAdmissionLocked || boundarySetConflict ||
+      (uncacheAdmissionLocked || maintenanceAdmissionLocked || boundarySetConflict ||
         (iCancelPending && mshrSource(i) === L2PortSource.icache))
   })
   for (i <- 0 until l2MshrEntries) {
@@ -1007,7 +1110,8 @@ class L2Cache(implicit p: Parameters) extends NSModule {
     stbValid.asUInt.orR || ebValid || lookupTokenD1Valid ||
     lookupTokenD2Valid || resultQueue.io.count =/= 0.U
   val prefetchBridgeMayQueue = hasPrefetchMshrRead &&
-    !hasDemandMshrRead && !registeredDemandWork && !uncacheAdmissionLocked
+    !hasDemandMshrRead && !registeredDemandWork && !uncacheAdmissionLocked &&
+    !maintenanceAdmissionLocked
   val bridgeReadMshr = Mux(hasDemandMshrRead,
     demandReadMshr, prefetchReadMshr)
   val bridgeReadQueue = Module(new Queue(new L2BridgeReadCmd, 1,

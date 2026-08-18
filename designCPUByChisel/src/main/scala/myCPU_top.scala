@@ -196,7 +196,6 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.llbitClear := backend.io.commitToCsr.llbitClear
 
   memory.io.ibarFenceReq := backend.io.ibarFenceReq
-  backend.io.ibarFenceDone := memory.io.ibarFenceDone
   
   csr.io.excpEvent <> backend.io.excpEvent
   csr.io.excpInfo <> backend.io.excpInfo
@@ -236,11 +235,13 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   l2cache.io.icache <> frontend.io.l2_read
   l2cache.io.dcache <> memory.io.l2
 
-  // 本版不改变现有CACOP处理路径，L2维护端口仅作扩展预留。
-  l2cache.io.maintenance.req.valid := false.B
+  // L1 first writes every dirty line into L2/DDR. L2 then scans, writes back
+  // its remaining dirty lines, and invalidates the complete L2 contents.
+  l2cache.io.maintenance.req.valid := memory.io.ibarFenceDone
   l2cache.io.maintenance.req.bits.op := 0.U
   l2cache.io.maintenance.req.bits.addr := 0.U
   l2cache.io.maintenance.done.ready := true.B
+  backend.io.ibarFenceDone := l2cache.io.maintenance.done.valid
  
   // L2 → 顶层AXI3接口
   // AR通道

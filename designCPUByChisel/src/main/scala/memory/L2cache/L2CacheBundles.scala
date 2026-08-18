@@ -114,7 +114,7 @@ class L2MaintenanceDone(implicit p: Parameters) extends NSBundle {
   val done = Bool()
 }
 
-// V1 只预留该组接口，不接管现有 CACOP 路径。
+// 全L2 clean+invalidate维护请求与完成握手。
 class L2MaintenanceMasterIO(implicit p: Parameters) extends NSBundle {
   val req = Decoupled(new L2MaintenanceReq)
   val done = Flipped(Decoupled(new L2MaintenanceDone))
