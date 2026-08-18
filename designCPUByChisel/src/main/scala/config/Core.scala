@@ -41,7 +41,7 @@ object CoreConfigKeys {
   val LoadQVersion = new Field[Int](2)
   val EnableLoadQExecWakeup = new Field[Boolean](false)
 
-  val NWaysI = new Field[Int](2)
+  val NWaysI = new Field[Int](4)
   val NSetsI = new Field[Int](64)
   
   val NWaysD = new Field[Int](2)
@@ -49,7 +49,7 @@ object CoreConfigKeys {
   
 
   val BlockBytes = new Field[Int](64)
-  val L2Ways = new Field[Int](4)
+  val L2Ways = new Field[Int](2)
   val L2Prefetch = new Field[Int](L2PrefetchMode.Disabled)
   val NMshrEntries = new Field[Int](2)
   val BurstNum = new Field[Int](16)
