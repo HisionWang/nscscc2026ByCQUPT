@@ -36,8 +36,8 @@ class Scheduler(implicit p: Parameters) extends NSModule {
  
     // ── 写回唤醒广播（全局广播到所有 IQ） ──
     val wakeupPorts   = Input(Vec(IQNumWakeupPorts, Valid(new IssueWakeup)))
-    // ── 执行阶段唤醒（前三个执行单元 + 可选 LoadQ 返回） ──
-    val execWakeup    = Input(Vec(4, new WakeupSignal))
+    // ── 执行阶段唤醒（仅前三个整数执行单元） ──
+    val execWakeup    = Input(Vec(3, new WakeupSignal))
  
     // ── 重定向 / 冲刷 ──
     val redirect      = Input(new RedirectInfo)

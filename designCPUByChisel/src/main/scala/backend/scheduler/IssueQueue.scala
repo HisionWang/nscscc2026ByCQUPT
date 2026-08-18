@@ -39,8 +39,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     val wakeupPorts   = Input(Vec(iqParams.numWakeupPorts, Valid(new IssueWakeup)))
     // ── 快速唤醒广播（IQ fire 时发出，dataSource=exeUnit） ──
     val fastWakeup    = Input(Vec(IQNum - 2, new WakeupSignal))
-    // ── 执行阶段唤醒（仅更新 ready，不参与 pEff 关键路径） ──
-    val execWakeup    = Input(Vec(4, new WakeupSignal))
+    // ── 执行阶段唤醒（仅前三个执行单元，更新 ready 不参与 pEff 关键路径） ──
+    val execWakeup    = Input(Vec(3, new WakeupSignal))
     // ── 本 IQ 发出的快速唤醒信号 ──
     val wakeupOut     = Output(new WakeupSignal)
     // ── 重定向 / 冲刷 ──
@@ -84,6 +84,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   // ══════════════════════════════════════════════════════════════
   val p1WakeupWB  = Wire(Vec(N, Bool()))  // 写回唤醒 p1
   val p2WakeupWB  = Wire(Vec(N, Bool()))  // 写回唤醒 p2
+  val p1WakeupLoadWB = Wire(Vec(N, Bool())) // LoadQ 写回口同周期唤醒 p1
+  val p2WakeupLoadWB = Wire(Vec(N, Bool())) // LoadQ 写回口同周期唤醒 p2
   val p1WakeupFast = Wire(Vec(N, Bool())) // 快速唤醒 p1
   val p2WakeupFast = Wire(Vec(N, Bool())) // 快速唤醒 p2
   val p1WakeupExec = Wire(Vec(N, Bool())) // 执行阶段唤醒 p1
@@ -105,6 +107,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     }
     p1WakeupWB(i) := wbP1Matches.asUInt.orR
     p2WakeupWB(i) := wbP2Matches.asUInt.orR
+    p1WakeupLoadWB(i) := wbP1Matches(3)
+    p2WakeupLoadWB(i) := wbP2Matches(3)
  
     // ── 快速唤醒 ──
     val fastP1Matches = Wire(Vec(IQNum - 2, Bool()))
@@ -120,9 +124,9 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
     p2WakeupFast(i) := fastP2Matches.asUInt.orR
 
     // ── 执行阶段唤醒 ──
-    val execP1Matches = Wire(Vec(4, Bool()))
-    val execP2Matches = Wire(Vec(4, Bool()))
-    for (w <- 0 until 4) {
+    val execP1Matches = Wire(Vec(3, Bool()))
+    val execP2Matches = Wire(Vec(3, Bool()))
+    for (w <- 0 until 3) {
       val ew      = io.execWakeup(w)
       val ewValid = ew.valid && entryValid(i)
       val pdst    = ew.pdst
@@ -154,8 +158,8 @@ class IssueQueue(val iqParams: IQParams)(implicit p: Parameters) extends NSModul
   val p1Eff = Wire(Vec(N, Bool()))
   val p2Eff = Wire(Vec(N, Bool()))
   for (i <- 0 until N) {
-    p1Eff(i) := entryP1Ready(i)
-    p2Eff(i) := entryP2Ready(i)
+    p1Eff(i) := entryP1Ready(i) || p1WakeupLoadWB(i)
+    p2Eff(i) := entryP2Ready(i) || p2WakeupLoadWB(i)
   }
  
   // ══════════════════════════════════════════════════════════════
