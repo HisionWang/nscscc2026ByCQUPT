@@ -90,7 +90,7 @@ end
 always #5 clk=~clk;
 soc_top #(.SIMULATION(1'b1)) u_soc_top
 (
-       .resetn      (resetn     ), 
+       .resetn_fpga      (resetn     ), 
        .clk         (clk        ),
 
         //------gpio-------
@@ -99,10 +99,10 @@ soc_top #(.SIMULATION(1'b1)) u_soc_top
         .led        (led        ),
         .led_rg0    (led_rg0    ),
         .led_rg1    (led_rg1    ),
-        .switch     (switch     ),
+        .switch_fpga     (switch     ),
         .btn_key_col(btn_key_col),
         .btn_key_row(btn_key_row),
-        .btn_step   (btn_step   ),
+        .btn_step_fpga   (btn_step   ),
 
         //------ddr3-------
         .ddr3_addr               ( ddr3_addr      ),

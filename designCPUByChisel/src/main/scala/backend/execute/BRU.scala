@@ -102,7 +102,15 @@ class BRU(implicit p: Parameters) extends NSModule {
   val imm          = io.uop.imm
   val jirlTarget   = (src1 + imm)(XLEN - 1, 0)
   val branchTarget = (pc + imm)(XLEN - 1, 0)
-  val target       = Mux(op === BruOp.jirl, jirlTarget, branchTarget)
+
+  // 安全提取 customUnit 的 target，如果 customInstrEnable 为 false 则默认给 0.U
+  val customTarget = customUnit.map(_.io.target).getOrElse(0.U(XLEN.W))
+
+  val target       = Mux(op === BruOp.custom, customTarget, 
+    
+    Mux(op === BruOp.jirl, jirlTarget, branchTarget)
+
+    )
  
   // ── 写回值 ──
   val linkResult = pc + 4.U
