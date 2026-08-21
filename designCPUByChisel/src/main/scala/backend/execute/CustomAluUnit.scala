@@ -14,5 +14,5 @@ class CustomAluUnit(implicit p: Parameters) extends NSModule {
     val result = Output(UInt(XLEN.W))
   })
 
-  io.result := 0.U
+  io.result := io.rs1 + io.rs2;
 }

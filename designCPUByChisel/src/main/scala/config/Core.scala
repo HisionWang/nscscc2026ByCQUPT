@@ -79,7 +79,7 @@ case class IQParams(
 trait HasCoreParameters {
   implicit def p: Parameters
   val XLEN: Int = 32
-  val customInstrEnable: Boolean = false
+  val customInstrEnable: Boolean = true
 //>>>>>>> 54959d9721e27e04de23b63d4323d2985b48c173
 
   val fetchWidth: Int = p(CoreConfigKeys.FetchWidth)

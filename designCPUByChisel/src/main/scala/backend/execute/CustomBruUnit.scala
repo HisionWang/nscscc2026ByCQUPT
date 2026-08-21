@@ -11,10 +11,10 @@ class CustomBruUnit(implicit p: Parameters) extends NSModule {
     val inst = Input(UInt(XLEN.W))
     val rs1 = Input(UInt(XLEN.W))
     val rs2 = Input(UInt(XLEN.W))
-    val target = Input(UInt(XLEN.W))
+    val target = Output(UInt(XLEN.W))
     val taken = Output(Bool())
   })
 
   io.taken := false.B
-  io.target := 0.U
+  io.target := 0.U(32.W)
 }
