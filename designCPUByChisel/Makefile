@@ -33,6 +33,7 @@ CONFIGURE_SH := ./configure.sh
 
 define SELECT_SOFTWARE_CMD
 	program_paths=( \
+		"func/func_lab3" \
 		"func/func_lab9" \
 		"func/func_lab14" \
 		"func/func_lab15" \
@@ -57,6 +58,7 @@ define SELECT_SOFTWARE_CMD
 		"c_prg/product_sequence" \
 	); \
 	program_labels=( \
+		"func/func_lab3" \
 		"func/func_lab9" \
 		"func/func_lab14" \
 		"func/func_lab15" \

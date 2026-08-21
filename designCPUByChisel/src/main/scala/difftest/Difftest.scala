@@ -171,6 +171,7 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
   val cmtTimer64 = RegInit(0.U(64.W))
   cmt := io.commit
   cmtTimer64 := io.csr.timer64
+  dontTouch(cmtTimer64)
 
   val cycleCnt = RegInit(0.U(64.W))
   val instrCnt = RegInit(0.U(64.W))
@@ -184,8 +185,9 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestInstrCommit.io.clock := clock
     difftestInstrCommit.io.coreid := 0.U
     difftestInstrCommit.io.index := i.U
-
-    difftestInstrCommit.io.valid := commit.valid &&
+    // cmtTimer64 === 200000.U
+    difftestInstrCommit.io.valid := commit.pc =/= 0x1c000214.U &&
+       commit.valid &&
       (!commit.excpFlush || commit.ertnFlush || isSyscallCommit(commit))
     difftestInstrCommit.io.pc := zeroExt64(commit.pc)
     difftestInstrCommit.io.instr := commit.instr

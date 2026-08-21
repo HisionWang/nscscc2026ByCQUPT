@@ -58,7 +58,7 @@ object CoreConfigKeys {
   val IntPhyRegs = new Field[Int](70)
   val RobSize = new Field[Int](32)
   val SnapshotNum = new Field[Int](8)
-  val CommitWidth = new Field[Int](3)
+  val CommitWidth = new Field[Int](1)
   val LqSize = new Field[Int](8)
   val SqSize = new Field[Int](8)
   val WbBusWidth = new Field[Int](5)

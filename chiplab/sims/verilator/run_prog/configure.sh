@@ -298,6 +298,13 @@ do
             mkdir -p ./obj/func
             mkdir -p ./log/func
             ;;
+        func/func_final) 
+            RUN_FUNC=y
+            DEAD_CLOCK_EN=y
+            mkdir -p ./obj/func
+            mkdir -p ./log/func
+            ;;
+        
         func/func_lab14) 
             RUN_FUNC=y
             DEAD_CLOCK_EN=y
