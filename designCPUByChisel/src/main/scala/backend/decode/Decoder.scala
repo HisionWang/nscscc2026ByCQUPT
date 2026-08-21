@@ -167,6 +167,11 @@ object DecodeTable {
       rfWen = n, isPriv = y, waitForward = y, blockBackward = y,
       flushOnCommit = y)
   )
+
+  val customTable: Array[(BitPat, List[UInt])] = Array(
+    CUSTOM_ALU -> ctrl(
+    ),
+  )
 }
 // 纯组合逻辑解码器模块
 class Decoder(implicit p: Parameters) extends NSModule {
@@ -202,7 +207,9 @@ class Decoder(implicit p: Parameters) extends NSModule {
   // ===========================================================
   // 3. 查表解码 (修正索引错位，严格对齐 18 元素列表)
   // ===========================================================
-  val decoded = ListLookup(inst, DecodeTable.default, DecodeTable.table)
+  val decoded = ListLookup(inst, DecodeTable.default,
+    if (customInstrEnable) DecodeTable.table ++ DecodeTable.customTable
+    else DecodeTable.table)
   
   val isInstValid = decoded(0).asBool // 原始 table 中的第 0 位 valid
   val fuType   = decoded(1)

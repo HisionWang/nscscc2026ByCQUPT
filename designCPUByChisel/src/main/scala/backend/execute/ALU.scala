@@ -63,8 +63,20 @@ class ALU(implicit p: Parameters) extends NSModule {
  
   // ── 直通 ──
   val pass2Result = src2
- 
+
   // ── 结果选择 ──
+  val customUnit = if (customInstrEnable) {
+    val unit = Module(new CustomAluUnit)
+    unit.io.valid := io.valid && op === AluOp.custom
+    unit.io.op := op
+    unit.io.inst := io.uop.inst
+    unit.io.rs1 := src1
+    unit.io.rs2 := src2
+    Some(unit)
+  } else {
+    None
+  }
+
   io.result := MuxCase(0.U(XLEN.W), Seq(
     (op === AluOp.add  ) -> addResult,
     (op === AluOp.sub  ) -> subResult,
@@ -78,5 +90,5 @@ class ALU(implicit p: Parameters) extends NSModule {
     (op === AluOp.srl  ) -> srlResult(XLEN - 1, 0),
     (op === AluOp.sra  ) -> sraResult(XLEN - 1, 0),
     (op === AluOp.pass2) -> pass2Result
-  ))
+  ) ++ customUnit.toSeq.map(unit => (op === AluOp.custom) -> unit.io.result))
 }
