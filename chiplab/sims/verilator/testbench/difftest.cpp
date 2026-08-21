@@ -1,5 +1,6 @@
 #include <sys/mman.h>
 #include "difftest.h"
+#include "custom.h"
 
 std::chrono::nanoseconds nemu_nano_seconds = std::chrono::nanoseconds(0);
 
@@ -59,8 +60,17 @@ int Difftest::step(vluint64_t &main_time) {
         return STATE_END;
     }
     
-    while (idx_commit < DIFFTEST_COMMIT_WIDTH && dut.commit[idx_commit].valid) {
+    while (idx_commit < DIFFTEST_COMMIT_WIDTH ) {
         inst_total += 1;
+
+	if (is_custom_instr(dut.commit[idx_commit].instr))
+		printf("[pc=%d]custom instr %d result ==> [reg:%d] = %d\n",
+				dut.commit[idx_commit].pc, dut.commit[idx_commit].instr,
+				dut.commit[idx_commit].wdest, dut.commit[idx_commit].wdata);
+
+	if (!&& dut.commit[idx_commit].valid)
+		continue;
+
 #ifndef TRACE_COMP
         dut.commit[idx_commit].valid = 0;
 #endif

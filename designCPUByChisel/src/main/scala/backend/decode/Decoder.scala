@@ -169,7 +169,9 @@ object DecodeTable {
   )
 
   val customTable: Array[(BitPat, List[UInt])] = Array(
-    CUSTOM_ALU -> ctrl(
+    ADD_W-> ctrl(
+      FuType.alu,
+      aluOp = AluOp.custom,
     ),
   )
 }
