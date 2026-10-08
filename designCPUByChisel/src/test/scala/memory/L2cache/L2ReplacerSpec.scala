@@ -1,8 +1,8 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chiseltest._
-import nscscc.config._
+import minixiangshan.config._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

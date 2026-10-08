@@ -1,9 +1,9 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.util.SimpleBlockRAM
+import minixiangshan.config._
+import minixiangshan.util.SimpleBlockRAM
  
 class DCacheArray(implicit p: Parameters) extends NSModule {
   val metaWidth = tagBitsD    + 1 //2

@@ -1,211 +1,202 @@
-package nscscc.backend.redirect
- 
+package minixiangshan.backend.redirect
+
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.execute._
-import nscscc.backend.rename._
-import firrtl.flattenType
-import nscscc.csr._
-import nscscc.config.ExcType._
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.execute._
+import minixiangshan.backend.rename._
+import minixiangshan.csr._
+import minixiangshan.config.ExcType._
 
-
-
+/** ROB 发出的重定向请求（异常 / CSR 写 / 串行化指令） */
 class RobRedirectReq(implicit p: Parameters) extends NSBundle {
-  val valid       = Bool()
-  val robIdx      = new RobPtr(RobSize)
-  val isException = Bool()                        // true=异常, false=CSR写
-  val excp = new ExceptionBundle
-  val pc          = UInt(XLEN.W)                  // 异常指令PC / CSR写指令PC
-  val excpVaddr          = UInt(XLEN.W)                  // 异常指令PC / CSR写指令PC
+  val valid         = Bool()
+  val robIdx        = new RobPtr(RobSize)
+  val isException   = Bool()
+  val excp          = new ExceptionBundle
+  val pc            = UInt(XLEN.W)
+  val inst          = UInt(XLEN.W)
+  val excpVaddr     = UInt(XLEN.W)
   val invalidIcache = Bool()
-  
 }
 
- 
+/* ============================================================================
+ *  重定向控制器
+ *
+ *  · BRU 误预测：直接发出重定向
+ *  · ROB 异常 / 串行化：等待 ROB 回滚结束后发出重定向
+ *  · 陷入入口：由 mtvec / stvec（含 vectored 偏移）与 medeleg / mideleg 决定
+ *  · mret / sret：返回 mepc / sepc
+ *
+ *  陷入相关的信息在进入回滚时锁存，从而在若干周期的回滚过程中保持稳定。
+ * ==========================================================================*/
 class RedirectController(implicit p: Parameters) extends NSModule with HasCsrParameters {
   val io = IO(new Bundle {
     // ── 输入 ──
     val bruRedirect     = Input(Valid(new redirectInfoFromBru))
     val robRedirect     = Input(new RobRedirectReq)
     val robRollbackDone = Input(Bool())
-    val eentry          = Input(UInt(XLEN.W))
-    val tlbrentry       = Input(UInt(XLEN.W))
- 
+
+    /** 当前特权级（陷入时锁存，用于 ecall 编号与委托判断） */
+    val currentPriv     = Input(UInt(privLen.W))
+    /** CSR 给出的最高优先级中断编号 */
+    val intrCode        = Input(UInt(IntrCode.width.W))
+    /** CSR 的陷入环境（寄存器输出） */
+    val trapEnv         = Input(new TrapEnv)
+
     // ── 统一重定向输出 ──
     val redirectInfo    = ValidIO(new redirectInfoToModule)
- 
+
     // ── 暂停信号 ──
     val robRedirectPause     = Output(Bool())
 
     // ── ROB 回滚控制 ──
     val robNeedRollback   = Output(Bool())
     val robRollbackTarget = Output(new RobPtr(RobSize))
- 
-    // ── Rename 恢复 ──
-    // val doRecover       = Output(Bool())
-    // val recoverSnptId  = Output(UInt(log2Ceil(SnapshotNum).W))
- 
-    // ── CSR 异常写入 ──
-    //val csrExcpValid   = Output(Bool())
-    //val csrExcpVec     = Output(new ExceptionBundle)
-    //val csrExcpPc      = Output(UInt(XLEN.W))
 
-
-    val excpEvent           = Output(new ExcpEvent)
-    val excpInfo            = Output(new ExcpInfo)
-    val redirectAddrFromCsr = Input(new RedirectEntry)
-
-
+    // ── 陷入请求（送 CSR 做状态更新） ──
+    val trapReq = Output(new TrapReq)
   })
- 
+
   // ================================================================
-  //  输入寄存（打1拍改善时序）
+  //  陷入请求（组合，来自 ROB 的重定向请求）
+  // ================================================================
+  val commitException = io.robRedirect.valid && io.robRedirect.isException
+  val isXret          = commitException && io.robRedirect.excp.has(XRET)
+  val isTrap          = commitException && !isXret
+  val hasInt          = commitException && io.robRedirect.excp.has(INT)
+  val isMret          = isXret && (Instructions.MRET === io.robRedirect.inst)
+
+  val trapCause = Mux(hasInt, io.intrCode, io.robRedirect.excp.cause)
+  val trapTval  = io.robRedirect.excp.tvalSelect(io.robRedirect.pc,
+                   io.robRedirect.inst, io.robRedirect.excpVaddr)
+
+  io.trapReq.valid       := isTrap || isXret
+  io.trapReq.isInterrupt := hasInt
+  io.trapReq.cause       := trapCause
+  io.trapReq.epc         := io.robRedirect.pc
+  io.trapReq.tval        := trapTval
+  io.trapReq.priv        := io.currentPriv
+  io.trapReq.xret        := isXret
+  io.trapReq.isMret      := isMret
+
+  // ================================================================
+  //  输入寄存
   // ================================================================
   val bruReg = RegNext(io.bruRedirect)
-  val robReq = (io.robRedirect)
- 
+
   // ================================================================
   //  状态机
-  //    s_idle        : 正常运行
-  //    s_bru_redirect: BRU重定向，本周期发出redirectInfo
-  //    s_rob_rollback: ROB重定向，等待回滚完成后发出redirectInfo
   // ================================================================
   val s_idle :: s_bru_redirect :: s_rob_rollback :: s_rob_flush :: Nil = Enum(4)
   val state = RegInit(s_idle)
- 
-  // ROB 重定向信息（在回滚期间保持稳定）
-  val robInfoIsException = RegInit(false.B)
-  val robInfoInvalidIcache = RegInit(false.B)
-  val robInfoExcpVec     = RegInit(0.U.asTypeOf(new ExceptionBundle))
-  val robInfoPc          = RegInit(0.U(XLEN.W))
-  val robInfoRobIdx      = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
- 
+
+  val robInfoIsException    = RegInit(false.B)
+  val robInfoInvalidIcache  = RegInit(false.B)
+  val robInfoExcpVec        = RegInit(0.U.asTypeOf(new ExceptionBundle))
+  val robInfoPc             = RegInit(0.U(XLEN.W))
+  val robInfoRobIdx         = RegInit(0.U.asTypeOf(new RobPtr(RobSize)))
+
+  // 陷入信息（回滚期间保持稳定）
+  val heldCause  = RegInit(0.U(6.W))
+  val heldIsIntr = RegInit(false.B)
+  val heldIsXret = RegInit(false.B)
+  val heldIsMret = RegInit(false.B)
+  val heldPriv   = RegInit(PRIV_M_VAL.U(privLen.W))
+
+  def latchRobInfo(): Unit = {
+    robInfoIsException   := io.robRedirect.isException
+    robInfoExcpVec       := io.robRedirect.excp
+    robInfoPc            := io.robRedirect.pc
+    robInfoRobIdx        := io.robRedirect.robIdx
+    robInfoInvalidIcache := io.robRedirect.invalidIcache
+    heldCause            := trapCause
+    heldIsIntr           := hasInt
+    heldIsXret           := isXret
+    heldIsMret           := isMret
+    heldPriv             := io.currentPriv
+  }
+
   switch(state) {
     is(s_idle) {
-      when(robReq.valid) {
-        state               := s_rob_rollback
-        robInfoIsException  := robReq.isException
-        robInfoExcpVec      := robReq.excp
-        robInfoPc           := robReq.pc
-        robInfoRobIdx       := robReq.robIdx
-        robInfoInvalidIcache := robReq.invalidIcache
-      }.elsewhen(io.bruRedirect.valid ){//就算没有重定向也要发去释放快照//&& io.bruRedirect.bits.doRedirect) {
+      when(io.robRedirect.valid) {
+        state := s_rob_rollback
+        latchRobInfo()
+      }.elsewhen(io.bruRedirect.valid) {
         state := s_bru_redirect
       }
     }
     is(s_bru_redirect) {
-      when(robReq.valid) {
-        state               := s_rob_rollback
-        robInfoIsException  := robReq.isException
-        robInfoExcpVec      := robReq.excp
-        robInfoPc           := robReq.pc
-        robInfoRobIdx       := robReq.robIdx
-        robInfoInvalidIcache := robReq.invalidIcache
-      }.elsewhen(io.bruRedirect.valid ){
+      when(io.robRedirect.valid) {
+        state := s_rob_rollback
+        latchRobInfo()
+      }.elsewhen(io.bruRedirect.valid) {
         state := s_bru_redirect
-      }.otherwise{
+      }.otherwise {
         state := s_idle
       }
     }
     is(s_rob_rollback) {
-      when(io.robRollbackDone) {
-        state := s_rob_flush
-      }
+      when(io.robRollbackDone) { state := s_rob_flush }
     }
-    is(s_rob_flush) { // archcommit 打了一拍，所以Rob重定向信号也要跟着延迟一拍
+    is(s_rob_flush) {
       state := s_idle
     }
   }
- 
-  // ================================================================
-  //  暂停信号
-  //  规则：非空闲态 且 非发重定向的周期 → 暂停
-  // ================================================================
-  val isRollingBack  = (state === s_rob_rollback)
-  val rollbackDone   = isRollingBack && io.robRollbackDone
-  io.robRedirectPause   := isRollingBack //|| io.robRedirect.valid
 
- 
   // ================================================================
-  //  ROB 回滚控制
+  //  暂停与回滚
   // ================================================================
+  val isRollingBack = (state === s_rob_rollback)
+  io.robRedirectPause  := isRollingBack
   io.robNeedRollback   := (state === s_rob_rollback)
   io.robRollbackTarget := robInfoRobIdx
- 
-  // ================================================================
-  //  重定向目标地址
-  // ================================================================
-  val hasErtnBit = robInfoExcpVec.has(ERTN)
-  val isPureErtnExcp = robInfoExcpVec.excpVec === (1.U << ExcType.ERTN.id).asUInt
-  val isErtnExcp = robInfoIsException && hasErtnBit && isPureErtnExcp
-  val isTlbExcp = robInfoIsException && !isErtnExcp && robInfoExcpVec.isTlbRefill
-  val isNormalExcp = robInfoIsException && !isErtnExcp
 
-//  val robTarget = Mux(robInfoIsException,
-//    Mux(isTlbExcp, io.tlbrentry, io.eentry),
-//    robInfoPc + 4.U
-//  )
+  // ================================================================
+  //  重定向目标
+  // ================================================================
+  // ecall 的 cause 依陷入时的特权级确定：U=8, S=9, M=11
+  val heldCauseAdj = Mux(heldCause === 11.U,
+    Mux(heldPriv === PRIV_U_VAL.U, 8.U,
+      Mux(heldPriv === PRIV_S_VAL.U, 9.U, 11.U)),
+    heldCause)
 
-  // 2. 多路地址选择 (自上而下具有优先级，默认分支为 CSR 写指令的 PC + 4)
+  val heldDelegated = Mux(heldIsIntr,
+    io.trapEnv.mideleg(heldCauseAdj), io.trapEnv.medeleg(heldCauseAdj)) &&
+    (heldPriv =/= PRIV_M_VAL.U)
+
+  val mtvecBase = Cat(io.trapEnv.mtvec(XLEN - 1, 2), 0.U(2.W))
+  val stvecBase = Cat(io.trapEnv.stvec(XLEN - 1, 2), 0.U(2.W))
+  val vectorOff = Cat(heldCauseAdj, 0.U(2.W))
+
+  val mtvecEntry = Mux((io.trapEnv.mtvec(1, 0) === 1.U) && heldIsIntr,
+                       mtvecBase + vectorOff, mtvecBase)
+  val stvecEntry = Mux((io.trapEnv.stvec(1, 0) === 1.U) && heldIsIntr,
+                       stvecBase + vectorOff, stvecBase)
+  val xretTarget = Mux(heldIsMret, io.trapEnv.mepc, io.trapEnv.sepc)
+
   val robTarget = MuxCase(
-    robInfoPc + 4.U,  //默认分支为 CSR 写指令的 PC + 4
+    robInfoPc + 4.U,
     Seq(
-      isTlbExcp    -> io.redirectAddrFromCsr.tlbrentry, // TLB重填异常入口
-      isNormalExcp -> io.redirectAddrFromCsr.eentry,    // 普通异常入口
-      isErtnExcp   -> io.redirectAddrFromCsr.era     // ERTN返回入口 
+      (robInfoIsException && heldIsXret)  -> xretTarget,
+      (robInfoIsException && !heldIsXret) -> Mux(heldDelegated, stvecEntry, mtvecEntry)
     )
   )
 
- 
   // ================================================================
   //  统一重定向输出
-  //    BRU：s_bru_redirect 周期发出
-  //    ROB：rollbackDone 周期发出
   // ================================================================
   val bruRedirecting = (state === s_bru_redirect)
   val robRedirecting = (state === s_rob_flush)
- 
-  io.redirectInfo.valid               := bruRedirecting || robRedirecting
-  io.redirectInfo.bits.doRedirect     := Mux(bruRedirecting, bruReg.bits.doRedirect, robRedirecting)
-  io.redirectInfo.bits.flushSelf      := Mux(bruRedirecting, false.B, robInfoIsException)
-  io.redirectInfo.bits.fromBru        := bruRedirecting
-  io.redirectInfo.bits.snptId         := bruReg.bits.snptId
-  io.redirectInfo.bits.robIdx         := Mux(bruRedirecting, bruReg.bits.robIdx, robInfoRobIdx)
-  io.redirectInfo.bits.invalidIcache  := Mux(bruRedirecting, false.B, robInfoInvalidIcache)
-  io.redirectInfo.bits.fromRob        := robRedirecting
-  io.redirectInfo.bits.target         := Mux(bruRedirecting, bruReg.bits.target, robTarget)
 
-  // ================================================================
-  //  Rename 恢复
-  // ================================================================
-  // io.doRecover      := robRedirecting
-  // io.recoverSnptId  := bruReg.bits.snptId
- 
-  // ================================================================
-  //  CSR 异常写入
-  // ================================================================
-  val commitException = io.robRedirect.valid && io.robRedirect.isException
-  val commitHasErtnBit = io.robRedirect.excp.has(ERTN)
-  val commitIsPureErtn = io.robRedirect.excp.excpVec === (1.U << ExcType.ERTN.id).asUInt
-  val commitIsErtnExcp = commitException && commitHasErtnBit && commitIsPureErtn
-  io.excpEvent.excp := commitException && !commitIsErtnExcp
-  io.excpEvent.ertn := commitIsErtnExcp
-  io.excpEvent.badvWrite := commitException && io.robRedirect.excp.needsBadvWrite
-  io.excpEvent.tlbehiWrite := commitException && io.robRedirect.excp.needsTlbehiWrite
-  io.excpEvent.tlbRefill := commitException && io.robRedirect.excp.isTlbRefill
-
-// io.csrExcpVec   := io.robRedirect.excp
-// io.csrExcpPc    := io.robRedirect.pc
-
-  val exceptionVaddr = io.robRedirect.excp.badvSelect(
-  io.robRedirect.pc, io.robRedirect.excpVaddr)
-  io.excpInfo.era := io.robRedirect.pc
-  io.excpInfo.ecode := io.robRedirect.excp.ecode
-  io.excpInfo.esubcode := io.robRedirect.excp.esubcode
-  io.excpInfo.badVaddr := exceptionVaddr
-  io.excpInfo.vppn     := exceptionVaddr(31, 13)
-
-
+  io.redirectInfo.valid              := bruRedirecting || robRedirecting
+  io.redirectInfo.bits.doRedirect    := Mux(bruRedirecting, bruReg.bits.doRedirect, robRedirecting)
+  io.redirectInfo.bits.flushSelf     := Mux(bruRedirecting, false.B, robInfoIsException)
+  io.redirectInfo.bits.fromBru       := bruRedirecting
+  io.redirectInfo.bits.snptId        := bruReg.bits.snptId
+  io.redirectInfo.bits.robIdx        := Mux(bruRedirecting, bruReg.bits.robIdx, robInfoRobIdx)
+  io.redirectInfo.bits.invalidIcache := Mux(bruRedirecting, false.B, robInfoInvalidIcache)
+  io.redirectInfo.bits.fromRob       := robRedirecting
+  io.redirectInfo.bits.target        := Mux(bruRedirecting, bruReg.bits.target, robTarget)
 }

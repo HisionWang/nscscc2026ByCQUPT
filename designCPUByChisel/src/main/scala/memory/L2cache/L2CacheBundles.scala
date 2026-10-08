@@ -1,8 +1,8 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chisel3.util._
-import nscscc.config._
+import minixiangshan.config._
 
 // L1 写请求的三种语义。普通牺牲行只等待 L2 接收，另外两种等待 DDR B。
 object L2WriteKind {
@@ -114,7 +114,7 @@ class L2MaintenanceDone(implicit p: Parameters) extends NSBundle {
   val done = Bool()
 }
 
-// V1 只预留该组接口，不接管现有 CACOP 路径。
+// V1 只预留该组接口。
 class L2MaintenanceMasterIO(implicit p: Parameters) extends NSBundle {
   val req = Decoupled(new L2MaintenanceReq)
   val done = Flipped(Decoupled(new L2MaintenanceDone))

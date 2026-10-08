@@ -1,14 +1,14 @@
-package nscscc.backend.dispatch
+package minixiangshan.backend.dispatch
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.backend.regfile._
-import nscscc.backend.issue._
-import nscscc.backend.execute._
-import nscscc.util.CircularQueuePtr
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.regfile._
+import minixiangshan.backend.issue._
+import minixiangshan.backend.execute._
+import minixiangshan.util.CircularQueuePtr
  
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -119,7 +119,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     needIq(i) && laneCanDispatch(i) && (
       stgData(i).ctrl.fuType === FuType.csr ||
       stgData(i).ctrl.tlbOp =/= TlbOp.none ||
-      ( stgData(i).ctrl.fuType === FuType.priv ) //Cacop得单独走有mmu的地方
+      ( stgData(i).ctrl.fuType === FuType.priv ) // 特权指令单独走带 MMU 的通道
     )
   ))
   val isDivLane   = VecInit((0 until CtrlBlockWidth).map(i => needIq(i) && laneCanDispatch(i) && stgData(i).ctrl.fuType === FuType.div))
@@ -456,7 +456,7 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     u.excp       := stgData(i).excp
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
-    u.cacop      := stgData(i).cacop
+    u.cacheOp      := stgData(i).cacheOp
     u.pdInfo     := stgData(i).pdInfo
     u.bpuInfo     := stgData(i).bpuInfo
     u.ldst       := stgData(i).ldst
@@ -594,16 +594,16 @@ class DispatchStage(implicit p: Parameters) extends NSModule {
     io.robEnq.bits(i).tlbOp         := stgData(i).ctrl.tlbOp
     io.robEnq.bits(i).csrWaddr      := stgData(i).csrAddress
     io.robEnq.bits(i).flushOnCommit := stgData(i).ctrl.flushOnCommit
-    io.robEnq.bits(i).isPriv        := stgData(i).ctrl.isPriv
+    io.robEnq.bits(i).privLevel    := stgData(i).ctrl.privLevel
     io.robEnq.bits(i).isIdle        := stgData(i).ctrl.isIdle
     io.robEnq.bits(i).waitStore     := stgData(i).ctrl.barOp =/= BarOp.none ||
-      stgData(i).ctrl.lsuOp === LsuOp.scw || stgData(i).cacop.valid
-    io.robEnq.bits(i).llbitSet      := stgData(i).ctrl.lsuOp === LsuOp.llw
-    io.robEnq.bits(i).llbitClear    := stgData(i).ctrl.lsuOp === LsuOp.scw
-    io.robEnq.bits(i).ibar          := stgData(i).ctrl.barOp === BarOp.ibar
-    io.robEnq.bits(i).isCacop       := stgData(i).cacop.valid
-    io.robEnq.bits(i).cacopCacheType := stgData(i).cacop.cacheType
-    io.robEnq.bits(i).cacopOperation := stgData(i).cacop.operation
+      stgData(i).ctrl.lsuOp === LsuOp.scw || stgData(i).cacheOp.valid
+    io.robEnq.bits(i).lrValidSet      := stgData(i).ctrl.lsuOp === LsuOp.lrw
+    io.robEnq.bits(i).lrValidClear    := stgData(i).ctrl.lsuOp === LsuOp.scw
+    io.robEnq.bits(i).fenceI          := stgData(i).ctrl.barOp === BarOp.fenceI
+    io.robEnq.bits(i).isCacheOp       := stgData(i).cacheOp.valid
+    io.robEnq.bits(i).cacheOpType := stgData(i).cacheOp.cacheType
+    io.robEnq.bits(i).cacheOpOperation := stgData(i).cacheOp.operation
     io.robEnq.bits(i).excp          := stgData(i).excp
     io.robEnq.bits(i).robIdx        := stgData(i).robIdx
 

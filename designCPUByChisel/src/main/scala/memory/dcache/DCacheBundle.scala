@@ -1,10 +1,10 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
  
 object MshrReqType {
   val width = 2

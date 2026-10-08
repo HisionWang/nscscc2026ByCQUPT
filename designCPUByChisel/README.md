@@ -1,58 +1,60 @@
-# DesignCPUByChiselByCQUPT！项目
+# miniXiangShan · 乱序 RISC-V 处理器（Chisel）
 
-目前只搭建好了一个简单的框架，代码都是AI写的（顶层框架，转接桥，miniIcache）
-代码逻辑应该是写得一坨，后面再搞，但可以正常转成v，项目框架现在也有个雏形了，至少证明chisel写CPU还是有可行性的
+以香山（XiangShan）微架构为原型的教学级乱序处理器，指令集为 **RISC-V RV32IM
+（Zicsr + M/S/U 特权模式 + Sv32 分页）**。
 
-## sbt
------
-转成verilog：
+## 指令集与特权架构
 
+- **RV32I**：LUI / AUIPC / JAL / JALR / 六条条件分支 / LB-LHU / SB-SW /
+  ADDI-SRAI / ADD-AND
+- **RV32M**：MUL / MULH / MULHSU / MULHU / DIV / DIVU / REM / REMU
+- **Zicsr**：CSRRW / CSRRS / CSRRC / CSRRWI / CSRRSI / CSRRCI
+- **特权指令**：ECALL / EBREAK / MRET / SRET / WFI / SFENCE.VMA / FENCE / FENCE.I
+- **特权资源**：
+  - 机器级：`mstatus misa medeleg mideleg mie mtvec mcounteren mscratch mepc
+    mcause mtval mip pmpcfg0-3 pmpaddr0-15 mcycle minstret mvendorid marchid mimpid mhartid`
+  - 监督级：`sstatus sie stvec scounteren sscratch sepc scause stval sip satp`
+  - 用户级：`cycle time instret`
+  - 异常编号遵循 RISC-V 规范（0~15），支持 `medeleg/mideleg` 委托与
+    direct/vectored 两种陷入向量模式
+- **MMU**：`satp.MODE = 0` 裸模式恒等映射；`satp.MODE = 1` 走 Sv32
+  （两级页表、4KB 页、PTE 的 V/R/W/X/U/G/A/D、9 位 ASID）。
+  TLB 缺失时由硬件页表遍历器（`mmu/Ptw.scala`）读取 PTE 并回填 TLB，
+  PTE 读取复用 L2 的物理读端口（`memory/L2cache/L2ReadArbiter.scala` 与
+  I-Cache 共享该端口）。
+
+## 微架构
+
+- 取指宽度 4 / 译码与分发宽度 3 / ROB 深度 32 / 提交宽度 3
+- 寄存器重命名（重命名表 + 空闲列表 + BusyTable）、发射队列/调度器、访存队列
+- 分支预测：BTB + PHT + RAS
+- L1 分离 I/D Cache + 统一 L2 Cache，对外为 AXI3 接口
+- 支持与参考模型对拍（`difftest/`，切到 RISC-V 后需配套 RISC-V NEMU）
+
+## 构建
+
+```shell
+cd designCPUByChisel
+sbt "runMain minixiangshan.CoreGen simu"   # 生成仿真用 Verilog
+sbt "runMain minixiangshan.CoreGen fpga"   # 生成上板用 Verilog
 ```
-sbt run
-```
 
-结果放在chiplab的IP文件夹里面的
+生成结果位于 `chiplab/IP/myCPU/{Chisel,FPGA}/`。
 
-另外你们如果不习惯用chisel写的话，后续可以用v写，我这边chisel里面可以留黑盒，到时候你们写好了就可以直接加进来了，现目前AI写的的chisel代码里面，dcahe和俩uncache都是黑盒，可以去看一下他的实现，这样你就比较清楚你那边的verilog怎么对接
-但建议还是看一下chisel代码，至少读到我这边的chisel大概知道什么意思
+## 目录
 
-如果要学chisel：
+| 目录 | 说明 |
+| --- | --- |
+| `backend/decode` | 译码表、立即数生成、指令编码 |
+| `backend/{rename,dispatch,scheduler,regfile,execute}` | 乱序后端各级 |
+| `backend/Rob.scala`、`backend/RedirectController.scala` | 提交与重定向 |
+| `csr` | RISC-V CSR 文件与陷入/中断处理 |
+| `mmu` | Sv32 TLB、页表遍历器、地址翻译 |
+| `frontend` | 取指、BPU、预译码、I-Cache |
+| `memory` | LSQ、D-Cache、L2 Cache |
 
-sbt安装见doc，其实就是下个发行版然后设置环境变量就行，网上搜一下教程吧
-chisel大致教程看
-[https://www.bilibili.com/video/BV1m44y1c7DZ](https://www.bilibili.com/video/BV1m44y1c7DZ)
-基本上把这一套是极品
+## TODO（后续）
 
-## mill
------
-build with mill
-### version
-
-- mill-version: 0.12.5
-- chisel-version: 7.0.0
-- scala-version: 2.13.16
-
-### Makefile
-verilog generation
-
-branch mmu_dev
-此分支下Mafefile默认构架方式修改为项目中给定的mill
-EMIT_TOPS指定顶层构建对象, 虽然Elaborate有多个同时转换的相关实现, 但是Makefile中只使用最后一个,
-verilog生成到以下路径
-`BUILD_DIR := ./build
-RTL_DIR   := $(BUILD_DIR)/rtl`
-对应顶层为main/scala/Elaborate.scala
-
-### TODO
-#### bugs
-
-相对于sbt构建会出现编译错误，主要为chisel版本差异导致的
-1. IO <> 0.asTypeOf(...)
-较新chisel不允许0UInt作为左值(assign对象), 添加WireDefault封装即可
-2. DontCare
-不允许存在无驱动IO, 否则产生编译错误, 可使用io <> DontCare 或者 io.seg := DontCare避免此编译错误
-
-#### symbol link
-
-使用符号链接将build/rtl链接到chiplab中，更符合人体工学
-Windows环境下可能存在bug, 可以参考doc/git.md解决
+- 更完整的 PMP/PMA 检查（当前仅占位，不产生 access fault）
+- Sv32 的 A/D 位硬件置位与写回
+- RISC-V NEMU 对拍环境与测试程序迁移

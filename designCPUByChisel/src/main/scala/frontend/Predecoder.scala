@@ -1,13 +1,13 @@
-package nscscc.frontend
+package minixiangshan.frontend
  
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
-import nscscc.config._
-import nscscc.mmu._
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
-import nscscc.frontend.icache._
+import minixiangshan.config.Parameters
+import minixiangshan.config._
+import minixiangshan.mmu._
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
+import minixiangshan.frontend.icache._
 
 class Predecoder(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -30,7 +30,7 @@ class Predecoder(implicit p: Parameters) extends NSModule {
   val s_valids   = RegInit(VecInit(Seq.fill(fetchWidth)(false.B)))
   val s_addr     = RegInit(0.U(32.W))
   val s_uncached = RegInit(false.B)
-  val s_mmuError = RegInit(0.U.asTypeOf(new MmuTransError))
+  val s_mmuError = RegInit(0.U.asTypeOf(new FetchMmuError))
   val s_bpu      = RegInit(0.U.asTypeOf(new bpuInfoBundle))
  
   val inFire  = io.icacheResp.valid && io.icacheResp.ready && io.bpuInfoValid
@@ -66,17 +66,18 @@ class Predecoder(implicit p: Parameters) extends NSModule {
  
   for (i <- 0 until fetchWidth) {
     val instr  = s_instrs(i)
-    val opcode = instr(31, 26)
+    val opcode = instr(6, 0)
     val v      = s_valids(i)
  
     pc(i)         := s_addr + (i * 4).U
-    isJalInst(i)  := v && (opcode === LoongArch32Opcodes.OPC_B || opcode === LoongArch32Opcodes.OPC_BL)
-    isJirlInst(i) := v && (opcode === LoongArch32Opcodes.OPC_JIRL)
-    isBrInst(i)   := v && LoongArch32Opcodes.isBranchOpcode(opcode)
+    isJalInst(i)  := v && (opcode === RiscVOpcodes.OPC_JAL)
+    isJirlInst(i) := v && (opcode === RiscVOpcodes.OPC_JALR)
+    isBrInst(i)   := v && RiscVOpcodes.isBranchOpcode(opcode)
     isCfiInst(i)  := isJalInst(i) || isJirlInst(i) || isBrInst(i)
  
-    val offs26        = Cat(instr(9, 0), instr(25, 10))
-    val jalOffsetSext = Cat(Fill(4, Cat(offs26, 0.U(2.W))(27)), Cat(offs26, 0.U(2.W)))
+    // J 型立即数：imm[20|10:1|11|19:12]
+    val imm20         = Cat(instr(31), instr(19, 12), instr(20), instr(30, 21))
+    val jalOffsetSext = Cat(Fill(11, instr(31)), imm20, 0.U(1.W))
     jalTgt(i)        := Mux(v, pc(i) + jalOffsetSext, 0.U)
   }
  
@@ -200,17 +201,17 @@ class Predecoder(implicit p: Parameters) extends NSModule {
  
   for (i <- 0 until fetchWidth) {
     val instr  = s_instrs(i)
-    val opcode = instr(31, 26)
+    val opcode = instr(6, 0)
     val v      = s_valids(i) && enqMask(i)   
  
     outPdInfo(i).valid      := v
-    outPdInfo(i).isBr       := v && LoongArch32Opcodes.isBranchOpcode(opcode)
-    outPdInfo(i).isJal      := v && (opcode === LoongArch32Opcodes.OPC_B || opcode === LoongArch32Opcodes.OPC_BL)
-    outPdInfo(i).isJalr     := v && (opcode === LoongArch32Opcodes.OPC_JIRL)
+    outPdInfo(i).isBr       := v && RiscVOpcodes.isBranchOpcode(opcode)
+    outPdInfo(i).isJal      := v && (opcode === RiscVOpcodes.OPC_JAL)
+    outPdInfo(i).isJalr     := v && (opcode === RiscVOpcodes.OPC_JALR)
     outPdInfo(i).isCall     := false.B   
     outPdInfo(i).isRet      := false.B   
     outPdInfo(i).jumpTarget := Mux(
-      v && (opcode === LoongArch32Opcodes.OPC_B || opcode === LoongArch32Opcodes.OPC_BL),
+      v && (opcode === RiscVOpcodes.OPC_JAL),
       jalTgt(i), 0.U
     )
  

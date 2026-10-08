@@ -1,12 +1,12 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.backend.execute._
-import nscscc.mem.L2cache._
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.execute._
+import minixiangshan.mem.L2cache._
  
 // ================================================================
 //  MSHR 顶层：2 Primary + 4 LoadStore

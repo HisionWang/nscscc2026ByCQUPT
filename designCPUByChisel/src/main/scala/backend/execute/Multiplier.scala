@@ -1,19 +1,20 @@
-package nscscc.backend.execute
+package minixiangshan.backend.execute
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.dispatch.DispatchedInst
-import nscscc.backend.regread.ExeReq
-import nscscc.backend.rename.RedirectInfo
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.dispatch.DispatchedInst
+import minixiangshan.backend.regread.ExeReq
+import minixiangshan.backend.rename.RedirectInfo
  
 // ═══════════════════════════════════════════════════════════════
 //  流水线乘法器
 //
-//  支持操作：MUL  (有符号 × 有符号，低32位)
-//            MULH (有符号 × 有符号，高32位)
-//            MULHU(无符号 × 无符号，高32位)
+//  支持操作：MUL    (低 32 位)
+//            MULH   (有符号 × 有符号，高 32 位)
+//            MULHSU (有符号 × 无符号，高 32 位)
+//            MULHU  (无符号 × 无符号，高 32 位)
 //
 //  2级流水线：
 //    S1: 锁存原始输入（切断旁路网络与乘法器的组合耦合）
@@ -51,8 +52,7 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   val s1_a        = RegInit(0.U(XLEN.W))
   val s1_b        = RegInit(0.U(XLEN.W))
   val s1_uop      = RegInit(0.U.asTypeOf(new DispatchedInst))
-  val s1_isSigned = RegInit(false.B)
-  val s1_isMul    = RegInit(false.B)
+  val s1_mulOp    = RegInit(MulOp.none)
  
   // ================================================================
   //  S2 寄存器：锁存乘法结果 + 输出
@@ -90,9 +90,7 @@ class Multiplier(implicit p: Parameters) extends NSModule {
     s1_a        := io.in.bits.rs1Data
     s1_b        := io.in.bits.rs2Data
     s1_uop      := io.in.bits.uop
-    s1_isSigned := (io.in.bits.uop.ctrl.mulOp === MulOp.mul) ||
-                   (io.in.bits.uop.ctrl.mulOp === MulOp.mulh)
-    s1_isMul    := (io.in.bits.uop.ctrl.mulOp === MulOp.mul)
+    s1_mulOp    := io.in.bits.uop.ctrl.mulOp
   }.elsewhen(s1_fire) {
     s1_valid := false.B
   }
@@ -104,18 +102,23 @@ class Multiplier(implicit p: Parameters) extends NSModule {
   //  1. 先计算无符号乘积 s1_a * s1_b
   //  2. 有符号乘积通过符号修正推导：
   //     signed = unsigned - a[31]*b*2^32 - b[31]*a*2^32
-  //  3. MUL 低32位在有无符号下结果一致，无需区分
+  //     MULHSU 只对 a 做修正
+  //  3. MUL 低 32 位在有无符号下结果一致，无需区分
   // ================================================================
   val prodUnsigned = s1_a * s1_b
  
-  val signCorrection = Mux(s1_a(XLEN - 1), Cat(s1_b, 0.U(XLEN.W)), 0.U((2 * XLEN).W)) +
-                       Mux(s1_b(XLEN - 1), Cat(s1_a, 0.U(XLEN.W)), 0.U((2 * XLEN).W))
-  val prodSigned = prodUnsigned - signCorrection
+  val corrA = Mux(s1_a(XLEN - 1), Cat(s1_b, 0.U(XLEN.W)), 0.U((2 * XLEN).W))
+  val corrB = Mux(s1_b(XLEN - 1), Cat(s1_a, 0.U(XLEN.W)), 0.U((2 * XLEN).W))
+  val prodSigned   = prodUnsigned - corrA - corrB   // MULH
+  val prodSignedUn = prodUnsigned - corrA           // MULHSU
  
-  val prod = Mux(s1_isSigned, prodSigned, prodUnsigned)
+  val prod = MuxCase(prodUnsigned, Seq(
+    (s1_mulOp === MulOp.mulh)   -> prodSigned,
+    (s1_mulOp === MulOp.mulhsu) -> prodSignedUn
+  ))
  
   // 结果选择：MUL→低32位，MULH/MULHU→高32位
-  val s1_result = Mux(s1_isMul, prod(XLEN - 1, 0), prod(2 * XLEN - 1, XLEN))
+  val s1_result = Mux(s1_mulOp === MulOp.mul, prod(XLEN - 1, 0), prod(2 * XLEN - 1, XLEN))
  
   // ================================================================
   //  S2 更新：锁存乘法结果

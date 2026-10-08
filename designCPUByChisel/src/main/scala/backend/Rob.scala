@@ -1,16 +1,16 @@
-package nscscc.backend.rob
+package minixiangshan.backend.rob
 
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.dispatch._
-import nscscc.backend.rename._
-import nscscc.backend.decode._
-import nscscc.backend.execute._
-import nscscc.util.CircularQueuePtr
-import nscscc.backend.redirect._
-import nscscc.csr._
-import nscscc.mmu._
+import minixiangshan.config._
+import minixiangshan.backend.dispatch._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.execute._
+import minixiangshan.util.CircularQueuePtr
+import minixiangshan.backend.redirect._
+import minixiangshan.csr._
+import minixiangshan.mmu._
  
 // ═══════════════════════════════════════════════════════════════
 //  ROB 内部表项
@@ -39,15 +39,15 @@ class RobEntryInner(implicit p: Parameters) extends NSBundle {
   val tlbOp       = UInt(TlbOp.width.W)
   val tlbFillIdx  = UInt(tlbIdxLen.W)
   val flushOnCommit = Bool()
-  val isPriv      = Bool()
+  val privLevel   = UInt(PrivLevel.width.W)   // 指令要求的最小特权级
   val isIdle      = Bool()
   val waitStore   = Bool()
-  val llbitSet    = Bool()
-  val llbitClear  = Bool()
-  val ibar        = Bool()
-  val isCacop     = Bool()
-  val cacopCacheType = UInt(CacopCode.cacheTypeWidth.W)
-  val cacopOperation = UInt(CacopCode.operationWidth.W)
+  val lrValidSet    = Bool()
+  val lrValidClear  = Bool()
+  val fenceI        = Bool()
+  val isCacheOp     = Bool()
+  val cacheOpType = UInt(CacheOpCode.cacheTypeWidth.W)
+  val cacheOpOperation = UInt(CacheOpCode.operationWidth.W)
   val excp        = new ExceptionBundle
   val robIdx      = new RobPtr(RobSize)
   val writtenBack = Bool()
@@ -71,10 +71,10 @@ class RobCommitToCsr(implicit p: Parameters) extends NSBundle {
   val csrWen   = Bool()
   val csrWaddr = UInt(csrAddrLen.W)
   val csrWdata = UInt(XLEN.W)
-  val llbitSet = Bool()
-  val llbitClear = Bool()
+  val lrValidSet = Bool()
+  val lrValidClear = Bool()
 //icahe的invalid由redirect做
-// val ibar = Bool()
+// val fenceI = Bool()
   val idle = Bool()
 }
 
@@ -98,11 +98,11 @@ class ROB(implicit p: Parameters) extends NSModule {
     val commit           = new RobCommitIO
     val commitToSq       = new RobCommitToSq
     val commitToCsr      = new RobCommitToCsr
-    val currentPlv       = Input(UInt(plvLen.W))
+    val currentPriv       = Input(UInt(privLen.W))
     val storeQueueEmpty  = Input(Bool())
-    val ibarFenceReq     = Output(Bool())
-    val ibarFenceDone    = Input(Bool())
-    val cacopICacheReq   = Output(Bool())
+    val fenceIReq     = Output(Bool())
+    val fenceIReady    = Input(Bool())
+    val cacheOpICacheReq   = Output(Bool())
     val writeback        = Input(Vec(WbBusWidth, Valid(new RobWriteback)))
  
     val archCommit       = Vec(CommitWidth, Output(new ArchCommitInfo))
@@ -191,15 +191,15 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(writeIdx).tlbOp        := io.enq.bits(i).tlbOp
       entries(writeIdx).tlbFillIdx := 0.U
       entries(writeIdx).flushOnCommit:= io.enq.bits(i).flushOnCommit
-      entries(writeIdx).isPriv       := io.enq.bits(i).isPriv
+      entries(writeIdx).privLevel    := io.enq.bits(i).privLevel
       entries(writeIdx).isIdle       := io.enq.bits(i).isIdle
       entries(writeIdx).waitStore    := io.enq.bits(i).waitStore
-      entries(writeIdx).llbitSet     := io.enq.bits(i).llbitSet
-      entries(writeIdx).llbitClear   := io.enq.bits(i).llbitClear
-      entries(writeIdx).ibar         := io.enq.bits(i).ibar
-      entries(writeIdx).isCacop      := io.enq.bits(i).isCacop
-      entries(writeIdx).cacopCacheType := io.enq.bits(i).cacopCacheType
-      entries(writeIdx).cacopOperation := io.enq.bits(i).cacopOperation
+      entries(writeIdx).lrValidSet     := io.enq.bits(i).lrValidSet
+      entries(writeIdx).lrValidClear   := io.enq.bits(i).lrValidClear
+      entries(writeIdx).fenceI         := io.enq.bits(i).fenceI
+      entries(writeIdx).isCacheOp      := io.enq.bits(i).isCacheOp
+      entries(writeIdx).cacheOpType := io.enq.bits(i).cacheOpType
+      entries(writeIdx).cacheOpOperation := io.enq.bits(i).cacheOpOperation
       entries(writeIdx).fuType       := io.enq.bits(i).fuType
       entries(writeIdx).excp         := io.enq.bits(i).excp
       entries(writeIdx).writtenBack  := false.B
@@ -222,7 +222,7 @@ class ROB(implicit p: Parameters) extends NSModule {
       entries(idx).writtenBack := true.B
       entries(idx).rfdata      := wb.bits.rfdata
       entries(idx).sqIdx       := wb.bits.sqIdx
-      when(entries(idx).isCacop) {
+      when(entries(idx).isCacheOp) {
         entries(idx).memRead   := false.B
         entries(idx).memWrite  := false.B
         entries(idx).memVaddr  := wb.bits.memVaddr
@@ -253,23 +253,23 @@ class ROB(implicit p: Parameters) extends NSModule {
   val commitCandidates = Wire(Vec(CommitWidth, new RobEntryInner))
 
   val headEntry = entries(deqPtr.value)
-  val headIsDcacheCacop = headEntry.isCacop &&
-    headEntry.cacopCacheType === CacopCode.dCache &&
-    headEntry.cacopOperation =/= CacopCode.implementationDefined
-  val headIsIcacheCacop = headEntry.isCacop &&
-    headEntry.cacopCacheType === CacopCode.iCache &&
-    headEntry.cacopOperation =/= CacopCode.implementationDefined
+  val headIsDcacheCacheOp = headEntry.isCacheOp &&
+    headEntry.cacheOpType === CacheOpCode.dCache &&
+    headEntry.cacheOpOperation =/= CacheOpCode.implementationDefined
+  val headIsIcacheCacheOp = headEntry.isCacheOp &&
+    headEntry.cacheOpType === CacheOpCode.iCache &&
+    headEntry.cacheOpOperation =/= CacheOpCode.implementationDefined
   // toDcache
-  io.ibarFenceReq := 
+  io.fenceIReq := 
     RegNext(
       headEntry.valid && headEntry.writtenBack &&
-      (headEntry.ibar || headIsDcacheCacop) && io.storeQueueEmpty &&
+      (headEntry.fenceI || headIsDcacheCacheOp) && io.storeQueueEmpty &&
       !headEntry.excp.hasException
     )
-  // Icache的cacop
+  // Icache的cacheOp
   //已弃用
-  io.cacopICacheReq := headEntry.valid && headEntry.writtenBack &&
-    headIsIcacheCacop && io.storeQueueEmpty && !headEntry.excp.hasException
+  io.cacheOpICacheReq := headEntry.valid && headEntry.writtenBack &&
+    headIsIcacheCacheOp && io.storeQueueEmpty && !headEntry.excp.hasException
   
   val canConsider = Wire(Vec(CommitWidth, Bool()))
   val isExcpSlot  = Wire(Vec(CommitWidth, Bool()))
@@ -280,35 +280,32 @@ class ROB(implicit p: Parameters) extends NSModule {
   for (i <- 0 until CommitWidth) {
     val idx       = (deqPtr.value + i.U)(log2Ceil(RobSize) - 1, 0)
     val entry     = entries(idx)
-    val isTlb     = entry.tlbOp =/= TlbOp.none
-    val isCacop   = entry.isCacop
-    val isPrivCsr = entry.fuType === FuType.csr && (
-      entry.csrOp === CsrOp.read ||
-      entry.csrOp === CsrOp.write ||
-      entry.csrOp === CsrOp.xchg
-    )
-    val userHitCacopAllowed = isCacop &&
-      io.currentPlv === 3.U &&
-      CacopCode.isHitOp(entry.cacopOperation)
-    //val tlbIpe    = isTlb && io.currentPlv =/= 0.U
-    // val csrIpe    = isPrivCsr && io.currentPlv =/= 0.U
-    val isIpe = entry.isPriv && io.currentPlv =/= 0.U && !userHitCacopAllowed
+    val isCacheOp   = entry.isCacheOp
+    val userHitCacheOpAllowed = isCacheOp &&
+      io.currentPriv === 3.U &&
+      CacheOpCode.isHitOp(entry.cacheOpOperation)
+    // 特权级检查：PrivLevel.s(1) 需要 S 及以上，PrivLevel.m(3) 需要 M
+    val privViolation =
+      ((entry.privLevel === PrivLevel.s) && (io.currentPriv === 0.U)) ||
+      ((entry.privLevel === PrivLevel.m) && (io.currentPriv =/= 3.U))
+    val isIllegalPriv = privViolation && !userHitCacheOpAllowed
     val commitExcp = Wire(new ExceptionBundle)
     commitExcp.excpVec := entry.excp.mergeMany(
       base = entry.excp.excpVec,
-      isIpe -> ExcType.IPE
+      isIllegalPriv -> ExcType.ILLEGAL
     )
+    commitExcp.intrCode := entry.excp.intrCode
     val hasExcp = commitExcp.hasException
     val olderStoreCommitting = if (i == 0) false.B else {
       VecInit((0 until i).map(j =>
         canConsider(j) && commitCandidates(j).memWrite)).asUInt.orR
     }
-    val ibarReady = !entry.ibar || io.ibarFenceDone
-    val cacopReady = !entry.isCacop ||
-      entry.cacopOperation === CacopCode.implementationDefined ||
-      entry.cacopCacheType =/= CacopCode.dCache || io.ibarFenceDone
+    val fenceIReadyLocal = !entry.fenceI || io.fenceIReady
+    val cacheOpReady = !entry.isCacheOp ||
+      entry.cacheOpOperation === CacheOpCode.implementationDefined ||
+      entry.cacheOpType =/= CacheOpCode.dCache || io.fenceIReady
     val storeReady = !entry.waitStore ||
-      (io.storeQueueEmpty && !olderStoreCommitting && ibarReady && cacopReady) || hasExcp
+      (io.storeQueueEmpty && !olderStoreCommitting && fenceIReadyLocal && cacheOpReady) || hasExcp
     val thisReady = entry.valid && entry.writtenBack &&
       storeReady && !inFlushRange(idx)
     val isCsrW    = entry.csrWen && !hasExcp
@@ -343,20 +340,21 @@ class ROB(implicit p: Parameters) extends NSModule {
   io.robRedirect.robIdx      := redirectEntry.robIdx
   io.robRedirect.excp        := redirectEntry.excp
   io.robRedirect.pc          := redirectEntry.pc
+  io.robRedirect.inst        := redirectEntry.inst
   io.robRedirect.excpVaddr   := redirectEntry.memVaddr
-  io.robRedirect.invalidIcache       :=   redirectValid && (redirectEntry.ibar ||
+  io.robRedirect.invalidIcache       :=   redirectValid && (redirectEntry.fenceI ||
 
-  ( redirectEntry.isCacop &&
-    redirectEntry.cacopCacheType === CacopCode.iCache &&
-    redirectEntry.cacopOperation =/= CacopCode.implementationDefined)
+  ( redirectEntry.isCacheOp &&
+    redirectEntry.cacheOpType === CacheOpCode.iCache &&
+    redirectEntry.cacheOpOperation =/= CacheOpCode.implementationDefined)
    )&&  !redirectEntry.excp.hasException
 
   io.commitToCsr.csrWen      := isCsrSlot.asUInt.orR
   io.commitToCsr.csrWaddr    := redirectEntry.csrWaddr
   io.commitToCsr.csrWdata    := redirectEntry.csrWdata
 
-  io.commitToCsr.llbitSet    :=   redirectValid && redirectEntry.llbitSet &&  !redirectEntry.excp.hasException
-  io.commitToCsr.llbitClear  :=   redirectValid && redirectEntry.llbitClear &&  !redirectEntry.excp.hasException
+  io.commitToCsr.lrValidSet    :=   redirectValid && redirectEntry.lrValidSet &&  !redirectEntry.excp.hasException
+  io.commitToCsr.lrValidClear  :=   redirectValid && redirectEntry.lrValidClear &&  !redirectEntry.excp.hasException
    
   io.commitToCsr.idle        :=   redirectValid && redirectEntry.isIdle &&  !redirectEntry.excp.hasException
   

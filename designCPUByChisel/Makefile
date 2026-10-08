@@ -5,7 +5,7 @@ SHELL := /bin/bash
 
 MILL     ?= ./mill
 MODULE   := RamOn
-CORE_TOP := nscscc.CoreSimu
+CORE_TOP := minixiangshan.CoreSimu
 BUILD_MILL := ./build.mill
 BUILD_FILES := $(BUILD_MILL) $(MILL)
 
@@ -22,7 +22,7 @@ TOP_V     := $(RTL_DIR)/core_top.v
 # 	@$(MILL) -i $(MODULE).runMain $(CORE_TOP)
 
 s:
-	sbt "runMain nscscc.CoreGen simu"
+	sbt "runMain minixiangshan.CoreGen simu"
 
 
 # 路径变量（强烈建议统一在这里管理）
@@ -103,7 +103,7 @@ sim:
 	$(SELECT_SOFTWARE_CMD) && \
 	$(MAKE)
 ss:
-	sbt "runMain nscscc.CoreGen simu" &&\
+	sbt "runMain minixiangshan.CoreGen simu" &&\
 	cd $(ENV_SCRIPT) && \
 	source env.sh && \
 	cd $(MAKE_DIR) && \
@@ -112,7 +112,7 @@ ss:
 
 ff: $(TOP_V)
 $(TOP_V): $(SCALA_FILES) $(BUILD_FILES)
-	sbt "runMain nscscc.CoreGen fpga"
+	sbt "runMain minixiangshan.CoreGen fpga"
 
 func:
 	cd $(ENV_SCRIPT) && \

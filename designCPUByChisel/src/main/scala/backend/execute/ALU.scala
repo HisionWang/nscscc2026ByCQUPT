@@ -1,16 +1,15 @@
-package nscscc.backend.execute
+package minixiangshan.backend.execute
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.dispatch.DispatchedInst
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.dispatch.DispatchedInst
  
 // ═══════════════════════════════════════════════════════════════
 //  ALU 执行单元
 //
-//  支持操作：add, sub, slt, sltu, and, or, xor, nor,
-//            sll, srl, sra, pass2
+//  支持操作：add, sub, sll, slt, sltu, xor, srl, sra, or, and, pass2
 //  单拍组合逻辑完成
 // ═══════════════════════════════════════════════════════════════
 class ALU(implicit p: Parameters) extends NSModule {
@@ -52,10 +51,9 @@ class ALU(implicit p: Parameters) extends NSModule {
   val andResult  = src1 & src2
   val orResult   = src1 | src2
   val xorResult  = src1 ^ src2
-  val norResult  = ~(src1 | src2)
  
   // ── 移位类 ──
-  // LoongArch 移位量只取低 5 位（32位架构）
+  // RISC-V（RV32）移位量只取低 5 位
   val shamt = src2(4, 0)
   val sllResult  = src1 << shamt
   val srlResult  = src1 >> shamt
@@ -85,7 +83,6 @@ class ALU(implicit p: Parameters) extends NSModule {
     (op === AluOp.and  ) -> andResult,
     (op === AluOp.or   ) -> orResult,
     (op === AluOp.xor  ) -> xorResult,
-    (op === AluOp.nor  ) -> norResult,
     (op === AluOp.sll  ) -> sllResult(XLEN - 1, 0),
     (op === AluOp.srl  ) -> srlResult(XLEN - 1, 0),
     (op === AluOp.sra  ) -> sraResult(XLEN - 1, 0),

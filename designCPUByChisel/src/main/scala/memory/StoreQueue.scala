@@ -1,14 +1,14 @@
-package nscscc.mem
+package minixiangshan.mem
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.dispatch._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.backend.execute._
-import nscscc.mmu._
-import nscscc.util.CircularQueuePtr
+import minixiangshan.config._
+import minixiangshan.backend.dispatch._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.execute._
+import minixiangshan.mmu._
+import minixiangshan.util.CircularQueuePtr
  
 // ★ 新增：SQ → LQ 的转发信息 Bundle
 class SqForwardInfoBundle(implicit p: Parameters) extends NSBundle {
@@ -249,9 +249,9 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
     val idx = io.dataWrite.idx
     entries(idx).dataValid := true.B
     entries(idx).data := MuxLookup(entries(idx).lsuOp, io.dataWrite.data)(Seq(
-      LsuOp.stb -> Cat(0.U(24.W), io.dataWrite.data(7, 0)),
-      LsuOp.sth -> Cat(0.U(16.W), io.dataWrite.data(15, 0)),
-      LsuOp.stw -> io.dataWrite.data,
+      LsuOp.sb -> Cat(0.U(24.W), io.dataWrite.data(7, 0)),
+      LsuOp.sh -> Cat(0.U(16.W), io.dataWrite.data(15, 0)),
+      LsuOp.sw -> io.dataWrite.data,
       LsuOp.scw -> io.dataWrite.data,
     ))
   }
@@ -282,7 +282,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.outResult.bits.memPaddr        := wbEntry.paddr
  
   val storeByteOff = wbEntry.paddr(1, 0)
-  io.outResult.bits.memStoreData    := Mux(wbEntry.lsuOp === LsuOp.stb,
+  io.outResult.bits.memStoreData    := Mux(wbEntry.lsuOp === LsuOp.sb,
                                            wbEntry.data << (storeByteOff * 8.U),
                                            wbEntry.data << (wbEntry.paddr(1) * 16.U))
   io.outResult.bits.storeValid := !wbEntry.excp.hasException &&
@@ -349,15 +349,15 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   wbUop.ctrl.csrWen   := false.B
   wbUop.ctrl.isBranch := false.B
   wbUop.ctrl.isJump   := false.B
-  wbUop.ctrl.isPriv   := false.B
+  wbUop.ctrl.privLevel   := 0.U
   wbUop.ctrl.isIdle   := false.B
   wbUop.ctrl.waitForward := false.B
   wbUop.ctrl.blockBackward := false.B
   wbUop.ctrl.flushOnCommit := false.B
-  wbUop.cacop.valid := false.B
-  wbUop.cacop.code := 0.U
-  wbUop.cacop.cacheType := 0.U
-  wbUop.cacop.operation := 0.U
+  wbUop.cacheOp.valid := false.B
+  wbUop.cacheOp.code := 0.U
+  wbUop.cacheOp.cacheType := 0.U
+  wbUop.cacheOp.operation := 0.U
  
   wbUop.pdInfo  := DontCare
   wbUop.bpuInfo := DontCare
@@ -404,7 +404,7 @@ class StoreQueue(implicit p: Parameters) extends NSModule {
   io.dcacheReq.bits.cacheable := dcacheEntry.cacheable
   io.dcacheReq.bits.sqIdx := dcacheIdx
   io.dcacheReq.bits.lsuOp := Mux(dcacheEntry.lsuOp === LsuOp.scw,
-    LsuOp.stw, dcacheEntry.lsuOp)
+    LsuOp.sw, dcacheEntry.lsuOp)
  
   when(io.dcacheReq.fire) {
     entries(dcacheIdx).dcacheIssued := true.B

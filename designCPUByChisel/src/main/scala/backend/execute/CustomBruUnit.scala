@@ -1,8 +1,8 @@
-package nscscc.backend.execute
+package minixiangshan.backend.execute
 
 import chisel3._
-import nscscc.backend.decode.BruOp
-import nscscc.config.{NSModule, Parameters}
+import minixiangshan.backend.decode.BruOp
+import minixiangshan.config.{NSModule, Parameters}
 
 class CustomBruUnit(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

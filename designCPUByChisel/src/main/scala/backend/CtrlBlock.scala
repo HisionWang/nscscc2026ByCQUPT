@@ -1,19 +1,19 @@
-package nscscc.backend
+package minixiangshan.backend
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.frontend.CtrlFlowIO
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.backend.dispatch._
-import nscscc.backend.rob._
-import nscscc.backend.issue._
-import nscscc.difftest._
-import nscscc.backend.execute._
-import nscscc.backend.redirect._
-import nscscc.csr._
-import nscscc.mmu._
+import minixiangshan.config._
+import minixiangshan.frontend.CtrlFlowIO
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.dispatch._
+import minixiangshan.backend.rob._
+import minixiangshan.backend.issue._
+import minixiangshan.difftest._
+import minixiangshan.backend.execute._
+import minixiangshan.backend.redirect._
+import minixiangshan.csr._
+import minixiangshan.mmu._
 
 class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // ── 来自前端 ──
@@ -39,11 +39,11 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   //val commit   = Output(Vec(CommitWidth, new RobCommitInfo))
   val commitToSq  = new RobCommitToSq
   val commitToCsr = new RobCommitToCsr
-  val currentPlv  = Input(UInt(plvLen.W))
+  val currentPriv  = Input(UInt(privLen.W))
   val storeQueueEmpty = Input(Bool())
-  val ibarFenceReq = Output(Bool())
-  val ibarFenceDone = Input(Bool())
-  val cacopICacheReq = Output(Bool())
+  val fenceIReq = Output(Bool())
+  val fenceIReady = Input(Bool())
+  val cacheOpICacheReq = Output(Bool())
 
  
   // ── 重定向 ──
@@ -55,9 +55,14 @@ class CtrlBlockIO(implicit p: Parameters) extends NSBundle {
   // 输出重定向
   val redirectInfo    = (ValidIO( new redirectInfoToModule )) 
 
-  val excpEvent           = Output(new ExcpEvent)
-  val excpInfo            = Output(new ExcpInfo)
-  val redirectAddrFromCsr = Input(new RedirectEntry)
+  // 陷入请求（送 CSR 计算入口地址并更新特权状态）
+  val trapReq             = Output(new TrapReq)
+  /** CSR 的陷入环境（mtvec/stvec/委托/返回地址） */
+  val trapEnv             = Input(new TrapEnv)
+  /** CSR 给出的最高优先级中断编号 */
+  val intrCode            = Input(UInt(IntrCode.width.W))
+  /** 本周期是否有指令提交（用于 minstret） */
+  val commitValid         = Output(Bool())
   
 
 
@@ -89,13 +94,16 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   val disp2Lsq = Module(new DispatchLsqBuffer)
 
 
-  redirectController.io.redirectAddrFromCsr <> io.redirectAddrFromCsr
+  redirectController.io.trapEnv <> io.trapEnv
 
   io.redirectInfo := redirectController.io.redirectInfo
 
   redirectController.io.bruRedirect := io.bruInfo
-  redirectController.io.eentry     := 0.U
-  redirectController.io.tlbrentry  := 0.U
+  redirectController.io.currentPriv := io.currentPriv
+  redirectController.io.intrCode    := io.intrCode
+
+  // 陷入请求送往 CSR；CSR 组合返回入口地址
+  io.trapReq := redirectController.io.trapReq
 
   decodeStage.io.in    <> io.in
   decodeStage.io.extInt := io.extInt
@@ -186,22 +194,20 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
   //缓解时序~
   renameStage.io.archCommit <>  RegNext( rob.io.archCommit               )
   io.commitToCsr            :=  RegNext( rob.io.commitToCsr              )
-  io.excpEvent              <>  RegNext( redirectController.io.excpEvent )
-  io.excpInfo               <>  RegNext( redirectController.io.excpInfo  )
+  io.commitValid            :=  rob.io.commit.valid.asUInt.orR
 
-  rob.io.currentPlv := io.currentPlv
+  rob.io.currentPriv := io.currentPriv
 
   rob.io.storeQueueEmpty := io.storeQueueEmpty
-  io.ibarFenceReq        := rob.io.ibarFenceReq
-  rob.io.ibarFenceDone   := io.ibarFenceDone
-  io.cacopICacheReq      := rob.io.cacopICacheReq
+  io.fenceIReq        := rob.io.fenceIReq
+  rob.io.fenceIReady   := io.fenceIReady
+  io.cacheOpICacheReq      := rob.io.cacheOpICacheReq
   if (EnableDifftest) {
     for (i <- 0 until CommitWidth) {
       val robCommit      = RegNext(    rob.io.commit.bits(i) )
       val robCommitvalid = RegNext(    rob.io.commit.valid(i) )
 
       val diffCommit = difftest.get.commit(i)
-      val isCsrRead = robCommit.fuType === FuType.csr && robCommit.csrOp === CsrOp.read
 
       //ROB提交窗口中时包含着异常的，也就是在rob视角异常也会提交（用这种方式清除他），但肯定不会改架构
       diffCommit.valid      := robCommitvalid//&& !rob.io.commit.isExcpCommit(i) 
@@ -210,19 +216,13 @@ class CtrlBlock(implicit p: Parameters) extends NSModule {
       diffCommit.rfWen      := robCommit.rfWen
       diffCommit.wdest      := robCommit.ldst
       diffCommit.wdata      := robCommit.rfdata
-      diffCommit.isCntInst  := DifftestUtils.isCntInst(robCommit.inst)
-      diffCommit.csrRstat   := isCsrRead && robCommit.csrWaddr === csrAddr.estat.U
-      diffCommit.csrData    := robCommit.rfdata
-      diffCommit.csrTimer   := robCommit.csrTimer
-      val isPureErtnExcp = robCommit.excp.excpVec === (1.U << ExcType.ERTN.id).asUInt
-      diffCommit.excpFlush  := robCommit.excp.hasException && !isPureErtnExcp
-      diffCommit.ertnFlush  := DifftestUtils.isErtn(robCommit.inst) && isPureErtnExcp
-      diffCommit.csrEcode   := DifftestUtils.excpVecToEcode(robCommit.excp)
-      diffCommit.tlbfillEn  := robCommitvalid &&
-        robCommit.tlbOp === TlbOp.fill
-      diffCommit.randIndex  := robCommit.tlbFillIdx
+      val isPureXret = robCommit.excp.excpVec === (1.U << ExcType.XRET.id).asUInt
+      diffCommit.excpFlush  := robCommit.excp.hasException && !isPureXret
+      diffCommit.xretFlush  := isPureXret
+      diffCommit.cause      := DifftestUtils.excpCause(robCommit.excp)
       diffCommit.trap       := DifftestUtils.isTrap(robCommit.inst)
       diffCommit.trapCode   := 0.U
+      diffCommit.tlbFillIdx := robCommit.tlbFillIdx
       diffCommit.load.valid := robCommit.memRead
       diffCommit.load.paddr := robCommit.memPaddr
       diffCommit.load.vaddr := robCommit.memVaddr

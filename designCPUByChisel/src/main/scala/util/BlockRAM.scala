@@ -1,9 +1,9 @@
-package nscscc.util
+package minixiangshan.util
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.config.Parameters
+import minixiangshan.config._
+import minixiangshan.config.Parameters
  
 // ===================== BlackBox：FPGA 模式专用 =====================
 class SimpleBlockRAMBlackBox(

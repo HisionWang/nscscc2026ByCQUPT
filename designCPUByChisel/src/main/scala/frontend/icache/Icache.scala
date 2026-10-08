@@ -1,12 +1,12 @@
-package nscscc.frontend.icache
+package minixiangshan.frontend.icache
 
 import chisel3._
 import chisel3.util._
 
-import nscscc.mem.L2cache.L2NativeReadIO
+import minixiangshan.mem.L2cache.L2NativeReadIO
 
-import nscscc.config.Parameters
-import nscscc.config.NSModule
+import minixiangshan.config.Parameters
+import minixiangshan.config.NSModule
 // OK
 class ICache(implicit p: Parameters) extends NSModule {
   
@@ -32,7 +32,6 @@ class ICache(implicit p: Parameters) extends NSModule {
   val mainPipe = Module(new ICacheMainPipe)
   val array = Module(new ICacheArray)
   val replacer = Module(new CacheReplacerI)
-  //val simMMU = Module(new SimpleMMU)
   
   
   // === 连接CPU接口 ===
@@ -55,7 +54,6 @@ class ICache(implicit p: Parameters) extends NSModule {
   mainPipe.io.replacer_touch  <> replacer.io.touch
   mainPipe.io.mmu <> io.mmu
 
-  //simMMU OK
   //mainPipe OK
 
   replacer.io.flush.valid := false.B

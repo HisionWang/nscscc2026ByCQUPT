@@ -3,10 +3,14 @@ export PROJECT_ROOT=$(dirname $(realpath ${SCRIPT_PATH}))
 
 export CHIPLAB_HOME=$PROJECT_ROOT/chiplab
 
-# 临时添加到PATH
-export PATH=$CHIPLAB_HOME/toolchains/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0/bin:$PATH
-# 给工具链目录中的所有可执行文件添加执行权限
-chmod -R +x $CHIPLAB_HOME/toolchains/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0/bin/
-# chmod -R +x "$CHIPLAB_HOME/toolchains/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0/libexec/gcc/loongarch32r-linux-gnusf/8.3.0/" 2>/dev/null
-# 测试是否找到
-which loongarch32r-linux-gnusf-gcc
+# RISC-V 交叉工具链（rv32i/rv32im）
+RISCV_TOOLCHAIN=$CHIPLAB_HOME/toolchains/riscv-toolchain/bin
+
+if [ -d "$RISCV_TOOLCHAIN" ]; then
+  export PATH=$RISCV_TOOLCHAIN:$PATH
+  chmod -R +x "$RISCV_TOOLCHAIN" 2>/dev/null
+  which riscv32-unknown-elf-gcc || which riscv64-unknown-elf-gcc
+else
+  echo "[env.sh] 未找到 RISC-V 工具链目录: $RISCV_TOOLCHAIN"
+  echo "[env.sh] 请将 rv32im 工具链安装到该目录后重新 source env.sh"
+fi

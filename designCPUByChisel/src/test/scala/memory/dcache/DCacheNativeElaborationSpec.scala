@@ -1,7 +1,7 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
 
 import chisel3.stage.ChiselStage
-import nscscc.config._
+import minixiangshan.config._
 import org.scalatest.flatspec.AnyFlatSpec
 
 class DCacheNativeElaborationSpec extends AnyFlatSpec {

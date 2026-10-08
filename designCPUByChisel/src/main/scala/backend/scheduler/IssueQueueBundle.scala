@@ -1,10 +1,10 @@
-package nscscc.backend.issue
+package minixiangshan.backend.issue
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.dispatch._
-import nscscc.backend.rename._
+import minixiangshan.config._
+import minixiangshan.backend.dispatch._
+import minixiangshan.backend.rename._
  
 // ════════════════════════════════════════════════════════════════
 //  DataSource 编码：bypass 数据来源（2 值，Option A）

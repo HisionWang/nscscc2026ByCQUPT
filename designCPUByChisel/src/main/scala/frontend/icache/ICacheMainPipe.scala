@@ -1,13 +1,13 @@
-package nscscc.frontend.icache
+package minixiangshan.frontend.icache
  
 import chisel3._
 import chisel3.util._
-import nscscc.mem.L2cache.L2NativeReadIO
-import nscscc.config.Parameters
-import nscscc.config._
-import nscscc.mmu._
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
+import minixiangshan.mem.L2cache.L2NativeReadIO
+import minixiangshan.config.Parameters
+import minixiangshan.config._
+import minixiangshan.mmu._
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
  
 class ICacheMainPipe(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

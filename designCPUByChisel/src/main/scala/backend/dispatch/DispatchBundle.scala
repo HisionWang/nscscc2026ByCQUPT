@@ -1,14 +1,14 @@
-package nscscc.backend.dispatch
+package minixiangshan.backend.dispatch
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.rob._
-import nscscc.backend.rename._
-import nscscc.frontend.PredecodeInfo
-import nscscc.util.CircularQueuePtr
-import nscscc.frontend.bpuInfoBundle
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rob._
+import minixiangshan.backend.rename._
+import minixiangshan.frontend.PredecodeInfo
+import minixiangshan.util.CircularQueuePtr
+import minixiangshan.frontend.bpuInfoBundle
 
 object IssueQueueId {
   val Q1 = 0   // ALU + CSR
@@ -38,7 +38,7 @@ class DispatchedInst(implicit p: Parameters) extends NSBundle {
   val excp       = new ExceptionBundle
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
-  val cacop      = new CacopDecode
+  val cacheOp      = new CacheOpDecode
   val pdInfo     = new PredecodeInfo
   val bpuInfo     = new bpuInfoBundle
  

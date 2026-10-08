@@ -1,11 +1,11 @@
-package nscscc.backend.dispatch
+package minixiangshan.backend.dispatch
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.rob._
-import nscscc.backend.rename._
-//import nscscc.backend.execute._
+import minixiangshan.config._
+import minixiangshan.backend.rob._
+import minixiangshan.backend.rename._
+//import minixiangshan.backend.execute._
  
 /**
  * ═══════════════════════════════════════════════════════════════

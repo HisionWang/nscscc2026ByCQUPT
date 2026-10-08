@@ -1,8 +1,8 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chisel3.util._
-import nscscc.config._
+import minixiangshan.config._
 
 class L2DataRAMBlackBox(val depth: Int, val width: Int)(implicit p: Parameters)
     extends BlackBox {

@@ -1,12 +1,12 @@
-package nscscc.backend.regread
+package minixiangshan.backend.regread
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.dispatch.DispatchedInst
-import nscscc.backend.rename.RedirectInfo
-import nscscc.backend.execute._
-import nscscc.backend.issue._
+import minixiangshan.config._
+import minixiangshan.backend.dispatch.DispatchedInst
+import minixiangshan.backend.rename.RedirectInfo
+import minixiangshan.backend.execute._
+import minixiangshan.backend.issue._
  
 // ═══════════════════════════════════════════════════════════════
 //  执行单元请求：datapath → ExeUnit

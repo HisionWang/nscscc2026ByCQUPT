@@ -1,13 +1,13 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.mem.L2cache._
-import nscscc.frontend.icache.CacheReplacerD
-import nscscc.backend.execute._
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.mem.L2cache._
+import minixiangshan.frontend.icache.CacheReplacerD
+import minixiangshan.backend.execute._
 
 class DCache(implicit p: Parameters) extends NSModule {
  
@@ -84,8 +84,8 @@ class DCache(implicit p: Parameters) extends NSModule {
       is(1.U) { halfData := rawWord(31, 16) }
     }
     MuxLookup(lsuOp, rawWord, Seq(
-      LsuOp.ldw  -> rawWord, LsuOp.ldh  -> Cat(Fill(16, halfData(15)), halfData), LsuOp.ldhu -> Cat(0.U(16.W), halfData),
-      LsuOp.ldb  -> Cat(Fill(24, byteData(7)), byteData), LsuOp.ldbu -> Cat(0.U(24.W), byteData)
+      LsuOp.lw  -> rawWord, LsuOp.lh  -> Cat(Fill(16, halfData(15)), halfData), LsuOp.lhu -> Cat(0.U(16.W), halfData),
+      LsuOp.lb  -> Cat(Fill(24, byteData(7)), byteData), LsuOp.lbu -> Cat(0.U(24.W), byteData)
     ))
   }
 
@@ -93,7 +93,7 @@ class DCache(implicit p: Parameters) extends NSModule {
     val byteOff  = paddr(1, 0)
     val byteData = MuxLookup(byteOff, rawWord(7, 0), Seq(0.U -> rawWord(7, 0), 1.U -> rawWord(15, 8), 2.U -> rawWord(23, 16), 3.U -> rawWord(31, 24)))
     val halfData = Mux(byteOff(1), rawWord(31, 16), rawWord(15, 0))
-    MuxLookup(lsuOp, rawWord, Seq(LsuOp.ldw -> rawWord, LsuOp.ldh -> Cat(Fill(16, halfData(15)), halfData), LsuOp.ldhu -> Cat(0.U(16.W), halfData), LsuOp.ldb -> Cat(Fill(24, byteData(7)), byteData), LsuOp.ldbu -> Cat(0.U(24.W), byteData)))
+    MuxLookup(lsuOp, rawWord, Seq(LsuOp.lw -> rawWord, LsuOp.lh -> Cat(Fill(16, halfData(15)), halfData), LsuOp.lhu -> Cat(0.U(16.W), halfData), LsuOp.lb -> Cat(Fill(24, byteData(7)), byteData), LsuOp.lbu -> Cat(0.U(24.W), byteData)))
   }
 
   def mergeStoreLine(data: DCacheArrayReadData, hitWay: UInt, paddr: UInt, storeData: UInt, lsuOp: UInt) = {
@@ -107,8 +107,8 @@ class DCache(implicit p: Parameters) extends NSModule {
     val sbEnable = UIntToOH(byteOff, 4)
     val shEnable = Mux(byteOff(1), Cat(true.B, true.B, false.B, false.B), Cat(false.B, false.B, true.B, true.B))
     val swEnable = Cat(true.B, true.B, true.B, true.B)
-    val finalEnable = MuxLookup(lsuOp, swEnable, Seq(LsuOp.stb -> sbEnable, LsuOp.sth -> shEnable, LsuOp.stw -> swEnable))
-    val shiftedStoreData = MuxLookup(lsuOp, storeData, Seq(LsuOp.stb -> (storeData(7, 0) << (byteOff * 8.U)), LsuOp.sth -> (storeData(15, 0) << (Cat(byteOff(1), 0.U(1.W)) * 8.U)), LsuOp.stw -> storeData))
+    val finalEnable = MuxLookup(lsuOp, swEnable, Seq(LsuOp.sb -> sbEnable, LsuOp.sh -> shEnable, LsuOp.sw -> swEnable))
+    val shiftedStoreData = MuxLookup(lsuOp, storeData, Seq(LsuOp.sb -> (storeData(7, 0) << (byteOff * 8.U)), LsuOp.sh -> (storeData(15, 0) << (Cat(byteOff(1), 0.U(1.W)) * 8.U)), LsuOp.sw -> storeData))
     val newWord = Cat(Mux(finalEnable(3), shiftedStoreData(31, 24), targetWord(31, 24)), Mux(finalEnable(2), shiftedStoreData(23, 16), targetWord(23, 16)), Mux(finalEnable(1), shiftedStoreData(15, 8),  targetWord(15, 8)), Mux(finalEnable(0), shiftedStoreData(7, 0), targetWord(7, 0)))
     for (w <- 0 until blockBytes / 4) when(wordOff === w.U) { merged(w) := newWord }
     Cat(merged.reverse)

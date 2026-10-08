@@ -1,12 +1,12 @@
-package nscscc.frontend
+package minixiangshan.frontend
  
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
-import nscscc.config._
-import nscscc.mmu._
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
+import minixiangshan.config.Parameters
+import minixiangshan.config._
+import minixiangshan.mmu._
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
 
 class RedirectIO(implicit p: Parameters) extends NSBundle {
   val target = Output(UInt(32.W))
@@ -22,29 +22,13 @@ class FtqEntry(implicit p: Parameters) extends NSBundle {
 }
 
  
-object FetchExceptIdx {
-  val INT  = 0
-  val PIL  = 1
-  val PIS  = 2
-  val PIF  = 3
-  val PME  = 4
-  val ADEF = 8
-}
-// ==================== LoongArch32 操作码 ====================
-object LoongArch32Opcodes {
-  val OPC_B    = "b010100".U(6.W)   // 无条件跳转 b
-  val OPC_BL   = "b010101".U(6.W)   // 函数调用 bl
-  val OPC_JIRL = "b010011".U(6.W)   // 间接跳转 jirl
-  val OPC_BEQ  = "b010110".U(6.W)   // 条件分支
-  val OPC_BNE  = "b010111".U(6.W)
-  val OPC_BLT  = "b011000".U(6.W)
-  val OPC_BGE  = "b011001".U(6.W)
-  val OPC_BLTU = "b011010".U(6.W)
-  val OPC_BGEU = "b011011".U(6.W)
- 
-  def isBranchOpcode(op: UInt): Bool =
-    op === OPC_BEQ || op === OPC_BNE || op === OPC_BLT ||
-    op === OPC_BGE || op === OPC_BLTU || op === OPC_BGEU
+// ==================== RISC-V 操作码（仅预译码需要的几类） ====================
+object RiscVOpcodes {
+  val OPC_JAL    = "b1101111".U(7.W)   // 无条件直接跳转
+  val OPC_JALR   = "b1100111".U(7.W)   // 间接跳转
+  val OPC_BRANCH = "b1100011".U(7.W)   // 条件分支
+
+  def isBranchOpcode(op: UInt): Bool = op === OPC_BRANCH
 }
  
 // ==================== BTB 表项 ====================
@@ -52,10 +36,10 @@ class BTBEntry(implicit p: Parameters) extends NSBundle {
   val valid  = Bool()
   val tag    = UInt(btbTagBits.W)
   val target = UInt(32.W)
-  val isJalr = Bool()   // 间接跳转 (jirl)
-  val isJal  = Bool()   // 无条件直接跳转 (b/bl)
-  val isCall = Bool()   // 函数调用 (bl / jirl r1,...)
-  val isRet  = Bool()   // 函数返回 (jirl r0, r1, 0)
+  val isJalr = Bool()   // 间接跳转 (jalr)
+  val isJal  = Bool()   // 无条件直接跳转 (jal)
+  val isCall = Bool()   // 函数调用
+  val isRet  = Bool()   // 函数返回 (jalr x0, x1, 0)
   val offset = UInt(log2Ceil(fetchWidth).W)  // 分支在fetch块内的指令偏移
 }
 
@@ -141,8 +125,8 @@ class FrontendRedirect(implicit p: Parameters) extends NSBundle {
 class PredecodeInfo(implicit p: Parameters) extends NSBundle {
   val valid      = Bool()
   val isBr       = Bool()     // 条件分支 (beq/bne/blt/bge/bltu/bgeu)
-  val isJal      = Bool()     // 无条件直接跳转 (b/bl)
-  val isJalr     = Bool()     // 间接跳转 (jirl)
+  val isJal      = Bool()     // 无条件直接跳转 (jal)
+  val isJalr     = Bool()     // 间接跳转 (jalr)
   val isCall     = Bool()     // 函数调用
   val isRet      = Bool()     // 函数返回
   val jumpTarget = UInt(32.W) // 跳转目标(直接跳转可计算, jirl为0)
@@ -160,7 +144,7 @@ class PredecodeResp(implicit p: Parameters) extends NSBundle {
   val bpuUpdate        = new BpuUpdateReq            // BPU快速更新请求
   //val miss             = Bool()
   val uncached         = Bool()
-  val mmu_error        = new MmuTransError
+  val mmu_error        = new FetchMmuError
   val addr             = UInt(32.W)
 }
 
@@ -171,17 +155,8 @@ class CtrlFlowIO(implicit p: Parameters) extends NSBundle {
   // === 预译码结果 ===
   val pdInfo     = new PredecodeInfo
   val bpuInfo    = new bpuInfoBundle
-  // === 取指异常向量 (索引=LoongArch32 ECODE) ===
-  val exception = new MmuTransError
-  //  [0]  INT  - 中断（暂未使用，预留）
-  //  [1]  PIL  - 取指TLB缺失
-  //  [2]  PIS  - 取指页表项无效
-  //  [3]  PIF  - 取指特权级违例
-  //  [4]  PME  - 取指页表项修改
-  //  [5]  -    - 预留
-  //  [6]  -    - 预留
-  //  [7]  -    - 预留
-  //  [8]  ADEF - 指令地址非对齐
+  // === 取指异常（页错误 / 访问错误 / 取指地址非对齐） ===
+  val exception = new FetchMmuError
 }
  
 // ==================== IBuffer 表项 ====================

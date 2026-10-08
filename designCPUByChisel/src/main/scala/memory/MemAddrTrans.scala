@@ -1,11 +1,11 @@
-package nscscc.mem
+package minixiangshan.mem
 
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.mmu._
-import nscscc.backend.execute._
-import nscscc.backend.decode.LsuOp
+import minixiangshan.config._
+import minixiangshan.mmu._
+import minixiangshan.backend.execute._
+import minixiangshan.backend.decode.LsuOp
 
 class MemAddrTrans(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
@@ -20,15 +20,15 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
 
     // 全局冲刷信号（如遇异常或分支预测错误）
     val flush    = Input(Bool())
-    val llbit    = Input(Bool())
+    val lrValid    = Input(Bool())
   })
 
   // ================================================================
   //  组合逻辑透传：直接向 MMU 发起地址翻译请求 (省去一拍延迟)
   // ================================================================
 
-  // LLBit=0 的 SC.W 直接失败，不进行地址翻译。
-  val in_sc_fail = io.in.bits.uop.ctrl.lsuOp === LsuOp.scw && !io.llbit
+  // reservation 无效时的 SC.W 直接失败，不进行地址翻译。
+  val in_sc_fail = io.in.bits.uop.ctrl.lsuOp === LsuOp.scw && !io.lrValid
 
   // MMU 能够接收（或无需接收）的条件
   val can_issue_mmu = in_sc_fail || io.mmuReq.ready
@@ -47,9 +47,8 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   io.mmuReq.bits.vaddr := io.in.bits.data      // 虚拟地址
   io.mmuReq.bits.lsuOp := MuxLookup(io.in.bits.uop.ctrl.lsuOp,
     io.in.bits.uop.ctrl.lsuOp)(Seq(
-      LsuOp.llw -> LsuOp.ldw,
-      LsuOp.scw -> LsuOp.stw,
-      LsuOp.cacop -> LsuOp.cacop
+      LsuOp.lrw -> LsuOp.lw,
+      LsuOp.scw -> LsuOp.sw
     ))
 
   // ================================================================
@@ -59,7 +58,7 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
   val s1_exe_data = RegInit(0.U.asTypeOf(new ExeResult))
   val s1_sc_fail  = RegInit(false.B)
 
-  // [关键缓冲器]：应对 SimpleMMU 没有内部停顿逻辑（不支持反压）的问题
+  // [关键缓冲器]：应对 MMU 响应可能晚于请求的问题
   val s1_mmu_done = RegInit(false.B)
   val s1_mmu_resp = RegInit(0.U.asTypeOf(new MmuToSqResp))
 
@@ -92,7 +91,7 @@ class MemAddrTrans(implicit p: Parameters) extends NSModule {
     }
   }
 
-  // 告知 MMU 我们的接收情况：永远为 true，依赖 S1 的 Skid Buffer 兜底
+  // 告知 MMU：本端口不反压，靠 S1 的 Skid Buffer 兜底
   io.mmuResp.ready := true.B
 
   // ================================================================

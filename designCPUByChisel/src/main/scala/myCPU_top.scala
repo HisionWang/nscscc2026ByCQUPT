@@ -1,21 +1,22 @@
-package nscscc
+package minixiangshan
  
 import chisel3._
 import chisel3.util._
 import chisel3.dontTouch
-import nscscc.config.NSModule
-import nscscc.config.NSRawModule
-import nscscc.config.NSBundle
-import nscscc.config.Parameters
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSRawModule
+import minixiangshan.config.NSBundle
+import minixiangshan.config.Parameters
  
-import nscscc.axi._
-import nscscc.frontend._
-import nscscc.mmu._
-import nscscc.csr._
-import nscscc.difftest._
-import nscscc.backend.Backend
-import nscscc.mem._
-import nscscc.mem.L2cache.L2Cache
+import minixiangshan.axi._
+import minixiangshan.frontend._
+import minixiangshan.mmu._
+import minixiangshan.csr._
+import minixiangshan.difftest._
+import minixiangshan.backend.Backend
+import minixiangshan.mem._
+import minixiangshan.mem.L2cache.L2Cache
+import minixiangshan.mem.L2cache.L2ReadArbiter
  
 class core_top(implicit p: Parameters) extends NSRawModule {
   // ========== 时钟与复位 ==========
@@ -106,7 +107,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   val backend = Module(new Backend)
   val memory = Module(new MemoryBlock)
   val mmu = Module(new Mmu)
-  val llbit = Wire(Bool())
+  val lrValid = Wire(Bool())
   val coreIdle = RegInit(false.B)
 
   memory.io.redirectInfo <> backend.io.redirectInfo
@@ -115,7 +116,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   frontend.io.out <> backend.io.in
   frontend.io.redirectInfo <> backend.io.redirectInfo
   //invalidIcahe由上诉redirectInfo去做
-  //frontend.io.invalidateICache := backend.io.commitToCsr.ibar || backend.io.cacopICacheReq
+  //frontend.io.invalidateICache := backend.io.commitToCsr.fenceI || backend.io.cacheOpICacheReq
   frontend.io.idle := coreIdle
 
 
@@ -129,7 +130,7 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   // 2.后端传给memory的地址信息处理
   val memaddrtrans = Module(new MemAddrTrans) 
   
-  memaddrtrans.io.llbit := llbit
+  memaddrtrans.io.lrValid := lrValid
   memaddrtrans.io.in <> backend.io.toMemResult(0)
   memory.io.fromExeMmuResult <> memaddrtrans.io.out
   memaddrtrans.io.mmuReq <> mmu.io.fromMem
@@ -168,20 +169,18 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   frontend.io.mmu.toMmu <> mmu.io.fromIcache
   frontend.io.mmu.fromMmu <> mmu.io.toIcache
 
-  //frontend.io.mmu.toMmu <> simMMU.io.mmu.toMmu
-  //frontend.io.mmu.fromMmu <> simMMU.io.mmu.fromMmu
 
-  //mmu.io <> 0.U.asTypeOf(new MmuIoBundle)
  
   // ---------- CSR ----------
   val csr = Module(new CsrFile)
-  llbit := csr.io.llbit
+  lrValid := csr.io.lrValid
   csr.io.timerInfo <> backend.io.timerInfo
   csr.io.irqBus <> intrpt
   csr.io.rReq <> backend.io.csrReq
   csr.io.rResp <> backend.io.csrResp
 
   backend.io.extInt :=  csr.io.hasIrq
+  backend.io.intrCode := csr.io.intrCode
 
   when(backend.io.idle) {
     coreIdle := true.B
@@ -192,32 +191,37 @@ class core_top(implicit p: Parameters) extends NSRawModule {
   csr.io.wReq.wen := backend.io.commitToCsr.csrWen
   csr.io.wReq.addr := backend.io.commitToCsr.csrWaddr
   csr.io.wReq.data := backend.io.commitToCsr.csrWdata
-  csr.io.llbitSet := backend.io.commitToCsr.llbitSet
-  csr.io.llbitClear := backend.io.commitToCsr.llbitClear
+  csr.io.lrValidSet := backend.io.commitToCsr.lrValidSet
+  csr.io.lrValidClear := backend.io.commitToCsr.lrValidClear
 
-  memory.io.ibarFenceReq := backend.io.ibarFenceReq
-  backend.io.ibarFenceDone := memory.io.ibarFenceDone
+  memory.io.fenceIReq := backend.io.fenceIReq
+  backend.io.fenceIReady := memory.io.fenceIReady
   
-  csr.io.excpEvent <> backend.io.excpEvent
-  csr.io.excpInfo <> backend.io.excpInfo
-  csr.io.redirectAddr <> backend.io.redirectAddrFromCsr
+  csr.io.trapReq := backend.io.trapReq
+  csr.io.trapEnv <> backend.io.trapEnv
+  csr.io.commitValid := backend.io.commitValid
 
-  mmu.io.tlb.instr := backend.io.tlbInstr
-  backend.io.tlbFillIdx := mmu.io.tlb.fillIdx
-  mmu.io.tlb.csr := csr.io.toTlb
-  csr.io.tlbCmd := mmu.io.tlb.cmd
-  csr.io.fromTlb := mmu.io.tlb.read
-  backend.io.currentPlv := csr.io.priv.plv
+  // ---------- TLB 冲刷（sfence.vma / satp 写） ----------
+  val sfenceFlush = Wire(new TlbFlush)
+  sfenceFlush.valid  := backend.io.tlbInstr.valid
+  sfenceFlush.all    := backend.io.tlbInstr.bits.all
+  sfenceFlush.noAsid := backend.io.tlbInstr.bits.noAsid
+  sfenceFlush.vaddr  := backend.io.tlbInstr.bits.vaddr
+  sfenceFlush.asid   := backend.io.tlbInstr.bits.asid
 
-  mmu.io.fromCsr.plv := csr.io.priv.plv
-  mmu.io.fromCsr.pgda := csr.io.tlbCtrl.pgda
-  mmu.io.fromCsr.dmw0 := csr.io.tlbCtrl.dmw0
-  mmu.io.fromCsr.dmw1 := csr.io.tlbCtrl.dmw1
+  val satpFlush = Wire(new TlbFlush)
+  satpFlush.valid  := csr.io.flushTlb
+  satpFlush.all    := true.B
+  satpFlush.noAsid := true.B
+  satpFlush.vaddr  := 0.U
+  satpFlush.asid   := 0.U
 
-  mmu.io.fromCsr.datm := csr.io.cacheCtrl.datm
-  mmu.io.fromCsr.datf := csr.io.cacheCtrl.datf
+  mmu.io.tlbFlush := Mux(csr.io.flushTlb, satpFlush, sfenceFlush)
+  backend.io.tlbFillIdx := mmu.io.tlbFillIdx
 
-  mmu.io.fromCsr.asid := csr.io.toTlb.asid
+  backend.io.currentPriv := csr.io.priv.curPriv
+
+  mmu.io.fromCsr := csr.io.mmuCtrl
 
   mmu.io.fromIcacheFlush := backend.io.redirectInfo.valid && backend.io.redirectInfo.bits.doRedirect
 
@@ -233,10 +237,14 @@ class core_top(implicit p: Parameters) extends NSRawModule {
 
   // I/D L1通过分组native端口接入统一L2，L2是唯一DDR master。
   val l2cache = Module(new L2Cache)
-  l2cache.io.icache <> frontend.io.l2_read
+  // I-Cache 与页表遍历器共享 L2 只读端口
+  val ptwArb = Module(new L2ReadArbiter)
+  ptwArb.io.m(0) <> frontend.io.l2_read
+  ptwArb.io.m(1) <> mmu.io.ptwRead
+  l2cache.io.icache <> ptwArb.io.s
   l2cache.io.dcache <> memory.io.l2
 
-  // 本版不改变现有CACOP处理路径，L2维护端口仅作扩展预留。
+  // Cache 维护通路保留接口，L2 维护端口仅作扩展预留。
   l2cache.io.maintenance.req.valid := false.B
   l2cache.io.maintenance.req.bits.op := 0.U
   l2cache.io.maintenance.req.bits.addr := 0.U

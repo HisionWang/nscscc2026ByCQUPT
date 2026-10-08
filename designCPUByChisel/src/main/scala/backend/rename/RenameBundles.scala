@@ -1,11 +1,11 @@
-package nscscc.backend.rename
+package minixiangshan.backend.rename
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.frontend.{PredecodeInfo, bpuInfoBundle}
-import nscscc.util.CircularQueuePtr
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.frontend.{PredecodeInfo, bpuInfoBundle}
+import minixiangshan.util.CircularQueuePtr
 
 
 // ================================================================
@@ -31,7 +31,7 @@ class RenamedInst(implicit p: Parameters) extends NSBundle {
   val excp       = new ExceptionBundle
   val imm        = UInt(XLEN.W)
   val csrAddress = UInt(csrAddrLen.W)
-  val cacop      = new CacopDecode
+  val cacheOp      = new CacheOpDecode
   val pdInfo     = new PredecodeInfo
   val bpuInfo    = new bpuInfoBundle
  

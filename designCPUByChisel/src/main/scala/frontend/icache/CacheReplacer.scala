@@ -1,9 +1,9 @@
-package nscscc.frontend.icache
+package minixiangshan.frontend.icache
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
-import nscscc.config.NSModule
+import minixiangshan.config.Parameters
+import minixiangshan.config.NSModule
 
 /**
  * ═══════════════════════════════════════════════════════════════

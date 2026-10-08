@@ -1,9 +1,9 @@
-package nscscc.axi
+package minixiangshan.axi
  
 import chisel3._
 import chisel3.util._
-import nscscc.config.NSModule
-import nscscc.config.Parameters
+import minixiangshan.config.NSModule
+import minixiangshan.config.Parameters
  
 /**
   * AXI3 2-to-1 Crossbar（锁定仲裁方式，AXI3 协议合规）

@@ -1,9 +1,9 @@
-package nscscc.backend.decode
+package minixiangshan.backend.decode
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.{NSModule, Parameters}
-import nscscc.frontend.CtrlFlowIO
+import minixiangshan.config.{NSModule, Parameters}
+import minixiangshan.frontend.CtrlFlowIO
 
 class DecodeStage(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

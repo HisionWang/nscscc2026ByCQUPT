@@ -1,4 +1,4 @@
-package nscscc.csr
+package minixiangshan.csr
 
 import chisel3._
 

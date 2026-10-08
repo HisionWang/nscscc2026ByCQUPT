@@ -1,11 +1,17 @@
-package nscscc.difftest
+package minixiangshan.difftest
 
 import chisel3._
 import chisel3.util._
 import chisel3.experimental._
-import nscscc.config._
+import minixiangshan.config._
 
-// 定义所有Difftest模块的黑盒接口
+/* ============================================================================
+ *  Difftest 黑盒接口（DPI-C）
+ *
+ *  注意：这些黑盒由仿真测试平台提供实现（chiplab/testbench）。
+ *  切换到 RISC-V 后，C 侧需要换成 RISC-V 的 NEMU 参考模型
+ *  （riscv32-nemu-interpreter-so），接口信号已按 RISC-V 语义重新命名。
+ * ==========================================================================*/
 class DifftestInstrCommit extends BlackBox with HasBlackBoxResource {
   val io = IO(new Bundle {
     val clock = Input(Clock())
@@ -15,17 +21,10 @@ class DifftestInstrCommit extends BlackBox with HasBlackBoxResource {
     val pc = Input(UInt(64.W))
     val instr = Input(UInt(32.W))
     val skip = Input(Bool())
-    val is_TLBFILL = Input(Bool())
-    val TLBFILL_index = Input(UInt(5.W))
-    val is_CNTinst = Input(Bool())
-    val timer_64_value = Input(UInt(64.W))
     val wen = Input(Bool())
     val wdest = Input(UInt(8.W))
     val wdata = Input(UInt(64.W))
-    val csr_rstat = Input(Bool())
-    val csr_data = Input(UInt(64.W))
   })
-
 }
 
 class DifftestExcpEvent extends BlackBox with HasBlackBoxResource {
@@ -33,13 +32,11 @@ class DifftestExcpEvent extends BlackBox with HasBlackBoxResource {
     val clock = Input(Clock())
     val coreid = Input(UInt(8.W))
     val excp_valid = Input(Bool())
-    val eret = Input(Bool())
-    val intrNo = Input(UInt(11.W))
+    val intr = Input(Bool())
     val cause = Input(UInt(6.W))
     val exceptionPC = Input(UInt(64.W))
     val exceptionInst = Input(UInt(32.W))
   })
-
 }
 
 class DifftestTrapEvent extends BlackBox with HasBlackBoxResource {
@@ -52,7 +49,6 @@ class DifftestTrapEvent extends BlackBox with HasBlackBoxResource {
     val cycleCnt = Input(UInt(64.W))
     val instrCnt = Input(UInt(64.W))
   })
-
 }
 
 class DifftestStoreEvent extends BlackBox with HasBlackBoxResource {
@@ -65,7 +61,6 @@ class DifftestStoreEvent extends BlackBox with HasBlackBoxResource {
     val storeVAddr = Input(UInt(64.W))
     val storeData = Input(UInt(64.W))
   })
-
 }
 
 class DifftestLoadEvent extends BlackBox with HasBlackBoxResource {
@@ -77,40 +72,34 @@ class DifftestLoadEvent extends BlackBox with HasBlackBoxResource {
     val paddr = Input(UInt(64.W))
     val vaddr = Input(UInt(64.W))
   })
-
 }
 
+/** RISC-V CSR 状态对比接口 */
 class DifftestCSRRegState extends BlackBox with HasBlackBoxResource {
   val io = IO(new Bundle {
     val clock = Input(Clock())
     val coreid = Input(UInt(8.W))
-    val crmd = Input(UInt(32.W))
-    val prmd = Input(UInt(32.W))
-    val euen = Input(UInt(32.W))
-    val ecfg = Input(UInt(32.W))
-    val estat = Input(UInt(32.W))
-    val era = Input(UInt(64.W))
-    val badv = Input(UInt(64.W))
-    val eentry = Input(UInt(64.W))
-    val tlbidx = Input(UInt(32.W))
-    val tlbehi = Input(UInt(64.W))
-    val tlbelo0 = Input(UInt(32.W))
-    val tlbelo1 = Input(UInt(32.W))
-    val asid = Input(UInt(32.W))
-    val pgdl = Input(UInt(64.W))
-    val pgdh = Input(UInt(64.W))
-    val save0 = Input(UInt(64.W))
-    val save1 = Input(UInt(64.W))
-    val save2 = Input(UInt(64.W))
-    val save3 = Input(UInt(64.W))
-    val tid = Input(UInt(64.W))
-    val tcfg = Input(UInt(32.W))
-    val tval = Input(UInt(64.W))
-    val ticlr = Input(UInt(32.W))
-    val llbctl = Input(UInt(32.W))
-    val tlbrentry = Input(UInt(64.W))
-    val dmw0 = Input(UInt(32.W))
-    val dmw1 = Input(UInt(32.W))
+    val mstatus = Input(UInt(32.W))
+    val misa = Input(UInt(32.W))
+    val medeleg = Input(UInt(32.W))
+    val mideleg = Input(UInt(32.W))
+    val mie = Input(UInt(32.W))
+    val mtvec = Input(UInt(32.W))
+    val mscratch = Input(UInt(32.W))
+    val mepc = Input(UInt(32.W))
+    val mcause = Input(UInt(32.W))
+    val mtval = Input(UInt(32.W))
+    val mip = Input(UInt(32.W))
+    val sstatus = Input(UInt(32.W))
+    val stvec = Input(UInt(32.W))
+    val sscratch = Input(UInt(32.W))
+    val sepc = Input(UInt(32.W))
+    val scause = Input(UInt(32.W))
+    val stval = Input(UInt(32.W))
+    val satp = Input(UInt(32.W))
+    val priv = Input(UInt(2.W))
+    val mcycle = Input(UInt(64.W))
+    val minstret = Input(UInt(64.W))
   })
 }
 
@@ -151,10 +140,9 @@ class DifftestGRegState extends BlackBox with HasBlackBoxResource {
     val gpr_30 = Input(UInt(64.W))
     val gpr_31 = Input(UInt(64.W))
   })
-
 }
 
-// 顶层模块
+// 顶层 Difftest 逻辑
 class DifftestInCore(implicit p: Parameters) extends NSModule {
   val io = IO(Input(new CoreDifftestBundle))
 
@@ -162,10 +150,6 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     val width = x.getWidth
     if (width >= 64) x(63, 0) else Cat(0.U((64 - width).W), x)
   }
-
-  private def isSyscallCommit(commit: DifftestCommitInfo): Bool =
-    commit.excpFlush && DifftestUtils.isSyscall(commit.instr) &&
-      commit.csrEcode === ExcType.ecodeInt(ExcType.SYS).U
 
   val cmt = RegInit(0.U.asTypeOf(Vec(CommitWidth, new DifftestCommitInfo)))
   val cmtTimer64 = RegInit(0.U(64.W))
@@ -184,21 +168,13 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestInstrCommit.io.clock := clock
     difftestInstrCommit.io.coreid := 0.U
     difftestInstrCommit.io.index := i.U
-
-    difftestInstrCommit.io.valid := commit.valid &&
-      (!commit.excpFlush || commit.ertnFlush || isSyscallCommit(commit))
+    difftestInstrCommit.io.valid := commit.valid && !commit.excpFlush
     difftestInstrCommit.io.pc := zeroExt64(commit.pc)
     difftestInstrCommit.io.instr := commit.instr
     difftestInstrCommit.io.skip := false.B
-    difftestInstrCommit.io.is_TLBFILL := commit.tlbfillEn
-    difftestInstrCommit.io.TLBFILL_index := commit.randIndex
-    difftestInstrCommit.io.is_CNTinst := commit.isCntInst
-    difftestInstrCommit.io.timer_64_value := commit.csrTimer 
     difftestInstrCommit.io.wen := commit.valid && commit.rfWen
     difftestInstrCommit.io.wdest := Cat(0.U(3.W), commit.wdest)
     difftestInstrCommit.io.wdata := zeroExt64(commit.wdata)
-    difftestInstrCommit.io.csr_rstat := commit.valid && commit.csrRstat
-    difftestInstrCommit.io.csr_data := zeroExt64(commit.csrData)
 
     val difftestStoreEvent = Module(new DifftestStoreEvent)
     difftestStoreEvent.io.clock := clock
@@ -218,17 +194,14 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
     difftestLoadEvent.io.vaddr := zeroExt64(commit.load.vaddr)
   }
 
-  val excpValids = VecInit(cmt.map { c =>
-    c.valid && ((c.excpFlush && !isSyscallCommit(c)) || c.ertnFlush)
-  })
+  val excpValids = VecInit(cmt.map(c => c.valid && (c.excpFlush || c.xretFlush)))
   val excpCommit = PriorityMux(excpValids, cmt)
   val difftestExcpEvent = Module(new DifftestExcpEvent)
   difftestExcpEvent.io.clock := clock
   difftestExcpEvent.io.coreid := 0.U
   difftestExcpEvent.io.excp_valid := excpValids.asUInt.orR && excpCommit.excpFlush
-  difftestExcpEvent.io.eret := excpValids.asUInt.orR && excpCommit.ertnFlush
-  difftestExcpEvent.io.intrNo := io.csr.estat(12, 2)
-  difftestExcpEvent.io.cause := excpCommit.csrEcode
+  difftestExcpEvent.io.intr := excpCommit.cause === 0.U && excpCommit.excpFlush
+  difftestExcpEvent.io.cause := excpCommit.cause
   difftestExcpEvent.io.exceptionPC := zeroExt64(excpCommit.pc)
   difftestExcpEvent.io.exceptionInst := excpCommit.instr
 
@@ -246,33 +219,27 @@ class DifftestInCore(implicit p: Parameters) extends NSModule {
   val difftestCSRRegState = Module(new DifftestCSRRegState)
   difftestCSRRegState.io.clock := clock
   difftestCSRRegState.io.coreid := 0.U
-  difftestCSRRegState.io.crmd := io.csr.crmd
-  difftestCSRRegState.io.prmd := io.csr.prmd
-  difftestCSRRegState.io.euen := 0.U
-  difftestCSRRegState.io.ecfg := io.csr.ecfg
-  difftestCSRRegState.io.estat := io.csr.estat
-  difftestCSRRegState.io.era := io.csr.era
-  difftestCSRRegState.io.badv := io.csr.badv
-  difftestCSRRegState.io.eentry := io.csr.eentry
-  difftestCSRRegState.io.tlbidx := io.csr.tlbidx
-  difftestCSRRegState.io.tlbehi := io.csr.tlbehi
-  difftestCSRRegState.io.tlbelo0 := io.csr.tlbelo0
-  difftestCSRRegState.io.tlbelo1 := io.csr.tlbelo1
-  difftestCSRRegState.io.asid := io.csr.asid
-  difftestCSRRegState.io.pgdl := io.csr.pgdl
-  difftestCSRRegState.io.pgdh := io.csr.pgdh
-  difftestCSRRegState.io.save0 := io.csr.save0
-  difftestCSRRegState.io.save1 := io.csr.save1
-  difftestCSRRegState.io.save2 := io.csr.save2
-  difftestCSRRegState.io.save3 := io.csr.save3
-  difftestCSRRegState.io.tid := io.csr.tid
-  difftestCSRRegState.io.tcfg := io.csr.tcfg
-  difftestCSRRegState.io.tval := io.csr.tval
-  difftestCSRRegState.io.ticlr := io.csr.ticlr
-  difftestCSRRegState.io.llbctl := io.csr.llbctl
-  difftestCSRRegState.io.tlbrentry := io.csr.tlbrentry
-  difftestCSRRegState.io.dmw0 := io.csr.dmw0
-  difftestCSRRegState.io.dmw1 := io.csr.dmw1
+  difftestCSRRegState.io.mstatus  := io.csr.mstatus
+  difftestCSRRegState.io.misa     := io.csr.misa
+  difftestCSRRegState.io.medeleg  := io.csr.medeleg
+  difftestCSRRegState.io.mideleg  := io.csr.mideleg
+  difftestCSRRegState.io.mie      := io.csr.mie
+  difftestCSRRegState.io.mtvec    := io.csr.mtvec
+  difftestCSRRegState.io.mscratch := io.csr.mscratch
+  difftestCSRRegState.io.mepc     := io.csr.mepc
+  difftestCSRRegState.io.mcause   := io.csr.mcause
+  difftestCSRRegState.io.mtval    := io.csr.mtval
+  difftestCSRRegState.io.mip      := io.csr.mip
+  difftestCSRRegState.io.sstatus  := io.csr.sstatus
+  difftestCSRRegState.io.stvec    := io.csr.stvec
+  difftestCSRRegState.io.sscratch := io.csr.sscratch
+  difftestCSRRegState.io.sepc     := io.csr.sepc
+  difftestCSRRegState.io.scause   := io.csr.scause
+  difftestCSRRegState.io.stval    := io.csr.stval
+  difftestCSRRegState.io.satp     := io.csr.satp
+  difftestCSRRegState.io.priv     := io.csr.priv
+  difftestCSRRegState.io.mcycle   := io.csr.mcycle
+  difftestCSRRegState.io.minstret := io.csr.minstret
 
   val difftestGRegState = Module(new DifftestGRegState)
   difftestGRegState.io.clock := clock

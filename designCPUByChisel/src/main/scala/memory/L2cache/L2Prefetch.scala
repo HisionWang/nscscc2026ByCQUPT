@@ -1,8 +1,8 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chisel3.util._
-import nscscc.config._
+import minixiangshan.config._
 
 /**
   * Conservative I-side next-line prefetcher.

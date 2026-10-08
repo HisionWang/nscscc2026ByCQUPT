@@ -1,8 +1,8 @@
-package nscscc.backend.regfile
+package minixiangshan.backend.regfile
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
+import minixiangshan.config._
  
 // ═══════════════════════════════════════════════════════════════
 //  物理寄存器堆读端口

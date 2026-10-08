@@ -1,4 +1,4 @@
-package nscscc.axi
+package minixiangshan.axi
 
 import chisel3._
 import chisel3.util._
@@ -7,9 +7,9 @@ import chisel3.util._
 // 被动类型（Passive Type）：纯数据结构，无方向标注
 // --------------------------
 // AXI3 AR通道数据（纯数据，无方向）
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
-import nscscc.config.Parameters  // 导入Parameters类型
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
+import minixiangshan.config.Parameters  // 导入Parameters类型
 
 class AXI3ARData(implicit p: Parameters) extends NSBundle {
   val arid    = UInt(4.W)

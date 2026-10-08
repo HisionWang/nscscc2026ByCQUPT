@@ -1,26 +1,46 @@
-package nscscc.backend.decode
+package minixiangshan.backend.decode
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.{NSModule, Parameters, ExceptionBundle}
-import nscscc.config.ExcType._
-import nscscc.frontend.CtrlFlowIO
+import minixiangshan.config.{NSModule, Parameters, ExceptionBundle}
+import minixiangshan.config.ExcType._
+import minixiangshan.frontend.CtrlFlowIO
+import minixiangshan.csr.CsrAddrMap
 
 import Instructions._
 
+/* ============================================================================
+ *  RV32IM + Zicsr 译码表
+ *
+ *  列表元素顺序（共 25 项）：
+ *    0  valid(表内匹配标记)   1  fuType
+ *    2  aluOp                 3  bruOp
+ *    4  lsuOp                 5  barOp
+ *    6  csrOp                 7  tlbOp
+ *    8  mulOp                 9  divOp
+ *   10  src1Type             11  src2Type
+ *   12  immType              13  rfWen
+ *   14  memRead              15  memWrite
+ *   16  csrWen(表内初值)     17  isBranch
+ *   18  isJump               19  privLevel
+ *   20  isIdle               21  waitForward
+ *   22  blockBackward        23  flushOnCommit
+ *   24  illegalBase
+ * ==========================================================================*/
 object DecodeTable {
   private val y = 1.U(1.W)
   private val n = 0.U(1.W)
 
-  val default: List[UInt] = List( 
-    n, FuType.none,  //非法指令默认走CSR单元
-    AluOp.add, BruOp.none, LsuOp.none, BarOp.none, CsrOp.none, TlbOp.none, MulOp.none, DivOp.none,
+  val default: List[UInt] = List(
+    n, FuType.none,
+    AluOp.add, BruOp.none, LsuOp.none, BarOp.none,
+    CsrOp.none, TlbOp.none, MulOp.none, DivOp.none,
     SrcType.none, SrcType.none, ImmType.none,
-    n, n, n, n, n, n, n, n, n, n, n, y
+    n, n, n, n, n, n, PrivLevel.any, n, n, n, n, y
   )
 
   private def ctrl(
-    fuType: UInt = FuType.none, //异常非法指令默认走CSR单元
+    fuType: UInt = FuType.none,
     aluOp: UInt = AluOp.add,
     bruOp: UInt = BruOp.none,
     lsuOp: UInt = LsuOp.none,
@@ -38,142 +58,169 @@ object DecodeTable {
     csrWen: UInt = n,
     isBranch: UInt = n,
     isJump: UInt = n,
-    isPriv: UInt = n,
+    privLevel: UInt = PrivLevel.any,
     isIdle: UInt = n,
     waitForward: UInt = n,
     blockBackward: UInt = n,
     flushOnCommit: UInt = n
   ): List[UInt] = List(
-    y, fuType, aluOp, bruOp, lsuOp, barOp, csrOp, tlbOp, mulOp, divOp,
+    y, fuType,
+    aluOp, bruOp, lsuOp, barOp, csrOp, tlbOp, mulOp, divOp,
     src1Type, src2Type, immType,
-    rfWen, memRead, memWrite, csrWen, isBranch, isJump, isPriv, isIdle,
+    rfWen, memRead, memWrite, csrWen, isBranch, isJump, privLevel, isIdle,
     waitForward, blockBackward, flushOnCommit, n
   )
 
+  /** 需要串行化执行的系统指令模板 */
+  private def sysCtrl(
+    fuType: UInt,
+    csrOp: UInt = CsrOp.none,
+    tlbOp: UInt = TlbOp.none,
+    barOp: UInt = BarOp.none,
+    src1Type: UInt = SrcType.none,
+    immType: UInt = ImmType.none,
+    privLevel: UInt = PrivLevel.any,
+    isIdle: UInt = n,
+    flushOnCommit: UInt = y
+  ): List[UInt] = ctrl(
+    fuType = fuType,
+    csrOp = csrOp,
+    tlbOp = tlbOp,
+    barOp = barOp,
+    src1Type = src1Type,
+    immType = immType,
+    rfWen = n,
+    privLevel = privLevel,
+    isIdle = isIdle,
+    waitForward = y,
+    blockBackward = y,
+    flushOnCommit = flushOnCommit
+  )
+
   val table: Array[(BitPat, List[UInt])] = Array(
-    ADD_W -> ctrl(FuType.alu, aluOp = AluOp.add),
-    SUB_W -> ctrl(FuType.alu, aluOp = AluOp.sub),
-    SLT   -> ctrl(FuType.alu, aluOp = AluOp.slt),
-    SLTU  -> ctrl(FuType.alu, aluOp = AluOp.sltu),
-    NOR   -> ctrl(FuType.alu, aluOp = AluOp.nor),
-    AND   -> ctrl(FuType.alu, aluOp = AluOp.and),
-    OR    -> ctrl(FuType.alu, aluOp = AluOp.or),
-    XOR   -> ctrl(FuType.alu, aluOp = AluOp.xor),
-    SLL_W -> ctrl(FuType.alu, aluOp = AluOp.sll),
-    SRL_W -> ctrl(FuType.alu, aluOp = AluOp.srl),
-    SRA_W -> ctrl(FuType.alu, aluOp = AluOp.sra),
+    // ---------------- RV32I：整数运算 ----------------
+    ADD    -> ctrl(FuType.alu, aluOp = AluOp.add),
+    SUB    -> ctrl(FuType.alu, aluOp = AluOp.sub),
+    SLL    -> ctrl(FuType.alu, aluOp = AluOp.sll),
+    SLT    -> ctrl(FuType.alu, aluOp = AluOp.slt),
+    SLTU   -> ctrl(FuType.alu, aluOp = AluOp.sltu),
+    XOR    -> ctrl(FuType.alu, aluOp = AluOp.xor),
+    SRL    -> ctrl(FuType.alu, aluOp = AluOp.srl),
+    SRA    -> ctrl(FuType.alu, aluOp = AluOp.sra),
+    OR     -> ctrl(FuType.alu, aluOp = AluOp.or),
+    AND    -> ctrl(FuType.alu, aluOp = AluOp.and),
 
-    MUL_W   -> ctrl(FuType.mul, mulOp = MulOp.mul),
-    MULH_W  -> ctrl(FuType.mul, mulOp = MulOp.mulh),
-    MULH_WU -> ctrl(FuType.mul, mulOp = MulOp.mulhu),
-    DIV_W   -> ctrl(FuType.div, divOp = DivOp.div),
-    MOD_W   -> ctrl(FuType.div, divOp = DivOp.mod),
-    DIV_WU  -> ctrl(FuType.div, divOp = DivOp.divu),
-    MOD_WU  -> ctrl(FuType.div, divOp = DivOp.modu),
+    ADDI   -> ctrl(FuType.alu, aluOp = AluOp.add,  src2Type = SrcType.imm, immType = ImmType.i),
+    SLTI   -> ctrl(FuType.alu, aluOp = AluOp.slt,  src2Type = SrcType.imm, immType = ImmType.i),
+    SLTIU  -> ctrl(FuType.alu, aluOp = AluOp.sltu, src2Type = SrcType.imm, immType = ImmType.i),
+    XORI   -> ctrl(FuType.alu, aluOp = AluOp.xor,  src2Type = SrcType.imm, immType = ImmType.i),
+    ORI    -> ctrl(FuType.alu, aluOp = AluOp.or,   src2Type = SrcType.imm, immType = ImmType.i),
+    ANDI   -> ctrl(FuType.alu, aluOp = AluOp.and,  src2Type = SrcType.imm, immType = ImmType.i),
+    SLLI   -> ctrl(FuType.alu, aluOp = AluOp.sll,  src2Type = SrcType.imm, immType = ImmType.shamt),
+    SRLI   -> ctrl(FuType.alu, aluOp = AluOp.srl,  src2Type = SrcType.imm, immType = ImmType.shamt),
+    SRAI   -> ctrl(FuType.alu, aluOp = AluOp.sra,  src2Type = SrcType.imm, immType = ImmType.shamt),
 
-    SLLI_W -> ctrl(FuType.alu, aluOp = AluOp.sll, src2Type = SrcType.imm, immType = ImmType.ui5),
-    SRLI_W -> ctrl(FuType.alu, aluOp = AluOp.srl, src2Type = SrcType.imm, immType = ImmType.ui5),
-    SRAI_W -> ctrl(FuType.alu, aluOp = AluOp.sra, src2Type = SrcType.imm, immType = ImmType.ui5),
+    LUI    -> ctrl(FuType.alu, aluOp = AluOp.pass2,
+                   src1Type = SrcType.zero, src2Type = SrcType.imm, immType = ImmType.u),
+    AUIPC  -> ctrl(FuType.alu, aluOp = AluOp.add,
+                   src1Type = SrcType.pc, src2Type = SrcType.imm, immType = ImmType.u),
 
-    SLTI   -> ctrl(FuType.alu, aluOp = AluOp.slt, src2Type = SrcType.imm, immType = ImmType.si12),
-    SLTUI  -> ctrl(FuType.alu, aluOp = AluOp.sltu, src2Type = SrcType.imm, immType = ImmType.si12),
-    ADDI_W -> ctrl(FuType.alu, aluOp = AluOp.add, src2Type = SrcType.imm, immType = ImmType.si12),
-    ANDI   -> ctrl(FuType.alu, aluOp = AluOp.and, src2Type = SrcType.imm, immType = ImmType.ui12),
-    ORI    -> ctrl(FuType.alu, aluOp = AluOp.or, src2Type = SrcType.imm, immType = ImmType.ui12),
-    XORI   -> ctrl(FuType.alu, aluOp = AluOp.xor, src2Type = SrcType.imm, immType = ImmType.ui12),
-    LU12I_W   -> ctrl(FuType.alu, aluOp = AluOp.pass2, src1Type = SrcType.zero, src2Type = SrcType.imm, immType = ImmType.si20),
-    PCADDU12I -> ctrl(FuType.alu, aluOp = AluOp.add, src1Type = SrcType.pc, src2Type = SrcType.imm, immType = ImmType.si20),
+    // ---------------- RV32M：乘除法 ----------------
+    MUL    -> ctrl(FuType.mul, mulOp = MulOp.mul),
+    MULH   -> ctrl(FuType.mul, mulOp = MulOp.mulh),
+    MULHSU -> ctrl(FuType.mul, mulOp = MulOp.mulhsu),
+    MULHU  -> ctrl(FuType.mul, mulOp = MulOp.mulhu),
+    DIV    -> ctrl(FuType.div, divOp = DivOp.div),
+    DIVU   -> ctrl(FuType.div, divOp = DivOp.divu),
+    REM    -> ctrl(FuType.div, divOp = DivOp.rem),
+    REMU   -> ctrl(FuType.div, divOp = DivOp.remu),
 
-    LD_B  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.ldb, src2Type = SrcType.imm, immType = ImmType.si12, memRead = y),
-    LD_H  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.ldh, src2Type = SrcType.imm, immType = ImmType.si12, memRead = y),
-    LD_W  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.ldw, src2Type = SrcType.imm, immType = ImmType.si12, memRead = y),
-    ST_B  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.stb, src2Type = SrcType.imm, immType = ImmType.si12, rfWen = n, memWrite = y),
-    ST_H  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.sth, src2Type = SrcType.imm, immType = ImmType.si12, rfWen = n, memWrite = y),
-    ST_W  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.stw, src2Type = SrcType.imm, immType = ImmType.si12, rfWen = n, memWrite = y),
-    LD_BU -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.ldbu, src2Type = SrcType.imm, immType = ImmType.si12, memRead = y),
-    LD_HU -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.ldhu, src2Type = SrcType.imm, immType = ImmType.si12, memRead = y),
-    LL_W  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.llw,
-      src2Type = SrcType.imm, immType = ImmType.si14, memRead = y,
-      waitForward = y, blockBackward = y,
-      flushOnCommit = y),
-    SC_W  -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.scw,
-      src2Type = SrcType.imm, immType = ImmType.si14, memWrite = y,
-      waitForward = y, blockBackward = y,
-      flushOnCommit = y),
+    // ---------------- RV32I：访存 ----------------
+    LB     -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.lb,
+                   src2Type = SrcType.imm, immType = ImmType.i, memRead = y),
+    LH     -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.lh,
+                   src2Type = SrcType.imm, immType = ImmType.i, memRead = y),
+    LW     -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.lw,
+                   src2Type = SrcType.imm, immType = ImmType.i, memRead = y),
+    LBU    -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.lbu,
+                   src2Type = SrcType.imm, immType = ImmType.i, memRead = y),
+    LHU    -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.lhu,
+                   src2Type = SrcType.imm, immType = ImmType.i, memRead = y),
 
-    // 只计算地址，不分配LSQ，不执行, 无异常
-    PRELD -> ctrl(FuType.alu, aluOp = AluOp.add, src2Type = SrcType.imm,
-      immType = ImmType.si12, rfWen = n),
-    DBAR -> ctrl(FuType.alu, barOp = BarOp.dbar,
-      src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, flushOnCommit = y),
-    IBAR -> ctrl(FuType.alu, barOp = BarOp.ibar,
-      src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, waitForward = y, blockBackward = y,
-      flushOnCommit = y),
+    SB     -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.sb,
+                   src2Type = SrcType.imm, immType = ImmType.s, rfWen = n, memWrite = y),
+    SH     -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.sh,
+                   src2Type = SrcType.imm, immType = ImmType.s, rfWen = n, memWrite = y),
+    SW     -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.sw,
+                   src2Type = SrcType.imm, immType = ImmType.s, rfWen = n, memWrite = y),
 
-    JIRL -> ctrl(FuType.bru, bruOp = BruOp.jirl, src1Type = SrcType.reg, src2Type = SrcType.imm, immType = ImmType.si16, isJump = y),
-    B    -> ctrl(FuType.bru, bruOp = BruOp.b, src1Type = SrcType.pc, src2Type = SrcType.imm, immType = ImmType.si26, rfWen = n, isBranch = y),
-    BL   -> ctrl(FuType.bru, bruOp = BruOp.bl, src1Type = SrcType.pc, src2Type = SrcType.imm, immType = ImmType.si26, isJump = y),
-    BEQ  -> ctrl(FuType.bru, bruOp = BruOp.beq, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
-    BNE  -> ctrl(FuType.bru, bruOp = BruOp.bne, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
-    BLT  -> ctrl(FuType.bru, bruOp = BruOp.blt, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
-    BGE  -> ctrl(FuType.bru, bruOp = BruOp.bge, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
-    BLTU -> ctrl(FuType.bru, bruOp = BruOp.bltu, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
-    BGEU -> ctrl(FuType.bru, bruOp = BruOp.bgeu, src1Type = SrcType.reg, src2Type = SrcType.reg, immType = ImmType.si16, rfWen = n, isBranch = y),
+    // LR.W / SC.W：需要与前后指令串行化，保证 reservation 精确
+    LR_W   -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.lrw,
+                   src2Type = SrcType.imm, immType = ImmType.i, memRead = y,
+                   waitForward = y, blockBackward = y, flushOnCommit = y),
+    SC_W   -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.scw,
+                   src2Type = SrcType.imm, immType = ImmType.i, rfWen = n, memWrite = y,
+                   waitForward = y, blockBackward = y, flushOnCommit = y),
 
-    CSRRD   -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.read, src1Type = SrcType.zero, src2Type = SrcType.none, csrWen = n, isPriv = y),
-    CSRWR   -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.write, src1Type = SrcType.reg, src2Type = SrcType.none, csrWen = y, isPriv = y),
-    CSRXCHG -> ctrl(FuType.csr, rfWen = y, csrOp = CsrOp.xchg, src1Type = SrcType.reg, src2Type = SrcType.reg, csrWen = y, isPriv = y),
-    RDCNTVL_W ->
-      ctrl(FuType.csr, csrOp = CsrOp.rdcntvl, src1Type = SrcType.zero, src2Type = SrcType.none),
-    RDCNTVH_W ->
-      ctrl(FuType.csr, csrOp = CsrOp.rdcntvh, src1Type = SrcType.zero, src2Type = SrcType.none),
-    RDCNTID_W ->
-      ctrl(FuType.csr, csrOp = CsrOp.rdcntid, src1Type = SrcType.zero, src2Type = SrcType.none, rfWen = y),
-    BREAK   -> ctrl(FuType.priv, rfWen = n, isPriv = y),
-    SYSCALL -> ctrl(FuType.priv, rfWen = n, isPriv = y,
-      waitForward = y, blockBackward = y, flushOnCommit = y),
-    I_ERTN  -> ctrl(FuType.priv, rfWen = n, isPriv = y),
-    IDLE    -> ctrl(FuType.priv, rfWen = n, isPriv = y, isIdle = y,
-      waitForward = y, blockBackward = y, flushOnCommit = y),
-    CPUCFG -> ctrl(FuType.csr, csrOp = CsrOp.cpucfg,
-       src1Type = SrcType.reg,
-       src2Type = SrcType.none,
-       rfWen = y, csrWen = n),
-    CACOP -> ctrl(FuType.lsu, aluOp = AluOp.add, lsuOp = LsuOp.cacop,
-      src1Type = SrcType.reg, src2Type = SrcType.imm,
-      immType = ImmType.si12, rfWen = n, memRead = y,
-      waitForward = y, blockBackward = y, flushOnCommit = y, isPriv = y),
+    // ---------------- RV32I：屏障 ----------------
+    FENCE   -> ctrl(FuType.alu, barOp = BarOp.fence,
+                    src1Type = SrcType.none, src2Type = SrcType.none,
+                    rfWen = n, flushOnCommit = y),
+    FENCE_I -> ctrl(FuType.alu, barOp = BarOp.fenceI,
+                    src1Type = SrcType.none, src2Type = SrcType.none,
+                    rfWen = n, waitForward = y, blockBackward = y,
+                    flushOnCommit = y),
 
-    TLBSRCH -> ctrl(FuType.priv, tlbOp = TlbOp.search,
-      src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, isPriv = y, waitForward = y, blockBackward = y,
-      flushOnCommit = y),
-    TLBRD -> ctrl(FuType.priv, tlbOp = TlbOp.read,
-      src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, isPriv = y, waitForward = y, blockBackward = y,
-      flushOnCommit = y),
-    TLBWR -> ctrl(FuType.priv, tlbOp = TlbOp.write,
-      src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, isPriv = y, waitForward = y, blockBackward = y,
-      flushOnCommit = y),
-    TLBFILL -> ctrl(FuType.priv, tlbOp = TlbOp.fill,
-      src1Type = SrcType.none, src2Type = SrcType.none,
-      rfWen = n, isPriv = y, waitForward = y, blockBackward = y,
-      flushOnCommit = y),
-    INVTLB -> ctrl(FuType.priv, tlbOp = TlbOp.invalidate,
-      src1Type = SrcType.reg, src2Type = SrcType.reg,
-      rfWen = n, isPriv = y, waitForward = y, blockBackward = y,
-      flushOnCommit = y)
+    // ---------------- RV32I：跳转与分支 ----------------
+    JAL    -> ctrl(FuType.bru, bruOp = BruOp.jal,
+                   src1Type = SrcType.none, src2Type = SrcType.imm, immType = ImmType.j,
+                   isJump = y),
+    JALR   -> ctrl(FuType.bru, bruOp = BruOp.jalr,
+                   src1Type = SrcType.reg, src2Type = SrcType.imm, immType = ImmType.i,
+                   isJump = y),
+    BEQ    -> ctrl(FuType.bru, bruOp = BruOp.beq, src1Type = SrcType.reg, src2Type = SrcType.reg,
+                   immType = ImmType.b, rfWen = n, isBranch = y),
+    BNE    -> ctrl(FuType.bru, bruOp = BruOp.bne, src1Type = SrcType.reg, src2Type = SrcType.reg,
+                   immType = ImmType.b, rfWen = n, isBranch = y),
+    BLT    -> ctrl(FuType.bru, bruOp = BruOp.blt, src1Type = SrcType.reg, src2Type = SrcType.reg,
+                   immType = ImmType.b, rfWen = n, isBranch = y),
+    BGE    -> ctrl(FuType.bru, bruOp = BruOp.bge, src1Type = SrcType.reg, src2Type = SrcType.reg,
+                   immType = ImmType.b, rfWen = n, isBranch = y),
+    BLTU   -> ctrl(FuType.bru, bruOp = BruOp.bltu, src1Type = SrcType.reg, src2Type = SrcType.reg,
+                   immType = ImmType.b, rfWen = n, isBranch = y),
+    BGEU   -> ctrl(FuType.bru, bruOp = BruOp.bgeu, src1Type = SrcType.reg, src2Type = SrcType.reg,
+                   immType = ImmType.b, rfWen = n, isBranch = y),
+
+    // ---------------- Zicsr ----------------
+    CSRRW  -> ctrl(FuType.csr, csrOp = CsrOp.rw,
+                   src1Type = SrcType.reg, src2Type = SrcType.none, rfWen = y),
+    CSRRS  -> ctrl(FuType.csr, csrOp = CsrOp.rs,
+                   src1Type = SrcType.reg, src2Type = SrcType.none, rfWen = y),
+    CSRRC  -> ctrl(FuType.csr, csrOp = CsrOp.rc,
+                   src1Type = SrcType.reg, src2Type = SrcType.none, rfWen = y),
+    CSRRWI -> ctrl(FuType.csr, csrOp = CsrOp.rwi, src1Type = SrcType.none, src2Type = SrcType.none,
+                   immType = ImmType.zimm, rfWen = y),
+    CSRRSI -> ctrl(FuType.csr, csrOp = CsrOp.rsi, src1Type = SrcType.none, src2Type = SrcType.none,
+                   immType = ImmType.zimm, rfWen = y),
+    CSRRCI -> ctrl(FuType.csr, csrOp = CsrOp.rci, src1Type = SrcType.none, src2Type = SrcType.none,
+                   immType = ImmType.zimm, rfWen = y),
+
+    // ---------------- 特权指令 ----------------
+    Instructions.ECALL -> sysCtrl(FuType.priv),
+    EBREAK     -> sysCtrl(FuType.priv),
+    MRET       -> sysCtrl(FuType.priv, privLevel = PrivLevel.m, flushOnCommit = n),
+    SRET       -> sysCtrl(FuType.priv, privLevel = PrivLevel.s, flushOnCommit = n),
+    WFI        -> sysCtrl(FuType.priv, privLevel = PrivLevel.any, isIdle = y),
+    SFENCE_VMA -> sysCtrl(FuType.priv, tlbOp = TlbOp.sfence,
+                          src1Type = SrcType.reg, privLevel = PrivLevel.s)
   )
 
   val customTable: Array[(BitPat, List[UInt])] = Array(
-    CUSTOM_ALU -> ctrl(
-    ),
+    CUSTOM -> ctrl(aluOp = AluOp.custom)
   )
 }
-// 纯组合逻辑解码器模块
+
+/** 纯组合逻辑译码器 */
 class Decoder(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {
     val inData = Input(new CtrlFlowIO)
@@ -183,147 +230,151 @@ class Decoder(implicit p: Parameters) extends NSModule {
 
   val inst = io.inData.instr
   val pc   = io.inData.pc
-  
 
   // ===========================================================
-  // 1. 基础字段提取
+  // 1. 字段提取（RISC-V 固定 32 bit 指令格式）
   // ===========================================================
-  val rd      =  inst(4, 0)
-  val rj      = inst(9, 5)
-  val rk      = inst(14, 10)
-  val csrAddress = inst(23, 10)
+  val rd      = inst(11, 7)
+  val rs1Idx  = inst(19, 15)
+  val rs2Idx  = inst(24, 20)
+  val csrAddr = inst(31, 20)
 
   // ===========================================================
-  // 2. 特权级/系统异常指令识别
-  // ===========================================================
-  val isSys  = SYSCALL === inst
-  val isBrk  = BREAK === inst
-  val isErtn = I_ERTN === inst
-  val isCacop = CACOP === inst
-  val isInvtlb = INVTLB === inst
-  val invtlbOp = inst(InvtlbOp.width - 1, 0)
-  val isInvtlbLegal = InvtlbOp.isLegal(invtlbOp, rj, rk)
-
-  // ===========================================================
-  // 3. 查表解码 (修正索引错位，严格对齐 18 元素列表)
+  // 2. 查表译码
   // ===========================================================
   val decoded = ListLookup(inst, DecodeTable.default,
     if (customInstrEnable) DecodeTable.table ++ DecodeTable.customTable
     else DecodeTable.table)
-  
-  val isInstValid = decoded(0).asBool // 原始 table 中的第 0 位 valid
-  val fuType   = decoded(1)
-  val aluOp    = decoded(2)
-  val bruOp    = decoded(3)
-  val lsuOp    = decoded(4)
-  val barOp    = decoded(5)
-  val csrOp    = decoded(6)
-  val tlbOp    = decoded(7)
-  val mulOp = decoded(8)
-  val divOp = decoded(9)
-  val src1Type = decoded(10)
-  val src2Type = decoded(11)
-  val immType  = decoded(12)
-  val rfWen    = decoded(13).asBool
-  val memRead  = decoded(14).asBool
-  val memWrite = decoded(15).asBool
-  val csrWen   = decoded(16).asBool
-  val isBranch = decoded(17).asBool
-  val isJump   = decoded(18).asBool
-  val isPriv   = decoded(19).asBool
-  val isIdle   = decoded(20).asBool
-  val waitForward = decoded(21).asBool
+
+  val isInstValid   = decoded(0).asBool
+  val fuType        = decoded(1)
+  val aluOp         = decoded(2)
+  val bruOp         = decoded(3)
+  val lsuOp         = decoded(4)
+  val barOp         = decoded(5)
+  val csrOp         = decoded(6)
+  val tlbOp         = decoded(7)
+  val mulOp         = decoded(8)
+  val divOp         = decoded(9)
+  val src1Type      = decoded(10)
+  val src2Type      = decoded(11)
+  val immType       = decoded(12)
+  val rfWen         = decoded(13).asBool
+  val memRead       = decoded(14).asBool
+  val memWrite      = decoded(15).asBool
+  val csrWenTable   = decoded(16).asBool
+  val isBranch      = decoded(17).asBool
+  val isJump        = decoded(18).asBool
+  val privLevelTbl  = decoded(19)
+  val isIdle        = decoded(20).asBool
+  val waitForward   = decoded(21).asBool
   val blockBackward = decoded(22).asBool
   val flushOnCommit = decoded(23).asBool
   val isIllegalBase = decoded(24).asBool
 
   // ===========================================================
-  // 4. 有效寄存器计算
+  // 3. 系统指令识别
   // ===========================================================
-  val rs2UseRd = memWrite || io.inData.pdInfo.isBr || csrWen
-  
-  val rs1Valid = src1Type === SrcType.reg 
-  val rs2Valid = src2Type === SrcType.reg || rs2UseRd
+  val isEcall  = Instructions.ECALL === inst
+  val isEbreak = EBREAK === inst
+  val isMret   = MRET === inst
+  val isSret   = SRET === inst
+  val isWfi    = WFI === inst
+  val isSfence = SFENCE_VMA === inst
+  val isCsrInst = (csrOp =/= CsrOp.none)
+
+  // CSR 写使能：CSRRW/CSRRWI 必写；CSRRS/CSRRC(+I) 仅在源非 x0/uimm≠0 时写
+  val csrWriteReq = CsrOp.isSwap(csrOp) ||
+    ((CsrOp.isSet(csrOp) || CsrOp.isClear(csrOp)) && (rs1Idx =/= 0.U))
+
+  // ===========================================================
+  // 4. 合法性检查
+  // ===========================================================
+  val csrReadOnly   = csrAddr(11, 10) === "b11".U(2.W)
+  val csrAddrExists = CsrAddrMap.isImplemented(csrAddr)
+  val csrIllegal    = isCsrInst && (!csrAddrExists || (csrWriteReq && csrReadOnly))
+  val isIllegal     = isIllegalBase || csrIllegal
+
+  // 指令所需最小特权级：CSR 指令取自 CSR 地址 [9:8]
+  val csrPriv      = csrAddr(9, 8)
+  val privLevel    = Mux(isCsrInst, csrPriv, privLevelTbl)
+
+  // ===========================================================
+  // 5. 源寄存器有效性
+  // ===========================================================
+  val rs1Valid = src1Type === SrcType.reg
+  // store 的写数据来自 rs2，需要读寄存器堆
+  val rs2Valid = (src2Type === SrcType.reg) || memWrite
   val rdValid  = rfWen
 
   // ===========================================================
-  // 5. 异常向量拼接 (高位在前，ExceptionCode 常量索引)
+  // 6. 异常向量拼接
   // ===========================================================
-  val isIllegal = isIllegalBase || (isInvtlb && !isInvtlbLegal)
-   //&& !isSys && !isBrk && !isErtn
-  
-
   val excpIn = io.inData.exception
-  //val excp = Wire(new ExceptionBundle)
+  val hasInt = io.extInt && !csrWriteReq
 
   val excp = Wire(new ExceptionBundle)
-  excp := 0.U.asTypeOf(new ExceptionBundle)
-
-  val excpI = Wire(new ExceptionBundle)
-  excpI := 0.U.asTypeOf(new ExceptionBundle)
-  val hasInt = io.extInt && !csrWen
-  excp.excpVec := excp.mergeMany(
-    base = excpI.excpVec,
-    isIllegal             -> INE,
-    excpIn.excpAdef       -> ADEF,
-    isBrk                 -> BRK,
-    isSys                 -> SYS,
-    excpIn.excpTlbPpi     -> PPI_I,
-    excpIn.excpTlbPif     -> PIF,
-    excpIn.excpTlbRefill  -> TLBR_I,
-    //isSys             -> INT,
-    hasInt             -> INT,
-    isErtn                -> ERTN
+  val excpBase = WireDefault(0.U.asTypeOf(new ExceptionBundle))
+  val excpVecMerged = excpBase.mergeMany(
+    base = 0.U(ExcType.excpnum.W),
+    isIllegal            -> ILLEGAL,
+    isEbreak             -> BREAK,
+    isEcall              -> ExcType.ECALL,
+    excpIn.misalign      -> IALIGN,
+    excpIn.pageFault     -> IPAGE,
+    excpIn.accessFault   -> IACCESS,
+    hasInt               -> INT
   )
+  val xretBit = (BigInt(1) << XRET.id).U(ExcType.excpnum.W)
+  excp.excpVec := excpVecMerged |
+    Mux(isMret || isSret, xretBit, 0.U(ExcType.excpnum.W))
+  excp.intrCode := 0.U
 
   // ===========================================================
-  // 6. 输出一次性全覆盖赋值
+  // 7. 输出
   // ===========================================================
-  
   io.out.pc         := pc
   io.out.inst       := inst
-  io.out.rd         := Mux( bruOp === BruOp.bl, 1.U ,
-                          Mux( fuType === FuType.csr && csrOp === CsrOp.rdcntid, rj, rd ))
-  io.out.rj         := rj
-  io.out.rk         := rk
-  io.out.rs1        := rj
-  io.out.rs2        := Mux(rs2UseRd, rd, rk)
+  io.out.rd         := rd
+  io.out.rs1        := rs1Idx
+  io.out.rs2        := rs2Idx
   io.out.rs1Valid   := rs1Valid
   io.out.rs2Valid   := rs2Valid
   io.out.rdValid    := rdValid
-  io.out.csrAddress := csrAddress
+  io.out.csrAddress := csrAddr
   io.out.imm        := ImmGen(inst, immType)
-  io.out.cacop.valid     := isCacop && !isIllegal
-  io.out.cacop.code      := Mux(isCacop, inst(4, 0), 0.U)
-  io.out.cacop.cacheType := Mux(isCacop, CacopCode.cacheType(inst), 0.U)
-  io.out.cacop.operation := Mux(isCacop, CacopCode.operation(inst), 0.U)
-  
-  io.out.ctrl.fuType   := Mux(isIllegal, FuType.csr, fuType)
-  io.out.ctrl.aluOp    := aluOp
-  io.out.ctrl.bruOp    := bruOp
-  io.out.ctrl.lsuOp    := lsuOp
-  io.out.ctrl.barOp    := barOp
-  io.out.ctrl.csrOp    := csrOp
-  io.out.ctrl.tlbOp    := Mux(isIllegal, TlbOp.none, tlbOp)
-  io.out.ctrl.mulOp := mulOp
-  io.out.ctrl.divOp := divOp
-  io.out.ctrl.src1Type := src1Type
-  io.out.ctrl.src2Type := src2Type
-  io.out.ctrl.immType  := immType
-  io.out.ctrl.rfWen    := rfWen
-  io.out.ctrl.memRead  := memRead
-  io.out.ctrl.memWrite := memWrite
- // io.out.ctrl.rs2UseRd := rs2UseRd
-  io.out.ctrl.csrWen   := csrWen
-  io.out.ctrl.isBranch := isBranch
-  io.out.ctrl.isJump   := isJump
-  io.out.ctrl.isPriv   := isPriv
-  io.out.ctrl.isIdle   := isIdle && !isIllegal
-  io.out.ctrl.waitForward := waitForward && !isIllegal
+
+  // CacheOp 通路保留但恒无效（FENCE.I 由 BarOp.fenceI 承担）
+  io.out.cacheOp.valid     := false.B
+  io.out.cacheOp.code      := 0.U
+  io.out.cacheOp.cacheType := 0.U
+  io.out.cacheOp.operation := 0.U
+
+  io.out.ctrl.fuType        := Mux(isIllegal, FuType.csr, fuType)
+  io.out.ctrl.aluOp         := aluOp
+  io.out.ctrl.bruOp         := bruOp
+  io.out.ctrl.lsuOp         := lsuOp
+  io.out.ctrl.barOp         := barOp
+  io.out.ctrl.csrOp         := csrOp
+  io.out.ctrl.tlbOp         := Mux(isIllegal, TlbOp.none, tlbOp)
+  io.out.ctrl.mulOp         := mulOp
+  io.out.ctrl.divOp         := divOp
+  io.out.ctrl.src1Type      := src1Type
+  io.out.ctrl.src2Type      := src2Type
+  io.out.ctrl.immType       := immType
+  io.out.ctrl.rfWen         := rfWen
+  io.out.ctrl.memRead       := memRead
+  io.out.ctrl.memWrite      := memWrite
+  io.out.ctrl.csrWen        := csrWriteReq && !isIllegal
+  io.out.ctrl.isBranch      := isBranch
+  io.out.ctrl.isJump        := isJump
+  io.out.ctrl.privLevel     := privLevel
+  io.out.ctrl.isIdle        := isIdle && !isIllegal
+  io.out.ctrl.waitForward   := waitForward && !isIllegal
   io.out.ctrl.blockBackward := blockBackward && !isIllegal
   io.out.ctrl.flushOnCommit := flushOnCommit && !isIllegal
-  
-  io.out.excp     := excp
+
+  io.out.excp    := excp
   io.out.pdInfo  := io.inData.pdInfo
-  io.out.bpuInfo  := io.inData.bpuInfo
+  io.out.bpuInfo := io.inData.bpuInfo
 }

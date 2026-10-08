@@ -1,17 +1,17 @@
 
 
-package nscscc.backend.execute
+package minixiangshan.backend.execute
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.csr._
-import nscscc.backend.dispatch.DispatchedInst
-import nscscc.backend.regread.ExeReq
-import nscscc.backend.rename.RedirectInfo
-import nscscc.frontend.BpuUpdateReq
-import nscscc.mmu._
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.csr._
+import minixiangshan.backend.dispatch.DispatchedInst
+import minixiangshan.backend.regread.ExeReq
+import minixiangshan.backend.rename.RedirectInfo
+import minixiangshan.frontend.BpuUpdateReq
+import minixiangshan.mmu._
 
 class ExeResult(implicit p: Parameters) extends NSBundle {
   val uop           = new DispatchedInst
@@ -64,7 +64,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
 
     val tlbInstr   = Valid(new TlbInstr)
     val tlbFillIdx = Input(UInt(tlbIdxLen.W))
-    val currentPlv = Input(UInt(plvLen.W))
+    val currentPriv = Input(UInt(privLen.W))
   })
 
 
@@ -92,7 +92,7 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val tlbKilled = io.redirectInfo.valid && io.redirectInfo.bits.doRedirect &&
     stgData.uop.robIdxFull.isAfter(io.redirectInfo.bits.robIdx)
   val tlbNeedsExec = stgIsTlb && !tlbKilled &&
-    !stgData.uop.excp.hasException && io.currentPlv === 0.U
+    !stgData.uop.excp.hasException && io.currentPriv =/= 0.U   // U 模式下不允许 sfence.vma
   val fastOutValid = stgValid
 
   val outFire  = fastOutValid && io.outResult.ready
@@ -154,7 +154,8 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     csrUnit.io.valid    := csrValid
     csrUnit.io.uop      := stgData.uop
     csrUnit.io.rs1      := stgData.rs1Data    // CSRWR/CSRXCHG: rd 旧值
-    csrUnit.io.rs2      := stgData.rs2Data    // CSRXCHG: rj 掩码
+    csrUnit.io.rs2      := stgData.rs2Data
+    csrUnit.io.imm      := stgData.uop.imm    // CSR 立即数形式（uimm）
     csrUnit.io.csrRdata := io.csrRdata        // CSR 寄存器堆读回数据
     csrUnit.io.timerInfo := io.timerInfo
   }
@@ -217,9 +218,10 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
   val fastIsTlb = stgIsTlb
   io.tlbInstr.valid    := tlbNeedsExec && outFire
   io.tlbInstr.bits.cmd := stgData.uop.ctrl.tlbOp
-  io.tlbInstr.bits.op  := stgData.uop.inst(InvtlbOp.width - 1, 0)
-  io.tlbInstr.bits.rj  := stgData.rs1Data(asidLen - 1, 0)
-  io.tlbInstr.bits.rk  := stgData.rs2Data
+  io.tlbInstr.bits.all    := stgData.uop.lrs1 === 0.U
+  io.tlbInstr.bits.noAsid := stgData.uop.lrs2 === 0.U
+  io.tlbInstr.bits.vaddr  := stgData.rs1Data
+  io.tlbInstr.bits.asid   := stgData.rs2Data(asidLen - 1, 0)
  
   // ================================================================
   //  乘法器（流水线）
@@ -320,9 +322,8 @@ class ExeUnit(val params: ExeUnitParams)(implicit p: Parameters) extends NSModul
     (if (params.hasMul) Seq(mulWins -> 0.U) else Seq()) ++
     (if (params.hasDiv) Seq(divWins -> 0.U) else Seq()))
 
-  io.outResult.bits.tlbFillIdx := Mux(
-    fastWins && fastIsTlb && stgData.uop.ctrl.tlbOp === TlbOp.fill,
-    io.tlbFillIdx, 0.U)
+  // RISC-V 版本不再有软件 TLB 填充指令，填充索引仅用于观测
+  io.outResult.bits.tlbFillIdx := 0.U
  
   // ================================================================
   //  重定向：BRU

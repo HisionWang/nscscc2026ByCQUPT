@@ -1,24 +1,24 @@
-package nscscc.backend
+package minixiangshan.backend
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.frontend.CtrlFlowIO
-import nscscc.backend.rename._
-import nscscc.backend.dispatch._
-import nscscc.backend.issue._
-import nscscc.backend.regfile._
-import nscscc.backend.regread._
-import nscscc.backend.bypass._
-import nscscc.backend.execute._
-import nscscc.backend.writeback._
-import nscscc.mem._
-import nscscc.difftest._
-import nscscc.csr._
-import nscscc.backend.rob._
-import nscscc.frontend.BpuUpdateReq
-import nscscc.mmu._
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.frontend.CtrlFlowIO
+import minixiangshan.backend.rename._
+import minixiangshan.backend.dispatch._
+import minixiangshan.backend.issue._
+import minixiangshan.backend.regfile._
+import minixiangshan.backend.regread._
+import minixiangshan.backend.bypass._
+import minixiangshan.backend.execute._
+import minixiangshan.backend.writeback._
+import minixiangshan.mem._
+import minixiangshan.difftest._
+import minixiangshan.csr._
+import minixiangshan.backend.rob._
+import minixiangshan.frontend.BpuUpdateReq
+import minixiangshan.mmu._
 import firrtl.passes.createMask
 class BackendIO(implicit p: Parameters) extends NSBundle {
   val in       = Vec(CtrlBlockWidth, Flipped(Decoupled(new CtrlFlowIO)))
@@ -37,15 +37,17 @@ class BackendIO(implicit p: Parameters) extends NSBundle {
   val commitToCsr  = new RobCommitToCsr
   val tlbInstr     = Valid(new TlbInstr)
   val tlbFillIdx   = Input(UInt(tlbIdxLen.W))
-  val currentPlv   = Input(UInt(plvLen.W))
+  val currentPriv   = Input(UInt(privLen.W))
   val storeQueueEmpty = Input(Bool())
-  val ibarFenceReq = Output(Bool())
-  val ibarFenceDone = Input(Bool())
-  val cacopICacheReq = Output(Bool())
+  val fenceIReq = Output(Bool())
+  val fenceIReady = Input(Bool())
+  val cacheOpICacheReq = Output(Bool())
 
-  val excpEvent           = Output(new ExcpEvent)
-  val excpInfo            = Output(new ExcpInfo)
-  val redirectAddrFromCsr = Input(new RedirectEntry)
+  // 陷入请求（送 CSR）
+  val trapReq             = Output(new TrapReq)
+  val trapEnv             = Input(new TrapEnv)
+  val intrCode            = Input(UInt(IntrCode.width.W))
+  val commitValid         = Output(Bool())
   val timerInfo =        Input(new TimerBundle)
 
   val bpuUpdate = Output(new BpuUpdateReq)                    // BPU 更新数据（始终发出）
@@ -62,9 +64,10 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   //  模块实例化
   // ══════════════════════════════════════════════════════════════
   val ctrlBlock   = Module(new CtrlBlock)
-  io.excpEvent <> ctrlBlock.io.excpEvent
-  io.excpInfo <> ctrlBlock.io.excpInfo
-  io.redirectAddrFromCsr <> ctrlBlock.io.redirectAddrFromCsr
+  io.trapReq := ctrlBlock.io.trapReq
+  io.trapEnv <> ctrlBlock.io.trapEnv
+  ctrlBlock.io.intrCode := io.intrCode
+  io.commitValid := ctrlBlock.io.commitValid
 
   io.robHead := ctrlBlock.io.robHead
   
@@ -72,11 +75,11 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   io.commitToSq <> ctrlBlock.io.commitToSq
   io.commitToCsr <> ctrlBlock.io.commitToCsr
   io.idle := ctrlBlock.io.commitToCsr.idle
-  ctrlBlock.io.currentPlv := io.currentPlv
+  ctrlBlock.io.currentPriv := io.currentPriv
   ctrlBlock.io.storeQueueEmpty := io.storeQueueEmpty
-  io.ibarFenceReq := ctrlBlock.io.ibarFenceReq
-  ctrlBlock.io.ibarFenceDone := io.ibarFenceDone
-  io.cacopICacheReq := ctrlBlock.io.cacopICacheReq
+  io.fenceIReq := ctrlBlock.io.fenceIReq
+  ctrlBlock.io.fenceIReady := io.fenceIReady
+  io.cacheOpICacheReq := ctrlBlock.io.cacheOpICacheReq
 
   io.lsEnq <> ctrlBlock.io.lsEnq
   val scheduler   = Module(new Scheduler)
@@ -128,7 +131,7 @@ class Backend(implicit p: Parameters) extends NSModule with HasCoreParameters {
   io.tlbInstr := exeUnits(0).io.tlbInstr
   exeUnits(0).io.tlbFillIdx := io.tlbFillIdx
   for (eu <- exeUnits) {
-    eu.io.currentPlv := io.currentPlv
+    eu.io.currentPriv := io.currentPriv
   }
   for (i <- 1 until exeUnits.length) {
     exeUnits(i).io.tlbFillIdx := 0.U

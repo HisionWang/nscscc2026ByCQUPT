@@ -1,13 +1,13 @@
-package nscscc.frontend
+package minixiangshan.frontend
  
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
-import nscscc.config._
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
-import nscscc.frontend.icache._
-import nscscc.backend.execute._
+import minixiangshan.config.Parameters
+import minixiangshan.config._
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
+import minixiangshan.frontend.icache._
+import minixiangshan.backend.execute._
  
 class IFU(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

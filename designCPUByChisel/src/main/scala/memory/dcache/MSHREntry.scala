@@ -1,11 +1,11 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
 
 import chisel3._
 import chisel3.util._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.config._
-import nscscc.mem.L2cache._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.config._
+import minixiangshan.mem.L2cache._
 
 // Primary MSHR 表项：直接使用 L2 native 接口。
 class MSHREntry(implicit p: Parameters) extends NSModule {
@@ -106,25 +106,25 @@ class MSHREntry(implicit p: Parameters) extends NSModule {
   }
 
   private def loadSize(op: UInt): UInt = MuxLookup(op, 2.U)(Seq(
-    LsuOp.ldb -> 0.U, LsuOp.ldbu -> 0.U,
-    LsuOp.ldh -> 1.U, LsuOp.ldhu -> 1.U,
-    LsuOp.ldw -> 2.U
+    LsuOp.lb -> 0.U, LsuOp.lbu -> 0.U,
+    LsuOp.lh -> 1.U, LsuOp.lhu -> 1.U,
+    LsuOp.lw -> 2.U
   ))
 
   private def storeSize(op: UInt): UInt = MuxLookup(op, 2.U)(Seq(
-    LsuOp.stb -> 0.U, LsuOp.sth -> 1.U, LsuOp.stw -> 2.U
+    LsuOp.sb -> 0.U, LsuOp.sh -> 1.U, LsuOp.sw -> 2.U
   ))
 
   val byteOff = reqPaddr(1, 0)
   val ucWstrb = MuxLookup(reqLsuOp, "b1111".U(4.W))(Seq(
-    LsuOp.stb -> UIntToOH(byteOff, 4),
-    LsuOp.sth -> Mux(byteOff(1), "b1100".U, "b0011".U),
-    LsuOp.stw -> "b1111".U
+    LsuOp.sb -> UIntToOH(byteOff, 4),
+    LsuOp.sh -> Mux(byteOff(1), "b1100".U, "b0011".U),
+    LsuOp.sw -> "b1111".U
   ))
   val ucWdata = MuxLookup(reqLsuOp, reqStoreData)(Seq(
-    LsuOp.stb -> (reqStoreData(7, 0) << (byteOff * 8.U)),
-    LsuOp.sth -> (reqStoreData(15, 0) << (Cat(byteOff(1), 0.U(1.W)) * 8.U)),
-    LsuOp.stw -> reqStoreData
+    LsuOp.sb -> (reqStoreData(7, 0) << (byteOff * 8.U)),
+    LsuOp.sh -> (reqStoreData(15, 0) << (Cat(byteOff(1), 0.U(1.W)) * 8.U)),
+    LsuOp.sw -> reqStoreData
   ))
 
   // Dirty victim 的 putLine 在请求握手时即由 L2 接管。

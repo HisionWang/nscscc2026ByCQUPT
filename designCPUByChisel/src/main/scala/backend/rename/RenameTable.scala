@@ -1,8 +1,8 @@
-package nscscc.backend.rename
+package minixiangshan.backend.rename
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
+import minixiangshan.config._
  
 class RenameTable(implicit p: Parameters) extends NSModule {
  

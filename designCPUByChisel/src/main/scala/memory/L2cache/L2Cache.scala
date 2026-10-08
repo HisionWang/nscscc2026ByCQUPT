@@ -1,9 +1,9 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chisel3.util._
-import nscscc.axi._
-import nscscc.config._
+import minixiangshan.axi._
+import minixiangshan.config._
 
 object L2PrefetchProtocol {
   final val EpochBits = 8
@@ -65,7 +65,7 @@ class L2Cache(implicit p: Parameters) extends NSModule {
   val bridge = Module(new L2Bridge)
   io.axi <> bridge.io.axi
 
-  // V1不接管现有CACOP路径。
+  // V1 不接管 Cache 维护路径。
   io.maintenance.req.ready := false.B
   io.maintenance.done.valid := false.B
   io.maintenance.done.bits.done := false.B

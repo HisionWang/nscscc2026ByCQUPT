@@ -1,12 +1,12 @@
-package nscscc.frontend.icache
+package minixiangshan.frontend.icache
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
-import nscscc.config._
-import nscscc.mmu._
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
+import minixiangshan.config.Parameters
+import minixiangshan.config._
+import minixiangshan.mmu._
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
 
 class arrayReadData(implicit p: Parameters) extends  NSBundle{
 
@@ -61,7 +61,7 @@ class victimChange(implicit p: Parameters) extends NSBundle {
 //    val data =  new Bundle {
 //        val paddr    = UInt(32.W)  // 物理地址
 //        val uncached = Bool()      // 是否为uncached访问
-//        val error    = new MmuTransError      // 转换错误(如TLB缺失)，我不清楚是否只有这一个异常，如果有很多那这个信号的位数不止一位
+//        val error    = new FetchMmuError      // 转换错误(如TLB缺失)，我不清楚是否只有这一个异常，如果有很多那这个信号的位数不止一位
 //    }
 //
 //}
@@ -88,5 +88,5 @@ class IcacheResp(implicit p: Parameters) extends NSBundle {
   val addr   = Output(UInt(32.W))  // 返回虚拟地址
   //val miss   = Output(Bool())
   val uncached   = Output(Bool())
-  val mmu_error   = new MmuTransError //异常
+  val mmu_error   = new FetchMmuError //异常
 }

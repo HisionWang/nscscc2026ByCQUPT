@@ -1,13 +1,13 @@
-package nscscc.frontend
+package minixiangshan.frontend
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
-import nscscc.config._
-import nscscc.config.NSModule
-import nscscc.config.NSBundle
-import nscscc.mmu.MmuTransError
-import nscscc.util.CircularQueue  // 导入新写的环形队列模块
+import minixiangshan.config.Parameters
+import minixiangshan.config._
+import minixiangshan.config.NSModule
+import minixiangshan.config.NSBundle
+import minixiangshan.mmu.FetchMmuError
+import minixiangshan.util.CircularQueue  // 导入新写的环形队列模块
 
 class IBF(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

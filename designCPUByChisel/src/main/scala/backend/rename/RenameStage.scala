@@ -1,12 +1,12 @@
-package nscscc.backend.rename
+package minixiangshan.backend.rename
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.execute._
-import nscscc.backend.rob._
-import nscscc.util.CircularQueuePtr
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.execute._
+import minixiangshan.backend.rob._
+import minixiangshan.util.CircularQueuePtr
 
 class RenameStage(implicit p: Parameters) extends NSModule {
  
@@ -212,7 +212,7 @@ class RenameStage(implicit p: Parameters) extends NSModule {
     u.excp       := stgData(i).excp
     u.imm        := stgData(i).imm
     u.csrAddress := stgData(i).csrAddress
-    u.cacop      := stgData(i).cacop
+    u.cacheOp      := stgData(i).cacheOp
     u.pdInfo     := stgData(i).pdInfo
     u.bpuInfo    := stgData(i).bpuInfo
  

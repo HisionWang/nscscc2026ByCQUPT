@@ -1,8 +1,8 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chisel3.util._
-import nscscc.config._
+import minixiangshan.config._
 
 class L2Replacer(implicit p: Parameters) extends NSModule {
   require(Seq(2, 4, 8, 16).contains(l2Ways), "tree-PLRU requires 2/4/8/16 ways")

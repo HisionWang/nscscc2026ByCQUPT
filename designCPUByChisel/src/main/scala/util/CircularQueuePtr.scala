@@ -1,4 +1,4 @@
-package nscscc.util
+package minixiangshan.util
 
 import chisel3._
 import chisel3.util._

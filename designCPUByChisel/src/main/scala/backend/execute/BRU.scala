@@ -1,25 +1,25 @@
-package nscscc.backend.execute
+package minixiangshan.backend.execute
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.backend.dispatch.DispatchedInst
-import nscscc.backend.rename.RedirectInfo
-import nscscc.frontend.BpuUpdateReq
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.dispatch.DispatchedInst
+import minixiangshan.backend.rename.RedirectInfo
+import minixiangshan.frontend.BpuUpdateReq
  
 // ═══════════════════════════════════════════════════════════════
 //  分支执行单元
 //
-//  支持操作：jirl, b, bl, beq, bne, blt, bge, bltu, bgeu
+//  支持操作：jal, jalr, beq, bne, blt, bge, bltu, bgeu
 //  单拍组合逻辑完成
 //
 //  职责：
 //    1. 计算分支实际 taken 与目标地址
 //    2. 与 BPU 预测值比对，仅在误预测时发起重定向
 //    3. 无论预测正确与否，为每条有效分支指令生成 BPU 更新数据
-//  注意：B/BL 的重定向与 BPU 更新已由前端预译码处理，此处跳过
+//  注意：JAL 的重定向与 BPU 更新已由前端预译码处理，此处跳过
 // ═══════════════════════════════════════════════════════════════
  
 class redirectInfoFromBru(implicit p: Parameters) extends NSBundle {
@@ -87,9 +87,8 @@ class BRU(implicit p: Parameters) extends NSModule {
   }
 
   val branchTaken = MuxCase(false.B, Seq(
-    (op === BruOp.jirl) -> true.B,
-    (op === BruOp.b)    -> true.B,
-    (op === BruOp.bl)   -> true.B,
+    (op === BruOp.jal)  -> true.B,
+    (op === BruOp.jalr) -> true.B,
     (op === BruOp.beq)  -> eq,
     (op === BruOp.bne)  -> ne,
     (op === BruOp.blt)  -> lt,
@@ -100,13 +99,16 @@ class BRU(implicit p: Parameters) extends NSModule {
  
   // ── 目标地址计算（实际值） ──
   val imm          = io.uop.imm
-  val jirlTarget   = (src1 + imm)(XLEN - 1, 0)
+  // JALR：目标地址最低位清零（RISC-V 规定）
+  val jalrSum      = (src1 + imm)(XLEN - 1, 0)
+  val jalrTarget   = Cat(jalrSum(XLEN - 1, 1), 0.U(1.W))
   val branchTarget = (pc + imm)(XLEN - 1, 0)
-  val target       = Mux(op === BruOp.jirl, jirlTarget, branchTarget)
+  val target       = Mux(op === BruOp.jalr, jalrTarget, branchTarget)
  
   // ── 写回值 ──
+  // jal / jalr 把 PC+4 写入 rd
   val linkResult = pc + 4.U
-  io.result := Mux(op === BruOp.bl || op === BruOp.jirl, linkResult, 0.U)
+  io.result := Mux(io.uop.ctrl.rfWen, linkResult, 0.U)
  
   // ── 指令类型标记 ──
   io.isBranch := op =/= BruOp.none
@@ -132,7 +134,7 @@ class BRU(implicit p: Parameters) extends NSModule {
   val mispredTarget   = bpuTaken && branchTaken && (bpuTarget =/= target)
   val mispredict      = mispredTaken || mispredNotTaken || mispredTarget
  
-  // B/BL (isJal) 的误预测已由前端预译码处理，BRU 不再发起重定向
+  // JAL 的误预测已由前端预译码处理，BRU 不再发起重定向
   val isBranch = io.valid && io.isBranch && !io.uop.pdInfo.isJal
   val needRedirect = io.valid && io.isBranch && mispredict && !io.uop.pdInfo.isJal
  

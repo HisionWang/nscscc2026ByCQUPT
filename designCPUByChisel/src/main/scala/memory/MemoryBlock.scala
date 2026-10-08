@@ -1,16 +1,16 @@
-package nscscc.mem
+package minixiangshan.mem
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.config.ExcType._
-import nscscc.backend.dispatch._
-import nscscc.backend.decode._
-import nscscc.backend.rename._
-import nscscc.backend.execute._
-import nscscc.mmu._
-import nscscc.mem.dcache.DCache
-import nscscc.mem.L2cache._
+import minixiangshan.config._
+import minixiangshan.config.ExcType._
+import minixiangshan.backend.dispatch._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.rename._
+import minixiangshan.backend.execute._
+import minixiangshan.mmu._
+import minixiangshan.mem.dcache.DCache
+import minixiangshan.mem.L2cache._
  
 class ExeMmuResult(implicit p: Parameters) extends NSBundle {
   val exeRes    = new ExeResult
@@ -43,8 +43,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
     // True when every older committed store has completed.  Speculative
     // younger stores are intentionally excluded to avoid a ROB/SQ deadlock.
     val storeQueueEmpty = Output(Bool())
-    val ibarFenceReq = Input(Bool())
-    val ibarFenceDone = Output(Bool())
+    val fenceIReq = Input(Bool())
+    val fenceIReady = Output(Bool())
 
     val l2 = new L2NativeMasterIO(1)
  
@@ -70,7 +70,7 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   loadQueue.io.enq.rfWen  := io.lsEnq.toLsqData.ctrl.rfWen
   loadQueue.io.enq.lsuOp  := io.lsEnq.toLsqData.ctrl.lsuOp
   loadQueue.io.enq.fuType := io.lsEnq.toLsqData.ctrl.fuType
-  loadQueue.io.enq.cacop  := io.lsEnq.toLsqData.cacop
+  loadQueue.io.enq.cacheOp  := io.lsEnq.toLsqData.cacheOp
  
   storeQueue.io.enq.valid  := io.lsEnq.req.valid && io.lsEnq.req.bits.isStore
   storeQueue.io.enq.robIdx := io.lsEnq.req.bits.robIdx
@@ -109,16 +109,18 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
   val mmuError = addrChannel.bits.mmuRes.error
   val excpIn   = addrChannel.bits.exeRes.uop.excp
   val excp     = Wire(new ExceptionBundle)
- 
+
+  val isStoreAccess = addrUop.ctrl.memWrite
   excp.excpVec := excp.mergeMany(
     base = excpIn.excpVec,
-    mmuError.excpAle          -> ALE,
-    mmuError.excpTlbPpi       -> PPI_D,
-    mmuError.excpTlbRefill    -> TLBR_D,
-    mmuError.excpTlbPme       -> PME,
-    mmuError.excpTlbPis       -> PIS,
-    mmuError.excpTlbPil       -> PIL,
+    (mmuError.misalign    && !isStoreAccess) -> LALIGN,
+    (mmuError.misalign    &&  isStoreAccess) -> SALIGN,
+    (mmuError.pageFault   && !isStoreAccess) -> LPAGE,
+    (mmuError.pageFault   &&  isStoreAccess) -> SPAGE,
+    (mmuError.accessFault && !isStoreAccess) -> LACCESS,
+    (mmuError.accessFault &&  isStoreAccess) -> SACCESS
   )
+  excp.intrCode := 0.U
  
   loadQueue.io.addrWrite.valid     := addrFire && addrUop.ctrl.memRead
   loadQueue.io.addrWrite.idx       := addrUop.lqIdx.value
@@ -151,8 +153,8 @@ class MemoryBlock(implicit p: Parameters) extends NSModule {
  
   dcache.io.storeReq <> storeQueue.io.dcacheReq
   dcache.io.storeAck <> storeQueue.io.storeAck
-  dcache.io.fenceReq := io.ibarFenceReq
-  io.ibarFenceDone := dcache.io.fenceDone
+  dcache.io.fenceReq := io.fenceIReq
+  io.fenceIReady := dcache.io.fenceDone
   dcache.io.l2 <> io.l2
   dcache.io.redirectInfo <> io.redirectInfo
  

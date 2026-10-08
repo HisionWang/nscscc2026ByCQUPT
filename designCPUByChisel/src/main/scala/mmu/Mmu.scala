@@ -1,286 +1,211 @@
-package nscscc.mmu
+package minixiangshan.mmu
 
 import chisel3._
 import chisel3.util._
 
-import nscscc.config._
-import nscscc.backend.decode.LsuOp
+import minixiangshan.config._
+import minixiangshan.backend.decode.LsuOp
 
-class Mmu(implicit p: Parameters) extends NSModule {
+/* ============================================================================
+ *  RISC-V Sv32 MMU
+ *
+ *  · satp.MODE = 0 (Bare)：恒等映射
+ *  · satp.MODE = 1 (Sv32)：TLB 查找 + 硬件页表遍历（TLB 缺失时）
+ *  · 两个翻译端口（取指 / 访存）共享一个页表遍历器，按轮转仲裁
+ *  · 权限检查：R/W/X 位、U 位、SUM、MXR
+ *  · 未实现 PMP/PMA，因此不产生 access fault；MMIO 区域标记为不可缓存
+ * ==========================================================================*/
+class Mmu(implicit p: Parameters) extends NSModule with HasCsrParameters {
   val io = IO(new MmuIoBundle)
 
   val tlb = Module(new Tlb)
+  val ptw = Module(new Ptw)
 
-  private def emptyError(): MmuTransError = 0.U.asTypeOf(new MmuTransError)
-  private def emptyDataError(): DcacheMmuTransError =
-    0.U.asTypeOf(new DcacheMmuTransError)
+  // ---------------- PTW 物理读端口透传 ----------------
+  io.ptwRead.req.valid  := ptw.io.l2.req.valid
+  ptw.io.l2.req.ready   := io.ptwRead.req.ready
+  io.ptwRead.req.bits   := ptw.io.l2.req.bits
+  io.ptwRead.cancel     := ptw.io.l2.cancel
+  ptw.io.l2.resp.valid  := io.ptwRead.resp.valid
+  io.ptwRead.resp.ready := ptw.io.l2.resp.ready
+  ptw.io.l2.resp.bits   := io.ptwRead.resp.bits
 
-  private def hitDmw(dmw: UInt, vaddr: UInt, plv: UInt): Bool = {
-    val plvHit = (plv === 0.U && dmw(0)) || (plv === 3.U && dmw(3))
-    val segHit = dmw(31, 29) === vaddr(31, 29)
-    plvHit && segHit
+  // ---------------- satp ----------------
+  val sv32 = io.fromCsr.satp(SATP_MODE_BIT)
+  val asid = io.fromCsr.satp(SATP_ASID_HI, SATP_ASID_LO)
+
+  // ---------------- 状态机 ----------------
+  val sIdle :: sWalk :: sDrain :: sResp :: Nil = Enum(4)
+  val state = RegInit(sIdle)
+
+  val curPort      = RegInit(0.U(1.W))      // 0 = 取指，1 = 访存
+  val lastServ     = RegInit(0.U(1.W))      // 轮转仲裁：上次服务的端口
+  val reqVaddr     = RegInit(0.U(XLEN.W))
+  val reqLsuOp     = RegInit(0.U(LsuOp.width.W))
+  val reqAcc       = RegInit(0.U(MmuAccType.width.W))
+  val reqPriv      = RegInit(0.U(privLen.W))
+  val respPaddr    = RegInit(0.U(XLEN.W))
+  val respMisalign = RegInit(false.B)
+  val respPageFlt  = RegInit(false.B)
+  val respAccessFlt = RegInit(false.B)
+
+  // ---------------- 输入仲裁（轮转） ----------------
+  val prioIcache = !lastServ
+  val acceptI = io.fromIcache.valid && io.fromIcache.ready
+  val acceptM = io.fromMem.valid    && io.fromMem.ready
+
+  io.fromIcache.ready := (state === sIdle) && io.fromIcache.valid &&
+    (!io.fromMem.valid || prioIcache)
+  io.fromMem.ready := (state === sIdle) && io.fromMem.valid &&
+    (!io.fromIcache.valid || !prioIcache)
+
+  val inVaddr = Mux(acceptI, io.fromIcache.bits.vaddr, io.fromMem.bits.vaddr)
+  val inPort  = Mux(acceptI, 0.U(1.W), 1.U(1.W))
+  val inAcc   = Mux(acceptI, MmuAccType.fetch,
+                Mux(LsuOp.isStore(io.fromMem.bits.lsuOp), MmuAccType.store, MmuAccType.load))
+  val inPriv  = Mux(acceptI, io.fromCsr.priv, io.fromCsr.dataPriv)
+
+  // ---------------- 组合 TLB 查找 ----------------
+  tlb.io.lookup.req.vaddr := inVaddr
+  tlb.io.lookup.req.asid  := asid
+  tlb.io.lookup.req.acc   := inAcc
+
+  val tlbHit      = tlb.io.lookup.resp.hit
+  val tlbHitPaddr = Cat(tlb.io.lookup.resp.ppn, inVaddr(pageOffLen - 1, 0))
+  val needWalk    = sv32 && !tlbHit
+
+  // ---------------- 权限检查 ----------------
+  def permFault(r: Bool, w: Bool, x: Bool, u: Bool, acc: UInt, priv: UInt): Bool = {
+    val sum = io.fromCsr.sum
+    val mxr = io.fromCsr.mxr
+    val accessOk = Mux(acc === MmuAccType.store, w,
+                    Mux(acc === MmuAccType.fetch, x,
+                      r || (mxr && x)))
+    val privOk = Mux(priv === PRIV_U_VAL.U, u,
+                  Mux(priv === PRIV_S_VAL.U,
+                    !u || (sum && (acc =/= MmuAccType.fetch)),
+                    true.B))
+    !(accessOk && privOk)
   }
 
-  private def dmwPaddr(dmw: UInt, vaddr: UInt): UInt = {
-    Cat(dmw(27, 25), vaddr(28, 0))
-  }
+  // 访存地址非对齐（按访问宽度）
+  def memMisalign(vaddr: UInt, lsuOp: UInt): Bool =
+    Mux(LsuOp.isByte(lsuOp), false.B,
+      Mux(LsuOp.isHalf(lsuOp), vaddr(0),
+        vaddr(1, 0) =/= 0.U))
 
-  private def isCacheable(mat: UInt): Bool = mat === 1.U
+  def fetchMisalign(vaddr: UInt): Bool = vaddr(1, 0) =/= 0.U
 
-  private def tlbPaddr(resp: TlbSearchResp): UInt = {
-    Mux(resp.ps === 12.U,
-      Cat(resp.ppn, resp.offset(11, 0)),// small page
-      Cat(resp.ppn(ppnLen - 1, 10), resp.offset)// big page
-    )
-  }
+  // MMIO 区域不可缓存（与 chiplab SoC 地址映射一致的简化实现）
+  def isCacheable(paddr: UInt): Bool = paddr(31, 16) =/= 0xbfaf.U
 
-  val isPaging = io.fromCsr.pgda === 2.U
-  val isDirect = io.fromCsr.pgda === 1.U
+  // ---------------- PTW 请求默认值 ----------------
+  ptw.io.req.valid       := false.B
+  ptw.io.req.bits.vaddr  := inVaddr
+  ptw.io.req.bits.acc    := inAcc
+  ptw.io.req.bits.satp   := io.fromCsr.satp
 
-  // iFetch Port
-  val ifetchPort = {
-    val sIdle :: sBusy :: Nil = Enum(2)
+  tlb.io.fill.valid := false.B
+  tlb.io.fill.vpn   := 0.U
+  tlb.io.fill.asid  := asid
+  tlb.io.fill.ppn   := 0.U
+  tlb.io.fill.r     := false.B
+  tlb.io.fill.w     := false.B
+  tlb.io.fill.x     := false.B
+  tlb.io.fill.u     := false.B
+  tlb.io.fill.g     := false.B
 
-    // a mutex lock
-    // req.fire - lock, resp.fire - unlock
-    val state = RegInit(sIdle)
+  // PTW 返回结果的权限检查
+  val ptwPermFault = permFault(ptw.io.resp.bits.r, ptw.io.resp.bits.w,
+                               ptw.io.resp.bits.x, ptw.io.resp.bits.u,
+                               reqAcc, reqPriv)
 
-    val isIdle = state === sIdle
-    val isBusy = state === sBusy
-
-    val reqBuffer = RegInit(0.U.asTypeOf(new IcacheToMmu))
-    val reqValid  = RegInit(false.B)
-
-    val flush = io.fromIcacheFlush || tlb.io.flush
-
-    when (flush) {
-      state := sIdle
-      reqValid := false.B
-    }.otherwise {
-      when (io.fromIcache.fire) {
-        reqBuffer := io.fromIcache.bits
-        reqValid  := true.B
-        state := sBusy
-      }.elsewhen(io.toIcache.fire) {
-        reqValid  := false.B
-        state := sIdle
+  switch(state) {
+    is(sIdle) {
+      when(acceptI || acceptM) {
+        curPort  := inPort
+        lastServ := inPort
+        reqVaddr := inVaddr
+        reqLsuOp := io.fromMem.bits.lsuOp
+        reqAcc   := inAcc
+        reqPriv  := inPriv
+        when(!needWalk) {
+          // Bare 模式或 TLB 命中
+          respPaddr     := Mux(sv32, tlbHitPaddr, inVaddr)
+          respMisalign  := Mux(acceptI, fetchMisalign(inVaddr),
+                               memMisalign(inVaddr, io.fromMem.bits.lsuOp))
+          respPageFlt   := sv32 && permFault(tlb.io.lookup.resp.r, tlb.io.lookup.resp.w,
+                                             tlb.io.lookup.resp.x, tlb.io.lookup.resp.u,
+                                             inAcc, inPriv)
+          respAccessFlt := false.B
+          state         := sResp
+        }.otherwise {
+          ptw.io.req.valid := true.B
+          when(ptw.io.req.fire) { state := sWalk }
+        }
       }
     }
 
-    val reqVaddr = reqBuffer.vaddr
-    val nextVaddr = io.fromIcache.bits.vaddr
-
-    // DMW
-    val dmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, reqVaddr, io.fromCsr.plv)
-    val dmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, reqVaddr, io.fromCsr.plv)
-    val dmwHit  = dmw0Hit || dmw1Hit
-
-    val addrMisaligned = reqVaddr(1, 0) =/= 0.U
-
-    val nextDmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, nextVaddr, io.fromCsr.plv)
-    val nextDmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, nextVaddr, io.fromCsr.plv)
-    val nextNeedTlb = isPaging && !(nextDmw0Hit || nextDmw1Hit)
-    val nextAddrMisaligned = nextVaddr(1, 0) =/= 0.U
-    val nextNeedSearch = nextNeedTlb && !nextAddrMisaligned
-
-    val directResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
-    directResp.paddr := reqVaddr
-
-    // TODO: uncomment
-    directResp.cacheable := isDirect && isCacheable(io.fromCsr.datf)
-    //directResp.cacheable := true.B
-    directResp.error     := emptyError()
-    directResp.error.excpAdef := addrMisaligned
-    directResp.hasError  := directResp.error.asUInt.orR
-
-    val dmwResp = WireDefault(0.U.asTypeOf(new MmuToIcache))
-    dmwResp.paddr  := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),
-                      Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), 0.U(XLEN.W)))
-
-    // TODO: uncomment
-    dmwResp.cacheable := (dmw0Hit && isCacheable(io.fromCsr.dmw0(5, 4))) || (dmw1Hit && isCacheable(io.fromCsr.dmw1(5, 4)))
-    //dmwResp.cacheable := true.B
-    dmwResp.error     := emptyError()
-    dmwResp.error.excpAdef := addrMisaligned
-    dmwResp.hasError  := dmwResp.error.asUInt.orR
-
-    val tlbReq  = tlb.io.search(0).req
-    val tlbResp = tlb.io.search(0).resp
-
-    // 保留单请求锁，但允许响应fire的同一拍接收下一条请求。
-    val respFire     = io.toIcache.fire
-    val canAcceptReq = (isIdle || respFire) // Hision && !flush
-
-    tlbReq.valid        := canAcceptReq && io.fromIcache.valid && nextNeedSearch
-    tlbReq.bits.vppn    := nextVaddr(31, 13)
-    tlbReq.bits.vaBit12 := nextVaddr(12)
-    tlbReq.bits.offset  := nextVaddr(21,  0)
-    tlbReq.bits.asid    := io.fromCsr.asid
-
-    io.fromIcache.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
-
-    tlbResp.ready := isBusy && io.toIcache.ready // Hision && !flush
-    tlb.io.search(0).flush := flush
-
-    // Response
-    /* TLB <> MMU <> ICACHE */
-    io.toIcache.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) // Hision && !flush
-    val resp       = tlbResp.bits
-    val tlbError   = WireDefault(emptyError())
-    val tlbOut     = WireDefault(0.U.asTypeOf(new MmuToIcache))
-
-    tlbError.excpTlbRefill := !resp.found
-    tlbError.excpTlbPif    := resp.found && !resp.v
-    tlbError.excpTlbPpi    := resp.found && resp.v && (io.fromCsr.plv > resp.plv)
-    tlbError.excpAdef      := addrMisaligned
-
-    tlbOut.paddr        := tlbPaddr(resp)
-    tlbOut.cacheable    := isCacheable(resp.mat)
-    tlbOut.error        := tlbError
-    tlbOut.hasError     := tlbError.asUInt.orR
-
-    io.toIcache.bits  := Mux(isDirect, directResp,
-                         Mux(dmwHit, dmwResp, tlbOut))
-
-    diffDontTouch(dmwHit)
-    diffDontTouch(isPaging)
-    diffDontTouch(isDirect)
-    diffDontTouch(directResp)
-    diffDontTouch(io.toIcache)
-    diffDontTouch(io.fromIcache)
-  }
-
-  // Mem Port
-  val memPort = {
-    val sIdle :: sBusy :: Nil = Enum(2)
-
-    val state = RegInit(sIdle)
-    val isIdle = state === sIdle
-    val isBusy = state === sBusy
-
-    val reqBuffer = RegInit(0.U.asTypeOf(new SqToMmuReq))
-    val reqValid  = RegInit(false.B)
-
-    val flush = io.fromMemFlush || tlb.io.flush
-
-    when (flush) {
-      state := sIdle
-      reqValid := false.B
-    }.otherwise {
-      when (io.fromMem.fire) {
-        reqBuffer := io.fromMem.bits
-        reqValid  := true.B
-        state := sBusy
-      }.elsewhen(io.toMem.fire) {
-        reqValid  := false.B
-        state := sIdle
+    is(sWalk) {
+      when(ptw.io.resp.valid) {
+        val pr = ptw.io.resp.bits
+        when(!pr.fault) {
+          tlb.io.fill.valid := true.B
+          tlb.io.fill.vpn   := pr.vpn
+          tlb.io.fill.asid  := asid
+          tlb.io.fill.ppn   := pr.ppn
+          tlb.io.fill.r     := pr.r
+          tlb.io.fill.w     := pr.w
+          tlb.io.fill.x     := pr.x
+          tlb.io.fill.u     := pr.u
+          tlb.io.fill.g     := pr.g
+        }
+        respPaddr     := pr.paddr
+        respMisalign  := Mux(curPort === 0.U, fetchMisalign(reqVaddr),
+                             memMisalign(reqVaddr, reqLsuOp))
+        respPageFlt   := pr.fault || ptwPermFault
+        respAccessFlt := false.B
+        state         := sResp
       }
     }
 
-    def memAddrMisaligned(vaddr: UInt, lsuOp: UInt): Bool = {
-      val halfAccess = lsuOp === LsuOp.ldh || lsuOp === LsuOp.ldhu || lsuOp === LsuOp.sth
-      val wordAccess = lsuOp === LsuOp.ldw || lsuOp === LsuOp.stw
-      Mux(lsuOp === LsuOp.cacop, false.B,
-        (halfAccess && vaddr(0)) || (wordAccess && (vaddr(1, 0) =/= 0.U)))
+    is(sDrain) {
+      // 等待被放弃的页表遍历结束，保证 PTW 回到空闲
+      when(ptw.io.resp.valid) { state := sIdle }
     }
 
-    val reqVaddr = reqBuffer.vaddr
-    val reqLsuOp = reqBuffer.lsuOp
-    val nextVaddr = io.fromMem.bits.vaddr
-    val nextLsuOp = io.fromMem.bits.lsuOp
-
-    val dmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, reqVaddr, io.fromCsr.plv)
-    val dmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, reqVaddr, io.fromCsr.plv)
-    val dmwHit  = dmw0Hit || dmw1Hit
-
-    val addrMisaligned = memAddrMisaligned(reqVaddr, reqLsuOp)
-
-    val nextDmw0Hit = isPaging && hitDmw(io.fromCsr.dmw0, nextVaddr, io.fromCsr.plv)
-    val nextDmw1Hit = isPaging && hitDmw(io.fromCsr.dmw1, nextVaddr, io.fromCsr.plv)
-    val nextNeedTlb = isPaging && !(nextDmw0Hit || nextDmw1Hit)
-    val nextAddrMisaligned = memAddrMisaligned(nextVaddr, nextLsuOp)
-    val nextNeedSearch = nextNeedTlb && !nextAddrMisaligned
-
-    val directResp = WireDefault(0.U.asTypeOf(new MmuToSqResp))
-    directResp.paddr := reqVaddr
-    // TODO: uncomment
-    // 我肯定是改了的吧！！！！！！
-    directResp.cacheable := isDirect && isCacheable(io.fromCsr.datm)
-    //directResp.cacheable := true.B
-    directResp.error     := emptyDataError()
-    directResp.error.excpAle := addrMisaligned
-    directResp.hasError  := directResp.error.asUInt.orR
-
-    val dmwResp = WireDefault(0.U.asTypeOf(new MmuToSqResp))
-    dmwResp.paddr := Mux(dmw0Hit, dmwPaddr(io.fromCsr.dmw0, reqVaddr),
-                    Mux(dmw1Hit, dmwPaddr(io.fromCsr.dmw1, reqVaddr), 0.U(XLEN.W)))
-    // TODO: uncomment
-    dmwResp.cacheable := (dmw0Hit && isCacheable(io.fromCsr.dmw0(5, 4))) || (dmw1Hit && isCacheable(io.fromCsr.dmw1(5, 4)))
-    //dmwResp.cacheable := true.B
-    dmwResp.error     := emptyDataError()
-    dmwResp.error.excpAle := addrMisaligned
-    dmwResp.hasError  := dmwResp.error.asUInt.orR
-
-    val tlbReq  = tlb.io.search(1).req
-    val tlbResp = tlb.io.search(1).resp
-
-    val respFire     = io.toMem.fire
-    val canAcceptReq = (isIdle || respFire) // Hision && !flush
-
-    tlbReq.valid        := canAcceptReq && io.fromMem.valid && nextNeedSearch
-    tlbReq.bits.vppn    := nextVaddr(31, 13)
-    tlbReq.bits.vaBit12 := nextVaddr(12)
-    tlbReq.bits.offset  := nextVaddr(21, 0)
-    tlbReq.bits.asid    := io.fromCsr.asid
-
-    io.fromMem.ready := canAcceptReq && (!nextNeedSearch || tlbReq.ready)
-
-    tlbResp.ready := isBusy && io.toMem.ready  // Hision && !flush
-    tlb.io.search(1).flush := flush
-
-    io.toMem.valid := isBusy && (addrMisaligned || isDirect || tlbResp.valid || dmwHit) // Hision && !flush
-
-    val resp     = tlbResp.bits
-    val tlbError = WireDefault(emptyDataError())
-    val tlbOut   = WireDefault(0.U.asTypeOf(new MmuToSqResp))
-
-    val isStore = reqLsuOp === LsuOp.stb ||
-      reqLsuOp === LsuOp.sth || reqLsuOp === LsuOp.stw
-    val pageInvalid = resp.found && !resp.v
-    val privilegeError = resp.found && resp.v &&
-      (io.fromCsr.plv > resp.plv)
-
-    tlbError.excpTlbRefill := !resp.found
-    tlbError.excpTlbPil    := pageInvalid && !isStore
-    tlbError.excpTlbPis    := pageInvalid && isStore
-    tlbError.excpTlbPpi    := privilegeError
-    tlbError.excpTlbPme    := resp.found && resp.v &&
-      !privilegeError && isStore && !resp.d
-    tlbError.excpAle       := addrMisaligned
-
-    tlbOut.paddr     := tlbPaddr(resp)
-    tlbOut.cacheable := isCacheable(resp.mat)
-    tlbOut.error     := tlbError
-    tlbOut.hasError  := tlbError.asUInt.orR
-
-    io.toMem.bits := Mux(isDirect, directResp,
-                     Mux(dmwHit, dmwResp, tlbOut))
-
-    diffDontTouch(dmwHit)
-    diffDontTouch(io.toMem)
-    diffDontTouch(io.fromMem)
+    is(sResp) {
+      when(Mux(curPort === 0.U, io.toIcache.fire, io.toMem.fire)) {
+        state := sIdle
+      }
+    }
   }
 
-  for (i <- 2 until nrSearchPort) {
-    tlb.io.search(i).req.valid  := false.B
-    tlb.io.search(i).req.bits   := DontCare
-    tlb.io.search(i).resp.ready := true.B
-    tlb.io.search(i).flush      := false.B
+  // ---------------- 重定向冲刷 ----------------
+  val curFlushed = Mux(curPort === 0.U, io.fromIcacheFlush, io.fromMemFlush)
+  when(state =/= sIdle && curFlushed) {
+    // 若页表遍历恰在本周期返回，则直接回空闲；否则进入排空态等待
+    state := Mux(state === sWalk && !ptw.io.resp.valid, sDrain, sIdle)
   }
 
-  tlb.io.instr := io.tlb.instr
-  tlb.io.csr   := io.tlb.csr
-  io.tlb.cmd   := tlb.io.cmd
-  io.tlb.read  := tlb.io.read
-  io.tlb.fillIdx := tlb.io.fillIdx
+  // ---------------- 输出 ----------------
+  io.toIcache.valid           := (state === sResp) && (curPort === 0.U)
+  io.toIcache.bits.paddr      := respPaddr
+  io.toIcache.bits.cacheable  := isCacheable(respPaddr)
+  io.toIcache.bits.error.misalign    := respMisalign
+  io.toIcache.bits.error.pageFault   := respPageFlt
+  io.toIcache.bits.error.accessFault := respAccessFlt
+  io.toIcache.bits.hasError   := respMisalign || respPageFlt || respAccessFlt
+
+  io.toMem.valid              := (state === sResp) && (curPort === 1.U)
+  io.toMem.bits.paddr         := respPaddr
+  io.toMem.bits.cacheable     := isCacheable(respPaddr)
+  io.toMem.bits.error.misalign    := respMisalign
+  io.toMem.bits.error.pageFault   := respPageFlt
+  io.toMem.bits.error.accessFault := respAccessFlt
+  io.toMem.bits.hasError      := respMisalign || respPageFlt || respAccessFlt
+
+  // ---------------- TLB 冲刷 ----------------
+  tlb.io.flush := io.tlbFlush
+  io.tlbFillIdx := tlb.io.fillIdx
 }

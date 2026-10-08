@@ -1,11 +1,11 @@
-package nscscc.mem.dcache
+package minixiangshan.mem.dcache
 
 import chisel3._
 import chisel3.util.log2Ceil
 import chiseltest._
-import nscscc.backend.decode.LsuOp
-import nscscc.config._
-import nscscc.mem.L2cache.L2WriteKind
+import minixiangshan.backend.decode.LsuOp
+import minixiangshan.config._
+import minixiangshan.mem.L2cache.L2WriteKind
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -37,7 +37,7 @@ class MSHREntryNativeSpec
       victimTag: BigInt = 0,
       victimData: BigInt = 0,
       storeData: BigInt = 0,
-      lsuOp: UInt = LsuOp.ldw
+      lsuOp: UInt = LsuOp.lw
   ): Unit = {
     dut.io.req.bits.paddr.poke(paddr.U)
     dut.io.req.bits.reqType.poke(reqType)
@@ -145,7 +145,7 @@ class MSHREntryNativeSpec
   it should "complete uncache traffic only on its native response or write done" in {
     test(new MSHREntry) { dut =>
       init(dut)
-      request(dut, 0x1f000003L, MshrReqType.uncacheRead, lsuOp = LsuOp.ldbu)
+      request(dut, 0x1f000003L, MshrReqType.uncacheRead, lsuOp = LsuOp.lbu)
       dut.io.l2.read.req.bits.addr.expect(0x1f000003L.U)
       dut.io.l2.read.req.bits.size.expect(0.U)
       dut.io.l2.read.req.bits.uncache.expect(true.B)
@@ -166,7 +166,7 @@ class MSHREntryNativeSpec
 
       dut.io.release.poke(false.B)
       request(dut, 0x1f000002L, MshrReqType.uncacheWrite,
-        storeData = 0xabcd, lsuOp = LsuOp.sth)
+        storeData = 0xabcd, lsuOp = LsuOp.sh)
       dut.io.l2.write.req.bits.kind.expect(L2WriteKind.uncache)
       dut.io.l2.write.req.bits.size.expect(1.U)
       dut.io.l2.write.req.bits.data.expect(0xabcd0000L.U)

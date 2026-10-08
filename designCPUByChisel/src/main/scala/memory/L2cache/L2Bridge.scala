@@ -1,9 +1,9 @@
-package nscscc.mem.L2cache
+package minixiangshan.mem.L2cache
 
 import chisel3._
 import chisel3.util._
-import nscscc.axi._
-import nscscc.config._
+import minixiangshan.axi._
+import minixiangshan.config._
 
 class L2Bridge(implicit p: Parameters) extends NSModule {
   val io = IO(new Bundle {

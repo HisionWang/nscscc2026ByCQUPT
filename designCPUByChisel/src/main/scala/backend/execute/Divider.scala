@@ -1,20 +1,20 @@
-package nscscc.backend.execute
+package minixiangshan.backend.execute
  
 import chisel3._
 import chisel3.util._
-import nscscc.config._
-import nscscc.backend.decode._
-import nscscc.backend.dispatch.DispatchedInst
-import nscscc.backend.regread.ExeReq
-import nscscc.backend.rename.RedirectInfo
+import minixiangshan.config._
+import minixiangshan.backend.decode._
+import minixiangshan.backend.dispatch.DispatchedInst
+import minixiangshan.backend.regread.ExeReq
+import minixiangshan.backend.rename.RedirectInfo
  
 // ═══════════════════════════════════════════════════════════════
 //  多周期除法器
 //
 //  支持操作：DIV  (有符号除法，商)
-//            MOD  (有符号取模，余数)
+//            REM  (有符号取余)
 //            DIVU (无符号除法，商)
-//            MODU (无符号取模，余数)
+//            REMU (无符号取余)
 //
 //  算法：恢复余数法（参考 open-la500）
 //        每周期处理1位，32周期完成32位除法
@@ -106,7 +106,7 @@ class Divider(implicit p: Parameters) extends NSModule {
           val a  = io.in.bits.rs1Data
           val b  = io.in.bits.rs2Data
           val op = io.in.bits.uop.ctrl.divOp
-          val signed = (op === DivOp.div) || (op === DivOp.mod)
+          val signed = (op === DivOp.div) || (op === DivOp.rem)
           val sA = signed && a(XLEN - 1)
           val sB = signed && b(XLEN - 1)
           val divisorZero = (b === 0.U)
@@ -116,7 +116,7 @@ class Divider(implicit p: Parameters) extends NSModule {
           signA     := sA
           signB     := sB
           isSigned  := signed
-          isMod     := (op === DivOp.mod) || (op === DivOp.modu)
+          isMod     := (op === DivOp.rem) || (op === DivOp.remu)
           divByZero := divisorZero
           remainder := 0.U
           quotient  := Mux(sA, (-a).asUInt, a)   // |被除数| → 商寄存器
@@ -165,7 +165,7 @@ class Divider(implicit p: Parameters) extends NSModule {
   val finalQ = Mux(isSigned && quotNeg, (-quotient).asUInt, quotient)
   val finalR = Mux(isSigned && remNeg,  (-remainder(XLEN - 1, 0)).asUInt, remainder(XLEN - 1, 0))
  
-  // 除零处理（LoongArch 规定结果未定义，此处返回全1商 + 原被除数余数）
+  // 除零处理（RISC-V：商为全 1，余数为被除数）
   val origDividend = Mux(signA, (-quotient).asUInt, quotient)  // quotient此时仍存|被除数|
   val resultQ = Mux(divByZero, Fill(XLEN, true.B), finalQ)
   val resultR = Mux(divByZero, origDividend, finalR)

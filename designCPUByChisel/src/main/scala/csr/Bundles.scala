@@ -1,8 +1,8 @@
-package nscscc.csr
+package minixiangshan.csr
 
 import chisel3._
 import chisel3.util._
-import nscscc.config.Parameters
+import minixiangshan.config._
 
 class CsrFileBundleSkel(implicit p: Parameters) extends BundleSkel
 
@@ -20,90 +20,87 @@ class CsrFileWriteReq(implicit p: Parameters) extends CsrFileBundleSkel {
   val data = UInt(XLEN.W)
 }
 
-class ExcpEvent(implicit p: Parameters) extends CsrFileBundleSkel {
-  val excp = Bool()
-  val ertn = Bool()
-  val badvWrite = Bool()
-  val tlbehiWrite = Bool()
-  val tlbRefill = Bool()
+/**
+ * 陷入请求（RedirectController -> CsrFile）
+ * 既包含组合路径（用于计算 trap 入口地址），也由 CSR 内部打拍后用于状态更新。
+ */
+class TrapReq(implicit p: Parameters) extends CsrFileBundleSkel {
+  val valid       = Bool()
+  val isInterrupt = Bool()
+  val cause       = UInt(6.W)
+  val epc         = UInt(XLEN.W)
+  val tval        = UInt(XLEN.W)
+  val priv        = UInt(privLen.W)  // 陷入发生时的特权级
+  val xret        = Bool()   // mret / sret
+  val isMret      = Bool()
 }
 
-class RedirectEntry(implicit p: Parameters) extends CsrFileBundleSkel {
-  val eentry = UInt(XLEN.W)
-  val tlbrentry = UInt(XLEN.W)
-  val era = UInt(XLEN.W)
-}
-
-class ExcpInfo(implicit p: Parameters) extends CsrFileBundleSkel {
-  val era = UInt(XLEN.W)
-  val ecode = UInt(6.W)
-  val esubcode = UInt(9.W)
-  val badVaddr = UInt(XLEN.W)
-  val vppn = UInt(19.W)
+/** CsrFile -> RedirectController 的陷入环境（寄存器输出，回滚期间保持稳定） */
+class TrapEnv(implicit p: Parameters) extends CsrFileBundleSkel {
+  val mtvec    = UInt(XLEN.W)
+  val stvec    = UInt(XLEN.W)
+  val medeleg  = UInt(XLEN.W)
+  val mideleg  = UInt(XLEN.W)
+  val mepc     = UInt(XLEN.W)
+  val sepc     = UInt(XLEN.W)
 }
 
 class TimerBundle(implicit p: Parameters) extends CsrFileBundleSkel {
-  val tid = UInt(XLEN.W)
+  val tid   = UInt(XLEN.W)
   val timer = UInt(TimerLen.W)
 }
 
-class TlbCmd(implicit p: Parameters) extends CsrFileBundleSkel {
-  val tlbrd = Bool()
-  val srchVld = Bool()
-  val srchHit = Bool()
-  val srchIdx = UInt(5.W)
-}
-
 class PrivCtrl(implicit p: Parameters) extends CsrFileBundleSkel {
-  val plv = UInt(2.W)
-}
-
-class AddrTransCtrl(implicit p: Parameters) extends CsrFileBundleSkel {
-  val pgda = UInt(2.W)
-  val dmw0 = UInt(XLEN.W)
-  val dmw1 = UInt(XLEN.W)
-}
-
-class CacheCtrl(implicit p: Parameters) extends CsrFileBundleSkel {
-  val datm = UInt(2.W)
-  val datf = UInt(2.W)
-}
-
-class TlbToCsr(implicit p: Parameters) extends CsrFileBundleSkel {
-  val tlbehi = UInt(XLEN.W)
-  val tlbeho0 = UInt(XLEN.W)
-  val tlbeho1 = UInt(XLEN.W)
-  val tlbidx = UInt(XLEN.W)
-  val asid = UInt(XLEN.W)
-}
-
-class CsrToTlb(implicit p: Parameters) extends CsrFileBundleSkel {
-  val ecode = UInt(6.W)
-  val tlbidx = UInt(XLEN.W)
-  val tlbehi = UInt(XLEN.W)
-  val tlbelo0 = UInt(XLEN.W)
-  val tlbelo1 = UInt(XLEN.W)
-  val asid = UInt(10.W)
-  val random = UInt(5.W)
+  val curPriv  = UInt(privLen.W)  // 当前特权级
+  val dataPriv = UInt(privLen.W)  // 数据访问特权级（考虑 mstatus.MPRV）
 }
 
 class CsrFileIo(implicit p: Parameters) extends CsrFileBundleSkel {
-  val irqBus = Input(UInt(irqWidth.W))
+  val irqBus = Input(UInt(8.W))
   val hasIrq = Output(Bool())
+  /** 当前最高优先级的 pending+enabled 中断编号 */
+  val intrCode = Output(UInt(IntrCode.width.W))
+
   val rReq = Input(new CsrFileReadReq)
   val rResp = Output(new CsrFileReadResp)
   val wReq = Input(new CsrFileWriteReq)
-  val excpEvent = Input(new ExcpEvent)
-  val excpInfo = Input(new ExcpInfo)
-  val redirectAddr = Output(new RedirectEntry)
+
+  val trapReq = Input(new TrapReq)
+  val trapEnv = Output(new TrapEnv)
+
   val timerInfo = Output(new TimerBundle)
-  val tlbCmd= Input(new TlbCmd)
   val priv = Output(new PrivCtrl)
-  val tlbCtrl = Output(new AddrTransCtrl)
-  val cacheCtrl = Output(new CacheCtrl)
-  val toTlb = Output(new CsrToTlb)
-  val fromTlb = Input(new TlbToCsr)
-  val llbitSet = Input(Bool())
-  val llbitClear = Input(Bool())
-  val llbit = Output(Bool())
+  val mmuCtrl = Output(new minixiangshan.mmu.CsrToMmu)
+  val flushTlb = Output(Bool())
+
+  val lrValidSet = Input(Bool())
+  val lrValidClear = Input(Bool())
+  val lrValid = Output(Bool())
+
+  /** ROB 本周期是否有指令提交（用于 minstret） */
+  val commitValid = Input(Bool())
+}
+
+/* ============================================================================
+ *  已实现 CSR 地址表
+ * ==========================================================================*/
+object CsrAddrMap {
+  private def eq(a: UInt, b: Int): Bool = a === b.U
+
+  def isImplemented(a: UInt): Bool = {
+    val list = Seq(
+      0x000, 0x001, 0x002, 0x003,                                  // ustatus/fcsr
+      0x100, 0x104, 0x105, 0x106, 0x140, 0x141, 0x142, 0x143, 0x144, 0x180,
+      0x300, 0x301, 0x302, 0x303, 0x304, 0x305, 0x306, 0x310, 0x312, 0x313,
+      0x340, 0x341, 0x342, 0x343, 0x344, 0x34a, 0x34b,
+      0x3a0, 0x3a1, 0x3a2, 0x3a3,
+      0xb00, 0xb02, 0xb80, 0xb82,
+      0xc00, 0xc01, 0xc02, 0xc80, 0xc81, 0xc82,
+      0xf11, 0xf12, 0xf13, 0xf14, 0xf15
+    )
+    val base = list.map(x => eq(a, x)).reduce(_ || _)
+    // pmpaddr0 .. pmpaddr15 -> 0x3b0 .. 0x3bf
+    val pmpAddr = (a >= 0x3b0.U) && (a <= 0x3bf.U)
+    base || pmpAddr
+  }
 }
